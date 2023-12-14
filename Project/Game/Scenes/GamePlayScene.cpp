@@ -71,6 +71,8 @@ void GamePlayScene::Update()
 {
 	debugCamera_->Update();
 
+	sprite_->Update(LeftTop_[0], LeftBottom_[0], RightTop_[1], RightBottom_[1]);
+
 #ifdef _DEBUG
 	if (input_->PushKey(DIK_1))
 	{

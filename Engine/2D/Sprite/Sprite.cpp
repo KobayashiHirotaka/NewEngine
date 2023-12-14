@@ -16,12 +16,13 @@ void Sprite::Initialize(const Vector4& LeftTop, const Vector4& LeftBottom, const
 
 	vertexResourceSprite_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSprite_));
 
-	D3D12_RESOURCE_DESC resDesc = textureManager_->GetResourceDesc(textureHandle_);
+	resDesc_ = textureManager_->GetResourceDesc(textureHandle_);
+	textureSize_ = { float(resDesc_.Width),float(resDesc_.Height) };
 
-	float texLeft = textureLeftTop_.x / resDesc.Width;
-	float texRight = (textureLeftTop_.x + textureSize_.x) / resDesc.Width;
-	float texTop = textureLeftTop_.y / resDesc.Height;
-	float texBottom = (textureLeftTop_.y + textureSize_.y) / resDesc.Height;
+	float texLeft = textureLeftTop_.x / resDesc_.Width;
+	float texRight = (textureLeftTop_.x + textureSize_.x) / resDesc_.Width;
+	float texTop = textureLeftTop_.y / resDesc_.Height;
+	float texBottom = (textureLeftTop_.y + textureSize_.y) / resDesc_.Height;
 
 	//左下
 	vertexDataSprite_[0].position = LeftBottom;
@@ -55,6 +56,47 @@ void Sprite::Initialize(const Vector4& LeftTop, const Vector4& LeftBottom, const
 	camera_.Initialize();
 	camera_.constMap->view = MakeIdentity4x4();
 	camera_.constMap->projection = MakeOrthographicMatrix(0.0f, 0.0f, float(WindowsApp::kClientWidth), float(WindowsApp::kClientHeight), 0.0f, 100.0f);
+}
+
+void Sprite::Update(const Vector4& LeftTop, const Vector4& LeftBottom, const Vector4& RightTop, const Vector4& RightBottom)
+{
+	AdjustTextureSize();
+
+	vertexResourceSprite_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSprite_));
+
+	float texLeft = textureLeftTop_.x / resDesc_.Width;
+	float texRight = (textureLeftTop_.x + textureSize_.x) / resDesc_.Width;
+	float texTop = textureLeftTop_.y / resDesc_.Height;
+	float texBottom = (textureLeftTop_.y + textureSize_.y) / resDesc_.Height;
+
+	//左下
+	vertexDataSprite_[0].position = LeftBottom;
+	vertexDataSprite_[0].texcoord = { texLeft,texBottom };
+
+	//左上
+	vertexDataSprite_[1].position = LeftTop;
+	vertexDataSprite_[1].texcoord = { texLeft,texTop };
+
+	//右下
+	vertexDataSprite_[2].position = RightBottom;
+	vertexDataSprite_[2].texcoord = { texRight,texBottom };
+
+	//右上
+	vertexDataSprite_[3].position = RightTop;
+	vertexDataSprite_[3].texcoord = { texRight,texTop };
+
+	//インデックスリソースにデータを書き込む
+	indexResourceSprite_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexDataSprite_));
+
+	//三角形1枚目
+	indexDataSprite_[0] = 0;
+	indexDataSprite_[1] = 1;
+	indexDataSprite_[2] = 2;
+
+	//三角形2枚目
+	indexDataSprite_[3] = 1;
+	indexDataSprite_[4] = 3;
+	indexDataSprite_[5] = 2;
 }
 
 void Sprite::Draw(const WorldTransform& transform)
@@ -103,6 +145,7 @@ void Sprite::ImGui(const char* Title)
 	ImGui::DragFloat2("UVScale", &uvTransformSprite_.scale.x, 0.01f, -10.0f, 10.0f);
 	ImGui::SliderAngle("UVRotate", &uvTransformSprite_.rotate.z);
 	ImGui::ColorEdit4("Color", &color_.x);
+	ImGui::DragFloat2("textureSize", &textureSize_.x, 0.01f, 0.0f, 1600.0f);
 	ImGui::End();
 }
 
@@ -124,4 +167,12 @@ void Sprite::CreateIndexBufferViewSprite()
 	indexBufferViewSprite_.SizeInBytes = sizeof(uint32_t) * 6;
 	//インデックスはuint32_t
 	indexBufferViewSprite_.Format = DXGI_FORMAT_R32_UINT;
+}
+
+
+void Sprite::AdjustTextureSize()
+{
+	resDesc_ = textureManager_->GetResourceDesc(textureHandle_);
+
+	textureSize_ = { float(resDesc_.Width),float(resDesc_.Height) };
 }

@@ -12,12 +12,14 @@ class Sprite
 {
 public:
 	void Initialize(const Vector4& LeftTop, const Vector4& LeftBottom, const Vector4& RightTop, const Vector4& RightBottom, const uint32_t textureHandle);
+	void Update(const Vector4& LeftTop, const Vector4& LeftBottom, const Vector4& RightTop, const Vector4& RightBottom);
 	void Draw(const WorldTransform& transform);
 	void ImGui(const char* Title);
 
 private:
 	void CreateVertexBufferViewSprite();
 	void CreateIndexBufferViewSprite();
+	void AdjustTextureSize();
 
 private:
 	DirectXCore* dxCore_ = nullptr;
@@ -63,5 +65,7 @@ private:
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 
 	uint32_t textureHandle_;
+
+	D3D12_RESOURCE_DESC resDesc_;
 };
 
