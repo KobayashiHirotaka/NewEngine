@@ -26,6 +26,8 @@ public:
 
 	const CD3DX12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32_t textureHandle);
 
+	const D3D12_RESOURCE_DESC GetResourceDesc(uint32_t textureHandle);
+
 private:
 	static const size_t kMaxTexture = 256;
 

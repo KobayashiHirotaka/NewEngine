@@ -27,8 +27,14 @@ void GamePlayScene::Initialize()
 	light_ = Light::GetInstance();
 	light_->Initialize();
 
+	white_ = textureManager_->LoadTexture("resource/white.png");
+	uvChecker_ = textureManager_->LoadTexture("resource/uvChecker.png");
+	monsterBall_ = textureManager_->LoadTexture("resource/monsterBall.png");
+
+	texture_ = monsterBall_;
+
 	sprite_ = new Sprite();
-	sprite_->Initialize(LeftTop_[0], LeftBottom_[0], RightTop_[1], RightBottom_[1]);
+	sprite_->Initialize(LeftTop_[0], LeftBottom_[0], RightTop_[1], RightBottom_[1], texture_);
 	worldTransformSprite_.Initialize();
 
 	for (int i = 0; i < 2; i++ )
@@ -37,12 +43,6 @@ void GamePlayScene::Initialize()
 		sphere_[i]->Initialize();
 		worldTransform_[i].Initialize();
 	}
-
-	white_= textureManager_->LoadTexture("resource/white.png");
-	uvChecker_ = textureManager_->LoadTexture("resource/uvChecker.png");
-	monsterBall_ = textureManager_->LoadTexture("resource/monsterBall.png");
-
-	texture_ = monsterBall_;
 
 	audio_->soundDatas[0] = audio_->SoundLoadWave("resource/mokugyo.wav");
 
@@ -154,9 +154,9 @@ void GamePlayScene::Draw()
 	/*sphere_[0]->Draw(worldTransform_[0], viewProjection_, texture_);
 	sphere_[1]->Draw(worldTransform_[1], viewProjection_, texture_);*/
 
-	//sprite_->Draw(worldTransformSprite_, texture_);
+	sprite_->Draw(worldTransformSprite_);
 
-	model_->Draw(worldTransformModel_, camera_);
+	//model_->Draw(worldTransformModel_, camera_);
 
 	ImGui::Begin("sphereTexture");
 	ImGui::Checkbox("texture", &changeTexture_);
@@ -184,6 +184,6 @@ void GamePlayScene::Draw()
 		texture_ = monsterBall_;
 
 	}else {
-		texture_ = white_;
+		texture_ = uvChecker_;
 	}
 }

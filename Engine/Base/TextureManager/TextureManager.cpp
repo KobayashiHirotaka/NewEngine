@@ -149,3 +149,11 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetGPUDescriptorHandle(Microsoft::WR
 	handleGPU.ptr += (descriptorSize * index);
 	return handleGPU;
 }
+
+const D3D12_RESOURCE_DESC TextureManager::GetResourceDesc(uint32_t textureHandle) 
+{
+	D3D12_RESOURCE_DESC resourceDesc{};
+	resourceDesc = textures_.at(textureHandle).textureResource.Get()->GetDesc();
+
+	return resourceDesc;
+}

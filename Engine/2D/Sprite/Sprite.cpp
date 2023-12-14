@@ -1,9 +1,11 @@
 #include "Sprite.h"
 
-void Sprite::Initialize(const Vector4& LeftTop, const Vector4& LeftBottom, const Vector4& RightTop, const Vector4& RightBottom)
+void Sprite::Initialize(const Vector4& LeftTop, const Vector4& LeftBottom, const Vector4& RightTop, const Vector4& RightBottom, const uint32_t textureHandle)
 {
 	dxCore_ = DirectXCore::GetInstance();
 	textureManager_ = TextureManager::GetInstance();
+
+	textureHandle_ = textureHandle;
 
 	vertexResourceSprite_ = dxCore_->CreateBufferResource(sizeof(VertexData) * 4);
 	materialResourceSprite_ = dxCore_->CreateBufferResource(sizeof(Material));
@@ -13,6 +15,8 @@ void Sprite::Initialize(const Vector4& LeftTop, const Vector4& LeftBottom, const
 	CreateIndexBufferViewSprite();
 
 	vertexResourceSprite_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSprite_));
+
+	/*D3D12_RESOURCE_DESC resDesc = textureManager_->GetResourceDesc();*/
 
 	//左下
 	vertexDataSprite_[0].position = LeftBottom;
@@ -48,7 +52,7 @@ void Sprite::Initialize(const Vector4& LeftTop, const Vector4& LeftBottom, const
 	camera_.constMap->projection = MakeOrthographicMatrix(0.0f, 0.0f, float(WindowsApp::kClientWidth), float(WindowsApp::kClientHeight), 0.0f, 100.0f);
 }
 
-void Sprite::Draw(const WorldTransform& transform, const uint32_t textureHandle)
+void Sprite::Draw(const WorldTransform& transform)
 {
 	//色の書き込み
 	materialResourceSprite_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialDataSprite_));
@@ -79,7 +83,7 @@ void Sprite::Draw(const WorldTransform& transform, const uint32_t textureHandle)
 	dxCore_->GetcommandList()->SetGraphicsRootConstantBufferView(0, materialResourceSprite_.Get()->GetGPUVirtualAddress());
 
 	//テクスチャ
-	dxCore_->GetcommandList()->SetGraphicsRootDescriptorTable(2, textureManager_->GetGPUHandle(textureHandle));
+	dxCore_->GetcommandList()->SetGraphicsRootDescriptorTable(2, textureManager_->GetGPUHandle(textureHandle_));
 
 	dxCore_->GetcommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }

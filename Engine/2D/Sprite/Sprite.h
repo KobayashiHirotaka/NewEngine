@@ -11,8 +11,8 @@
 class Sprite
 {
 public:
-	void Initialize(const Vector4& LeftTop, const Vector4& LeftBottom, const Vector4& RightTop, const Vector4& RightBottom);
-	void Draw(const WorldTransform& transform, const uint32_t textureHandle);
+	void Initialize(const Vector4& LeftTop, const Vector4& LeftBottom, const Vector4& RightTop, const Vector4& RightBottom, const uint32_t textureHandle);
+	void Draw(const WorldTransform& transform);
 	void ImGui(const char* Title);
 
 private:
@@ -57,5 +57,7 @@ private:
 	Camera camera_;
 
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
+
+	uint32_t textureHandle_;
 };
 
