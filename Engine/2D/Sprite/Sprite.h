@@ -54,6 +54,10 @@ private:
 		{0.0f,0.0f,0.0f}
 	};
 
+	Vector2 textureLeftTop_ = { 0.0f,0.0f };
+
+	Vector2 textureSize_ = { 100.0f,100.0f };
+
 	Camera camera_;
 
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };

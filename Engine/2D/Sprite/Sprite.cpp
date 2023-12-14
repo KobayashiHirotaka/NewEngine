@@ -16,23 +16,28 @@ void Sprite::Initialize(const Vector4& LeftTop, const Vector4& LeftBottom, const
 
 	vertexResourceSprite_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSprite_));
 
-	/*D3D12_RESOURCE_DESC resDesc = textureManager_->GetResourceDesc();*/
+	D3D12_RESOURCE_DESC resDesc = textureManager_->GetResourceDesc(textureHandle_);
+
+	float texLeft = textureLeftTop_.x / resDesc.Width;
+	float texRight = (textureLeftTop_.x + textureSize_.x) / resDesc.Width;
+	float texTop = textureLeftTop_.y / resDesc.Height;
+	float texBottom = (textureLeftTop_.y + textureSize_.y) / resDesc.Height;
 
 	//左下
 	vertexDataSprite_[0].position = LeftBottom;
-	vertexDataSprite_[0].texcoord = { 0.0f,1.0f };
+	vertexDataSprite_[0].texcoord = { texLeft,texBottom };
 
 	//左上
 	vertexDataSprite_[1].position = LeftTop;
-	vertexDataSprite_[1].texcoord = { 0.0f,0.0f };
+	vertexDataSprite_[1].texcoord = { texLeft,texTop };
 
 	//右下
 	vertexDataSprite_[2].position = RightBottom;
-	vertexDataSprite_[2].texcoord = { 1.0f,1.0f };
+	vertexDataSprite_[2].texcoord = { texRight,texBottom };
 
 	//右上
 	vertexDataSprite_[3].position = RightTop;
-	vertexDataSprite_[3].texcoord = { 1.0f,0.0f };
+	vertexDataSprite_[3].texcoord = { texRight,texTop };
 
 	//インデックスリソースにデータを書き込む
 	indexResourceSprite_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexDataSprite_));
