@@ -162,9 +162,9 @@ void GamePlayScene::Draw()
 
 	//sprite_->Draw(worldTransformSprite_);
 
-	game3dObjectManager_->Draw(camera_);
+	//game3dObjectManager_->Draw(camera_);
 
-	//model_->Draw(worldTransformModel_, camera_);
+	model_->Draw(worldTransformModel_, camera_);
 
 	ImGui::Begin("sphereTexture");
 	ImGui::Checkbox("texture", &changeTexture_);
