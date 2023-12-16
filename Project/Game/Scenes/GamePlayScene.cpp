@@ -10,6 +10,8 @@ GamePlayScene::~GamePlayScene()
 {
 	audio_->xAudio2.Reset();
 	audio_->SoundUnload(&audio_->soundDatas[0]);
+
+	delete sprite_;
 }
 
 void GamePlayScene::Initialize()

@@ -23,5 +23,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SceneManager* sceneManager = new SceneManager();
 	sceneManager->Run();
 
+	//D3DResourceLeakCheker leakChecker;
+
 	return 0;
 }
