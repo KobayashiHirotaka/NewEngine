@@ -8,7 +8,7 @@
 #include "Engine/2D/Triangle/Triangle.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/3D/Sphere/Sphere.h"
-#include "Engine/3D/Model/Model.h"
+#include "Engine//3D/Model/Game3dObjectManager.h"
 #include "Engine/3D/Light/Light.h"
 #include "Engine/Utility/Math/MyMath.h"
 #include "Engine/Utility/Structs/ModelData.h"
@@ -45,6 +45,8 @@ private:
 	DirectXCore* dxCore_ = nullptr;
 
 	Model* model_ = nullptr;
+
+	Game3dObjectManager* game3dObjectManager_ = nullptr;
 
 	WorldTransform worldTransform_[2];
 

@@ -294,6 +294,12 @@
     <ClCompile Include="Engine\Utility\GlobalVariables.cpp">
       <Filter>ソース ファイル\Engine\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp">
+      <Filter>ソース ファイル\Engine\3d\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp">
+      <Filter>ソース ファイル\Engine\3d\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -436,6 +442,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Utility\Structs\VertexData.h">
       <Filter>ヘッダー ファイル\Engine\Utility\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\IGame3dObject.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

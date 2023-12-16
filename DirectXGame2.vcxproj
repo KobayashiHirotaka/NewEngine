@@ -16,6 +16,8 @@
     <ClCompile Include="Engine\3D\Camera\Camera.cpp" />
     <ClCompile Include="Engine\3D\Camera\DebugCamera.cpp" />
     <ClCompile Include="Engine\3D\Light\Light.cpp" />
+    <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp" />
+    <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp" />
     <ClCompile Include="Engine\3D\Model\Model.cpp" />
     <ClCompile Include="Engine\3D\Sphere\Sphere.cpp" />
     <ClCompile Include="Engine\3D\WorldTransform\WorldTransform.cpp" />
@@ -61,6 +63,8 @@
     <ClInclude Include="Engine\3D\Camera\Camera.h" />
     <ClInclude Include="Engine\3D\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\3D\Light\Light.h" />
+    <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h" />
+    <ClInclude Include="Engine\3D\Model\IGame3dObject.h" />
     <ClInclude Include="Engine\3D\Model\Model.h" />
     <ClInclude Include="Engine\3D\Sphere\Sphere.h" />
     <ClInclude Include="Engine\3D\WorldTransform\WorldTransform.h" />
