@@ -61,12 +61,6 @@
     <Filter Include="ソース ファイル\Engine\Base\TextureManager">
       <UniqueIdentifier>{7a0a0eef-207e-4000-b31d-02b7de839f14}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Engine\Base\MyEngine">
-      <UniqueIdentifier>{b60c236a-0951-4b93-bce8-fffd681d688c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Engine\Base\MyEngine">
-      <UniqueIdentifier>{ea77232b-67d8-443f-8bdb-efdb9892e76d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\Engine\Base\WindowsApp">
       <UniqueIdentifier>{052f0adc-c505-4d60-9cc1-689e84eb52d7}</UniqueIdentifier>
     </Filter>
@@ -231,9 +225,6 @@
     <ClCompile Include="Engine\Base\ImGuiManager\ImGuiManager.cpp">
       <Filter>ソース ファイル\Engine\Base\ImGuiManager</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Base\MyEngine\MyEngine.cpp">
-      <Filter>ソース ファイル\Engine\Base\MyEngine</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Base\TextureManager\TextureManager.cpp">
       <Filter>ソース ファイル\Engine\Base\TextureManager</Filter>
     </ClCompile>
@@ -343,9 +334,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Base\ImGuiManager\ImGuiManager.h">
       <Filter>ヘッダー ファイル\Engine\Base\ImGuiManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Base\MyEngine\MyEngine.h">
-      <Filter>ヘッダー ファイル\Engine\Base\MyEngine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Base\TextureManager\TextureManager.h">
       <Filter>ヘッダー ファイル\Engine\Base\TextureManager</Filter>

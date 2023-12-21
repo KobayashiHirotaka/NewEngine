@@ -23,7 +23,6 @@
     <ClCompile Include="Engine\3D\WorldTransform\WorldTransform.cpp" />
     <ClCompile Include="Engine\Base\DirectXCore\DirectXCore.cpp" />
     <ClCompile Include="Engine\Base\ImGuiManager\ImGuiManager.cpp" />
-    <ClCompile Include="Engine\Base\MyEngine\MyEngine.cpp" />
     <ClCompile Include="Engine\Base\TextureManager\TextureManager.cpp" />
     <ClCompile Include="Engine\Base\WindowsApp\WindowsApp.cpp" />
     <ClCompile Include="Engine\Components\Audio\Audio.cpp" />
@@ -70,7 +69,6 @@
     <ClInclude Include="Engine\3D\WorldTransform\WorldTransform.h" />
     <ClInclude Include="Engine\Base\DirectXCore\DirectXCore.h" />
     <ClInclude Include="Engine\Base\ImGuiManager\ImGuiManager.h" />
-    <ClInclude Include="Engine\Base\MyEngine\MyEngine.h" />
     <ClInclude Include="Engine\Base\ResourceObject.h" />
     <ClInclude Include="Engine\Base\TextureManager\TextureManager.h" />
     <ClInclude Include="Engine\Base\WindowsApp\WindowsApp.h" />
