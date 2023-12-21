@@ -31,6 +31,7 @@ private:
 	WindowsApp(const WindowsApp&) = delete;
 	const WindowsApp& operator=(const WindowsApp&) = delete;
 
+private:
 	WNDCLASS wc_{};
 	RECT wrc_{};
 	HWND hwnd_{};
