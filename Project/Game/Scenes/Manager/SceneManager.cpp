@@ -17,13 +17,10 @@ void SceneManager::Initialize()
 
 	dxCore_ = DirectXCore::GetInstance();
 
-	engine_ = MyEngine::GetInstance();
-	engine_->Initialize();
-
 	textureManager_ = TextureManager::GetInstance();
 
 	imGuiManager_ = ImGuiManager::GetInstance();
-	imGuiManager_->Initialize(win_, dxCore_);
+	imGuiManager_->Initialize();
 
 	input_ = Input::GetInstance();
 	input_->Initialize(win_);
@@ -72,5 +69,5 @@ void SceneManager::Update()
 
 void SceneManager::Release()
 {
-	dxCore_->Release();
+	
 }

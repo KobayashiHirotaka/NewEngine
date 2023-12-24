@@ -1,5 +1,4 @@
 #pragma once
-#include "Engine/Base/MyEngine/MyEngine.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/3D/Camera/DebugCamera.h"
@@ -30,8 +29,6 @@ public:
 	void Draw()override;
 
 private:
-	MyEngine* engine_ = nullptr;
-
 	DebugCamera* debugCamera_ = nullptr;
 
 	TextureManager* textureManager_ = nullptr;
@@ -50,46 +47,7 @@ private:
 
 	WorldTransform worldTransform_[2];
 
-	WorldTransform worldTransformSprite_;
-
-	WorldTransform worldTransformModel_;
-
 	Camera camera_;
-
-	Sprite* sprite_;
-
-	Sphere* sphere_[2];
 	
-	int texture_;
-
-	bool changeTexture_;
-
-	int monsterBall_;
-
-	int uvChecker_;
-
-	int white_;
-
-	uint32_t sound_;
-	
-	Vector4 LeftTop_[2] = {
-		{ 0.0f,0.0f,0.0f,1.0f },
-		{ 360.0f,0.0f,0.0f,1.0f }
-	};
-	Vector4 LeftBottom_[2] = {
-		{ 0.0f,360.0f,0.0f,1.0f },
-		{ 360.0f,360.0f,0.0f,1.0f }
-	};
-	Vector4 RightTop_[2] = {
-		{ 360.0f,0.0f,0.0f,1.0f },
-		{ 640.0f,0.0f,0.0f,1.0f }
-	};
-	Vector4 RightBottom_[2] = {
-		{ 360.0f,180.0f,0.0f,1.0f },
-		{ 640.0f,360.0f,0.0f,1.0f }
-	};
-
-	int count_ = 0;
-
 	Vector4 color_ = { 1.0f,1.0f,1.0f,0.5f };
 };
