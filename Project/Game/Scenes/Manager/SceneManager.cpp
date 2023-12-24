@@ -73,7 +73,4 @@ void SceneManager::Update()
 void SceneManager::Release()
 {
 	dxCore_->Release();
-
-	ImGui_ImplDX12_Shutdown();
-	CoUninitialize();
 }
