@@ -309,6 +309,18 @@
     <None Include="resource\shaders\Particle.hlsli">
       <Filter>shaders</Filter>
     </None>
+    <None Include="resource\shaders\PostProcess.hlsli">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="resource\shaders\MultiPass.hlsli">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="resource\shaders\HorizontalBlur.hlsli">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="resource\shaders\VerticalBlur.hlsli">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\externals\imgui\imconfig.h">
@@ -461,6 +473,30 @@
       <Filter>shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\ParticleVS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\PostProcess.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\PostProcess.PS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\MultiPass.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\MultiPass.PS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\HorizontalBlur.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\HorizontalBlur.PS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\VerticalBlur.PS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\VerticalBlur.VS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
   </ItemGroup>

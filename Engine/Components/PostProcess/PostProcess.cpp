@@ -438,10 +438,10 @@ void PostProcess::CreatePipelineStateObject()
 
 
 	//Shaderをコンパイルする
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"Resources/Shader/MultiPassVS.hlsl", L"vs_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"resource/shaders/MultiPass.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"Resources/Shader/MultiPassPS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"resource/shaders/MultiPass.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 
@@ -562,10 +562,10 @@ void PostProcess::CreateBlurPipelineStateObject() {
 
 
 	//シェーダーをコンパイルする
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"Resources/Shader/HorizontalBlurVS.hlsl", L"vs_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"resource/shaders/HorizontalBlur.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"Resources/Shader/HorizontalBlurPS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"resource/shaders/HorizontalBlur.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 
@@ -595,10 +595,10 @@ void PostProcess::CreateBlurPipelineStateObject() {
 
 
 	//ブラー用のシェーダーをコンパイルする
-	vertexShaderBlob = CompileShader(L"Resources/Shader/VerticalBlurVS.hlsl", L"vs_6_0");
+	vertexShaderBlob = CompileShader(L"resource/shaders/VerticalBlur.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	pixelShaderBlob = CompileShader(L"Resources/Shader/VerticalBlurPS.hlsl", L"ps_6_0");
+	pixelShaderBlob = CompileShader(L"resource/shaders/VerticalBlur.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 	//PSOを再設定する
@@ -739,10 +739,10 @@ void PostProcess::CreatePostProcessPipelineStateObject() {
 
 
 	//シェーダーをコンパイルする
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"Resources/Shader/PostProcessVS.hlsl", L"vs_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"resource/shaders/PostProcess.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"Resources/Shader/PostProcessPS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"resource/shaders/PostProcess.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 
