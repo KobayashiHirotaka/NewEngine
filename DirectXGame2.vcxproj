@@ -27,6 +27,7 @@
     <ClCompile Include="Engine\Base\WindowsApp\WindowsApp.cpp" />
     <ClCompile Include="Engine\Components\Audio\Audio.cpp" />
     <ClCompile Include="Engine\Components\Input\Input.cpp" />
+    <ClCompile Include="Engine\Components\PostProcess\PostProcess.cpp" />
     <ClCompile Include="Engine\externals\imgui\imgui.cpp" />
     <ClCompile Include="Engine\externals\imgui\imgui_demo.cpp" />
     <ClCompile Include="Engine\externals\imgui\imgui_draw.cpp" />
@@ -74,6 +75,7 @@
     <ClInclude Include="Engine\Base\WindowsApp\WindowsApp.h" />
     <ClInclude Include="Engine\Components\Audio\Audio.h" />
     <ClInclude Include="Engine\Components\Input\Input.h" />
+    <ClInclude Include="Engine\Components\PostProcess\PostProcess.h" />
     <ClInclude Include="Engine\externals\imgui\imconfig.h" />
     <ClInclude Include="Engine\externals\imgui\imgui.h" />
     <ClInclude Include="Engine\externals\imgui\imgui_impl_dx12.h" />

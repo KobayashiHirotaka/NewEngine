@@ -190,6 +190,12 @@
     <Filter Include="ヘッダー ファイル\Engine\2d\Triangle">
       <UniqueIdentifier>{a7a5d53b-51e0-48cd-ba1d-0bb401f06e47}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Engine\Components\PostProcess">
+      <UniqueIdentifier>{0c0a9362-2d73-406b-aa3b-1b67e33cc4c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\Components\PostProcess">
+      <UniqueIdentifier>{5129ba16-6b7a-4059-a4b0-8c4052563173}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -290,6 +296,9 @@
     </ClCompile>
     <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp">
       <Filter>ソース ファイル\Engine\3d\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Components\PostProcess\PostProcess.cpp">
+      <Filter>ソース ファイル\Engine\Components\PostProcess</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -436,6 +445,9 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h">
       <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Components\PostProcess\PostProcess.h">
+      <Filter>ヘッダー ファイル\Engine\Components\PostProcess</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
