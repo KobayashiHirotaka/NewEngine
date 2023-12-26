@@ -46,9 +46,6 @@
     <Filter Include="ソース ファイル\Engine\Base\WindowsApp">
       <UniqueIdentifier>{6d8f9cfc-8687-49f7-8bde-cddd7a0a840c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Engine\Base\ImGuiManager">
-      <UniqueIdentifier>{c6de4378-a840-4161-9d8b-dfbef0d3ed44}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Engine\2d">
       <UniqueIdentifier>{40b72785-8269-4844-8399-a6ba2b1f960b}</UniqueIdentifier>
     </Filter>
@@ -118,9 +115,6 @@
     <Filter Include="ソース ファイル\Engine\3d\Model">
       <UniqueIdentifier>{3a1acfc6-3a38-4a4c-9d4a-260b02afc518}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Engine\3d\Sphere">
-      <UniqueIdentifier>{b18ac748-69ec-40cd-a186-c7d655c4d919}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Engine\Utility\Math">
       <UniqueIdentifier>{29540ec8-7afe-4927-9080-9753b35650fd}</UniqueIdentifier>
     </Filter>
@@ -132,9 +126,6 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\Engine\3d\Model">
       <UniqueIdentifier>{683f2ac0-56a1-4544-80eb-e51d758ad3b2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Engine\3d\Sphere">
-      <UniqueIdentifier>{ba9fb95c-8022-4a16-97f7-85f27eba84c1}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\Engine\3d\Light">
       <UniqueIdentifier>{c7ae341d-7eec-4e85-8ad1-db759020636b}</UniqueIdentifier>
@@ -181,20 +172,23 @@
     <Filter Include="ソース ファイル\Engine\2d\Sprite">
       <UniqueIdentifier>{7d788adf-d428-4568-acaf-aa3f264d447c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Engine\2d\Triangle">
-      <UniqueIdentifier>{e8efef33-0050-4075-93a0-4a85f952b09e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\Engine\2d\Sprite">
       <UniqueIdentifier>{7789594b-aeec-4f69-9f40-90ea7263c511}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Engine\2d\Triangle">
-      <UniqueIdentifier>{a7a5d53b-51e0-48cd-ba1d-0bb401f06e47}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Engine\Components\PostProcess">
       <UniqueIdentifier>{0c0a9362-2d73-406b-aa3b-1b67e33cc4c2}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\Engine\Components\PostProcess">
       <UniqueIdentifier>{5129ba16-6b7a-4059-a4b0-8c4052563173}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Engine\2d\ImGuiManager">
+      <UniqueIdentifier>{c6de4378-a840-4161-9d8b-dfbef0d3ed44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Engine\3d\Mesh">
+      <UniqueIdentifier>{7669bc63-3ec7-41f2-8ef6-efadba1a5029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\3d\Mesh">
+      <UniqueIdentifier>{ebcc405d-3a7c-4924-bcf1-af97e8170910}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -229,7 +223,7 @@
       <Filter>ソース ファイル\Engine\Base\DirectXCore</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Base\ImGuiManager\ImGuiManager.cpp">
-      <Filter>ソース ファイル\Engine\Base\ImGuiManager</Filter>
+      <Filter>ソース ファイル\Engine\2d\ImGuiManager</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Base\TextureManager\TextureManager.cpp">
       <Filter>ソース ファイル\Engine\Base\TextureManager</Filter>
@@ -273,14 +267,8 @@
     <ClCompile Include="Engine\2D\Sprite\Sprite.cpp">
       <Filter>ソース ファイル\Engine\2d\Sprite</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\2D\Triangle\Triangle.cpp">
-      <Filter>ソース ファイル\Engine\2d\Triangle</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\3D\Model\Model.cpp">
       <Filter>ソース ファイル\Engine\3d\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\3D\Sphere\Sphere.cpp">
-      <Filter>ソース ファイル\Engine\3d\Sphere</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\Light\Light.cpp">
       <Filter>ソース ファイル\Engine\3d\Light</Filter>
@@ -299,6 +287,12 @@
     </ClCompile>
     <ClCompile Include="Engine\Components\PostProcess\PostProcess.cpp">
       <Filter>ソース ファイル\Engine\Components\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Mesh\Mesh.cpp">
+      <Filter>ソース ファイル\Engine\3d\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\Material.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -404,17 +398,11 @@
     <ClInclude Include="Engine\Utility\ConvertString\ConvertString.h">
       <Filter>ヘッダー ファイル\Engine\Utility\ConvertString</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\2D\Triangle\Triangle.h">
-      <Filter>ヘッダー ファイル\Engine\2d\Triangle</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\2D\Sprite\Sprite.h">
       <Filter>ヘッダー ファイル\Engine\2d\Sprite</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Model\Model.h">
       <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\3D\Sphere\Sphere.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Sphere</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Light\Light.h">
       <Filter>ヘッダー ファイル\Engine\3d\Light</Filter>
@@ -428,13 +416,7 @@
     <ClInclude Include="Engine\Utility\GlobalVariables.h">
       <Filter>ヘッダー ファイル\Engine\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Utility\Structs\Material.h">
-      <Filter>ヘッダー ファイル\Engine\Utility\Structs</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Utility\Structs\Matrix4x4.h">
-      <Filter>ヘッダー ファイル\Engine\Utility\Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Utility\Structs\ModelData.h">
       <Filter>ヘッダー ファイル\Engine\Utility\Structs</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Utility\Structs\TransformationMatrix.h">
@@ -460,6 +442,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Components\PostProcess\PostProcess.h">
       <Filter>ヘッダー ファイル\Engine\Components\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Mesh\Mesh.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Utility\Structs\Material.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

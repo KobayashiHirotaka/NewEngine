@@ -1,7 +1,6 @@
 #pragma once
 #include "Engine/Base/WindowsApp/WindowsApp.h"
 #include "Engine/Base/DirectXCore/DirectXCore.h"
-#include "Engine/Base/MyEngine/MyEngine.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/Components/Input/Input.h"
@@ -36,8 +35,6 @@ private:
 	WindowsApp* win_ = nullptr;
 
 	DirectXCore* dxCore_ = nullptr;
-
-	MyEngine* engine_ = nullptr;
 
 	ImGuiManager* imGuiManager_ = nullptr;
 

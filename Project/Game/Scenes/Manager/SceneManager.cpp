@@ -28,9 +28,6 @@ void SceneManager::Initialize()
 	audio_ = Audio::GetInstance();
 	audio_->Initialize();
 
-	light_ = Light::GetInstance();
-	light_->Initialize();
-
 	GlobalVariables::GetInstance()->LoadFiles();
 
 	state[START] = std::make_unique<GameStartScene>();

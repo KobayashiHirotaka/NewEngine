@@ -18,13 +18,9 @@ void GamePlayScene::Initialize()
 
 	dxCore_ = DirectXCore::GetInstance();
 	
-	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
 	textureManager_ = TextureManager::GetInstance();
-
-	light_ = Light::GetInstance();
-	light_->Initialize();
 
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
 	game3dObjectManager_->Initialize();

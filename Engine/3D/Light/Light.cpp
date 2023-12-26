@@ -1,27 +1,34 @@
 #include "Light.h"
 
-Light* Light::GetInstance()
+void Light::Initialize() 
 {
-	static Light instance;
-	return &instance;
+	lightingResource_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(ConstBufferDataDirectionalLight));
+
+	ConstBufferDataDirectionalLight* directionalLightData = nullptr;
+	lightingResource_->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData));
+	directionalLightData->lightingMethod = lightingMethod_;
+	directionalLightData->enableLighting = enableLighting_;
+	directionalLightData->color = color_;
+	directionalLightData->direction = direction_;
+	directionalLightData->intensity = intensity_;
+	lightingResource_->Unmap(0, nullptr);
 }
 
-void Light::Initialize()
+void Light::Update() 
 {
-	dxCore_ = DirectXCore::GetInstance();
-
-	directionalLightResource_ = dxCore_->CreateBufferResource(sizeof(DirectionalLight));
-	directionalLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData_));
-	directionalLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
-	directionalLightData_->direction = { 0.0f,-1.0f,0.0f };
-	directionalLightData_->intensity = 1.0f;
+	//lightingResourceに書き込む
+	ConstBufferDataDirectionalLight* directionalLightData = nullptr;
+	lightingResource_->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData));
+	directionalLightData->lightingMethod = lightingMethod_;
+	directionalLightData->enableLighting = enableLighting_;
+	directionalLightData->color = color_;
+	directionalLightData->direction = direction_;
+	directionalLightData->intensity = intensity_;
+	lightingResource_->Unmap(0, nullptr);
 }
 
-void Light::ImGui(const char* Title)
+void Light::SetGraphicsCommand(UINT rootParameterIndex)
 {
-	ImGui::Begin(Title);
-	ImGui::SliderFloat3("LightColor", &directionalLightData_->color.x, 0, 1, "%.3f");
-	ImGui::SliderFloat3("Lightpotision", &directionalLightData_->direction.x, -10, 10, "%.3f");
-	ImGui::SliderFloat3("Lightintensity", &directionalLightData_->intensity, 0, 3, "%.3f");
-	ImGui::End();
+	//lightingResourceの場所を設定
+	DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(rootParameterIndex, lightingResource_->GetGPUVirtualAddress());
 }
