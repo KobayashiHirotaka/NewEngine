@@ -315,6 +315,9 @@
     <None Include="resource\shaders\VerticalBlur.hlsli">
       <Filter>shaders</Filter>
     </None>
+    <None Include="resource\shaders\Sprite.hlsli">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\externals\imgui\imconfig.h">
@@ -416,22 +419,7 @@
     <ClInclude Include="Engine\Utility\GlobalVariables.h">
       <Filter>ヘッダー ファイル\Engine\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Utility\Structs\Matrix4x4.h">
-      <Filter>ヘッダー ファイル\Engine\Utility\Structs</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Utility\Structs\TransformationMatrix.h">
-      <Filter>ヘッダー ファイル\Engine\Utility\Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Utility\Structs\Vector2.h">
-      <Filter>ヘッダー ファイル\Engine\Utility\Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Utility\Structs\Vector3.h">
-      <Filter>ヘッダー ファイル\Engine\Utility\Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Utility\Structs\Vector4.h">
-      <Filter>ヘッダー ファイル\Engine\Utility\Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Utility\Structs\VertexData.h">
       <Filter>ヘッダー ファイル\Engine\Utility\Structs</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Model\IGame3dObject.h">
@@ -485,6 +473,12 @@
       <Filter>shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\VerticalBlur.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Sprite.PS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Sprite.VS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
   </ItemGroup>

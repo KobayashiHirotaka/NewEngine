@@ -1,52 +1,43 @@
-#pragma once
 #include "Engine/Base/WindowsApp/WindowsApp.h"
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
-#include "Engine/Base/ImGuiManager/ImGuiManager.h"
+//#include "Base/D3DResourceLeakChecker.h"
+//#include "Engine/Components/Audio/Audio.h"
 #include "Engine/Components/Input/Input.h"
-#include "Engine/Components/Audio/Audio.h"
-#include "Engine/3D/Light/Light.h"
+#include "Engine/Components/PostProcess/PostProcess.h"
+#include "Engine/3D/Model/Model.h"
+#include "Engine/2D/Sprite/Sprite.h"
+#include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Project/Game/Scenes/IScene.h"
-#include "Project/Game/Scenes/GameStartScene.h"
-#include "Project/Game/Scenes/GamePlayScene.h"
-#include "Project/Game/Scenes/GameEndScene.h"
+#include <memory>
 
-class SceneManager
+class SceneManager 
 {
 public:
-	void Initialize();
+	SceneManager();
 
-	void Update();
+	~SceneManager();
 
-	//void Draw();
-
-	void Release();
+	void ChangeScene(IScene* newScene);
 
 	void Run();
 
-	enum GameSceneNum
-	{
-		START,
-		PLAY,
-		END
-	};
-
 private:
+	/*static D3DResourceLeakChecker leakCheck;*/
+
 	WindowsApp* win_ = nullptr;
 
 	DirectXCore* dxCore_ = nullptr;
 
-	ImGuiManager* imGuiManager_ = nullptr;
-
 	TextureManager* textureManager_ = nullptr;
+
+	ImGuiManager* imguiManager_ = nullptr;
+
+	/*Audio* audio_ = nullptr;*/
 
 	Input* input_ = nullptr;
 
-	Audio* audio_ = nullptr;
+	PostProcess* postProcess_ = nullptr;
 
-	Light* light_ = nullptr;
-
-	MSG msg{};
-
-	std::unique_ptr<IScene>state[END];
+	IScene* currentScene_;
 };

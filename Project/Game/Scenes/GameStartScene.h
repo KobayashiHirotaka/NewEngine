@@ -1,11 +1,17 @@
 #pragma once
-#include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "IScene.h"
+#include <memory>
 
 class GameStartScene : public IScene
 {
 public:
-	void Initialize()override;
-	void Update()override;
-	void Draw()override;
+	GameStartScene();
+
+	~GameStartScene();
+
+	void Initialize(SceneManager* sceneManager)override;
+
+	void Update(SceneManager* sceneManager)override;
+
+	void Draw(SceneManager* sceneManager)override;
 };

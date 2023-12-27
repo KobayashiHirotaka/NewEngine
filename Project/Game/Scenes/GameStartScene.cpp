@@ -1,19 +1,28 @@
 #include "GameStartScene.h"
+#include "Project/Game/Scenes/Manager/SceneManager.h"
+#include "GamePlayScene.h"
+#include "Engine/Components/PostProcess/PostProcess.h"
+#include <cassert>
+#include <algorithm>
 
-void GameStartScene::Initialize()
+GameStartScene::GameStartScene() {};
+
+GameStartScene::~GameStartScene() {};
+
+void GameStartScene::Initialize(SceneManager* sceneManager)
 {
 	
-}
+};
 
-void GameStartScene::Update()
+void GameStartScene::Update(SceneManager* sceneManager)
 {
-	ImGui::Begin("SceneNum");
-	ImGui::Text("SceneNum %d", sceneNum);
-	ImGui::InputInt("SceneNum", &sceneNum);
+	ImGui::Begin("Start");
+
 	ImGui::End();
-}
+	/*sceneManager->ChangeScene(new GamePlayScene);*/
+};
 
-void GameStartScene::Draw()
+void GameStartScene::Draw(SceneManager* sceneManager)
 {
-
-}
+	
+};

@@ -1,45 +1,66 @@
 #pragma once
+#include "Engine/Base/WindowsApp/WindowsApp.h"
+#include <memory>
+#include <wrl.h>
 #define DIRECTINPUT_VERSION 0x0800//DirectInputのバージョン指定
 #include <dinput.h>
 #include <Xinput.h>
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 #pragma comment(lib,"xinput.lib")
-#include <array>
-#include <wrl.h>
-#include "Engine/Base/WindowsApp/WindowsApp.h"
 
 class Input
 {
 public:
 	static Input* GetInstance();
 
-	//Input();
-	//~Input();
-
-	void Initialize(WindowsApp* win);
+	void Initialize();
 
 	void Update();
 
-	//押した時
-	bool PushKey(uint8_t keyNumber)const;
+	bool IsPushKey(uint8_t keyNum);
 
-	//押している間
-	bool PressKey(uint8_t keyNumber)const;
+	bool IsReleaseKey(uint8_t keyNum);
 
-	//離した時
-	bool IsReleseKey(uint8_t keyNumber)const;
+	bool IsPushKeyEnter(uint8_t keyNum);
+
+	bool IsPushKeyExit(uint8_t keyNum);
+
+	bool IsPressMouse(int32_t mouseNum);
+
+	bool IsReleaseMouse(int32_t mouseNum);
+
+	bool IsPressMouseEnter(int32_t mouseNum);
+
+	bool IsPressMouseExit(int32_t mouseNum);
+
+	int32_t GetWheel();
 
 	bool GetJoystickState(XINPUT_STATE& state);
 
+	bool IsPressButtonEnter(WORD button);
+
 private:
-	static Input* input_;
+	WindowsApp* win_ = nullptr;
 
-	Microsoft::WRL::ComPtr<IDirectInput8>directInput_ = nullptr;
-	Microsoft::WRL::ComPtr<IDirectInputDevice8> keyboard_ = nullptr;
+	//DirectInput
+	Microsoft::WRL::ComPtr<IDirectInput8> directInput_ = nullptr;
 
-	std::array<BYTE, 256> keys_;
-	std::array<BYTE, 256> preKeys_;
+	//Keyboard
+	Microsoft::WRL::ComPtr<IDirectInputDevice8> keyboardDevice_ = nullptr;
+
+	//Mouse
+	Microsoft::WRL::ComPtr<IDirectInputDevice8> mouseDevice_ = nullptr;
+
+	BYTE key_[256] = {};
+	BYTE preKey_[256] = {};
+
+	DIMOUSESTATE mouse_ = {};
+
+	DIMOUSESTATE mousePre_ = {};
 
 	XINPUT_STATE state_{};
+	
+	XINPUT_STATE preState_{};
 };
+

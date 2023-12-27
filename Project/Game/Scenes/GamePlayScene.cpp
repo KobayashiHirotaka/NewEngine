@@ -1,44 +1,27 @@
 #include "GamePlayScene.h"
-#include "Engine/Utility/GlobalVariables.h"
+#include "Project/Game/Scenes/Manager/SceneManager.h"
+#include "GameStartScene.h"
+#include "Engine/Components/PostProcess/PostProcess.h"
+#include <cassert>
+#include <algorithm>
 
-GamePlayScene::GamePlayScene()
+GamePlayScene::GamePlayScene() {};
+
+GamePlayScene::~GamePlayScene() {};
+
+void GamePlayScene::Initialize(SceneManager* sceneManager)
 {
 
-}
+};
 
-GamePlayScene::~GamePlayScene()
+void GamePlayScene::Update(SceneManager* sceneManager)
 {
-	
-}
+	ImGui::Begin("Play");
 
-void GamePlayScene::Initialize()
+	ImGui::End();
+};
+
+void GamePlayScene::Draw(SceneManager* sceneManager)
 {
-	debugCamera_ = new DebugCamera();
-	debugCamera_->Initialize(1280, 720);
 
-	dxCore_ = DirectXCore::GetInstance();
-	
-	audio_ = Audio::GetInstance();
-
-	textureManager_ = TextureManager::GetInstance();
-
-	game3dObjectManager_ = Game3dObjectManager::GetInstance();
-	game3dObjectManager_->Initialize();
-	
-	camera_.Initialize();
-}
-
-void GamePlayScene::Update()
-{
-	debugCamera_->Update();
-
-	game3dObjectManager_->Update();
-
-
-	camera_.UpdateMatrix();
-}
-
-void GamePlayScene::Draw()
-{
-	
-}
+};
