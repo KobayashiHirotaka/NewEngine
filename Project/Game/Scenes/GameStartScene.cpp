@@ -14,7 +14,7 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 	camera_.Initialize();
 
-	playerModel_.reset(Model::CreateFromOBJ("resource/Cube", "Cube.obj"));
+	playerModel_.reset(Model::CreateFromOBJ("resource/player", "player.obj"));
 	skydomeModel_.reset(Model::CreateFromOBJ("resource/skydome", "skydome.obj"));
 
 	player_ = std::make_unique<Player>();

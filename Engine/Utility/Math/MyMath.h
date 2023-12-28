@@ -40,6 +40,8 @@ float Length(const Vector3& v);
 
 float Lerp(const float& v1, const float& v2, float t);
 
+float LerpShortAngle(const float& a, const float& b, float t);
+
 //Vector3
 Vector3 Add(const Vector3& v1, const Vector3& v2);
 
@@ -79,3 +81,14 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
 
 Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip);
+
+Vector3 operator+(const Vector3& v1, const Vector3& v2);
+Vector3 operator-(const Vector3& v1, const Vector3& v2);
+Vector3 operator+(const Vector3& v1, float s);
+Vector3 operator-(const Vector3& v1, float s);
+Vector3 operator*(const Vector3& v, float s);
+Matrix4x4 operator-(const Matrix4x4& m1, const Matrix4x4& m2);
+Matrix4x4 operator*(const Matrix4x4& m1, const Matrix4x4& m2);
+
+Vector3 operator-(const Vector3& v);
+Vector3 operator+(const Vector3& v);

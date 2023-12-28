@@ -15,6 +15,28 @@ float Lerp(const float& v1, const float& v2, float t)
 	return result;
 }
 
+float LerpShortAngle(const float& a, const float& b, float t) 
+{
+	float diff = b - a;
+	
+	float PI = 3.14159265359f;
+	float PI2 = 2.0f * 3.14159265359f;
+	float theta = std::fmod(diff, PI2);
+
+	if (theta >= PI) 
+	{
+		theta -= PI2;
+	}
+
+	if (theta <= -PI)
+	{
+		theta += PI2;
+	}
+
+	return a + theta * t;
+}
+
+
 //Vector3
 Vector3 Add(const Vector3& v1, const Vector3& v2)
 {
@@ -438,3 +460,14 @@ Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float botto
 
 	return result;
 }
+
+Vector3 operator+(const Vector3& v1, const Vector3& v2) { return Add(v1, v2); }
+Vector3 operator+(const Vector3& v1, float s) { return { v1.x + s, v1.y + s, v1.z + s }; }
+Vector3 operator-(const Vector3& v1, const Vector3& v2) { return Subtract(v1, v2); }
+Vector3 operator-(const Vector3& v1, float s) { return { v1.x - s, v1.y - s, v1.z - s }; }
+Vector3 operator*(const Vector3& v2, float s) { return Multiply(s, v2); }
+Matrix4x4 operator-(const Matrix4x4& m1, const Matrix4x4& m2) { return Subtract(m1, m2); }
+Matrix4x4 operator*(const Matrix4x4& m1, const Matrix4x4& m2) { return Multiply(m1, m2); }
+
+Vector3 operator-(const Vector3& v) { return { -v.x, -v.y, -v.z }; }
+Vector3 operator+(const Vector3& v) { return v; }
