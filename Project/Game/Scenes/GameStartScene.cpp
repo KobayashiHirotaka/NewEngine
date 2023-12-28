@@ -14,7 +14,11 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 	camera_.Initialize();
 
+	playerModel_.reset(Model::CreateFromOBJ("resource/Cube", "Cube.obj"));
 	skydomeModel_.reset(Model::CreateFromOBJ("resource/skydome", "skydome.obj"));
+
+	player_ = std::make_unique<Player>();
+	player_->Initialize(playerModel_.get());
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(skydomeModel_.get());
@@ -30,6 +34,8 @@ void GameStartScene::Update(SceneManager* sceneManager)
 	ImGui::Begin("Start");
 	
 	ImGui::End();
+
+	player_->Update();
 
 	skydome_->Update();
 
@@ -60,6 +66,8 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 	DirectXCore::GetInstance()->ClearDepthBuffer();
 
 	Model::PreDraw();
+
+	player_->Draw(camera_);
 
 	skydome_->Draw(camera_);
 
