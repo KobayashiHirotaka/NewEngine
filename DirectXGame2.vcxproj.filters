@@ -130,9 +130,6 @@
     <Filter Include="ヘッダー ファイル\Engine\3d\Light">
       <UniqueIdentifier>{c7ae341d-7eec-4e85-8ad1-db759020636b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Engine\Utility\Structs">
-      <UniqueIdentifier>{bb1ff5a6-e980-4815-a511-d275ab6ccbc0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Project">
       <UniqueIdentifier>{fdfb5075-b81a-4a32-8584-fb24fe4195df}</UniqueIdentifier>
     </Filter>
@@ -181,9 +178,6 @@
     <Filter Include="ヘッダー ファイル\Engine\Components\PostProcess">
       <UniqueIdentifier>{5129ba16-6b7a-4059-a4b0-8c4052563173}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Engine\2d\ImGuiManager">
-      <UniqueIdentifier>{c6de4378-a840-4161-9d8b-dfbef0d3ed44}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Engine\3d\Mesh">
       <UniqueIdentifier>{7669bc63-3ec7-41f2-8ef6-efadba1a5029}</UniqueIdentifier>
     </Filter>
@@ -201,6 +195,9 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\Project\GameObject\Skydome">
       <UniqueIdentifier>{ac44e775-1fd6-4cd5-9b80-d50089c69be5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Engine\Base\ImGuiManager">
+      <UniqueIdentifier>{c6de4378-a840-4161-9d8b-dfbef0d3ed44}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -235,7 +232,7 @@
       <Filter>ソース ファイル\Engine\Base\DirectXCore</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Base\ImGuiManager\ImGuiManager.cpp">
-      <Filter>ソース ファイル\Engine\2d\ImGuiManager</Filter>
+      <Filter>ソース ファイル\Engine\Base\ImGuiManager</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Base\TextureManager\TextureManager.cpp">
       <Filter>ソース ファイル\Engine\Base\TextureManager</Filter>
@@ -436,9 +433,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Utility\GlobalVariables.h">
       <Filter>ヘッダー ファイル\Engine\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Utility\Structs\TransformationMatrix.h">
-      <Filter>ヘッダー ファイル\Engine\Utility\Structs</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Model\IGame3dObject.h">
       <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>

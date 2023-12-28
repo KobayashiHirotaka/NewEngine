@@ -40,7 +40,6 @@ SceneManager::SceneManager()
 
 SceneManager::~SceneManager()
 {
-	//シーンの削除
 	delete currentScene_;
 	currentScene_ = nullptr;
 
@@ -57,41 +56,39 @@ void SceneManager::ChangeScene(IScene* newScene)
 
 void SceneManager::Run() 
 {
-
 	while (true)
 	{
-		//メッセージ処理
+		//Windowのメッセージ処理
 		if (win_->ProcessMessage()) 
 		{
 			break;
 		}
 
-		//ImGui受付開始
+		//ゲームの処理
 		imguiManager_->BeginFlame();
-		//Inputの更新
+
 		input_->Update();
-		//グローバル変数の更新
+
 		//GlobalVariables::GetInstance()->Update();
-		//ゲームシーンの更新
+
 		currentScene_->Update(this);
-		//ポストプロセスの更新
+
 		postProcess_->Update();
-		//ImGui受付終了
+
 		imguiManager_->EndFlame();
 
-		//描画開始
 		dxCore_->PreDraw();
-		//ゲームシーンの描画
+
 		currentScene_->Draw(this);
-		//ImGuiの描画
+
 		imguiManager_->Draw();
-		//描画終了
+
 		dxCore_->PostDraw();
 	}
-	//ImGuiの解放処理
+
 	imguiManager_->ShutDown();
-	////Audioの解放処理
+
 	//audio_->Finalize();
-	//ゲームウィンドウ削除
+
 	win_->CloseGameWindow();
 }

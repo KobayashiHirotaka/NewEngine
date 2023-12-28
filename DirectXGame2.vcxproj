@@ -114,7 +114,6 @@
     <ClInclude Include="Engine\Utility\GlobalVariables.h" />
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
     <ClInclude Include="Engine\Utility\Structs\Material.h" />
-    <ClInclude Include="Engine\Utility\Structs\TransformationMatrix.h" />
     <ClInclude Include="Project\GameObject\Player\Player.h" />
     <ClInclude Include="Project\GameObject\Skydome\Skydome.h" />
     <ClInclude Include="Project\Game\Scenes\GameEndScene.h" />
