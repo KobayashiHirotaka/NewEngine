@@ -55,64 +55,67 @@ public:
 	void SetIsBloomActive(bool flag) { isBloomActive_ = flag; };
 
 private:
+	//ぼかしの種類
 	enum BlurState 
 	{
 		kHorizontal,
 		kVertical,
 	};
 
+	//DXCの初期化
 	void InitializeDXC();
 
+	//CompileShader
 	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(
 		const std::wstring& filePath,
 		const wchar_t* profile);
 
+	//PSOの作成
 	void CreatePipelineStateObject();
-
 	void CreateBlurPipelineStateObject();
-
 	void CreatePostProcessPipelineStateObject();
 
+	//描画処理
 	void Draw();
-
 	void PreSecondPassDraw();
-
 	void SecondPassDraw();
-
 	void PostSecondPassDraw();
 
+	//ぼかし処理
 	void PreBlur(BlurState blurState);
-
 	void Blur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex);
-
 	void PostBlur(BlurState blurState);
-
 	void PreShrinkBlur(BlurState blurState);
-
 	void ShrinkBlur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex);
-
 	void PostShrinkBlur(BlurState blurState);
 
-	//マルチパス
+	//マルチパス用テクスチャの作成
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor);
 
+	//深度テクスチャの作成
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(int32_t width, int32_t height);
 
-	//RTVの設定
+	//RTVの作成
 	uint32_t CreateRenderTargetView(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format);
 
-	
+	//SRVの作成
 	uint32_t CreateShaderResourceView(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format);
 
+	//DSVの作成
 	void CreateDepthStencilView();
 
+	//DescriptorHandleの取得
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
-
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
 
 private:
 	DirectXCore* dxCore_ = nullptr;
 
+	ID3D12GraphicsCommandList* commandList_;
+
+	ID3D12Device* device_;
+
+	//DXCompiler
 	Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_;
 	Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_;
 	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_;
@@ -127,16 +130,12 @@ private:
 	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, 2> blurPipelineState_;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> postProcessPipelineState_;
 
-	ID3D12GraphicsCommandList* commandList_;
-
-	ID3D12Device* device_;
-
 	//Vertex
 	std::vector<VertexPosUV> vertices_{};
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
-
+	//DescriptorHeap
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassRTVDescriptorHeap_ = nullptr;
 	uint32_t rtvIndex_ = -1;
 
@@ -145,30 +144,30 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassDSVDescriptorHeap_ = nullptr;
 
+	//深度バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
 
-	//1パス目用テクスチャ
+	//テクスチャ
+	//パス用テクスチャ
 	Texture firstPassResource_ = { nullptr };
-
-	//2パス目用テクスチャ
 	Texture secondPassResource_ = { nullptr };
 
-	//深度を書き込むテクスチャ
+	//深度テクスチャ
 	Texture linearDepthResource_ = { nullptr };
 
-	//高輝度を書き込むテクスチャ
+	//高輝度テクスチャ
 	Texture highIntensityResource_ = { nullptr };
 
-	//ぼかし用のテクスチャ
+	//ぼかし用テクスチャ
 	std::array<Texture, 2> blurResources_ = { nullptr };
 
-	//高輝度ぼかし用のテクスチャ
+	//高輝度ぼかし用テクスチャ
 	std::array<Texture, 2> highIntensityBlurResource_ = { nullptr };
 
-	//縮小ぼかし用のテクスチャ
+	//縮小ぼかし用テクスチャ
 	std::array<Texture, 2> shrinkBlurResources_ = { nullptr };
 
-	//縮小高輝度ぼかし用のテクスチャ
+	//縮小高輝度ぼかし用テクスチャ
 	std::array<Texture, 2> shrinkHighIntensityBlurResources_ = { nullptr };
 
 	//ぼかし
@@ -178,6 +177,7 @@ private:
 	//Bloom
 	Microsoft::WRL::ComPtr<ID3D12Resource> bloomConstantBuffer_ = nullptr;
 
+	//Flag
 	bool isPostProcessActive_ = false;
 	bool isBloomActive_ = false;
 };

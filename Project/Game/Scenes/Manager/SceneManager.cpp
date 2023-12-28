@@ -22,7 +22,7 @@ SceneManager::SceneManager()
 	audio_->Initialize();*/
 
 	input_ = Input::GetInstance();
-	input_->Initialize();
+	input_->Initialize(win_);
 
 	postProcess_ = PostProcess::GetInstance();
 	postProcess_->Initialize();

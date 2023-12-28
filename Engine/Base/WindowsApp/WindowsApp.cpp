@@ -28,8 +28,8 @@ LRESULT CALLBACK WindowsApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPAR
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-void WindowsApp::CreateGameWindow(const wchar_t* title, int32_t clientWidth, int32_t clientHeight) {
-
+void WindowsApp::CreateGameWindow(const wchar_t* title, int32_t clientWidth, int32_t clientHeight)
+{
 	//COM初期化
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
@@ -42,7 +42,7 @@ void WindowsApp::CreateGameWindow(const wchar_t* title, int32_t clientWidth, int
 	//カーソル
 	wc_.hCursor = LoadCursor(nullptr, IDC_ARROW);
 
-	//ウィンドウクラスを登録する
+	//ウィンドウクラス登録
 	RegisterClass(&wc_);
 
 	//ウィンドウサイズを表す構造体にクライアント領域を入れる

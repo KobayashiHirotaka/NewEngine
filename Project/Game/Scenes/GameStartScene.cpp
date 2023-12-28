@@ -39,18 +39,18 @@ void GameStartScene::Update(SceneManager* sceneManager)
 
 	skydome_->Update();
 
-	if (input_->IsPushKey(DIK_SPACE))
+	if (input_->PushKey(DIK_SPACE))
 	{
 		sceneManager->ChangeScene(new GamePlayScene);
 	}
 
-	if (input_->IsPushKey(DIK_L))
+	if (input_->PushKey(DIK_L))
 	{
 		PostProcess::GetInstance()->SetIsPostProcessActive(true);
 		PostProcess::GetInstance()->SetIsBloomActive(true);
 	}
 
-	if (input_->IsPushKey(DIK_K))
+	if (input_->PushKey(DIK_K))
 	{
 		PostProcess::GetInstance()->SetIsPostProcessActive(false);
 		PostProcess::GetInstance()->SetIsBloomActive(false);
