@@ -1,7 +1,7 @@
 #include "Engine/Base/WindowsApp/WindowsApp.h"
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
-//#include "Base/D3DResourceLeakChecker.h"
+#include "Engine/Base/D3DResourceLeakChecker.h"
 //#include "Engine/Components/Audio/Audio.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
@@ -23,7 +23,7 @@ public:
 	void Run();
 
 private:
-	/*static D3DResourceLeakChecker leakCheck;*/
+	static D3DResourceLeakChecker leakCheck;
 
 	WindowsApp* win_ = nullptr;
 

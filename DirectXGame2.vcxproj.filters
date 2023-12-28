@@ -190,6 +190,18 @@
     <Filter Include="ヘッダー ファイル\Engine\3d\Mesh">
       <UniqueIdentifier>{ebcc405d-3a7c-4924-bcf1-af97e8170910}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\Player">
+      <UniqueIdentifier>{74a201b4-fb28-49af-8018-5f5563dd20eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\Skydome">
+      <UniqueIdentifier>{079ace73-e2ee-4f2f-b34a-bd5b9ce1c278}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\Player">
+      <UniqueIdentifier>{148a3aff-d80c-4ed1-bcb4-655a3d61cce7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\Skydome">
+      <UniqueIdentifier>{ac44e775-1fd6-4cd5-9b80-d50089c69be5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -292,7 +304,13 @@
       <Filter>ソース ファイル\Engine\3d\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\Model\Material.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Engine\3d\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Project\GameObject\Player\Player.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Project\GameObject\Skydome\Skydome.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Skydome</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -436,6 +454,15 @@
     </ClInclude>
     <ClInclude Include="Engine\Utility\Structs\Material.h">
       <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\D3DResourceLeakChecker.h">
+      <Filter>ソース ファイル\Engine\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Project\GameObject\Player\Player.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Project\GameObject\Skydome\Skydome.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Skydome</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
