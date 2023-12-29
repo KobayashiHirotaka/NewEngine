@@ -10,14 +10,11 @@ void Player::Initialize(Model* model)
 
 	model_ = model;
 	worldTransform_.Initialize();
+	worldTransform_.rotation.y = 1.6f;
 }
 
 void Player::Update()
 {
-	worldTransform_.rotation.y = LerpShortAngle(worldTransform_.rotation.y, destinationAngleY_, 0.2f);
-
-	worldTransform_.UpdateMatrix();
-
 	if (input_->GetJoystickState())
 	{
 		//コントローラーの移動処理
@@ -69,8 +66,16 @@ void Player::Update()
 					: -std::numbers::pi_v<float> / 2.0f;
 			}
 
+			worldTransform_.rotation.y = LerpShortAngle(worldTransform_.rotation.y, destinationAngleY_, 0.2f);
+
+			worldTransform_.UpdateMatrix();
+
 		}
 	}
+
+	ImGui::Begin("Player");
+	ImGui::DragFloat3("rotation", &worldTransform_.rotation.x, 0.01f, -5.0f, 5.0f, "%.3f");
+	ImGui::End();
 
 	worldTransform_.UpdateMatrix();
 }
