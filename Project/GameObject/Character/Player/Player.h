@@ -95,9 +95,11 @@ private:
 
 	std::unique_ptr<Model>attackModel_ = nullptr;
 
-	WorldTransform worldTransformCollision_[3];
+	WorldTransform worldTransformCollision_[4];
 
 	int attackTimer = 30;
+
+	int jumpAttackTimer_ = 15;
 
 	bool isAttack_[4];
 

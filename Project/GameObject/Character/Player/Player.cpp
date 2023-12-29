@@ -35,6 +35,10 @@ void Player::Initialize(const std::vector<Model*>& models)
 	worldTransformCollision_[2].translation.z = -1.5f;
 	worldTransformCollision_[2].scale = { 1.2f,1.2f,1.2f };
 
+	worldTransformCollision_[3].Initialize();
+	worldTransformCollision_[3].translation.y = -1.5f;
+	worldTransformCollision_[3].scale = { 1.2f,1.2f,1.2f };
+
 	worldTransformBody_.parent_ = &worldTransform_;
 	worldTransformHead_.parent_ = &worldTransformBody_;
 	worldTransformL_arm_.parent_ = &worldTransformBody_;
@@ -43,6 +47,7 @@ void Player::Initialize(const std::vector<Model*>& models)
 	worldTransformCollision_[0].parent_ = &worldTransform_;
 	worldTransformCollision_[1].parent_ = &worldTransform_;
 	worldTransformCollision_[2].parent_ = &worldTransform_;
+	worldTransformCollision_[3].parent_ = &worldTransform_;
 
 	weapon_ = std::make_unique<Weapon>();
 	weapon_->Initialize(models_[4]);
@@ -99,7 +104,7 @@ void Player::Update()
 	FloatingGimmickUpdate();
 
 	//振り降ろし
-	if (input_->PushKey(DIK_J))
+	if (input_->PushKey(DIK_F))
 	{
 		isAttack_[0] = true;
 	}
@@ -118,7 +123,7 @@ void Player::Update()
 	}
 
 	//突き
-	if (input_->PushKey(DIK_H))
+	if (input_->PushKey(DIK_G))
 	{
 		isAttack_[1] = true;
 	}
@@ -136,7 +141,7 @@ void Player::Update()
 	}
 
 	//振り回し
-	if (input_->PushKey(DIK_G))
+	if (input_->PushKey(DIK_H))
 	{
 		isAttack_[2] = true;
 	}
@@ -157,6 +162,25 @@ void Player::Update()
 		}
 	}
 
+	//ジャンプ攻撃
+	if (input_->PushKey(DIK_J))
+	{
+		isAttack_[3] = true;
+	}
+
+	if (isAttack_[3] == true)
+	{
+		jumpAttackTimer_--;
+
+		if (jumpAttackTimer_ < 0)
+		{
+			jumpAttackTimer_ = 15;
+			worldTransformCollision_[3].translation = { 0.0f,-1.5f,0.0f };
+			isAttack_[3] = false;
+		}
+	}
+
+
 	worldTransform_.UpdateMatrix();
 
 	worldTransformBody_.UpdateMatrix();
@@ -167,6 +191,7 @@ void Player::Update()
 	worldTransformCollision_[0].UpdateMatrix();
 	worldTransformCollision_[1].UpdateMatrix();
 	worldTransformCollision_[2].UpdateMatrix();
+	worldTransformCollision_[3].UpdateMatrix();
 
 	weapon_->Update();
 
@@ -197,6 +222,11 @@ void Player::Draw(const Camera& camera)
 	if (isAttack_[2] == true)
 	{
 		attackModel_->Draw(worldTransformCollision_[2], camera);
+	}
+
+	if (isAttack_[3] == true)
+	{
+		attackModel_->Draw(worldTransformCollision_[3], camera);
 	}
 }
 

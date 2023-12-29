@@ -64,10 +64,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	camera_.UpdateMatrix();
 
-	if (input_->PushKey(DIK_SPACE))
+	/*if (input_->PushKey(DIK_SPACE))
 	{
 		sceneManager->ChangeScene(new GameEndScene);
-	}
+	}*/
 };
 
 void GamePlayScene::Draw(SceneManager* sceneManager)
