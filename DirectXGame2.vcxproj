@@ -41,7 +41,9 @@
     <ClCompile Include="Engine\Utility\GlobalVariables.cpp" />
     <ClCompile Include="Engine\Utility\Math\MyMath.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Project\GameObject\Player\Player.cpp" />
+    <ClCompile Include="Project\GameObject\Character\Enemy\Enemy.cpp" />
+    <ClCompile Include="Project\GameObject\Character\ICharacter.cpp" />
+    <ClCompile Include="Project\GameObject\Character\Player\Player.cpp" />
     <ClCompile Include="Project\GameObject\Skydome\Skydome.cpp" />
     <ClCompile Include="Project\Game\Scenes\GameEndScene.cpp" />
     <ClCompile Include="Project\Game\Scenes\GamePlayScene.cpp" />
@@ -114,6 +116,8 @@
     <ClInclude Include="Engine\Utility\GlobalVariables.h" />
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
     <ClInclude Include="Engine\Utility\Structs\Material.h" />
+    <ClInclude Include="Project\GameObject\Character\Enemy\Enemy.h" />
+    <ClInclude Include="Project\GameObject\Character\ICharacter.h" />
     <ClInclude Include="Project\GameObject\Player\Player.h" />
     <ClInclude Include="Project\GameObject\Skydome\Skydome.h" />
     <ClInclude Include="Project\Game\Scenes\GameEndScene.h" />

@@ -17,8 +17,23 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	playerModel_.reset(Model::CreateFromOBJ("resource/player", "player.obj"));
 	skydomeModel_.reset(Model::CreateFromOBJ("resource/skydome", "skydome.obj"));
 
+	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
+	modelFighterHead_.reset(Model::CreateFromOBJ("resource/float_Head", "float_Head.obj"));
+	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
+	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
+	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
+
+	std::vector<Model*> playerModels = { modelFighterBody_.get(), modelFighterPHead_.get(), modelFighterL_arm_.get(),
+			modelFighterR_arm_.get() };
+
 	player_ = std::make_unique<Player>();
-	player_->Initialize(playerModel_.get());
+	player_->Initialize(playerModels);
+
+	std::vector<Model*> enemyModels = { modelFighterBody_.get(), modelFighterPHead_.get(), modelFighterL_arm_.get(),
+			modelFighterR_arm_.get() };
+
+	enemy_ = std::make_unique<Enemy>();
+	enemy_->Initialize(enemyModels);
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(skydomeModel_.get());
@@ -36,6 +51,8 @@ void GameStartScene::Update(SceneManager* sceneManager)
 	ImGui::End();
 
 	player_->Update();
+
+	enemy_->Update();
 
 	skydome_->Update();
 
@@ -68,6 +85,8 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 	Model::PreDraw();
 
 	player_->Draw(camera_);
+
+	enemy_->Draw(camera_);
 
 	skydome_->Draw(camera_);
 

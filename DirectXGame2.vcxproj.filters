@@ -303,11 +303,17 @@
     <ClCompile Include="Engine\3D\Model\Material.cpp">
       <Filter>ソース ファイル\Engine\3d\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Project\GameObject\Player\Player.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Player</Filter>
-    </ClCompile>
     <ClCompile Include="Project\GameObject\Skydome\Skydome.cpp">
       <Filter>ソース ファイル\Project\GameObject\Skydome</Filter>
+    </ClCompile>
+    <ClCompile Include="Project\GameObject\Character\ICharacter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Project\GameObject\Character\Player\Player.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Project\GameObject\Character\Enemy\Enemy.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -457,6 +463,12 @@
     </ClInclude>
     <ClInclude Include="Project\GameObject\Skydome\Skydome.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Skydome</Filter>
+    </ClInclude>
+    <ClInclude Include="Project\GameObject\Character\ICharacter.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Project\GameObject\Character\Enemy\Enemy.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
