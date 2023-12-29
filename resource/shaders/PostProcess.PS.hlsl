@@ -10,6 +10,7 @@ Texture2D<float32_t4> gHighIntensityShrinkBlurTexture : register(t6);
 SamplerState gSampler : register(s0);
 
 ConstantBuffer<Bloom> gBloomParameter : register(b0);
+ConstantBuffer<Vignette> gVignetteParameter : register(b1);
 
 struct PixelShaderOutput
 {
@@ -39,6 +40,14 @@ PixelShaderOutput main(VertexShaderOutput input)
     {
         float4 color = textureColor;
         textureColor = color + highIntensityColor + highIntensityBlurColor + highIntensityShrinkBlurColor;
+    }
+    
+    //ビネット
+    if (gVignetteParameter.enable)
+    {
+        float2 uv = input.texcoord;
+        uv = gVignetteParameter.intensity * uv - gVignetteParameter.intensity / 2;
+        textureColor *= 1.0 - dot(uv, uv);
     }
 
     output.color = textureColor;

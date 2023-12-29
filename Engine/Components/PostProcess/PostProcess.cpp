@@ -151,6 +151,16 @@ void PostProcess::Initialize()
 	bloomConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&bloomData));
 	bloomData->enable = isBloomActive_;
 	bloomConstantBuffer_->Unmap(0, nullptr);
+
+	//ビネット用のCBVの作成
+	vignetteConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(VignetteData));
+
+	//ビネット用のリソースに書き込む
+	VignetteData* vignetteData = nullptr;
+	vignetteConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vignetteData));
+	vignetteData->enable = isVignetteActive_;
+	vignetteData->intensity = vignetteIntensity_;
+	vignetteConstantBuffer_->Unmap(0, nullptr);
 }
 
 
@@ -166,6 +176,13 @@ void PostProcess::Update()
 	bloomConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&bloomData));
 	bloomData->enable = isBloomActive_;
 	bloomConstantBuffer_->Unmap(0, nullptr);
+
+	//ビネット用のリソースに書き込む
+	VignetteData* vignetteData = nullptr;
+	vignetteConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vignetteData));
+	vignetteData->enable = isVignetteActive_;
+	vignetteData->intensity = vignetteIntensity_;
+	vignetteConstantBuffer_->Unmap(0, nullptr);
 }
 
 void PostProcess::PreDraw() 
@@ -809,6 +826,7 @@ void PostProcess::Draw() {
 	commandList_->SetGraphicsRootDescriptorTable(4, srvHandles[4]);
 	//CBVを設定
 	commandList_->SetGraphicsRootConstantBufferView(5, bloomConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(6, vignetteConstantBuffer_->GetGPUVirtualAddress());
 	//形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//描画

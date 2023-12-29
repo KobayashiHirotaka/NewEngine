@@ -40,6 +40,12 @@ public:
 		float padding[3];
 	};
 
+	struct VignetteData
+	{
+		bool enable;
+		float intensity;
+	};
+
 	static PostProcess* GetInstance();
 
 	void Initialize();
@@ -53,6 +59,10 @@ public:
 	void SetIsPostProcessActive(bool flag) { isPostProcessActive_ = flag; };
 
 	void SetIsBloomActive(bool flag) { isBloomActive_ = flag; };
+
+	void SetIsVignetteActive(bool flag) { isVignetteActive_ = flag; };
+
+	void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
 
 private:
 	//ぼかしの種類
@@ -177,7 +187,12 @@ private:
 	//Bloom
 	Microsoft::WRL::ComPtr<ID3D12Resource> bloomConstantBuffer_ = nullptr;
 
+	//Vignette
+	Microsoft::WRL::ComPtr<ID3D12Resource> vignetteConstantBuffer_ = nullptr;
+	float vignetteIntensity_ = 1.5f;
+
 	//Flag
 	bool isPostProcessActive_ = false;
 	bool isBloomActive_ = false;
+	bool isVignetteActive_ = false;
 };

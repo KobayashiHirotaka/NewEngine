@@ -50,16 +50,26 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	skydome_->Update();
 
-	if (input_->PushKey(DIK_L))
+	if (input_->PushKey(DIK_1))
 	{
 		PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	}
+
+	if (input_->PushKey(DIK_2))
+	{
 		PostProcess::GetInstance()->SetIsBloomActive(true);
 	}
 
-	if (input_->PushKey(DIK_K))
+	if (input_->PushKey(DIK_3))
+	{
+		PostProcess::GetInstance()->SetIsVignetteActive(true);
+	}
+
+	if (input_->PushKey(DIK_4))
 	{
 		PostProcess::GetInstance()->SetIsPostProcessActive(false);
 		PostProcess::GetInstance()->SetIsBloomActive(false);
+		PostProcess::GetInstance()->SetIsVignetteActive(false);
 	}
 
 	camera_.UpdateMatrix();

@@ -9,3 +9,9 @@ struct Bloom
     bool enable;
 };
 
+struct Vignette
+{
+    bool enable;
+    float intensity;
+};
+
