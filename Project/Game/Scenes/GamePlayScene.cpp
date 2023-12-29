@@ -41,7 +41,9 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 void GamePlayScene::Update(SceneManager* sceneManager)
 {
 	ImGui::Begin("Play");
-
+	ImGui::Text("1Key : PostProcess ON");
+	ImGui::Text("2Key : Bloom ON");
+	ImGui::Text("3Key : Vignette ON");
 	ImGui::End();
 
 	player_->Update();

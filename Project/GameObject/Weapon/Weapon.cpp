@@ -7,7 +7,7 @@ void Weapon::Initialize(Model* model)
 	model_ = model;
 
 	worldTransform_.Initialize();
-	worldTransform_.translation = { -1.0f,0.0f,0.2f};
+	worldTransform_.translation = { -1.0f,0.0f,0.0f};
 	worldTransform_.rotation.x = 1.5f;
 	collisionWorldTransform_.Initialize();
 

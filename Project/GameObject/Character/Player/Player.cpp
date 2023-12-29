@@ -57,7 +57,7 @@ void Player::Initialize(const std::vector<Model*>& models)
 	SetCollisionMask(kCollisionMaskPlayer);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
 
-	FloatingGimmickInitialize();
+	/*FloatingGimmickInitialize();*/
 }
 
 void Player::Update()
@@ -101,7 +101,7 @@ void Player::Update()
 		break;
 	}
 
-	FloatingGimmickUpdate();
+	/*FloatingGimmickUpdate();*/
 
 	//振り降ろし
 	if (input_->PushKey(DIK_F))
@@ -337,33 +337,33 @@ void Player::BehaviorJumpUpdate()
 	}
 }
 
-void Player::FloatingGimmickInitialize()
-{
-	for (int i = 0; i < kMaxModelParts; i++)
-	{
-		floatingParameter_[i] = 0.0f;
-	}
-}
-
-void Player::FloatingGimmickUpdate()
-{
-	floatingCycle_[0] = 120;
-	floatingCycle_[1] = 120;
-
-	float step[2]{};
-
-	for (int i = 0; i < kMaxModelParts; i++)
-	{
-		step[i] = 2.0f * (float)std::numbers::pi / floatingCycle_[i];
-
-		floatingParameter_[i] += step[i];
-
-		floatingParameter_[i] = (float)std::fmod(floatingParameter_[i], 2.0f * (float)std::numbers::pi);
-	}
-
-	worldTransformL_arm_.rotation.x = std::sin(floatingParameter_[1]) * 0.35f;
-	worldTransformR_arm_.rotation.x = -std::sin(floatingParameter_[1]) * 0.35f;
-}
+//void Player::FloatingGimmickInitialize()
+//{
+//	for (int i = 0; i < kMaxModelParts; i++)
+//	{
+//		floatingParameter_[i] = 0.0f;
+//	}
+//}
+//
+//void Player::FloatingGimmickUpdate()
+//{
+//	floatingCycle_[0] = 120;
+//	floatingCycle_[1] = 120;
+//
+//	float step[2]{};
+//
+//	for (int i = 0; i < kMaxModelParts; i++)
+//	{
+//		step[i] = 2.0f * (float)std::numbers::pi / floatingCycle_[i];
+//
+//		floatingParameter_[i] += step[i];
+//
+//		floatingParameter_[i] = (float)std::fmod(floatingParameter_[i], 2.0f * (float)std::numbers::pi);
+//	}
+//
+//	worldTransformL_arm_.rotation.x = std::sin(floatingParameter_[1]) * 0.35f;
+//	worldTransformR_arm_.rotation.x = -std::sin(floatingParameter_[1]) * 0.35f;
+//}
 
 
 
