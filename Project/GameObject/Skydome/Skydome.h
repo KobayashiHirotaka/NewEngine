@@ -6,14 +6,14 @@
 class Skydome
 {
 public:
-	void Initialize(Model* model);
+	void Initialize();
 
 	void Update();
 
 	void Draw(const Camera camera);
 
 private:
-	Model* model_ = nullptr;
+	std::unique_ptr<Model>model_ = nullptr;
 
 	WorldTransform worldTransform_;
 };

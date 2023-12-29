@@ -16,8 +16,6 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	weaponModel_.reset(Model::CreateFromOBJ("resource/hammer", "hammer.obj"));
 
-	skydomeModel_.reset(Model::CreateFromOBJ("resource/skydome", "skydome.obj"));
-
 	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
 	modelFighterHead_.reset(Model::CreateFromOBJ("resource/float_Head", "float_Head.obj"));
 	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
@@ -37,12 +35,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	enemy_->Initialize(enemyModels);
 
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize(skydomeModel_.get());
-
-	PostProcess::GetInstance()->SetIsPostProcessActive(false);
-	PostProcess::GetInstance()->SetIsBloomActive(false);
-
-	camera_.UpdateMatrix();
+	skydome_->Initialize();
 };
 
 void GamePlayScene::Update(SceneManager* sceneManager)
@@ -57,11 +50,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	skydome_->Update();
 
-	if (input_->PushKey(DIK_SPACE))
-	{
-		sceneManager->ChangeScene(new GameEndScene);
-	}
-
 	if (input_->PushKey(DIK_L))
 	{
 		PostProcess::GetInstance()->SetIsPostProcessActive(true);
@@ -75,10 +63,22 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 
 	camera_.UpdateMatrix();
+
+	if (input_->PushKey(DIK_SPACE))
+	{
+		sceneManager->ChangeScene(new GameEndScene);
+	}
 };
 
 void GamePlayScene::Draw(SceneManager* sceneManager)
 {
+
+	/*Model::PreDraw();
+
+	player_->Draw(camera_);
+
+	Model::PostDraw();*/
+
 	PostProcess::GetInstance()->PreDraw();
 
 	DirectXCore::GetInstance()->ClearDepthBuffer();

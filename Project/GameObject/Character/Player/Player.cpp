@@ -6,6 +6,8 @@ void Player::Initialize(const std::vector<Model*>& models)
 {
 	input_ = Input::GetInstance();
 
+	attackModel_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
+
 	ICharacter::Initialize(models);
 	worldTransform_.translation = { -7.0f,0.0f,0.0f };
 
@@ -21,10 +23,26 @@ void Player::Initialize(const std::vector<Model*>& models)
 	worldTransformR_arm_.Initialize();
 	worldTransformR_arm_.translation.x = -0.5f;
 
+	worldTransformCollision_[0].Initialize();
+	worldTransformCollision_[0].translation.y = 2.0f;
+	worldTransformCollision_[0].scale = { 1.2f,1.2f,1.2f };
+
+	worldTransformCollision_[1].Initialize();
+	worldTransformCollision_[1].translation.z = 1.5f;
+	worldTransformCollision_[1].scale = { 1.2f,1.2f,1.2f };
+
+	worldTransformCollision_[2].Initialize();
+	worldTransformCollision_[2].translation.z = -1.5f;
+	worldTransformCollision_[2].scale = { 1.2f,1.2f,1.2f };
+
 	worldTransformBody_.parent_ = &worldTransform_;
 	worldTransformHead_.parent_ = &worldTransformBody_;
 	worldTransformL_arm_.parent_ = &worldTransformBody_;
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
+
+	worldTransformCollision_[0].parent_ = &worldTransform_;
+	worldTransformCollision_[1].parent_ = &worldTransform_;
+	worldTransformCollision_[2].parent_ = &worldTransform_;
 
 	weapon_ = std::make_unique<Weapon>();
 	weapon_->Initialize(models_[4]);
@@ -75,12 +93,86 @@ void Player::Update()
 		}
 	}
 
+	if (input_->PushKey(DIK_W))
+	{
+		worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+		const float kGravityAcceleration_ = 0.03f;
+
+		Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
+
+		velocity_.y += accelerationVector_.y;
+	}
+
+	//振り降ろし
+	if (input_->PushKey(DIK_J))
+	{
+		isAttack_[0] = true;
+	}
+
+	if (isAttack_[0] == true)
+	{
+		attackTimer--;
+		worldTransformCollision_[0].translation.y -= 0.08f;
+		worldTransformCollision_[0].translation.z += 0.1f;
+		if (attackTimer < 0)
+		{
+			attackTimer = 30;
+			worldTransformCollision_[0].translation = {0.0f,2.0f,0.0f};
+			isAttack_[0] = false;
+		}
+	}
+
+	//突き
+	if (input_->PushKey(DIK_H))
+	{
+		isAttack_[1] = true;
+	}
+
+	if (isAttack_[1] == true)
+	{
+		attackTimer--;
+		worldTransformCollision_[1].translation.z += 0.1f;
+		if (attackTimer < 0)
+		{
+			attackTimer = 30;
+			worldTransformCollision_[1].translation = { 0.0f,0.0f,1.5f };
+			isAttack_[1] = false;
+		}
+	}
+
+	//振り回し
+	if (input_->PushKey(DIK_G))
+	{
+		isAttack_[2] = true;
+	}
+
+	if (isAttack_[2] == true)
+	{
+		attackTimer--;
+		if (attackTimer > 0 && attackTimer < 15)
+		{
+			worldTransformCollision_[2].translation = { 0.0f,0.0f,1.5f };
+		}
+
+		if (attackTimer < 0)
+		{
+			attackTimer = 30;
+			worldTransformCollision_[2].translation = { 0.0f,0.0f,-1.5f };
+			isAttack_[2] = false;
+		}
+	}
+
 	worldTransform_.UpdateMatrix();
 
 	worldTransformBody_.UpdateMatrix();
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
+
+	worldTransformCollision_[0].UpdateMatrix();
+	worldTransformCollision_[1].UpdateMatrix();
+	worldTransformCollision_[2].UpdateMatrix();
 
 	weapon_->Update();
 
@@ -97,6 +189,21 @@ void Player::Draw(const Camera& camera)
 	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, camera);
 
 	weapon_->Draw(camera);
+
+	if (isAttack_[0] == true)
+	{
+		attackModel_->Draw(worldTransformCollision_[0], camera);
+	}
+
+	if (isAttack_[1] == true)
+	{
+		attackModel_->Draw(worldTransformCollision_[1], camera);
+	}
+
+	if (isAttack_[2] == true)
+	{
+		attackModel_->Draw(worldTransformCollision_[2], camera);
+	}
 }
 
 void Player::OnCollision(Collider* collider)

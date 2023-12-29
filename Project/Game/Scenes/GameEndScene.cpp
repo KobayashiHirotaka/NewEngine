@@ -14,10 +14,8 @@ void GameEndScene::Initialize(SceneManager* sceneManager)
 
 	camera_.Initialize();
 
-	skydomeModel_.reset(Model::CreateFromOBJ("resource/skydome", "skydome.obj"));
-
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize(skydomeModel_.get());
+	skydome_->Initialize();
 
 	camera_.UpdateMatrix();
 };

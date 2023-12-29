@@ -14,12 +14,8 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 	camera_.Initialize();
 
-	skydomeModel_.reset(Model::CreateFromOBJ("resource/skydome", "skydome.obj"));
-
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize(skydomeModel_.get());
-
-	camera_.UpdateMatrix();
+	skydome_->Initialize();
 };
 
 void GameStartScene::Update(SceneManager* sceneManager)
@@ -30,12 +26,12 @@ void GameStartScene::Update(SceneManager* sceneManager)
 
 	skydome_->Update();
 
+	camera_.UpdateMatrix();
+
 	if (input_->PushKey(DIK_SPACE))
 	{
 		sceneManager->ChangeScene(new GamePlayScene);
 	}
-
-	camera_.UpdateMatrix();
 };
 
 void GameStartScene::Draw(SceneManager* sceneManager)

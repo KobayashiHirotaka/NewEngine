@@ -12,6 +12,22 @@
 class Player : public Collider, public ICharacter
 {
 public:
+	struct WorkAttack
+	{
+		Vector3 translation;
+
+		Vector3 rotation;
+
+		uint32_t attackParameter = 0;
+
+		int32_t comboIndex = 0;
+
+		int32_t inComboPhase = 0;
+
+		bool comboNext = false;
+		bool isAttack = false;
+	};
+
 	void Initialize(const std::vector<Model*>& models)override;
 
 	void Update()override;
@@ -51,5 +67,15 @@ private:
 	float floatingAmplitude_;
 
 	std::unique_ptr<Weapon> weapon_ = nullptr;
+
+	WorkAttack workAttack_;
+
+	std::unique_ptr<Model>attackModel_ = nullptr;
+
+	WorldTransform worldTransformCollision_[3];
+
+	int attackTimer = 30;
+
+	bool isAttack_[4];
 };
 

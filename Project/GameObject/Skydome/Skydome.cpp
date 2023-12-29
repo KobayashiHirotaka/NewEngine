@@ -1,13 +1,14 @@
 #include "Skydome.h"
 #include <cassert>
 
-void Skydome::Initialize(Model* model)
+void Skydome::Initialize()
 {
-	assert(model);
+	model_.reset(Model::CreateFromOBJ("resource/skydome", "skydome.obj"));
 
-	model_ = model;
 	worldTransform_.Initialize();
 	worldTransform_.scale = { 250.0f,250.0f,250.0f };
+
+	worldTransform_.UpdateMatrix();
 }
 
 void Skydome::Update()
