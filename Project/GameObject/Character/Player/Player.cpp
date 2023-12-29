@@ -51,58 +51,52 @@ void Player::Initialize(const std::vector<Model*>& models)
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	SetCollisionMask(kCollisionMaskPlayer);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
+
+	FloatingGimmickInitialize();
 }
 
 void Player::Update()
 {
-	if (input_->GetJoystickState())
+	if (behaviorRequest_)
 	{
-		//コントローラーの移動処理
-	}
-	else {
-		bool isMove_ = false;
-		float kCharacterSpeed = 0.1f;
-		velocity_ = { 0.0f, 0.0f, 0.0f };
+		behavior_ = behaviorRequest_.value();
 
-		//移動処理
-		if (input_->PressKey(DIK_A))
+		switch (behavior_)
 		{
-			velocity_.x = -0.03f;
-			worldTransform_.rotation.y = 4.6f;
+		case Behavior::kRoot:
+		default:
+			BehaviorRootInitialize();
+			break;
+
+		case Behavior::kAttack:
+			BehaviorAttackInitialize();
+			break;
+
+		case Behavior::kJump:
+			BehaviorJumpInitialize();
+			break;
 		}
-		else if (input_->PressKey(DIK_D)) {
-			velocity_.x = 0.03f;
-			worldTransform_.rotation.y = 1.7f;
-		}
 
-		if (input_->PressKey(DIK_A) || input_->PressKey(DIK_D))
-		{
-			isMove_ = true;
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(kCharacterSpeed,velocity_);
-		}
-
-
-		if (isMove_)
-		{
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
-
-			worldTransform_.UpdateMatrix();
-
-		}
+		behaviorRequest_ = std::nullopt;
 	}
 
-	if (input_->PushKey(DIK_W))
+	switch (behavior_)
 	{
-		worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+	case Behavior::kRoot:
+	default:
+		BehaviorRootUpdate();
+		break;
 
-		const float kGravityAcceleration_ = 0.03f;
+	case Behavior::kAttack:
+		BehaviorAttackUpdate();
+		break;
 
-		Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
-
-		velocity_.y += accelerationVector_.y;
+	case Behavior::kJump:
+		BehaviorJumpUpdate();
+		break;
 	}
+
+	FloatingGimmickUpdate();
 
 	//振り降ろし
 	if (input_->PushKey(DIK_J))
@@ -219,5 +213,128 @@ Vector3 Player::GetWorldPosition()
 	pos.z = worldTransform_.matWorld.m[3][2];
 	return pos;
 }
+
+void Player::BehaviorRootInitialize()
+{
+	velocity_ = { 0.0f,0.0f,0.0f };
+}
+
+void Player::BehaviorRootUpdate()
+{
+	if (input_->GetJoystickState())
+	{
+		//コントローラーの移動処理
+	}
+	else {
+		bool isMove_ = false;
+		float kCharacterSpeed = 0.1f;
+		velocity_ = { 0.0f, 0.0f, 0.0f };
+
+		//移動処理
+		if (input_->PressKey(DIK_A))
+		{
+			velocity_.x = -0.03f;
+			worldTransform_.rotation.y = 4.6f;
+		}
+		else if (input_->PressKey(DIK_D)) {
+			velocity_.x = 0.03f;
+			worldTransform_.rotation.y = 1.7f;
+		}
+
+		if (input_->PressKey(DIK_A) || input_->PressKey(DIK_D))
+		{
+			isMove_ = true;
+			velocity_ = Normalize(velocity_);
+			velocity_ = Multiply(kCharacterSpeed, velocity_);
+		}
+
+
+		if (isMove_)
+		{
+			// 平行移動
+			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+			worldTransform_.UpdateMatrix();
+
+		}
+	}
+
+	
+	if (input_->PushKey(DIK_W))
+	{
+		behaviorRequest_ = Behavior::kJump;
+	}
+	
+}
+
+void Player::BehaviorAttackInitialize()
+{
+	
+}
+
+void Player::BehaviorAttackUpdate()
+{
+	
+}
+
+void Player::BehaviorJumpInitialize()
+{
+	worldTransform_.translation.y = 0.0f;
+
+	const float kJumpFirstSpeed_ = 0.6f;
+
+	velocity_.y = kJumpFirstSpeed_;
+
+	worldTransform_.DeleteParent();
+}
+
+void Player::BehaviorJumpUpdate()
+{
+	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+	const float kGravityAcceleration_ = 0.03f;
+
+	Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
+
+	velocity_.y += accelerationVector_.y;
+
+	worldTransform_.UpdateMatrix();
+
+	if (worldTransform_.translation.y <= 0.0f)
+	{
+		behaviorRequest_ = Behavior::kRoot;
+		worldTransform_.translation.y = 0.0f;
+	}
+}
+
+void Player::FloatingGimmickInitialize()
+{
+	for (int i = 0; i < kMaxModelParts; i++)
+	{
+		floatingParameter_[i] = 0.0f;
+	}
+}
+
+void Player::FloatingGimmickUpdate()
+{
+	floatingCycle_[0] = 120;
+	floatingCycle_[1] = 120;
+
+	float step[2]{};
+
+	for (int i = 0; i < kMaxModelParts; i++)
+	{
+		step[i] = 2.0f * (float)std::numbers::pi / floatingCycle_[i];
+
+		floatingParameter_[i] += step[i];
+
+		floatingParameter_[i] = (float)std::fmod(floatingParameter_[i], 2.0f * (float)std::numbers::pi);
+	}
+
+	worldTransformL_arm_.rotation.x = std::sin(floatingParameter_[1]) * 0.35f;
+	worldTransformR_arm_.rotation.x = -std::sin(floatingParameter_[1]) * 0.35f;
+}
+
+
 
 

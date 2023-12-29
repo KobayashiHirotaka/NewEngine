@@ -12,6 +12,13 @@
 class Player : public Collider, public ICharacter
 {
 public:
+	enum class Behavior
+	{
+		kRoot,
+		kAttack,
+		kJump
+	};
+
 	struct WorkAttack
 	{
 		Vector3 translation;
@@ -41,6 +48,22 @@ public:
 	void OnCollision(Collider* collider)override;
 
 	Weapon* GetWeapon() { return weapon_.get(); };
+
+	void BehaviorRootInitialize();
+
+	void BehaviorRootUpdate();
+
+	void BehaviorAttackInitialize();
+
+	void BehaviorAttackUpdate();
+
+	void BehaviorJumpInitialize();
+
+	void BehaviorJumpUpdate();
+
+	void FloatingGimmickInitialize();
+
+	void FloatingGimmickUpdate();
 
 private:
 	Input* input_ = nullptr;
@@ -77,5 +100,9 @@ private:
 	int attackTimer = 30;
 
 	bool isAttack_[4];
+
+	Behavior behavior_ = Behavior::kRoot;
+
+	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 };
 
