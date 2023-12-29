@@ -26,6 +26,10 @@ void Player::Initialize(const std::vector<Model*>& models)
 	worldTransformL_arm_.parent_ = &worldTransformBody_;
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
 
+	weapon_ = std::make_unique<Weapon>();
+	weapon_->Initialize(models_[4]);
+	weapon_->SetParent(&worldTransform_);
+
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	SetCollisionMask(kCollisionMaskPlayer);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
@@ -71,26 +75,28 @@ void Player::Update()
 		}
 	}
 
-	ImGui::Begin("Player");
-	ImGui::DragFloat3("rotation", &worldTransform_.rotation.x, 0.01f, -5.0f, 5.0f, "%.3f");
-	ImGui::End();
-
 	worldTransform_.UpdateMatrix();
 
 	worldTransformBody_.UpdateMatrix();
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
+
+	weapon_->Update();
+
+	ImGui::Begin("Player");
+	ImGui::DragFloat3("rotation", &worldTransform_.rotation.x, 0.01f, -5.0f, 5.0f, "%.3f");
+	ImGui::End();
 }
 
 void Player::Draw(const Camera& camera)
 {
-	/*model_->Draw(worldTransform_, camera);*/
-
 	models_[kModelIndexBody]->Draw(worldTransformBody_, camera);
 	models_[kModelIndexHead]->Draw(worldTransformHead_, camera);
 	models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, camera);
 	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, camera);
+
+	weapon_->Draw(camera);
 }
 
 void Player::OnCollision(Collider* collider)

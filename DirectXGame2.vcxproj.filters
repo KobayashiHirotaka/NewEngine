@@ -315,6 +315,9 @@
     <ClCompile Include="Project\GameObject\Character\Enemy\Enemy.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Project\GameObject\Weapon\Weapon.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -458,9 +461,6 @@
     <ClInclude Include="Engine\Base\D3DResourceLeakChecker.h">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Project\GameObject\Player\Player.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Player</Filter>
-    </ClInclude>
     <ClInclude Include="Project\GameObject\Skydome\Skydome.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Skydome</Filter>
     </ClInclude>
@@ -469,6 +469,12 @@
     </ClInclude>
     <ClInclude Include="Project\GameObject\Character\Enemy\Enemy.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Project\GameObject\Weapon\Weapon.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Project\GameObject\Character\Player\Player.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

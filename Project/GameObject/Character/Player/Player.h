@@ -7,6 +7,8 @@
 #include "Engine/Utility/Collision/Collider.h"
 #include "Engine/Utility/Collision/CollisionConfig.h"
 
+#include "Project/GameObject/Weapon/Weapon.h"
+
 class Player : public Collider, public ICharacter
 {
 public:
@@ -21,6 +23,8 @@ public:
 	Vector3 GetWorldPosition() override;
 
 	void OnCollision(Collider* collider)override;
+
+	Weapon* GetWeapon() { return weapon_.get(); };
 
 private:
 	Input* input_ = nullptr;
@@ -45,5 +49,7 @@ private:
 	int floatingCycle_[2];
 
 	float floatingAmplitude_;
+
+	std::unique_ptr<Weapon> weapon_ = nullptr;
 };
 
