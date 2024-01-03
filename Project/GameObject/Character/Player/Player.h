@@ -79,6 +79,8 @@ private:
 
 	Vector3 velocity_ = {};
 
+	float speed_ = 0.3f;
+
 	float destinationAngleY_ = 0.0f;
 
 	const uint16_t kMaxModelParts = 2;

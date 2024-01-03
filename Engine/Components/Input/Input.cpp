@@ -90,6 +90,15 @@ bool Input::GetJoystickState()
 	return false;
 }
 
+bool Input::IsPressButton(WORD button)
+{
+	if (state_.Gamepad.wButtons & button)
+	{
+		return true;
+	}
+	return false;
+}
+
 bool Input::IsPressButtonEnter(WORD button) 
 {
 	if ((state_.Gamepad.wButtons & button) && !(preState_.Gamepad.wButtons & button))

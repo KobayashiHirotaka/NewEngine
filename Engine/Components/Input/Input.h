@@ -32,6 +32,8 @@ public:
 
 	bool GetJoystickState();
 
+	bool IsPressButton(WORD button);
+
 	bool IsPressButtonEnter(WORD button);
 
 	float GetLeftStickX();

@@ -128,41 +128,48 @@ void Player::BehaviorRootUpdate()
 	if (input_->GetJoystickState())
 	{
 		//コントローラーの移動処理
-		bool isMove_ = false;
 		const float deadZone = 0.7f;
+		bool isMove_ = false;
 		const float kCharacterSpeed = 0.1f;
-		velocity_ = { input_->GetLeftStickX(), 0.0f, 0.0f };
+		velocity_ = { 0.0f, 0.0f, 0.0f };
 
 		//移動処理
-		if (input_->GetLeftStickX()<-deadZone)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
 		{
+			velocity_.x = -0.3f;
 			worldTransform_.rotation.y = 4.6f;
 		}
-		else if (input_->GetLeftStickX() > deadZone) {
+
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
+		{
+			velocity_.x = 0.3f;
 			worldTransform_.rotation.y = 1.7f;
 		}
 
-		if (input_->GetLeftStickX() < -deadZone || input_->GetLeftStickX() > deadZone)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
 		{
 			isMove_ = true;
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(kCharacterSpeed, velocity_);
 		}
 
 
 		if (isMove_)
 		{
+			velocity_ = Normalize(velocity_);
+			velocity_ = Multiply(kCharacterSpeed, velocity_);
+
 			// 平行移動
 			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
 			worldTransform_.UpdateMatrix();
 
 		}
+		
 
-		if (input_->GetLeftStickY() > deadZone)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
 		{
 			behaviorRequest_ = Behavior::kJump;
 		}
+	
 	}
 }
 
@@ -193,9 +200,7 @@ void Player::BehaviorJumpUpdate()
 
 	Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
 
-	velocity_.y += accelerationVector_.y;
-
-	worldTransform_.UpdateMatrix();
+	velocity_ = Add(velocity_, accelerationVector_);
 
 	if (worldTransform_.translation.y <= 0.0f)
 	{
