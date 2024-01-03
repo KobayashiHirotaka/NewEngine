@@ -12,6 +12,8 @@
 class Player : public Collider, public ICharacter
 {
 public:
+	static const int ComboNum = 3;
+
 	enum class Behavior
 	{
 		kRoot,
@@ -35,6 +37,24 @@ public:
 		bool isAttack = false;
 	};
 
+	struct ConstAttack
+	{
+		uint32_t anticipationTime;
+
+		uint32_t chargeTime;
+
+		uint32_t swingTime;
+
+		uint32_t recoveryTime;
+
+		float anticipationSpeed;
+
+		float chargeSpeed;
+
+		float swingSpeed;
+	};
+
+
 	void Initialize(const std::vector<Model*>& models)override;
 
 	void Update()override;
@@ -48,6 +68,8 @@ public:
 	void OnCollision(Collider* collider)override;
 
 	Weapon* GetWeapon() { return weapon_.get(); };
+
+	bool GetIsAttack() { return workAttack_.isAttack; };
 
 	void BehaviorRootInitialize();
 
@@ -94,6 +116,8 @@ private:
 	std::unique_ptr<Weapon> weapon_ = nullptr;
 
 	WorkAttack workAttack_;
+
+	static const std::array<ConstAttack, Player::ComboNum>kConstAttacks_;
 
 	int attackTimer = 30;
 

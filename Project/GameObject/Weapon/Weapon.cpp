@@ -7,7 +7,6 @@ void Weapon::Initialize(Model* model)
 	model_ = model;
 
 	worldTransform_.Initialize();
-	worldTransform_.rotation.y = 3.0f;
 	collisionWorldTransform_.Initialize();
 
 	worldTransform_.scale.x = 0.5f;
@@ -60,7 +59,8 @@ Vector3 Weapon::GetWorldPosition()
 
 void Weapon::AttackInitialize()
 {
-
+	worldTransform_.rotation.x = 1.5f;
+	worldTransform_.rotation.y = 3.0f;
 }
 
 void Weapon::Attack()
