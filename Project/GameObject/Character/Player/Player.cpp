@@ -80,14 +80,14 @@ void Player::Update()
 
 	FloatingGimmickUpdate();
 
+	weapon_->Update();
+
 	worldTransform_.UpdateMatrix();
 
 	worldTransformBody_.UpdateMatrix();
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
-
-	weapon_->Update();
 
 	ImGui::Begin("Player");
 	ImGui::DragFloat3("rotation", &worldTransform_.rotation.x, 0.01f, -5.0f, 5.0f, "%.3f");
@@ -101,7 +101,7 @@ void Player::Draw(const Camera& camera)
 	models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, camera);
 	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, camera);
 
-	weapon_->Draw(camera);
+	/*weapon_->Draw(camera);*/
 }
 
 void Player::OnCollision(Collider* collider)
@@ -138,19 +138,15 @@ void Player::BehaviorRootUpdate()
 		{
 			velocity_.x = -0.3f;
 			worldTransform_.rotation.y = 4.6f;
+			isMove_ = true;
 		}
 
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
 		{
 			velocity_.x = 0.3f;
 			worldTransform_.rotation.y = 1.7f;
-		}
-
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
-		{
 			isMove_ = true;
 		}
-
 
 		if (isMove_)
 		{
@@ -161,10 +157,8 @@ void Player::BehaviorRootUpdate()
 			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
 			worldTransform_.UpdateMatrix();
-
 		}
 		
-
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
 		{
 			behaviorRequest_ = Behavior::kJump;
