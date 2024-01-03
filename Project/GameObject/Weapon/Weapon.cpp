@@ -7,16 +7,15 @@ void Weapon::Initialize(Model* model)
 	model_ = model;
 
 	worldTransform_.Initialize();
-	worldTransform_.translation = { -1.0f,0.0f,0.0f};
-	worldTransform_.rotation.x = 1.5f;
+	worldTransform_.rotation.y = 3.0f;
 	collisionWorldTransform_.Initialize();
 
-	worldTransform_.scale.x = 0.3f;
-	worldTransform_.scale.y = 0.3f;
-	worldTransform_.scale.z = 0.3f;
+	worldTransform_.scale.x = 0.5f;
+	worldTransform_.scale.y = 0.5f;
+	worldTransform_.scale.z = 0.5f;
 
-	SetCollisionAttribute(kCollisionAttributePlayer);
-	SetCollisionMask(kCollisionMaskPlayer);
+	SetCollisionAttribute(kCollisionAttributeWeapon);
+	SetCollisionMask(kCollisionMaskWeapon);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
 
 	AABB aabbSize =
@@ -61,7 +60,7 @@ Vector3 Weapon::GetWorldPosition()
 
 void Weapon::AttackInitialize()
 {
-	
+
 }
 
 void Weapon::Attack()

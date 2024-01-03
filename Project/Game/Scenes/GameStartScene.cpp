@@ -28,9 +28,12 @@ void GameStartScene::Update(SceneManager* sceneManager)
 
 	camera_.UpdateMatrix();
 
-	if (input_->PushKey(DIK_SPACE))
+	if (input_->GetJoystickState())
 	{
-		sceneManager->ChangeScene(new GamePlayScene);
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
+		{
+			sceneManager->ChangeScene(new GamePlayScene);
+		}
 	}
 };
 
