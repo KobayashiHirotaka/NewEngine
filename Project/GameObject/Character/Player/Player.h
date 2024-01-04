@@ -138,5 +138,8 @@ private:
 	int HP_ = 100;
 
 	Enemy* enemy_ = nullptr;
+
+	int throwTimer_ = 100;
+	bool isThrow_ = false;
 };
 

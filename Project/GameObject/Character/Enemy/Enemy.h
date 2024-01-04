@@ -30,6 +30,8 @@ public:
 
 	void SetPlayer(Player* player) { player_ = player; };
 
+	bool GetIsPlayerHit() { return isPlayerHit_; };
+
 private:
 	Input* input_ = nullptr;
 
@@ -57,4 +59,6 @@ private:
 	int HP_ = 100;
 
 	Player* player_ = nullptr;
+
+	bool isPlayerHit_ = false;
 };

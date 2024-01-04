@@ -197,6 +197,7 @@ void Player::BehaviorRootUpdate()
 		if (input_->IsPressButton(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_Y))
 		{
 			behaviorRequest_ = Behavior::kThrow;
+			isThrow_ = true;
 		}
 	}
 
@@ -394,62 +395,49 @@ void Player::BehaviorJumpUpdate()
 
 void Player::BehaviorThrowInitialize()
 {
+	worldTransformL_arm_.rotation.x = -1.3f;
+	worldTransformR_arm_.rotation.x = -1.3f;
+	worldTransformL_arm_.rotation.y = 0.0f;
+	worldTransformR_arm_.rotation.y = 0.0f;
 	attackAnimationFrame = 0;
 }
 
 void Player::BehaviorThrowUpdate()
 {
 	//投げ
-	/*if (attackAnimationFrame < 10)
+	if (attackAnimationFrame < 30)
 	{
-		worldTransformBody_.rotation.y -= 0.1f;
-
-		workAttack_.rotation.x -= 0.05f;
-
-		weapon_->SetTranslation(workAttack_.translation);
-		weapon_->SetRotation(workAttack_.rotation);
-
+		worldTransformL_arm_.rotation.y -= 0.02f;
+		worldTransformR_arm_.rotation.y += 0.02f;
 	}
-	else if (workAttack_.rotation.x <= 7.8f)
+	else if (enemy_->GetIsPlayerHit() == true)
 	{
-		worldTransformBody_.rotation.y += 0.1f;
+		throwTimer_--;
+		worldTransformL_arm_.rotation.x += 0.2f;
+		worldTransformR_arm_.rotation.x += 0.2f;
 
-		workAttack_.rotation.x += 0.1f;
-
-		weapon_->SetTranslation(workAttack_.translation);
-		weapon_->SetRotation(workAttack_.rotation);
-		weapon_->SetIsAttack(true);
-
+		if (throwTimer_ <= 0)
+		{
+			behaviorRequest_ = Behavior::kRoot;
+			throwTimer_ = 100;
+			worldTransformL_arm_.rotation.y = 0.0f;
+			worldTransformR_arm_.rotation.y = 0.0f;
+			isThrow_ = false;
+		}
 	}
 	else
 	{
 		workAttack_.stiffnessTimer--;
-		workAttack_.isAttack = false;
-		weapon_->SetIsAttack(false);
 
 		if (workAttack_.stiffnessTimer <= 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
-			worldTransformHead_.rotation.y = 0.0f;
-			worldTransformBody_.rotation.y = 0.0f;
 			worldTransformL_arm_.rotation.y = 0.0f;
 			worldTransformR_arm_.rotation.y = 0.0f;
 			workAttack_.stiffnessTimer = 20;
-			workAttack_.isPoke = false;
+			isThrow_ = false;
 		}
-	}*/
-
-	if (attackAnimationFrame < 100)
-	{
-		ImGui::Begin("Throw");
-
-		ImGui::End();
 	}
-	else 
-	{
-		behaviorRequest_ = Behavior::kRoot;
-	}
-
 	attackAnimationFrame++;
 }
 

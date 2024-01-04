@@ -54,6 +54,8 @@ void Enemy::Update()
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
+
+	isPlayerHit_ = false;
 }
 
 void Enemy::Draw(const Camera& camera)
@@ -68,6 +70,7 @@ void Enemy::OnCollision(Collider* collider)
 {
 	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
 	{
+		isPlayerHit_ = true;
 		ImGui::Begin("Aaa");
 
 		ImGui::End();
