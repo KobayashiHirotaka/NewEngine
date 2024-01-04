@@ -4,6 +4,7 @@
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
+#include "Engine/Utility/Collision/CollisionManager.h"
 
 #include "Project/GameObject/Character/Player/Player.h"
 #include "Project/GameObject/Character/Enemy/Enemy.h"
@@ -29,6 +30,8 @@ private:
 	Camera camera_;
 
 	TextureManager* textureManager_ = nullptr;
+
+	std::unique_ptr<CollisionManager> collisionManager_;
 
 	Input* input_ = nullptr;
 

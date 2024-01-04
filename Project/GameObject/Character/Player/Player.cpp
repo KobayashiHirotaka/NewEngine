@@ -2,15 +2,6 @@
 #include <cassert>
 #include <numbers>
 
-const std::array<Player::ConstAttack, Player::ComboNum>
-Player::kConstAttacks_ = {
-	{
-		{0,0,20,1,0.0f,0.0f,0.14f},
-		{15,10,15,1,0.04f,0.0f,0.2f},
-		{15,10,15,30,-0.04f,0.0f,0.2f}
-	}
-};
-
 void Player::Initialize(const std::vector<Model*>& models)
 {
 	input_ = Input::GetInstance();
@@ -42,8 +33,6 @@ void Player::Initialize(const std::vector<Model*>& models)
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	SetCollisionMask(kCollisionMaskPlayer);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
-
-	FloatingGimmickInitialize();
 }
 
 void Player::Update()
@@ -57,6 +46,7 @@ void Player::Update()
 		case Behavior::kRoot:
 		default:
 			BehaviorRootInitialize();
+			FloatingGimmickInitialize();
 			break;
 
 		case Behavior::kAttack:
@@ -76,6 +66,7 @@ void Player::Update()
 	case Behavior::kRoot:
 	default:
 		BehaviorRootUpdate();
+		FloatingGimmickUpdate();
 		break;
 
 	case Behavior::kAttack:
@@ -97,8 +88,12 @@ void Player::Update()
 	worldTransformR_arm_.UpdateMatrix();
 
 	ImGui::Begin("Player");
-	ImGui::DragFloat3("rotation", &worldTransform_.rotation.x, 0.01f, -5.0f, 5.0f, "%.3f");
+	ImGui::DragFloat3("rotation", &workAttack_.translation.x, 0.01f, -5.0f, 5.0f, "%.3f");
+	ImGui::Text("timer %d", workAttack_.stiffnessTimer);
+	ImGui::Text("count %d", workAttack_.count);
 	ImGui::End();
+
+	/*weapon_->SetTranslation(workAttack_.translation);*/
 }
 
 void Player::Draw(const Camera& camera)
@@ -135,8 +130,6 @@ void Player::BehaviorRootInitialize()
 
 void Player::BehaviorRootUpdate()
 {
-	FloatingGimmickUpdate();
-
 	if (input_->GetJoystickState())
 	{
 		//コントローラーの移動処理
@@ -182,156 +175,165 @@ void Player::BehaviorRootUpdate()
 
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && workAttack_.count == 0)
 		{
 			behaviorRequest_ = Behavior::kAttack;
+			workAttack_.isPanch = true;
+		}
+	}
+
+	if (input_->GetJoystickState())
+	{
+		if (input_->IsPressButton(XINPUT_GAMEPAD_A) && input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_DOWN) && workAttack_.count == 0)
+		{
+			behaviorRequest_ = Behavior::kAttack;
+			workAttack_.isPoke = true;
 		}
 	}
 }
 
 void Player::BehaviorAttackInitialize()
 {
-	workAttack_.attackParameter = 0;
-	workAttack_.comboIndex = 0;
-	workAttack_.inComboPhase = 0;
-	workAttack_.comboNext = false;
-	workAttack_.isAttack = true;
-	workAttack_.translation = { 0.0f,0.8f,0.0f };
-	workAttack_.rotation = { 0.0f,0.0f,0.0f };
+	if (workAttack_.isPanch)
+	{
+		worldTransformL_arm_.rotation.x = (float)std::numbers::pi;
+		worldTransformR_arm_.rotation.x = (float)std::numbers::pi;
+		workAttack_.translation = { 0.0f,2.5f,0.0f };
+		workAttack_.rotation = { 0.0f,0.0f,0.0f };
+		workAttack_.count = 1;
+	}
+
+	if (workAttack_.isPoke)
+	{
+		worldTransformL_arm_.rotation.x = -1.3f;
+		worldTransformR_arm_.rotation.x = -1.3f;
+		worldTransformL_arm_.rotation.y = 0.0f;
+		worldTransformR_arm_.rotation.y = 0.0f;
+		workAttack_.translation = { 0.0f,0.5f,0.0f };
+		workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
+		workAttack_.count = 1;
+	}
+
+	attackAnimationFrame = 0;
 }
 
 void Player::BehaviorAttackUpdate()
 {
-	if (workAttack_.comboIndex < ComboNum - 1)
+	if (workAttack_.isPanch)
 	{
-		if (input_->GetJoystickState())
+		if (attackAnimationFrame < 10)
 		{
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
-			{
-				workAttack_.comboNext = true;
-			}
-		}
-	}
+			worldTransformL_arm_.rotation.x -= 0.05f;
+			worldTransformR_arm_.rotation.x -= 0.05f;
 
-	if (++workAttack_.attackParameter >= 40)
-	{
-		if (workAttack_.comboNext)
+			workAttack_.rotation.x -= 0.05f;
+
+			weapon_->SetTranslation(workAttack_.translation);
+			weapon_->SetRotation(workAttack_.rotation);
+
+		}
+		else if (workAttack_.rotation.x < 2.0f)
 		{
-			workAttack_.comboNext = false;
-			workAttack_.attackParameter = 0;
-			workAttack_.comboIndex++;
+			worldTransformL_arm_.rotation.x += 0.1f;
+			worldTransformR_arm_.rotation.x += 0.1f;
 
-			weapon_->SetIsAttack(false);
+			workAttack_.translation.z += 0.05f;
+			workAttack_.translation.y -= 0.05f;
+			workAttack_.rotation.x += 0.1f;
 
-			switch (workAttack_.comboIndex)
-			{
-			case 0:
-				workAttack_.translation = { 0.0f,0.8f,0.0f };
-				workAttack_.rotation = { 0.0f,0.0f,0.0f };
-				break;
-
-			case 1:
-				workAttack_.translation = { 0.0f,0.8f,0.0f };
-				workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
-				break;
-
-			case 2:
-				workAttack_.translation = { 0.0f,0.8f,0.0f };
-				workAttack_.rotation = { 0.0f,0.0f,0.0f };
-				break;
-			}
+			weapon_->SetTranslation(workAttack_.translation);
+			weapon_->SetRotation(workAttack_.rotation);
+			weapon_->SetIsAttack(true);
 		}
-		else {
-			behaviorRequest_ = Behavior::kRoot;
+		else if (workAttack_.rotation.x >= 2.0f)
+		{
+			workAttack_.stiffnessTimer--;
 			workAttack_.isAttack = false;
 			weapon_->SetIsAttack(false);
+
+			if (workAttack_.stiffnessTimer <= 0)
+			{
+				behaviorRequest_ = Behavior::kRoot;
+				workAttack_.count = 0;
+				workAttack_.stiffnessTimer = 20;
+				workAttack_.isPanch = false;
+			}
 		}
+		attackAnimationFrame++;
 	}
 
-	uint32_t anticipationTime = kConstAttacks_[workAttack_.comboIndex].anticipationTime;
-	uint32_t chargeTime = kConstAttacks_[workAttack_.comboIndex].anticipationTime + kConstAttacks_[workAttack_.comboIndex].chargeTime;
-	uint32_t swingTime = kConstAttacks_[workAttack_.comboIndex].anticipationTime + kConstAttacks_[workAttack_.comboIndex].chargeTime + kConstAttacks_[workAttack_.comboIndex].swingTime;
 
-	switch (workAttack_.comboIndex)
+	if (workAttack_.isPoke)
 	{
-	case 0:
-		if (workAttack_.attackParameter < anticipationTime)
+		if (attackAnimationFrame < 10)
 		{
-			workAttack_.rotation.x += kConstAttacks_[workAttack_.comboIndex].anticipationSpeed;
-		}
+			worldTransformBody_.rotation.y -= 0.1f;
 
-		if (workAttack_.attackParameter >= anticipationTime && workAttack_.attackParameter < chargeTime)
-		{
-			workAttack_.rotation.x += kConstAttacks_[workAttack_.comboIndex].chargeSpeed;
-		}
+			workAttack_.rotation.x -= 0.05f;
 
-		if (workAttack_.attackParameter >= chargeTime && workAttack_.attackParameter < swingTime)
+			weapon_->SetTranslation(workAttack_.translation);
+			weapon_->SetRotation(workAttack_.rotation);
+
+		}
+		else if (workAttack_.rotation.x <= 7.8f)
 		{
-			workAttack_.rotation.x += kConstAttacks_[workAttack_.comboIndex].swingSpeed;
+			worldTransformBody_.rotation.y += 0.1f;
+
+			workAttack_.rotation.x += 0.1f;
+
+			weapon_->SetTranslation(workAttack_.translation);
+			weapon_->SetRotation(workAttack_.rotation);
 			weapon_->SetIsAttack(true);
-		}
 
-		if (workAttack_.attackParameter >= swingTime && workAttack_.attackParameter < 40) {
+			//キャンセル用の処理
+			/*if (input_->GetJoystickState())
+			{
+				if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
+				{
+					behaviorRequest_ = Behavior::kAttack;
+					worldTransformHead_.rotation.y = 0.0f;
+					worldTransformBody_.rotation.y = 0.0f;
+					worldTransformL_arm_.rotation.y = 0.0f;
+					worldTransformR_arm_.rotation.y = 0.0f;
+					workAttack_.isPanch = true;
+					workAttack_.isPoke = false;
+				}
+			}*/
+
+		}
+		else 
+		{
+			behaviorRequest_ = Behavior::kRoot;
+			worldTransformHead_.rotation.y = 0.0f;
+			worldTransformBody_.rotation.y = 0.0f;
+			worldTransformL_arm_.rotation.y = 0.0f;
+			worldTransformR_arm_.rotation.y = 0.0f;
+			workAttack_.count = 0;
+			/*workAttack_.stiffnessTimer = 20;*/
+			workAttack_.isAttack = false;
+			workAttack_.isPoke = false;
 			weapon_->SetIsAttack(false);
 		}
 
-		worldTransformL_arm_.rotation.x += 0.3f;
-		worldTransformR_arm_.rotation.x += 0.3f;
-
-		weapon_->SetTranslation(workAttack_.translation);
-		weapon_->SetRotation(workAttack_.rotation);
-		break;
-
-	case 1:
-		if (workAttack_.attackParameter < anticipationTime)
+		/*if (workAttack_.rotation.x >= 7.8f && workAttack_.pokeCount == 1)
 		{
-			workAttack_.rotation.x += kConstAttacks_[workAttack_.comboIndex].anticipationSpeed;
-		}
+			workAttack_.stiffnessTimer--;
 
-		if (workAttack_.attackParameter >= anticipationTime && workAttack_.attackParameter < chargeTime)
-		{
-			workAttack_.rotation.x += kConstAttacks_[workAttack_.comboIndex].chargeSpeed;
-		}
-
-		if (workAttack_.attackParameter >= chargeTime && workAttack_.attackParameter < swingTime)
-		{
-			workAttack_.rotation.x += kConstAttacks_[workAttack_.comboIndex].swingSpeed;
-			weapon_->SetIsAttack(true);
-		}
-
-		if (workAttack_.attackParameter >= swingTime && workAttack_.attackParameter < 40) {
-			weapon_->SetIsAttack(false);
-		}
-
-		weapon_->SetTranslation(workAttack_.translation);
-		weapon_->SetRotation(workAttack_.rotation);
-		break;
-
-	case 2:
-		if (workAttack_.attackParameter < anticipationTime)
-		{
-			workAttack_.rotation.x += kConstAttacks_[workAttack_.comboIndex].anticipationSpeed;
-		}
-
-		if (workAttack_.attackParameter >= anticipationTime && workAttack_.attackParameter < chargeTime)
-		{
-			workAttack_.rotation.x += kConstAttacks_[workAttack_.comboIndex].chargeSpeed;
-		}
-
-		if (workAttack_.attackParameter >= chargeTime && workAttack_.attackParameter < swingTime)
-		{
-			workAttack_.rotation.x += kConstAttacks_[workAttack_.comboIndex].swingSpeed;
-			weapon_->SetIsAttack(true);
-		}
-
-		if (workAttack_.attackParameter >= swingTime && workAttack_.attackParameter < 40) {
-			weapon_->SetIsAttack(false);
-		}
-
-		weapon_->SetTranslation(workAttack_.translation);
-		weapon_->SetRotation(workAttack_.rotation);
-
-		break;
+			if (workAttack_.stiffnessTimer <= 0)
+			{
+				behaviorRequest_ = Behavior::kRoot;
+				worldTransformHead_.rotation.y = 0.0f;
+				worldTransformBody_.rotation.y = 0.0f;
+				worldTransformL_arm_.rotation.y = 0.0f;
+				worldTransformR_arm_.rotation.y = 0.0f;
+				workAttack_.count = 0;
+				workAttack_.stiffnessTimer = 20;
+				workAttack_.isAttack = false;
+				workAttack_.isPoke = false;
+				weapon_->SetIsAttack(false);
+			}
+		}*/
+		attackAnimationFrame++;
 	}
 }
 

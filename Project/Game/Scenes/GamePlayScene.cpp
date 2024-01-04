@@ -12,6 +12,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 {
 	input_ = Input::GetInstance();
 
+	collisionManager_ = std::make_unique<CollisionManager>();
+
 	camera_.Initialize();
 
 	weaponModel_.reset(Model::CreateFromOBJ("resource/hammer", "hammer.obj"));
@@ -75,6 +77,18 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 
 	camera_.UpdateMatrix();
+
+	collisionManager_->ClearColliders();
+	collisionManager_->AddCollider(player_.get());
+
+	if (player_->GetWeapon()->GetIsAttack())
+	{
+		collisionManager_->AddCollider(player_->GetWeapon());
+	}
+
+	collisionManager_->AddCollider(enemy_.get());
+	
+	collisionManager_->CheckAllCollision();
 
 	/*if (input_->PushKey(DIK_SPACE))
 	{

@@ -33,27 +33,16 @@ public:
 
 		int32_t inComboPhase = 0;
 
+		int count = 0;
+		int pokeCount = 0;
+
+		int stiffnessTimer = 20;
+
 		bool comboNext = false;
 		bool isAttack = false;
+		bool isPanch = false;
+		bool isPoke = false;
 	};
-
-	struct ConstAttack
-	{
-		uint32_t anticipationTime;
-
-		uint32_t chargeTime;
-
-		uint32_t swingTime;
-
-		uint32_t recoveryTime;
-
-		float anticipationSpeed;
-
-		float chargeSpeed;
-
-		float swingSpeed;
-	};
-
 
 	void Initialize(const std::vector<Model*>& models)override;
 
@@ -117,8 +106,6 @@ private:
 
 	WorkAttack workAttack_;
 
-	static const std::array<ConstAttack, Player::ComboNum>kConstAttacks_;
-
 	int attackTimer = 30;
 
 	int jumpAttackTimer_ = 15;
@@ -128,5 +115,7 @@ private:
 	Behavior behavior_ = Behavior::kRoot;
 
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
+
+	int attackAnimationFrame;
 };
 

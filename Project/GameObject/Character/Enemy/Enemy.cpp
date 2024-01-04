@@ -26,8 +26,8 @@ void Enemy::Initialize(const std::vector<Model*>& models)
 	worldTransformL_arm_.parent_ = &worldTransformBody_;
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
 
-	SetCollisionAttribute(kCollisionAttributePlayer);
-	SetCollisionMask(kCollisionMaskPlayer);
+	SetCollisionAttribute(kCollisionAttributeEnemy);
+	SetCollisionMask(kCollisionMaskEnemy);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
 }
 
@@ -51,7 +51,19 @@ void Enemy::Draw(const Camera& camera)
 
 void Enemy::OnCollision(Collider* collider)
 {
+	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
+	{
+		ImGui::Begin("Aaa");
 
+		ImGui::End();
+	}
+
+	if (collider->GetCollisionAttribute() & kCollisionAttributeWeapon)
+	{
+		ImGui::Begin("A");
+
+		ImGui::End();
+	}
 }
 
 Vector3 Enemy::GetWorldPosition()
