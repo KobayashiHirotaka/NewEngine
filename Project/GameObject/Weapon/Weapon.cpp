@@ -59,15 +59,13 @@ Vector3 Weapon::GetWorldPosition()
 
 void Weapon::AttackInitialize()
 {
-	worldTransform_.rotation.x = 1.5f;
-	worldTransform_.rotation.y = 3.0f;
+	
 }
 
 void Weapon::Attack()
 {
 	if (isAttack_ == false)
 	{
-		Weapon::AttackInitialize();
 		isAttack_ = true;
 	}
 }
