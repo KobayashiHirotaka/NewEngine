@@ -197,7 +197,6 @@ void Player::BehaviorRootUpdate()
 		if (input_->IsPressButton(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_Y))
 		{
 			behaviorRequest_ = Behavior::kThrow;
-			isThrow_ = true;
 		}
 	}
 
@@ -422,7 +421,6 @@ void Player::BehaviorThrowUpdate()
 			throwTimer_ = 100;
 			worldTransformL_arm_.rotation.y = 0.0f;
 			worldTransformR_arm_.rotation.y = 0.0f;
-			isThrow_ = false;
 		}
 	}
 	else
@@ -435,21 +433,20 @@ void Player::BehaviorThrowUpdate()
 			worldTransformL_arm_.rotation.y = 0.0f;
 			worldTransformR_arm_.rotation.y = 0.0f;
 			workAttack_.stiffnessTimer = 20;
-			isThrow_ = false;
 		}
 	}
 	attackAnimationFrame++;
 }
 
-void Player::BehaviorGuardInitialize()
-{
-
-}
-
-void Player::BehaviorGuardUpdate()
-{
-
-}
+//void Player::BehaviorGuardInitialize()
+//{
+//
+//}
+//
+//void Player::BehaviorGuardUpdate()
+//{
+//
+//}
 
 void Player::FloatingGimmickInitialize()
 {

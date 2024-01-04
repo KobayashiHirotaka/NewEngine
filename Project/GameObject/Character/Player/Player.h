@@ -79,9 +79,9 @@ public:
 
 	void BehaviorThrowUpdate();
 
-	void BehaviorGuardInitialize();
+	/*void BehaviorGuardInitialize();
 
-	void BehaviorGuardUpdate();
+	void BehaviorGuardUpdate();*/
 
 	void FloatingGimmickInitialize();
 
@@ -140,6 +140,5 @@ private:
 	Enemy* enemy_ = nullptr;
 
 	int throwTimer_ = 100;
-	bool isThrow_ = false;
 };
 
