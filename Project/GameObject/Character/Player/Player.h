@@ -18,7 +18,9 @@ public:
 	{
 		kRoot,
 		kAttack,
-		kJump
+		kJump,
+		kThrow,
+		kGuard
 	};
 
 	struct WorkAttack

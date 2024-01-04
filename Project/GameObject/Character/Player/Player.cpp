@@ -175,6 +175,7 @@ void Player::BehaviorRootUpdate()
 		}
 	}
 
+	//Jump
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
@@ -183,6 +184,7 @@ void Player::BehaviorRootUpdate()
 		}
 	}
 
+	//振り下ろし攻撃
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
@@ -192,6 +194,7 @@ void Player::BehaviorRootUpdate()
 		}
 	}
 
+	//振り回し攻撃
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
@@ -204,6 +207,7 @@ void Player::BehaviorRootUpdate()
 
 void Player::BehaviorAttackInitialize()
 {
+	//振り下ろし攻撃
 	if (workAttack_.isPanch)
 	{
 		worldTransformL_arm_.rotation.x = (float)std::numbers::pi;
@@ -212,6 +216,7 @@ void Player::BehaviorAttackInitialize()
 		workAttack_.rotation = { 0.0f,0.0f,0.0f };
 	}
 
+	//振り回し攻撃
 	if (workAttack_.isPoke)
 	{
 		worldTransformL_arm_.rotation.x = -1.3f;
@@ -227,6 +232,7 @@ void Player::BehaviorAttackInitialize()
 
 void Player::BehaviorAttackUpdate()
 {
+	//振り下ろし攻撃
 	if (workAttack_.isPanch)
 	{
 		if (attackAnimationFrame < 10)
@@ -253,7 +259,7 @@ void Player::BehaviorAttackUpdate()
 			weapon_->SetRotation(workAttack_.rotation);
 			weapon_->SetIsAttack(true);
 		}
-		else if (workAttack_.rotation.x >= 2.0f)
+		else
 		{
 			workAttack_.stiffnessTimer--;
 			workAttack_.isAttack = false;
@@ -269,7 +275,7 @@ void Player::BehaviorAttackUpdate()
 		attackAnimationFrame++;
 	}
 
-
+	//振り回し攻撃
 	if (workAttack_.isPoke)
 	{
 		if (attackAnimationFrame < 10)
@@ -325,25 +331,6 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.isPoke = false;
 			}
 		}
-
-		/*if (workAttack_.rotation.x >= 7.8f && workAttack_.pokeCount == 1)
-		{
-			workAttack_.stiffnessTimer--;
-
-			if (workAttack_.stiffnessTimer <= 0)
-			{
-				behaviorRequest_ = Behavior::kRoot;
-				worldTransformHead_.rotation.y = 0.0f;
-				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
-				workAttack_.count = 0;
-				workAttack_.stiffnessTimer = 20;
-				workAttack_.isAttack = false;
-				workAttack_.isPoke = false;
-				weapon_->SetIsAttack(false);
-			}
-		}*/
 		attackAnimationFrame++;
 	}
 }
