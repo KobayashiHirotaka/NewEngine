@@ -7,6 +7,8 @@
 #include "Engine/Utility/Collision/Collider.h"
 #include "Engine/Utility/Collision/CollisionConfig.h"
 
+class Player;
+
 class Enemy : public Collider, public ICharacter
 {
 public:
@@ -25,6 +27,8 @@ public:
 	int GetHP() { return HP_; };
 
 	void SetHP(int HP) { HP_ = HP; };
+
+	void SetPlayer(Player* player) { player_ = player; };
 
 private:
 	Input* input_ = nullptr;
@@ -51,4 +55,6 @@ private:
 	float floatingAmplitude_;
 
 	int HP_ = 100;
+
+	Player* player_ = nullptr;
 };

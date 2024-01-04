@@ -9,6 +9,8 @@
 
 #include "Project/GameObject/Weapon/Weapon.h"
 
+class Enemy;
+
 class Player : public Collider, public ICharacter
 {
 public:
@@ -90,6 +92,8 @@ public:
 
 	void SetHP(int HP) { HP_ = HP; };
 
+	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
+
 private:
 	Input* input_ = nullptr;
 
@@ -133,5 +137,7 @@ private:
 	int attackAnimationFrame;
 
 	int HP_ = 100;
+
+	Enemy* enemy_ = nullptr;
 };
 

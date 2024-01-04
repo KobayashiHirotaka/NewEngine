@@ -1,6 +1,7 @@
 #include "Player.h"
 #include <cassert>
 #include <numbers>
+#include "Project/GameObject/Character/Enemy/Enemy.h"
 
 void Player::Initialize(const std::vector<Model*>& models)
 {
@@ -166,14 +167,14 @@ void Player::BehaviorRootUpdate()
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
 		{
 			velocity_.x = -0.3f;
-			worldTransform_.rotation.y = 4.6f;
+			/*worldTransform_.rotation.y = 4.6f;*/
 			isMove_ = true;
 		}
 
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
 		{
 			velocity_.x = 0.3f;
-			worldTransform_.rotation.y = 1.7f;
+			/*worldTransform_.rotation.y = 1.7f;*/
 			isMove_ = true;
 		}
 
@@ -235,6 +236,20 @@ void Player::BehaviorRootUpdate()
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPoke = true;
 		}
+	}
+
+	Vector3 playerWorldPosition = GetWorldPosition();
+
+	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
+
+	if (enemyWorldPosition.x > playerWorldPosition.x)
+	{
+		worldTransform_.rotation.y = 1.7f;
+	}
+
+	if (enemyWorldPosition.x < playerWorldPosition.x)
+	{
+		worldTransform_.rotation.y = 4.6f;
 	}
 }
 

@@ -1,13 +1,14 @@
 #include "Enemy.h"
 #include <cassert>
 #include <numbers>
+#include "Project/GameObject/Character/Player/Player.h"
 
 void Enemy::Initialize(const std::vector<Model*>& models)
 {
 	input_ = Input::GetInstance();
 
 	ICharacter::Initialize(models);
-	worldTransform_.translation = { 7.0f,0.0f,0.0f };
+	worldTransform_.translation = { 3.0f,0.0f,0.0f };
 
 	worldTransformHead_.Initialize();
 	worldTransform_.rotation.y = 4.6f;
@@ -33,6 +34,20 @@ void Enemy::Initialize(const std::vector<Model*>& models)
 
 void Enemy::Update()
 {
+	Vector3 playerWorldPosition = player_->GetWorldPosition();
+
+	Vector3 enemyWorldPosition = GetWorldPosition();
+
+	if (enemyWorldPosition.x > playerWorldPosition.x)
+	{
+		worldTransform_.rotation.y = 4.6f;
+	}
+
+	if (enemyWorldPosition.x < playerWorldPosition.x)
+	{
+		worldTransform_.rotation.y = 1.7f;
+	}
+
 	worldTransform_.UpdateMatrix();
 
 	worldTransformBody_.UpdateMatrix();
