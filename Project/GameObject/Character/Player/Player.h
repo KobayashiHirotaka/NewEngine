@@ -22,7 +22,6 @@ public:
 		kAttack,
 		kJump,
 		kThrow,
-		kGuard
 	};
 
 	struct WorkAttack

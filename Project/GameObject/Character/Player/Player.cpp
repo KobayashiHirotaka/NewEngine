@@ -67,10 +67,6 @@ void Player::Update()
 		case Behavior::kThrow:
 			BehaviorThrowInitialize();
 			break;
-
-		case Behavior::kGuard:
-			BehaviorGuardInitialize();
-			break;
 		}
 
 		behaviorRequest_ = std::nullopt;
@@ -94,10 +90,6 @@ void Player::Update()
 
 	case Behavior::kThrow:
 		BehaviorThrowUpdate();
-		break;
-
-	case Behavior::kGuard:
-		BehaviorGuardUpdate();
 		break;
 	}
 
@@ -205,15 +197,6 @@ void Player::BehaviorRootUpdate()
 		if (input_->IsPressButton(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_Y))
 		{
 			behaviorRequest_ = Behavior::kThrow;
-		}
-	}
-
-	//ガード
-	if (input_->GetJoystickState())
-	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_THUMB))
-		{
-			behaviorRequest_ = Behavior::kGuard;
 		}
 	}
 
