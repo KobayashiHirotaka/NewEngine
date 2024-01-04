@@ -215,10 +215,21 @@ void Player::BehaviorRootUpdate()
 	//振り下ろし攻撃
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 		{
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isSwingDown = true;
+		}
+	}
+
+	//突き攻撃
+	if (input_->GetJoystickState())
+	{
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
+		{
+			behaviorRequest_ = Behavior::kAttack;
+			workAttack_.isPoke = true;
 		}
 	}
 
@@ -265,6 +276,17 @@ void Player::BehaviorAttackInitialize()
 		worldTransformR_arm_.rotation.x = (float)std::numbers::pi;
 		workAttack_.translation = { 0.0f,2.5f,0.0f };
 		workAttack_.rotation = { 0.0f,0.0f,0.0f };
+	}
+
+	//突き攻撃
+	if (workAttack_.isPoke)
+	{
+		worldTransformL_arm_.rotation.x = -1.3f;
+		worldTransformR_arm_.rotation.x = 0.0f;
+		worldTransformL_arm_.rotation.y = 0.0f;
+		worldTransformR_arm_.rotation.y = 0.0f;
+		workAttack_.translation = { 0.0f,0.5f,0.0f };
+		workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
 	}
 
 	//薙ぎ払う攻撃
@@ -354,6 +376,65 @@ void Player::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				workAttack_.stiffnessTimer = 20;
 				workAttack_.isSwingDown = false;
+			}
+		}
+		attackAnimationFrame++;
+	}
+
+	//突き攻撃
+	if (workAttack_.isPoke)
+	{
+		if (attackAnimationFrame < 10)
+		{
+			worldTransformBody_.rotation.y -= 0.1f;
+
+			workAttack_.rotation.x -= 0.05f;
+
+			weapon_->SetTranslation(workAttack_.translation);
+			weapon_->SetRotation(workAttack_.rotation);
+
+		}
+		else if (workAttack_.rotation.x <= 7.8f)
+		{
+			worldTransformBody_.rotation.y += 0.1f;
+
+			workAttack_.rotation.x += 0.1f;
+
+			weapon_->SetTranslation(workAttack_.translation);
+			weapon_->SetRotation(workAttack_.rotation);
+			weapon_->SetIsAttack(true);
+
+			//キャンセル用の処理
+			/*if (input_->GetJoystickState())
+			{
+				if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
+				{
+					behaviorRequest_ = Behavior::kAttack;
+					worldTransformHead_.rotation.y = 0.0f;
+					worldTransformBody_.rotation.y = 0.0f;
+					worldTransformL_arm_.rotation.y = 0.0f;
+					worldTransformR_arm_.rotation.y = 0.0f;
+					workAttack_.isPanch = true;
+					workAttack_.isPoke = false;
+				}
+			}*/
+
+		}
+		else
+		{
+			workAttack_.stiffnessTimer--;
+			workAttack_.isAttack = false;
+			weapon_->SetIsAttack(false);
+
+			if (workAttack_.stiffnessTimer <= 0)
+			{
+				behaviorRequest_ = Behavior::kRoot;
+				worldTransformHead_.rotation.y = 0.0f;
+				worldTransformBody_.rotation.y = 0.0f;
+				worldTransformL_arm_.rotation.y = 0.0f;
+				worldTransformR_arm_.rotation.y = 0.0f;
+				workAttack_.stiffnessTimer = 20;
+				workAttack_.isPoke = false;
 			}
 		}
 		attackAnimationFrame++;
