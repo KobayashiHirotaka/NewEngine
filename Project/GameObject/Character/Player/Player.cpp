@@ -17,6 +17,7 @@ void Player::Initialize(const std::vector<Model*>& models)
 
 	worldTransformBody_.Initialize();
 	worldTransformBody_.translation = { 0.0f,1.0f,0.0f };
+	worldTransformBody_.scale = { 1.2f,1.2f,1.2f };
 
 	worldTransformL_arm_.Initialize();
 	worldTransformL_arm_.translation.x = 0.5f;
@@ -120,7 +121,7 @@ void Player::Draw(const Camera& camera)
 	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, camera);
 
 	//Weaponの描画
-	if (behavior_ == Behavior::kAttack)
+	if (workAttack_.isSwingDown == true || workAttack_.isMowDown == true)
 	{
 		weapon_->Draw(camera);
 	}
@@ -201,23 +202,33 @@ void Player::BehaviorRootUpdate()
 	}
 
 	//攻撃
+	//通常攻撃
+	if (input_->GetJoystickState())
+	{
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
+		{
+			behaviorRequest_ = Behavior::kAttack;
+			workAttack_.isPunch = true;
+		}
+	}
+	
 	//振り下ろし攻撃
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 		{
 			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isPanch = true;
+			workAttack_.isSwingDown = true;
 		}
 	}
 
-	//振り回し攻撃
+	//薙ぎ払う攻撃
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 		{
 			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isPoke = true;
+			workAttack_.isMowDown = true;
 		}
 	}
 
@@ -238,8 +249,17 @@ void Player::BehaviorRootUpdate()
 
 void Player::BehaviorAttackInitialize()
 {
+	//通常攻撃
+	if (workAttack_.isPunch)
+	{
+		worldTransformL_arm_.rotation.x = -1.3f;
+		worldTransformR_arm_.rotation.x = 0.0f;
+		worldTransformL_arm_.rotation.y = 0.0f;
+		worldTransformR_arm_.rotation.y = 0.0f;
+	}
+
 	//振り下ろし攻撃
-	if (workAttack_.isPanch)
+	if (workAttack_.isSwingDown)
 	{
 		worldTransformL_arm_.rotation.x = (float)std::numbers::pi;
 		worldTransformR_arm_.rotation.x = (float)std::numbers::pi;
@@ -247,8 +267,8 @@ void Player::BehaviorAttackInitialize()
 		workAttack_.rotation = { 0.0f,0.0f,0.0f };
 	}
 
-	//振り回し攻撃
-	if (workAttack_.isPoke)
+	//薙ぎ払う攻撃
+	if (workAttack_.isMowDown)
 	{
 		worldTransformL_arm_.rotation.x = -1.3f;
 		worldTransformR_arm_.rotation.x = -1.3f;
@@ -263,8 +283,41 @@ void Player::BehaviorAttackInitialize()
 
 void Player::BehaviorAttackUpdate()
 {
+	//通常攻撃
+	if (workAttack_.isPunch)
+	{
+		if (attackAnimationFrame < 3.0f)
+		{
+			worldTransformBody_.rotation.y += 0.1f;
+		}
+		else if (worldTransformBody_.rotation.y > -1.0f)
+		{
+			worldTransformBody_.rotation.y -= 0.1f;
+
+			ImGui::Begin("rotate");
+			ImGui::DragFloat3("rotation", &worldTransformBody_.rotation.x, 0.01f, -5.0f, 5.0f, "%.3f");
+			ImGui::End();
+		}
+		else
+		{
+			workAttack_.stiffnessTimer--;
+			
+			if (workAttack_.stiffnessTimer <= 0)
+			{
+				behaviorRequest_ = Behavior::kRoot;
+				workAttack_.stiffnessTimer = 20;
+				worldTransformHead_.rotation.y = 0.0f;
+				worldTransformBody_.rotation.y = 0.0f;
+				worldTransformL_arm_.rotation.y = 0.0f;
+				worldTransformR_arm_.rotation.y = 0.0f;
+				workAttack_.isPunch = false;
+			}
+		}
+		attackAnimationFrame++;
+	}
+
 	//振り下ろし攻撃
-	if (workAttack_.isPanch)
+	if (workAttack_.isSwingDown)
 	{
 		if (attackAnimationFrame < 10)
 		{
@@ -300,14 +353,14 @@ void Player::BehaviorAttackUpdate()
 			{
 				behaviorRequest_ = Behavior::kRoot;
 				workAttack_.stiffnessTimer = 20;
-				workAttack_.isPanch = false;
+				workAttack_.isSwingDown = false;
 			}
 		}
 		attackAnimationFrame++;
 	}
 
-	//振り回し攻撃
-	if (workAttack_.isPoke)
+	//薙ぎ払う攻撃
+	if (workAttack_.isMowDown)
 	{
 		if (attackAnimationFrame < 10)
 		{
@@ -359,7 +412,7 @@ void Player::BehaviorAttackUpdate()
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 20;
-				workAttack_.isPoke = false;
+				workAttack_.isMowDown = false;
 			}
 		}
 		attackAnimationFrame++;

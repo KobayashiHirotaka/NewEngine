@@ -42,9 +42,24 @@ public:
 		int stiffnessTimer = 20;
 
 		bool comboNext = false;
+
+		//攻撃しているか
 		bool isAttack = false;
-		bool isPanch = false;
+
+		//パンチ
+		bool isPunch = false;
+
+		//振り下ろす
+		bool isSwingDown = false;
+
+		//突く
 		bool isPoke = false;
+
+		//対空
+		bool isAntiAir = false;
+
+		//薙ぎ払う
+		bool isMowDown = false;
 	};
 
 	void Initialize(const std::vector<Model*>& models)override;
