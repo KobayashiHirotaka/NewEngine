@@ -74,6 +74,14 @@ public:
 
 	void BehaviorJumpUpdate();
 
+	void BehaviorThrowInitialize();
+
+	void BehaviorThrowUpdate();
+
+	void BehaviorGuardInitialize();
+
+	void BehaviorGuardUpdate();
+
 	void FloatingGimmickInitialize();
 
 	void FloatingGimmickUpdate();

@@ -62,6 +62,14 @@ void Player::Update()
 		case Behavior::kJump:
 			BehaviorJumpInitialize();
 			break;
+
+		case Behavior::kThrow:
+			BehaviorThrowInitialize();
+			break;
+
+		case Behavior::kGuard:
+			BehaviorGuardInitialize();
+			break;
 		}
 
 		behaviorRequest_ = std::nullopt;
@@ -82,6 +90,14 @@ void Player::Update()
 	case Behavior::kJump:
 		BehaviorJumpUpdate();
 		break;
+
+	case Behavior::kThrow:
+		BehaviorThrowUpdate();
+		break;
+
+	case Behavior::kGuard:
+		BehaviorGuardUpdate();
+		break;
 	}
 
 	//Weaponの更新
@@ -100,8 +116,6 @@ void Player::Update()
 	ImGui::Text("timer %d", workAttack_.stiffnessTimer);
 	ImGui::Text("count %d", workAttack_.count);
 	ImGui::End();
-
-	/*weapon_->SetTranslation(workAttack_.translation);*/
 }
 
 void Player::Draw(const Camera& camera)
@@ -175,7 +189,7 @@ void Player::BehaviorRootUpdate()
 		}
 	}
 
-	//Jump
+	//ジャンプ
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
@@ -184,6 +198,25 @@ void Player::BehaviorRootUpdate()
 		}
 	}
 
+	//投げ
+	if (input_->GetJoystickState())
+	{
+		if (input_->IsPressButton(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_Y))
+		{
+			behaviorRequest_ = Behavior::kThrow;
+		}
+	}
+
+	//ガード
+	if (input_->GetJoystickState())
+	{
+		if (input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_THUMB))
+		{
+			behaviorRequest_ = Behavior::kGuard;
+		}
+	}
+
+	//攻撃
 	//振り下ろし攻撃
 	if (input_->GetJoystickState())
 	{
@@ -359,6 +392,77 @@ void Player::BehaviorJumpUpdate()
 		behaviorRequest_ = Behavior::kRoot;
 		worldTransform_.translation.y = 0.0f;
 	}
+}
+
+void Player::BehaviorThrowInitialize()
+{
+	attackAnimationFrame = 0;
+}
+
+void Player::BehaviorThrowUpdate()
+{
+	//投げ
+	/*if (attackAnimationFrame < 10)
+	{
+		worldTransformBody_.rotation.y -= 0.1f;
+
+		workAttack_.rotation.x -= 0.05f;
+
+		weapon_->SetTranslation(workAttack_.translation);
+		weapon_->SetRotation(workAttack_.rotation);
+
+	}
+	else if (workAttack_.rotation.x <= 7.8f)
+	{
+		worldTransformBody_.rotation.y += 0.1f;
+
+		workAttack_.rotation.x += 0.1f;
+
+		weapon_->SetTranslation(workAttack_.translation);
+		weapon_->SetRotation(workAttack_.rotation);
+		weapon_->SetIsAttack(true);
+
+	}
+	else
+	{
+		workAttack_.stiffnessTimer--;
+		workAttack_.isAttack = false;
+		weapon_->SetIsAttack(false);
+
+		if (workAttack_.stiffnessTimer <= 0)
+		{
+			behaviorRequest_ = Behavior::kRoot;
+			worldTransformHead_.rotation.y = 0.0f;
+			worldTransformBody_.rotation.y = 0.0f;
+			worldTransformL_arm_.rotation.y = 0.0f;
+			worldTransformR_arm_.rotation.y = 0.0f;
+			workAttack_.stiffnessTimer = 20;
+			workAttack_.isPoke = false;
+		}
+	}*/
+
+	if (attackAnimationFrame < 100)
+	{
+		ImGui::Begin("Throw");
+
+		ImGui::End();
+	}
+	else 
+	{
+		behaviorRequest_ = Behavior::kRoot;
+	}
+
+	attackAnimationFrame++;
+}
+
+void Player::BehaviorGuardInitialize()
+{
+
+}
+
+void Player::BehaviorGuardUpdate()
+{
+
 }
 
 void Player::FloatingGimmickInitialize()
