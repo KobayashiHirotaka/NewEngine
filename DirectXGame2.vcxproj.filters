@@ -184,20 +184,38 @@
     <Filter Include="ヘッダー ファイル\Engine\3d\Mesh">
       <UniqueIdentifier>{ebcc405d-3a7c-4924-bcf1-af97e8170910}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Project\GameObject\Player">
-      <UniqueIdentifier>{74a201b4-fb28-49af-8018-5f5563dd20eb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Project\GameObject\Skydome">
       <UniqueIdentifier>{079ace73-e2ee-4f2f-b34a-bd5b9ce1c278}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Project\GameObject\Player">
-      <UniqueIdentifier>{148a3aff-d80c-4ed1-bcb4-655a3d61cce7}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\Project\GameObject\Skydome">
       <UniqueIdentifier>{ac44e775-1fd6-4cd5-9b80-d50089c69be5}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Engine\Base\ImGuiManager">
       <UniqueIdentifier>{c6de4378-a840-4161-9d8b-dfbef0d3ed44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\Character">
+      <UniqueIdentifier>{42c4cdd3-a08f-4bd5-8971-e023bb0d0442}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\Character\Player">
+      <UniqueIdentifier>{148a3aff-d80c-4ed1-bcb4-655a3d61cce7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\Character\Enemy">
+      <UniqueIdentifier>{6d82dc92-ff08-4a14-8488-bfb929cd1858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\Weapon">
+      <UniqueIdentifier>{4e901f51-6b79-4418-a57b-a6afabd6ae81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\Character">
+      <UniqueIdentifier>{15176456-29bb-4463-ad26-e04a7613b667}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\Character\Player">
+      <UniqueIdentifier>{74a201b4-fb28-49af-8018-5f5563dd20eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\Character\Enemy">
+      <UniqueIdentifier>{73414d1d-68a1-4107-9207-6d889d23fb3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\Weapon">
+      <UniqueIdentifier>{5dc9fdaa-72db-4ed7-9a26-1e51d43f08a4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -306,17 +324,17 @@
     <ClCompile Include="Project\GameObject\Skydome\Skydome.cpp">
       <Filter>ソース ファイル\Project\GameObject\Skydome</Filter>
     </ClCompile>
-    <ClCompile Include="Project\GameObject\Character\ICharacter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Project\GameObject\Character\Player\Player.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Player</Filter>
+      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Project\GameObject\Character\Enemy\Enemy.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Project\GameObject\Character\ICharacter.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character</Filter>
     </ClCompile>
     <ClCompile Include="Project\GameObject\Weapon\Weapon.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Project\GameObject\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Project\GameObject\Character\Enemy\Enemy.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -464,17 +482,17 @@
     <ClInclude Include="Project\GameObject\Skydome\Skydome.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Skydome</Filter>
     </ClInclude>
-    <ClInclude Include="Project\GameObject\Character\ICharacter.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Project\GameObject\Character\Player\Player.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
     </ClInclude>
     <ClInclude Include="Project\GameObject\Character\Enemy\Enemy.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Project\GameObject\Weapon\Weapon.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Project\GameObject\Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="Project\GameObject\Character\Player\Player.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Player</Filter>
+    <ClInclude Include="Project\GameObject\Character\ICharacter.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

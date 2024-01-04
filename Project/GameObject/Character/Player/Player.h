@@ -76,6 +76,10 @@ public:
 
 	void FloatingGimmickUpdate();
 
+	int GetHP() { return HP_; };
+
+	void SetHP(int HP) { HP_ = HP; };
+
 private:
 	Input* input_ = nullptr;
 
@@ -117,5 +121,7 @@ private:
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 
 	int attackAnimationFrame;
+
+	int HP_ = 100;
 };
 

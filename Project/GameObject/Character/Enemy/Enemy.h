@@ -22,6 +22,10 @@ public:
 
 	void OnCollision(Collider* collider)override;
 
+	int GetHP() { return HP_; };
+
+	void SetHP(int HP) { HP_ = HP; };
+
 private:
 	Input* input_ = nullptr;
 
@@ -45,4 +49,6 @@ private:
 	int floatingCycle_[2];
 
 	float floatingAmplitude_;
+
+	int HP_ = 100;
 };

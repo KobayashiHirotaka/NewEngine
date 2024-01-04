@@ -4,8 +4,10 @@
 
 void Player::Initialize(const std::vector<Model*>& models)
 {
+	//Inputのインスタンス
 	input_ = Input::GetInstance();
 
+	//WorldTransform(Player)の初期化
 	ICharacter::Initialize(models);
 	worldTransform_.translation = { -7.0f,0.0f,0.0f };
 
@@ -21,15 +23,18 @@ void Player::Initialize(const std::vector<Model*>& models)
 	worldTransformR_arm_.Initialize();
 	worldTransformR_arm_.translation.x = -0.5f;
 
+	//親子付け
 	worldTransformBody_.parent_ = &worldTransform_;
 	worldTransformHead_.parent_ = &worldTransformBody_;
 	worldTransformL_arm_.parent_ = &worldTransformBody_;
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
 
+	//Weaponの生成
 	weapon_ = std::make_unique<Weapon>();
 	weapon_->Initialize(models_[4]);
 	weapon_->SetParent(&worldTransform_);
 
+	//当たり判定の設定
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	SetCollisionMask(kCollisionMaskPlayer);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
@@ -37,6 +42,7 @@ void Player::Initialize(const std::vector<Model*>& models)
 
 void Player::Update()
 {
+	//PlayerのBehavior
 	if (behaviorRequest_)
 	{
 		behavior_ = behaviorRequest_.value();
@@ -78,8 +84,10 @@ void Player::Update()
 		break;
 	}
 
+	//Weaponの更新
 	weapon_->Update();
 
+	//WorldTransform(Player)の更新
 	worldTransform_.UpdateMatrix();
 
 	worldTransformBody_.UpdateMatrix();
@@ -98,11 +106,13 @@ void Player::Update()
 
 void Player::Draw(const Camera& camera)
 {
+	//Playerの描画
 	models_[kModelIndexBody]->Draw(worldTransformBody_, camera);
 	models_[kModelIndexHead]->Draw(worldTransformHead_, camera);
 	models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, camera);
 	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, camera);
 
+	//Weaponの描画
 	if (behavior_ == Behavior::kAttack)
 	{
 		weapon_->Draw(camera);
@@ -125,14 +135,14 @@ Vector3 Player::GetWorldPosition()
 
 void Player::BehaviorRootInitialize()
 {
-	velocity_ = { 0.0f,0.0f,0.0f };
+	/*velocity_ = { 0.0f,0.0f,0.0f };*/
 }
 
 void Player::BehaviorRootUpdate()
 {
+	//コントローラーの移動処理
 	if (input_->GetJoystickState())
 	{
-		//コントローラーの移動処理
 		const float deadZone = 0.7f;
 		bool isMove_ = false;
 		const float kCharacterSpeed = 0.1f;
@@ -175,7 +185,7 @@ void Player::BehaviorRootUpdate()
 
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && workAttack_.count == 0)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 		{
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPanch = true;
@@ -184,7 +194,7 @@ void Player::BehaviorRootUpdate()
 
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_A) && input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_DOWN) && workAttack_.count == 0)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 		{
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPoke = true;
@@ -200,7 +210,6 @@ void Player::BehaviorAttackInitialize()
 		worldTransformR_arm_.rotation.x = (float)std::numbers::pi;
 		workAttack_.translation = { 0.0f,2.5f,0.0f };
 		workAttack_.rotation = { 0.0f,0.0f,0.0f };
-		workAttack_.count = 1;
 	}
 
 	if (workAttack_.isPoke)
@@ -211,7 +220,6 @@ void Player::BehaviorAttackInitialize()
 		worldTransformR_arm_.rotation.y = 0.0f;
 		workAttack_.translation = { 0.0f,0.5f,0.0f };
 		workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
-		workAttack_.count = 1;
 	}
 
 	attackAnimationFrame = 0;
@@ -254,7 +262,6 @@ void Player::BehaviorAttackUpdate()
 			if (workAttack_.stiffnessTimer <= 0)
 			{
 				behaviorRequest_ = Behavior::kRoot;
-				workAttack_.count = 0;
 				workAttack_.stiffnessTimer = 20;
 				workAttack_.isPanch = false;
 			}
@@ -303,16 +310,20 @@ void Player::BehaviorAttackUpdate()
 		}
 		else 
 		{
-			behaviorRequest_ = Behavior::kRoot;
-			worldTransformHead_.rotation.y = 0.0f;
-			worldTransformBody_.rotation.y = 0.0f;
-			worldTransformL_arm_.rotation.y = 0.0f;
-			worldTransformR_arm_.rotation.y = 0.0f;
-			workAttack_.count = 0;
-			/*workAttack_.stiffnessTimer = 20;*/
+			workAttack_.stiffnessTimer--;
 			workAttack_.isAttack = false;
-			workAttack_.isPoke = false;
 			weapon_->SetIsAttack(false);
+
+			if (workAttack_.stiffnessTimer <= 0)
+			{
+				behaviorRequest_ = Behavior::kRoot;
+				worldTransformHead_.rotation.y = 0.0f;
+				worldTransformBody_.rotation.y = 0.0f;
+				worldTransformL_arm_.rotation.y = 0.0f;
+				worldTransformR_arm_.rotation.y = 0.0f;
+				workAttack_.stiffnessTimer = 20;
+				workAttack_.isPoke = false;
+			}
 		}
 
 		/*if (workAttack_.rotation.x >= 7.8f && workAttack_.pokeCount == 1)

@@ -49,4 +49,10 @@ private:
 	std::unique_ptr<Model> modelFighterPHead_;
 	std::unique_ptr<Model> modelFighterL_arm_;
 	std::unique_ptr<Model> modelFighterR_arm_;
+
+	int round_ = 1;
+	int roundTimer_ = 99;
+	int migrationTimer_ = 60;
+	int PlayerWinCount_ = 0;
+	int EnemyWinCount_ = 0;
 };

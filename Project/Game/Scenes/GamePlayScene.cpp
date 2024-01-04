@@ -76,6 +76,153 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		PostProcess::GetInstance()->SetIsVignetteActive(false);
 	}
 
+	//勝ち負け表示の処理
+	if (input_->PushKey(DIK_P))
+	{
+		player_->SetHP(0);
+	}
+
+	if (input_->PushKey(DIK_O))
+	{
+		enemy_->SetHP(0);
+	}
+
+	//Playerが勝ったとき
+	if (enemy_->GetHP() == 0 && round_ == 1)
+	{
+		migrationTimer_--;
+		ImGui::Begin("PlayerWin");
+		ImGui::End();
+
+		if (migrationTimer_ < 0)
+		{
+			migrationTimer_ = 60;
+			round_ = 2;
+			player_->SetHP(100);
+			enemy_->SetHP(100);
+			PlayerWinCount_ = 1;
+		}
+	}
+	else if (enemy_->GetHP() == 0 && round_ == 2 && PlayerWinCount_ == 1)
+	{
+		migrationTimer_--;
+		ImGui::Begin("PlayerWin");
+		ImGui::End();
+
+		if (migrationTimer_ < 0)
+		{
+			migrationTimer_ = 60;
+			player_->SetHP(100);
+			enemy_->SetHP(100);
+			PlayerWinCount_ = 2;
+		}
+	}
+	else if (enemy_->GetHP() == 0 && round_ == 2 && PlayerWinCount_ == 0)
+	{
+		migrationTimer_--;
+		ImGui::Begin("PlayerWin");
+		ImGui::End();
+
+		if (migrationTimer_ < 0)
+		{
+			migrationTimer_ = 60;
+			round_ = 3;
+			player_->SetHP(100);
+			enemy_->SetHP(100);
+			PlayerWinCount_ = 1;
+		}
+	}
+	else if (enemy_->GetHP() == 0 && round_ == 3 && PlayerWinCount_ == 1)
+	{
+		migrationTimer_--;
+		ImGui::Begin("PlayerWin");
+		ImGui::End();
+
+		if (migrationTimer_ < 0)
+		{
+			migrationTimer_ = 60;
+			player_->SetHP(100);
+			enemy_->SetHP(100);
+			PlayerWinCount_ = 2;
+		}
+	}
+
+	if (PlayerWinCount_ == 2)
+	{
+		sceneManager->ChangeScene(new GameEndScene);
+	}
+
+	//Enemyが勝ったとき
+	if (player_->GetHP() == 0 && round_ == 1)
+	{
+		migrationTimer_--;
+		ImGui::Begin("EnemyWin");
+		ImGui::End();
+
+		if (migrationTimer_ < 0)
+		{
+			migrationTimer_ = 60;
+			round_ = 2;
+			player_->SetHP(100);
+			enemy_->SetHP(100);
+			EnemyWinCount_ = 1;
+		}
+	}
+	else if (player_->GetHP() == 0 && round_ == 2 && EnemyWinCount_ == 1)
+	{
+		migrationTimer_--;
+		ImGui::Begin("EnemyWin");
+		ImGui::End();
+
+		if (migrationTimer_ < 0)
+		{
+			migrationTimer_ = 60;
+			player_->SetHP(100);
+			enemy_->SetHP(100);
+			EnemyWinCount_ = 2;
+		}
+	}
+	else if (player_->GetHP() == 0 && round_ == 2 && EnemyWinCount_ == 0)
+	{
+		migrationTimer_--;
+		ImGui::Begin("EnemyWin");
+		ImGui::End();
+
+		if (migrationTimer_ < 0)
+		{
+			migrationTimer_ = 60;
+			round_ = 3;
+			player_->SetHP(100);
+			enemy_->SetHP(100);
+			EnemyWinCount_ = 1;
+		}
+	}
+	else if (player_->GetHP() == 0 && round_ == 3 && EnemyWinCount_ == 1)
+	{
+		migrationTimer_--;
+		ImGui::Begin("EnemyWin");
+		ImGui::End();
+
+		if (migrationTimer_ < 0)
+		{
+			migrationTimer_ = 60;
+			player_->SetHP(100);
+			enemy_->SetHP(100);
+			EnemyWinCount_ = 2;
+		}
+	}
+
+	if (EnemyWinCount_ == 2)
+	{
+		sceneManager->ChangeScene(new GameEndScene);
+	}
+
+	ImGui::Begin("round");
+	ImGui::Text("round %d", round_);
+	ImGui::Text("PlayerWinCount %d", PlayerWinCount_);
+	ImGui::Text("EnemyWinCount %d", EnemyWinCount_);
+	ImGui::End();
+
 	camera_.UpdateMatrix();
 
 	collisionManager_->ClearColliders();
