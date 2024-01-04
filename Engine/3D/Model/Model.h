@@ -52,15 +52,11 @@ public:
 
 	static Model* CreateFromOBJ(const std::string& directoryPath, const std::string& filename);
 
-	static Model* CreateSphere();
-
 	static void PreDraw();
 
 	static void PostDraw();
 
 	void Draw(const WorldTransform& worldTransform, const Camera& camera);
-
-	void Draw(const WorldTransform& worldTransform, const Camera& camera, uint32_t textureHandle);
 
 	Light* GetDirectionalLight() { return light_.get(); };
 

@@ -79,69 +79,6 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 	return model;
 }
 
-Model* Model::CreateSphere()
-{
-	//モデルを生成
-	Model* model = new Model();
-
-	//メッシュの作成
-	std::vector<Mesh::VertexData> vertices{};
-	const float pi = 3.14f;
-	const uint32_t kSubdivision = 16;
-	uint32_t latIndex = 0;
-	uint32_t lonIndex = 0;
-	//経度分割一つ分の角度φd
-	const float kLonEvery = pi * 2.0f / float(kSubdivision);
-	//緯度分割一つ分の角度θd
-	const float kLatEvery = pi / float(kSubdivision);
-	//緯度の方向に分割
-	for (latIndex = 0; latIndex < kSubdivision; ++latIndex) {
-		float lat = -pi / 2.0f + kLatEvery * latIndex;//θ
-		//経度の方向に分割しながら線を描く
-		for (lonIndex = 0; lonIndex < kSubdivision; ++lonIndex) {
-			uint32_t start = (latIndex * kSubdivision + lonIndex) * 6;
-			float lon = lonIndex * kLonEvery;//φ
-			//頂点にデータを入力する。基準点a
-			vertices.push_back(Mesh::VertexData{ {std::cos(lat) * std::cos(lon),std::sin(lat),std::cos(lat) * std::sin(lon),1.0f},
-				{ float(lonIndex) / float(kSubdivision),1.0f - float(latIndex) / float(kSubdivision)},
-				{std::cos(lat) * std::cos(lon),std::sin(lat),std::cos(lat) * std::sin(lon)} });
-
-			//残りの５頂点も順番に計算して入力していく
-			vertices.push_back(Mesh::VertexData{ {std::cos(lat + kLatEvery) * std::cos(lon),std::sin(lat + kLatEvery),std::cos(lat + kLatEvery) * std::sin(lon),1.0f},
-				{float(lonIndex) / float(kSubdivision),1.0f - float(latIndex + 1) / float(kSubdivision)},
-				{std::cos(lat + kLatEvery) * std::cos(lon),std::sin(lat + kLatEvery),std::cos(lat + kLatEvery) * std::sin(lon)} });
-
-			vertices.push_back(Mesh::VertexData{ {std::cos(lat) * std::cos(lon + kLonEvery),std::sin(lat),std::cos(lat) * std::sin(lon + kLonEvery),1.0f},
-				{float(lonIndex + 1) / float(kSubdivision),1.0f - float(latIndex) / float(kSubdivision)},
-				{std::cos(lat) * std::cos(lon + kLonEvery),std::sin(lat),std::cos(lat) * std::sin(lon + kLonEvery)} });
-
-			vertices.push_back(Mesh::VertexData{ { std::cos(lat) * std::cos(lon + kLonEvery),std::sin(lat),std::cos(lat) * std::sin(lon + kLonEvery),1.0f},
-				{float(lonIndex + 1) / float(kSubdivision),1.0f - float(latIndex) / float(kSubdivision)},
-				{std::cos(lat) * std::cos(lon + kLonEvery),std::sin(lat),std::cos(lat) * std::sin(lon + kLonEvery)} });
-
-			vertices.push_back(Mesh::VertexData{ {std::cos(lat + kLatEvery) * std::cos(lon),std::sin(lat + kLatEvery),std::cos(lat + kLatEvery) * std::sin(lon),1.0f},
-				{float(lonIndex) / float(kSubdivision),1.0f - float(latIndex + 1) / float(kSubdivision)},
-				{std::cos(lat + kLatEvery) * std::cos(lon),std::sin(lat + kLatEvery),std::cos(lat + kLatEvery) * std::sin(lon)} });
-
-			vertices.push_back(Mesh::VertexData{ {std::cos(lat + kLatEvery) * std::cos(lon + kLonEvery),std::sin(lat + kLatEvery),std::cos(lat + kLatEvery) * std::sin(lon + kLonEvery),1.0f},
-				{float(lonIndex + 1) / float(kSubdivision),1.0f - float(latIndex + 1) / float(kSubdivision)},
-				{std::cos(lat + kLatEvery) * std::cos(lon + kLonEvery),std::sin(lat + kLatEvery),std::cos(lat + kLatEvery) * std::sin(lon + kLonEvery)} });
-		}
-	}
-
-	model->mesh_ = std::make_unique<Mesh>();
-	model->mesh_->Initialize(vertices);
-
-	//マテリアルの作成
-	model->material_ = std::make_unique<Material>();
-	model->material_->Initialize();
-
-	model->light_ = std::make_unique<Light>();
-	model->light_->Initialize();
-
-	return model;
-}
-
 void Model::PreDraw()
 {
 	sCommandList_->SetGraphicsRootSignature(sRootSignature_.Get());
@@ -179,35 +116,8 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 	mesh_->Draw();
 }
 
-void Model::Draw(const WorldTransform& worldTransform, const Camera& camera, uint32_t textureHandle)
-{
-	//マテリアルの更新
-	material_->Update();
-
-	//DirectionalLightの更新
-	light_->Update();
-
-	//頂点データを設定
-	mesh_->SetGraphicsCommand();
-	//マテリアルCBufferの場所を設定
-	material_->SetGraphicsCommand(UINT(RootParameterIndex::Material));
-	//WorldTransform用のCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldlTransform), worldTransform.constBuff->GetGPUVirtualAddress());
-	//ViewProjection用のCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff->GetGPUVirtualAddress());
-	//DescriptorHeapを設定
-	TextureManager::GetInstance()->SetGraphicsDescriptorHeap();
-	//DescriptorTableを設定
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Texture), textureHandle);
-	//DirectionalLightを設定
-	light_->SetGraphicsCommand(UINT(RootParameterIndex::DirectionalLight));
-	//描画!(DrawCall/ドローコール)。3頂点で1つのインスタンス。インスタンスについては今後
-	mesh_->Draw();
-}
-
 void Model::InitializeDXC()
 {
-
 	//dxccompilerを初期化
 	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&sDxcUtils_));
 	assert(SUCCEEDED(hr));
