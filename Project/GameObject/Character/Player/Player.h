@@ -7,15 +7,13 @@
 #include "Engine/Utility/Collision/Collider.h"
 #include "Engine/Utility/Collision/CollisionConfig.h"
 
-#include "Project/GameObject/Weapon/Weapon.h"
+#include "Project/GameObject/Character/Player/PlayerWeapon.h"
 
 class Enemy;
 
 class Player : public Collider, public ICharacter
 {
 public:
-	static const int ComboNum = 3;
-
 	enum class Behavior
 	{
 		kRoot,
@@ -31,10 +29,6 @@ public:
 		Vector3 rotation;
 
 		uint32_t attackParameter = 0;
-
-		int32_t comboIndex = 0;
-
-		int32_t inComboPhase = 0;
 
 		int count = 0;
 		int pokeCount = 0;
@@ -82,7 +76,7 @@ public:
 
 	void OnCollision(Collider* collider, float damage)override;
 
-	Weapon* GetWeapon() { return weapon_.get(); };
+	PlayerWeapon* GetPlayerWeapon() { return playerWeapon_.get(); };
 
 	bool GetIsAttack() { return workAttack_.isAttack; };
 
@@ -116,23 +110,25 @@ public:
 
 	void BehaviorThrowUpdate();
 
-	/*void BehaviorGuardInitialize();
-
-	void BehaviorGuardUpdate();*/
-
 	void FloatingGimmickInitialize();
 
 	void FloatingGimmickUpdate();
 
-	int GetHP() { return HP_; };
+	float GetHP() { return HP_; };
 
-	void SetHP(int HP) { HP_ = HP; };
+	void SetHP(float HP) { HP_ = HP; };
 
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
+
+	bool GetIsEnemyHit() { return isEnemyHit_; };
+
+	void DownAnimation();
 
 	void SetTransform(Vector3 transform) { worldTransform_.translation = transform; };
 
 	void SetRotation(Vector3 rotation) { worldTransform_.rotation = rotation; };
+
+	bool GetIsDown() { return isDown_; };
 
 private:
 	Input* input_ = nullptr;
@@ -150,8 +146,6 @@ private:
 
 	float speed_ = 0.3f;
 
-	float destinationAngleY_ = 0.0f;
-
 	const uint16_t kMaxModelParts = 2;
 
 	float floatingParameter_[2];
@@ -160,7 +154,9 @@ private:
 
 	float floatingAmplitude_;
 
-	std::unique_ptr<Weapon> weapon_ = nullptr;
+	float HP_ = 100.0f;
+
+	std::unique_ptr<PlayerWeapon> playerWeapon_ = nullptr;
 
 	WorkAttack workAttack_;
 
@@ -176,8 +172,6 @@ private:
 
 	int attackAnimationFrame;
 
-	int HP_ = 100;
-
 	Enemy* enemy_ = nullptr;
 
 	int throwTimer_ = 100;
@@ -187,5 +181,15 @@ private:
 	int pokeTimer_ = 30;
 
 	bool isThrow_ = false;
+
+	bool isEnemyHit_ = false;
+
+	int downAnimationTimer_[6] = { 60,60,60,60,60,60 };
+	bool isHitPunch_ = false;
+	bool isHitSwingDown_ = false;
+	bool isHitPoke_ = false;
+	bool isHitMowDown_ = false;
+	bool isHitThrow_ = false;
+	bool isDown_ = false;
 };
 

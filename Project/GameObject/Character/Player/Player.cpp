@@ -32,9 +32,9 @@ void Player::Initialize(const std::vector<Model*>& models)
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
 
 	//Weaponの生成
-	weapon_ = std::make_unique<Weapon>();
-	weapon_->Initialize(models_[4]);
-	weapon_->SetParent(&worldTransform_);
+	playerWeapon_ = std::make_unique<PlayerWeapon>();
+	playerWeapon_->Initialize(models_[4]);
+	playerWeapon_->SetParent(&worldTransform_);
 
 	//当たり判定の設定
 	SetCollisionAttribute(kCollisionAttributePlayer);
@@ -105,7 +105,7 @@ void Player::Update()
 	}
 
 	//Weaponの更新
-	weapon_->Update();
+	playerWeapon_->Update();
 
 	//WorldTransform(Player)の更新
 	worldTransform_.UpdateMatrix();
@@ -114,6 +114,22 @@ void Player::Update()
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
+
+	Vector3 playerWorldPosition = GetWorldPosition();
+
+	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
+
+	if (enemyWorldPosition.x > playerWorldPosition.x)
+	{
+		worldTransform_.rotation.y = 1.7f;
+	}
+
+	if (enemyWorldPosition.x < playerWorldPosition.x)
+	{
+		worldTransform_.rotation.y = 4.6f;
+	}
+
+	isEnemyHit_ = false;
 
 	ImGui::Begin("Player");
 	ImGui::DragFloat3("rotation", &workAttack_.translation.x, 0.01f, -5.0f, 5.0f, "%.3f");
@@ -133,13 +149,68 @@ void Player::Draw(const Camera& camera)
 	//Weaponの描画
 	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke)
 	{
-		weapon_->Draw(camera);
+		playerWeapon_->Draw(camera);
 	}
 }
 
 void Player::OnCollision(Collider* collider, float damage)
 {
+	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
+	{
+		isEnemyHit_ = true;
 
+		if (enemy_->GetIsPunch() == true && isDown_ == false)
+		{
+			damage = 3.0f;
+			HP_ -= damage;
+			isHitPunch_ = true;
+		}
+
+		if (enemy_->GetIsThrow() == true && isDown_ == false)
+		{
+			damage = 500.0f;
+			HP_ -= damage;
+			isHitThrow_ = true;
+		}
+		ImGui::Begin("Aaa");
+
+		ImGui::End();
+	}
+
+	if (collider->GetCollisionAttribute() & kCollisionAttributeWeapon)
+	{
+		if (enemy_->GetIsAttack() == true && enemy_->GetIsSwingDown() == true && isDown_ == false)
+		{
+			damage = 7.0f;
+			HP_ -= damage;
+			isHitSwingDown_ = true;
+		}
+
+		if (enemy_->GetIsAttack() == true && enemy_->GetIsSwingDown() == true && isDown_ == false)
+		{
+			damage = 7.0f;
+			HP_ -= damage;
+			isHitSwingDown_ = true;
+		}
+
+		if (enemy_->GetIsAttack() == true && enemy_->GetIsPoke() == true && isDown_ == false)
+		{
+			damage = 10.0f;
+			HP_ -= damage;
+			isHitPoke_ = true;
+		}
+
+		if (enemy_->GetIsAttack() == true && enemy_->GetIsMowDown() == true && isDown_ == false)
+		{
+			damage = 10.0f;
+			HP_ -= damage;
+			isHitMowDown_ = true;
+		}
+
+		ImGui::Begin("A");
+
+		ImGui::End();
+	}
 }
 
 Vector3 Player::GetWorldPosition()
@@ -328,20 +399,6 @@ void Player::BehaviorRootUpdate()
 			workAttack_.isReject = true;
 		}
 	}
-
-	Vector3 playerWorldPosition = GetWorldPosition();
-
-	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
-
-	if (enemyWorldPosition.x > playerWorldPosition.x)
-	{
-		worldTransform_.rotation.y = 1.7f;
-	}
-
-	if (enemyWorldPosition.x < playerWorldPosition.x)
-	{
-		worldTransform_.rotation.y = 4.6f;
-	}
 }
 
 void Player::BehaviorAttackInitialize()
@@ -455,8 +512,8 @@ void Player::BehaviorAttackUpdate()
 
 			workAttack_.rotation.x -= 0.05f;
 
-			weapon_->SetTranslation(workAttack_.translation);
-			weapon_->SetRotation(workAttack_.rotation);
+			playerWeapon_->SetTranslation(workAttack_.translation);
+			playerWeapon_->SetRotation(workAttack_.rotation);
 
 		}
 		else if (workAttack_.rotation.x < 2.0f)
@@ -468,9 +525,9 @@ void Player::BehaviorAttackUpdate()
 			workAttack_.translation.y -= 0.05f;
 			workAttack_.rotation.x += 0.1f;
 
-			weapon_->SetTranslation(workAttack_.translation);
-			weapon_->SetRotation(workAttack_.rotation);
-			weapon_->SetIsAttack(true);
+			playerWeapon_->SetTranslation(workAttack_.translation);
+			playerWeapon_->SetRotation(workAttack_.rotation);
+			playerWeapon_->SetIsAttack(true);
 			workAttack_.isAttack = true;
 
 			SetDamage(10.0f);
@@ -479,7 +536,7 @@ void Player::BehaviorAttackUpdate()
 		{
 			workAttack_.stiffnessTimer--;
 			workAttack_.isAttack = false;
-			weapon_->SetIsAttack(false);
+			playerWeapon_->SetIsAttack(false);
 
 			
 			if (workAttack_.stiffnessTimer <= 0)
@@ -509,8 +566,8 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.rotation.z -= 0.05f;
 			}
 
-			weapon_->SetTranslation(workAttack_.translation);
-			weapon_->SetRotation(workAttack_.rotation);
+			playerWeapon_->SetTranslation(workAttack_.translation);
+			playerWeapon_->SetRotation(workAttack_.rotation);
 
 		}
 		else if (pokeTimer_ > 0)
@@ -532,16 +589,16 @@ void Player::BehaviorAttackUpdate()
 				worldTransform_.translation.x -= 0.3f;
 			}
 
-			weapon_->SetTranslation(workAttack_.translation);
-			weapon_->SetRotation(workAttack_.rotation);
-			weapon_->SetIsAttack(true);
+			playerWeapon_->SetTranslation(workAttack_.translation);
+			playerWeapon_->SetRotation(workAttack_.rotation);
+			playerWeapon_->SetIsAttack(true);
 			workAttack_.isAttack = true;
 		}
 		else
 		{
 			workAttack_.stiffnessTimer--;
 			workAttack_.isAttack = false;
-			weapon_->SetIsAttack(false);
+			playerWeapon_->SetIsAttack(false);
 
 			if (workAttack_.stiffnessTimer <= 0)
 			{
@@ -569,8 +626,8 @@ void Player::BehaviorAttackUpdate()
 
 			workAttack_.rotation.x -= 0.05f;
 
-			weapon_->SetTranslation(workAttack_.translation);
-			weapon_->SetRotation(workAttack_.rotation);
+			playerWeapon_->SetTranslation(workAttack_.translation);
+			playerWeapon_->SetRotation(workAttack_.rotation);
 
 		}
 		else if (workAttack_.rotation.x <= 3.8f)
@@ -579,16 +636,16 @@ void Player::BehaviorAttackUpdate()
 
 			workAttack_.rotation.x += 0.1f;
 
-			weapon_->SetTranslation(workAttack_.translation);
-			weapon_->SetRotation(workAttack_.rotation);
-			weapon_->SetIsAttack(true);
+			playerWeapon_->SetTranslation(workAttack_.translation);
+			playerWeapon_->SetRotation(workAttack_.rotation);
+			playerWeapon_->SetIsAttack(true);
 			workAttack_.isAttack = true;
 		}
 		else 
 		{
 			workAttack_.stiffnessTimer--;
 			workAttack_.isAttack = false;
-			weapon_->SetIsAttack(false);
+			playerWeapon_->SetIsAttack(false);
 
 			////キャンセル用の処理
 			//if (input_->GetJoystickState())
@@ -803,16 +860,6 @@ void Player::BehaviorThrowUpdate()
 	}
 }
 
-//void Player::BehaviorGuardInitialize()
-//{
-//
-//}
-//
-//void Player::BehaviorGuardUpdate()
-//{
-//
-//}
-
 void Player::FloatingGimmickInitialize()
 {
 	for (int i = 0; i < kMaxModelParts; i++)
@@ -840,6 +887,221 @@ void Player::FloatingGimmickUpdate()
 	worldTransformL_arm_.rotation.x = std::sin(floatingParameter_[1]) * 0.35f;
 	worldTransformR_arm_.rotation.x = -std::sin(floatingParameter_[1]) * 0.35f;
 }
+
+void Player::DownAnimation()
+{
+	//通常攻撃
+	if (isHitPunch_ && worldTransform_.rotation.y == 4.6f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[3]--;
+		if (downAnimationTimer_[3] > 0)
+		{
+			worldTransformBody_.rotation.x -= 0.01f;
+		}
+
+		if (enemy_->GetIsPunch() == false)
+		{
+			downAnimationTimer_[3] = 60;
+			isHitPunch_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitPunch_ && worldTransform_.rotation.y == 1.7f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[3]--;
+		if (downAnimationTimer_[3] > 0)
+		{
+			worldTransformBody_.rotation.x -= 0.01f;
+		}
+
+		if (enemy_->GetIsPunch() == false)
+		{
+			downAnimationTimer_[3] = 60;
+			isHitPunch_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	//振り下ろし攻撃
+	if (isHitSwingDown_ && worldTransform_.rotation.y == 4.6f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[0]--;
+		if (downAnimationTimer_[0] > 0)
+		{
+			worldTransform_.translation.x += 0.1f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[0] <= 0)
+		{
+			downAnimationTimer_[0] = 60;
+			isHitSwingDown_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitSwingDown_ && worldTransform_.rotation.y == 1.7f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[0]--;
+		if (downAnimationTimer_[0] > 0)
+		{
+			worldTransform_.translation.x -= 0.1f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[0] <= 0)
+		{
+			downAnimationTimer_[0] = 60;
+			isHitSwingDown_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	//突き攻撃
+	if (isHitPoke_ && worldTransform_.rotation.y == 4.6f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[1]--;
+		if (downAnimationTimer_[1] > 0)
+		{
+			worldTransform_.translation.x += 0.3f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[1] <= 0)
+		{
+			downAnimationTimer_[1] = 60;
+			isHitPoke_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitPoke_ && worldTransform_.rotation.y == 1.7f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[1]--;
+		if (downAnimationTimer_[1] > 0)
+		{
+			worldTransform_.translation.x -= 0.3f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[1] <= 0)
+		{
+			downAnimationTimer_[1] = 60;
+			isHitPoke_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	//薙ぎ払い攻撃
+	if (isHitMowDown_ && worldTransform_.rotation.y == 4.6f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[2]--;
+		if (downAnimationTimer_[2] > 0)
+		{
+			worldTransform_.translation.x += 0.1f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[2] <= 0)
+		{
+			downAnimationTimer_[2] = 60;
+			isHitMowDown_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitMowDown_ && worldTransform_.rotation.y == 1.7f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[2]--;
+		if (downAnimationTimer_[2] > 0)
+		{
+			worldTransform_.translation.x += 0.1f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[2] <= 0)
+		{
+			downAnimationTimer_[2] = 60;
+			isHitMowDown_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	//投げ攻撃
+	if (isHitThrow_ && worldTransform_.rotation.y == 4.6f)
+	{
+		isDown_ = true;
+		if (enemy_->GetAttackAnimationFrame() < 30)
+		{
+			worldTransformBody_.rotation.x += 0.01f;
+
+		}
+		else if (enemy_->GetThrowTimer() > 20)
+		{
+			worldTransformBody_.rotation.x -= 0.2f;
+		}
+		else if (enemy_->GetThrowTimer() <= 20)
+		{
+			worldTransform_.translation.x += 0.3f;
+			worldTransformBody_.rotation.x -= 0.2f;
+		}
+
+		if (enemy_->GetIsThrow() == false)
+		{
+			downAnimationTimer_[4] = 60;
+			isHitThrow_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitThrow_ && worldTransform_.rotation.y == 1.7f)
+	{
+		isDown_ = true;
+		if (enemy_->GetAttackAnimationFrame() < 30)
+		{
+			worldTransformBody_.rotation.x -= 0.01f;
+
+		}
+		else if (enemy_->GetThrowTimer() > 10)
+		{
+			worldTransformBody_.rotation.x -= 0.2f;
+		}
+		else if (enemy_->GetThrowTimer() <= 10)
+		{
+			worldTransform_.translation.x -= 0.3f;
+			worldTransformBody_.rotation.x -= 0.2f;
+		}
+
+		if (enemy_->GetIsThrow() == false)
+		{
+			downAnimationTimer_[4] = 60;
+			isHitThrow_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+}
+
+
+
 
 
 

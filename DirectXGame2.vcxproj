@@ -42,10 +42,11 @@
     <ClCompile Include="Engine\Utility\Math\MyMath.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Project\GameObject\Character\Enemy\Enemy.cpp" />
+    <ClCompile Include="Project\GameObject\Character\Enemy\EnemyWeapon.cpp" />
     <ClCompile Include="Project\GameObject\Character\ICharacter.cpp" />
     <ClCompile Include="Project\GameObject\Character\Player\Player.cpp" />
+    <ClCompile Include="Project\GameObject\Character\Player\PlayerWeapon.cpp" />
     <ClCompile Include="Project\GameObject\Skydome\Skydome.cpp" />
-    <ClCompile Include="Project\GameObject\Weapon\Weapon.cpp" />
     <ClCompile Include="Project\Game\Scenes\GameEndScene.cpp" />
     <ClCompile Include="Project\Game\Scenes\GamePlayScene.cpp" />
     <ClCompile Include="Project\Game\Scenes\GameStartScene.cpp" />
@@ -118,10 +119,11 @@
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
     <ClInclude Include="Engine\Utility\Structs\Material.h" />
     <ClInclude Include="Project\GameObject\Character\Enemy\Enemy.h" />
+    <ClInclude Include="Project\GameObject\Character\Enemy\EnemyWeapon.h" />
     <ClInclude Include="Project\GameObject\Character\ICharacter.h" />
     <ClInclude Include="Project\GameObject\Character\Player\Player.h" />
+    <ClInclude Include="Project\GameObject\Character\Player\PlayerWeapon.h" />
     <ClInclude Include="Project\GameObject\Skydome\Skydome.h" />
-    <ClInclude Include="Project\GameObject\Weapon\Weapon.h" />
     <ClInclude Include="Project\Game\Scenes\GameEndScene.h" />
     <ClInclude Include="Project\Game\Scenes\GamePlayScene.h" />
     <ClInclude Include="Project\Game\Scenes\GameStartScene.h" />

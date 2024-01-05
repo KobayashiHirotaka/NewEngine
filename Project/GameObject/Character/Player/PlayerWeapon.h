@@ -6,7 +6,7 @@
 #include "Engine/Utility/Collision/CollisionConfig.h"
 #include <numbers>
 
-class Weapon : public Collider
+class PlayerWeapon : public Collider
 {
 public:
 	void Initialize(Model* model);

@@ -1,7 +1,7 @@
-#include "Weapon.h"
+#include "EnemyWeapon.h"
 #include <cassert>
 
-void Weapon::Initialize(Model* model)
+void EnemyWeapon::Initialize(Model* model)
 {
 	assert(model);
 	model_ = model;
@@ -26,7 +26,7 @@ void Weapon::Initialize(Model* model)
 	SetAABB(aabbSize);
 }
 
-void Weapon::Update()
+void EnemyWeapon::Update()
 {
 	Vector3 direction{ 0.0f,0.0f,4.0f };
 	direction = TransformNormal(direction, worldTransform_.parent_->matWorld);
@@ -38,17 +38,17 @@ void Weapon::Update()
 	collisionWorldTransform_.UpdateMatrix();
 }
 
-void Weapon::Draw(const Camera& camera)
+void EnemyWeapon::Draw(const Camera& camera)
 {
 	model_->Draw(worldTransform_, camera);
 }
 
-void Weapon::OnCollision(Collider* collider, float damage)
+void EnemyWeapon::OnCollision(Collider* collider, float damage)
 {
 
 }
 
-Vector3 Weapon::GetWorldPosition()
+Vector3 EnemyWeapon::GetWorldPosition()
 {
 	Vector3 pos{};
 	pos.x = collisionWorldTransform_.matWorld.m[3][0];
@@ -57,12 +57,12 @@ Vector3 Weapon::GetWorldPosition()
 	return pos;
 }
 
-void Weapon::AttackInitialize()
+void EnemyWeapon::AttackInitialize()
 {
-	
+
 }
 
-void Weapon::Attack()
+void EnemyWeapon::Attack()
 {
 	if (isAttack_ == false)
 	{

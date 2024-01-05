@@ -7,11 +7,63 @@
 #include "Engine/Utility/Collision/Collider.h"
 #include "Engine/Utility/Collision/CollisionConfig.h"
 
+#include "Project/GameObject/Character/Enemy/EnemyWeapon.h"
+
 class Player;
 
 class Enemy : public Collider, public ICharacter
 {
 public:
+	enum class Behavior
+	{
+		kRoot,
+		kAttack,
+		kJump,
+		kThrow,
+	};
+
+	struct WorkAttack
+	{
+		Vector3 translation;
+
+		Vector3 rotation;
+
+		uint32_t attackParameter = 0;
+
+		int count = 0;
+		int pokeCount = 0;
+
+		int stiffnessTimer = 60;
+
+		bool comboNext = false;
+
+		//攻撃しているか
+		bool isAttack = false;
+
+		//パンチ
+		bool isPunch = false;
+
+		//振り下ろす
+		bool isSwingDown = false;
+
+		//突く
+		bool isPoke = false;
+		bool isPokeRight = false;
+		bool isPokeLeft = false;
+
+		//対空
+		bool isAntiAir = false;
+
+		//薙ぎ払う
+		bool isMowDown = false;
+
+		//ジャンプ攻撃
+		bool isJumpAttack = false;
+
+		//跳ね返す
+		bool isReject = false;
+	};
+
 	void Initialize(const std::vector<Model*>& models)override;
 
 	void Update()override;
@@ -23,6 +75,44 @@ public:
 	Vector3 GetWorldPosition() override;
 
 	void OnCollision(Collider* collider, float damage)override;
+
+	EnemyWeapon* GetEnemyWeapon() { return enemyWeapon_.get(); };
+	
+	bool GetIsAttack() { return workAttack_.isAttack; };
+
+	bool GetIsPunch() { return workAttack_.isPunch; };
+
+	bool GetIsSwingDown() { return workAttack_.isSwingDown; };
+
+	bool GetIsPoke() { return workAttack_.isPoke; };
+
+	bool GetIsMowDown() { return workAttack_.isMowDown; };
+
+	bool GetIsThrow() { return isThrow_; };
+
+	int GetAttackAnimationFrame() { return attackAnimationFrame; };
+
+	int GetThrowTimer() { return throwTimer_; };
+
+	void BehaviorRootInitialize();
+
+	void BehaviorRootUpdate();
+
+	void BehaviorAttackInitialize();
+
+	void BehaviorAttackUpdate();
+
+	void BehaviorJumpInitialize();
+
+	void BehaviorJumpUpdate();
+
+	void BehaviorThrowInitialize();
+
+	void BehaviorThrowUpdate();
+
+	void FloatingGimmickInitialize();
+
+	void FloatingGimmickUpdate();
 
 	float GetHP() { return HP_; };
 
@@ -54,7 +144,7 @@ private:
 
 	Vector3 velocity_ = {};
 
-	float destinationAngleY_ = 0.0f;
+	float speed_ = 0.3f;
 
 	const uint16_t kMaxModelParts = 2;
 
@@ -64,9 +154,33 @@ private:
 
 	float floatingAmplitude_;
 
+	std::unique_ptr<EnemyWeapon> enemyWeapon_ = nullptr;
+
 	float HP_ = 100.0f;
 
+	WorkAttack workAttack_;
+
+	int attackTimer = 30;
+
+	int jumpAttackTimer_ = 15;
+
+	bool isAttack_[4];
+
+	Behavior behavior_ = Behavior::kRoot;
+
+	std::optional<Behavior> behaviorRequest_ = std::nullopt;
+
+	int attackAnimationFrame;
+
 	Player* player_ = nullptr;
+
+	int throwTimer_ = 100;
+
+	bool isGuard_ = false;
+
+	int pokeTimer_ = 30;
+
+	bool isThrow_ = false;
 
 	bool isPlayerHit_ = false;
 
