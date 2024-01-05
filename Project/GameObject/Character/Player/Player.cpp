@@ -217,7 +217,7 @@ void Player::BehaviorRootUpdate()
 	//ジャンプ
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButton(XINPUT_GAMEPAD_A))
 		{
 			behaviorRequest_ = Behavior::kJump;
 		}
@@ -242,12 +242,23 @@ void Player::BehaviorRootUpdate()
 			workAttack_.isPunch = true;
 		}
 	}
+
+	//対空攻撃
+	if (input_->GetJoystickState())
+	{
+		if (input_->IsPressButton(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+		{
+			behaviorRequest_ = Behavior::kAttack;
+			workAttack_.isAntiAir = true;
+		}
+	}
 	
 	//振り下ろし攻撃
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
 		{
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isSwingDown = true;
@@ -352,6 +363,20 @@ void Player::BehaviorAttackInitialize()
 	{
 		worldTransformL_arm_.rotation.x = -1.3f;
 		worldTransformR_arm_.rotation.x = -1.3f;
+		worldTransformL_arm_.rotation.y = 0.0f;
+		worldTransformR_arm_.rotation.y = 0.0f;
+	}
+
+	if (workAttack_.isAntiAir)
+	{
+		worldTransform_.translation.y = 0.0f;
+
+		const float kJumpFirstSpeed_ = 0.6f;
+
+		velocity_.y = kJumpFirstSpeed_;
+
+		worldTransformL_arm_.rotation.x = 0.0f;
+		worldTransformR_arm_.rotation.x = 0.0f;
 		worldTransformL_arm_.rotation.y = 0.0f;
 		worldTransformR_arm_.rotation.y = 0.0f;
 	}
@@ -559,6 +584,7 @@ void Player::BehaviorAttackUpdate()
 		attackAnimationFrame++;
 	}
 
+	//跳ね返す攻撃
 	if (workAttack_.isReject)
 	{
 		if (attackAnimationFrame < 30)
@@ -588,6 +614,34 @@ void Player::BehaviorAttackUpdate()
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isReject = false;
+			}
+		}
+		attackAnimationFrame++;
+	}
+
+	//対空攻撃
+	if (workAttack_.isAntiAir)
+	{
+		if (attackAnimationFrame < 60)
+		{
+			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+			worldTransformBody_.rotation.y += 0.1f;
+
+			const float kGravityAcceleration_ = 0.03f;
+
+			Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
+
+			velocity_ = Add(velocity_, accelerationVector_);
+
+			if (worldTransform_.translation.y <= 0.0f)
+			{
+				behaviorRequest_ = Behavior::kRoot;
+				worldTransformBody_.rotation.y = 0.0f;
+				worldTransformL_arm_.rotation.y = 0.0f;
+				worldTransformR_arm_.rotation.y = 0.0f;
+				worldTransform_.translation.y = 0.0f;
+				workAttack_.isAntiAir = false;
 			}
 		}
 		attackAnimationFrame++;
