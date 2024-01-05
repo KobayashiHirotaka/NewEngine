@@ -130,6 +130,10 @@ public:
 
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
 
+	void SetTransform(Vector3 transform) { worldTransform_.translation = transform; };
+
+	void SetRotation(Vector3 rotation) { worldTransform_.rotation = rotation; };
+
 private:
 	Input* input_ = nullptr;
 

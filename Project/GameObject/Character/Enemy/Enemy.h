@@ -34,6 +34,12 @@ public:
 
 	void DownAnimation();
 
+	void SetTransform(Vector3 transform) { worldTransform_.translation = transform; };
+
+	void SetRotation(Vector3 rotation) { worldTransform_.rotation = rotation; };
+
+	bool GetIsDown() { return isDown_; };
+
 private:
 	Input* input_ = nullptr;
 

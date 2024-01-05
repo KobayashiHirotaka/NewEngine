@@ -32,7 +32,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	std::vector<Model*> playerModels = { modelFighterBody_.get(), modelFighterPHead_.get(), modelFighterL_arm_.get(),
 		modelFighterR_arm_.get(),weaponModel_.get() };
-
+	
 	player_ = std::make_unique<Player>();
 	player_->Initialize(playerModels);
 	player_->SetEnemy(enemy_.get());
@@ -91,61 +91,77 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 
 	//Playerが勝ったとき
-	if (enemy_->GetHP() == 0 && round_ == 1)
+	if (enemy_->GetHP() <= 0 && round_ == 1)
 	{
 		migrationTimer_--;
 		ImGui::Begin("PlayerWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0)
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
 		{
 			migrationTimer_ = 60;
 			round_ = 2;
 			player_->SetHP(100);
 			enemy_->SetHP(100);
+			player_->SetTransform({ -7.0f,0.0f,0.0f });
+			player_->SetRotation({ 0.0f,1.7f,0.0f });
+			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
+			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
 			PlayerWinCount_ = 1;
 		}
 	}
-	else if (enemy_->GetHP() == 0 && round_ == 2 && PlayerWinCount_ == 1)
+	else if (enemy_->GetHP() <= 0 && round_ == 2 && PlayerWinCount_ == 1)
 	{
 		migrationTimer_--;
 		ImGui::Begin("PlayerWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0)
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
 		{
 			migrationTimer_ = 60;
 			player_->SetHP(100);
 			enemy_->SetHP(100);
+			player_->SetTransform({ -7.0f,0.0f,0.0f });
+			player_->SetRotation({ 0.0f,1.7f,0.0f });
+			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
+			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
 			PlayerWinCount_ = 2;
 		}
 	}
-	else if (enemy_->GetHP() == 0 && round_ == 2 && PlayerWinCount_ == 0)
+	else if (enemy_->GetHP() <= 0 && round_ == 2 && PlayerWinCount_ == 0)
 	{
 		migrationTimer_--;
 		ImGui::Begin("PlayerWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0)
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
 		{
 			migrationTimer_ = 60;
 			round_ = 3;
 			player_->SetHP(100);
 			enemy_->SetHP(100);
+			player_->SetTransform({ -7.0f,0.0f,0.0f });
+			player_->SetRotation({ 0.0f,1.7f,0.0f });
+			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
+			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
 			PlayerWinCount_ = 1;
 		}
 	}
-	else if (enemy_->GetHP() == 0 && round_ == 3 && PlayerWinCount_ == 1)
+	else if (enemy_->GetHP() <= 0 && round_ == 3 && PlayerWinCount_ == 1)
 	{
 		migrationTimer_--;
 		ImGui::Begin("PlayerWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0)
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
 		{
 			migrationTimer_ = 60;
 			player_->SetHP(100);
 			enemy_->SetHP(100);
+			player_->SetTransform({ -7.0f,0.0f,0.0f });
+			player_->SetRotation({ 0.0f,1.7f,0.0f });
+			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
+			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
 			PlayerWinCount_ = 2;
 		}
 	}
@@ -156,61 +172,77 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 
 	//Enemyが勝ったとき
-	if (player_->GetHP() == 0 && round_ == 1)
+	if (player_->GetHP() <= 0 && round_ == 1)
 	{
 		migrationTimer_--;
 		ImGui::Begin("EnemyWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0)
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
 		{
 			migrationTimer_ = 60;
 			round_ = 2;
 			player_->SetHP(100);
 			enemy_->SetHP(100);
+			player_->SetTransform({ -7.0f,0.0f,0.0f });
+			player_->SetRotation({ 0.0f,1.7f,0.0f });
+			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
+			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
 			EnemyWinCount_ = 1;
 		}
 	}
-	else if (player_->GetHP() == 0 && round_ == 2 && EnemyWinCount_ == 1)
+	else if (player_->GetHP() <= 0 && round_ == 2 && EnemyWinCount_ == 1)
 	{
 		migrationTimer_--;
 		ImGui::Begin("EnemyWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0)
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
 		{
 			migrationTimer_ = 60;
 			player_->SetHP(100);
 			enemy_->SetHP(100);
+			player_->SetTransform({ -7.0f,0.0f,0.0f });
+			player_->SetRotation({ 0.0f,1.7f,0.0f });
+			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
+			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
 			EnemyWinCount_ = 2;
 		}
 	}
-	else if (player_->GetHP() == 0 && round_ == 2 && EnemyWinCount_ == 0)
+	else if (player_->GetHP() <= 0 && round_ == 2 && EnemyWinCount_ == 0)
 	{
 		migrationTimer_--;
 		ImGui::Begin("EnemyWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0)
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
 		{
 			migrationTimer_ = 60;
 			round_ = 3;
 			player_->SetHP(100);
 			enemy_->SetHP(100);
+			player_->SetTransform({ -7.0f,0.0f,0.0f });
+			player_->SetRotation({ 0.0f,1.7f,0.0f });
+			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
+			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
 			EnemyWinCount_ = 1;
 		}
 	}
-	else if (player_->GetHP() == 0 && round_ == 3 && EnemyWinCount_ == 1)
+	else if (player_->GetHP() <= 0 && round_ == 3 && EnemyWinCount_ == 1)
 	{
 		migrationTimer_--;
 		ImGui::Begin("EnemyWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0)
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
 		{
 			migrationTimer_ = 60;
 			player_->SetHP(100);
 			enemy_->SetHP(100);
+			player_->SetTransform({ -7.0f,0.0f,0.0f });
+			player_->SetRotation({ 0.0f,1.7f,0.0f });
+			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
+			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
 			EnemyWinCount_ = 2;
 		}
 	}

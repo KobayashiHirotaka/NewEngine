@@ -97,7 +97,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 		if (player_->GetIsThrow() == true && isDown_ == false)
 		{
-			damage = 5.0f;
+			damage = 500.0f;
 			HP_ -= damage;
 			isHitThrow_ = true;
 		}
