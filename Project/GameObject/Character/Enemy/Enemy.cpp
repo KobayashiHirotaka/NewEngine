@@ -94,6 +94,13 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			HP_ -= damage;
 			isHitPunch_ = true;
 		}
+
+		if (player_->GetIsThrow() == true && isDown_ == false)
+		{
+			damage = 3.0f;
+			HP_ -= damage;
+			isHitThrow_ = true;
+		}
 		ImGui::Begin("Aaa");
 
 		ImGui::End();
@@ -146,6 +153,7 @@ Vector3 Enemy::GetWorldPosition()
 
 void Enemy::DownAnimation()
 {
+	//通常攻撃
 	if (isHitPunch_ && worldTransform_.rotation.y == 4.6f)
 	{
 		isDown_ = true;
@@ -182,6 +190,7 @@ void Enemy::DownAnimation()
 		}
 	}
 
+	//振り下ろし攻撃
 	if (isHitSwingDown_ && worldTransform_.rotation.y == 4.6f)
 	{
 		isDown_ = true;
@@ -220,6 +229,7 @@ void Enemy::DownAnimation()
 		}
 	}
 
+	//突き攻撃
 	if (isHitPoke_ && worldTransform_.rotation.y == 4.6f)
 	{
 		isDown_ = true;
@@ -258,6 +268,7 @@ void Enemy::DownAnimation()
 		}
 	}
 
+	//薙ぎ払い攻撃
 	if (isHitMowDown_ && worldTransform_.rotation.y == 4.6f)
 	{
 		isDown_ = true;
@@ -291,6 +302,61 @@ void Enemy::DownAnimation()
 		{
 			downAnimationTimer_[2] = 60;
 			isHitMowDown_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	//投げ攻撃
+	if (isHitThrow_ && worldTransform_.rotation.y == 4.6f)
+	{
+		isDown_ = true;
+		if (player_->GetAttackAnimationFrame() < 30)
+		{
+			worldTransformBody_.rotation.x += 0.01f;
+
+		}
+		else if (player_->GetThrowTimer() > 20)
+		{
+			worldTransformBody_.rotation.x -= 0.2f;
+		}
+		else if (player_->GetThrowTimer() <= 20)
+		{
+			worldTransform_.translation.x += 0.3f;
+			worldTransformBody_.rotation.x -= 0.2f;
+		}
+
+		if (player_->GetIsThrow() == false)
+		{
+			downAnimationTimer_[4] = 60;
+			isHitThrow_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitThrow_ && worldTransform_.rotation.y == 1.7f)
+	{
+		isDown_ = true;
+		if (player_->GetAttackAnimationFrame() < 30)
+		{
+			worldTransformBody_.rotation.x -= 0.01f;
+
+		}
+		else if (player_->GetThrowTimer() > 10)
+		{
+			worldTransformBody_.rotation.x -= 0.2f;
+		}
+		else if (player_->GetThrowTimer() <= 10)
+		{
+			worldTransform_.translation.x -= 0.3f;
+			worldTransformBody_.rotation.x -= 0.2f;
+		}
+
+		if (player_->GetIsThrow() == false)
+		{
+			downAnimationTimer_[4] = 60;
+			isHitThrow_ = false;
 			isDown_ = false;
 			worldTransformBody_.rotation.x = 0.0f;
 		}

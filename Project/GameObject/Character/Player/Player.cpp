@@ -794,6 +794,7 @@ void Player::BehaviorThrowUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
+				throwTimer_ = 100;
 				workAttack_.stiffnessTimer = 60;
 				isThrow_ = false;
 			}

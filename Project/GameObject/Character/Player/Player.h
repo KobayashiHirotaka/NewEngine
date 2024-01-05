@@ -94,7 +94,11 @@ public:
 
 	bool GetIsMowDown() { return workAttack_.isMowDown; };
 
-	bool GetisThrow() { return isThrow_; };
+	bool GetIsThrow() { return isThrow_; };
+
+	int GetAttackAnimationFrame() { return attackAnimationFrame; };
+
+	int GetThrowTimer() { return throwTimer_; };
 
 	void BehaviorRootInitialize();
 
