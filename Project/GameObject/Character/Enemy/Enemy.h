@@ -22,15 +22,17 @@ public:
 
 	Vector3 GetWorldPosition() override;
 
-	void OnCollision(Collider* collider)override;
+	void OnCollision(Collider* collider, float damage)override;
 
-	int GetHP() { return HP_; };
+	float GetHP() { return HP_; };
 
-	void SetHP(int HP) { HP_ = HP; };
+	void SetHP(float HP) { HP_ = HP; };
 
 	void SetPlayer(Player* player) { player_ = player; };
 
 	bool GetIsPlayerHit() { return isPlayerHit_; };
+
+	void DownAnimation();
 
 private:
 	Input* input_ = nullptr;
@@ -56,9 +58,17 @@ private:
 
 	float floatingAmplitude_;
 
-	int HP_ = 100;
+	float HP_ = 100.0f;
 
 	Player* player_ = nullptr;
 
 	bool isPlayerHit_ = false;
+
+	int downAnimationTimer_[6] = { 60,60,60,60,60,60 };
+	bool isHitPunch_ = false;
+	bool isHitSwingDown_ = false;
+	bool isHitPoke_ = false;
+	bool isHitMowDown_ = false;
+	bool isHitThrow_ = false;
+	bool isDown_ = false;
 };

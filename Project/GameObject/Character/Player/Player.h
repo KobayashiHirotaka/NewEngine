@@ -80,11 +80,21 @@ public:
 
 	Vector3 GetWorldPosition() override;
 
-	void OnCollision(Collider* collider)override;
+	void OnCollision(Collider* collider, float damage)override;
 
 	Weapon* GetWeapon() { return weapon_.get(); };
 
 	bool GetIsAttack() { return workAttack_.isAttack; };
+
+	bool GetIsPunch() { return workAttack_.isPunch; };
+
+	bool GetIsSwingDown() { return workAttack_.isSwingDown; };
+
+	bool GetIsPoke() { return workAttack_.isPoke; };
+
+	bool GetIsMowDown() { return workAttack_.isMowDown; };
+
+	bool GetisThrow() { return isThrow_; };
 
 	void BehaviorRootInitialize();
 
@@ -166,6 +176,8 @@ private:
 
 	bool isGuard_ = false;
 
-	int pokeTimer_ = 120;
+	int pokeTimer_ = 30;
+
+	bool isThrow_ = false;
 };
 

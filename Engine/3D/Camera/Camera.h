@@ -29,7 +29,7 @@ public:
 	Vector3 rotation = { 0.0f, 0.0f, 0.0f };
 
 	// ローカル座標
-	Vector3 translation = { 0.0f, 2.0f, -25.0f };
+	Vector3 translation = { 0.0f, 2.0f, -35.0f };
 
 	// 垂直方向視野角
 	float fovAngleY = 0.45f;

@@ -43,7 +43,7 @@ void Weapon::Draw(const Camera& camera)
 	model_->Draw(worldTransform_, camera);
 }
 
-void Weapon::OnCollision(Collider* collider)
+void Weapon::OnCollision(Collider* collider, float damage)
 {
 
 }

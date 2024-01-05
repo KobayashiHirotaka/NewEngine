@@ -48,6 +48,18 @@ void Enemy::Update()
 		worldTransform_.rotation.y = 1.7f;
 	}
 
+	if (worldTransform_.translation.x >= 12.0f)
+	{
+		worldTransform_.translation.x = 12.0f;
+	}
+
+	if (worldTransform_.translation.x <= -12.0f)
+	{
+		worldTransform_.translation.x = -12.0f;
+	}
+
+	DownAnimation();
+
 	worldTransform_.UpdateMatrix();
 
 	worldTransformBody_.UpdateMatrix();
@@ -56,6 +68,10 @@ void Enemy::Update()
 	worldTransformR_arm_.UpdateMatrix();
 
 	isPlayerHit_ = false;
+
+	ImGui::Begin("HP");
+	ImGui::Text("%f", HP_);
+	ImGui::End();
 }
 
 void Enemy::Draw(const Camera& camera)
@@ -66,11 +82,18 @@ void Enemy::Draw(const Camera& camera)
 	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, camera);
 }
 
-void Enemy::OnCollision(Collider* collider)
+void Enemy::OnCollision(Collider* collider, float damage)
 {
 	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
 	{
 		isPlayerHit_ = true;
+
+		if (player_->GetIsPunch() == true && isDown_ == false)
+		{
+			damage = 3.0f;
+			HP_ -= damage;
+			isHitPunch_ = true;
+		}
 		ImGui::Begin("Aaa");
 
 		ImGui::End();
@@ -78,6 +101,34 @@ void Enemy::OnCollision(Collider* collider)
 
 	if (collider->GetCollisionAttribute() & kCollisionAttributeWeapon)
 	{
+		if (player_->GetIsAttack() == true && player_->GetIsSwingDown() == true && isDown_ == false)
+		{
+			damage = 7.0f;
+			HP_ -= damage;
+			isHitSwingDown_ = true;
+		}
+
+		if (player_->GetIsAttack() == true && player_->GetIsSwingDown() == true && isDown_ == false)
+		{
+			damage = 7.0f;
+			HP_ -= damage;
+			isHitSwingDown_ = true;
+		}
+
+		if (player_->GetIsAttack() == true && player_->GetIsPoke() == true && isDown_ == false)
+		{
+			damage = 10.0f;
+			HP_ -= damage;
+			isHitPoke_ = true;
+		}
+
+		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true && isDown_ == false)
+		{
+			damage = 10.0f;
+			HP_ -= damage;
+			isHitMowDown_ = true;
+		}
+
 		ImGui::Begin("A");
 
 		ImGui::End();
@@ -93,5 +144,157 @@ Vector3 Enemy::GetWorldPosition()
 	return pos;
 }
 
+void Enemy::DownAnimation()
+{
+	if (isHitPunch_ && worldTransform_.rotation.y == 4.6f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[3]--;
+		if (downAnimationTimer_[3] > 0)
+		{
+			worldTransformBody_.rotation.x -= 0.01f;
+		}
+
+		if (player_->GetIsPunch() == false)
+		{
+			downAnimationTimer_[3] = 60;
+			isHitPunch_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitPunch_ && worldTransform_.rotation.y == 1.7f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[3]--;
+		if (downAnimationTimer_[3] > 0)
+		{
+			worldTransformBody_.rotation.x -= 0.01f;
+		}
+
+		if (player_->GetIsPunch() == false)
+		{
+			downAnimationTimer_[3] = 60;
+			isHitPunch_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitSwingDown_ && worldTransform_.rotation.y == 4.6f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[0]--;
+		if (downAnimationTimer_[0] > 0)
+		{
+			worldTransform_.translation.x += 0.1f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[0] <= 0)
+		{
+			downAnimationTimer_[0] = 60;
+			isHitSwingDown_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitSwingDown_ && worldTransform_.rotation.y == 1.7f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[0]--;
+		if (downAnimationTimer_[0] > 0)
+		{
+			worldTransform_.translation.x -= 0.1f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[0] <= 0)
+		{
+			downAnimationTimer_[0] = 60;
+			isHitSwingDown_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitPoke_ && worldTransform_.rotation.y == 4.6f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[1]--;
+		if (downAnimationTimer_[1] > 0)
+		{
+			worldTransform_.translation.x += 0.3f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[1] <= 0)
+		{
+			downAnimationTimer_[1] = 60;
+			isHitPoke_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitPoke_ && worldTransform_.rotation.y == 1.7f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[1]--;
+		if (downAnimationTimer_[1] > 0)
+		{
+			worldTransform_.translation.x -= 0.3f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[1] <= 0)
+		{
+			downAnimationTimer_[1] = 60;
+			isHitPoke_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitMowDown_ && worldTransform_.rotation.y == 4.6f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[2]--;
+		if (downAnimationTimer_[2] > 0)
+		{
+			worldTransform_.translation.x += 0.1f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[2] <= 0)
+		{
+			downAnimationTimer_[2] = 60;
+			isHitMowDown_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitMowDown_ && worldTransform_.rotation.y == 1.7f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[2]--;
+		if (downAnimationTimer_[2] > 0)
+		{
+			worldTransform_.translation.x += 0.1f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[2] <= 0)
+		{
+			downAnimationTimer_[2] = 60;
+			isHitMowDown_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+}
 
 

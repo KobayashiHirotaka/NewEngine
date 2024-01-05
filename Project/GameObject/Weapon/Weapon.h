@@ -19,7 +19,7 @@ public:
 
 	Vector3 GetWorldPosition() override;
 
-	void OnCollision(Collider* collider) override;
+	void OnCollision(Collider* collider, float damage) override;
 
 	void SetParent(const WorldTransform* parent) { worldTransform_.parent_ = parent; };
 
