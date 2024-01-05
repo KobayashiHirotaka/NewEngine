@@ -377,8 +377,8 @@ void Player::BehaviorAttackInitialize()
 
 		worldTransformL_arm_.rotation.x = 0.0f;
 		worldTransformR_arm_.rotation.x = 0.0f;
-		worldTransformL_arm_.rotation.y = 0.0f;
-		worldTransformR_arm_.rotation.y = 0.0f;
+		worldTransformL_arm_.rotation.y = -1.3f;
+		worldTransformR_arm_.rotation.y = -1.3f;
 	}
 
 
