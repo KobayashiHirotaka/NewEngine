@@ -60,6 +60,8 @@ public:
 
 		//薙ぎ払う
 		bool isMowDown = false;
+
+		bool isJumpAttack = false;
 	};
 
 	void Initialize(const std::vector<Model*>& models)override;
@@ -155,5 +157,7 @@ private:
 	Enemy* enemy_ = nullptr;
 
 	int throwTimer_ = 100;
+
+	bool isGuard_ = false;
 };
 

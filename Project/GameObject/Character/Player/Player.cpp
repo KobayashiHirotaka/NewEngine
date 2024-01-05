@@ -17,7 +17,7 @@ void Player::Initialize(const std::vector<Model*>& models)
 
 	worldTransformBody_.Initialize();
 	worldTransformBody_.translation = { 0.0f,1.0f,0.0f };
-	worldTransformBody_.scale = { 1.2f,1.2f,1.2f };
+	/*worldTransformBody_.scale = { 1.2f,1.2f,1.2f };*/
 
 	worldTransformL_arm_.Initialize();
 	worldTransformL_arm_.translation.x = 0.5f;
@@ -153,24 +153,51 @@ void Player::BehaviorRootUpdate()
 	{
 		const float deadZone = 0.7f;
 		bool isMove_ = false;
-		const float kCharacterSpeed = 0.1f;
+		float kCharacterSpeed = 0.1f;
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
 		//移動処理
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && worldTransform_.rotation.y == 4.6f)
 		{
+			kCharacterSpeed = 0.1f;
 			velocity_.x = -0.3f;
 			/*worldTransform_.rotation.y = 4.6f;*/
 			isMove_ = true;
+			isGuard_ = false;
 		}
 
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
 		{
+			kCharacterSpeed = 0.1f;
 			velocity_.x = 0.3f;
 			/*worldTransform_.rotation.y = 1.7f;*/
 			isMove_ = true;
+			isGuard_ = false;
 		}
 
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && worldTransform_.rotation.y == 1.7f)
+		{
+			kCharacterSpeed = 0.05f;
+			velocity_.x = -0.3f;
+			/*worldTransform_.rotation.y = 4.6f;*/
+			isMove_ = true;
+			isGuard_ = true;
+		}
+
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && worldTransform_.rotation.y == 4.6f)
+		{
+			kCharacterSpeed = 0.05f;
+			velocity_.x = 0.3f;
+			/*worldTransform_.rotation.y = 4.6f;*/
+			isMove_ = true;
+			isGuard_ = true;
+		}
+
+		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+		{
+			isGuard_ = false;
+		}
+		
 		if (isMove_)
 		{
 			velocity_ = Normalize(velocity_);
@@ -181,6 +208,10 @@ void Player::BehaviorRootUpdate()
 
 			worldTransform_.UpdateMatrix();
 		}
+
+		ImGui::Begin("Guard");
+		ImGui::Text("%d", isGuard_);
+		ImGui::End();
 	}
 
 	//ジャンプ
@@ -519,9 +550,46 @@ void Player::BehaviorJumpUpdate()
 
 	velocity_ = Add(velocity_, accelerationVector_);
 
+	if (input_->GetJoystickState())
+	{
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
+		{
+			workAttack_.isJumpAttack = true;
+			worldTransformL_arm_.rotation.x = -1.3f;
+			worldTransformR_arm_.rotation.x = -1.3f;
+			worldTransformL_arm_.rotation.y = 0.0f;
+			worldTransformR_arm_.rotation.y = 0.0f;
+
+			attackAnimationFrame = 0;
+		}
+	}
+
+	if (workAttack_.isJumpAttack)
+	{
+		if (attackAnimationFrame < 10)
+		{
+			worldTransformL_arm_.rotation.x -= 0.1f;
+			worldTransformR_arm_.rotation.x -= 0.1f;
+		}
+		else if (worldTransformL_arm_.rotation.x > -0.8f && worldTransformR_arm_.rotation.x > -0.8f)
+		{
+			worldTransformL_arm_.rotation.x += 0.1f;
+			worldTransformR_arm_.rotation.x += 0.1f;
+
+			ImGui::Begin("rotate");
+			ImGui::DragFloat3("rotation", &worldTransformBody_.rotation.x, 0.01f, -5.0f, 5.0f, "%.3f");
+			ImGui::End();
+		}
+		attackAnimationFrame++;
+		
+	}
+
 	if (worldTransform_.translation.y <= 0.0f)
 	{
 		behaviorRequest_ = Behavior::kRoot;
+		workAttack_.isJumpAttack = false;
+		worldTransformL_arm_.rotation.x = 0.0f;
+		worldTransformR_arm_.rotation.x = 0.0f;
 		worldTransform_.translation.y = 0.0f;
 	}
 }
