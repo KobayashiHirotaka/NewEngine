@@ -54,6 +54,8 @@ public:
 
 		//突く
 		bool isPoke = false;
+		bool isPokeRight = false;
+		bool isPokeLeft = false;
 
 		//対空
 		bool isAntiAir = false;
@@ -159,5 +161,7 @@ private:
 	int throwTimer_ = 100;
 
 	bool isGuard_ = false;
+
+	int pokeTimer_ = 120;
 };
 

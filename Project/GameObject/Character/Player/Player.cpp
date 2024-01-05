@@ -121,7 +121,7 @@ void Player::Draw(const Camera& camera)
 	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, camera);
 
 	//Weaponの描画
-	if (workAttack_.isSwingDown == true || workAttack_.isMowDown == true)
+	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke)
 	{
 		weapon_->Draw(camera);
 	}
@@ -247,7 +247,7 @@ void Player::BehaviorRootUpdate()
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
+			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
 		{
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isSwingDown = true;
@@ -257,10 +257,18 @@ void Player::BehaviorRootUpdate()
 	//突き攻撃
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && worldTransform_.rotation.y == 1.7f)
 		{
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPoke = true;
+			workAttack_.isPokeRight = true;
+		}
+
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && worldTransform_.rotation.y == 4.6f)
+		{
+			behaviorRequest_ = Behavior::kAttack;
+			workAttack_.isPoke = true;
+			workAttack_.isPokeLeft = true;
 		}
 	}
 
@@ -313,11 +321,9 @@ void Player::BehaviorAttackInitialize()
 	if (workAttack_.isPoke)
 	{
 		worldTransformL_arm_.rotation.x = -1.3f;
-		worldTransformR_arm_.rotation.x = 0.0f;
-		worldTransformL_arm_.rotation.y = 0.0f;
-		worldTransformR_arm_.rotation.y = 0.0f;
+		worldTransformR_arm_.rotation.x = -1.3f;
 		workAttack_.translation = { 0.0f,0.5f,0.0f };
-		workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
+		workAttack_.rotation = { 1.5f,0.0f,0.0f };
 	}
 
 	//薙ぎ払う攻撃
@@ -415,21 +421,37 @@ void Player::BehaviorAttackUpdate()
 	//突き攻撃
 	if (workAttack_.isPoke)
 	{
+		pokeTimer_--;
+
 		if (attackAnimationFrame < 10)
 		{
-			worldTransformBody_.rotation.y -= 0.1f;
+			if (workAttack_.isPokeRight)
+			{
+				workAttack_.rotation.z += 0.05f;
+			}
 
-			workAttack_.rotation.x -= 0.05f;
+			if (workAttack_.isPokeLeft)
+			{
+				workAttack_.rotation.z -= 0.05f;
+			}
 
 			weapon_->SetTranslation(workAttack_.translation);
 			weapon_->SetRotation(workAttack_.rotation);
 
 		}
-		else if (workAttack_.rotation.x <= 7.8f)
+		else if (pokeTimer_ > 0)
 		{
-			worldTransformBody_.rotation.y += 0.1f;
+			if (workAttack_.isPokeRight)
+			{
+				workAttack_.rotation.z += 0.3f;
+				worldTransform_.translation.x += 0.1f;
+			}
 
-			workAttack_.rotation.x += 0.1f;
+			if (workAttack_.isPokeLeft)
+			{
+				workAttack_.rotation.z -= 0.3f;
+				worldTransform_.translation.x -= 0.1f;
+			}
 
 			weapon_->SetTranslation(workAttack_.translation);
 			weapon_->SetRotation(workAttack_.rotation);
@@ -465,7 +487,10 @@ void Player::BehaviorAttackUpdate()
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 20;
+				pokeTimer_ = 120;
 				workAttack_.isPoke = false;
+				workAttack_.isPokeRight = false;
+				workAttack_.isPokeLeft = false;
 			}
 		}
 		attackAnimationFrame++;
