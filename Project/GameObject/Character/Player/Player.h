@@ -39,7 +39,7 @@ public:
 		int count = 0;
 		int pokeCount = 0;
 
-		int stiffnessTimer = 20;
+		int stiffnessTimer = 60;
 
 		bool comboNext = false;
 
@@ -63,7 +63,11 @@ public:
 		//薙ぎ払う
 		bool isMowDown = false;
 
+		//ジャンプ攻撃
 		bool isJumpAttack = false;
+
+		//跳ね返す
+		bool isReject = false;
 	};
 
 	void Initialize(const std::vector<Model*>& models)override;
