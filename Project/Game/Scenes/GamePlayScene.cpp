@@ -16,7 +16,6 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	camera_.Initialize();
 
-	playerWeaponModel_.reset(Model::CreateFromOBJ("resource/hammer", "hammer.obj"));
 	enemyWeaponModel_.reset(Model::CreateFromOBJ("resource/hammer", "hammer.obj"));
 
 	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
@@ -32,7 +31,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	enemy_->Initialize(enemyModels);
 
 	std::vector<Model*> playerModels = { modelFighterBody_.get(), modelFighterPHead_.get(), modelFighterL_arm_.get(),
-		modelFighterR_arm_.get(),playerWeaponModel_.get() };
+		modelFighterR_arm_.get() };
 	
 	player_ = std::make_unique<Player>();
 	player_->Initialize(playerModels);
@@ -267,6 +266,11 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	if (player_->GetPlayerWeapon()->GetIsAttack())
 	{
 		collisionManager_->AddCollider(player_->GetPlayerWeapon());
+	}
+
+	if (enemy_->GetEnemyWeapon()->GetIsAttack())
+	{
+		collisionManager_->AddCollider(enemy_->GetEnemyWeapon());
 	}
 
 	collisionManager_->AddCollider(enemy_.get());

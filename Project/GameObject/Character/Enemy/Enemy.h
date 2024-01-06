@@ -6,6 +6,7 @@
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Utility/Collision/Collider.h"
 #include "Engine/Utility/Collision/CollisionConfig.h"
+#include <random>
 
 #include "Project/GameObject/Character/Enemy/EnemyWeapon.h"
 
@@ -50,9 +51,6 @@ public:
 		bool isPoke = false;
 		bool isPokeRight = false;
 		bool isPokeLeft = false;
-
-		//対空
-		bool isAntiAir = false;
 
 		//薙ぎ払う
 		bool isMowDown = false;
@@ -130,9 +128,9 @@ public:
 
 	bool GetIsDown() { return isDown_; };
 
-private:
-	Input* input_ = nullptr;
+	int Random(int min_value, int max_value);
 
+private:
 	const WorldTransform* parent_ = nullptr;
 
 	const Camera* camera_ = nullptr;
@@ -174,7 +172,7 @@ private:
 
 	Player* player_ = nullptr;
 
-	int throwTimer_ = 100;
+	int throwTimer_ = 140;
 
 	bool isGuard_ = false;
 
@@ -191,4 +189,7 @@ private:
 	bool isHitMowDown_ = false;
 	bool isHitThrow_ = false;
 	bool isDown_ = false;
+
+	int patternCount_ = 1;
+	int moveTimer_ = 60;
 };

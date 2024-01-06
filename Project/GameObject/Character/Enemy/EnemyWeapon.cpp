@@ -13,8 +13,8 @@ void EnemyWeapon::Initialize(Model* model)
 	worldTransform_.scale.y = 0.5f;
 	worldTransform_.scale.z = 0.5f;
 
-	SetCollisionAttribute(kCollisionAttributeWeapon);
-	SetCollisionMask(kCollisionMaskWeapon);
+	SetCollisionAttribute(kCollisionAttributeEnemyWeapon);
+	SetCollisionMask(kCollisionMaskEnemyWeapon);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
 
 	AABB aabbSize =

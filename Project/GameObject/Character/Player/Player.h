@@ -51,9 +51,6 @@ public:
 		bool isPokeRight = false;
 		bool isPokeLeft = false;
 
-		//対空
-		bool isAntiAir = false;
-
 		//薙ぎ払う
 		bool isMowDown = false;
 
@@ -141,6 +138,8 @@ private:
 	WorldTransform worldTransformHead_;
 	WorldTransform worldTransformL_arm_;
 	WorldTransform worldTransformR_arm_;
+
+	std::unique_ptr<Model> playerWeaponModel_;
 
 	Vector3 velocity_ = {};
 

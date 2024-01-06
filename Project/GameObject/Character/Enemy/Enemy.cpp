@@ -5,8 +5,6 @@
 
 void Enemy::Initialize(const std::vector<Model*>& models)
 {
-	input_ = Input::GetInstance();
-
 	ICharacter::Initialize(models);
 	worldTransform_.translation = { 3.0f,0.0f,0.0f };
 
@@ -27,14 +25,14 @@ void Enemy::Initialize(const std::vector<Model*>& models)
 	worldTransformL_arm_.parent_ = &worldTransformBody_;
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
 
-	SetCollisionAttribute(kCollisionAttributeEnemy);
-	SetCollisionMask(kCollisionMaskEnemy);
-	SetCollisionPrimitive(kCollisionPrimitiveAABB);
-
 	//Weaponの生成
 	enemyWeapon_ = std::make_unique<EnemyWeapon>();
 	enemyWeapon_->Initialize(models_[4]);
 	enemyWeapon_->SetParent(&worldTransform_);
+
+	SetCollisionAttribute(kCollisionAttributeEnemy);
+	SetCollisionMask(kCollisionMaskEnemy);
+	SetCollisionPrimitive(kCollisionPrimitiveAABB);
 }
 
 void Enemy::Update()
@@ -111,30 +109,6 @@ void Enemy::Update()
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
 
-	Vector3 playerWorldPosition = player_->GetWorldPosition();
-
-	Vector3 enemyWorldPosition = GetWorldPosition();
-
-	if (enemyWorldPosition.x > playerWorldPosition.x)
-	{
-		worldTransform_.rotation.y = 4.6f;
-	}
-
-	if (enemyWorldPosition.x < playerWorldPosition.x)
-	{
-		worldTransform_.rotation.y = 1.7f;
-	}
-
-	if (worldTransform_.translation.x >= 12.0f)
-	{
-		worldTransform_.translation.x = 12.0f;
-	}
-
-	if (worldTransform_.translation.x <= -12.0f)
-	{
-		worldTransform_.translation.x = -12.0f;
-	}
-
 	isPlayerHit_ = false;
 
 	ImGui::Begin("HP");
@@ -151,7 +125,8 @@ void Enemy::Draw(const Camera& camera)
 	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, camera);
 
 	//Weaponの描画
-	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke)
+	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_
+		&& !isHitPoke_ && !isHitMowDown_ && !isDown_)
 	{
 		enemyWeapon_->Draw(camera);
 	}
@@ -172,39 +147,35 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 		if (player_->GetIsThrow() == true && isDown_ == false)
 		{
-			damage = 500.0f;
+			damage = 5.0f;
 			HP_ -= damage;
 			isHitThrow_ = true;
 		}
-		ImGui::Begin("Aaa");
+		/*ImGui::Begin("Aaa");
 
-		ImGui::End();
+		ImGui::End();*/
 	}
 
-	if (collider->GetCollisionAttribute() & kCollisionAttributeWeapon)
+	if (collider->GetCollisionAttribute() & kCollisionAttributePlayerWeapon)
 	{
-		if (player_->GetIsAttack() == true && player_->GetIsSwingDown() == true && isDown_ == false)
+		if (player_->GetIsAttack() == true && player_->GetIsSwingDown() == true && isDown_ == false
+			&& isGuard_ == false)
 		{
 			damage = 7.0f;
 			HP_ -= damage;
 			isHitSwingDown_ = true;
 		}
 
-		if (player_->GetIsAttack() == true && player_->GetIsSwingDown() == true && isDown_ == false)
-		{
-			damage = 7.0f;
-			HP_ -= damage;
-			isHitSwingDown_ = true;
-		}
-
-		if (player_->GetIsAttack() == true && player_->GetIsPoke() == true && isDown_ == false)
+		if (player_->GetIsAttack() == true && player_->GetIsPoke() == true && isDown_ == false
+			&& isGuard_ == false)
 		{
 			damage = 10.0f;
 			HP_ -= damage;
 			isHitPoke_ = true;
 		}
 
-		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true && isDown_ == false)
+		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true && isDown_ == false
+			&& isGuard_ == false)
 		{
 			damage = 10.0f;
 			HP_ -= damage;
@@ -215,34 +186,6 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 		ImGui::End();
 	}
-}
-
-void Enemy::FloatingGimmickInitialize()
-{
-	for (int i = 0; i < kMaxModelParts; i++)
-	{
-		floatingParameter_[i] = 0.0f;
-	}
-}
-
-void Enemy::FloatingGimmickUpdate()
-{
-	floatingCycle_[0] = 120;
-	floatingCycle_[1] = 120;
-
-	float step[2]{};
-
-	for (int i = 0; i < kMaxModelParts; i++)
-	{
-		step[i] = 2.0f * (float)std::numbers::pi / floatingCycle_[i];
-
-		floatingParameter_[i] += step[i];
-
-		floatingParameter_[i] = (float)std::fmod(floatingParameter_[i], 2.0f * (float)std::numbers::pi);
-	}
-
-	worldTransformL_arm_.rotation.x = std::sin(floatingParameter_[1]) * 0.35f;
-	worldTransformR_arm_.rotation.x = -std::sin(floatingParameter_[1]) * 0.35f;
 }
 
 Vector3 Enemy::GetWorldPosition()
@@ -261,16 +204,19 @@ void Enemy::BehaviorRootInitialize()
 
 void Enemy::BehaviorRootUpdate()
 {
+	patternCount_ = 1;
 	//コントローラーの移動処理
-	if (input_->GetJoystickState())
+	if (patternCount_ == 1  && isDown_ == false)
 	{
+		moveTimer_--;
+
 		const float deadZone = 0.7f;
 		bool isMove_ = false;
 		float kCharacterSpeed = 0.1f;
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
 		//移動処理
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && worldTransform_.rotation.y == 4.6f)
+		if (moveTimer_ > 30 && worldTransform_.rotation.y == 4.6f)
 		{
 			kCharacterSpeed = 0.1f;
 			velocity_.x = -0.3f;
@@ -279,7 +225,7 @@ void Enemy::BehaviorRootUpdate()
 			isGuard_ = false;
 		}
 
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
+		if (moveTimer_ > 30 && worldTransform_.rotation.y == 1.7f)
 		{
 			kCharacterSpeed = 0.1f;
 			velocity_.x = 0.3f;
@@ -288,7 +234,7 @@ void Enemy::BehaviorRootUpdate()
 			isGuard_ = false;
 		}
 
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && worldTransform_.rotation.y == 1.7f)
+		if (moveTimer_ <= 30 && worldTransform_.rotation.y == 1.7f)
 		{
 			kCharacterSpeed = 0.05f;
 			velocity_.x = -0.3f;
@@ -297,18 +243,13 @@ void Enemy::BehaviorRootUpdate()
 			isGuard_ = true;
 		}
 
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && worldTransform_.rotation.y == 4.6f)
+		if (moveTimer_ <= 30 && worldTransform_.rotation.y == 4.6f)
 		{
 			kCharacterSpeed = 0.05f;
 			velocity_.x = 0.3f;
 			/*worldTransform_.rotation.y = 4.6f;*/
 			isMove_ = true;
 			isGuard_ = true;
-		}
-
-		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
-		{
-			isGuard_ = false;
 		}
 
 		if (isMove_)
@@ -322,82 +263,95 @@ void Enemy::BehaviorRootUpdate()
 			worldTransform_.UpdateMatrix();
 		}
 
+		if (moveTimer_ < 0)
+		{
+			moveTimer_ = 60;
+			patternCount_ = Random(5, 7);
+		}
+
+		Vector3 playerWorldPosition = player_->GetWorldPosition();
+
+		Vector3 enemyWorldPosition = GetWorldPosition();
+
+		if (enemyWorldPosition.x > playerWorldPosition.x)
+		{
+			worldTransform_.rotation.y = 4.6f;
+		}
+
+		if (enemyWorldPosition.x < playerWorldPosition.x)
+		{
+			worldTransform_.rotation.y = 1.7f;
+		}
+
+		if (worldTransform_.translation.x >= 12.0f)
+		{
+			worldTransform_.translation.x = 12.0f;
+		}
+
+		if (worldTransform_.translation.x <= -12.0f)
+		{
+			worldTransform_.translation.x = -12.0f;
+		}
+
 		ImGui::Begin("Guard");
 		ImGui::Text("%d", isGuard_);
 		ImGui::End();
 	}
 
+	isGuard_ = false;
+
 	//ジャンプ
-	if (input_->GetJoystickState())
+	if (patternCount_ == 2 && isDown_ == false)
 	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButton(XINPUT_GAMEPAD_A))
-		{
-			behaviorRequest_ = Behavior::kJump;
-		}
+		behaviorRequest_ = Behavior::kJump;
 	}
 
 	//投げ
-	if (input_->GetJoystickState())
+	if (patternCount_ == 3 && isDown_ == false)
 	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_Y))
-		{
-			behaviorRequest_ = Behavior::kThrow;
-			isThrow_ = true;
-		}
+		behaviorRequest_ = Behavior::kThrow;
+		isThrow_ = true;
 	}
 
 	//攻撃
 	//通常攻撃
-	if (input_->GetJoystickState())
+	if (patternCount_ == 4 && isDown_ == false)
 	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
-		{
-			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isPunch = true;
-		}
+		behaviorRequest_ = Behavior::kAttack;
+		workAttack_.isPunch = true;
 	}
 
-	//対空攻撃
-	if (input_->GetJoystickState())
-	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
-		{
-			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isAntiAir = true;
-		}
-	}
+	////対空攻撃
+	//if (input_->GetJoystickState())
+	//{
+	//	if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+	//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+	//		&& input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+	//	{
+	//		behaviorRequest_ = Behavior::kAttack;
+	//		workAttack_.isAntiAir = true;
+	//	}
+	//}
 
 	//振り下ろし攻撃
-	if (input_->GetJoystickState())
+	if (patternCount_ == 5 && isDown_ == false)
 	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
-		{
-			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isSwingDown = true;
-		}
+		behaviorRequest_ = Behavior::kAttack;
+		workAttack_.isSwingDown = true;
 	}
 
 	//突き攻撃
-	if (input_->GetJoystickState())
+	if (patternCount_ == 6 && isDown_ == false)
 	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f)
+		if (worldTransform_.rotation.y == 1.7f)
 		{
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPoke = true;
 			workAttack_.isPokeRight = true;
 		}
+		
 
-		if (input_->IsPressButton(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f)
+		if (worldTransform_.rotation.y == 4.6f)
 		{
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPoke = true;
@@ -406,26 +360,16 @@ void Enemy::BehaviorRootUpdate()
 	}
 
 	//薙ぎ払う攻撃
-	if (input_->GetJoystickState())
+	if (patternCount_ == 7 && isDown_ == false)
 	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
-		{
-			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isMowDown = true;
-		}
+		behaviorRequest_ = Behavior::kAttack;
+		workAttack_.isMowDown = true;
 	}
 
 	//跳ね返す攻撃
-	if (input_->GetJoystickState())
+	if (patternCount_ == 8 && isDown_ == false)
 	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
-			input_->IsPressButton(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f)
+		if (worldTransform_.rotation.y == 4.6f || worldTransform_.rotation.y == 1.7f)
 		{
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isReject = true;
@@ -481,21 +425,6 @@ void Enemy::BehaviorAttackInitialize()
 		worldTransformR_arm_.rotation.y = 0.0f;
 	}
 
-	if (workAttack_.isAntiAir)
-	{
-		worldTransform_.translation.y = 0.0f;
-
-		const float kJumpFirstSpeed_ = 0.6f;
-
-		velocity_.y = kJumpFirstSpeed_;
-
-		worldTransformL_arm_.rotation.x = 0.0f;
-		worldTransformR_arm_.rotation.x = 0.0f;
-		worldTransformL_arm_.rotation.y = -1.3f;
-		worldTransformR_arm_.rotation.y = -1.3f;
-	}
-
-
 	attackAnimationFrame = 0;
 }
 
@@ -522,6 +451,7 @@ void Enemy::BehaviorAttackUpdate()
 
 			if (workAttack_.stiffnessTimer < 0)
 			{
+				patternCount_ = 1;
 				behaviorRequest_ = Behavior::kRoot;
 				workAttack_.stiffnessTimer = 20;
 				worldTransformHead_.rotation.y = 0.0f;
@@ -744,34 +674,6 @@ void Enemy::BehaviorAttackUpdate()
 		}
 		attackAnimationFrame++;
 	}
-
-	//対空攻撃
-	if (workAttack_.isAntiAir)
-	{
-		if (attackAnimationFrame < 60)
-		{
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
-
-			worldTransformBody_.rotation.y += 0.1f;
-
-			const float kGravityAcceleration_ = 0.03f;
-
-			Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
-
-			velocity_ = Add(velocity_, accelerationVector_);
-
-			if (worldTransform_.translation.y <= 0.0f)
-			{
-				behaviorRequest_ = Behavior::kRoot;
-				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
-				worldTransform_.translation.y = 0.0f;
-				workAttack_.isAntiAir = false;
-			}
-		}
-		attackAnimationFrame++;
-	}
 }
 
 void Enemy::BehaviorJumpInitialize()
@@ -793,7 +695,7 @@ void Enemy::BehaviorJumpUpdate()
 
 	velocity_ = Add(velocity_, accelerationVector_);
 
-	if (input_->GetJoystickState())
+	/*if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
 		{
@@ -805,7 +707,7 @@ void Enemy::BehaviorJumpUpdate()
 
 			attackAnimationFrame = 0;
 		}
-	}
+	}*/
 
 	if (workAttack_.isJumpAttack)
 	{
@@ -829,6 +731,7 @@ void Enemy::BehaviorJumpUpdate()
 
 	if (worldTransform_.translation.y <= 0.0f)
 	{
+		patternCount_ = 1;
 		behaviorRequest_ = Behavior::kRoot;
 		workAttack_.isJumpAttack = false;
 		worldTransformL_arm_.rotation.x = 0.0f;
@@ -880,6 +783,7 @@ void Enemy::BehaviorThrowUpdate()
 
 			if (workAttack_.stiffnessTimer <= 0)
 			{
+				patternCount_ = 1;
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
@@ -942,7 +846,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[0] <= 0)
+		if (player_->GetIsSwingDown() == false)
 		{
 			downAnimationTimer_[0] = 60;
 			isHitSwingDown_ = false;
@@ -961,7 +865,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[0] <= 0)
+		if (player_->GetIsSwingDown() == false)
 		{
 			downAnimationTimer_[0] = 60;
 			isHitSwingDown_ = false;
@@ -981,7 +885,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[1] <= 0)
+		if (player_->GetIsPoke() == false)
 		{
 			downAnimationTimer_[1] = 60;
 			isHitPoke_ = false;
@@ -1000,7 +904,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[1] <= 0)
+		if (player_->GetIsPoke() == false)
 		{
 			downAnimationTimer_[1] = 60;
 			isHitPoke_ = false;
@@ -1020,7 +924,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[2] <= 0)
+		if (player_->GetIsMowDown() == false)
 		{
 			downAnimationTimer_[2] = 60;
 			isHitMowDown_ = false;
@@ -1039,7 +943,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[2] <= 0)
+		if (player_->GetIsMowDown() == false)
 		{
 			downAnimationTimer_[2] = 60;
 			isHitMowDown_ = false;
@@ -1057,11 +961,11 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x += 0.01f;
 
 		}
-		else if (player_->GetThrowTimer() > 20)
+		else if (player_->GetThrowTimer() > 5)
 		{
 			worldTransformBody_.rotation.x -= 0.2f;
 		}
-		else if (player_->GetThrowTimer() <= 20)
+		else if (player_->GetThrowTimer() <= 5)
 		{
 			worldTransform_.translation.x += 0.3f;
 			worldTransformBody_.rotation.x -= 0.2f;
@@ -1102,6 +1006,43 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x = 0.0f;
 		}
 	}
+}
+
+void Enemy::FloatingGimmickInitialize()
+{
+	for (int i = 0; i < kMaxModelParts; i++)
+	{
+		floatingParameter_[i] = 0.0f;
+	}
+}
+
+void Enemy::FloatingGimmickUpdate()
+{
+	floatingCycle_[0] = 120;
+	floatingCycle_[1] = 120;
+
+	float step[2]{};
+
+	for (int i = 0; i < kMaxModelParts; i++)
+	{
+		step[i] = 2.0f * (float)std::numbers::pi / floatingCycle_[i];
+
+		floatingParameter_[i] += step[i];
+
+		floatingParameter_[i] = (float)std::fmod(floatingParameter_[i], 2.0f * (float)std::numbers::pi);
+	}
+
+	worldTransformL_arm_.rotation.x = std::sin(floatingParameter_[1]) * 0.35f;
+	worldTransformR_arm_.rotation.x = -std::sin(floatingParameter_[1]) * 0.35f;
+}
+
+int Enemy::Random(int min_value, int max_value) 
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(min_value, max_value);
+
+	return dis(gen); // ランダムな浮動小数点数を生成して返す
 }
 
 
