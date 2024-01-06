@@ -306,7 +306,7 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	ParticleModel::PreDraw();
 
-	/*player_->DrawParticle(viewProjection_);*/
+	player_->DrawParticle(camera_);
 
 	ParticleModel::PostDraw();
 

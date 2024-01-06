@@ -41,6 +41,10 @@ void Player::Initialize(const std::vector<Model*>& models)
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	SetCollisionMask(kCollisionMaskPlayer);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
+
+	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
+	particleSystem_ = std::make_unique<ParticleSystem>();
+	particleSystem_->Initialize();
 }
 
 void Player::Update()
@@ -119,6 +123,9 @@ void Player::Update()
 	//Weaponの更新
 	playerWeapon_->Update();
 
+	//パーティクルの更新
+	particleSystem_->Update();
+
 	//WorldTransform(Player)の更新
 	worldTransform_.UpdateMatrix();
 
@@ -158,6 +165,12 @@ void Player::Draw(const Camera& camera)
 	}
 }
 
+void Player::DrawParticle(const Camera& camera) 
+{
+	particleModel_->Draw(particleSystem_.get(), camera);
+}
+
+
 void Player::OnCollision(Collider* collider, float damage)
 {
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemy)
@@ -189,6 +202,24 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (isGuard_ && worldTransform_.rotation.y == 1.7f)
 		{
 			worldTransform_.translation.x -= 0.3f;
+
+			//衝撃
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.15f ,0.15f ,0.15f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.02f ,0.02f ,0.02f }, { 0.04f ,0.04f ,0.04f })
+				.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(3.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
 		if (isGuard_ && worldTransform_.rotation.y == 4.6f)

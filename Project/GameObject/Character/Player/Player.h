@@ -6,6 +6,8 @@
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Utility/Collision/Collider.h"
 #include "Engine/Utility/Collision/CollisionConfig.h"
+#include "Engine/3D/Particle/ParticleModel.h"
+#include "Engine/3D/Particle/ParticleSystem.h"
 
 #include "Project/GameObject/Character/Player/PlayerWeapon.h"
 
@@ -129,6 +131,8 @@ public:
 
 	Vector3 GetRotation() { return worldTransform_.rotation; };
 
+	void DrawParticle(const Camera& camera);
+
 private:
 	Input* input_ = nullptr;
 
@@ -197,5 +201,9 @@ private:
 
 	Vector3 currentPosition_;  // 現在のフレームでの位置
 	Vector3 previousPosition_; // 前のフレームでの位置
+
+	//パーティクル
+	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
+	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
 };
 
