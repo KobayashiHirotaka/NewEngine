@@ -5,6 +5,7 @@
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/Utility/Collision/CollisionManager.h"
+#include "Engine/3D/Particle/ParticleModel.h"
 
 #include "Project/GameObject/Character/Player/Player.h"
 #include "Project/GameObject/Character/Enemy/Enemy.h"

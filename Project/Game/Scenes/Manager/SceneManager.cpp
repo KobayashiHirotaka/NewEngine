@@ -29,6 +29,8 @@ SceneManager::SceneManager()
 
 	Model::StaticInitialize();
 
+	ParticleModel::StaticInitialize();
+
 	Sprite::StaticInitialize();
 
 	GlobalVariables::GetInstance()->LoadFiles();

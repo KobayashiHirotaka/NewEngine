@@ -304,5 +304,11 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	Model::PostDraw();
 
+	ParticleModel::PreDraw();
+
+	/*player_->DrawParticle(viewProjection_);*/
+
+	ParticleModel::PostDraw();
+
 	PostProcess::GetInstance()->PostDraw();
 };
