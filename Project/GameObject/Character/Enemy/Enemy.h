@@ -130,6 +130,8 @@ public:
 
 	int Random(int min_value, int max_value);
 
+	Vector3 GetRotation() { return worldTransform_.rotation; };
+
 private:
 	const WorldTransform* parent_ = nullptr;
 
@@ -139,6 +141,8 @@ private:
 	WorldTransform worldTransformHead_;
 	WorldTransform worldTransformL_arm_;
 	WorldTransform worldTransformR_arm_;
+
+	std::unique_ptr<Model> enemyWeaponModel_;
 
 	Vector3 velocity_ = {};
 
@@ -192,4 +196,9 @@ private:
 
 	int patternCount_ = 1;
 	int moveTimer_ = 60;
+
+	bool isHit_ = false;
+
+	Vector3 currentPosition_;  // 現在のフレームでの位置
+	Vector3 previousPosition_; // 前のフレームでの位置
 };

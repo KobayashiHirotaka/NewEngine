@@ -46,6 +46,10 @@ void Player::Initialize(const std::vector<Model*>& models)
 
 void Player::Update()
 {
+	previousPosition_ = currentPosition_;
+	// プレイヤーキャラクターの位置を更新
+	currentPosition_ = worldTransform_.translation;
+
 	//PlayerのBehavior
 	if (behaviorRequest_)
 	{
@@ -106,6 +110,11 @@ void Player::Update()
 		worldTransform_.translation.x = -12.0f;
 	}
 
+	if (behaviorRequest_ == Behavior::kJump && isHit_)
+	{
+		worldTransform_.translation.y = 0.0f;
+	}
+
 	DownAnimation();
 
 	//Weaponの更新
@@ -120,6 +129,8 @@ void Player::Update()
 	worldTransformR_arm_.UpdateMatrix();
 
 	//isEnemyHit_ = false;
+
+	isHit_ = false;
 
 	ImGui::Begin("HP");
 	ImGui::Text("%f", HP_);
@@ -142,7 +153,8 @@ void Player::Draw(const Camera& camera)
 
 	//Weaponの描画
 	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_
-		&& !isHitPoke_ && !isHitMowDown_ && !isDown_ && behaviorRequest_ != Behavior::kRoot)
+		&& !isHitPoke_ && !isHitMowDown_ && !isDown_ && behaviorRequest_ != Behavior::kRoot && 
+		workAttack_.stiffnessTimer == 60)
 	{
 		playerWeapon_->Draw(camera);
 	}
@@ -152,6 +164,8 @@ void Player::OnCollision(Collider* collider, float damage)
 {
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemy)
 	{
+		isHit_ = true;
+
 		if (enemy_->GetIsPunch() == true && isDown_ == false)
 		{
 			damage = 3.0f;
@@ -166,6 +180,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			isEnemyHit_ = true;
 			isHitThrow_ = true;
 		}
+
 		ImGui::Begin("Aaa");
 
 		ImGui::End();
@@ -228,7 +243,7 @@ void Player::BehaviorRootUpdate()
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
 		//移動処理
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && worldTransform_.rotation.y == 4.6f && isDown_ == false && !isHit_)
 		{
 			kCharacterSpeed = 0.1f;
 			velocity_.x = -0.3f;
@@ -237,7 +252,7 @@ void Player::BehaviorRootUpdate()
 			isGuard_ = false;
 		}
 
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && worldTransform_.rotation.y == 1.7f && isDown_ == false && !isHit_ )
 		{
 			kCharacterSpeed = 0.1f;
 			velocity_.x = 0.3f;
@@ -302,7 +317,7 @@ void Player::BehaviorRootUpdate()
 	//ジャンプ
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButton(XINPUT_GAMEPAD_A) && isDown_ == false)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isDown_ == false)
 		{
 			behaviorRequest_ = Behavior::kJump;
 		}
@@ -346,7 +361,7 @@ void Player::BehaviorRootUpdate()
 	//突き攻撃
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
 		{
@@ -355,7 +370,7 @@ void Player::BehaviorRootUpdate()
 			workAttack_.isPokeRight = true;
 		}
 
-		if (input_->IsPressButton(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
 		{
@@ -368,7 +383,7 @@ void Player::BehaviorRootUpdate()
 	//薙ぎ払う攻撃
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
 			&& input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
 		{
@@ -380,10 +395,10 @@ void Player::BehaviorRootUpdate()
 	//跳ね返す攻撃
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
-			input_->IsPressButton(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+			input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
 		{
@@ -420,6 +435,8 @@ void Player::BehaviorAttackInitialize()
 		worldTransformR_arm_.rotation.x = -1.3f;
 		workAttack_.translation = { 0.0f,0.5f,0.0f };
 		workAttack_.rotation = { 1.5f,0.0f,0.0f };
+		workAttack_.stiffnessTimer = 60;
+		pokeTimer_ = 30;
 	}
 
 	//薙ぎ払う攻撃
@@ -840,7 +857,7 @@ void Player::FloatingGimmickUpdate()
 void Player::DownAnimation()
 {
 	//通常攻撃
-	if (isHitPunch_ && worldTransform_.rotation.y == 4.6f)
+	if (isHitPunch_ && enemy_->GetRotation().y == 1.7f)
 	{
 		isDown_ = true;
 		downAnimationTimer_[3]--;
@@ -858,7 +875,7 @@ void Player::DownAnimation()
 		}
 	}
 
-	if (isHitPunch_ && worldTransform_.rotation.y == 1.7f)
+	if (isHitPunch_ && enemy_->GetRotation().y == 4.6f)
 	{
 		isDown_ = true;
 		downAnimationTimer_[3]--;
@@ -877,7 +894,7 @@ void Player::DownAnimation()
 	}
 
 	//振り下ろし攻撃
-	if (isHitSwingDown_ && worldTransform_.rotation.y == 4.6f)
+	if (isHitSwingDown_ && enemy_->GetRotation().y == 1.7f)
 	{
 		isDown_ = true;
 		downAnimationTimer_[0]--;
@@ -889,14 +906,19 @@ void Player::DownAnimation()
 
 		if (downAnimationTimer_[0] <= 0)
 		{
+			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[0] = 60;
 			isHitSwingDown_ = false;
+			workAttack_.isSwingDown = false;
+			workAttack_.isPoke = false;
+			workAttack_.isMowDown = false;
 			isDown_ = false;
 			worldTransformBody_.rotation.x = 0.0f;
+			worldTransformBody_.rotation.y = 0.0f;
 		}
 	}
 
-	if (isHitSwingDown_ && worldTransform_.rotation.y == 1.7f)
+	if (isHitSwingDown_ && enemy_->GetRotation().y == 4.6f)
 	{
 		isDown_ = true;
 		downAnimationTimer_[0]--;
@@ -908,15 +930,20 @@ void Player::DownAnimation()
 
 		if (downAnimationTimer_[0] <= 0)
 		{
+			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[0] = 60;
 			isHitSwingDown_ = false;
+			workAttack_.isSwingDown = false;
+			workAttack_.isPoke = false;
+			workAttack_.isMowDown = false;
 			isDown_ = false;
 			worldTransformBody_.rotation.x = 0.0f;
+			worldTransformBody_.rotation.y = 0.0f;
 		}
 	}
 
 	//突き攻撃
-	if (isHitPoke_ && worldTransform_.rotation.y == 4.6f)
+	if (isHitPoke_ && enemy_->GetRotation().y == 1.7f)
 	{
 		isDown_ = true;
 		downAnimationTimer_[1]--;
@@ -931,13 +958,16 @@ void Player::DownAnimation()
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[1] = 60;
 			isHitPoke_ = false;
+			workAttack_.isSwingDown = false;
 			workAttack_.isPoke = false;
+			workAttack_.isMowDown = false;
 			isDown_ = false;
 			worldTransformBody_.rotation.x = 0.0f;
+			worldTransformBody_.rotation.y = 0.0f;
 		}
 	}
 
-	if (isHitPoke_ && worldTransform_.rotation.y == 1.7f)
+	if (isHitPoke_ && enemy_->GetRotation().y == 4.6f)
 	{
 		isDown_ = true;
 		downAnimationTimer_[1]--;
@@ -952,14 +982,17 @@ void Player::DownAnimation()
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[1] = 60;
 			isHitPoke_ = false;
+			workAttack_.isSwingDown = false;
 			workAttack_.isPoke = false;
+			workAttack_.isMowDown = false;
 			isDown_ = false;
 			worldTransformBody_.rotation.x = 0.0f;
+			worldTransformBody_.rotation.y = 0.0f;
 		}
 	}
 
 	//薙ぎ払い攻撃
-	if (isHitMowDown_ && worldTransform_.rotation.y == 4.6f)
+	if (isHitMowDown_ && enemy_->GetRotation().y >= 1.7f && enemy_->GetRotation().y < 4.6f)
 	{
 		isDown_ = true;
 		downAnimationTimer_[2]--;
@@ -971,34 +1004,44 @@ void Player::DownAnimation()
 
 		if (downAnimationTimer_[2] <= 0)
 		{
+			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[2] = 60;
 			isHitMowDown_ = false;
+			workAttack_.isSwingDown = false;
+			workAttack_.isPoke = false;
+			workAttack_.isMowDown = false;
 			isDown_ = false;
 			worldTransformBody_.rotation.x = 0.0f;
+			worldTransformBody_.rotation.y = 0.0f;
 		}
 	}
 
-	if (isHitMowDown_ && worldTransform_.rotation.y == 1.7f)
+	if (isHitMowDown_ && enemy_->GetRotation().y >= 4.6f)
 	{
 		isDown_ = true;
 		downAnimationTimer_[2]--;
 		if (downAnimationTimer_[2] > 0)
 		{
-			worldTransform_.translation.x += 0.1f;
+			worldTransform_.translation.x -= 0.1f;
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
 		if (downAnimationTimer_[2] <= 0)
 		{
+			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[2] = 60;
 			isHitMowDown_ = false;
+			workAttack_.isSwingDown = false;
+			workAttack_.isPoke = false;
+			workAttack_.isMowDown = false;
 			isDown_ = false;
 			worldTransformBody_.rotation.x = 0.0f;
+			worldTransformBody_.rotation.y = 0.0f;
 		}
 	}
 
 	//投げ攻撃
-	if (isHitThrow_ && worldTransform_.rotation.y == 4.6f)
+	if (isHitThrow_ && enemy_->GetRotation().y == 1.7f)
 	{
 		isDown_ = true;
 		if (enemy_->GetAttackAnimationFrame() < 30)
@@ -1026,7 +1069,7 @@ void Player::DownAnimation()
 		}
 	}
 
-	if (isHitThrow_ && worldTransform_.rotation.y == 1.7f)
+	if (isHitThrow_ && enemy_->GetRotation().y == 4.6f)
 	{
 		isDown_ = true;
 		if (enemy_->GetAttackAnimationFrame() < 30)

@@ -127,6 +127,8 @@ public:
 
 	bool GetIsDown() { return isDown_; };
 
+	Vector3 GetRotation() { return worldTransform_.rotation; };
+
 private:
 	Input* input_ = nullptr;
 
@@ -190,5 +192,10 @@ private:
 	bool isHitMowDown_ = false;
 	bool isHitThrow_ = false;
 	bool isDown_ = false;
+
+	bool isHit_ = false;
+
+	Vector3 currentPosition_;  // 現在のフレームでの位置
+	Vector3 previousPosition_; // 前のフレームでの位置
 };
 

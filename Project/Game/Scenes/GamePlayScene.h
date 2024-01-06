@@ -38,7 +38,6 @@ private:
 	std::unique_ptr<Player>player_;
 
 	std::unique_ptr<Enemy>enemy_;
-	std::unique_ptr<Model> enemyWeaponModel_;
 
 	std::unique_ptr<Skydome>skydome_;
 	std::unique_ptr<Model>skydomeModel_;
