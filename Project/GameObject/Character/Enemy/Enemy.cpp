@@ -135,8 +135,7 @@ void Enemy::Draw(const Camera& camera)
 
 	//Weaponの描画
 	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_
-		&& !isHitPoke_ && !isHitMowDown_ && isDown_ == false && behaviorRequest_ != Behavior::kRoot &&
-		workAttack_.stiffnessTimer == 60)
+		&& !isHitPoke_ && !isHitMowDown_ && !isDown_ && behaviorRequest_ != Behavior::kRoot)
 	{
 		enemyWeapon_->Draw(camera);
 	}
