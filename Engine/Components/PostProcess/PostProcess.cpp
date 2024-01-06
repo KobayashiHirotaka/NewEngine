@@ -488,8 +488,8 @@ void PostProcess::CreatePipelineStateObject()
 }
 
 
-void PostProcess::CreateBlurPipelineStateObject() {
-
+void PostProcess::CreateBlurPipelineStateObject() 
+{
 	//RootSignature作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -629,8 +629,8 @@ void PostProcess::CreateBlurPipelineStateObject() {
 }
 
 
-void PostProcess::CreatePostProcessPipelineStateObject() {
-
+void PostProcess::CreatePostProcessPipelineStateObject()
+{
 	//RootSignature作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -801,8 +801,8 @@ void PostProcess::CreatePostProcessPipelineStateObject() {
 }
 
 
-void PostProcess::Draw() {
-
+void PostProcess::Draw() 
+{
 	//ルートシグネチャを設定
 	commandList_->SetGraphicsRootSignature(postProcessRootSignature_.Get());
 	//パイプラインステートを設定
@@ -834,8 +834,8 @@ void PostProcess::Draw() {
 }
 
 
-void PostProcess::PreSecondPassDraw() {
-
+void PostProcess::PreSecondPassDraw()
+{
 	//バリアを張る
 	D3D12_RESOURCE_BARRIER barrier{};
 	//通常テクスチャ
@@ -886,8 +886,8 @@ void PostProcess::PreSecondPassDraw() {
 }
 
 
-void PostProcess::SecondPassDraw() {
-
+void PostProcess::SecondPassDraw() 
+{
 	//ルートシグネチャを設定
 	commandList_->SetGraphicsRootSignature(rootSignature_.Get());
 	//パイプラインステートを設定
@@ -907,7 +907,8 @@ void PostProcess::SecondPassDraw() {
 }
 
 
-void PostProcess::PostSecondPassDraw() {
+void PostProcess::PostSecondPassDraw()
+{
 	//バリアを張る
 	D3D12_RESOURCE_BARRIER barrier{};
 	//通常テクスチャ
@@ -925,8 +926,8 @@ void PostProcess::PostSecondPassDraw() {
 }
 
 
-void PostProcess::PreBlur(BlurState blurState) {
-
+void PostProcess::PreBlur(BlurState blurState)
+{
 	//バリアを張る
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -975,8 +976,8 @@ void PostProcess::PreBlur(BlurState blurState) {
 }
 
 
-void PostProcess::Blur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex) {
-
+void PostProcess::Blur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex)
+{
 	//ルートシグネチャを設定
 	commandList_->SetGraphicsRootSignature(blurRootSignature_.Get());
 	//パイプラインステートを設定
@@ -998,8 +999,8 @@ void PostProcess::Blur(BlurState blurState, uint32_t srvIndex, uint32_t highInte
 }
 
 
-void PostProcess::PostBlur(BlurState blurState) {
-
+void PostProcess::PostBlur(BlurState blurState)
+{
 	//バリアを張る
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -1015,8 +1016,8 @@ void PostProcess::PostBlur(BlurState blurState) {
 }
 
 
-void PostProcess::PreShrinkBlur(BlurState blurState) {
-
+void PostProcess::PreShrinkBlur(BlurState blurState) 
+{
 	//バリアを張る
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -1065,8 +1066,8 @@ void PostProcess::PreShrinkBlur(BlurState blurState) {
 }
 
 
-void PostProcess::ShrinkBlur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex) {
-
+void PostProcess::ShrinkBlur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex)
+{
 	//ルートシグネチャを設定
 	commandList_->SetGraphicsRootSignature(blurRootSignature_.Get());
 	//パイプラインステートを設定
@@ -1088,8 +1089,8 @@ void PostProcess::ShrinkBlur(BlurState blurState, uint32_t srvIndex, uint32_t hi
 }
 
 
-void PostProcess::PostShrinkBlur(BlurState blurState) {
-
+void PostProcess::PostShrinkBlur(BlurState blurState)
+{
 	//バリアを張る
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -1105,7 +1106,8 @@ void PostProcess::PostShrinkBlur(BlurState blurState) {
 }
 
 
-Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor) {
+Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor)
+{
 
 	//ヒープの設定
 	D3D12_HEAP_PROPERTIES heapProperties{};
@@ -1146,7 +1148,8 @@ Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateTextureResource(uint32
 }
 
 
-Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateDepthStencilTextureResource(int32_t width, int32_t height) {
+Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateDepthStencilTextureResource(int32_t width, int32_t height)
+{
 
 	//生成するResourceの設定
 	D3D12_RESOURCE_DESC resourceDesc{};
@@ -1185,8 +1188,8 @@ Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateDepthStencilTextureRes
 }
 
 
-uint32_t PostProcess::CreateRenderTargetView(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format) {
-
+uint32_t PostProcess::CreateRenderTargetView(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format)
+{
 	rtvIndex_++;
 
 	//RTVの設定
@@ -1202,8 +1205,8 @@ uint32_t PostProcess::CreateRenderTargetView(const Microsoft::WRL::ComPtr<ID3D12
 }
 
 
-uint32_t PostProcess::CreateShaderResourceView(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format) {
-
+uint32_t PostProcess::CreateShaderResourceView(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format)
+{
 	srvIndex_++;
 
 	//SRVの設定
@@ -1221,8 +1224,8 @@ uint32_t PostProcess::CreateShaderResourceView(const Microsoft::WRL::ComPtr<ID3D
 }
 
 
-void PostProcess::CreateDepthStencilView() {
-
+void PostProcess::CreateDepthStencilView()
+{
 	//DSVの設定
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;//Format。基本的にはResourceに合わせる
@@ -1232,14 +1235,16 @@ void PostProcess::CreateDepthStencilView() {
 }
 
 
-D3D12_CPU_DESCRIPTOR_HANDLE PostProcess::GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index) {
+D3D12_CPU_DESCRIPTOR_HANDLE PostProcess::GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index)
+{
 	D3D12_CPU_DESCRIPTOR_HANDLE handleCPU = descriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	handleCPU.ptr += static_cast<D3D12_CPU_DESCRIPTOR_HANDLE>((descriptorSize * index)).ptr;
 	return handleCPU;
 }
 
 
-D3D12_GPU_DESCRIPTOR_HANDLE PostProcess::GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index) {
+D3D12_GPU_DESCRIPTOR_HANDLE PostProcess::GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index)
+{
 	D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap->GetGPUDescriptorHandleForHeapStart();
 	handleGPU.ptr += static_cast<D3D12_GPU_DESCRIPTOR_HANDLE>((descriptorSize * index)).ptr;
 	return handleGPU;

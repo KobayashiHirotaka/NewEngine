@@ -186,6 +186,16 @@ void Player::OnCollision(Collider* collider, float damage)
 
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemyWeapon)
 	{
+		if (isGuard_ && worldTransform_.rotation.y == 1.7f)
+		{
+			worldTransform_.translation.x -= 0.3f;
+		}
+
+		if (isGuard_ && worldTransform_.rotation.y == 4.6f)
+		{
+			worldTransform_.translation.x += 0.3f;
+		}
+
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsSwingDown() == true && isDown_ == false 
 			&& isGuard_ == false)
 		{
@@ -245,7 +255,6 @@ void Player::BehaviorRootUpdate()
 		{
 			kCharacterSpeed = 0.1f;
 			velocity_.x = -0.3f;
-			/*worldTransform_.rotation.y = 4.6f;*/
 			isMove_ = true;
 			isGuard_ = false;
 		}
@@ -254,27 +263,47 @@ void Player::BehaviorRootUpdate()
 		{
 			kCharacterSpeed = 0.1f;
 			velocity_.x = 0.3f;
-			/*worldTransform_.rotation.y = 1.7f;*/
 			isMove_ = true;
 			isGuard_ = false;
 		}
 
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
 		{
-			kCharacterSpeed = 0.05f;
-			velocity_.x = -0.3f;
-			/*worldTransform_.rotation.y = 4.6f;*/
-			isMove_ = true;
 			isGuard_ = true;
+
+			if (!input_->IsPressButton(XINPUT_GAMEPAD_X))
+			{
+				kCharacterSpeed = 0.05f;
+				velocity_.x = -0.3f;
+				isMove_ = true;
+			}
+
+			if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_X))
+			{
+				kCharacterSpeed = 0.0f;
+				velocity_.x = 0.0f;
+				isMove_ = false;
+			}
 		}
 
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
 		{
-			kCharacterSpeed = 0.05f;
-			velocity_.x = 0.3f;
-			/*worldTransform_.rotation.y = 4.6f;*/
-			isMove_ = true;
+
 			isGuard_ = true;
+
+			if (!input_->IsPressButton(XINPUT_GAMEPAD_X))
+			{
+				kCharacterSpeed = 0.05f;
+				velocity_.x = 0.3f;
+				isMove_ = true;
+			}
+
+			if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_X))
+			{
+				kCharacterSpeed = 0.0f;
+				velocity_.x = 0.0f;
+				isMove_ = false;
+			}
 		}
 
 		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
