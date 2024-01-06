@@ -333,6 +333,9 @@
     <ClCompile Include="Project\GameObject\Character\Enemy\EnemyWeapon.cpp">
       <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\3D\Particle\Random.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -493,6 +496,9 @@
     </ClInclude>
     <ClInclude Include="Project\GameObject\Character\Player\PlayerWeapon.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Particle\Random.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

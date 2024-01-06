@@ -18,8 +18,8 @@ SceneManager::SceneManager()
 	imguiManager_ = ImGuiManager::GetInstance();
 	imguiManager_->Initialize();
 
-	/*audio_ = Audio::GetInstance();
-	audio_->Initialize();*/
+	audio_ = Audio::GetInstance();
+	audio_->Initialize();
 
 	input_ = Input::GetInstance();
 	input_->Initialize(win_);
@@ -32,6 +32,8 @@ SceneManager::SceneManager()
 	Sprite::StaticInitialize();
 
 	GlobalVariables::GetInstance()->LoadFiles();
+
+	Random::Initialize();
 
 	//シーンの初期化
 	currentScene_ = new GameStartScene();

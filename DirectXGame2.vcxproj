@@ -20,6 +20,7 @@
     <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp" />
     <ClCompile Include="Engine\3D\Model\Material.cpp" />
     <ClCompile Include="Engine\3D\Model\Model.cpp" />
+    <ClCompile Include="Engine\3D\Particle\Random.cpp" />
     <ClCompile Include="Engine\3D\WorldTransform\WorldTransform.cpp" />
     <ClCompile Include="Engine\Base\DirectXCore\DirectXCore.cpp" />
     <ClCompile Include="Engine\Base\ImGuiManager\ImGuiManager.cpp" />
@@ -92,6 +93,7 @@
     <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h" />
     <ClInclude Include="Engine\3D\Model\IGame3dObject.h" />
     <ClInclude Include="Engine\3D\Model\Model.h" />
+    <ClInclude Include="Engine\3D\Particle\Random.h" />
     <ClInclude Include="Engine\3D\WorldTransform\WorldTransform.h" />
     <ClInclude Include="Engine\Base\D3DResourceLeakChecker.h" />
     <ClInclude Include="Engine\Base\DirectXCore\DirectXCore.h" />

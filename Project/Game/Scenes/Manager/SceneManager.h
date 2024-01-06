@@ -2,12 +2,13 @@
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/Base/D3DResourceLeakChecker.h"
-//#include "Engine/Components/Audio/Audio.h"
+#include "Engine/Components/Audio/Audio.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include "Engine/3D/Model/Model.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
+#include "Engine/3D/Particle/Random.h"
 #include "Project/Game/Scenes/IScene.h"
 #include <memory>
 
@@ -33,7 +34,7 @@ private:
 
 	ImGuiManager* imguiManager_ = nullptr;
 
-	/*Audio* audio_ = nullptr;*/
+	Audio* audio_ = nullptr;
 
 	Input* input_ = nullptr;
 
