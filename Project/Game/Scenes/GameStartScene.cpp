@@ -27,7 +27,7 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
 	audio_->SoundPlayWave(titleSoundHandle_, true, 1.0f);
 
-	currentSeconds_ = 99;
+	currentSeconds_ = 10;
 	UpdateNumberSprite();
 };
 
@@ -41,7 +41,7 @@ void GameStartScene::Update(SceneManager* sceneManager)
 
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) || currentSeconds_ <= 0)
 		{
 		/*	audio_->StopAudio(titleSoundHandle_);*/
 			sceneManager->ChangeScene(new GamePlayScene);
