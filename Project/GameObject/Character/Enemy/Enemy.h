@@ -5,9 +5,12 @@
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Utility/Collision/Collider.h"
 #include "Engine/Utility/Collision/CollisionConfig.h"
+#include "Engine/3D/Particle/ParticleModel.h"
+#include "Engine/3D/Particle/ParticleSystem.h"
 #include <random>
 
 #include "Project/GameObject/Character/Enemy/EnemyWeapon.h"
+#include "UI.h"
 
 class Player;
 
@@ -60,6 +63,8 @@ public:
 		//跳ね返す
 		bool isReject = false;
 	};
+
+	~Enemy();
 
 	void Initialize();
 
@@ -131,6 +136,12 @@ public:
 
 	Vector3 GetRotation() { return worldTransform_.rotation; };
 
+	void DrawParticle(const Camera& camera);
+
+	void DrawSprite();
+
+	void HPBarUpdate();
+
 private:
 	const WorldTransform* parent_ = nullptr;
 
@@ -161,7 +172,9 @@ private:
 
 	std::unique_ptr<EnemyWeapon> enemyWeapon_ = nullptr;
 
-	float HP_ = 100.0f;
+	float maxHP_ = 100.0f;
+
+	float HP_ = maxHP_;
 
 	WorkAttack workAttack_;
 
@@ -204,4 +217,12 @@ private:
 
 	Vector3 currentPosition_;  // 現在のフレームでの位置
 	Vector3 previousPosition_; // 前のフレームでの位置
+
+	//パーティクル
+	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
+	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
+
+	UI hpBar_;
+	const float barSpace = 16.0f;
+	float barSize = 480.0f;
 };

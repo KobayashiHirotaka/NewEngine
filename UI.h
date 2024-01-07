@@ -2,7 +2,7 @@
 #include "Engine/Utility/Math/MyMath.h"
 #include "Engine/2D/Sprite/Sprite.h"
 
-struct UIStruct 
+struct UI
 {
 	bool isDraw_ = true;
 	uint32_t textureHandle_ = 0;

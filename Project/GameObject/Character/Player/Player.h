@@ -216,8 +216,8 @@ private:
 	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
 	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
 
-	UIStruct hpBar_;
+	UI hpBar_;
 	const float barSpace = 16.0f;
-	float barSize = WindowsApp::GetInstance()->kClientWidth - 320 - barSpace * 2;
+	float barSize = 480.0f;
 };
 

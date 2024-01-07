@@ -22,8 +22,6 @@ public:
 
 	void Draw(SceneManager* sceneManager)override;
 
-	void UpdateNumberSprite();
-
 private:
 	WorldTransform worldTransform_;
 
@@ -45,14 +43,4 @@ private:
 	//サウンド
 	uint32_t soundHandle_ = 0u;
 	uint32_t titleSoundHandle_ = 0u;
-
-	std::unique_ptr<Sprite>numberTensSprite_ = nullptr;
-	std::unique_ptr<Sprite>numberOnesSprite_ = nullptr;
-	uint32_t tensTextureHandle_;
-	uint32_t onesTextureHandle_;
-
-	int currentSeconds_;
-
-	float frameTime = 1.0f / 60.0f;  // 60FPSを仮定
-	float elapsedTime = 0.0f;
 };

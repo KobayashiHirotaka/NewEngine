@@ -21,9 +21,9 @@ void Player::Initialize()
 	hpBar_ = {
 		true,
 		TextureManager::Load("resource/HP.png"),
-		{barSpace + 160, barSpace},
+		{60.0f, barSpace},
 		0.0f,
-		{barSize  ,1.0f},
+		{-barSize  ,1.0f},
 		nullptr,
 	};
 
@@ -165,7 +165,6 @@ void Player::Update()
 
 	isHit_ = false;
 
-	//バー
 	HPBarUpdate();
 
 	ImGui::Begin("HP");
@@ -231,14 +230,14 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (enemy_->GetIsPunch() == true && isDown_ == false)
 		{
-			damage = 3.0f;
+			damage = 15.0f;
 			HP_ -= damage;
 			isHitPunch_ = true;
 		}
 
 		if (enemy_->GetIsThrow() == true && isDown_ == false)
 		{
-			damage = 5.0f;
+			damage = 50.0f;
 			HP_ -= damage;
 			isEnemyHit_ = true;
 			isHitThrow_ = true;
@@ -260,7 +259,7 @@ void Player::OnCollision(Collider* collider, float damage)
 				.SetTranslation(worldTransform_.translation)
 				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.6f ,0.6f ,0.6f })
 				.SetAzimuth(0.0f, 360.0f)
 				.SetElevation(0.0f, 0.0f)
 				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
@@ -282,7 +281,7 @@ void Player::OnCollision(Collider* collider, float damage)
 				.SetTranslation(worldTransform_.translation)
 				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.6f ,0.6f ,0.6f })
 				.SetAzimuth(0.0f, 360.0f)
 				.SetElevation(0.0f, 0.0f)
 				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
@@ -298,7 +297,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsSwingDown() == true && isDown_ == false 
 			&& isGuard_ == false)
 		{
-			damage = 50.0f;
+			damage = 30.0f;
 			HP_ -= damage;
 			isHitSwingDown_ = true;
 		}
@@ -306,7 +305,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsPoke() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			damage = 50.0f;
+			damage = 20.0f;
 			HP_ -= damage;
 			isHitPoke_ = true;
 		}
@@ -314,7 +313,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsMowDown() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			damage = 50.0f;
+			damage = 30.0f;
 			HP_ -= damage;
 			isHitMowDown_ = true;
 		}
@@ -1027,6 +1026,27 @@ void Player::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[0]--;
+
+		if (downAnimationTimer_[0] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[0] > 0)
 		{
 			worldTransform_.translation.x += 0.1f;
@@ -1051,6 +1071,27 @@ void Player::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[0]--;
+
+		if (downAnimationTimer_[0] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[0] > 0)
 		{
 			worldTransform_.translation.x -= 0.1f;
@@ -1076,6 +1117,27 @@ void Player::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[1]--;
+
+		if (downAnimationTimer_[1] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[1] > 0)
 		{
 			worldTransform_.translation.x += 0.3f;
@@ -1100,6 +1162,27 @@ void Player::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[1]--;
+
+		if (downAnimationTimer_[1] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[1] > 0)
 		{
 			worldTransform_.translation.x -= 0.3f;
@@ -1125,6 +1208,27 @@ void Player::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[2]--;
+
+		if (downAnimationTimer_[2] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[2] > 0)
 		{
 			worldTransform_.translation.x += 0.1f;
@@ -1149,6 +1253,27 @@ void Player::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[2]--;
+
+		if (downAnimationTimer_[2] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[2] > 0)
 		{
 			worldTransform_.translation.x -= 0.1f;

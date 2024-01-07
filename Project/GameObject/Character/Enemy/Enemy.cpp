@@ -3,12 +3,28 @@
 #include <numbers>
 #include "Project/GameObject/Character/Player/Player.h"
 
+Enemy::~Enemy()
+{
+	delete hpBar_.sprite_;
+}
+
 void Enemy::Initialize()
 {
 	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
 	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
 	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
+
+	hpBar_ = {
+		true,
+		TextureManager::Load("resource/HP.png"),
+		{720.0f, barSpace},
+		0.0f,
+		{barSize  ,1.0f},
+		nullptr,
+	};
+
+	hpBar_.sprite_ = Sprite::Create(hpBar_.textureHandle_, hpBar_.position_);
 
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 3.0f,0.0f,0.0f };
@@ -38,6 +54,10 @@ void Enemy::Initialize()
 	SetCollisionAttribute(kCollisionAttributeEnemy);
 	SetCollisionMask(kCollisionMaskEnemy);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
+
+	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
+	particleSystem_ = std::make_unique<ParticleSystem>();
+	particleSystem_->Initialize();
 
 	//WorldTransform(Player)の更新
 	worldTransform_.UpdateMatrix();
@@ -120,6 +140,9 @@ void Enemy::Update()
 	//Weaponの更新
 	enemyWeapon_->Update();
 
+	//パーティクルの更新
+	particleSystem_->Update();
+
 	worldTransform_.UpdateMatrix();
 
 	worldTransformBody_.UpdateMatrix();
@@ -130,6 +153,8 @@ void Enemy::Update()
 	isHit_ = false;
 
 	isPlayerHit_ = false;
+
+	HPBarUpdate();
 
 	ImGui::Begin("HP");
 	ImGui::Text("%f", HP_);
@@ -152,6 +177,33 @@ void Enemy::Draw(const Camera& camera)
 	}
 }
 
+void Enemy::DrawSprite()
+{
+	hpBar_.sprite_->Draw();
+}
+
+void Enemy::HPBarUpdate()
+{
+	hpBar_.size_ = { (HP_ / maxHP_) * barSize,1.0f };
+
+	hpBar_.sprite_->SetSize(hpBar_.size_);
+
+	if (HP_ >= (maxHP_ / 3.0f) * 2.0f) {
+		hpBar_.sprite_->SetColor({ 0.9f, 0.0f, 1.0f, 1.0f });
+	}
+	else if (HP_ < (maxHP_ / 3.0f) * 2.0f && HP_ >= (maxHP_ / 3.0f) * 1.0f) {
+		hpBar_.sprite_->SetColor({ 1.0f, 1.0f, 0.0f, 1.0f });
+	}
+	else if (HP_ < (maxHP_ / 3.0f) * 1.0f && HP_ >= 0.0f) {
+		hpBar_.sprite_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
+	}
+}
+
+void Enemy::DrawParticle(const Camera& camera)
+{
+	particleModel_->Draw(particleSystem_.get(), camera);
+}
+
 void Enemy::OnCollision(Collider* collider, float damage)
 {
 	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
@@ -162,14 +214,14 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 		if (player_->GetIsPunch() == true && isDown_ == false)
 		{
-			damage = 3.0f;
+			damage = 8.0f;
 			HP_ -= damage;
 			isHitPunch_ = true;
 		}
 
 		if (player_->GetIsThrow() == true && isDown_ == false)
 		{
-			damage = 5.0f;
+			damage = 20.0f;
 			HP_ -= damage;
 			isHitThrow_ = true;
 		}
@@ -177,10 +229,54 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 	if (collider->GetCollisionAttribute() & kCollisionAttributePlayerWeapon)
 	{
+		if (isGuard_ && worldTransform_.rotation.y == 1.7f)
+		{
+			worldTransform_.translation.x -= 0.3f;
+
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.6f ,0.6f ,0.6f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
+		if (isGuard_ && worldTransform_.rotation.y == 4.6f)
+		{
+			worldTransform_.translation.x += 0.3f;
+
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.6f ,0.6f ,0.6f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (player_->GetIsAttack() == true && player_->GetIsSwingDown() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			damage = 50.0f;
+			damage = 20.0f;
 			HP_ -= damage;
 			isHitSwingDown_ = true;
 		}
@@ -188,7 +284,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsAttack() == true && player_->GetIsPoke() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			damage = 50.0f;
+			damage = 15.0f;
 			HP_ -= damage;
 			isHitPoke_ = true;
 		}
@@ -196,7 +292,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			damage = 50.0f;
+			damage = 20.0f;
 			HP_ -= damage;
 			isHitMowDown_ = true;
 		}
@@ -231,7 +327,7 @@ void Enemy::BehaviorRootUpdate()
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
 		//移動処理
-		if (moveTimer_ > 30 && worldTransform_.rotation.y == 4.6f && !isHit_)
+		if (moveTimer_ > 40 && worldTransform_.rotation.y == 4.6f && !isHit_)
 		{
 			kCharacterSpeed = 0.1f;
 			velocity_.x = -0.3f;
@@ -239,7 +335,7 @@ void Enemy::BehaviorRootUpdate()
 			isGuard_ = false;
 		}
 
-		if (moveTimer_ > 30 && worldTransform_.rotation.y == 1.7f && !isHit_)
+		if (moveTimer_ > 40 && worldTransform_.rotation.y == 1.7f && !isHit_)
 		{
 			kCharacterSpeed = 0.1f;
 			velocity_.x = 0.3f;
@@ -247,7 +343,7 @@ void Enemy::BehaviorRootUpdate()
 			isGuard_ = false;
 		}
 
-		if (moveTimer_ <= 30 && worldTransform_.rotation.y == 1.7f)
+		if (moveTimer_ <= 40 && worldTransform_.rotation.y == 1.7f)
 		{
 			kCharacterSpeed = 0.05f;
 			velocity_.x = -0.3f;
@@ -255,7 +351,7 @@ void Enemy::BehaviorRootUpdate()
 			isGuard_ = true;
 		}
 
-		if (moveTimer_ <= 30 && worldTransform_.rotation.y == 4.6f)
+		if (moveTimer_ <= 40 && worldTransform_.rotation.y == 4.6f)
 		{
 			kCharacterSpeed = 0.05f;
 			velocity_.x = 0.3f;
@@ -276,8 +372,16 @@ void Enemy::BehaviorRootUpdate()
 
 		if (moveTimer_ < 0)
 		{
-			moveTimer_ = 60;
-			patternCount_ = Random(5, 5);
+			if (!isHit_)
+			{
+				moveTimer_ = Random(30, 90);;
+				patternCount_ = Random(5, 7);
+
+			}
+			else {
+				moveTimer_ = Random(30,90);
+				patternCount_ = Random(3, 7);
+			}
 		}
 
 		Vector3 playerWorldPosition = player_->GetWorldPosition();
@@ -309,16 +413,14 @@ void Enemy::BehaviorRootUpdate()
 		ImGui::End();
 	}
 
-	isGuard_ = false;
-
 	//ジャンプ
-	if (patternCount_ == 2 && isDown_ == false)
+	if (patternCount_ == 3 && isDown_ == false)
 	{
 		behaviorRequest_ = Behavior::kJump;
 	}
 
 	//投げ
-	if (patternCount_ == 3 && isDown_ == false)
+	if (patternCount_ == 4 && isDown_ == false)
 	{
 		behaviorRequest_ = Behavior::kThrow;
 		isThrow_ = true;
@@ -326,7 +428,7 @@ void Enemy::BehaviorRootUpdate()
 
 	//攻撃
 	//通常攻撃
-	if (patternCount_ == 4 && isDown_ == false)
+	if (patternCount_ == 2 && isDown_ == false)
 	{
 		behaviorRequest_ = Behavior::kAttack;
 		workAttack_.isPunch = true;
@@ -363,16 +465,6 @@ void Enemy::BehaviorRootUpdate()
 	{
 		behaviorRequest_ = Behavior::kAttack;
 		workAttack_.isMowDown = true;
-	}
-
-	//跳ね返す攻撃
-	if (patternCount_ == 8 && isDown_ == false)
-	{
-		if (worldTransform_.rotation.y == 4.6f || worldTransform_.rotation.y == 1.7f)
-		{
-			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isReject = true;
-		}
 	}
 }
 
@@ -420,13 +512,7 @@ void Enemy::BehaviorAttackInitialize()
 		workAttack_.stiffnessTimer = 60;
 	}
 
-	if (workAttack_.isReject)
-	{
-		worldTransformL_arm_.rotation.x = -1.3f;
-		worldTransformR_arm_.rotation.x = -1.3f;
-		worldTransformL_arm_.rotation.y = 0.0f;
-		worldTransformR_arm_.rotation.y = 0.0f;
-	}
+	isGuard_ = false;
 
 	attackAnimationFrame = 0;
 }
@@ -583,7 +669,7 @@ void Enemy::BehaviorAttackUpdate()
 			enemyWeapon_->SetIsAttack(true);
 			workAttack_.isAttack = true;
 
-			if (isDown_)
+			if (isHit_ || isDown_)
 			{
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
@@ -706,41 +792,6 @@ void Enemy::BehaviorAttackUpdate()
 		}
 		attackAnimationFrame++;
 	}
-
-	//跳ね返す攻撃
-	if (workAttack_.isReject)
-	{
-		if (attackAnimationFrame < 30)
-		{
-			worldTransformL_arm_.rotation.y += 0.02f;
-			worldTransformR_arm_.rotation.y -= 0.02f;
-		}
-		else if (attackAnimationFrame >= 30 && attackAnimationFrame < 60 && player_->GetIsEnemyHit() == true)
-		{
-			ImGui::Begin("reject");
-			ImGui::End();
-
-			behaviorRequest_ = Behavior::kRoot;
-			worldTransformL_arm_.rotation.y = 0.0f;
-			worldTransformR_arm_.rotation.y = 0.0f;
-			workAttack_.stiffnessTimer = 60;
-			workAttack_.isReject = false;
-		}
-		else
-		{
-			workAttack_.stiffnessTimer--;
-
-			if (workAttack_.stiffnessTimer <= 0)
-			{
-				behaviorRequest_ = Behavior::kRoot;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
-				workAttack_.stiffnessTimer = 60;
-				workAttack_.isReject = false;
-			}
-		}
-		attackAnimationFrame++;
-	}
 }
 
 void Enemy::BehaviorJumpInitialize()
@@ -750,6 +801,8 @@ void Enemy::BehaviorJumpInitialize()
 	const float kJumpFirstSpeed_ = 0.9f;
 
 	velocity_.y = kJumpFirstSpeed_;
+
+	isGuard_ = false;
 }
 
 void Enemy::BehaviorJumpUpdate()
@@ -783,6 +836,8 @@ void Enemy::BehaviorThrowInitialize()
 		worldTransformR_arm_.rotation.y = 0.0f;
 		attackAnimationFrame = 0;
 	}
+
+	isGuard_ = false;
 }
 
 void Enemy::BehaviorThrowUpdate()
@@ -873,6 +928,27 @@ void Enemy::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[0]--;
+
+		if (downAnimationTimer_[0] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[0] > 0)
 		{
 			worldTransform_.translation.x += 0.1f;
@@ -897,6 +973,27 @@ void Enemy::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[0]--;
+
+		if (downAnimationTimer_[0] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[0] > 0)
 		{
 			worldTransform_.translation.x -= 0.1f;
@@ -922,6 +1019,27 @@ void Enemy::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[1]--;
+
+		if (downAnimationTimer_[1] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[1] > 0)
 		{
 			worldTransform_.translation.x += 0.3f;
@@ -946,6 +1064,27 @@ void Enemy::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[1]--;
+
+		if (downAnimationTimer_[1] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[1] > 0)
 		{
 			worldTransform_.translation.x -= 0.3f;
@@ -971,6 +1110,27 @@ void Enemy::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[2]--;
+
+		if (downAnimationTimer_[2] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[2] > 0)
 		{
 			worldTransform_.translation.x += 0.1f;
@@ -995,6 +1155,27 @@ void Enemy::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[2]--;
+
+		if (downAnimationTimer_[2] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[2] > 0)
 		{
 			worldTransform_.translation.x -= 0.1f;
@@ -1099,13 +1280,13 @@ void Enemy::FloatingGimmickUpdate()
 	worldTransformR_arm_.rotation.x = -std::sin(floatingParameter_[1]) * 0.35f;
 }
 
-int Enemy::Random(int min_value, int max_value) 
+int Enemy::Random(int min_value, int max_value)
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> dis(min_value, max_value);
 
-	return dis(gen); // ランダムな浮動小数点数を生成して返す
+	return dis(gen);
 }
 
 

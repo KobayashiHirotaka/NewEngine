@@ -26,6 +26,8 @@ public:
 
 	void Draw(SceneManager* sceneManager)override;
 
+	void UpdateNumberSprite();
+
 private:
 	WorldTransform worldTransform_;
 
@@ -44,8 +46,17 @@ private:
 	std::unique_ptr<Skydome>skydome_;
 
 	int round_ = 1;
-	int roundTimer_ = 99;
 	int migrationTimer_ = 60;
 	int PlayerWinCount_ = 0;
 	int EnemyWinCount_ = 0;
+
+	std::unique_ptr<Sprite>numberTensSprite_ = nullptr;
+	std::unique_ptr<Sprite>numberOnesSprite_ = nullptr;
+	uint32_t tensTextureHandle_;
+	uint32_t onesTextureHandle_;
+
+	int currentSeconds_;
+
+	float frameTime = 1.0f / 60.0f;  // 60FPSを仮定
+	float elapsedTime = 0.0f;
 };

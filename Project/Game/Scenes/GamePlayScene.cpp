@@ -32,6 +32,9 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
 
 	camera_.UpdateMatrix();
+
+	currentSeconds_ = 10;
+	UpdateNumberSprite();
 };
 
 void GamePlayScene::Update(SceneManager* sceneManager)
@@ -181,8 +184,21 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		sceneManager->ChangeScene(new GameLoseScene);
 	}
 
+	// 時間経過を加算
+	elapsedTime += frameTime;
+
+	// タイムカウントを更新
+	if (currentSeconds_ > 0 && elapsedTime >= 1.0f) {
+		currentSeconds_--;
+		UpdateNumberSprite();
+
+		// elapsedTimeをリセット
+		elapsedTime = 0.0f;
+	}
+
 	ImGui::Begin("round");
 	ImGui::Text("round %d", round_);
+	ImGui::Text("%d", currentSeconds_);
 	ImGui::Text("PlayerWinCount %d", PlayerWinCount_);
 	ImGui::Text("EnemyWinCount %d", EnemyWinCount_);
 	ImGui::End();
@@ -237,6 +253,8 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	player_->DrawParticle(camera_);
 
+	enemy_->DrawParticle(camera_);
+
 	ParticleModel::PostDraw();
 
 	PostProcess::GetInstance()->PostDraw();
@@ -245,5 +263,23 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	player_->DrawSprite();
 
+	enemy_->DrawSprite();
+
+	numberOnesSprite_->Draw();
+	numberTensSprite_->Draw();
+
 	Sprite::PostDraw();
 };
+
+void GamePlayScene::UpdateNumberSprite()
+{
+	int tensDigit = currentSeconds_ / 10;
+	int onesDigit = currentSeconds_ % 10;
+
+	tensTextureHandle_ = TextureManager::Load("resource/number/" + std::to_string(tensDigit) + ".png");
+	onesTextureHandle_ = TextureManager::Load("resource/number/" + std::to_string(onesDigit) + ".png");
+
+	// 10の位の数字スプライトの位置は左に少しずらす例
+	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, { 580.0f, 0.0f }));
+	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, { 620.0f, 0.0f }));
+}
