@@ -22,6 +22,8 @@ public:
 
 	void Draw(SceneManager* sceneManager)override;
 
+	void UpdateNumberSprite();
+
 private:
 	WorldTransform worldTransform_;
 
@@ -36,15 +38,21 @@ private:
 	std::unique_ptr<Skydome>skydome_;
 	std::unique_ptr<Model>skydomeModel_;
 
-	//タイトル用のスプライト
-	std::unique_ptr<Sprite>  titleSprite_ = nullptr;
 
-	//タイトルのテクスチャ
+	std::unique_ptr<Sprite>titleSprite_ = nullptr;
 	uint32_t titleTextureHandle_ = 0;
 
 	//サウンド
 	uint32_t soundHandle_ = 0u;
 	uint32_t titleSoundHandle_ = 0u;
 
-	int soundCount_ = 0;
+	std::unique_ptr<Sprite>numberTensSprite_ = nullptr;
+	std::unique_ptr<Sprite>numberOnesSprite_ = nullptr;
+	uint32_t tensTextureHandle_;
+	uint32_t onesTextureHandle_;
+
+	int currentSeconds_;
+
+	float frameTime = 1.0f / 60.0f;  // 60FPSを仮定
+	float elapsedTime = 0.0f;
 };

@@ -60,6 +60,7 @@
     <ClCompile Include="Project\Game\Scenes\GameStartScene.cpp" />
     <ClCompile Include="Project\Game\Scenes\GameWinScene.cpp" />
     <ClCompile Include="Project\Game\Scenes\Manager\SceneManager.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -147,6 +148,7 @@
     <ClInclude Include="Project\Game\Scenes\GameWinScene.h" />
     <ClInclude Include="Project\Game\Scenes\IScene.h" />
     <ClInclude Include="Project\Game\Scenes\Manager\SceneManager.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\HorizontalBlur.PS.hlsl">
