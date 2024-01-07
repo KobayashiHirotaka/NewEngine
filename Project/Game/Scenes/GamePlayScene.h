@@ -41,13 +41,6 @@ private:
 	std::unique_ptr<Enemy>enemy_;
 
 	std::unique_ptr<Skydome>skydome_;
-	std::unique_ptr<Model>skydomeModel_;
-
-	std::unique_ptr<Model> modelFighterBody_;
-	std::unique_ptr<Model> modelFighterHead_;
-	std::unique_ptr<Model> modelFighterPHead_;
-	std::unique_ptr<Model> modelFighterL_arm_;
-	std::unique_ptr<Model> modelFighterR_arm_;
 
 	int round_ = 1;
 	int roundTimer_ = 99;

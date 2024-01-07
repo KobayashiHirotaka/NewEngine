@@ -12,8 +12,6 @@ void GameEndScene::Initialize(SceneManager* sceneManager)
 {
 	input_ = Input::GetInstance();
 
-	camera_.Initialize();
-
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 

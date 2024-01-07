@@ -1,5 +1,4 @@
 #pragma once
-#include "Project/GameObject/Character/ICharacter.h"
 #include "Engine/3D/Model/Model.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
@@ -13,7 +12,7 @@
 
 class Enemy;
 
-class Player : public Collider, public ICharacter
+class Player : public Collider
 {
 public:
 	enum class Behavior
@@ -60,11 +59,11 @@ public:
 		bool isJumpAttack = false;
 	};
 
-	void Initialize(const std::vector<Model*>& models)override;
+	void Initialize();
 
-	void Update()override;
+	void Update();
 
-	void Draw(const Camera& camera)override;
+	void Draw(const Camera& camera);
 
 	WorldTransform& GetWorldTransform()override { return worldTransform_; }
 
@@ -137,10 +136,16 @@ private:
 
 	const Camera* camera_ = nullptr;
 
+	WorldTransform worldTransform_;
 	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformHead_;
 	WorldTransform worldTransformL_arm_;
 	WorldTransform worldTransformR_arm_;
+
+	std::unique_ptr<Model> modelFighterBody_;
+	std::unique_ptr<Model> modelFighterPHead_;
+	std::unique_ptr<Model> modelFighterL_arm_;
+	std::unique_ptr<Model> modelFighterR_arm_;
 
 	std::unique_ptr<Model> playerWeaponModel_;
 

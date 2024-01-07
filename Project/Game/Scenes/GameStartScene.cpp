@@ -10,12 +10,16 @@ GameStartScene::~GameStartScene() {};
 
 void GameStartScene::Initialize(SceneManager* sceneManager)
 {
+	textureManager_ = TextureManager::GetInstance();
+
 	input_ = Input::GetInstance();
 
-	camera_.Initialize();
+	//audio_ = Audio::GetInstance();
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
+
+	camera_.UpdateMatrix();
 };
 
 void GameStartScene::Update(SceneManager* sceneManager)
@@ -26,8 +30,6 @@ void GameStartScene::Update(SceneManager* sceneManager)
 
 	skydome_->Update();
 
-	camera_.UpdateMatrix();
-
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
@@ -35,6 +37,8 @@ void GameStartScene::Update(SceneManager* sceneManager)
 			sceneManager->ChangeScene(new GamePlayScene);
 		}
 	}
+
+	camera_.UpdateMatrix();
 };
 
 void GameStartScene::Draw(SceneManager* sceneManager)

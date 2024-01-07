@@ -105,7 +105,7 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 	//WorldTransform用のCBufferの場所を設定
 	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldlTransform), worldTransform.constBuff->GetGPUVirtualAddress());
 	//ViewProjection用のCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff_->GetGPUVirtualAddress());
 	//DescriptorHeapを設定
 	TextureManager::GetInstance()->SetGraphicsDescriptorHeap();
 	//DescriptorTableを設定

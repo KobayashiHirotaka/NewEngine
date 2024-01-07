@@ -3,11 +3,16 @@
 #include <numbers>
 #include "Project/GameObject/Character/Player/Player.h"
 
-void Enemy::Initialize(const std::vector<Model*>& models)
+void Enemy::Initialize()
 {
+	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
+	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
+	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
+	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
+
 	enemyWeaponModel_.reset(Model::CreateFromOBJ("resource/hammer", "hammer.obj"));
 
-	ICharacter::Initialize(models);
+	worldTransform_.Initialize();
 	worldTransform_.translation = { 3.0f,0.0f,0.0f };
 
 	worldTransformHead_.Initialize();
@@ -35,6 +40,14 @@ void Enemy::Initialize(const std::vector<Model*>& models)
 	SetCollisionAttribute(kCollisionAttributeEnemy);
 	SetCollisionMask(kCollisionMaskEnemy);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
+
+	//WorldTransform(Player)の更新
+	worldTransform_.UpdateMatrix();
+
+	worldTransformBody_.UpdateMatrix();
+	worldTransformHead_.UpdateMatrix();
+	worldTransformL_arm_.UpdateMatrix();
+	worldTransformR_arm_.UpdateMatrix();
 }
 
 void Enemy::Update()
@@ -128,10 +141,10 @@ void Enemy::Update()
 void Enemy::Draw(const Camera& camera)
 {
 	//Enemyの描画
-	models_[kModelIndexBody]->Draw(worldTransformBody_, camera);
-	models_[kModelIndexHead]->Draw(worldTransformHead_, camera);
-	models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, camera);
-	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, camera);
+	modelFighterBody_->Draw(worldTransformBody_, camera);
+	modelFighterPHead_->Draw(worldTransformHead_, camera);
+	modelFighterL_arm_->Draw(worldTransformL_arm_, camera);
+	modelFighterR_arm_->Draw(worldTransformR_arm_, camera);
 
 	//Weaponの描画
 	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_

@@ -84,7 +84,7 @@ void ParticleModel::Draw(const ParticleSystem* particleSystem, const Camera& cam
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(1, particleSystem->GetSrvIndex());
 
 	//ViewProjection用のCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(2, camera.constBuff->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(2, camera.constBuff_->GetGPUVirtualAddress());
 
 	//DescriptorTableを設定
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(3, textureHandle_);
@@ -111,7 +111,7 @@ void ParticleModel::Draw(const ParticleSystem* particleSystem, const Camera& cam
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(1, particleSystem->GetSrvIndex());
 
 	//ViewProjection用のCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(2, camera.constBuff->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(2, camera.constBuff_->GetGPUVirtualAddress());
 
 	//DescriptorTableを設定
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(3, textureHandle);

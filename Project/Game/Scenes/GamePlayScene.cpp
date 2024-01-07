@@ -14,27 +14,13 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
-	camera_.Initialize();
-
-	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
-	modelFighterHead_.reset(Model::CreateFromOBJ("resource/float_Head", "float_Head.obj"));
-	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
-	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
-	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
-
-	std::vector<Model*> enemyModels = { modelFighterBody_.get(), modelFighterPHead_.get(), modelFighterL_arm_.get(),
-			modelFighterR_arm_.get()};
-
 	enemy_ = std::make_unique<Enemy>();
-	enemy_->Initialize(enemyModels);
-
-	std::vector<Model*> playerModels = { modelFighterBody_.get(), modelFighterPHead_.get(), modelFighterL_arm_.get(),
-		modelFighterR_arm_.get() };
+	enemy_->Initialize();
 	
 	player_ = std::make_unique<Player>();
-	player_->Initialize(playerModels);
-	player_->SetEnemy(enemy_.get());
+	player_->Initialize();
 
+	player_->SetEnemy(enemy_.get());
 	enemy_->SetPlayer(player_.get());
 
 	skydome_ = std::make_unique<Skydome>();
@@ -43,6 +29,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
 	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
+
+	camera_.UpdateMatrix();
 };
 
 void GamePlayScene::Update(SceneManager* sceneManager)
@@ -198,8 +186,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	ImGui::Text("EnemyWinCount %d", EnemyWinCount_);
 	ImGui::End();
 
-	camera_.UpdateMatrix();
-
 	collisionManager_->ClearColliders();
 	collisionManager_->AddCollider(player_.get());
 
@@ -221,6 +207,8 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		sceneManager->ChangeScene(new GameEndScene);
 	}*/
+
+	camera_.UpdateMatrix();
 };
 
 void GamePlayScene::Draw(SceneManager* sceneManager)

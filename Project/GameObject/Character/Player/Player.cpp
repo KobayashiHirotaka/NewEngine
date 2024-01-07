@@ -3,15 +3,20 @@
 #include <numbers>
 #include "Project/GameObject/Character/Enemy/Enemy.h"
 
-void Player::Initialize(const std::vector<Model*>& models)
+void Player::Initialize()
 {
 	//Inputのインスタンス
 	input_ = Input::GetInstance();
 
+	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
+	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
+	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
+	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
+
 	playerWeaponModel_.reset(Model::CreateFromOBJ("resource/hammer", "hammer.obj"));
 
 	//WorldTransform(Player)の初期化
-	ICharacter::Initialize(models);
+	worldTransform_.Initialize();
 	worldTransform_.translation = { -7.0f,0.0f,0.0f };
 
 	worldTransformHead_.Initialize();
@@ -45,6 +50,14 @@ void Player::Initialize(const std::vector<Model*>& models)
 	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
 	particleSystem_ = std::make_unique<ParticleSystem>();
 	particleSystem_->Initialize();
+
+	//WorldTransform(Player)の更新
+	worldTransform_.UpdateMatrix();
+
+	worldTransformBody_.UpdateMatrix();
+	worldTransformHead_.UpdateMatrix();
+	worldTransformL_arm_.UpdateMatrix();
+	worldTransformR_arm_.UpdateMatrix();
 }
 
 void Player::Update()
@@ -152,10 +165,10 @@ void Player::Update()
 void Player::Draw(const Camera& camera)
 {
 	//Playerの描画
-	models_[kModelIndexBody]->Draw(worldTransformBody_, camera);
-	models_[kModelIndexHead]->Draw(worldTransformHead_, camera);
-	models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, camera);
-	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, camera);
+	modelFighterBody_->Draw(worldTransformBody_, camera);
+	modelFighterPHead_->Draw(worldTransformHead_, camera);
+	modelFighterL_arm_->Draw(worldTransformL_arm_, camera);
+	modelFighterR_arm_->Draw(worldTransformR_arm_, camera);
 
 	//Weaponの描画
 	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_
