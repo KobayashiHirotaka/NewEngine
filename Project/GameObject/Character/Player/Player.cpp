@@ -203,21 +203,20 @@ void Player::OnCollision(Collider* collider, float damage)
 		{
 			worldTransform_.translation.x -= 0.3f;
 
-			//衝撃
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kScale)
 				.SetTranslation(worldTransform_.translation)
 				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.15f ,0.15f ,0.15f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
 				.SetAzimuth(0.0f, 360.0f)
 				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.02f ,0.02f ,0.02f }, { 0.04f ,0.04f ,0.04f })
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
 				.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
 				.SetLifeTime(0.1f, 1.0f)
 				.SetCount(100)
 				.SetFrequency(4.0f)
-				.SetDeleteTime(3.0f)
+				.SetDeleteTime(2.0f)
 				.Build();
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
@@ -225,6 +224,23 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (isGuard_ && worldTransform_.rotation.y == 4.6f)
 		{
 			worldTransform_.translation.x += 0.3f;
+
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(2.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsSwingDown() == true && isDown_ == false 
