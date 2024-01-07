@@ -6,6 +6,7 @@
 #include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/Utility/Collision/CollisionManager.h"
 #include "Engine/3D/Particle/ParticleModel.h"
+#include "Engine/2D/Sprite/Sprite.h"
 
 #include "Project/GameObject/Character/Player/Player.h"
 #include "Project/GameObject/Character/Enemy/Enemy.h"

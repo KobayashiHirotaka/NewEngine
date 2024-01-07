@@ -240,4 +240,10 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 	ParticleModel::PostDraw();
 
 	PostProcess::GetInstance()->PostDraw();
+
+	Sprite::PreDraw(Sprite::kBlendModeNormal);
+
+	player_->DrawSprite();
+
+	Sprite::PostDraw();
 };

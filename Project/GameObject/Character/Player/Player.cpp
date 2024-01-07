@@ -3,6 +3,11 @@
 #include <numbers>
 #include "Project/GameObject/Character/Enemy/Enemy.h"
 
+Player::~Player()
+{
+	delete hpBar_.sprite_;
+}
+
 void Player::Initialize()
 {
 	//Inputのインスタンス
@@ -12,6 +17,17 @@ void Player::Initialize()
 	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
 	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
+
+	hpBar_ = {
+		true,
+		TextureManager::Load("resource/HP.png"),
+		{barSpace + 160, barSpace},
+		0.0f,
+		{barSize  ,1.0f},
+		nullptr,
+	};
+
+	hpBar_.sprite_ = Sprite::Create(hpBar_.textureHandle_, hpBar_.position_);
 
 	//WorldTransform(Player)の初期化
 	worldTransform_.Initialize();
@@ -149,6 +165,9 @@ void Player::Update()
 
 	isHit_ = false;
 
+	//バー
+	HPBarUpdate();
+
 	ImGui::Begin("HP");
 	ImGui::Text("%f", HP_);
 	ImGui::End();
@@ -173,6 +192,28 @@ void Player::Draw(const Camera& camera)
 		&& !isHitPoke_ && !isHitMowDown_ && !isDown_ && behaviorRequest_ != Behavior::kRoot)
 	{
 		playerWeapon_->Draw(camera);
+	}
+}
+
+void Player::DrawSprite()
+{
+	hpBar_.sprite_->Draw();
+}
+
+void Player::HPBarUpdate()
+{
+	hpBar_.size_ = { (HP_ / maxHP_) * barSize,1.0f };
+
+	hpBar_.sprite_->SetSize(hpBar_.size_);
+
+	if (HP_ >= (maxHP_ / 3.0f) * 2.0f) {
+		hpBar_.sprite_->SetColor({ 0.9f, 0.0f, 1.0f, 1.0f });
+	}
+	else if (HP_ < (maxHP_ / 3.0f) * 2.0f && HP_ >= (maxHP_ / 3.0f) * 1.0f) {
+		hpBar_.sprite_->SetColor({ 1.0f, 1.0f, 0.0f, 1.0f });
+	}
+	else if (HP_ < (maxHP_ / 3.0f) * 1.0f && HP_ >= 0.0f) {
+		hpBar_.sprite_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 	}
 }
 

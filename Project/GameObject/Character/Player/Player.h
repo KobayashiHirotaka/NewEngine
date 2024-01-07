@@ -7,8 +7,10 @@
 #include "Engine/Utility/Collision/CollisionConfig.h"
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"
+#include "Engine/Base/WindowsApp/WindowsApp.h"
 
 #include "Project/GameObject/Character/Player/PlayerWeapon.h"
+#include "UI.h"
 
 class Enemy;
 
@@ -58,6 +60,8 @@ public:
 		//ジャンプ攻撃
 		bool isJumpAttack = false;
 	};
+
+	~Player();
 
 	void Initialize();
 
@@ -129,6 +133,10 @@ public:
 
 	void DrawParticle(const Camera& camera);
 
+	void DrawSprite();
+
+	void HPBarUpdate();
+
 private:
 	Input* input_ = nullptr;
 
@@ -159,7 +167,9 @@ private:
 
 	float floatingAmplitude_;
 
-	float HP_ = 100.0f;
+	float maxHP_ = 100.0f;
+
+	float HP_ = maxHP_;
 
 	std::unique_ptr<PlayerWeapon> playerWeapon_ = nullptr;
 
@@ -205,5 +215,9 @@ private:
 	//パーティクル
 	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
 	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
+
+	UIStruct hpBar_;
+	const float barSpace = 16.0f;
+	float barSize = WindowsApp::GetInstance()->kClientWidth - 320 - barSpace * 2;
 };
 
