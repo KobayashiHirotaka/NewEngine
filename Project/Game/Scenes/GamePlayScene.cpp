@@ -39,6 +39,10 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
+
+	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	PostProcess::GetInstance()->SetIsBloomActive(true);
+	PostProcess::GetInstance()->SetIsVignetteActive(true);
 };
 
 void GamePlayScene::Update(SceneManager* sceneManager)
@@ -54,28 +58,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	enemy_->Update();
 
 	skydome_->Update();
-
-	if (input_->PushKey(DIK_1))
-	{
-		PostProcess::GetInstance()->SetIsPostProcessActive(true);
-	}
-
-	if (input_->PushKey(DIK_2))
-	{
-		PostProcess::GetInstance()->SetIsBloomActive(true);
-	}
-
-	if (input_->PushKey(DIK_3))
-	{
-		PostProcess::GetInstance()->SetIsVignetteActive(true);
-	}
-
-	if (input_->PushKey(DIK_4))
-	{
-		PostProcess::GetInstance()->SetIsPostProcessActive(false);
-		PostProcess::GetInstance()->SetIsBloomActive(false);
-		PostProcess::GetInstance()->SetIsVignetteActive(false);
-	}
 
 	//勝ち負け表示の処理
 	if (input_->PushKey(DIK_P))
@@ -244,14 +226,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 void GamePlayScene::Draw(SceneManager* sceneManager)
 {
 
-	/*Model::PreDraw();
-
-	player_->Draw(camera_);
-
-	Model::PostDraw();*/
-
-	PostProcess::GetInstance()->PreDraw();
-
 	DirectXCore::GetInstance()->ClearDepthBuffer();
 
 	Model::PreDraw();
@@ -259,6 +233,12 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 	player_->Draw(camera_);
 
 	enemy_->Draw(camera_);
+
+	Model::PostDraw();
+
+	PostProcess::GetInstance()->PreDraw();
+
+	Model::PreDraw();
 
 	skydome_->Draw(camera_);
 
