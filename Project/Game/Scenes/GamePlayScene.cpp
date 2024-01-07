@@ -114,6 +114,53 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		{
 			migrationTimer_ = 60;
 			Initialize(sceneManager);
+			PlayerWinCount_ = 1;
+		}
+	}
+
+	if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 1)
+	{
+		migrationTimer_--;
+
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		{
+			migrationTimer_ = 60;
+			round_ = 2;
+			Initialize(sceneManager);
+			PlayerWinCount_ = 1;
+		}
+	}
+	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 2 && PlayerWinCount_ == 1)
+	{
+		migrationTimer_--;
+		
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		{
+			migrationTimer_ = 60;
+			Initialize(sceneManager);
+			PlayerWinCount_ = 2;
+		}
+	}
+	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 2 && PlayerWinCount_ == 0)
+	{
+		migrationTimer_--;
+
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		{
+			migrationTimer_ = 60;
+			round_ = 3;
+			Initialize(sceneManager);
+			PlayerWinCount_ = 1;
+		}
+	}
+	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 3 && PlayerWinCount_ == 1)
+	{
+		migrationTimer_--;
+
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		{
+			migrationTimer_ = 60;
+			Initialize(sceneManager);
 			PlayerWinCount_ = 2;
 		}
 	}
@@ -179,9 +226,83 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		}
 	}
 
+	if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 1)
+	{
+		migrationTimer_--;
+
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		{
+			migrationTimer_ = 60;
+			round_ = 2;
+			Initialize(sceneManager);
+			EnemyWinCount_ = 1;
+		}
+	}
+	else if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 2 && EnemyWinCount_ == 1)
+	{
+		migrationTimer_--;
+
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		{
+			migrationTimer_ = 60;
+			Initialize(sceneManager);
+			EnemyWinCount_ = 2;
+		}
+	}
+	else if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 2 && EnemyWinCount_ == 0)
+	{
+		migrationTimer_--;
+
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		{
+			migrationTimer_ = 60;
+			round_ = 3;
+			Initialize(sceneManager);
+			EnemyWinCount_ = 1;
+		}
+	}
+	else if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 3 && EnemyWinCount_ == 1)
+	{
+		migrationTimer_--;
+
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		{
+			migrationTimer_ = 60;
+			Initialize(sceneManager);
+			EnemyWinCount_ = 2;
+		}
+	}
+
 	if (EnemyWinCount_ == 2)
 	{
 		sceneManager->ChangeScene(new GameLoseScene);
+	}
+
+	if (currentSeconds_ <= 0 && enemy_->GetHP() == player_->GetHP() && round_ == 1)
+	{
+		migrationTimer_--;
+
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		{
+			migrationTimer_ = 60;
+			round_ = 3;
+			Initialize(sceneManager);
+			PlayerWinCount_ = 1;
+			EnemyWinCount_ = 1;
+		}
+	}
+	else if (currentSeconds_ <= 0 && enemy_->GetHP() == player_->GetHP() && round_ == 3)
+	{
+		migrationTimer_--;
+
+		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		{
+			migrationTimer_ = 60;
+			round_ = 3;
+			Initialize(sceneManager);
+			PlayerWinCount_ = 1;
+			EnemyWinCount_ = 1;
+		}
 	}
 
 	// 時間経過を加算
