@@ -4,6 +4,7 @@
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Components/Input/Input.h"
+#include "Engine/Components/Audio/Audio.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Project/GameObject/Skydome/Skydome.h"
 #include <memory>
@@ -30,11 +31,20 @@ private:
 
 	Input* input_ = nullptr;
 
+	Audio* audio_ = nullptr;
+
 	std::unique_ptr<Skydome>skydome_;
 	std::unique_ptr<Model>skydomeModel_;
 
 	//タイトル用のスプライト
 	std::unique_ptr<Sprite>  titleSprite_ = nullptr;
+
 	//タイトルのテクスチャ
 	uint32_t titleTextureHandle_ = 0;
+
+	//サウンド
+	uint32_t soundHandle_ = 0u;
+	uint32_t titleSoundHandle_ = 0u;
+
+	int soundCount_ = 0;
 };

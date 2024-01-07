@@ -93,7 +93,7 @@ void SceneManager::Run()
 
 	imguiManager_->ShutDown();
 
-	//audio_->Finalize();
+	audio_->Release();
 
 	win_->CloseGameWindow();
 }

@@ -14,7 +14,7 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 	input_ = Input::GetInstance();
 
-	//audio_ = Audio::GetInstance();
+	audio_ = Audio::GetInstance();
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
@@ -23,6 +23,9 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 	titleTextureHandle_ = TextureManager::Load("resource/title.png");
 	titleSprite_.reset(Sprite::Create(titleTextureHandle_, { 0.0f,0.0f }));
+
+	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
+	audio_->SoundPlayWave(titleSoundHandle_, true, 1.0f);
 };
 
 void GameStartScene::Update(SceneManager* sceneManager)
@@ -37,6 +40,7 @@ void GameStartScene::Update(SceneManager* sceneManager)
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
+		/*	audio_->StopAudio(titleSoundHandle_);*/
 			sceneManager->ChangeScene(new GamePlayScene);
 		}
 	}
