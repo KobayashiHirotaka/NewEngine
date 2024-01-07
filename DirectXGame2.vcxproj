@@ -100,6 +100,7 @@
     <ClInclude Include="Engine\3D\Mesh\Mesh.h" />
     <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h" />
     <ClInclude Include="Engine\3D\Model\IGame3dObject.h" />
+    <ClInclude Include="Engine\3D\Model\Material.h" />
     <ClInclude Include="Engine\3D\Model\Model.h" />
     <ClInclude Include="Engine\3D\Particle\BaseParticle.h" />
     <ClInclude Include="Engine\3D\Particle\ChargeParticle.h" />
@@ -134,7 +135,6 @@
     <ClInclude Include="Engine\Utility\CSV\LoadCSV.h" />
     <ClInclude Include="Engine\Utility\GlobalVariables.h" />
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
-    <ClInclude Include="Engine\Utility\Structs\Material.h" />
     <ClInclude Include="Project\GameObject\Character\Enemy\Enemy.h" />
     <ClInclude Include="Project\GameObject\Character\Enemy\EnemyWeapon.h" />
     <ClInclude Include="Project\GameObject\Character\ICharacter.h" />

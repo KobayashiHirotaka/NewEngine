@@ -291,9 +291,6 @@
     <ClCompile Include="Engine\Utility\ConvertString\ConvertString.cpp">
       <Filter>ソース ファイル\Engine\Utility\ConvertString</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\2D\Sprite\Sprite.cpp">
-      <Filter>ソース ファイル\Engine\2d\Sprite</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\3D\Model\Model.cpp">
       <Filter>ソース ファイル\Engine\3d\Model</Filter>
     </ClCompile>
@@ -365,6 +362,9 @@
     </ClCompile>
     <ClCompile Include="Project\Game\Scenes\GameWinScene.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\2D\Sprite\Sprite.cpp">
+      <Filter>ソース ファイル\Engine\2d\Sprite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -473,9 +473,6 @@
     <ClInclude Include="Engine\Utility\ConvertString\ConvertString.h">
       <Filter>ヘッダー ファイル\Engine\Utility\ConvertString</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\2D\Sprite\Sprite.h">
-      <Filter>ヘッダー ファイル\Engine\2d\Sprite</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\3D\Model\Model.h">
       <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
@@ -502,9 +499,6 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\Mesh\Mesh.h">
       <Filter>ヘッダー ファイル\Engine\3d\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Utility\Structs\Material.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Base\D3DResourceLeakChecker.h">
       <Filter>ソース ファイル\Engine\Base</Filter>
@@ -553,6 +547,12 @@
     </ClInclude>
     <ClInclude Include="Project\Game\Scenes\GameWinScene.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\Material.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\2D\Sprite\Sprite.h">
+      <Filter>ヘッダー ファイル\Engine\2d\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

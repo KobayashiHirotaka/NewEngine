@@ -20,6 +20,9 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	skydome_->Initialize();
 
 	camera_.UpdateMatrix();
+
+	titleTextureHandle_ = TextureManager::Load("resource/title.png");
+	titleSprite_.reset(Sprite::Create(titleTextureHandle_, { 0.0f,0.0f }));
 };
 
 void GameStartScene::Update(SceneManager* sceneManager)
@@ -54,4 +57,10 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 	Model::PostDraw();
 
 	PostProcess::GetInstance()->PostDraw();
+
+	Sprite::PreDraw(Sprite::kBlendModeNormal);
+
+	/*titleSprite_->Draw();*/
+
+	Sprite::PostDraw();
 };
