@@ -1,10 +1,9 @@
 #include "PlayerWeapon.h"
 #include <cassert>
 
-void PlayerWeapon::Initialize(Model* model)
+void PlayerWeapon::Initialize()
 {
-	assert(model);
-	model_ = model;
+	playerWeaponModel_.reset(Model::CreateFromOBJ("resource/hammer", "hammer.obj"));
 
 	worldTransform_.Initialize();
 	collisionWorldTransform_.Initialize();
@@ -40,7 +39,7 @@ void PlayerWeapon::Update()
 
 void PlayerWeapon::Draw(const Camera& camera)
 {
-	model_->Draw(worldTransform_, camera);
+	playerWeaponModel_->Draw(worldTransform_, camera);
 }
 
 void PlayerWeapon::OnCollision(Collider* collider, float damage)

@@ -13,8 +13,6 @@ void Player::Initialize()
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
 	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
 
-	playerWeaponModel_.reset(Model::CreateFromOBJ("resource/hammer", "hammer.obj"));
-
 	//WorldTransform(Player)の初期化
 	worldTransform_.Initialize();
 	worldTransform_.translation = { -7.0f,0.0f,0.0f };
@@ -39,7 +37,7 @@ void Player::Initialize()
 
 	//Weaponの生成
 	playerWeapon_ = std::make_unique<PlayerWeapon>();
-	playerWeapon_->Initialize(playerWeaponModel_.get());
+	playerWeapon_->Initialize();
 	playerWeapon_->SetParent(&worldTransform_);
 
 	//当たり判定の設定

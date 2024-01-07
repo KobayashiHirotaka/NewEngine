@@ -147,8 +147,6 @@ private:
 	std::unique_ptr<Model> modelFighterL_arm_;
 	std::unique_ptr<Model> modelFighterR_arm_;
 
-	std::unique_ptr<Model> playerWeaponModel_;
-
 	Vector3 velocity_ = {};
 
 	float speed_ = 0.3f;

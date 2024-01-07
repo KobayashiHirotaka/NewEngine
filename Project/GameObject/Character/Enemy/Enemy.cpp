@@ -10,8 +10,6 @@ void Enemy::Initialize()
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
 	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
 
-	enemyWeaponModel_.reset(Model::CreateFromOBJ("resource/hammer", "hammer.obj"));
-
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 3.0f,0.0f,0.0f };
 
@@ -34,7 +32,7 @@ void Enemy::Initialize()
 
 	//Weaponの生成
 	enemyWeapon_ = std::make_unique<EnemyWeapon>();
-	enemyWeapon_->Initialize(enemyWeaponModel_.get());
+	enemyWeapon_->Initialize();
 	enemyWeapon_->SetParent(&worldTransform_);
 
 	SetCollisionAttribute(kCollisionAttributeEnemy);

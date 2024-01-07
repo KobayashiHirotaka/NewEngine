@@ -9,7 +9,7 @@
 class PlayerWeapon : public Collider
 {
 public:
-	void Initialize(Model* model);
+	void Initialize();
 
 	void Update();
 
@@ -36,7 +36,7 @@ public:
 private:
 	void AttackInitialize();
 
-	Model* model_ = nullptr;
+	std::unique_ptr<Model> playerWeaponModel_;
 
 	WorldTransform worldTransform_;
 	WorldTransform collisionWorldTransform_;
