@@ -169,7 +169,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsAttack() == true && player_->GetIsSwingDown() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			damage = 7.0f;
+			damage = 50.0f;
 			HP_ -= damage;
 			isHitSwingDown_ = true;
 		}
@@ -177,7 +177,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsAttack() == true && player_->GetIsPoke() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			damage = 10.0f;
+			damage = 50.0f;
 			HP_ -= damage;
 			isHitPoke_ = true;
 		}
@@ -185,7 +185,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			damage = 10.0f;
+			damage = 50.0f;
 			HP_ -= damage;
 			isHitMowDown_ = true;
 		}

@@ -58,9 +58,6 @@ public:
 
 		//ジャンプ攻撃
 		bool isJumpAttack = false;
-
-		//跳ね返す
-		bool isReject = false;
 	};
 
 	void Initialize(const std::vector<Model*>& models)override;

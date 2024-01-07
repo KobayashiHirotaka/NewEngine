@@ -99,12 +99,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		{
 			migrationTimer_ = 60;
 			round_ = 2;
-			player_->SetHP(100);
-			enemy_->SetHP(100);
-			player_->SetTransform({ -7.0f,0.0f,0.0f });
-			player_->SetRotation({ 0.0f,1.7f,0.0f });
-			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
-			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
+			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
 		}
 	}
@@ -117,12 +112,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
 		{
 			migrationTimer_ = 60;
-			player_->SetHP(100);
-			enemy_->SetHP(100);
-			player_->SetTransform({ -7.0f,0.0f,0.0f });
-			player_->SetRotation({ 0.0f,1.7f,0.0f });
-			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
-			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
+			Initialize(sceneManager);
 			PlayerWinCount_ = 2;
 		}
 	}
@@ -136,12 +126,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		{
 			migrationTimer_ = 60;
 			round_ = 3;
-			player_->SetHP(100);
-			enemy_->SetHP(100);
-			player_->SetTransform({ -7.0f,0.0f,0.0f });
-			player_->SetRotation({ 0.0f,1.7f,0.0f });
-			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
-			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
+			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
 		}
 	}
@@ -154,12 +139,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
 		{
 			migrationTimer_ = 60;
-			player_->SetHP(100);
-			enemy_->SetHP(100);
-			player_->SetTransform({ -7.0f,0.0f,0.0f });
-			player_->SetRotation({ 0.0f,1.7f,0.0f });
-			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
-			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
+			Initialize(sceneManager);
 			PlayerWinCount_ = 2;
 		}
 	}
@@ -180,12 +160,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		{
 			migrationTimer_ = 60;
 			round_ = 2;
-			player_->SetHP(100);
-			enemy_->SetHP(100);
-			player_->SetTransform({ -7.0f,0.0f,0.0f });
-			player_->SetRotation({ 0.0f,1.7f,0.0f });
-			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
-			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
+			Initialize(sceneManager);
 			EnemyWinCount_ = 1;
 		}
 	}
@@ -198,12 +173,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
 		{
 			migrationTimer_ = 60;
-			player_->SetHP(100);
-			enemy_->SetHP(100);
-			player_->SetTransform({ -7.0f,0.0f,0.0f });
-			player_->SetRotation({ 0.0f,1.7f,0.0f });
-			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
-			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
+			Initialize(sceneManager);
 			EnemyWinCount_ = 2;
 		}
 	}
@@ -217,12 +187,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		{
 			migrationTimer_ = 60;
 			round_ = 3;
-			player_->SetHP(100);
-			enemy_->SetHP(100);
-			player_->SetTransform({ -7.0f,0.0f,0.0f });
-			player_->SetRotation({ 0.0f,1.7f,0.0f });
-			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
-			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
+			Initialize(sceneManager);
 			EnemyWinCount_ = 1;
 		}
 	}
@@ -235,12 +200,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
 		{
 			migrationTimer_ = 60;
-			player_->SetHP(100);
-			enemy_->SetHP(100);
-			player_->SetTransform({ -7.0f,0.0f,0.0f });
-			player_->SetRotation({ 0.0f,1.7f,0.0f });
-			enemy_->SetTransform({ 7.0f,0.0f,0.0f });
-			enemy_->SetRotation({ 0.0f,4.6f,0.0f });
+			Initialize(sceneManager);
 			EnemyWinCount_ = 2;
 		}
 	}
