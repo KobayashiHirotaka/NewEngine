@@ -1,6 +1,7 @@
 #include "GamePlayScene.h"
 #include "Project/Game/Scenes/Manager/SceneManager.h"
-#include "GameEndScene.h"
+#include "GameWinScene.h"
+#include "GameLoseScene.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>
 
@@ -116,7 +117,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (PlayerWinCount_ == 2)
 	{
-		sceneManager->ChangeScene(new GameEndScene);
+		sceneManager->ChangeScene(new GameWinScene);
 	}
 
 	//Enemyが勝ったとき
@@ -177,7 +178,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (EnemyWinCount_ == 2)
 	{
-		sceneManager->ChangeScene(new GameEndScene);
+		sceneManager->ChangeScene(new GameLoseScene);
 	}
 
 	ImGui::Begin("round");

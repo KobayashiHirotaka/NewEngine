@@ -1,14 +1,14 @@
-#include "GameEndScene.h"
+#include "GameWinScene.h"
 #include "Project/Game/Scenes/Manager/SceneManager.h"
 #include "GameStartScene.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>
 
-GameEndScene::GameEndScene() {};
+GameWinScene::GameWinScene() {};
 
-GameEndScene::~GameEndScene() {};
+GameWinScene::~GameWinScene() {};
 
-void GameEndScene::Initialize(SceneManager* sceneManager)
+void GameWinScene::Initialize(SceneManager* sceneManager)
 {
 	input_ = Input::GetInstance();
 
@@ -18,23 +18,26 @@ void GameEndScene::Initialize(SceneManager* sceneManager)
 	camera_.UpdateMatrix();
 };
 
-void GameEndScene::Update(SceneManager* sceneManager)
+void GameWinScene::Update(SceneManager* sceneManager)
 {
-	ImGui::Begin("End");
+	ImGui::Begin("Win");
 
 	ImGui::End();
 
 	skydome_->Update();
 
-	if (input_->PushKey(DIK_SPACE))
+	if (input_->GetJoystickState())
 	{
-		sceneManager->ChangeScene(new GameStartScene);
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
+		{
+			sceneManager->ChangeScene(new GameStartScene);
+		}
 	}
 
 	camera_.UpdateMatrix();
 };
 
-void GameEndScene::Draw(SceneManager* sceneManager)
+void GameWinScene::Draw(SceneManager* sceneManager)
 {
 	PostProcess::GetInstance()->PreDraw();
 

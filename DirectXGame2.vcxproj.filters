@@ -279,7 +279,7 @@
     <ClCompile Include="Project\Game\Scenes\GamePlayScene.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Project\Game\Scenes\GameEndScene.cpp">
+    <ClCompile Include="Project\Game\Scenes\GameLoseScene.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Utility\Collision\CollisionManager.cpp">
@@ -362,6 +362,9 @@
     </ClCompile>
     <ClCompile Include="Engine\3D\Particle\ParticleSystem.cpp">
       <Filter>ソース ファイル\Engine\3d\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Project\Game\Scenes\GameWinScene.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -452,7 +455,7 @@
     <ClInclude Include="Project\Game\Scenes\GamePlayScene.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Project\Game\Scenes\GameEndScene.h">
+    <ClInclude Include="Project\Game\Scenes\GameLoseScene.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Utility\Collision\Collider.h">
@@ -547,6 +550,9 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\Particle\ParticleModel.h">
       <Filter>ヘッダー ファイル\Engine\3d\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Project\Game\Scenes\GameWinScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

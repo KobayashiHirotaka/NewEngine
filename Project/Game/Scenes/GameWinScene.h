@@ -7,12 +7,12 @@
 #include "Project/GameObject/Skydome/Skydome.h"
 #include <memory>
 
-class GameEndScene : public IScene
+class GameWinScene : public IScene
 {
 public:
-	GameEndScene();
+	GameWinScene();
 
-	~GameEndScene();
+	~GameWinScene();
 
 	void Initialize(SceneManager* sceneManager)override;
 
@@ -32,3 +32,4 @@ private:
 	std::unique_ptr<Skydome>skydome_;
 	std::unique_ptr<Model>skydomeModel_;
 };
+
