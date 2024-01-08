@@ -18,7 +18,7 @@ void Particle::Initialize(const Vector3& translation, const Vector3& rotation, c
 void Particle::Update() 
 {
 	float scale = scale_.x;
-	scale -= scaleMinus_;
+	scale -= 0.01f;
 
 	if (scale < 0.0f)
 	{

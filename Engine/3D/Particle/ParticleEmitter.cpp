@@ -10,17 +10,18 @@ void ParticleEmitter::Update()
 	const float kDeltaTime = 1.0f / 60.0f;
 	frequencyTime_ += kDeltaTime;
 
-	if (popFrequency_ <= frequencyTime_) 
+	if (frequency_ <= frequencyTime_) 
 	{
-		for (uint32_t index = 0; index < popCount_; ++index)
+		for (uint32_t index = 0; index < particleCount_; ++index)
 		{
-			ParticleEmitter::Pop();
+			EmitParticle();
 		}
-		frequencyTime_ -= popFrequency_;
+		frequencyTime_ -= frequency_;
 	}
 
 	//パーティクルの更新
-	for (std::list<std::unique_ptr<BaseParticle>>::iterator particleIterator = particles_.begin(); particleIterator != particles_.end(); ++particleIterator) {
+	for (std::list<std::unique_ptr<BaseParticle>>::iterator particleIterator = particles_.begin(); particleIterator != particles_.end(); ++particleIterator)
+	{
 		particleIterator->get()->Update();
 	}
 
@@ -32,62 +33,57 @@ void ParticleEmitter::Update()
 	}
 }
 
-void ParticleEmitter::Pop() 
+void ParticleEmitter::EmitParticle()
 {
 	Vector3 translation = {
-		popTranslation_.x + Random::GetRandomFloat(popArea_.min.x,popArea_.max.x),
-		popTranslation_.y + Random::GetRandomFloat(popArea_.min.y,popArea_.max.y),
-		popTranslation_.z + Random::GetRandomFloat(popArea_.min.z,popArea_.max.z)
+		translation_.x + Random::GetRandomFloat(area_.min.x,area_.max.x),
+		translation_.y + Random::GetRandomFloat(area_.min.y,area_.max.y),
+		translation_.z + Random::GetRandomFloat(area_.min.z,area_.max.z)
 	};
 
 	Vector3 rotation = {
-		Random::GetRandomFloat(popRotation_.min.x,popRotation_.max.x),
-		Random::GetRandomFloat(popRotation_.min.y,popRotation_.max.y),
-		Random::GetRandomFloat(popRotation_.min.z,popRotation_.max.z)
+		Random::GetRandomFloat(rotation_.min.x,rotation_.max.x),
+		Random::GetRandomFloat(rotation_.min.y,rotation_.max.y),
+		Random::GetRandomFloat(rotation_.min.z,rotation_.max.z)
 	};
 
 	Vector3 scale = {
-		Random::GetRandomFloat(popScale_.min.x,popScale_.max.x),
-		Random::GetRandomFloat(popScale_.min.y,popScale_.max.y),
-		Random::GetRandomFloat(popScale_.min.z,popScale_.max.z)
+		Random::GetRandomFloat(scale_.min.x,scale_.max.x),
+		Random::GetRandomFloat(scale_.min.y,scale_.max.y),
+		Random::GetRandomFloat(scale_.min.z,scale_.max.z)
 	};
 
-	float azimuth = { Random::GetRandomFloat(popAzimuth.min,popAzimuth.max) };
+	float azimuth = { Random::GetRandomFloat(azimuth_.min,azimuth_.max) };
 	float azimuthRadian = azimuth * float(std::numbers::pi / 180.0f);
 
-	float elevation = { Random::GetRandomFloat(popElevation.min,popElevation.max) };
+	float elevation = { Random::GetRandomFloat(elevation_.min,elevation_.max) };
 	float elevationRadian = elevation * float(std::numbers::pi / 180.0f);
 
 	Vector3 velocity = {
-		Random::GetRandomFloat(popVelocity_.min.x,popVelocity_.max.x) * std::cos(elevationRadian) * std::cos(azimuthRadian),
-		Random::GetRandomFloat(popVelocity_.min.y,popVelocity_.max.y) * std::cos(elevationRadian) * std::sin(azimuthRadian),
-		Random::GetRandomFloat(popVelocity_.min.z,popVelocity_.max.z) * std::sin(elevationRadian)
+		Random::GetRandomFloat(velocity_.min.x,velocity_.max.x) * std::cos(elevationRadian) * std::cos(azimuthRadian),
+		Random::GetRandomFloat(velocity_.min.y,velocity_.max.y) * std::cos(elevationRadian) * std::sin(azimuthRadian),
+		Random::GetRandomFloat(velocity_.min.z,velocity_.max.z) * std::sin(elevationRadian)
 	};
 
 	Vector4 color = {
-		Random::GetRandomFloat(popColor_.min.x,popColor_.max.x),
-		Random::GetRandomFloat(popColor_.min.y,popColor_.max.y),
-		Random::GetRandomFloat(popColor_.min.z,popColor_.max.z),
-		Random::GetRandomFloat(popColor_.min.w,popColor_.max.w)
+		Random::GetRandomFloat(color_.min.x,color_.max.x),
+		Random::GetRandomFloat(color_.min.y,color_.max.y),
+		Random::GetRandomFloat(color_.min.z,color_.max.z),
+		Random::GetRandomFloat(color_.min.w,color_.max.w)
 	};
 
-	float lifeTime = Random::GetRandomFloat(popLifeTime_.min, popLifeTime_.max);
+	float lifeTime = Random::GetRandomFloat(lifeTime_.min, lifeTime_.max);
 
 	BaseParticle* particle = nullptr;
 	switch (particleType_) 
 	{
-	case ParticleType::kNormal:
+	case ParticleType::kBase:
 		particle = new BaseParticle();
 		particle->Initialize(translation, rotation, scale, velocity, color, lifeTime);
 		break;
 
-	case ParticleType::kScale:
+	case ParticleType::kNormal:
 		particle = new Particle();
-		particle->Initialize(translation, rotation, scale, velocity, color, lifeTime);
-		break;
-
-	case ParticleType::kCharge:
-		particle = new ChargeParticle();
 		particle->Initialize(translation, rotation, scale, velocity, color, lifeTime);
 		break;
 	}

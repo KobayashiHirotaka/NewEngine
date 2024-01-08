@@ -74,7 +74,7 @@ void ParticleModel::Draw(const ParticleSystem* particleSystem, const Camera& cam
 	//VBVを設定
 	sCommandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
-	//形状を設定。PSOに設定しているものとは別。同じものを設定すると考えておけば良い
+	//形状を設定
 	sCommandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//マテリアルCBufferの場所を設定
@@ -89,7 +89,7 @@ void ParticleModel::Draw(const ParticleSystem* particleSystem, const Camera& cam
 	//DescriptorTableを設定
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(3, textureHandle_);
 
-	//描画!(DrawCall/ドローコール)。3頂点で1つのインスタンス。インスタンスについては今後
+	//描画
 	sCommandList_->DrawInstanced(UINT(vertices_.size()), particleSystem->GetNumInstance(), 0, 0);
 }
 
@@ -101,7 +101,7 @@ void ParticleModel::Draw(const ParticleSystem* particleSystem, const Camera& cam
 	//VBVを設定
 	sCommandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
-	//形状を設定。PSOに設定しているものとは別。同じものを設定すると考えておけば良い
+	//形状を設定
 	sCommandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//マテリアルCBufferの場所を設定
@@ -116,7 +116,7 @@ void ParticleModel::Draw(const ParticleSystem* particleSystem, const Camera& cam
 	//DescriptorTableを設定
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(3, textureHandle);
 
-	//描画!(DrawCall/ドローコール)。3頂点で1つのインスタンス。インスタンスについては今後
+	//描画
 	sCommandList_->DrawInstanced(UINT(vertices_.size()), particleSystem->GetNumInstance(), 0, 0);
 }
 
@@ -368,15 +368,13 @@ void ParticleModel::Initialize(const ModelData& modelData) {
 }
 
 
-void ParticleModel::CreateVertexResource() {
+void ParticleModel::CreateVertexResource()
+{
 	//頂点リソースを作る
 	vertexResource_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(VertexData) * vertices_.size());
 
-	//リソースの先頭のアドレスから使う
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
-	//使用するリソースのサイズは頂点6つ分のサイズ
 	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * vertices_.size());
-	//頂点1つあたりのサイズ
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
 	//書き込むためのアドレスを取得
@@ -387,84 +385,90 @@ void ParticleModel::CreateVertexResource() {
 }
 
 
-void ParticleModel::CreateMaterialResource() {
-	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
+void ParticleModel::CreateMaterialResource()
+{
 	materialResource_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(ConstBuffDataMaterial));
-	//マテリアルにデータを書き込む
+
 	ConstBuffDataMaterial* materialData = nullptr;
-	//書き込むためのアドレスを取得
+	
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-	//今回は赤を書き込んでみる
+
 	materialData->color = Vector4{ 1.0f,1.0f,1.0f,1.0f };
 	materialData->uvTransform = MakeIdentity4x4();
 	materialResource_->Unmap(0, nullptr);
 }
 
 
-ParticleModel::ModelData ParticleModel::LoadObjFile(const std::string& directoryPath, const std::string& filename) {
-	ModelData modelData;//構築するModelData
-	std::vector<Vector4> positions;//位置
-	std::vector<Vector3> normals;//法線
-	std::vector<Vector2> texcoords;//テクスチャ座標
-	std::string line;//ファイルから読んだ1行を格納するもの
-	std::ifstream file(directoryPath + "/" + filename);//ファイルを開く
-	assert(file.is_open());//とりあえず開けなかったら止める
+ParticleModel::ModelData ParticleModel::LoadObjFile(const std::string& directoryPath, const std::string& filename)
+{
+	ModelData modelData;
+	std::vector<Vector4> positions;
+	std::vector<Vector3> normals;
+	std::vector<Vector2> texcoords;
+	std::string line;
+	std::ifstream file(directoryPath + "/" + filename);
+	assert(file.is_open());
 
-	while (std::getline(file, line)) {
+	while (std::getline(file, line))
+	{
 		std::string identifier;
 		std::istringstream s(line);
-		s >> identifier;//先頭の識別子を読む
+		s >> identifier;
 
-		//identifierに応じた処理
-		if (identifier == "v") {
+		if (identifier == "v")
+		{
 			Vector4 position;
 			s >> position.x >> position.y >> position.z;
 			position.z *= -1.0f;
 			position.w = 1.0f;
 			positions.push_back(position);
 		}
-		else if (identifier == "vt") {
+		else if (identifier == "vt")
+		{
 			Vector2 texcoord;
 			s >> texcoord.x >> texcoord.y;
 			texcoord.y = 1.0f - texcoord.y;
 			texcoords.push_back(texcoord);
 		}
-		else if (identifier == "vn") {
+		else if (identifier == "vn")
+		{
 			Vector3 normal;
 			s >> normal.x >> normal.y >> normal.z;
 			normal.z *= -1.0f;
 			normals.push_back(normal);
 		}
-		else if (identifier == "f") {
+		else if (identifier == "f") 
+		{
 			VertexData triangle[3];
-			//面は三角形限定。その他は未対応
-			for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex) {
+			for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex)
+			{
 				std::string vertexDefinition;
 				s >> vertexDefinition;
-				//頂点の要素へのIndexは「位置/UV/法線」で格納されているので、分解してIndexを取得する
 				std::istringstream v(vertexDefinition);
+
 				uint32_t elementIndices[3];
-				for (int32_t element = 0; element < 3; ++element) {
+				for (int32_t element = 0; element < 3; ++element)
+				{
 					std::string index;
-					std::getline(v, index, '/');// /区切りでインデックスを読んでいく
+					std::getline(v, index, '/');
 					elementIndices[element] = std::stoi(index);
 				}
-				//要素へのIndexから、実際の要素の値を取得して、頂点を構築する
+				
 				Vector4 position = positions[elementIndices[0] - 1];
 				Vector2 texcoord = texcoords[elementIndices[1] - 1];
 				Vector3 normal = normals[elementIndices[2] - 1];
 				triangle[faceVertex] = { position,texcoord,normal };
 			}
-			//頂点を逆順で登録することで、回り順を逆にする
+
+			
 			modelData.vertices.push_back(triangle[2]);
 			modelData.vertices.push_back(triangle[1]);
 			modelData.vertices.push_back(triangle[0]);
 		}
-		else if (identifier == "mtllib") {
-			//materialTempalteLibraryファイルの名前を取得する
+		else if (identifier == "mtllib")
+		{
 			std::string materialFilename;
 			s >> materialFilename;
-			//基本的にobjファイルと同一階層にmtlは存在させるので、ディレクトリ名とファイル名を渡す
 			modelData.material = LoadMaterialTemplateFile(directoryPath, materialFilename);
 		}
 	}
@@ -472,22 +476,23 @@ ParticleModel::ModelData ParticleModel::LoadObjFile(const std::string& directory
 }
 
 
-ParticleModel::MaterialData ParticleModel::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) {
-	MaterialData materialData;//構築するMaterialData
-	std::string line;//ファイルから読んだ1行を格納するもの
-	std::ifstream file(directoryPath + "/" + filename);//ファイルを開く
-	assert(file.is_open());//とりあえず開けなかったら止める
+ParticleModel::MaterialData ParticleModel::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
+{
+	MaterialData materialData;
+	std::string line;
+	std::ifstream file(directoryPath + "/" + filename);
+	assert(file.is_open());
 
-	while (std::getline(file, line)) {
+	while (std::getline(file, line)) 
+	{
 		std::string identifier;
 		std::istringstream s(line);
 		s >> identifier;
 
-		//identifierに応じた処理
-		if (identifier == "map_Kd") {
+		if (identifier == "map_Kd")
+		{
 			std::string textureFilename;
 			s >> textureFilename;
-			//連結してファイルパスにする
 			materialData.textureFilePath = directoryPath + "/" + textureFilename;
 		}
 	}

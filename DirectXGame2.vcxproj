@@ -21,7 +21,6 @@
     <ClCompile Include="Engine\3D\Model\Material.cpp" />
     <ClCompile Include="Engine\3D\Model\Model.cpp" />
     <ClCompile Include="Engine\3D\Particle\BaseParticle.cpp" />
-    <ClCompile Include="Engine\3D\Particle\ChargeParticle.cpp" />
     <ClCompile Include="Engine\3D\Particle\EmitterBuilder.cpp" />
     <ClCompile Include="Engine\3D\Particle\Particle.cpp" />
     <ClCompile Include="Engine\3D\Particle\ParticleEmitter.cpp" />
@@ -103,7 +102,6 @@
     <ClInclude Include="Engine\3D\Model\Material.h" />
     <ClInclude Include="Engine\3D\Model\Model.h" />
     <ClInclude Include="Engine\3D\Particle\BaseParticle.h" />
-    <ClInclude Include="Engine\3D\Particle\ChargeParticle.h" />
     <ClInclude Include="Engine\3D\Particle\EmitterBuilder.h" />
     <ClInclude Include="Engine\3D\Particle\Particle.h" />
     <ClInclude Include="Engine\3D\Particle\ParticleEmitter.h" />

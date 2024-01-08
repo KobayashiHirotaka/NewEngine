@@ -1,6 +1,5 @@
 #pragma once
 #include "Particle.h"
-#include "ChargeParticle.h"
 #include "Engine/3D/Particle/Random.h"
 #include <list>
 #include <memory>
@@ -12,27 +11,26 @@ class ParticleEmitter
 public:
 	enum class ParticleType
 	{
+		kBase,
 		kNormal,
-		kScale,
-		kCharge,
 	};
 
-	struct minmaxStructVector4 
+	struct RangeFloat
 	{
-		Vector4 min;
-		Vector4 max;
+		float min;
+		float max;
 	};
 
-	struct minmaxStructVector3
+	struct RangeVector3
 	{
 		Vector3 min;
 		Vector3 max;
 	};
 
-	struct minmaxStructFloat 
+	struct RangeVector4
 	{
-		float min;
-		float max;
+		Vector4 min;
+		Vector4 max;
 	};
 
 	void Initialize();
@@ -47,49 +45,49 @@ public:
 
 	const std::string& GetName() { return name_; };
 
-	void SetTranslation(const Vector3& translation) { popTranslation_ = translation; };
+	void SetTranslation(const Vector3& translation) { translation_ = translation; };
 
-	void SetPopCount(uint32_t count) { popCount_ = count; };
+	void SetPopCount(uint32_t count) { particleCount_ = count; };
 
-	void SetPopArea(const Vector3& min, const Vector3& max) { popArea_ = { min,max }; };
+	void SetPopArea(const Vector3& min, const Vector3& max) { area_ = { min,max }; };
 
-	void SetPopAzimuth(float min, float max) { popAzimuth = { min,max }; }
+	void SetPopAzimuth(float min, float max) { azimuth_ = { min,max }; }
 
-	void SetPopVelocity(const Vector3& min, const Vector3& max) { popArea_ = { min,max }; };
-
-private:
-	void Pop();
+	void SetPopVelocity(const Vector3& min, const Vector3& max) { area_ = { min,max }; };
 
 private:
-	std::list<std::unique_ptr<BaseParticle>> particles_{};
+	void EmitParticle();
+
+private:
+	std::list<std::unique_ptr<BaseParticle>> particles_;
 	
 	std::string name_ = "nameless";
 	
-	ParticleType particleType_ = ParticleType::kNormal;
+	ParticleType particleType_ = ParticleType::kBase;
 	
-	Vector3 popTranslation_ = { 0.0f,0.0f,0.0f };
-	
-	minmaxStructVector3 popArea_ = { {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
-	
-	minmaxStructVector3 popRotation_ = { {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
-	
-	minmaxStructVector3 popScale_ = { {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} };
+	Vector3 translation_ = { 0.0f,0.0f,0.0f };
 
-	minmaxStructFloat popAzimuth = { 0.0f,360.0f };
+	RangeVector3 rotation_ = { {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 
-	minmaxStructFloat popElevation = { 0.0f,180.0f };
+	RangeVector3 scale_ = { {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} };
+
+	RangeVector3 velocity_ = { {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} };
 	
-	minmaxStructVector3 popVelocity_ = { {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} };
+	RangeVector3 area_ = { {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+
+	RangeVector4 color_ = { {1.0f,1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f,1.0f} };
+
+	RangeFloat azimuth_ = { 0.0f,360.0f };
+
+	RangeFloat elevation_ = { 0.0f,180.0f };
 	
-	minmaxStructVector4 popColor_ = { {1.0f,1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f,1.0f} };
-	
-	minmaxStructFloat popLifeTime_ = { 0.5f,1.0f };
+	RangeFloat lifeTime_ = { 0.5f,1.0f };
 
-	uint32_t popCount_ = 1;
+	uint32_t particleCount_ = 1;
 
-	float popFrequency_ = 0.1f;
+	float frequency_ = 0.1f;
 
-	float frequencyTime_ = popFrequency_;
+	float frequencyTime_ = frequency_;
 	
 	float deleteTime_ = 10.0f;
 

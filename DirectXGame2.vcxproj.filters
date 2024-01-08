@@ -345,9 +345,6 @@
     <ClCompile Include="Engine\3D\Particle\Particle.cpp">
       <Filter>ソース ファイル\Engine\3d\Particle</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\3D\Particle\ChargeParticle.cpp">
-      <Filter>ソース ファイル\Engine\3d\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\3D\Particle\EmitterBuilder.cpp">
       <Filter>ソース ファイル\Engine\3d\Particle</Filter>
     </ClCompile>
@@ -528,9 +525,6 @@
       <Filter>ヘッダー ファイル\Engine\3d\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Particle\Particle.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\3D\Particle\ChargeParticle.h">
       <Filter>ヘッダー ファイル\Engine\3d\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Particle\ParticleEmitter.h">

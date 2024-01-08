@@ -8,7 +8,4 @@ public:
 	void Initialize(const Vector3& translation, const Vector3& rotation, const Vector3& scale, const Vector3& velocity, const Vector4& color, float lifeTime) override;
 
 	void Update() override;
-
-private:
-	float scaleMinus_ = 0.01f;
 };

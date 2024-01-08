@@ -33,7 +33,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	camera_.UpdateMatrix();
 
-	currentSeconds_ = 10;
+	currentSeconds_ = 99;
 	UpdateNumberSprite();
 };
 

@@ -187,16 +187,6 @@ void Enemy::HPBarUpdate()
 	hpBar_.size_ = { (HP_ / maxHP_) * barSize,1.0f };
 
 	hpBar_.sprite_->SetSize(hpBar_.size_);
-
-	if (HP_ >= (maxHP_ / 3.0f) * 2.0f) {
-		hpBar_.sprite_->SetColor({ 0.9f, 0.0f, 1.0f, 1.0f });
-	}
-	else if (HP_ < (maxHP_ / 3.0f) * 2.0f && HP_ >= (maxHP_ / 3.0f) * 1.0f) {
-		hpBar_.sprite_->SetColor({ 1.0f, 1.0f, 0.0f, 1.0f });
-	}
-	else if (HP_ < (maxHP_ / 3.0f) * 1.0f && HP_ >= 0.0f) {
-		hpBar_.sprite_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
-	}
 }
 
 void Enemy::DrawParticle(const Camera& camera)
@@ -234,7 +224,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			worldTransform_.translation.x -= 0.3f;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
 				.SetTranslation(worldTransform_.translation)
 				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
@@ -256,7 +246,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			worldTransform_.translation.x += 0.3f;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
 				.SetTranslation(worldTransform_.translation)
 				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
@@ -932,7 +922,7 @@ void Enemy::DownAnimation()
 		if (downAnimationTimer_[0] > 40)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
 				.SetTranslation(worldTransform_.translation)
 				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
@@ -977,7 +967,7 @@ void Enemy::DownAnimation()
 		if (downAnimationTimer_[0] > 40)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
 				.SetTranslation(worldTransform_.translation)
 				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
@@ -1023,7 +1013,7 @@ void Enemy::DownAnimation()
 		if (downAnimationTimer_[1] > 40)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
 				.SetTranslation(worldTransform_.translation)
 				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
@@ -1068,7 +1058,7 @@ void Enemy::DownAnimation()
 		if (downAnimationTimer_[1] > 40)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
 				.SetTranslation(worldTransform_.translation)
 				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
@@ -1114,7 +1104,7 @@ void Enemy::DownAnimation()
 		if (downAnimationTimer_[2] > 40)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
 				.SetTranslation(worldTransform_.translation)
 				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
@@ -1159,7 +1149,7 @@ void Enemy::DownAnimation()
 		if (downAnimationTimer_[2] > 40)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kScale)
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
 				.SetTranslation(worldTransform_.translation)
 				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })

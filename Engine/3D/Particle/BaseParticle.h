@@ -19,15 +19,15 @@ public:
 	virtual const bool IsDead() { return isDead_; };
 
 protected:
-	Vector3 translation_{};
+	Vector3 translation_;
 
-	Vector3 rotation_{};
+	Vector3 rotation_;
 	
-	Vector3 scale_{};
+	Vector3 scale_;
 
-	Vector3 velocity_{};
+	Vector3 velocity_;
 
-	Vector4 color_{};
+	Vector4 color_;
 
 	float lifeTime_ = 0.0f;
 

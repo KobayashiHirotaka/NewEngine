@@ -25,7 +25,7 @@ public:
 		WorldlTransform,
 		ViewProjection,
 		Texture,
-		DirectionalLight
+		Light
 	};
 
 	struct MaterialData
@@ -96,6 +96,5 @@ private:
 
 	std::unique_ptr<Light>light_;
 	
-	uint32_t textureHandle_{};
-
+	uint32_t textureHandle_;
 };

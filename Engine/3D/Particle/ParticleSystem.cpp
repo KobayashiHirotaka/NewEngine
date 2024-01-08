@@ -88,7 +88,7 @@ ParticleEmitter* ParticleSystem::GetParticleEmitter(const std::string& name)
 			return particleEmitter.get();
 		}
 	}
-	//見つからなかったらnullptrを返す
+	
 	return nullptr;
 }
 
@@ -103,5 +103,6 @@ std::list<ParticleEmitter*> ParticleSystem::GetParticleEmitters(const std::strin
 			particleEmitters.push_back(particleEmitter.get());
 		}
 	}
+
 	return particleEmitters;
 }

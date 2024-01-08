@@ -24,67 +24,67 @@ EmitterBuilder& EmitterBuilder::SetParticleType(ParticleEmitter::ParticleType pa
 
 EmitterBuilder& EmitterBuilder::SetTranslation(const Vector3& translation)
 {
-	particleEmitter_->popTranslation_ = translation;
+	particleEmitter_->translation_ = translation;
 	return *this;
 }
 
 EmitterBuilder& EmitterBuilder::SetArea(const Vector3& min, const Vector3& max)
 {
-	particleEmitter_->popArea_ = { min,max };
+	particleEmitter_->area_ = { min,max };
 	return *this;
 }
 
 EmitterBuilder& EmitterBuilder::SetRotation(const Vector3& min, const Vector3& max)
 {
-	particleEmitter_->popRotation_ = { min,max };
+	particleEmitter_->rotation_ = { min,max };
 	return *this;
 }
 
 EmitterBuilder& EmitterBuilder::SetScale(const Vector3& min, const Vector3& max)
 {
-	particleEmitter_->popScale_ = { min,max };
+	particleEmitter_->scale_ = { min,max };
 	return *this;
 }
 
 EmitterBuilder& EmitterBuilder::SetAzimuth(float min, float max)
 {
-	particleEmitter_->popAzimuth = { min,max };
+	particleEmitter_->azimuth_ = { min,max };
 	return *this;
 }
 
 EmitterBuilder& EmitterBuilder::SetElevation(float min, float max)
 {
-	particleEmitter_->popElevation = { min,max };
+	particleEmitter_->elevation_ = { min,max };
 	return *this;
 }
 
 EmitterBuilder& EmitterBuilder::SetVelocity(const Vector3& min, const Vector3& max)
 {
-	particleEmitter_->popVelocity_ = { min,max };
+	particleEmitter_->velocity_ = { min,max };
 	return *this;
 }
 
 EmitterBuilder& EmitterBuilder::SetColor(const Vector4& min, const Vector4& max)
 {
-	particleEmitter_->popColor_ = { min,max };
+	particleEmitter_->color_ = { min,max };
 	return *this;
 }
 
 EmitterBuilder& EmitterBuilder::SetLifeTime(float min, float max)
 {
-	particleEmitter_->popLifeTime_ = { min,max };
+	particleEmitter_->lifeTime_ = { min,max };
 	return *this;
 }
 
 EmitterBuilder& EmitterBuilder::SetCount(uint32_t count)
 {
-	particleEmitter_->popCount_ = count;
+	particleEmitter_->particleCount_ = count;
 	return *this;
 }
 
 EmitterBuilder& EmitterBuilder::SetFrequency(float frequency)
 {
-	particleEmitter_->popFrequency_ = frequency;
+	particleEmitter_->frequency_ = frequency;
 	particleEmitter_->frequencyTime_ = frequency;
 	return *this;
 }

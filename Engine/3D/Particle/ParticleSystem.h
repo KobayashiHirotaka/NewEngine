@@ -44,6 +44,5 @@ private:
 
 	//インスタンス数
 	uint32_t numInstance_ = 0;
-
 };
 
