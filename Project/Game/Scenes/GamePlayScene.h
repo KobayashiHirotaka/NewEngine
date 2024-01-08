@@ -46,7 +46,7 @@ private:
 	std::unique_ptr<Skydome>skydome_;
 
 	int round_ = 1;
-	int migrationTimer_ = 60;
+	int migrationTimer_;
 	int PlayerWinCount_ = 0;
 	int EnemyWinCount_ = 0;
 
@@ -55,8 +55,20 @@ private:
 	uint32_t tensTextureHandle_;
 	uint32_t onesTextureHandle_;
 
+	std::unique_ptr<Sprite>winSprite_ = nullptr;
+	uint32_t winTextureHandle_;
+
+	std::unique_ptr<Sprite>loseSprite_ = nullptr;
+	uint32_t loseTextureHandle_;
+
+	std::unique_ptr<Sprite>drowSprite_ = nullptr;
+	uint32_t drowTextureHandle_;
+
 	int currentSeconds_;
 
 	float frameTime = 1.0f / 60.0f;  // 60FPSを仮定
 	float elapsedTime = 0.0f;
+
+	bool isPlayerWin_ = false;
+	bool isDrow_ = false;
 };

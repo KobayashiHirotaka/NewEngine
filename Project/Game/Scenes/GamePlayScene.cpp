@@ -15,6 +15,14 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
+	winTextureHandle_ = TextureManager::Load("resource/number/0.png");
+	loseTextureHandle_ = TextureManager::Load("resource/number/1.png");
+	drowTextureHandle_= TextureManager::Load("resource/number/2.png");
+
+	winSprite_.reset(Sprite::Create(winTextureHandle_, { 600.0f, 70.0f }));
+	loseSprite_.reset(Sprite::Create(loseTextureHandle_, { 600.0f, 70.0f }));
+	drowSprite_.reset(Sprite::Create(drowTextureHandle_, { 600.0f, 70.0f }));
+
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
 	
@@ -33,8 +41,16 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	camera_.UpdateMatrix();
 
-	currentSeconds_ = 99;
+	currentSeconds_ = 5;
 	UpdateNumberSprite();
+
+	migrationTimer_ = 200;
+
+	frameTime = 1.0f / 60.0f;  // 60FPSを仮定
+	elapsedTime = 0.0f;
+
+	isPlayerWin_ = false;
+	isDrow_ = false;
 };
 
 void GamePlayScene::Update(SceneManager* sceneManager)
@@ -45,9 +61,25 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	ImGui::Text("3Key : Vignette ON");
 	ImGui::End();
 
-	player_->Update();
+	if (migrationTimer_ >= 150)
+	{
+		player_->Update();
 
-	enemy_->Update();
+		enemy_->Update();
+
+		// 時間経過を加算
+		elapsedTime += frameTime;
+
+		// タイムカウントを更新
+		if (currentSeconds_ > 0 && elapsedTime >= 1.0f) {
+			currentSeconds_--;
+			UpdateNumberSprite();
+
+			// elapsedTimeをリセット
+			elapsedTime = 0.0f;
+		}
+	}
+
 
 	skydome_->Update();
 
@@ -66,12 +98,12 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	if (enemy_->GetHP() <= 0 && round_ == 1)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = true;
 		ImGui::Begin("PlayerWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			round_ = 2;
 			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
@@ -80,12 +112,12 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	else if (enemy_->GetHP() <= 0 && round_ == 2 && PlayerWinCount_ == 1)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = true;
 		ImGui::Begin("PlayerWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			Initialize(sceneManager);
 			PlayerWinCount_ = 2;
 		}
@@ -93,12 +125,12 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	else if (enemy_->GetHP() <= 0 && round_ == 2 && PlayerWinCount_ == 0)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = true;
 		ImGui::Begin("PlayerWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			round_ = 3;
 			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
@@ -107,10 +139,11 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	else if (enemy_->GetHP() <= 0 && round_ == 3 && PlayerWinCount_ == 1)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = true;
 		ImGui::Begin("PlayerWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
 			migrationTimer_ = 60;
 			Initialize(sceneManager);
@@ -121,10 +154,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 1)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = true;
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			round_ = 2;
 			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
@@ -133,10 +166,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 2 && PlayerWinCount_ == 1)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = true;
 		
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			Initialize(sceneManager);
 			PlayerWinCount_ = 2;
 		}
@@ -144,10 +177,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 2 && PlayerWinCount_ == 0)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = true;
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			round_ = 3;
 			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
@@ -156,10 +189,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 3 && PlayerWinCount_ == 1)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = true;
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			Initialize(sceneManager);
 			PlayerWinCount_ = 2;
 		}
@@ -174,12 +207,12 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	if (player_->GetHP() <= 0 && round_ == 1)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = false;
 		ImGui::Begin("EnemyWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			round_ = 2;
 			Initialize(sceneManager);
 			EnemyWinCount_ = 1;
@@ -188,12 +221,12 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	else if (player_->GetHP() <= 0 && round_ == 2 && EnemyWinCount_ == 1)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = false;
 		ImGui::Begin("EnemyWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			Initialize(sceneManager);
 			EnemyWinCount_ = 2;
 		}
@@ -201,12 +234,12 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	else if (player_->GetHP() <= 0 && round_ == 2 && EnemyWinCount_ == 0)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = false;
 		ImGui::Begin("EnemyWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			round_ = 3;
 			Initialize(sceneManager);
 			EnemyWinCount_ = 1;
@@ -215,12 +248,12 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	else if (player_->GetHP() <= 0 && round_ == 3 && EnemyWinCount_ == 1)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = false;
 		ImGui::Begin("EnemyWin");
 		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			Initialize(sceneManager);
 			EnemyWinCount_ = 2;
 		}
@@ -229,10 +262,12 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 1)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = false;
+		ImGui::Begin("EnemyWin");
+		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			round_ = 2;
 			Initialize(sceneManager);
 			EnemyWinCount_ = 1;
@@ -241,10 +276,12 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 2 && EnemyWinCount_ == 1)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = false;
+		ImGui::Begin("EnemyWin");
+		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			Initialize(sceneManager);
 			EnemyWinCount_ = 2;
 		}
@@ -252,10 +289,12 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 2 && EnemyWinCount_ == 0)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = false;
+		ImGui::Begin("EnemyWin");
+		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			round_ = 3;
 			Initialize(sceneManager);
 			EnemyWinCount_ = 1;
@@ -264,10 +303,12 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 3 && EnemyWinCount_ == 1)
 	{
 		migrationTimer_--;
+		isPlayerWin_ = false;
+		ImGui::Begin("EnemyWin");
+		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			Initialize(sceneManager);
 			EnemyWinCount_ = 2;
 		}
@@ -281,10 +322,12 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	if (currentSeconds_ <= 0 && enemy_->GetHP() == player_->GetHP() && round_ == 1)
 	{
 		migrationTimer_--;
+		isDrow_ = true;
+		ImGui::Begin("Draw");
+		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			round_ = 3;
 			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
@@ -294,27 +337,17 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() == player_->GetHP() && round_ == 3)
 	{
 		migrationTimer_--;
+		isDrow_ = true;
+		ImGui::Begin("Draw");
+		ImGui::End();
 
-		if (migrationTimer_ < 0 && enemy_->GetIsDown() == false)
+		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			round_ = 3;
 			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
 			EnemyWinCount_ = 1;
 		}
-	}
-
-	// 時間経過を加算
-	elapsedTime += frameTime;
-
-	// タイムカウントを更新
-	if (currentSeconds_ > 0 && elapsedTime >= 1.0f) {
-		currentSeconds_--;
-		UpdateNumberSprite();
-
-		// elapsedTimeをリセット
-		elapsedTime = 0.0f;
 	}
 
 	ImGui::Begin("round");
@@ -356,15 +389,15 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	Model::PreDraw();
 
-	player_->Draw(camera_);
-
-	enemy_->Draw(camera_);
-
 	Model::PostDraw();
 
 	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
+
+	player_->Draw(camera_);
+
+	enemy_->Draw(camera_);
 
 	skydome_->Draw(camera_);
 
@@ -388,6 +421,24 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	numberOnesSprite_->Draw();
 	numberTensSprite_->Draw();
+
+	if (migrationTimer_ < 150)
+	{
+		if (isPlayerWin_)
+		{
+			winSprite_->Draw();
+		}
+
+		if (!isPlayerWin_ && !isDrow_)
+		{
+			loseSprite_->Draw();
+		}
+
+		if (isDrow_)
+		{
+			drowSprite_->Draw();
+		}
+	}
 
 	Sprite::PostDraw();
 };
