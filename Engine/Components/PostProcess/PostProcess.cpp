@@ -10,7 +10,6 @@ PostProcess* PostProcess::GetInstance()
 	return &instance;
 }
 
-
 void PostProcess::Initialize()
 {
 	dxCore_ = DirectXCore::GetInstance();

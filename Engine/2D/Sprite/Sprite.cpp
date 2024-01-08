@@ -22,6 +22,27 @@ void Sprite::StaticInitialize()
 	sMatProjection_ = MakeOrthographicMatrix(0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 100.0f);
 }
 
+void Sprite::Initialize(uint32_t textureHandle, Vector2 position)
+{
+	textureHandle_ = textureHandle;
+
+	position_ = position;
+
+	resourceDesc_ = TextureManager::GetInstance()->GetResourceDesc(textureHandle_);
+
+	texSize_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
+
+	//頂点バッファの作成
+	Sprite::CreateVertexBuffer();
+
+	//マテリアル用のリソースの作成
+	Sprite::CreateMaterialResource();
+
+	//wvp用のリソースの作成
+	Sprite::CreateWVPResource();
+}
+
+
 void Sprite::Release()
 {
 	sDxcUtils_.Reset();
@@ -81,7 +102,7 @@ void Sprite::Draw()
 	//DescriptorTableを設定
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(2, textureHandle_);
 
-	//描画!(DrawCall/ドローコール)。3頂点で1つのインスタンス。インスタンスについては今後
+	//描画
 	sCommandList_->DrawInstanced(6, 1, 0, 0);
 }
 
@@ -355,26 +376,6 @@ void Sprite::CreatePipelineStateObject()
 	assert(SUCCEEDED(hr));
 }
 
-void Sprite::Initialize(uint32_t textureHandle, Vector2 position)
-{
-	textureHandle_ = textureHandle;
-
-	position_ = position;
-
-	resourceDesc_ = TextureManager::GetInstance()->GetResourceDesc(textureHandle_);
-
-	texSize_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
-
-	//頂点バッファの作成
-	Sprite::CreateVertexBuffer();
-
-	//マテリアル用のリソースの作成
-	Sprite::CreateMaterialResource();
-
-	//wvp用のリソースの作成
-	Sprite::CreateWVPResource();
-}
-
 void Sprite::CreateVertexBuffer()
 {
 	vertexResource_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(VertexData) * 6);
@@ -416,7 +417,6 @@ void Sprite::CreateMaterialResource()
 	materialData->uvTransform = MakeIdentity4x4();
 }
 
-
 void Sprite::UpdateMaterial()
 {
 	//マテリアルにデータを書き込む
@@ -430,7 +430,6 @@ void Sprite::UpdateMaterial()
 	uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix(Vector3{ uvTranslation_.x,uvTranslation_.y,0.0f }));
 	materialData->uvTransform = uvTransformMatrix;
 }
-
 
 void Sprite::CreateWVPResource()
 {
