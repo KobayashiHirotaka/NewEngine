@@ -15,13 +15,13 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
-	winTextureHandle_ = TextureManager::Load("resource/number/0.png");
-	loseTextureHandle_ = TextureManager::Load("resource/number/1.png");
-	drowTextureHandle_= TextureManager::Load("resource/number/2.png");
+	winTextureHandle_ = TextureManager::Load("resource/WIN.png");
+	loseTextureHandle_ = TextureManager::Load("resource/LOSE.png");
+	drowTextureHandle_= TextureManager::Load("resource/Drow.png");
 
-	winSprite_.reset(Sprite::Create(winTextureHandle_, { 600.0f, 70.0f }));
-	loseSprite_.reset(Sprite::Create(loseTextureHandle_, { 600.0f, 70.0f }));
-	drowSprite_.reset(Sprite::Create(drowTextureHandle_, { 600.0f, 70.0f }));
+	winSprite_.reset(Sprite::Create(winTextureHandle_, { 0.0f, 0.0f }));
+	loseSprite_.reset(Sprite::Create(loseTextureHandle_, { 0.0f, 0.0f }));
+	drowSprite_.reset(Sprite::Create(drowTextureHandle_, { 0.0f, 0.0f }));
 
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
@@ -55,12 +55,6 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 void GamePlayScene::Update(SceneManager* sceneManager)
 {
-	ImGui::Begin("Play");
-	ImGui::Text("1Key : PostProcess ON");
-	ImGui::Text("2Key : Bloom ON");
-	ImGui::Text("3Key : Vignette ON");
-	ImGui::End();
-
 	if (migrationTimer_ >= 150)
 	{
 		player_->Update();
@@ -83,24 +77,11 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	skydome_->Update();
 
-	//勝ち負け表示の処理
-	if (input_->PushKey(DIK_P))
-	{
-		player_->SetHP(0);
-	}
-
-	if (input_->PushKey(DIK_O))
-	{
-		enemy_->SetHP(0);
-	}
-
 	//Playerが勝ったとき
 	if (enemy_->GetHP() <= 0 && round_ == 1)
 	{
 		migrationTimer_--;
 		isPlayerWin_ = true;
-		ImGui::Begin("PlayerWin");
-		ImGui::End();
 
 		if (migrationTimer_ < 0)
 		{
@@ -113,9 +94,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		migrationTimer_--;
 		isPlayerWin_ = true;
-		ImGui::Begin("PlayerWin");
-		ImGui::End();
-
+		
 		if (migrationTimer_ < 0)
 		{
 			Initialize(sceneManager);
@@ -126,9 +105,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		migrationTimer_--;
 		isPlayerWin_ = true;
-		ImGui::Begin("PlayerWin");
-		ImGui::End();
-
+		
 		if (migrationTimer_ < 0)
 		{
 			round_ = 3;
@@ -140,9 +117,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		migrationTimer_--;
 		isPlayerWin_ = true;
-		ImGui::Begin("PlayerWin");
-		ImGui::End();
-
+		
 		if (migrationTimer_ < 0)
 		{
 			migrationTimer_ = 60;
@@ -208,9 +183,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		migrationTimer_--;
 		isPlayerWin_ = false;
-		ImGui::Begin("EnemyWin");
-		ImGui::End();
-
+		
 		if (migrationTimer_ < 0)
 		{
 			round_ = 2;
@@ -222,9 +195,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		migrationTimer_--;
 		isPlayerWin_ = false;
-		ImGui::Begin("EnemyWin");
-		ImGui::End();
-
+		
 		if (migrationTimer_ < 0)
 		{
 			Initialize(sceneManager);
@@ -235,9 +206,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		migrationTimer_--;
 		isPlayerWin_ = false;
-		ImGui::Begin("EnemyWin");
-		ImGui::End();
-
+	
 		if (migrationTimer_ < 0)
 		{
 			round_ = 3;
@@ -249,9 +218,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		migrationTimer_--;
 		isPlayerWin_ = false;
-		ImGui::Begin("EnemyWin");
-		ImGui::End();
-
+		
 		if (migrationTimer_ < 0)
 		{
 			Initialize(sceneManager);
@@ -263,9 +230,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		migrationTimer_--;
 		isPlayerWin_ = false;
-		ImGui::Begin("EnemyWin");
-		ImGui::End();
-
+	
 		if (migrationTimer_ < 0)
 		{
 			round_ = 2;
@@ -277,9 +242,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		migrationTimer_--;
 		isPlayerWin_ = false;
-		ImGui::Begin("EnemyWin");
-		ImGui::End();
-
+		
 		if (migrationTimer_ < 0)
 		{
 			Initialize(sceneManager);
@@ -290,9 +253,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		migrationTimer_--;
 		isPlayerWin_ = false;
-		ImGui::Begin("EnemyWin");
-		ImGui::End();
-
+		
 		if (migrationTimer_ < 0)
 		{
 			round_ = 3;
@@ -304,9 +265,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		migrationTimer_--;
 		isPlayerWin_ = false;
-		ImGui::Begin("EnemyWin");
-		ImGui::End();
-
+		
 		if (migrationTimer_ < 0)
 		{
 			Initialize(sceneManager);
@@ -323,8 +282,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		migrationTimer_--;
 		isDrow_ = true;
-		ImGui::Begin("Draw");
-		ImGui::End();
 
 		if (migrationTimer_ < 0)
 		{
@@ -338,9 +295,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		migrationTimer_--;
 		isDrow_ = true;
-		ImGui::Begin("Draw");
-		ImGui::End();
-
+		
 		if (migrationTimer_ < 0)
 		{
 			round_ = 3;
@@ -349,13 +304,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			EnemyWinCount_ = 1;
 		}
 	}
-
-	ImGui::Begin("round");
-	ImGui::Text("round %d", round_);
-	ImGui::Text("%d", currentSeconds_);
-	ImGui::Text("PlayerWinCount %d", PlayerWinCount_);
-	ImGui::Text("EnemyWinCount %d", EnemyWinCount_);
-	ImGui::End();
 
 	collisionManager_->ClearColliders();
 	collisionManager_->AddCollider(player_.get());
@@ -403,16 +351,7 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	ParticleModel::PostDraw();
 
-	PostProcess::GetInstance()->PostDraw();
-
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
-
-	player_->DrawSprite();
-
-	enemy_->DrawSprite();
-
-	numberOnesSprite_->Draw();
-	numberTensSprite_->Draw();
 
 	if (migrationTimer_ < 150)
 	{
@@ -431,6 +370,19 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 			drowSprite_->Draw();
 		}
 	}
+
+	Sprite::PostDraw();
+
+	PostProcess::GetInstance()->PostDraw();
+
+	Sprite::PreDraw(Sprite::kBlendModeNormal);
+
+	player_->DrawSprite();
+
+	enemy_->DrawSprite();
+
+	numberOnesSprite_->Draw();
+	numberTensSprite_->Draw();
 
 	Sprite::PostDraw();
 };

@@ -1,9 +1,11 @@
 #pragma once
 #include "IScene.h"
+#include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Components/Input/Input.h"
-#include "Engine/Base/TextureManager/TextureManager.h"
+#include "Engine/Components/Audio/Audio.h"
+#include "Engine/2D/Sprite/Sprite.h"
 #include "Project/GameObject/Skydome/Skydome.h"
 #include <memory>
 
@@ -29,6 +31,15 @@ private:
 
 	Input* input_ = nullptr;
 
+	Audio* audio_ = nullptr;
+
 	std::unique_ptr<Skydome>skydome_;
 	std::unique_ptr<Model>skydomeModel_;
+
+	std::unique_ptr<Sprite>loseSceneSprite_ = nullptr;
+	uint32_t loseSceneTextureHandle_ = 0;
+
+	//サウンド
+	uint32_t soundHandle_ = 0u;
+	uint32_t titleSoundHandle_ = 0u;
 };

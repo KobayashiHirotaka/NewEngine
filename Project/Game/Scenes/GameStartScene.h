@@ -36,7 +36,6 @@ private:
 	std::unique_ptr<Skydome>skydome_;
 	std::unique_ptr<Model>skydomeModel_;
 
-
 	std::unique_ptr<Sprite>titleSprite_ = nullptr;
 	uint32_t titleTextureHandle_ = 0;
 

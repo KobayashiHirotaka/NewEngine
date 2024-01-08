@@ -10,20 +10,30 @@ GameWinScene::~GameWinScene() {};
 
 void GameWinScene::Initialize(SceneManager* sceneManager)
 {
+	textureManager_ = TextureManager::GetInstance();
+
 	input_ = Input::GetInstance();
+
+	audio_ = Audio::GetInstance();
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
+	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	PostProcess::GetInstance()->SetIsBloomActive(true);
+	//PostProcess::GetInstance()->SetIsVignetteActive(true);
+
 	camera_.UpdateMatrix();
+
+	winSceneTextureHandle_ = TextureManager::Load("resource/WinScene.png");
+	winSceneSprite_.reset(Sprite::Create(winSceneTextureHandle_, { 0.0f,0.0f }));
+
+	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
+	/*audio_->SoundPlayWave(titleSoundHandle_, true, 1.0f);*/
 };
 
 void GameWinScene::Update(SceneManager* sceneManager)
 {
-	ImGui::Begin("Win");
-
-	ImGui::End();
-
 	skydome_->Update();
 
 	if (input_->GetJoystickState())
@@ -41,13 +51,17 @@ void GameWinScene::Draw(SceneManager* sceneManager)
 {
 	PostProcess::GetInstance()->PreDraw();
 
-	DirectXCore::GetInstance()->ClearDepthBuffer();
-
 	Model::PreDraw();
 
 	skydome_->Draw(camera_);
 
 	Model::PostDraw();
+
+	Sprite::PreDraw(Sprite::kBlendModeNormal);
+
+	winSceneSprite_->Draw();
+
+	Sprite::PostDraw();
 
 	PostProcess::GetInstance()->PostDraw();
 };

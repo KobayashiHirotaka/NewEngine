@@ -21,7 +21,7 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
 	PostProcess::GetInstance()->SetIsBloomActive(true);
-	PostProcess::GetInstance()->SetIsVignetteActive(true);
+	//PostProcess::GetInstance()->SetIsVignetteActive(true);
 
 	camera_.UpdateMatrix();
 
