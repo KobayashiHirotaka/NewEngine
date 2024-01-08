@@ -39,7 +39,12 @@ private:
 	std::unique_ptr<Sprite>titleSprite_ = nullptr;
 	uint32_t titleTextureHandle_ = 0;
 
+	std::unique_ptr<Sprite>commandListSprite_ = nullptr;
+	uint32_t commandListTextureHandle_ = 0;
+
 	//サウンド
 	uint32_t soundHandle_ = 0u;
 	uint32_t titleSoundHandle_ = 0u;
+
+	bool isOpen_ = false;
 };
