@@ -374,19 +374,11 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	
 	collisionManager_->CheckAllCollision();
 
-	/*if (input_->PushKey(DIK_SPACE))
-	{
-		sceneManager->ChangeScene(new GameEndScene);
-	}*/
-
 	camera_.UpdateMatrix();
 };
 
 void GamePlayScene::Draw(SceneManager* sceneManager)
 {
-
-	DirectXCore::GetInstance()->ClearDepthBuffer();
-
 	Model::PreDraw();
 
 	Model::PostDraw();

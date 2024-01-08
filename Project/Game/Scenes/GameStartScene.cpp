@@ -19,6 +19,10 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
+	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	PostProcess::GetInstance()->SetIsBloomActive(true);
+	PostProcess::GetInstance()->SetIsVignetteActive(true);
+
 	camera_.UpdateMatrix();
 
 	titleTextureHandle_ = TextureManager::Load("resource/title.png");
@@ -30,9 +34,6 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 void GameStartScene::Update(SceneManager* sceneManager)
 {
-	ImGui::Begin("Start");
-	ImGui::End();
-
 	skydome_->Update();
 
 	if (input_->GetJoystickState())
@@ -51,19 +52,17 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 {
 	PostProcess::GetInstance()->PreDraw();
 
-	DirectXCore::GetInstance()->ClearDepthBuffer();
-
 	Model::PreDraw();
 
 	skydome_->Draw(camera_);
 
 	Model::PostDraw();
 
-	PostProcess::GetInstance()->PostDraw();
-
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	/*titleSprite_->Draw();*/
+	titleSprite_->Draw();
 
 	Sprite::PostDraw();
+
+	PostProcess::GetInstance()->PostDraw();
 };
