@@ -28,11 +28,17 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	titleTextureHandle_ = TextureManager::Load("resource/title.png");
 	titleSprite_.reset(Sprite::Create(titleTextureHandle_, { 0.0f,0.0f }));
 
-	commandListTextureHandle_ = TextureManager::Load("resource/WIN.png");
-	commandListSprite_.reset(Sprite::Create(commandListTextureHandle_, { 0.0f,0.0f }));
+	titleUITextureHandle_ = TextureManager::Load("resource/titleUI.png");
+	titleUISprite_.reset(Sprite::Create(titleUITextureHandle_, { 0.0f,0.0f }));
 
-	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
-	audio_->SoundPlayWave(titleSoundHandle_, true, 1.0f);
+	generalCommandListTextureHandle_ = TextureManager::Load("resource/GeneralCommandList.png");
+	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
+
+	attackCommandListTextureHandle_ = TextureManager::Load("resource/AttackCommandList.png");
+	attackCommandListSprite_.reset(Sprite::Create(attackCommandListTextureHandle_, { 0.0f,0.0f }));
+
+	/*titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
+	audio_->SoundPlayWave(titleSoundHandle_, true, 1.0f);*/
 };
 
 void GameStartScene::Update(SceneManager* sceneManager)
@@ -54,12 +60,26 @@ void GameStartScene::Update(SceneManager* sceneManager)
 		{
 			/*	audio_->StopAudio(titleSoundHandle_);*/
 			isOpen_ = true;
+			spriteCount_ = 1;
 		}
 
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isOpen_)
 		{
 			/*	audio_->StopAudio(titleSoundHandle_);*/
 			isOpen_ = false;
+			spriteCount_ = 0;
+		}
+
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) && isOpen_ && spriteCount_ == 1)
+		{
+			/*	audio_->StopAudio(titleSoundHandle_);*/
+			spriteCount_ = 2;
+		}
+
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) && isOpen_ && spriteCount_ == 2)
+		{
+			/*	audio_->StopAudio(titleSoundHandle_);*/
+			spriteCount_ = 1;
 		}
 	}
 
@@ -78,7 +98,10 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	titleSprite_->Draw();
+	if (!isOpen_)
+	{
+		titleSprite_->Draw();
+	}
 
 	Sprite::PostDraw();
 
@@ -86,10 +109,21 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	if (isOpen_)
+	if (!isOpen_)
 	{
-		commandListSprite_->Draw();
+		titleUISprite_->Draw();
 	}
+
+	if (isOpen_ && spriteCount_ == 1)
+	{
+		generalCommandListSprite_->Draw();
+	}
+
+	if (isOpen_ && spriteCount_ == 2)
+	{
+		attackCommandListSprite_->Draw();
+	}
+
 
 	Sprite::PostDraw();
 };

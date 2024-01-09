@@ -329,15 +329,15 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 {
 	Model::PreDraw();
 
+	player_->Draw(camera_);
+
+	enemy_->Draw(camera_);
+
 	Model::PostDraw();
 
 	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
-
-	player_->Draw(camera_);
-
-	enemy_->Draw(camera_);
 
 	skydome_->Draw(camera_);
 
@@ -371,18 +371,18 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 		}
 	}
 
-	Sprite::PostDraw();
-
-	PostProcess::GetInstance()->PostDraw();
-
-	Sprite::PreDraw(Sprite::kBlendModeNormal);
-
 	player_->DrawSprite();
 
 	enemy_->DrawSprite();
 
 	numberOnesSprite_->Draw();
 	numberTensSprite_->Draw();
+
+	Sprite::PostDraw();
+
+	PostProcess::GetInstance()->PostDraw();
+
+	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
 	Sprite::PostDraw();
 };
