@@ -29,7 +29,7 @@ void Enemy::Initialize()
 	hpBar_.sprite_ = Sprite::Create(hpBar_.textureHandle_, hpBar_.position_);
 
 	worldTransform_.Initialize();
-	worldTransform_.translation = { 3.0f,0.0f,0.0f };
+	worldTransform_.translation = { 7.0f,0.0f,0.0f };
 
 	worldTransformHead_.Initialize();
 	worldTransform_.rotation.y = 4.6f;
