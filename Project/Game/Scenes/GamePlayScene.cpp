@@ -480,8 +480,6 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 		numberOnesSprite_->Draw();
 		numberTensSprite_->Draw();
 
-		UICommandListSprite_->Draw();
-
 		if (PlayerWinCount_ == 1)
 		{
 			roundGetSprite_[1]->Draw();
@@ -510,6 +508,11 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 	PostProcess::GetInstance()->PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
+
+	if (roundStartTimer_ <= 0 && !isOpen_)
+	{
+		UICommandListSprite_->Draw();
+	}
 
 	if (isOpen_ && spriteCount_ == 1)
 	{
