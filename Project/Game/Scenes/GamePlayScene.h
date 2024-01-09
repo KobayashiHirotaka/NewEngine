@@ -58,6 +58,12 @@ private:
 	uint32_t tensTextureHandle_;
 	uint32_t onesTextureHandle_;
 
+	std::unique_ptr<Sprite>roundSprite_[3];
+	uint32_t roundTextureHandle_[3];
+
+	std::unique_ptr<Sprite>fightSprite_ = nullptr;
+	uint32_t fightTextureHandle_;
+
 	std::unique_ptr<Sprite>winSprite_ = nullptr;
 	uint32_t winTextureHandle_;
 
@@ -71,6 +77,8 @@ private:
 
 	float frameTime = 1.0f / 60.0f;  // 60FPSを仮定
 	float elapsedTime = 0.0f;
+
+	float roundStartTimer_ = 100.0f;
 
 	bool isPlayerWin_ = false;
 	bool isDrow_ = false;

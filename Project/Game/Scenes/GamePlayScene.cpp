@@ -17,6 +17,18 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
+	roundTextureHandle_[0] = TextureManager::Load("resource/Round1.png");
+	roundTextureHandle_[1] = TextureManager::Load("resource/Round2.png");
+	roundTextureHandle_[2] = TextureManager::Load("resource/Round3.png");
+
+	roundSprite_[0].reset(Sprite::Create(roundTextureHandle_[0], {0.0f, 0.0f}));
+	roundSprite_[1].reset(Sprite::Create(roundTextureHandle_[1], { 0.0f, 0.0f }));
+	roundSprite_[2].reset(Sprite::Create(roundTextureHandle_[2], { 0.0f, 0.0f }));
+
+	fightTextureHandle_ = TextureManager::Load("resource/FIGHT.png");
+
+	fightSprite_.reset(Sprite::Create(fightTextureHandle_, { 0.0f, 0.0f }));
+
 	winTextureHandle_ = TextureManager::Load("resource/WIN.png");
 	loseTextureHandle_ = TextureManager::Load("resource/LOSE.png");
 	drowTextureHandle_= TextureManager::Load("resource/Drow.png");
@@ -51,13 +63,17 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	frameTime = 1.0f / 60.0f;  // 60FPSを仮定
 	elapsedTime = 0.0f;
 
+	roundStartTimer_ = 100.0f;
+
 	isPlayerWin_ = false;
 	isDrow_ = false;
 };
 
 void GamePlayScene::Update(SceneManager* sceneManager)
 {
-	if (migrationTimer_ >= 150)
+	roundStartTimer_--;
+
+	if (migrationTimer_ >= 150 && roundStartTimer_ <= 0)
 	{
 		player_->Update();
 
@@ -373,13 +389,37 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 		}
 	}
 
-	player_->DrawSprite();
+	if (roundStartTimer_ <= 100 && roundStartTimer_ > 50 && round_ == 1)
+	{
+		roundSprite_[0]->Draw();
+	}
 
-	enemy_->DrawSprite();
+	if (roundStartTimer_ <= 100 && roundStartTimer_ > 50 && round_ == 2)
+	{
+		roundSprite_[1]->Draw();
+	}
 
-	numberOnesSprite_->Draw();
-	numberTensSprite_->Draw();
+	if (roundStartTimer_ <= 100 && roundStartTimer_ > 50 && round_ == 3)
+	{
+		roundSprite_[2]->Draw();
+	}
 
+	if (roundStartTimer_ <= 50 && roundStartTimer_ > 0)
+	{
+		fightSprite_->Draw();
+	}
+
+	if (roundStartTimer_ <= 0)
+	{
+		player_->DrawSprite();
+
+		enemy_->DrawSprite();
+
+		numberOnesSprite_->Draw();
+		numberTensSprite_->Draw();
+
+	}
+	
 	Sprite::PostDraw();
 
 	PostProcess::GetInstance()->PostDraw();
