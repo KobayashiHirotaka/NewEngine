@@ -29,6 +29,13 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	fightSprite_.reset(Sprite::Create(fightTextureHandle_, { 0.0f, 0.0f }));
 
+	roundGetTextureHandle_ = TextureManager::Load("resource/RoundGet.png");
+
+	roundGetSprite_[0].reset(Sprite::Create(roundGetTextureHandle_, { 400.0f, 30.0f }));
+	roundGetSprite_[1].reset(Sprite::Create(roundGetTextureHandle_, { 480.0f, 30.0f }));
+	roundGetSprite_[2].reset(Sprite::Create(roundGetTextureHandle_, { 800.0f, 30.0f }));
+	roundGetSprite_[3].reset(Sprite::Create(roundGetTextureHandle_, { 720.0f, 30.0f }));
+
 	winTextureHandle_ = TextureManager::Load("resource/WIN.png");
 	loseTextureHandle_ = TextureManager::Load("resource/LOSE.png");
 	drowTextureHandle_= TextureManager::Load("resource/Drow.png");
@@ -60,7 +67,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	migrationTimer_ = 200;
 
-	frameTime = 1.0f / 60.0f;  // 60FPSを仮定
+	frameTime = 1.0f / 60.0f; 
 	elapsedTime = 0.0f;
 
 	roundStartTimer_ = 100.0f;
@@ -417,6 +424,27 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 		numberOnesSprite_->Draw();
 		numberTensSprite_->Draw();
+
+		if (PlayerWinCount_ == 1)
+		{
+			roundGetSprite_[1]->Draw();
+		}
+
+		if (PlayerWinCount_ == 2)
+		{
+			roundGetSprite_[0]->Draw();
+		}
+
+
+		if (EnemyWinCount_ == 1)
+		{
+			roundGetSprite_[3]->Draw();
+		}
+
+		if (EnemyWinCount_ == 2)
+		{
+			roundGetSprite_[2]->Draw();
+		}
 
 	}
 	

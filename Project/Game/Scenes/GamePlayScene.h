@@ -64,6 +64,9 @@ private:
 	std::unique_ptr<Sprite>fightSprite_ = nullptr;
 	uint32_t fightTextureHandle_;
 
+	std::unique_ptr<Sprite>roundGetSprite_[4];
+	uint32_t roundGetTextureHandle_;
+
 	std::unique_ptr<Sprite>winSprite_ = nullptr;
 	uint32_t winTextureHandle_;
 
