@@ -80,6 +80,12 @@ private:
 		const std::wstring& filePath,
 		const wchar_t* profile);
 
+	void InitializeVertexBuffer();
+
+	void CreateRenderTargets();
+
+	void SetupBlurConstantBuffers();
+
 	//PSOの作成
 	void CreatePSO();
 	void CreateBlurPSO();

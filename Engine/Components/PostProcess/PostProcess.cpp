@@ -29,16 +29,7 @@ void PostProcess::Initialize()
 	vertices_.push_back(VertexPosUV{ {1.0f,1.0f,1.0f,1.0f},{1.0f,0.0f} });
 	vertices_.push_back(VertexPosUV{ {1.0f,-1.0f,1.0f,1.0f},{1.0f,1.0f} });
 
-	vertexResource_ = dxCore_->CreateBufferResource(sizeof(VertexPosUV) * vertices_.size());
-
-	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
-	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexPosUV) * vertices_.size());
-	vertexBufferView_.StrideInBytes = sizeof(VertexPosUV);
-
-	VertexPosUV* vertexData = nullptr;
-	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-	std::memcpy(vertexData, vertices_.data(), sizeof(VertexPosUV) * vertices_.size());
-	vertexResource_->Unmap(0, nullptr);
+	InitializeVertexBuffer();
 
 	InitializeDXC();
 
@@ -56,91 +47,9 @@ void PostProcess::Initialize()
 
 	CreateDSV();
 
-	//リソースの作成
-	float clearColor[] = { 0.1f,0.25f,0.5f,1.0f };
-	float depthColor[] = { 1.0f,0.0f,0.0f,0.0f };
-	firstPassResource_.resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
-	linearDepthResource_.resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R32_FLOAT, depthColor);
-	secondPassResource_.resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
-	highIntensityResource_.resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
-	blurResources_[0].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
-	blurResources_[1].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
-	highIntensityBlurResource_[0].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
-	highIntensityBlurResource_[1].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
-	shrinkBlurResources_[0].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth / 2, WindowsApp::GetInstance()->kClientHeight / 2, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
-	shrinkBlurResources_[1].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth / 2, WindowsApp::GetInstance()->kClientHeight / 2, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
-	shrinkHighIntensityBlurResources_[0].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth / 2, WindowsApp::GetInstance()->kClientHeight / 2, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
-	shrinkHighIntensityBlurResources_[1].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth / 2, WindowsApp::GetInstance()->kClientHeight / 2, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
+	CreateRenderTargets();
 
-	//レンダーターゲットビュー
-	firstPassResource_.rtvIndex = CreateRTV(firstPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	linearDepthResource_.rtvIndex = CreateRTV(linearDepthResource_.resource, DXGI_FORMAT_R32_FLOAT);
-	secondPassResource_.rtvIndex = CreateRTV(secondPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	highIntensityResource_.rtvIndex = CreateRTV(highIntensityResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	blurResources_[0].rtvIndex = CreateRTV(blurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	blurResources_[1].rtvIndex = CreateRTV(blurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	highIntensityBlurResource_[0].rtvIndex = CreateRTV(highIntensityBlurResource_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	highIntensityBlurResource_[1].rtvIndex = CreateRTV(highIntensityBlurResource_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkBlurResources_[0].rtvIndex = CreateRTV(shrinkBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkBlurResources_[1].rtvIndex = CreateRTV(shrinkBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkHighIntensityBlurResources_[0].rtvIndex = CreateRTV(shrinkHighIntensityBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkHighIntensityBlurResources_[1].rtvIndex = CreateRTV(shrinkHighIntensityBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-
-	//シェーダーリソースビューの作成
-	firstPassResource_.srvIndex = CreateSRV(firstPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	linearDepthResource_.srvIndex = CreateSRV(linearDepthResource_.resource, DXGI_FORMAT_R32_FLOAT);
-	secondPassResource_.srvIndex = CreateSRV(secondPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	highIntensityResource_.srvIndex = CreateSRV(highIntensityResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	blurResources_[0].srvIndex = CreateSRV(blurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	blurResources_[1].srvIndex = CreateSRV(blurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	highIntensityBlurResource_[0].srvIndex = CreateSRV(highIntensityBlurResource_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	highIntensityBlurResource_[1].srvIndex = CreateSRV(highIntensityBlurResource_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkBlurResources_[0].srvIndex = CreateSRV(shrinkBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkBlurResources_[1].srvIndex = CreateSRV(shrinkBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkHighIntensityBlurResources_[0].srvIndex = CreateSRV(shrinkHighIntensityBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkHighIntensityBlurResources_[1].srvIndex = CreateSRV(shrinkHighIntensityBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-
-	//ブラー用のCBVの作成
-	blurConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(BlurData));
-
-	//ブラー用のCBVに書き込む
-	BlurData* blurData = nullptr;
-	blurConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&blurData));
-	blurData->textureWidth = WindowsApp::GetInstance()->kClientWidth;
-	blurData->textureHeight = WindowsApp::GetInstance()->kClientHeight;
-
-	float total = 0.0f;
-	for (int i = 0; i < 8; i++) 
-	{
-		blurData->weight[i] = expf(-(i * i) / (2 * 5.0f * 5.0f));
-		total += blurData->weight[i];
-	}
-
-	total = total * 2.0f - 1.0f;
-
-	//最終的な合計値で重みをわる
-	for (int i = 0; i < 8; i++) 
-	{
-		blurData->weight[i] /= total;
-	}
-
-	blurConstantBuffer_->Unmap(0, nullptr);
-
-	//縮小ぼかし用のCBVの作成
-	shrinkBlurConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(BlurData));
-
-	//ブラー用のCBVに書き込む
-	BlurData* shrinkBlurData = nullptr;
-	shrinkBlurConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&shrinkBlurData));
-	shrinkBlurData->textureWidth = WindowsApp::GetInstance()->kClientWidth / 2;
-	shrinkBlurData->textureHeight = WindowsApp::GetInstance()->kClientHeight / 2;
-
-	for (int i = 0; i < 8; i++)
-	{
-		shrinkBlurData->weight[i] = blurData->weight[i];
-	}
-
-	shrinkBlurConstantBuffer_->Unmap(0, nullptr);
+	SetupBlurConstantBuffers();
 
 	Bloom();
 
@@ -248,7 +157,6 @@ void PostProcess::PostDraw()
 	SecondPassDraw();
 	PostSecondPassDraw();
 
-	//ぼかし処理
 	PreBlur(kHorizontal);
 	Blur(kHorizontal, secondPassResource_.srvIndex, highIntensityResource_.srvIndex);
 	PostBlur(kHorizontal);
@@ -257,7 +165,6 @@ void PostProcess::PostDraw()
 	Blur(kVertical, blurResources_[kHorizontal].srvIndex, highIntensityBlurResource_[kHorizontal].srvIndex);
 	PostBlur(kVertical);
 
-	//縮小ぼかし処理
 	PreShrinkBlur(kHorizontal);
 	ShrinkBlur(kHorizontal, blurResources_[kVertical].srvIndex, highIntensityBlurResource_[kVertical].srvIndex);
 	PostShrinkBlur(kHorizontal);
@@ -266,10 +173,10 @@ void PostProcess::PostDraw()
 	ShrinkBlur(kVertical, shrinkBlurResources_[kHorizontal].srvIndex, shrinkHighIntensityBlurResources_[kHorizontal].srvIndex);
 	PostShrinkBlur(kVertical);
 
-	//バックバッファをセット
+	//バックバッファ
 	dxCore_->SetBackBuffer();
 
-	//ポストプロセスの描画
+	//描画
 	Draw();
 }
 
@@ -348,6 +255,111 @@ Microsoft::WRL::ComPtr<IDxcBlob> PostProcess::CompileShader(const std::wstring& 
 	return shaderBlob;
 }
 
+void PostProcess::InitializeVertexBuffer()
+{
+	vertexResource_ = dxCore_->CreateBufferResource(sizeof(VertexPosUV) * vertices_.size());
+
+	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
+	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexPosUV) * vertices_.size());
+	vertexBufferView_.StrideInBytes = sizeof(VertexPosUV);
+
+	VertexPosUV* vertexData = nullptr;
+	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+	std::memcpy(vertexData, vertices_.data(), sizeof(VertexPosUV) * vertices_.size());
+	vertexResource_->Unmap(0, nullptr);
+}
+
+void PostProcess::CreateRenderTargets()
+{
+	//リソースの作成
+	float clearColor[] = { 0.1f,0.25f,0.5f,1.0f };
+	float depthColor[] = { 1.0f,0.0f,0.0f,0.0f };
+	firstPassResource_.resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
+	linearDepthResource_.resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R32_FLOAT, depthColor);
+	secondPassResource_.resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
+	highIntensityResource_.resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
+	blurResources_[0].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
+	blurResources_[1].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
+	highIntensityBlurResource_[0].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
+	highIntensityBlurResource_[1].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
+	shrinkBlurResources_[0].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth / 2, WindowsApp::GetInstance()->kClientHeight / 2, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
+	shrinkBlurResources_[1].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth / 2, WindowsApp::GetInstance()->kClientHeight / 2, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
+	shrinkHighIntensityBlurResources_[0].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth / 2, WindowsApp::GetInstance()->kClientHeight / 2, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
+	shrinkHighIntensityBlurResources_[1].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth / 2, WindowsApp::GetInstance()->kClientHeight / 2, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
+
+	//レンダーターゲットビュー
+	firstPassResource_.rtvIndex = CreateRTV(firstPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	linearDepthResource_.rtvIndex = CreateRTV(linearDepthResource_.resource, DXGI_FORMAT_R32_FLOAT);
+	secondPassResource_.rtvIndex = CreateRTV(secondPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	highIntensityResource_.rtvIndex = CreateRTV(highIntensityResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	blurResources_[0].rtvIndex = CreateRTV(blurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	blurResources_[1].rtvIndex = CreateRTV(blurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	highIntensityBlurResource_[0].rtvIndex = CreateRTV(highIntensityBlurResource_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	highIntensityBlurResource_[1].rtvIndex = CreateRTV(highIntensityBlurResource_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkBlurResources_[0].rtvIndex = CreateRTV(shrinkBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkBlurResources_[1].rtvIndex = CreateRTV(shrinkBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkHighIntensityBlurResources_[0].rtvIndex = CreateRTV(shrinkHighIntensityBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkHighIntensityBlurResources_[1].rtvIndex = CreateRTV(shrinkHighIntensityBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+
+	//シェーダーリソースビューの作成
+	firstPassResource_.srvIndex = CreateSRV(firstPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	linearDepthResource_.srvIndex = CreateSRV(linearDepthResource_.resource, DXGI_FORMAT_R32_FLOAT);
+	secondPassResource_.srvIndex = CreateSRV(secondPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	highIntensityResource_.srvIndex = CreateSRV(highIntensityResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	blurResources_[0].srvIndex = CreateSRV(blurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	blurResources_[1].srvIndex = CreateSRV(blurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	highIntensityBlurResource_[0].srvIndex = CreateSRV(highIntensityBlurResource_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	highIntensityBlurResource_[1].srvIndex = CreateSRV(highIntensityBlurResource_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkBlurResources_[0].srvIndex = CreateSRV(shrinkBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkBlurResources_[1].srvIndex = CreateSRV(shrinkBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkHighIntensityBlurResources_[0].srvIndex = CreateSRV(shrinkHighIntensityBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkHighIntensityBlurResources_[1].srvIndex = CreateSRV(shrinkHighIntensityBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+}
+
+void PostProcess::SetupBlurConstantBuffers()
+{
+	//ブラー用のCBVの作成
+	blurConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(BlurData));
+
+	//ブラー用のCBVに書き込む
+	BlurData* blurData = nullptr;
+	blurConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&blurData));
+	blurData->textureWidth = WindowsApp::GetInstance()->kClientWidth;
+	blurData->textureHeight = WindowsApp::GetInstance()->kClientHeight;
+
+	float total = 0.0f;
+	for (int i = 0; i < 8; i++)
+	{
+		blurData->weight[i] = expf(-(i * i) / (2 * 5.0f * 5.0f));
+		total += blurData->weight[i];
+	}
+
+	total = total * 2.0f - 1.0f;
+
+	//最終的な合計値で重みをわる
+	for (int i = 0; i < 8; i++)
+	{
+		blurData->weight[i] /= total;
+	}
+
+	blurConstantBuffer_->Unmap(0, nullptr);
+
+	//縮小ぼかし用のCBVの作成
+	shrinkBlurConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(BlurData));
+
+	//ブラー用のCBVに書き込む
+	BlurData* shrinkBlurData = nullptr;
+	shrinkBlurConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&shrinkBlurData));
+	shrinkBlurData->textureWidth = WindowsApp::GetInstance()->kClientWidth / 2;
+	shrinkBlurData->textureHeight = WindowsApp::GetInstance()->kClientHeight / 2;
+
+	for (int i = 0; i < 8; i++)
+	{
+		shrinkBlurData->weight[i] = blurData->weight[i];
+	}
+
+	shrinkBlurConstantBuffer_->Unmap(0, nullptr);
+}
 
 void PostProcess::CreatePSO()
 {
@@ -409,24 +421,23 @@ void PostProcess::CreatePSO()
 	inputElementDescs[1].SemanticIndex = 0;
 	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
-
 
 	//BlendStateの設定
 	D3D12_BLEND_DESC blendDesc{};
 	//すべての色要素を書き込む
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
-
 	//RasterizerStateの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
+
 	//裏面(時計回り)を表示しない
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 	//三角形の中を塗りつぶす
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-
 
 	//Shaderをコンパイルする
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"resource/shaders/MultiPass.VS.hlsl", L"vs_6_0");
@@ -434,7 +445,6 @@ void PostProcess::CreatePSO()
 
 	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"resource/shaders/MultiPass.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
-
 
 	//PSOを作成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
@@ -446,16 +456,20 @@ void PostProcess::CreatePSO()
 	pixelShaderBlob->GetBufferSize() };//PixelShader
 	graphicsPipelineStateDesc.BlendState = blendDesc;//BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;//RasterizerState
+
 	//書き込むRTVの情報
 	graphicsPipelineStateDesc.NumRenderTargets = 2;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	graphicsPipelineStateDesc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+
 	//利用するトポロジ(形状)のタイプ。三角形
 	graphicsPipelineStateDesc.PrimitiveTopologyType =
 		D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
 	//どのように画面に色を打ち込むかの設定(気にしなくて良い)
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
 	//実際に生成
 	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&pipelineState_));
 	assert(SUCCEEDED(hr));
@@ -517,6 +531,7 @@ void PostProcess::CreateBlurPSO()
 		Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 		assert(false);
 	}
+
 	//バイナリを元に生成
 	hr = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
 		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&blurRootSignature_));
@@ -533,16 +548,15 @@ void PostProcess::CreateBlurPSO()
 	inputElementDescs[1].SemanticIndex = 0;
 	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
-
 
 	//BlendStateの設定
 	D3D12_BLEND_DESC blendDesc{};
 	//すべての色要素を書き込む
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-
 
 	//RasterizerStateの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
@@ -551,14 +565,12 @@ void PostProcess::CreateBlurPSO()
 	//三角形の中を塗りつぶす
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
-
 	//シェーダーをコンパイルする
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"resource/shaders/HorizontalBlur.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
 	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"resource/shaders/HorizontalBlur.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
-
 
 	//PSOを作成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
@@ -570,33 +582,37 @@ void PostProcess::CreateBlurPSO()
 	pixelShaderBlob->GetBufferSize() };//PixelShader
 	graphicsPipelineStateDesc.BlendState = blendDesc;//BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;//RasterizerState
+
 	//書き込むRTVの情報
 	graphicsPipelineStateDesc.NumRenderTargets = 2;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	graphicsPipelineStateDesc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+
 	//利用するトポロジ(形状)のタイプ。三角形
 	graphicsPipelineStateDesc.PrimitiveTopologyType =
 		D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
 	//どのように画面に色を打ち込むかの設定(気にしなくて良い)
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
 	//実際に生成
 	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&blurPipelineState_[kHorizontal]));
 	assert(SUCCEEDED(hr));
 
-
-	//ブラー用のシェーダーをコンパイルする
+	//シェーダーをコンパイルする
 	vertexShaderBlob = CompileShader(L"resource/shaders/VerticalBlur.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
 	pixelShaderBlob = CompileShader(L"resource/shaders/VerticalBlur.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
-	//PSOを再設定する
+	//PSOを再設定
 	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),
 	vertexShaderBlob->GetBufferSize() };//VertexShader
 	graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(),
 	pixelShaderBlob->GetBufferSize() };//PixelShader
+
 	//実際に生成
 	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&blurPipelineState_[kVertical]));
 	assert(SUCCEEDED(hr));
@@ -694,6 +710,7 @@ void PostProcess::CreatePostProcessPSO()
 		Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 		assert(false);
 	}
+
 	//バイナリを元に生成
 	hr = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
 		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&postProcessRootSignature_));
@@ -710,16 +727,15 @@ void PostProcess::CreatePostProcessPSO()
 	inputElementDescs[1].SemanticIndex = 0;
 	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
-
 
 	//BlendStateの設定
 	D3D12_BLEND_DESC blendDesc{};
 	//すべての色要素を書き込む
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-
 
 	//RasterizerStateの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
@@ -728,7 +744,6 @@ void PostProcess::CreatePostProcessPSO()
 	//三角形の中を塗りつぶす
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
-
 	//シェーダーをコンパイルする
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"resource/shaders/PostProcess.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
@@ -736,18 +751,16 @@ void PostProcess::CreatePostProcessPSO()
 	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"resource/shaders/PostProcess.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
-
 	//DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
-	//Depthの機能を有効化する
+	//Depthの機能を有効化
 	depthStencilDesc.DepthEnable = true;
-	//書き込みします
+	//書き込み
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	//比較関数はLessEqual。つまり、近ければ描画される
+	//近ければ描画される
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
-
-	//PSOを作成する
+	//PSOを作成
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
 	graphicsPipelineStateDesc.pRootSignature = postProcessRootSignature_.Get();//RootSignature
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;//InputLayout
@@ -757,18 +770,23 @@ void PostProcess::CreatePostProcessPSO()
 	pixelShaderBlob->GetBufferSize() };//PixelShader
 	graphicsPipelineStateDesc.BlendState = blendDesc;//BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;//RasterizerState
+
 	//書き込むRTVの情報
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+
 	//利用するトポロジ(形状)のタイプ。三角形
 	graphicsPipelineStateDesc.PrimitiveTopologyType =
 		D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
 	//どのように画面に色を打ち込むかの設定(気にしなくて良い)
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
 	//DepthStencilの設定
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
 	//実際に生成
 	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&postProcessPipelineState_));
 	assert(SUCCEEDED(hr));
@@ -1149,7 +1167,6 @@ void PostProcess::Vignette()
 
 Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateDepthStencilTextureResource(int32_t width, int32_t height)
 {
-
 	//生成するResourceの設定
 	D3D12_RESOURCE_DESC resourceDesc{};
 	resourceDesc.Width = width;//Textureの幅
