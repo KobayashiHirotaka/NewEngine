@@ -53,6 +53,8 @@ private:
 	int PlayerWinCount_ = 0;
 	int EnemyWinCount_ = 0;
 
+	std::unique_ptr<Model>ground_;
+
 	std::unique_ptr<Sprite>numberTensSprite_ = nullptr;
 	std::unique_ptr<Sprite>numberOnesSprite_ = nullptr;
 	uint32_t tensTextureHandle_;

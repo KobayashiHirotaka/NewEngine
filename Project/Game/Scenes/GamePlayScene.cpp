@@ -17,6 +17,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
+	ground_.reset(Model::CreateFromOBJ("resource/Ground", "Ground.obj"));
+
 	roundTextureHandle_[0] = TextureManager::Load("resource/Round1.png");
 	roundTextureHandle_[1] = TextureManager::Load("resource/Round2.png");
 	roundTextureHandle_[2] = TextureManager::Load("resource/Round3.png");
@@ -43,6 +45,9 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	winSprite_.reset(Sprite::Create(winTextureHandle_, { 0.0f, 0.0f }));
 	loseSprite_.reset(Sprite::Create(loseTextureHandle_, { 0.0f, 0.0f }));
 	drowSprite_.reset(Sprite::Create(drowTextureHandle_, { 0.0f, 0.0f }));
+
+	worldTransform_.Initialize();
+	worldTransform_.translation = { 0.0f,-1.0f,0.0f };
 
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
@@ -347,6 +352,8 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	
 	collisionManager_->CheckAllCollision();
 
+	worldTransform_.UpdateMatrix();
+
 	camera_.UpdateMatrix();
 };
 
@@ -363,6 +370,8 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
+
+	ground_->Draw(worldTransform_, camera_);
 
 	skydome_->Draw(camera_);
 
