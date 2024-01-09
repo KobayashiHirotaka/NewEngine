@@ -17,6 +17,15 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
+	UICommandListTextureHandle_ = TextureManager::Load("resource/UICommandList.png");
+	UICommandListSprite_.reset(Sprite::Create(UICommandListTextureHandle_, { 0.0f,0.0f }));
+
+	generalCommandListTextureHandle_ = TextureManager::Load("resource/PlayGeneralCommandList.png");
+	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
+
+	attackCommandListTextureHandle_ = TextureManager::Load("resource/PlayAttackCommandList.png");
+	attackCommandListSprite_.reset(Sprite::Create(attackCommandListTextureHandle_, { 0.0f,0.0f }));
+
 	ground_.reset(Model::CreateFromOBJ("resource/Ground", "Ground.obj"));
 
 	roundTextureHandle_[0] = TextureManager::Load("resource/Round1.png");
@@ -79,13 +88,15 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	isPlayerWin_ = false;
 	isDrow_ = false;
+
+	selectSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Select.wav");
 };
 
 void GamePlayScene::Update(SceneManager* sceneManager)
 {
 	roundStartTimer_--;
 
-	if (migrationTimer_ >= 150 && roundStartTimer_ <= 0)
+	if (migrationTimer_ >= 150 && roundStartTimer_ <= 0 && !isOpen_)
 	{
 		player_->Update();
 
@@ -335,6 +346,35 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		}
 	}
 
+	if (input_->GetJoystickState())
+	{
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !isOpen_ && roundStartTimer_ < 0)
+		{
+			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			isOpen_ = true;
+			spriteCount_ = 1;
+		}
+
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isOpen_)
+		{
+			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			isOpen_ = false;
+			spriteCount_ = 0;
+		}
+
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) && isOpen_ && spriteCount_ == 1)
+		{
+			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			spriteCount_ = 2;
+		}
+
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) && isOpen_ && spriteCount_ == 2)
+		{
+			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			spriteCount_ = 1;
+		}
+	}
+
 	collisionManager_->ClearColliders();
 	collisionManager_->AddCollider(player_.get());
 
@@ -361,9 +401,12 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 {
 	Model::PreDraw();
 
-	player_->Draw(camera_);
+	if (!isOpen_)
+	{
+		player_->Draw(camera_);
 
-	enemy_->Draw(camera_);
+		enemy_->Draw(camera_);
+	}
 
 	Model::PostDraw();
 
@@ -371,7 +414,10 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	Model::PreDraw();
 
-	ground_->Draw(worldTransform_, camera_);
+	if (!isOpen_)
+	{
+		ground_->Draw(worldTransform_, camera_);
+	}
 
 	skydome_->Draw(camera_);
 
@@ -425,7 +471,7 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 		fightSprite_->Draw();
 	}
 
-	if (roundStartTimer_ <= 0)
+	if (roundStartTimer_ <= 0 && !isOpen_)
 	{
 		player_->DrawSprite();
 
@@ -433,6 +479,8 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 		numberOnesSprite_->Draw();
 		numberTensSprite_->Draw();
+
+		UICommandListSprite_->Draw();
 
 		if (PlayerWinCount_ == 1)
 		{
@@ -462,6 +510,16 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 	PostProcess::GetInstance()->PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
+
+	if (isOpen_ && spriteCount_ == 1)
+	{
+		generalCommandListSprite_->Draw();
+	}
+
+	if (isOpen_ && spriteCount_ == 2)
+	{
+		attackCommandListSprite_->Draw();
+	}
 
 	Sprite::PostDraw();
 };

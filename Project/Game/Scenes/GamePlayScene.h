@@ -78,6 +78,15 @@ private:
 	std::unique_ptr<Sprite>drowSprite_ = nullptr;
 	uint32_t drowTextureHandle_;
 
+	std::unique_ptr<Sprite>UICommandListSprite_ = nullptr;
+	uint32_t UICommandListTextureHandle_ = 0;
+
+	std::unique_ptr<Sprite>generalCommandListSprite_ = nullptr;
+	uint32_t generalCommandListTextureHandle_ = 0;
+
+	std::unique_ptr<Sprite>attackCommandListSprite_ = nullptr;
+	uint32_t attackCommandListTextureHandle_ = 0;
+
 	int currentSeconds_;
 
 	float frameTime = 1.0f / 60.0f;  // 60FPSを仮定
@@ -87,4 +96,9 @@ private:
 
 	bool isPlayerWin_ = false;
 	bool isDrow_ = false;
+
+	uint32_t selectSoundHandle_ = 0u;
+
+	int spriteCount_ = 0;
+	bool isOpen_ = false;
 };
