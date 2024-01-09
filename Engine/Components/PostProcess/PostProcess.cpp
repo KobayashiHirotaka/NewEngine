@@ -42,11 +42,11 @@ void PostProcess::Initialize()
 
 	InitializeDXC();
 
-	CreatePipelineStateObject();
+	CreatePSO();
 
-	CreateBlurPipelineStateObject();
+	CreateBlurPSO();
 
-	CreatePostProcessPipelineStateObject();
+	CreatePostProcessPSO();
 
 	multiPassRTVDescriptorHeap_ = dxCore_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 14, false);
 	multiPassSRVDescriptorHeap_ = dxCore_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 14, true);
@@ -54,7 +54,7 @@ void PostProcess::Initialize()
 
 	depthStencilResource_ = CreateDepthStencilTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight);
 
-	CreateDepthStencilView();
+	CreateDSV();
 
 	//リソースの作成
 	float clearColor[] = { 0.1f,0.25f,0.5f,1.0f };
@@ -72,33 +72,33 @@ void PostProcess::Initialize()
 	shrinkHighIntensityBlurResources_[0].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth / 2, WindowsApp::GetInstance()->kClientHeight / 2, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
 	shrinkHighIntensityBlurResources_[1].resource = CreateTextureResource(WindowsApp::GetInstance()->kClientWidth / 2, WindowsApp::GetInstance()->kClientHeight / 2, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor);
 
-	//レンダーターゲットビューの作成の作成
-	firstPassResource_.rtvIndex = CreateRenderTargetView(firstPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	linearDepthResource_.rtvIndex = CreateRenderTargetView(linearDepthResource_.resource, DXGI_FORMAT_R32_FLOAT);
-	secondPassResource_.rtvIndex = CreateRenderTargetView(secondPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	highIntensityResource_.rtvIndex = CreateRenderTargetView(highIntensityResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	blurResources_[0].rtvIndex = CreateRenderTargetView(blurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	blurResources_[1].rtvIndex = CreateRenderTargetView(blurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	highIntensityBlurResource_[0].rtvIndex = CreateRenderTargetView(highIntensityBlurResource_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	highIntensityBlurResource_[1].rtvIndex = CreateRenderTargetView(highIntensityBlurResource_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkBlurResources_[0].rtvIndex = CreateRenderTargetView(shrinkBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkBlurResources_[1].rtvIndex = CreateRenderTargetView(shrinkBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkHighIntensityBlurResources_[0].rtvIndex = CreateRenderTargetView(shrinkHighIntensityBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkHighIntensityBlurResources_[1].rtvIndex = CreateRenderTargetView(shrinkHighIntensityBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	//レンダーターゲットビュー
+	firstPassResource_.rtvIndex = CreateRTV(firstPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	linearDepthResource_.rtvIndex = CreateRTV(linearDepthResource_.resource, DXGI_FORMAT_R32_FLOAT);
+	secondPassResource_.rtvIndex = CreateRTV(secondPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	highIntensityResource_.rtvIndex = CreateRTV(highIntensityResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	blurResources_[0].rtvIndex = CreateRTV(blurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	blurResources_[1].rtvIndex = CreateRTV(blurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	highIntensityBlurResource_[0].rtvIndex = CreateRTV(highIntensityBlurResource_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	highIntensityBlurResource_[1].rtvIndex = CreateRTV(highIntensityBlurResource_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkBlurResources_[0].rtvIndex = CreateRTV(shrinkBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkBlurResources_[1].rtvIndex = CreateRTV(shrinkBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkHighIntensityBlurResources_[0].rtvIndex = CreateRTV(shrinkHighIntensityBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkHighIntensityBlurResources_[1].rtvIndex = CreateRTV(shrinkHighIntensityBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
 
 	//シェーダーリソースビューの作成
-	firstPassResource_.srvIndex = CreateShaderResourceView(firstPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	linearDepthResource_.srvIndex = CreateShaderResourceView(linearDepthResource_.resource, DXGI_FORMAT_R32_FLOAT);
-	secondPassResource_.srvIndex = CreateShaderResourceView(secondPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	highIntensityResource_.srvIndex = CreateShaderResourceView(highIntensityResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	blurResources_[0].srvIndex = CreateShaderResourceView(blurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	blurResources_[1].srvIndex = CreateShaderResourceView(blurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	highIntensityBlurResource_[0].srvIndex = CreateShaderResourceView(highIntensityBlurResource_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	highIntensityBlurResource_[1].srvIndex = CreateShaderResourceView(highIntensityBlurResource_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkBlurResources_[0].srvIndex = CreateShaderResourceView(shrinkBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkBlurResources_[1].srvIndex = CreateShaderResourceView(shrinkBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkHighIntensityBlurResources_[0].srvIndex = CreateShaderResourceView(shrinkHighIntensityBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	shrinkHighIntensityBlurResources_[1].srvIndex = CreateShaderResourceView(shrinkHighIntensityBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	firstPassResource_.srvIndex = CreateSRV(firstPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	linearDepthResource_.srvIndex = CreateSRV(linearDepthResource_.resource, DXGI_FORMAT_R32_FLOAT);
+	secondPassResource_.srvIndex = CreateSRV(secondPassResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	highIntensityResource_.srvIndex = CreateSRV(highIntensityResource_.resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	blurResources_[0].srvIndex = CreateSRV(blurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	blurResources_[1].srvIndex = CreateSRV(blurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	highIntensityBlurResource_[0].srvIndex = CreateSRV(highIntensityBlurResource_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	highIntensityBlurResource_[1].srvIndex = CreateSRV(highIntensityBlurResource_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkBlurResources_[0].srvIndex = CreateSRV(shrinkBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkBlurResources_[1].srvIndex = CreateSRV(shrinkBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkHighIntensityBlurResources_[0].srvIndex = CreateSRV(shrinkHighIntensityBlurResources_[0].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	shrinkHighIntensityBlurResources_[1].srvIndex = CreateSRV(shrinkHighIntensityBlurResources_[1].resource, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
 
 	//ブラー用のCBVの作成
 	blurConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(BlurData));
@@ -142,26 +142,10 @@ void PostProcess::Initialize()
 
 	shrinkBlurConstantBuffer_->Unmap(0, nullptr);
 
-	//Bloom用のCBVの作成
-	bloomConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(BloomData));
+	Bloom();
 
-	//Bloom用のリソースに書き込む
-	BloomData* bloomData = nullptr;
-	bloomConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&bloomData));
-	bloomData->enable = isBloomActive_;
-	bloomConstantBuffer_->Unmap(0, nullptr);
-
-	//ビネット用のCBVの作成
-	vignetteConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(VignetteData));
-
-	//ビネット用のリソースに書き込む
-	VignetteData* vignetteData = nullptr;
-	vignetteConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vignetteData));
-	vignetteData->enable = isVignetteActive_;
-	vignetteData->intensity = vignetteIntensity_;
-	vignetteConstantBuffer_->Unmap(0, nullptr);
+	Vignette();
 }
-
 
 void PostProcess::Update()
 {
@@ -170,18 +154,9 @@ void PostProcess::Update()
 		return;
 	}
 
-	//Bloom用のリソースに書き込む
-	BloomData* bloomData = nullptr;
-	bloomConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&bloomData));
-	bloomData->enable = isBloomActive_;
-	bloomConstantBuffer_->Unmap(0, nullptr);
+	Bloom();
 
-	//ビネット用のリソースに書き込む
-	VignetteData* vignetteData = nullptr;
-	vignetteConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vignetteData));
-	vignetteData->enable = isVignetteActive_;
-	vignetteData->intensity = vignetteIntensity_;
-	vignetteConstantBuffer_->Unmap(0, nullptr);
+	Vignette();
 }
 
 void PostProcess::PreDraw() 
@@ -374,7 +349,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> PostProcess::CompileShader(const std::wstring& 
 }
 
 
-void PostProcess::CreatePipelineStateObject() 
+void PostProcess::CreatePSO()
 {
 	//RootSignature作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
@@ -487,7 +462,7 @@ void PostProcess::CreatePipelineStateObject()
 }
 
 
-void PostProcess::CreateBlurPipelineStateObject() 
+void PostProcess::CreateBlurPSO()
 {
 	//RootSignature作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
@@ -628,7 +603,7 @@ void PostProcess::CreateBlurPipelineStateObject()
 }
 
 
-void PostProcess::CreatePostProcessPipelineStateObject()
+void PostProcess::CreatePostProcessPSO()
 {
 	//RootSignature作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
@@ -1146,6 +1121,31 @@ Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateTextureResource(uint32
 	return resource;
 }
 
+void PostProcess::Bloom()
+{
+	//Bloom用のCBVの作成
+	bloomConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(BloomData));
+
+	//Bloom用のリソースに書き込む
+	BloomData* bloomData = nullptr;
+	bloomConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&bloomData));
+	bloomData->enable = isBloomActive_;
+	bloomConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::Vignette()
+{
+	//ビネット用のCBVの作成
+	vignetteConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(VignetteData));
+
+	//ビネット用のリソースに書き込む
+	VignetteData* vignetteData = nullptr;
+	vignetteConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vignetteData));
+	vignetteData->enable = isVignetteActive_;
+	vignetteData->intensity = vignetteIntensity_;
+	vignetteConstantBuffer_->Unmap(0, nullptr);
+}
+
 
 Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateDepthStencilTextureResource(int32_t width, int32_t height)
 {
@@ -1187,7 +1187,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateDepthStencilTextureRes
 }
 
 
-uint32_t PostProcess::CreateRenderTargetView(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format)
+uint32_t PostProcess::CreateRTV(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format)
 {
 	rtvIndex_++;
 
@@ -1204,7 +1204,7 @@ uint32_t PostProcess::CreateRenderTargetView(const Microsoft::WRL::ComPtr<ID3D12
 }
 
 
-uint32_t PostProcess::CreateShaderResourceView(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format)
+uint32_t PostProcess::CreateSRV(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format)
 {
 	srvIndex_++;
 
@@ -1223,7 +1223,7 @@ uint32_t PostProcess::CreateShaderResourceView(const Microsoft::WRL::ComPtr<ID3D
 }
 
 
-void PostProcess::CreateDepthStencilView()
+void PostProcess::CreateDSV()
 {
 	//DSVの設定
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};

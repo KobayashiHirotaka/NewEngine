@@ -28,8 +28,7 @@ void GameWinScene::Initialize(SceneManager* sceneManager)
 	winSceneTextureHandle_ = TextureManager::Load("resource/WinScene.png");
 	winSceneSprite_.reset(Sprite::Create(winSceneTextureHandle_, { 0.0f,0.0f }));
 
-	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
-	/*audio_->SoundPlayWave(titleSoundHandle_, true, 1.0f);*/
+	selectSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Select.wav");
 };
 
 void GameWinScene::Update(SceneManager* sceneManager)
@@ -40,6 +39,7 @@ void GameWinScene::Update(SceneManager* sceneManager)
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
+			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
 			sceneManager->ChangeScene(new GameStartScene);
 		}
 	}

@@ -37,8 +37,10 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	attackCommandListTextureHandle_ = TextureManager::Load("resource/AttackCommandList.png");
 	attackCommandListSprite_.reset(Sprite::Create(attackCommandListTextureHandle_, { 0.0f,0.0f }));
 
-	/*titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
-	audio_->SoundPlayWave(titleSoundHandle_, true, 1.0f);*/
+	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
+	selectSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Select.wav");
+	audio_->StopAudio(titleSoundHandle_);
+	audio_->SoundPlayWave(titleSoundHandle_, true, 1.0f);
 };
 
 void GameStartScene::Update(SceneManager* sceneManager)
@@ -49,36 +51,42 @@ void GameStartScene::Update(SceneManager* sceneManager)
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !isOpen_)
 		{
-		/*	audio_->StopAudio(titleSoundHandle_);*/
+			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
 			sceneManager->ChangeScene(new GamePlayScene);
 		}
+	}
+
+	if (input_->PushKey(DIK_SPACE))
+	{
+		audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+		sceneManager->ChangeScene(new GamePlayScene);
 	}
 
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !isOpen_)
 		{
-			/*	audio_->StopAudio(titleSoundHandle_);*/
+			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
 			isOpen_ = true;
 			spriteCount_ = 1;
 		}
 
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isOpen_)
 		{
-			/*	audio_->StopAudio(titleSoundHandle_);*/
+			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
 			isOpen_ = false;
 			spriteCount_ = 0;
 		}
 
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) && isOpen_ && spriteCount_ == 1)
 		{
-			/*	audio_->StopAudio(titleSoundHandle_);*/
+			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
 			spriteCount_ = 2;
 		}
 
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) && isOpen_ && spriteCount_ == 2)
 		{
-			/*	audio_->StopAudio(titleSoundHandle_);*/
+			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
 			spriteCount_ = 1;
 		}
 	}

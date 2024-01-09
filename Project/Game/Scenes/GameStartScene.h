@@ -49,8 +49,8 @@ private:
 	uint32_t attackCommandListTextureHandle_ = 0;
 
 	//サウンド
-	uint32_t soundHandle_ = 0u;
 	uint32_t titleSoundHandle_ = 0u;
+	uint32_t selectSoundHandle_ = 0u;
 
 	int spriteCount_ = 0;
 	bool isOpen_ = false;

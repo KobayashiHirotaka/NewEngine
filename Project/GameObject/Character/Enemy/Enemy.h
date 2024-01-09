@@ -3,6 +3,7 @@
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Components/Input/Input.h"
+#include "Engine/Components/Audio/Audio.h"
 #include "Engine/Utility/Collision/Collider.h"
 #include "Engine/Utility/Collision/CollisionConfig.h"
 #include "Engine/3D/Particle/ParticleModel.h"
@@ -147,6 +148,8 @@ private:
 
 	const Camera* camera_ = nullptr;
 
+	Audio* audio_ = nullptr;
+
 	WorldTransform worldTransform_;
 	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformHead_;
@@ -225,4 +228,10 @@ private:
 	UI hpBar_;
 	const float barSpace = 16.0f;
 	float barSize = 480.0f;
+
+	//サウンド
+	uint32_t attackSoundHandle_ = 0u;
+	uint32_t weaponAttackSoundHandle_ = 0u;
+	uint32_t damageSoundHandle_ = 0u;
+	uint32_t guardSoundHandle_ = 0u;
 };

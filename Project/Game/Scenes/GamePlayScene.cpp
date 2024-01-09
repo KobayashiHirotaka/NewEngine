@@ -13,6 +13,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 {
 	input_ = Input::GetInstance();
 
+	audio_ = Audio::GetInstance();
+
 	collisionManager_ = std::make_unique<CollisionManager>();
 
 	winTextureHandle_ = TextureManager::Load("resource/WIN.png");

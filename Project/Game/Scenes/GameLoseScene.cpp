@@ -28,8 +28,7 @@ void GameLoseScene::Initialize(SceneManager* sceneManager)
 	loseSceneTextureHandle_ = TextureManager::Load("resource/LoseScene.png");
 	loseSceneSprite_.reset(Sprite::Create(loseSceneTextureHandle_, { 0.0f,0.0f }));
 
-	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
-	//audio_->SoundPlayWave(titleSoundHandle_, true, 1.0f);
+	selectSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Select.wav");
 };
 
 void GameLoseScene::Update(SceneManager* sceneManager)
@@ -40,6 +39,7 @@ void GameLoseScene::Update(SceneManager* sceneManager)
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
+			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
 			sceneManager->ChangeScene(new GameStartScene);
 		}
 	}

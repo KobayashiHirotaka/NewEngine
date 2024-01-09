@@ -10,6 +10,8 @@ Enemy::~Enemy()
 
 void Enemy::Initialize()
 {
+	audio_ = Audio::GetInstance();
+
 	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
 	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
@@ -66,6 +68,11 @@ void Enemy::Initialize()
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
+
+	attackSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Attack.wav");
+	weaponAttackSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/WeaponAttack.wav");
+	damageSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Damage.wav");
+	guardSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Guard.wav");
 }
 
 void Enemy::Update()
@@ -204,6 +211,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 		if (player_->GetIsPunch() == true && isDown_ == false)
 		{
+			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
 			damage = 8.0f;
 			HP_ -= damage;
 			isHitPunch_ = true;
@@ -211,6 +219,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 		if (player_->GetIsThrow() == true && isDown_ == false)
 		{
+			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
 			damage = 20.0f;
 			HP_ -= damage;
 			isHitThrow_ = true;
@@ -221,6 +230,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 	{
 		if (isGuard_ && worldTransform_.rotation.y == 1.7f)
 		{
+			audio_->SoundPlayWave(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.3f;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
@@ -243,6 +253,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 		if (isGuard_ && worldTransform_.rotation.y == 4.6f)
 		{
+			audio_->SoundPlayWave(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.3f;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
@@ -266,6 +277,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsAttack() == true && player_->GetIsSwingDown() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
+			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
 			damage = 20.0f;
 			HP_ -= damage;
 			isHitSwingDown_ = true;
@@ -274,6 +286,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsAttack() == true && player_->GetIsPoke() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
+			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
 			damage = 15.0f;
 			HP_ -= damage;
 			isHitPoke_ = true;
@@ -282,6 +295,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
+			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
 			damage = 20.0f;
 			HP_ -= damage;
 			isHitMowDown_ = true;
@@ -420,6 +434,7 @@ void Enemy::BehaviorRootUpdate()
 	//通常攻撃
 	if (patternCount_ == 2 && isDown_ == false)
 	{
+		audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
 		behaviorRequest_ = Behavior::kAttack;
 		workAttack_.isPunch = true;
 	}
@@ -427,6 +442,7 @@ void Enemy::BehaviorRootUpdate()
 	//振り下ろし攻撃
 	if (patternCount_ == 5 && isDown_ == false)
 	{
+		audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
 		behaviorRequest_ = Behavior::kAttack;
 		workAttack_.isSwingDown = true;
 	}
@@ -436,6 +452,7 @@ void Enemy::BehaviorRootUpdate()
 	{
 		if (worldTransform_.rotation.y == 1.7f)
 		{
+			audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPoke = true;
 			workAttack_.isPokeRight = true;
@@ -444,6 +461,7 @@ void Enemy::BehaviorRootUpdate()
 
 		if (worldTransform_.rotation.y == 4.6f)
 		{
+			audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPoke = true;
 			workAttack_.isPokeLeft = true;
@@ -453,6 +471,7 @@ void Enemy::BehaviorRootUpdate()
 	//薙ぎ払う攻撃
 	if (patternCount_ == 7 && isDown_ == false)
 	{
+		audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
 		behaviorRequest_ = Behavior::kAttack;
 		workAttack_.isMowDown = true;
 	}

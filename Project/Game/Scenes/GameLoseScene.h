@@ -40,6 +40,5 @@ private:
 	uint32_t loseSceneTextureHandle_ = 0;
 
 	//サウンド
-	uint32_t soundHandle_ = 0u;
-	uint32_t titleSoundHandle_ = 0u;
+	uint32_t selectSoundHandle_ = 0u;
 };

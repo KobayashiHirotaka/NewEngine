@@ -3,6 +3,7 @@
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Components/Input/Input.h"
+#include "Engine/Components/Audio/Audio.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/Utility/Collision/CollisionManager.h"
 #include "Engine/3D/Particle/ParticleModel.h"
@@ -38,6 +39,8 @@ private:
 	std::unique_ptr<CollisionManager> collisionManager_;
 
 	Input* input_ = nullptr;
+
+	Audio* audio_ = nullptr;
 
 	std::unique_ptr<Player>player_;
 

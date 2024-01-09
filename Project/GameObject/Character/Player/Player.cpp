@@ -13,6 +13,8 @@ void Player::Initialize()
 	//Inputのインスタンス
 	input_ = Input::GetInstance();
 
+	audio_ = Audio::GetInstance();
+
 	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
 	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
@@ -72,14 +74,15 @@ void Player::Initialize()
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
+
+	attackSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Attack.wav");
+	weaponAttackSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/WeaponAttack.wav");
+	damageSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Damage.wav");
+	guardSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Guard.wav");
 }
 
 void Player::Update()
 {
-	previousPosition_ = currentPosition_;
-	// プレイヤーキャラクターの位置を更新
-	currentPosition_ = worldTransform_.translation;
-
 	//PlayerのBehavior
 	if (behaviorRequest_)
 	{
@@ -147,9 +150,6 @@ void Player::Update()
 
 	DownAnimation();
 
-	//Weaponの更新
-	playerWeapon_->Update();
-
 	//パーティクルの更新
 	particleSystem_->Update();
 
@@ -160,6 +160,9 @@ void Player::Update()
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
+
+	//Weaponの更新
+	playerWeapon_->Update();
 
 	//isEnemyHit_ = false;
 
@@ -220,6 +223,7 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (enemy_->GetIsPunch() == true && isDown_ == false)
 		{
+			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
 			damage = 15.0f;
 			HP_ -= damage;
 			isHitPunch_ = true;
@@ -227,6 +231,7 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (enemy_->GetIsThrow() == true && isDown_ == false)
 		{
+			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
 			damage = 50.0f;
 			HP_ -= damage;
 			isEnemyHit_ = true;
@@ -242,6 +247,7 @@ void Player::OnCollision(Collider* collider, float damage)
 	{
 		if (isGuard_ && worldTransform_.rotation.y == 1.7f)
 		{
+			audio_->SoundPlayWave(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.3f;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
@@ -264,6 +270,7 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (isGuard_ && worldTransform_.rotation.y == 4.6f)
 		{
+			audio_->SoundPlayWave(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.3f;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
@@ -287,6 +294,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsSwingDown() == true && isDown_ == false 
 			&& isGuard_ == false)
 		{
+			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
 			damage = 30.0f;
 			HP_ -= damage;
 			isHitSwingDown_ = true;
@@ -295,6 +303,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsPoke() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
+			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
 			damage = 20.0f;
 			HP_ -= damage;
 			isHitPoke_ = true;
@@ -303,6 +312,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsMowDown() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
+			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
 			damage = 30.0f;
 			HP_ -= damage;
 			isHitMowDown_ = true;
@@ -456,6 +466,7 @@ void Player::BehaviorRootUpdate()
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
 		{
+			audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPunch = true;
 		}
@@ -468,6 +479,7 @@ void Player::BehaviorRootUpdate()
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
 		{
+			audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isSwingDown = true;
 		}
@@ -480,6 +492,7 @@ void Player::BehaviorRootUpdate()
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
 		{
+			audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPoke = true;
 			workAttack_.isPokeRight = true;
@@ -489,6 +502,7 @@ void Player::BehaviorRootUpdate()
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
 		{
+			audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPoke = true;
 			workAttack_.isPokeLeft = true;
@@ -505,6 +519,7 @@ void Player::BehaviorRootUpdate()
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
 		{
+			audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isMowDown = true;
 		}
@@ -529,6 +544,9 @@ void Player::BehaviorAttackInitialize()
 		worldTransformR_arm_.rotation.x = (float)std::numbers::pi;
 		workAttack_.translation = { 0.0f,2.5f,0.0f };
 		workAttack_.rotation = { 0.0f,0.0f,0.0f };
+
+		playerWeapon_->SetTranslation(workAttack_.translation);
+		playerWeapon_->SetRotation(workAttack_.rotation);
 	}
 
 	//突き攻撃
@@ -540,6 +558,9 @@ void Player::BehaviorAttackInitialize()
 		workAttack_.rotation = { 1.5f,0.0f,0.0f };
 		workAttack_.stiffnessTimer = 60;
 		pokeTimer_ = 30;
+
+		playerWeapon_->SetTranslation(workAttack_.translation);
+		playerWeapon_->SetRotation(workAttack_.rotation);
 	}
 
 	//薙ぎ払う攻撃
@@ -551,6 +572,9 @@ void Player::BehaviorAttackInitialize()
 		worldTransformR_arm_.rotation.y = 0.0f;
 		workAttack_.translation = { 0.0f,0.5f,0.0f };
 		workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
+
+		playerWeapon_->SetTranslation(workAttack_.translation);
+		playerWeapon_->SetRotation(workAttack_.rotation);
 	}
 
 	attackAnimationFrame = 0;
@@ -654,6 +678,10 @@ void Player::BehaviorAttackUpdate()
 			if (workAttack_.stiffnessTimer <= 0)
 			{
 				behaviorRequest_ = Behavior::kRoot;
+				worldTransformHead_.rotation.y = 0.0f;
+				worldTransformBody_.rotation.y = 0.0f;
+				worldTransformL_arm_.rotation.y = 0.0f;
+				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isSwingDown = false;
 			}
