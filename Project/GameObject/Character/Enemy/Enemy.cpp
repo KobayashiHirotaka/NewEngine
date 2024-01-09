@@ -162,10 +162,6 @@ void Enemy::Update()
 	isPlayerHit_ = false;
 
 	HPBarUpdate();
-
-	ImGui::Begin("HP");
-	ImGui::Text("%f", HP_);
-	ImGui::End();
 }
 
 void Enemy::Draw(const Camera& camera)
@@ -411,10 +407,6 @@ void Enemy::BehaviorRootUpdate()
 		{
 			worldTransform_.translation.x = -12.0f;
 		}
-
-		ImGui::Begin("Guard");
-		ImGui::Text("%d", isGuard_);
-		ImGui::End();
 	}
 
 	//ジャンプ
@@ -538,10 +530,6 @@ void Enemy::BehaviorAttackUpdate()
 		else if (worldTransformBody_.rotation.y > -1.0f)
 		{
 			worldTransformBody_.rotation.y -= 0.1f;
-
-			ImGui::Begin("rotate");
-			ImGui::DragFloat3("rotation", &worldTransformBody_.rotation.x, 0.01f, -5.0f, 5.0f, "%.3f");
-			ImGui::End();
 		}
 		else
 		{

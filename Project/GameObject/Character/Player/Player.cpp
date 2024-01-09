@@ -169,16 +169,6 @@ void Player::Update()
 	isHit_ = false;
 
 	HPBarUpdate();
-
-	ImGui::Begin("HP");
-	ImGui::Text("%f", HP_);
-	ImGui::End();
-
-	ImGui::Begin("Player");
-	ImGui::DragFloat3("rotation", &workAttack_.translation.x, 0.01f, -5.0f, 5.0f, "%.3f");
-	ImGui::Text("timer %d", workAttack_.stiffnessTimer);
-	ImGui::Text("count %d", workAttack_.count);
-	ImGui::End();
 }
 
 void Player::Draw(const Camera& camera)
@@ -237,10 +227,6 @@ void Player::OnCollision(Collider* collider, float damage)
 			isEnemyHit_ = true;
 			isHitThrow_ = true;
 		}
-
-		ImGui::Begin("Aaa");
-
-		ImGui::End();
 	}
 
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemyWeapon)
@@ -317,10 +303,6 @@ void Player::OnCollision(Collider* collider, float damage)
 			HP_ -= damage;
 			isHitMowDown_ = true;
 		}
-
-		ImGui::Begin("A");
-
-		ImGui::End();
 	}
 }
 
@@ -433,10 +415,6 @@ void Player::BehaviorRootUpdate()
 		{
 			worldTransform_.rotation.y = 4.6f;
 		}
-
-		ImGui::Begin("Guard");
-		ImGui::Text("%d", isGuard_);
-		ImGui::End();
 	}
 
 	//ジャンプ
@@ -592,10 +570,6 @@ void Player::BehaviorAttackUpdate()
 		else if (worldTransformBody_.rotation.y > -1.0f)
 		{
 			worldTransformBody_.rotation.y -= 0.1f;
-
-			ImGui::Begin("rotate");
-			ImGui::DragFloat3("rotation", &worldTransformBody_.rotation.x, 0.01f, -5.0f, 5.0f, "%.3f");
-			ImGui::End();
 		}
 		else
 		{
@@ -898,10 +872,6 @@ void Player::BehaviorJumpUpdate()
 		{
 			worldTransformL_arm_.rotation.x += 0.1f;
 			worldTransformR_arm_.rotation.x += 0.1f;
-
-			ImGui::Begin("rotate");
-			ImGui::DragFloat3("rotation", &worldTransformBody_.rotation.x, 0.01f, -5.0f, 5.0f, "%.3f");
-			ImGui::End();
 		}
 		attackAnimationFrame++;
 		
