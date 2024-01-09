@@ -287,7 +287,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsSwingDown() == true && isDown_ == false 
 			&& isGuard_ == false)
 		{
-			damage = 300.0f;
+			damage = 30.0f;
 			HP_ -= damage;
 			isHitSwingDown_ = true;
 		}
@@ -295,7 +295,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsPoke() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			damage = 200.0f;
+			damage = 20.0f;
 			HP_ -= damage;
 			isHitPoke_ = true;
 		}
@@ -303,7 +303,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsMowDown() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			damage = 300.0f;
+			damage = 30.0f;
 			HP_ -= damage;
 			isHitMowDown_ = true;
 		}
@@ -359,14 +359,14 @@ void Player::BehaviorRootUpdate()
 		{
 			isGuard_ = true;
 
-			if (!input_->IsPressButton(XINPUT_GAMEPAD_X))
+			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 			{
 				kCharacterSpeed = 0.05f;
 				velocity_.x = -0.3f;
 				isMove_ = true;
 			}
 
-			if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_X))
+			if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
 			{
 				kCharacterSpeed = 0.0f;
 				velocity_.x = 0.0f;
@@ -379,14 +379,14 @@ void Player::BehaviorRootUpdate()
 
 			isGuard_ = true;
 
-			if (!input_->IsPressButton(XINPUT_GAMEPAD_X))
+			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 			{
 				kCharacterSpeed = 0.05f;
 				velocity_.x = 0.3f;
 				isMove_ = true;
 			}
 
-			if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_X))
+			if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
 			{
 				kCharacterSpeed = 0.0f;
 				velocity_.x = 0.0f;
@@ -979,6 +979,27 @@ void Player::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[3]--;
+
+		if (downAnimationTimer_[3] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.4f ,0.4f ,0.4f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(50)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(1.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[3] > 0)
 		{
 			worldTransformBody_.rotation.x -= 0.01f;
@@ -997,6 +1018,27 @@ void Player::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[3]--;
+
+		if (downAnimationTimer_[3] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.4f ,0.4f ,0.4f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(50)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(1.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[3] > 0)
 		{
 			worldTransformBody_.rotation.x -= 0.01f;

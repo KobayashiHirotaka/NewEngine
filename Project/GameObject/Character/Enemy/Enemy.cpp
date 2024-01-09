@@ -266,7 +266,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsAttack() == true && player_->GetIsSwingDown() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			damage = 200.0f;
+			damage = 20.0f;
 			HP_ -= damage;
 			isHitSwingDown_ = true;
 		}
@@ -274,7 +274,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsAttack() == true && player_->GetIsPoke() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			damage = 150.0f;
+			damage = 15.0f;
 			HP_ -= damage;
 			isHitPoke_ = true;
 		}
@@ -282,7 +282,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			damage = 200.0f;
+			damage = 20.0f;
 			HP_ -= damage;
 			isHitMowDown_ = true;
 		}
@@ -881,6 +881,27 @@ void Enemy::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[3]--;
+
+		if (downAnimationTimer_[3] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.4f ,0.4f ,0.4f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(50)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(1.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[3] > 0)
 		{
 			worldTransformBody_.rotation.x -= 0.01f;
@@ -899,6 +920,27 @@ void Enemy::DownAnimation()
 	{
 		isDown_ = true;
 		downAnimationTimer_[3]--;
+
+		if (downAnimationTimer_[3] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.4f ,0.4f ,0.4f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(50)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(1.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
 		if (downAnimationTimer_[3] > 0)
 		{
 			worldTransformBody_.rotation.x -= 0.01f;

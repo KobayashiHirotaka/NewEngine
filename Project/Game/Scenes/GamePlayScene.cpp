@@ -41,7 +41,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	camera_.UpdateMatrix();
 
-	currentSeconds_ = 5;
+	currentSeconds_ = 99;
 	UpdateNumberSprite();
 
 	migrationTimer_ = 200;
