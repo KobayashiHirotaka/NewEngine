@@ -92,6 +92,9 @@ void GameStartScene::Update(SceneManager* sceneManager)
 	}
 
 	camera_.UpdateMatrix();
+
+	ImGui::Begin("Text");
+	ImGui::End();
 };
 
 void GameStartScene::Draw(SceneManager* sceneManager)
