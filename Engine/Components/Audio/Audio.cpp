@@ -1,4 +1,5 @@
-#include"Audio.h"
+#include "Audio.h"
+#include <cassert>
 
 Audio* Audio::GetInstance()
 {
@@ -8,40 +9,51 @@ Audio* Audio::GetInstance()
 
 void Audio::Initialize()
 {
-	hr = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
+	HRESULT hr = XAudio2Create(&xAudio2_, 0, XAUDIO2_DEFAULT_PROCESSOR);
 	assert(SUCCEEDED(hr));
-	hr = xAudio2->CreateMasteringVoice(&pMasteringVoice);
+	hr = xAudio2_->CreateMasteringVoice(&masterVoice_);
 	assert(SUCCEEDED(hr));
 }
 
-SoundData Audio::SoundLoadWave(const char* filename)
+uint32_t Audio::SoundLoadWave(const char* filename)
 {
+	//同じ音声データがないか探す
+	for (SoundData& soundData : soundDatas_)
+	{
+		if (soundData.name == filename)
+		{
+			return soundData.audioHandle;
+		}
+	}
+
+	audioHandle_++;
+
 	//ファイル入力ストリームのインスタンス
 	std::ifstream file;
 
 	//.wavファイルをバイナリモードで開く
 	file.open(filename, std::ios_base::binary);
 
-	//ファイルオープン失敗を検出
+	//ファイルオープン失敗を検出する
 	assert(file.is_open());
 
-	//RIFFチャンク読み込み
+	//RIFFヘッダーの読み込み
 	RiffHeader riff;
 
-	//チャンクがRIFFかチェック
+	//ファイルがRIFFかチェック
 	file.read((char*)&riff, sizeof(riff));
 	if (strncmp(riff.chunk.id, "RIFF", 4) != 0)
 	{
 		assert(0);
 	}
 
-	//ファイルタイプがWAVEかチェック
+	//タイプがWAVEかチェック
 	if (strncmp(riff.type, "WAVE", 4) != 0)
 	{
 		assert(0);
 	}
 
-	//formatチャンク読み込み
+	//Formatチャンクの読み込み
 	FormatChunk format = {};
 
 	//チャンクヘッダーの確認
@@ -55,11 +67,12 @@ SoundData Audio::SoundLoadWave(const char* filename)
 	assert(format.chunk.size <= sizeof(format.fmt));
 	file.read((char*)&format.fmt, format.chunk.size);
 
-	//Dataチャンク読み込み
+	//Dataチャンクの読み込み
 	ChunkHeader data;
-
 	file.read((char*)&data, sizeof(data));
-	if (strncmp(data.id, "bext", 4) == 0)
+
+	//JUNKチャンクの場合
+	if (strncmp(data.id, "JUNK", 4) == 0)
 	{
 		//JUNKチャンクの終わりまで進める
 		file.seekg(data.size, std::ios_base::cur);
@@ -67,10 +80,10 @@ SoundData Audio::SoundLoadWave(const char* filename)
 		file.read((char*)&data, sizeof(data));
 	}
 
-	//JUNKチャンクの場合
-	if (strncmp(data.id, "junk", 4) == 0)
+	//LISTチャンクの場合
+	if (strncmp(data.id, "LIST", 4) == 0)
 	{
-		//JUNKチャンクの終わりまで進める
+		//LISTチャンクの終わりまで進める
 		file.seekg(data.size, std::ios_base::cur);
 		//再読み込み
 		file.read((char*)&data, sizeof(data));
@@ -87,13 +100,44 @@ SoundData Audio::SoundLoadWave(const char* filename)
 
 	file.close();
 
-	SoundData soundData = {};
+	soundDatas_[audioHandle_].wfex = format.fmt;
+	soundDatas_[audioHandle_].pBuffer = reinterpret_cast<BYTE*>(pBuffer);
+	soundDatas_[audioHandle_].bufferSize = data.size;
+	soundDatas_[audioHandle_].name = filename;
+	soundDatas_[audioHandle_].audioHandle = audioHandle_;
 
-	soundData.wfex = format.fmt;
-	soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer);
-	soundData.bufferSize = data.size;
+	return audioHandle_;
+}
 
-	return soundData;
+uint32_t Audio::SoundPlayWave(uint32_t audioHandle, bool loopFlag, float volume) 
+{
+	HRESULT hr;
+	voiceHandle_++;
+
+	IXAudio2SourceVoice* pSourceVoice = nullptr;
+	hr = xAudio2_->CreateSourceVoice(&pSourceVoice, &soundDatas_[audioHandle].wfex);
+	assert(SUCCEEDED(hr));
+
+	Voice* voice = new Voice();
+	voice->handle = audioHandle;
+	voice->sourceVoice = pSourceVoice;
+	sourceVoices_.insert(voice);
+
+	XAUDIO2_BUFFER buffer{};
+	buffer.pAudioData = soundDatas_[audioHandle].pBuffer;
+	buffer.AudioBytes = soundDatas_[audioHandle].bufferSize;
+	buffer.Flags = XAUDIO2_END_OF_STREAM;
+
+	if (loopFlag)
+	{
+		buffer.LoopCount = XAUDIO2_LOOP_INFINITE;
+	}
+
+	hr = pSourceVoice->SubmitSourceBuffer(&buffer);
+	pSourceVoice->SetVolume(volume);
+	hr = pSourceVoice->Start();
+
+	return voiceHandle_;
 }
 
 void Audio::SoundUnload(SoundData* soundData)
@@ -104,21 +148,41 @@ void Audio::SoundUnload(SoundData* soundData)
 	soundData->wfex = {};
 }
 
-void Audio::Play(IXAudio2* xAudio2, const SoundData& soundData)
+void Audio::StopAudio(uint32_t voiceHandle) 
 {
-	IXAudio2SourceVoice* pSourceVoice;
-	hr = xAudio2->CreateSourceVoice(&pSourceVoice, &soundData.wfex);
-	assert(SUCCEEDED(hr));
+	HRESULT result;
 
-	XAUDIO2_BUFFER buffer{};
-	buffer.pAudioData = soundData.pBuffer;
-	buffer.Flags = XAUDIO2_END_OF_STREAM;
-	buffer.AudioBytes = soundData.bufferSize;
-	/*buffer.LoopBegin = 0;
-	buffer.LoopLength = 0;
-	buffer.LoopCount = XAUDIO2_LOOP_INFINITE;*/
+	auto it = sourceVoices_.begin();
 
-	pSourceVoice->SubmitSourceBuffer(&buffer);
-	pSourceVoice->Start(0);
+	while (it != sourceVoices_.end()) 
+	{
+		if ((*it)->handle == voiceHandle)
+		{
+			result = (*it)->sourceVoice->Stop();
+			delete (*it);
+			it = sourceVoices_.erase(it);
+		}
+		else {
+			++it;
+		}
+	}
 }
 
+void Audio::Release()
+{
+	for (const Voice* voice : sourceVoices_)
+	{
+		if (voice->sourceVoice != nullptr)
+		{
+			voice->sourceVoice->DestroyVoice();
+		}
+		delete voice;
+	}
+
+	xAudio2_.Reset();
+
+	for (int i = 0; i < soundDatas_.size(); i++)
+	{
+		SoundUnload(&soundDatas_[i]);
+	}
+}

@@ -1,93 +1,104 @@
 #pragma once
-#include "Engine/Base/MyEngine/MyEngine.h"
+#include "IScene.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
-#include "Engine/3D/Camera/DebugCamera.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
-#include "Engine/2D/Triangle/Triangle.h"
+#include "Engine/Base/TextureManager/TextureManager.h"
+#include "Engine/Utility/Collision/CollisionManager.h"
+#include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/2D/Sprite/Sprite.h"
-#include "Engine/3D/Sphere/Sphere.h"
-#include "Engine/3D/Model/Model.h"
-#include "Engine/3D/Light/Light.h"
-#include "Engine/Utility/Math/MyMath.h"
-#include "Engine/Utility/Structs/ModelData.h"
-#include "IScene.h"
 
-#define DIRECTINPUT_VERSION 0x0800//DirectInputのバージョン指定
-#include <dinput.h>
-#pragma comment(lib,"dinput8.lib")
-#pragma comment(lib,"dxguid.lib")
+#include "Project/GameObject/Character/Player/Player.h"
+#include "Project/GameObject/Character/Enemy/Enemy.h"
+#include "Project/GameObject/Skydome/Skydome.h"
+#include <memory>
 
 class GamePlayScene : public IScene
 {
 public:
 	GamePlayScene();
+
 	~GamePlayScene();
 
-	void Initialize()override;
-	void Update()override;
-	void Draw()override;
+	void Initialize(SceneManager* sceneManager)override;
+
+	void Update(SceneManager* sceneManager)override;
+
+	void Draw(SceneManager* sceneManager)override;
+
+	void UpdateNumberSprite();
 
 private:
-	MyEngine* engine_ = nullptr;
+	WorldTransform worldTransform_;
 
-	DebugCamera* debugCamera_ = nullptr;
+	Camera camera_;
 
 	TextureManager* textureManager_ = nullptr;
 
-	Light* light_ = nullptr;
+	std::unique_ptr<CollisionManager> collisionManager_;
 
 	Input* input_ = nullptr;
 
 	Audio* audio_ = nullptr;
 
-	DirectXCore* dxCore_ = nullptr;
+	std::unique_ptr<Player>player_;
 
-	Model* model_ = nullptr;
+	std::unique_ptr<Enemy>enemy_;
 
-	WorldTransform worldTransform_[2];
+	std::unique_ptr<Skydome>skydome_;
 
-	WorldTransform worldTransformSprite_;
+	int round_ = 1;
+	int migrationTimer_;
+	int PlayerWinCount_ = 0;
+	int EnemyWinCount_ = 0;
 
-	WorldTransform worldTransformModel_;
+	std::unique_ptr<Model>ground_;
 
-	Camera camera_;
+	std::unique_ptr<Sprite>numberTensSprite_ = nullptr;
+	std::unique_ptr<Sprite>numberOnesSprite_ = nullptr;
+	uint32_t tensTextureHandle_;
+	uint32_t onesTextureHandle_;
 
-	Sprite* sprite_;
+	std::unique_ptr<Sprite>roundSprite_[3];
+	uint32_t roundTextureHandle_[3];
 
-	Sphere* sphere_[2];
-	
-	int texture_;
+	std::unique_ptr<Sprite>fightSprite_ = nullptr;
+	uint32_t fightTextureHandle_;
 
-	bool changeTexture_;
+	std::unique_ptr<Sprite>roundGetSprite_[4];
+	uint32_t roundGetTextureHandle_;
 
-	int monsterBall_;
+	std::unique_ptr<Sprite>winSprite_ = nullptr;
+	uint32_t winTextureHandle_;
 
-	int uvChecker_;
+	std::unique_ptr<Sprite>loseSprite_ = nullptr;
+	uint32_t loseTextureHandle_;
 
-	int white_;
+	std::unique_ptr<Sprite>drowSprite_ = nullptr;
+	uint32_t drowTextureHandle_;
 
-	uint32_t sound_;
-	
-	Vector4 LeftTop_[2] = {
-		{ 0.0f,0.0f,0.0f,1.0f },
-		{ 360.0f,0.0f,0.0f,1.0f }
-	};
-	Vector4 LeftBottom_[2] = {
-		{ 0.0f,360.0f,0.0f,1.0f },
-		{ 360.0f,360.0f,0.0f,1.0f }
-	};
-	Vector4 RightTop_[2] = {
-		{ 360.0f,0.0f,0.0f,1.0f },
-		{ 640.0f,0.0f,0.0f,1.0f }
-	};
-	Vector4 RightBottom_[2] = {
-		{ 360.0f,180.0f,0.0f,1.0f },
-		{ 640.0f,360.0f,0.0f,1.0f }
-	};
+	std::unique_ptr<Sprite>UICommandListSprite_ = nullptr;
+	uint32_t UICommandListTextureHandle_ = 0;
 
-	int count_ = 0;
+	std::unique_ptr<Sprite>generalCommandListSprite_ = nullptr;
+	uint32_t generalCommandListTextureHandle_ = 0;
 
-	Vector4 color_ = { 1.0f,1.0f,1.0f,0.5f };
+	std::unique_ptr<Sprite>attackCommandListSprite_ = nullptr;
+	uint32_t attackCommandListTextureHandle_ = 0;
+
+	int currentSeconds_;
+
+	float frameTime = 1.0f / 60.0f;  // 60FPSを仮定
+	float elapsedTime = 0.0f;
+
+	float roundStartTimer_ = 100.0f;
+
+	bool isPlayerWin_ = false;
+	bool isDrow_ = false;
+
+	uint32_t selectSoundHandle_ = 0u;
+
+	int spriteCount_ = 0;
+	bool isOpen_ = false;
 };

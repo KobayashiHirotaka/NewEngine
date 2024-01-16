@@ -1,41 +1,67 @@
 #pragma once
-#include "Engine/Base/ImGuiManager/ImGuiManager.h"
+#include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Utility/Math/MyMath.h"
-#include <d3d12.h>
-#include <wrl.h>
-
-enum Lighting 
-{
-	checkLighting = false,
-	harfLambert = 1,
-	lambert = 2,
-};
 
 class Light
 {
-	struct DirectionalLight
+public:
+	enum class LightingMethod 
 	{
+		LambertianReflectance,
+		HalfLambert
+	};
+
+	struct ConstBufferDataDirectionalLight
+	{
+		int32_t enableLighting;
+
+		LightingMethod lightingMethod;
+	
+		float padding[2];
+	
 		Vector4 color;
+	
 		Vector3 direction;
+	
 		float intensity;
 	};
 
-public:
-	static Light* GetInstance();
-
-	//Light();
-	//~Light();
-
 	void Initialize();
 
-	void ImGui(const char* Title);
+	void Update();
 
-	ID3D12Resource* GetDirectionalLight()const { return directionalLightResource_.Get(); }
+	void SetGraphicsCommand(UINT rootParameterIndex);
+
+	const int32_t& GetEnableLighting() const { return enableLighting_; };
+
+	void SetEnableLighting(const int32_t& enableLighting) { enableLighting_ = enableLighting; };
+
+	const int32_t& GetLightingMethod() const { return int32_t(lightingMethod_); };
+
+	void SetLightingMethod(const int32_t& lightingMethod) { lightingMethod_ = LightingMethod(lightingMethod); };
+
+	const Vector4& GetColor() const { return color_; };
+
+	void SetColor(const Vector4& color) { color_ = color; };
+
+	const Vector3& GetDirection() const { return direction_; };
+
+	void SetDirection(const Vector3& direction) { direction_ = direction; };
+
+	const float& GetIntensity() const { return intensity_; };
+
+	void SetIntensity(const float& intensity) { intensity_ = intensity; };
 
 private:
-	DirectXCore* dxCore_ = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> lightingResource_ = nullptr;
+	
+	int32_t enableLighting_ = false;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource>directionalLightResource_ = nullptr;
-	DirectionalLight* directionalLightData_ = nullptr;
+	LightingMethod lightingMethod_ = LightingMethod::HalfLambert;
+	
+	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
+
+	Vector3 direction_ = { 0.0f,-1.0f,0.0f };
+	
+	float intensity_ = 1.0f;
 };
-

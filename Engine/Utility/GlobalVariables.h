@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
-#include "Engine/Utility/Structs/Vector3.h"
+#include "Engine/Utility/Math/MyMath.h"
 #include "Engine/externals/nlohmann/json.hpp"
 #include <variant>
 #include <map>

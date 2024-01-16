@@ -1,63 +1,100 @@
 #pragma once
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
-#include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
+#include "Engine/Utility/Math/MyMath.h"
+#include "Engine/3D/Mesh/Mesh.h"
+#include "Engine/3D/Model/Material.h"
 #include "Engine/3D/Light/Light.h"
-#include "Engine/Utility/Structs/VertexData.h"
-#include "Engine/Utility/Structs/Material.h"
-#include "Engine/Utility/Structs/ModelData.h"
-#include <d3d12.h>
+#include <cassert>
+#include <dxcapi.h>
 #include <fstream>
-#include <sstream>
+#include <list>
 #include <string>
-#include <wrl.h>
+#include <sstream>
 
-class Model
+#pragma comment(lib,"dxcompiler.lib")
+
+class Model 
 {
 public:
-	void Initialize(const std::string& directoryPath, const std::string& filename);
-	void Draw(const WorldTransform& transform, const Camera& camera);
-	void ImGui(const char* Title);
+	enum class RootParameterIndex 
+	{
+		Material,
+		WorldlTransform,
+		ViewProjection,
+		Texture,
+		Light
+	};
 
-	static Model* CreateModelFromObj(const std::string& directoryPath, const std::string& filename);
+	struct MaterialData
+	{
+		std::string textureFilePath;
+	};
+
+	struct ModelData 
+	{
+		std::vector<Mesh::VertexData> vertices;
+		MaterialData material;
+		std::string name;
+	};
+
+	struct ConstBufferDataTransformationMatrix 
+	{
+		Matrix4x4 WVP;
+		Matrix4x4 World;
+	};
+
+	static void StaticInitialize();
+
+	static void Release();
+
+	static Model* CreateFromOBJ(const std::string& directoryPath, const std::string& filename);
+
+	static void PreDraw();
+
+	static void PostDraw();
+
+	void Draw(const WorldTransform& worldTransform, const Camera& camera);
+
+	Light* GetDirectionalLight() { return light_.get(); };
+
+	Material* GetMaterial() { return material_.get(); };
+
+private:
+	static void InitializeDXC();
+
+	static Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(
+		const std::wstring& filePath,
+		const wchar_t* profile);
+
+	static void CreatePipelineStateObject();
 
 	ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
 
 	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
-	void SetColor(Vector4 color)
-	{
-		materialDataObj_->color = color;
-	}
-
-	void SetLighting(int32_t lightFlag)
-	{
-		materialDataObj_->enableLighting = lightFlag;
-	}
-
 private:
-	DirectXCore* dxCore_ = nullptr;
+	static ID3D12Device* sDevice_;
 
-	TextureManager* textureManager_ = nullptr;
+	static ID3D12GraphicsCommandList* sCommandList_;
 
-	Light* light_ = nullptr;
-
-	int32_t lightFlag = Lighting::checkLighting;
+	static Microsoft::WRL::ComPtr<IDxcUtils> sDxcUtils_;
+	static Microsoft::WRL::ComPtr<IDxcCompiler3> sDxcCompiler_;
+	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> sIncludeHandler_;
 	
-	ModelData modelData_;
+	static Microsoft::WRL::ComPtr<ID3D12RootSignature> sRootSignature_;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResourceObj_;
+	static Microsoft::WRL::ComPtr<ID3D12PipelineState> sGraphicsPipelineState_;
 
-	VertexData* vertexDataObj_;
+	static std::list<ModelData> modelDatas_;
 
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewObj_{};
+	std::unique_ptr<Mesh> mesh_ = nullptr;
+	
+	std::unique_ptr<Material> material_ = nullptr;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResourceObj_ = nullptr;
-
-	Material* materialDataObj_ = nullptr;
-
-	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
+	std::unique_ptr<Light>light_;
+	
+	uint32_t textureHandle_;
 };
-

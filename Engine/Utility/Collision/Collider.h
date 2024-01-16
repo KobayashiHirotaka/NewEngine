@@ -13,6 +13,7 @@ private:
 	uint32_t collisionAttribute_ = 0xffffffff;
 	uint32_t CollisionMask_ = 0xffffffff;
 	uint32_t collisionPrimitive_ = kCollisionPrimitiveSphere;
+	float damage_ = 1.0f;
 
 public:
 	float GetRadius() const { return radius_; }
@@ -20,7 +21,7 @@ public:
 	AABB GetAABB() { return aabb_; };
 	void SetAABB(AABB& aabb) { aabb_ = aabb; };
 	virtual ~Collider() {}
-	virtual void OnCollision(Collider* collider) = 0;
+	virtual void OnCollision(Collider* collider, float damage) = 0;
 	virtual Vector3 GetWorldPosition() = 0;
 	virtual WorldTransform& GetWorldTransform() = 0;
 	uint32_t GetCollisionAttribute() const { return collisionAttribute_; }
@@ -29,4 +30,6 @@ public:
 	void SetCollisionMask(uint32_t mask) { CollisionMask_ = mask; }
 	uint32_t GetCollisionPrimitive() { return collisionPrimitive_; };
 	void SetCollisionPrimitive(uint32_t collisionPrimitive) { collisionPrimitive_ = collisionPrimitive; };
+	float GetDamage() { return damage_; };
+	void SetDamage(float damage) { damage_ = damage; };
 };

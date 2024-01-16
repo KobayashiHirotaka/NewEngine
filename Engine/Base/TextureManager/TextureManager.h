@@ -1,56 +1,72 @@
 #pragma once
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/externals/DirectXTex/DirectXTex.h"
-#include <wrl.h>
+#include "Engine/externals/DirectXTex/d3dx12.h"
+#include "Engine/Utility/ConvertString/ConvertString.h"
 #include <array>
+#include <cassert>
+#include <thread>
+#include <vector>
 
 class TextureManager
 {
 public:
+	static const size_t kMaxDescriptors = 256;
 
-	struct Texture
+	static uint32_t descriptorSizeSRV;
+
+	struct Texture 
 	{
-		Microsoft::WRL::ComPtr<ID3D12Resource> textureResource;
+		Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
+		Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = nullptr;
+	
+		D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU{};
+		D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU{};
+	
+		std::string name{};
 
-		CD3DX12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU;
-		CD3DX12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
-
-		std::string name;
+		uint32_t textureHandle = 0;
 	};
 
 	static TextureManager* GetInstance();
 
-	void Initialize(DirectXCore* dxCore);
+	void Initialize();
 
-	uint32_t LoadTexture(const std::string& filePath);
+	static uint32_t Load(const std::string& filePath);
 
-	const CD3DX12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32_t textureHandle);
+	void SetGraphicsDescriptorHeap();
+
+	void SetGraphicsRootDescriptorTable(UINT rootParameterIndex, uint32_t textureHandle);
 
 	const D3D12_RESOURCE_DESC GetResourceDesc(uint32_t textureHandle);
 
+	uint32_t CreateInstancingShaderResourceView(const Microsoft::WRL::ComPtr<ID3D12Resource>& instancingResource, uint32_t kNumInstance, size_t size);
+
 private:
-	static const size_t kMaxTexture = 256;
+	TextureManager() = default;
+	~TextureManager() = default;
+	TextureManager(const TextureManager&) = delete;
+	TextureManager& operator=(const TextureManager&) = delete;
 
-	HRESULT hr_;
+	uint32_t LoadInternal(const std::string& filePath);
 
-	DirectXCore* dxCore_ = nullptr;
+	DirectX::ScratchImage LoadTexture(const std::string& filePath);
 
-	bool CheckTextureIndex[kMaxTexture];
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
 
-	std::array<Texture, kMaxTexture> textures_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource_[kMaxTexture];
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
+	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
 
-	DirectX::ScratchImage OpenImage(const std::string& filePath);
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device, const DirectX::TexMetadata& metadata);
-	Microsoft::WRL::ComPtr<ID3D12Resource> UploadTextureData(Microsoft::WRL::ComPtr<ID3D12Resource> texture, const DirectX::ScratchImage& mipImages);
+private:
+	ID3D12Device* device_ = nullptr;
 
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index);
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index);
+	ID3D12GraphicsCommandList* commandList_ = nullptr;
+	
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
+	
+	std::array<Texture, kMaxDescriptors> textures_{};
 
-	//DescriptorSizeを取得しておく
-	uint32_t descriptorSizeSRV_;
-	uint32_t descriptorSizeRTV_;
-	uint32_t descriptorSizeDSV_;
+	uint32_t textureHandle_ = -1;
 };
-

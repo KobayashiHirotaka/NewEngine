@@ -35,8 +35,8 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 
 		if (distance <= colliderA->GetRadius() + colliderB->GetRadius())
 		{
-			colliderA->OnCollision(colliderB);
-			colliderB->OnCollision(colliderA);
+			colliderA->OnCollision(colliderB, colliderB->GetDamage());
+			colliderB->OnCollision(colliderA, colliderA->GetDamage());
 		}
 	}
 
@@ -55,8 +55,8 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 			posA.y + aabbA.min.y <= posB.y + aabbB.max.y && posA.y + aabbA.max.y >= posB.y + aabbB.min.y &&
 			posA.z + aabbA.min.z <= posB.z + aabbB.max.z && posA.z + aabbA.max.z >= posB.z + aabbB.min.z)
 		{
-			colliderA->OnCollision(colliderB);
-			colliderB->OnCollision(colliderA);
+			colliderA->OnCollision(colliderB, colliderB->GetDamage());
+			colliderB->OnCollision(colliderA, colliderA->GetDamage());
 		}
 	}
 
@@ -83,8 +83,8 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 
 			if (distance <= colliderA->GetRadius())
 			{
-				colliderA->OnCollision(colliderB);
-				colliderB->OnCollision(colliderA);
+				colliderA->OnCollision(colliderB, colliderB->GetDamage());
+				colliderB->OnCollision(colliderA, colliderA->GetDamage());
 			}
 
 		}
@@ -101,8 +101,9 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 
 			if (distance <= colliderB->GetRadius())
 			{
-				colliderA->OnCollision(colliderB);
-				colliderB->OnCollision(colliderA);
+				colliderA->OnCollision(colliderB, colliderB->GetDamage());
+				//コライダーBの衝突時コールバックを呼び出す
+				colliderB->OnCollision(colliderA, colliderA->GetDamage());
 			}
 		}
 	}

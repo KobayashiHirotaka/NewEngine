@@ -1,43 +1,49 @@
 #include "Camera.h"
 
-void Camera::Initialize()
+Camera::Camera() 
 {
-	CreateConstBuffer();
-	Map();
-	UpdateMatrix();
-	TransferMatrix();
+	//CBVの作成
+	constBuff_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(ConstBuffDataViewProjection));
 }
 
-void Camera::CreateConstBuffer()
+Camera::~Camera()
 {
-	constBuff = DirectXCore::GetInstance()->CreateBufferResource(sizeof(ConstBufferDataViewProjection));
-}
 
-void Camera::Map()
-{
-	constBuff.Get()->Map(0, nullptr, reinterpret_cast<void**>(&constMap));
-}
-
-void Camera::UpdateMatrix()
-{
-	UpdateViewMatrix();
-	UpdateProjectionMatrix();
-	TransferMatrix();
-}
-
-void Camera::TransferMatrix()
-{
-	constMap->view = matView;
-	constMap->projection = matProjection;
 }
 
 void Camera::UpdateViewMatrix()
 {
-	Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotation, translation);
-	matView = Inverse(cameraMatrix);
+	//カメラのワールド行列を作成
+	Matrix4x4 worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotation_, translation_);
+
+	//ビュー行列の計算
+	matView_ = Inverse(worldMatrix);
 }
 
 void Camera::UpdateProjectionMatrix()
 {
-	matProjection = MakePerspectiveFovMatrix(fovAngleY, aspectRatio, nearZ, farZ);
+	//プロジェクション行列の計算
+	matProjection_ = MakePerspectiveFovMatrix(fov_, aspectRatio_, nearClip_, farClip_);
+}
+
+void Camera::UpdateMatrix()
+{
+	//ビュー行列の計算
+	Camera::UpdateViewMatrix();
+
+	//プロジェクション行列の計算
+	Camera::UpdateProjectionMatrix();
+
+	//ビュープロジェクションを転送する
+	Camera::TransferMatrix();
+}
+
+void Camera::TransferMatrix()
+{
+	//Resourceに書き込む
+	ConstBuffDataViewProjection* viewProjectionData = nullptr;
+	constBuff_->Map(0, nullptr, reinterpret_cast<void**>(&viewProjectionData));
+	viewProjectionData->view = matView_;
+	viewProjectionData->projection = matProjection_;
+	constBuff_->Unmap(0, nullptr);
 }

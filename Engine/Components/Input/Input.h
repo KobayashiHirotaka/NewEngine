@@ -30,7 +30,25 @@ public:
 	//離した時
 	bool IsReleseKey(uint8_t keyNumber)const;
 
-	bool GetJoystickState(XINPUT_STATE& state);
+	bool GetJoystickState();
+
+	bool IsPressButton(WORD button);
+
+	bool IsPressButtonEnter(WORD button);
+
+	float GetLeftStickX();
+
+	float GetLeftStickY();
+
+	float GetRightStickX();
+
+	float GetRightStickY();
+
+private:
+	Input() = default;
+	~Input() = default;
+	Input(const Input&) = delete;
+	const Input& operator = (const Input&) = delete;
 
 private:
 	static Input* input_;
@@ -42,4 +60,6 @@ private:
 	std::array<BYTE, 256> preKeys_;
 
 	XINPUT_STATE state_{};
+	XINPUT_STATE preState_{};
 };
+
