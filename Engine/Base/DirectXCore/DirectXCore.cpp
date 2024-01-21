@@ -11,7 +11,7 @@ DirectXCore* DirectXCore::GetInstance()
 
 void DirectXCore::Initialize() 
 {
-	DirectXCore::InitializeFixFPS();
+	InitializeFixFPS();
 
 	win_ = WindowsApp::GetInstance();
 

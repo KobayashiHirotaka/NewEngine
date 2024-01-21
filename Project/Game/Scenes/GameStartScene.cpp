@@ -95,6 +95,8 @@ void GameStartScene::Update(SceneManager* sceneManager)
 
 	ImGui::Begin("Text");
 	ImGui::End();
+
+	titleSprite_->ImGui("Sprite");
 };
 
 void GameStartScene::Draw(SceneManager* sceneManager)

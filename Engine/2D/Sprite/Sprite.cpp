@@ -15,33 +15,55 @@ void Sprite::StaticInitialize()
 
 	sCommandList_ = DirectXCore::GetInstance()->GetCommandList();
 
-	Sprite::InitializeDXC();
+	InitializeDXC();
 
-	Sprite::CreatePipelineStateObject();
+	CreatePipelineStateObject();
 
 	sMatProjection_ = MakeOrthographicMatrix(0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 100.0f);
 }
 
 void Sprite::Initialize(uint32_t textureHandle, Vector2 position)
 {
+	textureManager_ = TextureManager::GetInstance();
+
 	textureHandle_ = textureHandle;
 
 	position_ = position;
 
-	resourceDesc_ = TextureManager::GetInstance()->GetResourceDesc(textureHandle_);
+	resourceDesc_ = textureManager_->GetResourceDesc(textureHandle_);
 
 	texSize_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
 
 	//頂点バッファの作成
-	Sprite::CreateVertexBuffer();
+	CreateVertexBuffer();
 
 	//マテリアル用のリソースの作成
-	Sprite::CreateMaterialResource();
+	CreateMaterialResource();
 
 	//wvp用のリソースの作成
-	Sprite::CreateWVPResource();
+	CreateWVPResource();
 }
 
+void Sprite::Update()
+{
+	AdjustTextureSize();
+
+	CreateVertexBuffer();
+}
+
+void Sprite::AdjustTextureSize()
+{
+	resourceDesc_ = textureManager_->GetResourceDesc(textureHandle_);
+
+	textureSize_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
+}
+
+void Sprite::ImGui(const char* Title)
+{
+	ImGui::Begin(Title);
+	ImGui::DragFloat2("textureSize", &textureSize_.x, 0.01f, 0.0f, 1600.0f);
+	ImGui::End();
+}
 
 void Sprite::Release()
 {
@@ -78,11 +100,13 @@ void Sprite::PostDraw()
 
 void Sprite::Draw()
 {
+	Update();
+
 	//マテリアルの更新
-	Sprite::UpdateMaterial();
+	UpdateMaterial();
 
 	//行列の更新
-	Sprite::UpdateMatrix();
+	UpdateMatrix();
 
 	//VBVを設定
 	sCommandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
@@ -384,23 +408,28 @@ void Sprite::CreateVertexBuffer()
 	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 6;
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
+	float texLeft = textureLeftTop_.x / resourceDesc_.Width;
+	float texRight = (textureLeftTop_.x + textureSize_.x) / resourceDesc_.Width;
+	float texTop = textureLeftTop_.y / resourceDesc_.Height;
+	float texBottom = (textureLeftTop_.y + textureSize_.y) / resourceDesc_.Height;
+
 	//頂点データを設定
 	VertexData* vertexData = nullptr;
 
 	//書き込むためのアドレスを取得
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	vertexData[0].position = { texBase_.x,texBase_.y + texSize_.y,0.0f,1.0f };//左下
-	vertexData[0].texcoord = { 0.0f,1.0f };
+	vertexData[0].texcoord = { texLeft,texBottom };
 	vertexData[1].position = { texBase_.x,texBase_.y,0.0f,1.0f };//左上
-	vertexData[1].texcoord = { 0.0f,0.0f };
+	vertexData[1].texcoord = { texLeft,texTop };
 	vertexData[2].position = { texBase_.x + texSize_.x,texBase_.y + texSize_.y,0.0f,1.0f };//右下
-	vertexData[2].texcoord = { 1.0f,1.0f };
+	vertexData[2].texcoord = { texRight,texBottom };
 	vertexData[3].position = { texBase_.x,texBase_.y,0.0f,1.0f };//左上
-	vertexData[3].texcoord = { 0.0f,0.0f };
+	vertexData[3].texcoord = { texLeft,texTop };
 	vertexData[4].position = { texBase_.x + texSize_.x,texBase_.y,0.0f,1.0f };//右上
-	vertexData[4].texcoord = { 1.0f,0.0f };
+	vertexData[4].texcoord = { texRight,texTop };
 	vertexData[5].position = { texBase_.x + texSize_.x,texBase_.y + texSize_.y,0.0f,1.0f };//右上
-	vertexData[5].texcoord = { 1.0f,1.0f };
+	vertexData[5].texcoord = { texRight,texBottom };
 }
 
 

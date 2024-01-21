@@ -49,6 +49,8 @@ public:
 
 	void Draw();
 
+	void ImGui(const char* Title);
+
 	static Sprite* Create(uint32_t textureHandle, Vector2 position);
 
 	const Vector2& GetPosition() const { return position_; };
@@ -67,6 +69,14 @@ public:
 
 	void SetColor(const Vector4& color) { color_ = color; };
 
+	const Vector2& GetTextureLeftTop() const { return textureLeftTop_; };
+
+	void SetTextureLeftTop(const Vector2& textureLeftTop) { textureLeftTop_ = textureLeftTop; };
+
+	const Vector2& GetTextureSize() const { return textureSize_; };
+
+	void SetTextureSize(const Vector2& textureSize) { textureSize_ = textureSize; };
+
 private:
 	static void InitializeDXC();
 
@@ -78,6 +88,8 @@ private:
 
 	void Initialize(uint32_t textureHandle, Vector2 position);
 
+	void Update();
+
 	void CreateVertexBuffer();
 
 	void CreateMaterialResource();
@@ -88,7 +100,11 @@ private:
 
 	void UpdateMatrix();
 
+	void AdjustTextureSize();
+
 private:
+	TextureManager* textureManager_ = nullptr;
+
 	static ID3D12Device* sDevice_;
 	
 	static ID3D12GraphicsCommandList* sCommandList_;
@@ -126,6 +142,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource_ = nullptr;
 
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
+
+	Vector2 textureLeftTop_ = { 0.0f,0.0f };
+	Vector2 textureSize_ = { 100.0f,100.0f };
 
 	Vector2 uvTranslation_ = { 0.0f,0.0f };
 	
