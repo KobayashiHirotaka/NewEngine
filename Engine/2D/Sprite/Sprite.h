@@ -69,6 +69,19 @@ public:
 
 	void SetColor(const Vector4& color) { color_ = color; };
 
+	//拡張機能
+	const Vector2& GetAnchorPoint() const { return anchorPoint_; };
+
+	void SetAnchorPoint(const Vector2& anchorPoint) { anchorPoint_ = anchorPoint; };
+
+	bool GetIsFlipX() { return isFlipX_; };
+
+	void SetIsFlipX(bool isFlipX) { isFlipX_ = isFlipX; };
+
+	bool GetIsFlipY() { return isFlipY_; };
+
+	void SetIsFlipY(bool isFlipY) { isFlipY_ = isFlipY; };
+
 	const Vector2& GetTextureLeftTop() const { return textureLeftTop_; };
 
 	void SetTextureLeftTop(const Vector2& textureLeftTop) { textureLeftTop_ = textureLeftTop; };
@@ -151,4 +164,10 @@ private:
 	float uvRotation_ = 0.0f;
 
 	Vector2 uvScale_ = { 1.0f,1.0f };
+
+	Vector2 anchorPoint_{ 0.0f,0.0f };
+
+	bool isFlipX_ = false;
+
+	bool isFlipY_ = false;
 };

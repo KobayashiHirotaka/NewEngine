@@ -33,6 +33,7 @@ void Sprite::Initialize(uint32_t textureHandle, Vector2 position)
 	resourceDesc_ = textureManager_->GetResourceDesc(textureHandle_);
 
 	texSize_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
+	size_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
 
 	//頂点バッファの作成
 	CreateVertexBuffer();
@@ -62,6 +63,7 @@ void Sprite::ImGui(const char* Title)
 {
 	ImGui::Begin(Title);
 	ImGui::DragFloat2("textureSize", &textureSize_.x, 0.01f, 0.0f, 1600.0f);
+	ImGui::DragFloat("rotation", &rotation_, 0.1f, 0.0f, 100.0f);
 	ImGui::End();
 }
 
@@ -284,8 +286,8 @@ void Sprite::CreatePipelineStateObject()
 
 	//RasterizerStateの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
-	//裏面(時計回り)を表示しない
-	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	//カリングしない
+	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 	//三角形の中を塗りつぶす
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
@@ -408,27 +410,43 @@ void Sprite::CreateVertexBuffer()
 	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 6;
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
+	float left = 0.0f - anchorPoint_.x;
+	float right = 1.0f - anchorPoint_.x;
+	float top = 0.0f - anchorPoint_.y;
+	float bottom = 1.0f - anchorPoint_.y;
 	float texLeft = textureLeftTop_.x / resourceDesc_.Width;
 	float texRight = (textureLeftTop_.x + textureSize_.x) / resourceDesc_.Width;
 	float texTop = textureLeftTop_.y / resourceDesc_.Height;
 	float texBottom = (textureLeftTop_.y + textureSize_.y) / resourceDesc_.Height;
+
+	if (isFlipX_)
+	{
+		left = -left;
+		right = -right;
+	}
+
+	if (isFlipY_) 
+	{
+		top = -top;
+		bottom = -bottom;
+	}
 
 	//頂点データを設定
 	VertexData* vertexData = nullptr;
 
 	//書き込むためのアドレスを取得
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-	vertexData[0].position = { texBase_.x,texBase_.y + texSize_.y,0.0f,1.0f };//左下
+	vertexData[0].position = { left,bottom,0.0f,1.0f };//左下
 	vertexData[0].texcoord = { texLeft,texBottom };
-	vertexData[1].position = { texBase_.x,texBase_.y,0.0f,1.0f };//左上
+	vertexData[1].position = { left,top,0.0f,1.0f };//左上
 	vertexData[1].texcoord = { texLeft,texTop };
-	vertexData[2].position = { texBase_.x + texSize_.x,texBase_.y + texSize_.y,0.0f,1.0f };//右下
+	vertexData[2].position = { right,bottom,0.0f,1.0f };//右下
 	vertexData[2].texcoord = { texRight,texBottom };
-	vertexData[3].position = { texBase_.x,texBase_.y,0.0f,1.0f };//左上
+	vertexData[3].position = { left,top,0.0f,1.0f };//左上
 	vertexData[3].texcoord = { texLeft,texTop };
-	vertexData[4].position = { texBase_.x + texSize_.x,texBase_.y,0.0f,1.0f };//右上
+	vertexData[4].position = { right,top,0.0f,1.0f };//右上
 	vertexData[4].texcoord = { texRight,texTop };
-	vertexData[5].position = { texBase_.x + texSize_.x,texBase_.y + texSize_.y,0.0f,1.0f };//右上
+	vertexData[5].position = { right,bottom,0.0f,1.0f };//右上
 	vertexData[5].texcoord = { texRight,texBottom };
 }
 
