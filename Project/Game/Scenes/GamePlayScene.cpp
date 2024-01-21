@@ -17,39 +17,39 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
-	UICommandListTextureHandle_ = TextureManager::Load("resource/UICommandList.png");
+	UICommandListTextureHandle_ = TextureManager::LoadTexture("resource/UICommandList.png");
 	UICommandListSprite_.reset(Sprite::Create(UICommandListTextureHandle_, { 0.0f,0.0f }));
 
-	generalCommandListTextureHandle_ = TextureManager::Load("resource/PlayGeneralCommandList.png");
+	generalCommandListTextureHandle_ = TextureManager::LoadTexture("resource/PlayGeneralCommandList.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
-	attackCommandListTextureHandle_ = TextureManager::Load("resource/PlayAttackCommandList.png");
+	attackCommandListTextureHandle_ = TextureManager::LoadTexture("resource/PlayAttackCommandList.png");
 	attackCommandListSprite_.reset(Sprite::Create(attackCommandListTextureHandle_, { 0.0f,0.0f }));
 
 	ground_.reset(Model::CreateFromOBJ("resource/Ground", "Ground.obj"));
 
-	roundTextureHandle_[0] = TextureManager::Load("resource/Round1.png");
-	roundTextureHandle_[1] = TextureManager::Load("resource/Round2.png");
-	roundTextureHandle_[2] = TextureManager::Load("resource/Round3.png");
+	roundTextureHandle_[0] = TextureManager::LoadTexture("resource/Round1.png");
+	roundTextureHandle_[1] = TextureManager::LoadTexture("resource/Round2.png");
+	roundTextureHandle_[2] = TextureManager::LoadTexture("resource/Round3.png");
 
 	roundSprite_[0].reset(Sprite::Create(roundTextureHandle_[0], {0.0f, 0.0f}));
 	roundSprite_[1].reset(Sprite::Create(roundTextureHandle_[1], { 0.0f, 0.0f }));
 	roundSprite_[2].reset(Sprite::Create(roundTextureHandle_[2], { 0.0f, 0.0f }));
 
-	fightTextureHandle_ = TextureManager::Load("resource/FIGHT.png");
+	fightTextureHandle_ = TextureManager::LoadTexture("resource/FIGHT.png");
 
 	fightSprite_.reset(Sprite::Create(fightTextureHandle_, { 0.0f, 0.0f }));
 
-	roundGetTextureHandle_ = TextureManager::Load("resource/RoundGet.png");
+	roundGetTextureHandle_ = TextureManager::LoadTexture("resource/RoundGet.png");
 
 	roundGetSprite_[0].reset(Sprite::Create(roundGetTextureHandle_, { 400.0f, 30.0f }));
 	roundGetSprite_[1].reset(Sprite::Create(roundGetTextureHandle_, { 480.0f, 30.0f }));
 	roundGetSprite_[2].reset(Sprite::Create(roundGetTextureHandle_, { 800.0f, 30.0f }));
 	roundGetSprite_[3].reset(Sprite::Create(roundGetTextureHandle_, { 720.0f, 30.0f }));
 
-	winTextureHandle_ = TextureManager::Load("resource/WIN.png");
-	loseTextureHandle_ = TextureManager::Load("resource/LOSE.png");
-	drowTextureHandle_= TextureManager::Load("resource/Drow.png");
+	winTextureHandle_ = TextureManager::LoadTexture("resource/WIN.png");
+	loseTextureHandle_ = TextureManager::LoadTexture("resource/LOSE.png");
+	drowTextureHandle_= TextureManager::LoadTexture("resource/Drow.png");
 
 	winSprite_.reset(Sprite::Create(winTextureHandle_, { 0.0f, 0.0f }));
 	loseSprite_.reset(Sprite::Create(loseTextureHandle_, { 0.0f, 0.0f }));
@@ -532,8 +532,8 @@ void GamePlayScene::UpdateNumberSprite()
 	int tensDigit = currentSeconds_ / 10;
 	int onesDigit = currentSeconds_ % 10;
 
-	tensTextureHandle_ = TextureManager::Load("resource/number/" + std::to_string(tensDigit) + ".png");
-	onesTextureHandle_ = TextureManager::Load("resource/number/" + std::to_string(onesDigit) + ".png");
+	tensTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(tensDigit) + ".png");
+	onesTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(onesDigit) + ".png");
 
 	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, { 580.0f, 0.0f }));
 	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, { 620.0f, 0.0f }));

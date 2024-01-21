@@ -45,7 +45,7 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 			model->mesh_->Initialize(modelData.vertices);
 
 			//テクスチャの読み込み
-			model->textureHandle_ = TextureManager::GetInstance()->Load(modelData.material.textureFilePath);
+			model->textureHandle_ = TextureManager::GetInstance()->LoadTexture(modelData.material.textureFilePath);
 
 			//マテリアルの作成
 			model->material_ = std::make_unique<Material>();
@@ -65,7 +65,7 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 	modelDatas_.push_back(modelData);
 
 	//テクスチャを読み込む
-	model->textureHandle_ = TextureManager::Load(modelData.material.textureFilePath);
+	model->textureHandle_ = TextureManager::LoadTexture(modelData.material.textureFilePath);
 
 	//メッシュの作成
 	model->mesh_ = std::make_unique<Mesh>();

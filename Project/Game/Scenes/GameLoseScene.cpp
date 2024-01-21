@@ -25,7 +25,7 @@ void GameLoseScene::Initialize(SceneManager* sceneManager)
 
 	camera_.UpdateMatrix();
 
-	loseSceneTextureHandle_ = TextureManager::Load("resource/LoseScene.png");
+	loseSceneTextureHandle_ = TextureManager::LoadTexture("resource/LoseScene.png");
 	loseSceneSprite_.reset(Sprite::Create(loseSceneTextureHandle_, { 0.0f,0.0f }));
 
 	selectSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Select.wav");

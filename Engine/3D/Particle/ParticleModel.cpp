@@ -366,7 +366,7 @@ void ParticleModel::Initialize(const ModelData& modelData) {
 	//マテリアル用のリソースの作成
 	ParticleModel::CreateMaterialResource();
 	//テクスチャの読み込み
-	textureHandle_ = TextureManager::Load(modelData.material.textureFilePath);
+	textureHandle_ = TextureManager::LoadTexture(modelData.material.textureFilePath);
 }
 
 

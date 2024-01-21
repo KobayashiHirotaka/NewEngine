@@ -19,7 +19,7 @@ void Enemy::Initialize()
 
 	hpBar_ = {
 		true,
-		TextureManager::Load("resource/HP.png"),
+		TextureManager::LoadTexture("resource/HP.png"),
 		{720.0f, barSpace},
 		0.0f,
 		{barSize  ,1.0f},

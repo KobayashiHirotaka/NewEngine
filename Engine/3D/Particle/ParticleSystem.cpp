@@ -5,7 +5,7 @@ void ParticleSystem::Initialize()
 	//インスタンシング用のリソースの作成
 	ParticleSystem::CreateInstancingResource();
 	//SRVの作成
-	srvIndex_ = TextureManager::GetInstance()->CreateInstancingShaderResourceView(instancingResource_, kMaxInstance, sizeof(ParticleForGPU));
+	srvIndex_ = TextureManager::GetInstance()->CreateInstancingSRV(instancingResource_, kMaxInstance, sizeof(ParticleForGPU));
 }
 
 void ParticleSystem::Update()

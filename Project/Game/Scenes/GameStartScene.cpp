@@ -25,16 +25,16 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 	camera_.UpdateMatrix();
 
-	titleTextureHandle_ = TextureManager::Load("resource/title.png");
+	titleTextureHandle_ = TextureManager::LoadTexture("resource/title.png");
 	titleSprite_.reset(Sprite::Create(titleTextureHandle_, { 0.0f,0.0f }));
 
-	titleUITextureHandle_ = TextureManager::Load("resource/titleUI.png");
+	titleUITextureHandle_ = TextureManager::LoadTexture("resource/titleUI.png");
 	titleUISprite_.reset(Sprite::Create(titleUITextureHandle_, { 0.0f,0.0f }));
 
-	generalCommandListTextureHandle_ = TextureManager::Load("resource/GeneralCommandList.png");
+	generalCommandListTextureHandle_ = TextureManager::LoadTexture("resource/GeneralCommandList.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
-	attackCommandListTextureHandle_ = TextureManager::Load("resource/AttackCommandList.png");
+	attackCommandListTextureHandle_ = TextureManager::LoadTexture("resource/AttackCommandList.png");
 	attackCommandListSprite_.reset(Sprite::Create(attackCommandListTextureHandle_, { 0.0f,0.0f }));
 
 	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");

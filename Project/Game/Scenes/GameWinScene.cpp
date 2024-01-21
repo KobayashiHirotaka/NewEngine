@@ -25,7 +25,7 @@ void GameWinScene::Initialize(SceneManager* sceneManager)
 
 	camera_.UpdateMatrix();
 
-	winSceneTextureHandle_ = TextureManager::Load("resource/WinScene.png");
+	winSceneTextureHandle_ = TextureManager::LoadTexture("resource/WinScene.png");
 	winSceneSprite_.reset(Sprite::Create(winSceneTextureHandle_, { 0.0f,0.0f }));
 
 	selectSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Select.wav");

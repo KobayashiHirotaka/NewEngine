@@ -22,7 +22,7 @@ void Player::Initialize()
 
 	hpBar_ = {
 		true,
-		TextureManager::Load("resource/HP.png"),
+		TextureManager::LoadTexture("resource/HP.png"),
 		{60.0f, barSpace},
 		0.0f,
 		{-barSize  ,1.0f},
