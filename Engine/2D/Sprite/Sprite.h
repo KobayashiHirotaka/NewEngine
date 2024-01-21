@@ -41,53 +41,56 @@ public:
 
 	static void StaticInitialize();
 
-	static void PreDraw(BlendMode blendMode);
+	void Initialize(uint32_t textureHandle, Vector2 position);
 
-	static void PostDraw();
+	void Update();
+
+	void Draw();
 
 	static void Release();
 
-	void Draw();
+	static void PreDraw(BlendMode blendMode);
+
+	static void PostDraw();
 
 	void ImGui(const char* Title);
 
 	static Sprite* Create(uint32_t textureHandle, Vector2 position);
 
+	//Position
 	const Vector2& GetPosition() const { return position_; };
-
 	void SetPosition(const Vector2& position) { position_ = position; };
 
+	//Rotation
 	const float& GetRotation() const { return rotation_; };
-
 	void SetRotation(const float& rotation) { rotation_ = rotation; };
 
+	//Size
 	const Vector2& GetSize() const { return size_; };
-
 	void SetSize(const Vector2& size) { size_ = size; };
 
+	//Color
 	const Vector4& GetColor() const { return color_; };
-
 	void SetColor(const Vector4& color) { color_ = color; };
 
 	//拡張機能
+	//AnchorPoint
 	const Vector2& GetAnchorPoint() const { return anchorPoint_; };
-
 	void SetAnchorPoint(const Vector2& anchorPoint) { anchorPoint_ = anchorPoint; };
 
+	//Flip
 	bool GetIsFlipX() { return isFlipX_; };
-
 	void SetIsFlipX(bool isFlipX) { isFlipX_ = isFlipX; };
 
 	bool GetIsFlipY() { return isFlipY_; };
-
 	void SetIsFlipY(bool isFlipY) { isFlipY_ = isFlipY; };
 
+	//TextureLeftTop
 	const Vector2& GetTextureLeftTop() const { return textureLeftTop_; };
-
 	void SetTextureLeftTop(const Vector2& textureLeftTop) { textureLeftTop_ = textureLeftTop; };
 
+	//TextureSize
 	const Vector2& GetTextureSize() const { return textureSize_; };
-
 	void SetTextureSize(const Vector2& textureSize) { textureSize_ = textureSize; };
 
 private:
@@ -97,40 +100,38 @@ private:
 		const std::wstring& filePath,
 		const wchar_t* profile);
 
-	static void CreatePipelineStateObject();
-
-	void Initialize(uint32_t textureHandle, Vector2 position);
-
-	void Update();
+	static void CreatePSO();
 
 	void CreateVertexBuffer();
 
 	void CreateMaterialResource();
 
-	void UpdateMaterial();
-
 	void CreateWVPResource();
+
+	void UpdateMaterial();
 
 	void UpdateMatrix();
 
 	void AdjustTextureSize();
 
 private:
+	DirectXCore* dxCore_ = nullptr;
+
 	TextureManager* textureManager_ = nullptr;
 
-	static ID3D12Device* sDevice_;
+	static ID3D12Device* device_;
 	
-	static ID3D12GraphicsCommandList* sCommandList_;
+	static ID3D12GraphicsCommandList* commandList_;
 	
-	static Microsoft::WRL::ComPtr<IDxcUtils> sDxcUtils_;
-	static Microsoft::WRL::ComPtr<IDxcCompiler3> sDxcCompiler_;
-	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> sIncludeHandler_;
+	static Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_;
+	static Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_;
+	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_;
 
-	static Microsoft::WRL::ComPtr<ID3D12RootSignature> sRootSignature_;
+	static Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
 
-	static std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, kCountOfBlendMode> sGraphicsPipelineState_;
+	static std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, kCountOfBlendMode> graphicsPipelineState_;
 	
-	static Matrix4x4 sMatProjection_;
+	static Matrix4x4 matProjection_;
 	
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 
@@ -156,9 +157,6 @@ private:
 
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 
-	Vector2 textureLeftTop_ = { 0.0f,0.0f };
-	Vector2 textureSize_ = { 100.0f,100.0f };
-
 	Vector2 uvTranslation_ = { 0.0f,0.0f };
 	
 	float uvRotation_ = 0.0f;
@@ -168,6 +166,8 @@ private:
 	Vector2 anchorPoint_{ 0.0f,0.0f };
 
 	bool isFlipX_ = false;
-
 	bool isFlipY_ = false;
+
+	Vector2 textureLeftTop_ = { 0.0f,0.0f };
+	Vector2 textureSize_ = { 100.0f,100.0f };
 };

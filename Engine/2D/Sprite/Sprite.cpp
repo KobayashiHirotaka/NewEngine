@@ -1,29 +1,31 @@
 #include "Sprite.h"
 
-ID3D12Device* Sprite::sDevice_ = nullptr;
-ID3D12GraphicsCommandList* Sprite::sCommandList_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcUtils> Sprite::sDxcUtils_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcCompiler3> Sprite::sDxcCompiler_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcIncludeHandler> Sprite::sIncludeHandler_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12RootSignature> Sprite::sRootSignature_ = nullptr;
-std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, Sprite::kCountOfBlendMode> Sprite::sGraphicsPipelineState_{};
-Matrix4x4 Sprite::sMatProjection_{};
+ID3D12Device* Sprite::device_ = nullptr;
+ID3D12GraphicsCommandList* Sprite::commandList_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcUtils> Sprite::dxcUtils_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcCompiler3> Sprite::dxcCompiler_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcIncludeHandler> Sprite::includeHandler_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12RootSignature> Sprite::rootSignature_ = nullptr;
+std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, Sprite::kCountOfBlendMode> Sprite::graphicsPipelineState_{};
+Matrix4x4 Sprite::matProjection_{};
 
 void Sprite::StaticInitialize() 
 {
-	sDevice_ = DirectXCore::GetInstance()->GetDevice();
+	device_ = DirectXCore::GetInstance()->GetDevice();
 
-	sCommandList_ = DirectXCore::GetInstance()->GetCommandList();
+	commandList_ = DirectXCore::GetInstance()->GetCommandList();
 
 	InitializeDXC();
 
-	CreatePipelineStateObject();
+	CreatePSO();
 
-	sMatProjection_ = MakeOrthographicMatrix(0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 100.0f);
+	matProjection_ = MakeOrthographicMatrix(0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 100.0f);
 }
 
 void Sprite::Initialize(uint32_t textureHandle, Vector2 position)
 {
+	dxCore_ = DirectXCore::GetInstance();
+
 	textureManager_ = TextureManager::GetInstance();
 
 	textureHandle_ = textureHandle;
@@ -69,14 +71,14 @@ void Sprite::ImGui(const char* Title)
 
 void Sprite::Release()
 {
-	sDxcUtils_.Reset();
-	sDxcCompiler_.Reset();
-	sIncludeHandler_.Reset();
-	sRootSignature_.Reset();
+	dxcUtils_.Reset();
+	dxcCompiler_.Reset();
+	includeHandler_.Reset();
+	rootSignature_.Reset();
 
 	for (int i = 0; i < kCountOfBlendMode; i++)
 	{
-		sGraphicsPipelineState_[i].Reset();
+		graphicsPipelineState_[i].Reset();
 	}
 }
 
@@ -91,8 +93,8 @@ Sprite* Sprite::Create(uint32_t textureHandle, Vector2 position)
 
 void Sprite::PreDraw(BlendMode blendMode)
 {
-	sCommandList_->SetGraphicsRootSignature(sRootSignature_.Get());
-	sCommandList_->SetPipelineState(sGraphicsPipelineState_[blendMode].Get());
+	commandList_->SetGraphicsRootSignature(rootSignature_.Get());
+	commandList_->SetPipelineState(graphicsPipelineState_[blendMode].Get());
 }
 
 void Sprite::PostDraw() 
@@ -111,38 +113,38 @@ void Sprite::Draw()
 	UpdateMatrix();
 
 	//VBVを設定
-	sCommandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
 	//形状を設定。PSOに設定しているものとは別。同じものを設定すると考えておけば良い
-	sCommandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//マテリアルCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 
 	//wvp用のCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
 
 	//DescriptorHeapを設定
-	TextureManager::GetInstance()->SetGraphicsDescriptorHeap();
+	textureManager_->SetGraphicsDescriptorHeap();
 
 	//DescriptorTableを設定
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(2, textureHandle_);
+	textureManager_->SetGraphicsRootDescriptorTable(2, textureHandle_);
 
 	//描画
-	sCommandList_->DrawInstanced(6, 1, 0, 0);
+	commandList_->DrawInstanced(6, 1, 0, 0);
 }
 
 void Sprite::InitializeDXC() 
 {
 	//dxccompilerを初期化
-	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&sDxcUtils_));
+	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
 	assert(SUCCEEDED(hr));
 
-	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&sDxcCompiler_));
+	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
 	assert(SUCCEEDED(hr));
 
 	//現時点ではincludeはしないが、includeに対応するための設定を行っておく
-	hr = sDxcUtils_->CreateDefaultIncludeHandler(&sIncludeHandler_);
+	hr = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
 	assert(SUCCEEDED(hr));
 }
 
@@ -152,7 +154,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> Sprite::CompileShader(const std::wstring& fileP
 	Log(ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
 	//hlslファイルを読む
 	IDxcBlobEncoding* shaderSource = nullptr;
-	HRESULT hr = sDxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
+	HRESULT hr = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
 	//読めなかったら止める
 	assert(SUCCEEDED(hr));
 	//読み込んだファイルの内容を設定する
@@ -172,11 +174,11 @@ Microsoft::WRL::ComPtr<IDxcBlob> Sprite::CompileShader(const std::wstring& fileP
 	};
 	//実際にShaderをコンパイルする
 	IDxcResult* shaderResult = nullptr;
-	hr = sDxcCompiler_->Compile(
+	hr = dxcCompiler_->Compile(
 		&shaderSourceBuffer,//読み込んだファイル
 		arguments,//コンパイルオプション
 		_countof(arguments),//コンパイルオプションの数
-		sIncludeHandler_.Get(),//includeが含まれた諸々
+		includeHandler_.Get(),//includeが含まれた諸々
 		IID_PPV_ARGS(&shaderResult)//コンパイル結果
 	);
 	//コンパイルエラーではなくdxcが起動できないほど致命的な状況
@@ -207,7 +209,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> Sprite::CompileShader(const std::wstring& fileP
 	return shaderBlob;
 }
 
-void Sprite::CreatePipelineStateObject() 
+void Sprite::CreatePSO()
 {
 	//RootSignature作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
@@ -258,8 +260,8 @@ void Sprite::CreatePipelineStateObject()
 		assert(false);
 	}
 	//バイナリを元に生成
-	hr = sDevice_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
-		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&sRootSignature_));
+	hr = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
+		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
 	assert(SUCCEEDED(hr));
 
 
@@ -312,7 +314,7 @@ void Sprite::CreatePipelineStateObject()
 
 	//PSOを作成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-	graphicsPipelineStateDesc.pRootSignature = sRootSignature_.Get();//RootSignature
+	graphicsPipelineStateDesc.pRootSignature = rootSignature_.Get();//RootSignature
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;//InputLayout
 	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),
 	vertexShaderBlob->GetBufferSize() };//VertexShader
@@ -333,7 +335,7 @@ void Sprite::CreatePipelineStateObject()
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	//実際に生成
-	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_[kBlendModeNone]));
+	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_[kBlendModeNone]));
 	assert(SUCCEEDED(hr));
 
 
@@ -350,7 +352,7 @@ void Sprite::CreatePipelineStateObject()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 
 	//実際に生成
-	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_[kBlendModeNormal]));
+	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_[kBlendModeNormal]));
 	assert(SUCCEEDED(hr));
 
 
@@ -362,7 +364,7 @@ void Sprite::CreatePipelineStateObject()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 
 	//実際に生成
-	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_[kBlendModeAdd]));
+	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_[kBlendModeAdd]));
 	assert(SUCCEEDED(hr));
 
 
@@ -374,7 +376,7 @@ void Sprite::CreatePipelineStateObject()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 
 	//実際に生成
-	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_[kBlendModeSubtract]));
+	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_[kBlendModeSubtract]));
 	assert(SUCCEEDED(hr));
 
 
@@ -386,7 +388,7 @@ void Sprite::CreatePipelineStateObject()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 
 	//実際に生成
-	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_[kBlendModeMultiply]));
+	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_[kBlendModeMultiply]));
 	assert(SUCCEEDED(hr));
 
 
@@ -398,13 +400,13 @@ void Sprite::CreatePipelineStateObject()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 
 	//実際に生成
-	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_[kBlendModeScreen]));
+	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_[kBlendModeScreen]));
 	assert(SUCCEEDED(hr));
 }
 
 void Sprite::CreateVertexBuffer()
 {
-	vertexResource_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(VertexData) * 6);
+	vertexResource_ = dxCore_->CreateBufferResource(sizeof(VertexData) * 6);
 
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 6;
@@ -454,7 +456,7 @@ void Sprite::CreateVertexBuffer()
 void Sprite::CreateMaterialResource() 
 {
 	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
-	materialResource_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(MaterialData));
+	materialResource_ = dxCore_->CreateBufferResource(sizeof(MaterialData));
 	//マテリアルにデータを書き込む
 	MaterialData* materialData = nullptr;
 	//書き込むためのアドレスを取得
@@ -462,6 +464,18 @@ void Sprite::CreateMaterialResource()
 	//今回は赤を書き込んでみる
 	materialData->color = color_;
 	materialData->uvTransform = MakeIdentity4x4();
+}
+
+void Sprite::CreateWVPResource()
+{
+	//WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
+	wvpResource_ = dxCore_->CreateBufferResource(sizeof(Matrix4x4));
+	//データを書き込む
+	Matrix4x4* wvpData = nullptr;
+	//書き込むためのアドレスを取得
+	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData));
+	//単位行列を書き込んでおく
+	*wvpData = MakeIdentity4x4();
 }
 
 void Sprite::UpdateMaterial()
@@ -478,18 +492,6 @@ void Sprite::UpdateMaterial()
 	materialData->uvTransform = uvTransformMatrix;
 }
 
-void Sprite::CreateWVPResource()
-{
-	//WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
-	wvpResource_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(Matrix4x4));
-	//データを書き込む
-	Matrix4x4* wvpData = nullptr;
-	//書き込むためのアドレスを取得
-	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData));
-	//単位行列を書き込んでおく
-	*wvpData = MakeIdentity4x4();
-}
-
 void Sprite::UpdateMatrix() 
 {
 	//ワールド行列の作成
@@ -497,7 +499,7 @@ void Sprite::UpdateMatrix()
 	//ビュー行列の作成
 	Matrix4x4 viewMatrix = MakeIdentity4x4();
 	//WVPMatrixの作成
-	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, sMatProjection_));
+	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, matProjection_));
 
 	//データを書き込む
 	Matrix4x4* wvpData = nullptr;

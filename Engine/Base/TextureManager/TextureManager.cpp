@@ -15,7 +15,6 @@ uint32_t TextureManager::Load(const std::string& filePath)
 	return textureHandle;
 }
 
-
 void TextureManager::Initialize()
 {
 	device_ = DirectXCore::GetInstance()->GetDevice();
@@ -29,27 +28,16 @@ void TextureManager::Initialize()
 	LoadInternal("resource/white.png");
 }
 
-
 void TextureManager::SetGraphicsDescriptorHeap()
 {
 	ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap_.Get() };
 	commandList_->SetDescriptorHeaps(1, descriptorHeaps);
 }
 
-
 void TextureManager::SetGraphicsRootDescriptorTable(UINT rootParameterIndex, uint32_t textureHandle) 
 {
 	commandList_->SetGraphicsRootDescriptorTable(rootParameterIndex, textures_[textureHandle].srvHandleGPU);
 }
-
-const D3D12_RESOURCE_DESC TextureManager::GetResourceDesc(uint32_t textureHandle)
-{
-	D3D12_RESOURCE_DESC resourceDesc{};
-	resourceDesc = textures_[textureHandle].resource->GetDesc();
-
-	return resourceDesc;
-}
-
 
 uint32_t TextureManager::CreateInstancingShaderResourceView(const Microsoft::WRL::ComPtr<ID3D12Resource>& instancingResource, uint32_t kNumInstance, size_t size)
 {
@@ -115,7 +103,6 @@ uint32_t TextureManager::LoadInternal(const std::string& filePath)
 	return textureHandle_;
 }
 
-
 DirectX::ScratchImage TextureManager::LoadTexture(const std::string& filePath)
 {
 	//テクスチャファイルを読んでプログラムで扱えるようにする
@@ -132,7 +119,6 @@ DirectX::ScratchImage TextureManager::LoadTexture(const std::string& filePath)
 	//ミップマップ付きのデータを返す
 	return mipImages;
 }
-
 
 Microsoft::WRL::ComPtr<ID3D12Resource> TextureManager::CreateTextureResource(const DirectX::TexMetadata& metadata)
 {
@@ -190,7 +176,6 @@ Microsoft::WRL::ComPtr<ID3D12Resource> TextureManager::UploadTextureData(ID3D12R
 	return intermediateResource;
 }
 
-
 D3D12_CPU_DESCRIPTOR_HANDLE TextureManager::GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE handleCPU = descriptorHeap->GetCPUDescriptorHandleForHeapStart();
@@ -198,10 +183,17 @@ D3D12_CPU_DESCRIPTOR_HANDLE TextureManager::GetCPUDescriptorHandle(ID3D12Descrip
 	return handleCPU;
 }
 
-
 D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index) 
 {
 	D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap->GetGPUDescriptorHandleForHeapStart();
 	handleGPU.ptr += static_cast<D3D12_GPU_DESCRIPTOR_HANDLE>((descriptorSize * index)).ptr;
 	return handleGPU;
+}
+
+const D3D12_RESOURCE_DESC TextureManager::GetResourceDesc(uint32_t textureHandle)
+{
+	D3D12_RESOURCE_DESC resourceDesc{};
+	resourceDesc = textures_[textureHandle].resource->GetDesc();
+
+	return resourceDesc;
 }

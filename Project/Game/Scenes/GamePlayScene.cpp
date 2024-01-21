@@ -163,7 +163,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		{
 			migrationTimer_ = 60;
 			Initialize(sceneManager);
-			PlayerWinCount_ = 1;
+			PlayerWinCount_ = 2;
 		}
 	}
 
@@ -535,7 +535,6 @@ void GamePlayScene::UpdateNumberSprite()
 	tensTextureHandle_ = TextureManager::Load("resource/number/" + std::to_string(tensDigit) + ".png");
 	onesTextureHandle_ = TextureManager::Load("resource/number/" + std::to_string(onesDigit) + ".png");
 
-	// 10の位の数字スプライトの位置は左に少しずらす例
 	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, { 580.0f, 0.0f }));
 	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, { 620.0f, 0.0f }));
 }
