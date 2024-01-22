@@ -2,7 +2,7 @@
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Utility/Math/MyMath.h"
 
-struct ConstBufferDataWorldTransform
+struct WorldTransformData
 {
 	// ローカル → ワールド変換行列
 	Matrix4x4 matWorld;
@@ -15,7 +15,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff;
 
 	// マッピング済みアドレス
-	ConstBufferDataWorldTransform* constMap = nullptr;
+	WorldTransformData* constMap = nullptr;
 
 	// ローカルスケール
 	Vector3 scale = { 1, 1, 1 };

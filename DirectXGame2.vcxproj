@@ -113,7 +113,6 @@
     <ClInclude Include="Engine\Base\D3DResourceLeakChecker.h" />
     <ClInclude Include="Engine\Base\DirectXCore\DirectXCore.h" />
     <ClInclude Include="Engine\Base\ImGuiManager\ImGuiManager.h" />
-    <ClInclude Include="Engine\Base\ResourceObject.h" />
     <ClInclude Include="Engine\Base\TextureManager\TextureManager.h" />
     <ClInclude Include="Engine\Base\WindowsApp\WindowsApp.h" />
     <ClInclude Include="Engine\Components\Audio\Audio.h" />

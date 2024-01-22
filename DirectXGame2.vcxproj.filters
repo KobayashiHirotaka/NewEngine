@@ -476,9 +476,6 @@
     <ClInclude Include="Engine\3D\Light\Light.h">
       <Filter>ヘッダー ファイル\Engine\3d\Light</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Base\ResourceObject.h">
-      <Filter>ヘッダー ファイル\Engine\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Utility\Math\MyMath.h">
       <Filter>ヘッダー ファイル\Engine\Utility\Math</Filter>
     </ClInclude>
@@ -549,7 +546,7 @@
       <Filter>ヘッダー ファイル\Engine\2d\Sprite</Filter>
     </ClInclude>
     <ClInclude Include="Engine\2D\Sprite\UI.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Engine\2d\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
