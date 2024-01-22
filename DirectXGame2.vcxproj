@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\2D\Sprite\Sprite.h" />
+    <ClInclude Include="Engine\2D\Sprite\UI.h" />
     <ClInclude Include="Engine\3D\Camera\Camera.h" />
     <ClInclude Include="Engine\3D\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\3D\Light\Light.h" />
@@ -145,7 +146,6 @@
     <ClInclude Include="Project\Game\Scenes\GameWinScene.h" />
     <ClInclude Include="Project\Game\Scenes\IScene.h" />
     <ClInclude Include="Project\Game\Scenes\Manager\SceneManager.h" />
-    <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\HorizontalBlur.PS.hlsl">

@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/Base/WindowsApp/WindowsApp.h"
 #include "Engine/3D/Model/Model.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
@@ -8,10 +9,9 @@
 #include "Engine/Utility/Collision/CollisionConfig.h"
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"
-#include "Engine/Base/WindowsApp/WindowsApp.h"
+#include "Engine/2D/Sprite/UI.h"
 
 #include "Project/GameObject/Character/Player/PlayerWeapon.h"
-#include "UI.h"
 
 class Enemy;
 

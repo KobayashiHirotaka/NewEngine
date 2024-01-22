@@ -548,7 +548,7 @@
     <ClInclude Include="Engine\2D\Sprite\Sprite.h">
       <Filter>ヘッダー ファイル\Engine\2d\Sprite</Filter>
     </ClInclude>
-    <ClInclude Include="UI.h">
+    <ClInclude Include="Engine\2D\Sprite\UI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

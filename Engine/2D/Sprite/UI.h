@@ -1,6 +1,6 @@
 #pragma once
+#include "Sprite.h"
 #include "Engine/Utility/Math/MyMath.h"
-#include "Engine/2D/Sprite/Sprite.h"
 
 struct UI
 {

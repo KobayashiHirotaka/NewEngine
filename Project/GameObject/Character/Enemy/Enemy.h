@@ -8,10 +8,10 @@
 #include "Engine/Utility/Collision/CollisionConfig.h"
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"
+#include "Engine/2D/Sprite/UI.h"
 #include <random>
 
 #include "Project/GameObject/Character/Enemy/EnemyWeapon.h"
-#include "UI.h"
 
 class Player;
 
