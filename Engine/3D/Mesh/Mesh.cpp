@@ -2,9 +2,11 @@
 
 void Mesh::Initialize(const std::vector<VertexData>& vertices)
 {
+	dxCore_ = DirectXCore::GetInstance();
+
 	vertices_ = vertices;
 
-	vertexBuffer_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(VertexData) * vertices_.size());
+	vertexBuffer_ = dxCore_->CreateBufferResource(sizeof(VertexData) * vertices_.size());
 
 	//頂点バッファビューを作成
 	vertexBufferView_.BufferLocation = vertexBuffer_->GetGPUVirtualAddress();
@@ -18,13 +20,13 @@ void Mesh::Initialize(const std::vector<VertexData>& vertices)
 	vertexBuffer_->Unmap(0, nullptr);
 }
 
-void Mesh::SetGraphicsCommand() 
-{
-	DirectXCore::GetInstance()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
-	DirectXCore::GetInstance()->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-}
-
 void Mesh::Draw() 
 {
-	DirectXCore::GetInstance()->GetCommandList()->DrawInstanced(UINT(vertices_.size()), 1, 0, 0);
+	dxCore_->GetCommandList()->DrawInstanced(UINT(vertices_.size()), 1, 0, 0);
+}
+
+void Mesh::SetGraphicsCommand()
+{
+	dxCore_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	dxCore_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }

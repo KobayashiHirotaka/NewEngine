@@ -2,33 +2,34 @@
 
 void Light::Initialize() 
 {
-	lightingResource_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(ConstBufferDataDirectionalLight));
+	dxCore_ = DirectXCore::GetInstance();
 
-	ConstBufferDataDirectionalLight* directionalLightData = nullptr;
-	lightingResource_->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData));
-	directionalLightData->lightingMethod = lightingMethod_;
-	directionalLightData->enableLighting = enableLighting_;
-	directionalLightData->color = color_;
-	directionalLightData->direction = direction_;
-	directionalLightData->intensity = intensity_;
+	lightingResource_ = dxCore_->CreateBufferResource(sizeof(LightData));
+
+	LightData* lightData = nullptr;
+	lightingResource_->Map(0, nullptr, reinterpret_cast<void**>(&lightData));
+	lightData->enableLighting = enableLighting_;
+	lightData->lightingType = lightingType_;
+	lightData->color = color_;
+	lightData->direction = direction_;
+	lightData->intensity = intensity_;
 	lightingResource_->Unmap(0, nullptr);
 }
 
 void Light::Update() 
 {
 	//lightingResourceに書き込む
-	ConstBufferDataDirectionalLight* directionalLightData = nullptr;
-	lightingResource_->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData));
-	directionalLightData->lightingMethod = lightingMethod_;
-	directionalLightData->enableLighting = enableLighting_;
-	directionalLightData->color = color_;
-	directionalLightData->direction = direction_;
-	directionalLightData->intensity = intensity_;
+	LightData* lightData = nullptr;
+	lightingResource_->Map(0, nullptr, reinterpret_cast<void**>(&lightData));
+	lightData->enableLighting = enableLighting_;
+	lightData->lightingType = lightingType_;
+	lightData->color = color_;
+	lightData->direction = direction_;
+	lightData->intensity = intensity_;
 	lightingResource_->Unmap(0, nullptr);
 }
 
 void Light::SetGraphicsCommand(UINT rootParameterIndex)
 {
-	//lightingResourceの場所を設定
-	DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(rootParameterIndex, lightingResource_->GetGPUVirtualAddress());
+	dxCore_->GetCommandList()->SetGraphicsRootConstantBufferView(rootParameterIndex, lightingResource_->GetGPUVirtualAddress());
 }

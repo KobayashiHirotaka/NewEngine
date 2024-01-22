@@ -21,7 +21,6 @@ public:
 	void SetGameObjectManager(Game3dObjectManager* game3dObjectManager) { game3dObjectManager_ = game3dObjectManager; };
 
 private:
-
 	Game3dObjectManager* game3dObjectManager_ = nullptr;
 
 	WorldTransform worldTransform_{};

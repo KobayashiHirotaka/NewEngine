@@ -2,11 +2,13 @@
 
 void Material::Initialize() 
 {
+	dxCore_ = DirectXCore::GetInstance();
+
 	//マテリアルリソースの作成
-	materialResource_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(ConstBufferDataMaterial));
+	materialResource_ = dxCore_->CreateBufferResource(sizeof(MaterialData));
 
 	//マテリアルリソースに書き込む
-	ConstBufferDataMaterial* materialData = nullptr;
+	MaterialData* materialData = nullptr;
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	materialData->color = color_;
 	materialData->uvTransform = MakeIdentity4x4();
@@ -21,7 +23,7 @@ void Material::Update()
 	uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix(Vector3{ translation_.x,translation_.y,0.0f }));
 
 	//マテリアルリソースに書き込む
-	ConstBufferDataMaterial* materialData = nullptr;
+	MaterialData* materialData = nullptr;
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	materialData->color = color_;
 	materialData->uvTransform = uvTransformMatrix;
@@ -30,6 +32,5 @@ void Material::Update()
 
 void Material::SetGraphicsCommand(UINT rootParameterIndex)
 {
-	//マテリアルリソースを設定
-	DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(rootParameterIndex, materialResource_->GetGPUVirtualAddress());
+	dxCore_->GetCommandList()->SetGraphicsRootConstantBufferView(rootParameterIndex, materialResource_->GetGPUVirtualAddress());
 }
