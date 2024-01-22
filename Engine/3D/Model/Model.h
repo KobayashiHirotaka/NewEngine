@@ -22,7 +22,7 @@ public:
 	enum class RootParameterIndex 
 	{
 		Material,
-		WorldlTransform,
+		WorldTransform,
 		ViewProjection,
 		Texture,
 		Light
@@ -40,13 +40,17 @@ public:
 		std::string name;
 	};
 
-	struct ConstBufferDataTransformationMatrix 
+	struct ModelTransformationData
 	{
 		Matrix4x4 WVP;
 		Matrix4x4 World;
 	};
 
 	static void StaticInitialize();
+
+	//void Initialize();
+
+	void Draw(const WorldTransform& worldTransform, const Camera& camera);
 
 	static void Release();
 
@@ -56,11 +60,9 @@ public:
 
 	static void PostDraw();
 
-	void Draw(const WorldTransform& worldTransform, const Camera& camera);
-
-	Light* GetDirectionalLight() { return light_.get(); };
-
 	Material* GetMaterial() { return material_.get(); };
+
+	Light* GetLight() { return light_.get(); };
 
 private:
 	static void InitializeDXC();
@@ -69,24 +71,28 @@ private:
 		const std::wstring& filePath,
 		const wchar_t* profile);
 
-	static void CreatePipelineStateObject();
+	static void CreatePSO();
 
 	ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
 
 	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
 private:
-	static ID3D12Device* sDevice_;
+	static DirectXCore* dxCore_;
 
-	static ID3D12GraphicsCommandList* sCommandList_;
+	static TextureManager* textureManager_;
 
-	static Microsoft::WRL::ComPtr<IDxcUtils> sDxcUtils_;
-	static Microsoft::WRL::ComPtr<IDxcCompiler3> sDxcCompiler_;
-	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> sIncludeHandler_;
+	static ID3D12Device* device_;
+
+	static ID3D12GraphicsCommandList* commandList_;
+
+	static Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_;
+	static Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_;
+	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_;
 	
-	static Microsoft::WRL::ComPtr<ID3D12RootSignature> sRootSignature_;
+	static Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
 
-	static Microsoft::WRL::ComPtr<ID3D12PipelineState> sGraphicsPipelineState_;
+	static Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_;
 
 	static std::list<ModelData> modelDatas_;
 

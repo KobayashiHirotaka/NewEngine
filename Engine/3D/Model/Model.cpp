@@ -1,96 +1,29 @@
 #include "Model.h"
 
-ID3D12Device* Model::sDevice_ = nullptr;
-ID3D12GraphicsCommandList* Model::sCommandList_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcUtils> Model::sDxcUtils_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcCompiler3> Model::sDxcCompiler_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcIncludeHandler> Model::sIncludeHandler_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12RootSignature> Model::sRootSignature_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12PipelineState> Model::sGraphicsPipelineState_ = nullptr;
+DirectXCore* Model::dxCore_ = nullptr;
+TextureManager* Model::textureManager_ = nullptr;
+ID3D12Device* Model::device_ = nullptr;
+ID3D12GraphicsCommandList* Model::commandList_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcUtils> Model::dxcUtils_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcCompiler3> Model::dxcCompiler_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcIncludeHandler> Model::includeHandler_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12RootSignature> Model::rootSignature_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12PipelineState> Model::graphicsPipelineState_ = nullptr;
 std::list<Model::ModelData> Model::modelDatas_{};
 
 void Model::StaticInitialize()
 {
-	sDevice_ = DirectXCore::GetInstance()->GetDevice();
+	dxCore_ = DirectXCore::GetInstance();
 
-	sCommandList_ = DirectXCore::GetInstance()->GetCommandList();
+	textureManager_ = TextureManager::GetInstance();
 
-	//DXCの初期化
-	Model::InitializeDXC();
+	device_ = dxCore_->GetDevice();
 
-	//PipelineStateObjectの作成
-	Model::CreatePipelineStateObject();
-}
+	commandList_ = dxCore_->GetCommandList();
 
-void Model::Release() 
-{
-	sDxcUtils_.Reset();
-	sDxcCompiler_.Reset();
-	sIncludeHandler_.Reset();
-	sRootSignature_.Reset();
-	sGraphicsPipelineState_.Reset();
-}
+	InitializeDXC();
 
-Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string& filename)
-{
-	//モデルを生成
-	Model* model = new Model();
-
-	for (ModelData modelData : modelDatas_) 
-	{
-		if (modelData.name == filename)
-		{
-			//メッシュの作成
-			model->mesh_ = std::make_unique<Mesh>();
-			model->mesh_->Initialize(modelData.vertices);
-
-			//テクスチャの読み込み
-			model->textureHandle_ = TextureManager::GetInstance()->LoadTexture(modelData.material.textureFilePath);
-
-			//マテリアルの作成
-			model->material_ = std::make_unique<Material>();
-			model->material_->Initialize();
-
-			//Lightの作成
-			model->light_ = std::make_unique<Light>();
-			model->light_->Initialize();
-
-			return model;
-		}
-	}
-
-	//モデルデータを読み込む
-	ModelData modelData = model->LoadObjFile(directoryPath, filename);
-	modelData.name = filename;
-	modelDatas_.push_back(modelData);
-
-	//テクスチャを読み込む
-	model->textureHandle_ = TextureManager::LoadTexture(modelData.material.textureFilePath);
-
-	//メッシュの作成
-	model->mesh_ = std::make_unique<Mesh>();
-	model->mesh_->Initialize(modelData.vertices);
-
-	//マテリアルの作成
-	model->material_ = std::make_unique<Material>();
-	model->material_->Initialize();
-
-	//Lightの作成
-	model->light_ = std::make_unique<Light>();
-	model->light_->Initialize();
-
-	return model;
-}
-
-void Model::PreDraw()
-{
-	sCommandList_->SetGraphicsRootSignature(sRootSignature_.Get());
-	sCommandList_->SetPipelineState(sGraphicsPipelineState_.Get());
-}
-
-void Model::PostDraw() 
-{
-
+	CreatePSO();
 }
 
 void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
@@ -108,35 +41,103 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 	material_->SetGraphicsCommand(UINT(RootParameterIndex::Material));
 
 	//WorldTransform用のCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldlTransform), worldTransform.constBuff->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldTransform), worldTransform.constBuff->GetGPUVirtualAddress());
 
 	//ViewProjection用のCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff_->GetGPUVirtualAddress());
 
 	//DescriptorHeapを設定
-	TextureManager::GetInstance()->SetGraphicsDescriptorHeap();
+	textureManager_->SetGraphicsDescriptorHeap();
 
 	//DescriptorTableを設定
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Texture), textureHandle_);
+	textureManager_->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Texture), textureHandle_);
 
-	//DirectionalLightを設定
+	//Lightを設定
 	light_->SetGraphicsCommand(UINT(RootParameterIndex::Light));
 
 	//描画
 	mesh_->Draw();
 }
 
+void Model::Release() 
+{
+	dxcUtils_.Reset();
+	dxcCompiler_.Reset();
+	includeHandler_.Reset();
+	rootSignature_.Reset();
+	graphicsPipelineState_.Reset();
+}
+
+Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string& filename)
+{
+	//新しいモデルを作成
+	Model* model = new Model();
+
+	//モデルが既に存在するかチェック
+	bool modelExists = false;
+
+	//モデルデータを読み込む
+	ModelData modelData;
+
+	for (ModelData existingModelData : modelDatas_)
+	{
+		if (existingModelData.name == filename)
+		{
+			//既に存在する場合はそのモデルを使う
+			modelData = existingModelData;
+			modelExists = true;
+			break;
+		}
+	}
+
+	if (!modelExists)
+	{
+		//モデルデータを読み込む
+		modelData = model->LoadObjFile(directoryPath, filename);
+		modelData.name = filename;
+		modelDatas_.push_back(modelData);
+	}
+
+	//メッシュの作成
+	model->mesh_ = std::make_unique<Mesh>();
+	model->mesh_->Initialize(modelData.vertices);
+
+	//テクスチャのハンドルの取得
+	model->textureHandle_ = textureManager_->LoadTexture(modelData.material.textureFilePath);
+
+	//マテリアルの作成
+	model->material_ = std::make_unique<Material>();
+	model->material_->Initialize();
+
+	//Lightの作成
+	model->light_ = std::make_unique<Light>();
+	model->light_->Initialize();
+
+	return model;
+}
+
+void Model::PreDraw()
+{
+	commandList_->SetGraphicsRootSignature(rootSignature_.Get());
+	commandList_->SetPipelineState(graphicsPipelineState_.Get());
+}
+
+void Model::PostDraw() 
+{
+
+}
+
 void Model::InitializeDXC()
 {
 	//dxccompilerを初期化
-	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&sDxcUtils_));
+	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
 	assert(SUCCEEDED(hr));
 
-	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&sDxcCompiler_));
+	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
 	assert(SUCCEEDED(hr));
 
 	//現時点ではincludeはしないが、includeに対応するための設定を行っておく
-	hr = sDxcUtils_->CreateDefaultIncludeHandler(&sIncludeHandler_);
+	hr = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
 	assert(SUCCEEDED(hr));
 }
 
@@ -146,7 +147,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> Model::CompileShader(const std::wstring& filePa
 	Log(ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
 	//hlslファイルを読む
 	IDxcBlobEncoding* shaderSource = nullptr;
-	HRESULT hr = sDxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
+	HRESULT hr = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
 	//読めなかったら止める
 	assert(SUCCEEDED(hr));
 	//読み込んだファイルの内容を設定する
@@ -166,11 +167,11 @@ Microsoft::WRL::ComPtr<IDxcBlob> Model::CompileShader(const std::wstring& filePa
 	};
 	//実際にShaderをコンパイルする
 	IDxcResult* shaderResult = nullptr;
-	hr = sDxcCompiler_->Compile(
+	hr = dxcCompiler_->Compile(
 		&shaderSourceBuffer,//読み込んだファイル
 		arguments,//コンパイルオプション
 		_countof(arguments),//コンパイルオプションの数
-		sIncludeHandler_.Get(),//includeが含まれた諸々
+		includeHandler_.Get(),//includeが含まれた諸々
 		IID_PPV_ARGS(&shaderResult)//コンパイル結果
 	);
 	//コンパイルエラーではなくdxcが起動できないほど致命的な状況
@@ -201,8 +202,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> Model::CompileShader(const std::wstring& filePa
 	return shaderBlob;
 }
 
-
-void Model::CreatePipelineStateObject()
+void Model::CreatePSO()
 {
 	//RootSignature作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
@@ -259,8 +259,8 @@ void Model::CreatePipelineStateObject()
 		assert(false);
 	}
 	//バイナリを元に生成
-	hr = sDevice_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
-		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&sRootSignature_));
+	hr = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
+		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
 	assert(SUCCEEDED(hr));
 
 
@@ -326,7 +326,7 @@ void Model::CreatePipelineStateObject()
 
 	//PSOを作成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-	graphicsPipelineStateDesc.pRootSignature = sRootSignature_.Get();//RootSignature
+	graphicsPipelineStateDesc.pRootSignature = rootSignature_.Get();//RootSignature
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;//InputLayout
 	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),
 	vertexShaderBlob->GetBufferSize() };//VertexShader
@@ -348,7 +348,7 @@ void Model::CreatePipelineStateObject()
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	//実際に生成
-	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_));
+	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_));
 	assert(SUCCEEDED(hr));
 }
 

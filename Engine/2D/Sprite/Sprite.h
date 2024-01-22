@@ -49,13 +49,13 @@ public:
 
 	static void Release();
 
+	static Sprite* Create(uint32_t textureHandle, Vector2 position);
+
 	static void PreDraw(BlendMode blendMode);
 
 	static void PostDraw();
 
 	void ImGui(const char* Title);
-
-	static Sprite* Create(uint32_t textureHandle, Vector2 position);
 
 	//Position
 	const Vector2& GetPosition() const { return position_; };
@@ -115,9 +115,9 @@ private:
 	void AdjustTextureSize();
 
 private:
-	DirectXCore* dxCore_ = nullptr;
+	static DirectXCore* dxCore_;
 
-	TextureManager* textureManager_ = nullptr;
+	static TextureManager* textureManager_;
 
 	static ID3D12Device* device_;
 	

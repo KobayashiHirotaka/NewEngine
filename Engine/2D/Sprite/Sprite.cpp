@@ -1,5 +1,7 @@
 #include "Sprite.h"
 
+DirectXCore* Sprite::dxCore_ = nullptr;
+TextureManager* Sprite::textureManager_ = nullptr;
 ID3D12Device* Sprite::device_ = nullptr;
 ID3D12GraphicsCommandList* Sprite::commandList_ = nullptr;
 Microsoft::WRL::ComPtr<IDxcUtils> Sprite::dxcUtils_ = nullptr;
@@ -11,9 +13,13 @@ Matrix4x4 Sprite::matProjection_{};
 
 void Sprite::StaticInitialize() 
 {
-	device_ = DirectXCore::GetInstance()->GetDevice();
+	dxCore_ = DirectXCore::GetInstance();
 
-	commandList_ = DirectXCore::GetInstance()->GetCommandList();
+	textureManager_ = TextureManager::GetInstance();
+
+	device_ = dxCore_->GetDevice();
+
+	commandList_ = dxCore_->GetCommandList();
 
 	InitializeDXC();
 
@@ -24,10 +30,6 @@ void Sprite::StaticInitialize()
 
 void Sprite::Initialize(uint32_t textureHandle, Vector2 position)
 {
-	dxCore_ = DirectXCore::GetInstance();
-
-	textureManager_ = TextureManager::GetInstance();
-
 	textureHandle_ = textureHandle;
 
 	position_ = position;
@@ -54,19 +56,36 @@ void Sprite::Update()
 	CreateVertexBuffer();
 }
 
-void Sprite::AdjustTextureSize()
+void Sprite::Draw()
 {
-	resourceDesc_ = textureManager_->GetResourceDesc(textureHandle_);
+	Update();
 
-	textureSize_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
-}
+	//マテリアルの更新
+	UpdateMaterial();
 
-void Sprite::ImGui(const char* Title)
-{
-	ImGui::Begin(Title);
-	ImGui::DragFloat2("textureSize", &textureSize_.x, 0.01f, 0.0f, 1600.0f);
-	ImGui::DragFloat("rotation", &rotation_, 0.1f, 0.0f, 100.0f);
-	ImGui::End();
+	//行列の更新
+	UpdateMatrix();
+
+	//VBVを設定
+	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+
+	//形状を設定。PSOに設定しているものとは別。同じものを設定すると考えておけば良い
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	//マテリアルCBufferの場所を設定
+	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+
+	//wvp用のCBufferの場所を設定
+	commandList_->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
+
+	//DescriptorHeapを設定
+	textureManager_->SetGraphicsDescriptorHeap();
+
+	//DescriptorTableを設定
+	textureManager_->SetGraphicsRootDescriptorTable(2, textureHandle_);
+
+	//描画
+	commandList_->DrawInstanced(6, 1, 0, 0);
 }
 
 void Sprite::Release()
@@ -102,36 +121,12 @@ void Sprite::PostDraw()
 
 }
 
-void Sprite::Draw()
+void Sprite::ImGui(const char* Title)
 {
-	Update();
-
-	//マテリアルの更新
-	UpdateMaterial();
-
-	//行列の更新
-	UpdateMatrix();
-
-	//VBVを設定
-	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
-
-	//形状を設定。PSOに設定しているものとは別。同じものを設定すると考えておけば良い
-	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	//マテリアルCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
-
-	//wvp用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
-
-	//DescriptorHeapを設定
-	textureManager_->SetGraphicsDescriptorHeap();
-
-	//DescriptorTableを設定
-	textureManager_->SetGraphicsRootDescriptorTable(2, textureHandle_);
-
-	//描画
-	commandList_->DrawInstanced(6, 1, 0, 0);
+	ImGui::Begin(Title);
+	ImGui::DragFloat2("textureSize", &textureSize_.x, 0.01f, 0.0f, 1600.0f);
+	ImGui::DragFloat("rotation", &rotation_, 0.1f, 0.0f, 100.0f);
+	ImGui::End();
 }
 
 void Sprite::InitializeDXC() 
@@ -427,7 +422,7 @@ void Sprite::CreateVertexBuffer()
 		right = -right;
 	}
 
-	if (isFlipY_) 
+	if (isFlipY_)
 	{
 		top = -top;
 		bottom = -bottom;
@@ -451,7 +446,6 @@ void Sprite::CreateVertexBuffer()
 	vertexData[5].position = { right,bottom,0.0f,1.0f };//右上
 	vertexData[5].texcoord = { texRight,texBottom };
 }
-
 
 void Sprite::CreateMaterialResource() 
 {
@@ -507,4 +501,11 @@ void Sprite::UpdateMatrix()
 	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData));
 	//単位行列を書き込んでおく
 	*wvpData = worldViewProjectionMatrix;
+}
+
+void Sprite::AdjustTextureSize()
+{
+	resourceDesc_ = textureManager_->GetResourceDesc(textureHandle_);
+
+	textureSize_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
 }
