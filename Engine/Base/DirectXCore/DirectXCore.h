@@ -30,13 +30,13 @@ public:
 
 	void ClearDepthBuffer();
 
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
-
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
 	ID3D12Device* GetDevice() const { return device_.Get(); };
 
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); };
+
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
 
 private:
 	void CreateDXGIDevice();
@@ -45,9 +45,9 @@ private:
 
 	void CreateSwapChain();
 
-	void CreateRenderTargetView();
+	void CreateRTV();
 
-	void CreateDepthStencilView();
+	void CreateDSV();
 
 	void CreateFence();
 	
@@ -57,15 +57,14 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(int32_t width, int32_t height);
 
-	void InitializeFixFPS();
-
-	void UpdateFixFPS();
-
 private:
 	DirectXCore() = default;
 	~DirectXCore() = default;
 	DirectXCore(const DirectXCore&) = delete;
 	DirectXCore& operator=(const DirectXCore&) = delete;
+
+	void InitializeFixFPS();
+	void UpdateFixFPS();
 
 private:
 	WindowsApp* win_ = nullptr;

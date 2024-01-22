@@ -30,6 +30,9 @@ LRESULT CALLBACK WindowsApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPAR
 
 void WindowsApp::CreateGameWindow(const wchar_t* title, int32_t clientWidth, int32_t clientHeight)
 {
+	//システムタイマーの分解能をあげる
+	timeBeginPeriod(1);
+
 	//COM初期化
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
@@ -67,9 +70,6 @@ void WindowsApp::CreateGameWindow(const wchar_t* title, int32_t clientWidth, int
 
 	//ウィンドウ表示
 	ShowWindow(hwnd_, SW_SHOW);
-
-	//システムタイマーの分解能をあげる
-	timeBeginPeriod(1);
 }
 
 void WindowsApp::CloseGameWindow() 

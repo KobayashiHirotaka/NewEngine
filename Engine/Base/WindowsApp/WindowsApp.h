@@ -34,6 +34,6 @@ private:
 private:
 	WNDCLASS wc_{};
 	RECT wrc_{};
-	HWND hwnd_{};
+	HWND hwnd_ = nullptr;
 };
 

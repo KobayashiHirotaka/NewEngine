@@ -29,8 +29,8 @@ void DirectXCore::Initialize()
 
 	depthStencilResource_ = CreateDepthStencilTextureResource(win_->kClientWidth, win_->kClientHeight);
 
-	CreateRenderTargetView();
-	CreateDepthStencilView();
+	CreateRTV();
+	CreateDSV();
 
 	CreateFence();
 }
@@ -103,7 +103,7 @@ void DirectXCore::PostDraw()
 	HRESULT hr = commandList_->Close();
 	assert(SUCCEEDED(hr));
 
-	//GPUにコマンドリストの実行を行わせる
+	//コマンドをキック
 	ID3D12CommandList* commandLists[] = { commandList_.Get() };
 	commandQueue_->ExecuteCommandLists(1, commandLists);
 	swapChain_->Present(1, 0);
@@ -168,6 +168,7 @@ Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> DirectXCore::CreateDescriptorHeap(D
 	descriptorHeapDesc.NumDescriptors = numDescriptors;
 	descriptorHeapDesc.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
+	//ディスクリプタヒープの生成ができないので起動できない
 	HRESULT hr = device_->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
 	assert(SUCCEEDED(hr));
 
@@ -194,7 +195,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCore::CreateBufferResource(size_t 
 	//バッファの場合はこれにする決まり
 	resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
-	//実際にリソースを作る
+	//頂点リソースを作る
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
 	HRESULT hr = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
 		&resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
@@ -340,8 +341,10 @@ void DirectXCore::CreateSwapChain()
 	assert(SUCCEEDED(hr));
 }
 
-void DirectXCore::CreateRenderTargetView() 
+void DirectXCore::CreateRTV() 
 {
+
+
 	HRESULT hr = swapChain_->GetBuffer(0, IID_PPV_ARGS(&swapChainResources_[0]));
 
 	//リソースの取得ができないので起動できない
@@ -370,7 +373,7 @@ void DirectXCore::CreateRenderTargetView()
 	device_->CreateRenderTargetView(swapChainResources_[1].Get(), &rtvDesc_, rtvHandles[1]);
 }
 
-void DirectXCore::CreateDepthStencilView()
+void DirectXCore::CreateDSV()
 {
 	//DSVの設定
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
