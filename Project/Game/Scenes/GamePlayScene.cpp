@@ -142,7 +142,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		
 		if (migrationTimer_ < 0)
 		{
-			Initialize(sceneManager);
 			PlayerWinCount_ = 2;
 		}
 	}
@@ -166,7 +165,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0)
 		{
 			migrationTimer_ = 60;
-			Initialize(sceneManager);
 			PlayerWinCount_ = 2;
 		}
 	}
@@ -190,7 +188,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		
 		if (migrationTimer_ < 0)
 		{
-			Initialize(sceneManager);
 			PlayerWinCount_ = 2;
 		}
 	}
@@ -213,17 +210,13 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 		if (migrationTimer_ < 0)
 		{
-			Initialize(sceneManager);
 			PlayerWinCount_ = 2;
 		}
 	}
 
 	if (PlayerWinCount_ == 2)
 	{
-		if (isTransitionStart_ == false && isTransitionEnd_ == true)
-		{
-			isTransitionStart_ = true;
-		}
+		isTransitionStart_ = true;
 	}
 
 
@@ -280,7 +273,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		
 		if (migrationTimer_ < 0)
 		{
-			Initialize(sceneManager);
 			EnemyWinCount_ = 2;
 		}
 	}
@@ -303,7 +295,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		
 		if (migrationTimer_ < 0)
 		{
-			Initialize(sceneManager);
 			EnemyWinCount_ = 2;
 		}
 	}
@@ -327,7 +318,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		
 		if (migrationTimer_ < 0)
 		{
-			Initialize(sceneManager);
 			EnemyWinCount_ = 2;
 		}
 	}
@@ -350,7 +340,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		
 		if (migrationTimer_ < 0)
 		{
-			Initialize(sceneManager);
 			EnemyWinCount_ = 2;
 		}
 	}
@@ -456,6 +445,11 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	worldTransform_.UpdateMatrix();
 
 	camera_.UpdateMatrix();
+
+	ImGui::Begin("Play");
+	ImGui::DragInt("PlayerWinCount", &PlayerWinCount_, 1, 0, 2);
+	ImGui::DragInt("EnemyWinCount", &EnemyWinCount_, 1, 0, 2);
+	ImGui::End();
 };
 
 void GamePlayScene::Draw(SceneManager* sceneManager)
@@ -541,23 +535,23 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 		numberOnesSprite_->Draw();
 		numberTensSprite_->Draw();
 
-		if (PlayerWinCount_ == 1)
+		if (PlayerWinCount_ >= 1)
 		{
 			roundGetSprite_[1]->Draw();
 		}
 
-		if (PlayerWinCount_ == 2)
+		if (PlayerWinCount_ >= 2)
 		{
 			roundGetSprite_[0]->Draw();
 		}
 
 
-		if (EnemyWinCount_ == 1)
+		if (EnemyWinCount_ >= 1)
 		{
 			roundGetSprite_[3]->Draw();
 		}
 
-		if (EnemyWinCount_ == 2)
+		if (EnemyWinCount_ >= 2)
 		{
 			roundGetSprite_[2]->Draw();
 		}

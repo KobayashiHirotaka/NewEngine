@@ -28,6 +28,10 @@ void GameLoseScene::Initialize(SceneManager* sceneManager)
 	loseSceneTextureHandle_ = TextureManager::LoadTexture("resource/LoseScene.png");
 	loseSceneSprite_.reset(Sprite::Create(loseSceneTextureHandle_, { 0.0f,0.0f }));
 
+	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
+	transitionSprite_->SetColor(transitionColor_);
+	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
+
 	selectSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Select.wav");
 };
 
@@ -39,7 +43,35 @@ void GameLoseScene::Update(SceneManager* sceneManager)
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
-			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			if (isTransitionEnd_)
+			{
+				isTransitionStart_ = true;
+				audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			}
+		}
+	}
+
+	if (!isTransitionEnd_)
+	{
+		transitionTimer_ += 1.0f / kTransitionTime;
+		transitionColor_.w = Lerp(transitionColor_.w, 0.0f, transitionTimer_);
+		transitionSprite_->SetColor(transitionColor_);
+
+		if (transitionColor_.w <= 0.0f)
+		{
+			isTransitionEnd_ = true;
+			transitionTimer_ = 0.0f;
+		}
+	}
+
+	if (isTransitionStart_)
+	{
+		transitionTimer_ += 1.0f / kTransitionTime;
+		transitionColor_.w = Lerp(transitionColor_.w, 1.0f, transitionTimer_);
+		transitionSprite_->SetColor(transitionColor_);
+
+		if (transitionColor_.w >= 1.0f)
+		{
 			sceneManager->ChangeScene(new GameStartScene);
 		}
 	}
@@ -64,4 +96,10 @@ void GameLoseScene::Draw(SceneManager* sceneManager)
 	Sprite::PostDraw();
 
 	PostProcess::GetInstance()->PostDraw();
+
+	Sprite::PreDraw(Sprite::kBlendModeNormal);
+
+	transitionSprite_->Draw();
+
+	Sprite::PostDraw();
 };
