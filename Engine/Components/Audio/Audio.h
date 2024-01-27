@@ -6,48 +6,48 @@
 #include <xaudio2.h>
 #pragma comment(lib,"xaudio2.lib")
 
+struct ChunkHeader
+{
+	char id[4];//チャンクID
+	int32_t size;//チャンクサイズ
+};
+
+struct RiffHeader
+{
+	ChunkHeader chunk;//"RIFF"
+	char type[4];//"WAVE"
+};
+
+struct FormatChunk
+{
+	ChunkHeader chunk;//"fmt"
+	WAVEFORMATEX fmt;//フォーマット
+};
+
+struct SoundData
+{
+	//波形フォーマット
+	WAVEFORMATEX wfex;
+	//バッファの先頭
+	BYTE* pBuffer;
+	//バッファのサイズ
+	unsigned int bufferSize;
+	//名前
+	std::string name;
+	//オーディオハンドル
+	uint32_t audioHandle;
+};
+
+struct Voice
+{
+	uint32_t handle = 0;
+	IXAudio2SourceVoice* sourceVoice = nullptr;
+};
+
 class Audio 
 {
 public:
 	static const int kMaxSoundData = 256;
-
-	struct ChunkHeader 
-	{
-		char id[4];//チャンクID
-		int32_t size;//チャンクサイズ
-	};
-
-	struct RiffHeader
-	{
-		ChunkHeader chunk;//"RIFF"
-		char type[4];//"WAVE"
-	};
-
-	struct FormatChunk
-	{
-		ChunkHeader chunk;//"fmt"
-		WAVEFORMATEX fmt;//フォーマット
-	};
-
-	struct SoundData
-	{
-		//波形フォーマット
-		WAVEFORMATEX wfex;
-		//バッファの先頭
-		BYTE* pBuffer;
-		//バッファのサイズ
-		unsigned int bufferSize;
-		//名前
-		std::string name;
-		//オーディオハンドル
-		uint32_t audioHandle;
-	};
-
-	struct Voice 
-	{
-		uint32_t handle = 0;
-		IXAudio2SourceVoice* sourceVoice = nullptr;
-	};
 
 	static Audio* GetInstance();
 

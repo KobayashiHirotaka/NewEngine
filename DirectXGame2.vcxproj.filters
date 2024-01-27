@@ -258,9 +258,6 @@
     <ClCompile Include="Engine\3D\WorldTransform\WorldTransform.cpp">
       <Filter>ソース ファイル\Engine\3d\WorldTransform</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\3D\Camera\DebugCamera.cpp">
-      <Filter>ソース ファイル\Engine\3d\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\3D\Camera\Camera.cpp">
       <Filter>ソース ファイル\Engine\3d\Camera</Filter>
     </ClCompile>
@@ -433,9 +430,6 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\WorldTransform\WorldTransform.h">
       <Filter>ヘッダー ファイル\Engine\3d\WorldTransform</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\3D\Camera\DebugCamera.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Camera\Camera.h">
       <Filter>ヘッダー ファイル\Engine\3d\Camera</Filter>

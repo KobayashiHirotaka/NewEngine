@@ -34,26 +34,26 @@ uint32_t Audio::SoundLoadWave(const char* filename)
 	//.wavファイルをバイナリモードで開く
 	file.open(filename, std::ios_base::binary);
 
-	//ファイルオープン失敗を検出する
+	//ファイルオープン失敗を検出
 	assert(file.is_open());
 
-	//RIFFヘッダーの読み込み
+	//RIFFチャンク読み込み
 	RiffHeader riff;
 
-	//ファイルがRIFFかチェック
+	//チャンクがRIFFかチェック
 	file.read((char*)&riff, sizeof(riff));
 	if (strncmp(riff.chunk.id, "RIFF", 4) != 0)
 	{
 		assert(0);
 	}
 
-	//タイプがWAVEかチェック
+	//ファイルタイプがWAVEかチェック
 	if (strncmp(riff.type, "WAVE", 4) != 0)
 	{
 		assert(0);
 	}
 
-	//Formatチャンクの読み込み
+	//formatチャンク読み込み
 	FormatChunk format = {};
 
 	//チャンクヘッダーの確認

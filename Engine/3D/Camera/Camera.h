@@ -26,29 +26,29 @@ public:
 	void TransferMatrix();
 
 	//CBV
-	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff_ = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff_;
 
-	//角度
+	//X,Y,Z軸回りのローカル回転角
 	Vector3 rotation_ = { 0.0f,0.0f,0.0f };
 
-	//座標
+	//ローカル座標
 	Vector3 translation_ = { 0.0f,2.0f,-35.0f };
+
+	//視野角
+	float fov_ = 0.45f;
+
+	//アスペクト比
+	float aspectRatio_ = (float)16 / 9;
+
+	//近平面への距離（手前側）
+	float nearClip_ = 0.1f;
+
+	//遠平面への距離（奥側）
+	float farClip_ = 100.0f;
 
 	//ビュー行列
 	Matrix4x4 matView_{};
 
 	//プロジェクション行列
 	Matrix4x4 matProjection_{};
-
-	//視野角
-	float fov_ = 0.45f;
-
-	//アスペクト比
-	float aspectRatio_ = 1280.0f / 720.0f;
-
-	//近平面への距離
-	float nearClip_ = 0.1f;
-
-	//遠平面への距離
-	float farClip_ = 100.0f;
 };
