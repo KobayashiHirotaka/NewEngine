@@ -79,6 +79,17 @@ void Enemy::Update()
 {
 	isShake_ = false;
 
+	if (isReset_)
+	{
+		resetTimer_--;
+
+		if (resetTimer_ < 0)
+		{
+			isReset_ = false;
+			resetTimer_ = 60;
+		}
+	}
+
 	//EnemyのBehavior
 	if (behaviorRequest_)
 	{
@@ -197,9 +208,73 @@ void Enemy::HPBarUpdate()
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 }
 
+void Enemy::Reset()
+{
+	HP_ = maxHP_;
+
+	for (int i = 0; i < 6; i++)
+	{
+		downAnimationTimer_[i] = 60;
+	}
+
+	isReset_ = true;
+
+	isHitPunch_ = false;
+	isHitSwingDown_ = false;
+	isHitPoke_ = false;
+	isHitMowDown_ = false;
+	isHitThrow_ = false;
+	isDown_ = false;
+
+	isHit_ = false;
+
+	workAttack_.isAttack = false;
+	workAttack_.isPunch = false;
+	workAttack_.isSwingDown = false;
+	workAttack_.isPoke = false;
+	workAttack_.isPokeRight = false;
+	workAttack_.isPokeLeft = false;
+	workAttack_.isMowDown = false;
+	workAttack_.isJumpAttack = false;
+
+	behavior_ = Behavior::kRoot;
+
+	worldTransform_.Initialize();
+	worldTransform_.translation = { 7.0f,0.0f,0.0f };
+
+	worldTransformHead_.Initialize();
+	worldTransformHead_.rotation.y = 0.0f;
+	worldTransform_.rotation.y = 4.6f;
+
+	worldTransformBody_.Initialize();
+	worldTransformBody_.translation = { 0.0f,1.0f,0.0f };
+	worldTransformBody_.rotation.x = 0.0f;
+	worldTransformBody_.rotation.y = 0.0f;
+
+	worldTransformL_arm_.Initialize();
+	worldTransformL_arm_.translation.x = 0.5f;
+	worldTransformL_arm_.rotation.x = 0.0f;
+	worldTransformL_arm_.rotation.y = 0.0f;
+
+	worldTransformR_arm_.Initialize();
+	worldTransformR_arm_.translation.x = -0.5f;
+	worldTransformR_arm_.rotation.x = 0.0f;
+	worldTransformR_arm_.rotation.y = 0.0f;
+
+	worldTransform_.UpdateMatrix();
+
+	worldTransformBody_.UpdateMatrix();
+	worldTransformHead_.UpdateMatrix();
+	worldTransformL_arm_.UpdateMatrix();
+	worldTransformR_arm_.UpdateMatrix();
+}
+
 void Enemy::DrawParticle(const Camera& camera)
 {
-	particleModel_->Draw(particleSystem_.get(), camera);
+	if (!isReset_)
+	{
+		particleModel_->Draw(particleSystem_.get(), camera);
+	}
 }
 
 void Enemy::OnCollision(Collider* collider, float damage)
@@ -388,7 +463,7 @@ void Enemy::BehaviorRootUpdate()
 			}
 			else {
 				moveTimer_ = Random(30,90);
-				patternCount_ = Random(3, 7);
+				patternCount_ = Random(4, 7);
 			}
 		}
 
@@ -1244,7 +1319,8 @@ void Enemy::DownAnimation()
 	}
 
 	//投げ攻撃
-	if (isHitThrow_ && player_->GetRotation().y == 1.7f)
+	if (!workAttack_.isSwingDown && !workAttack_.isPoke && !workAttack_.isMowDown &&
+		!isThrow_ && isHitThrow_ && player_->GetRotation().y == 1.7f)
 	{
 		isDown_ = true;
 		if (player_->GetAttackAnimationFrame() < 30)
@@ -1271,7 +1347,8 @@ void Enemy::DownAnimation()
 		}
 	}
 
-	if (isHitThrow_ && player_->GetRotation().y == 4.6f)
+	if (!workAttack_.isSwingDown && !workAttack_.isPoke && !workAttack_.isMowDown &&
+		!isThrow_ && isHitThrow_ && player_->GetRotation().y == 4.6f)
 	{
 		isDown_ = true;
 		if (player_->GetAttackAnimationFrame() < 30)

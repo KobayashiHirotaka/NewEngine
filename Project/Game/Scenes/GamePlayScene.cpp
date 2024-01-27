@@ -131,8 +131,23 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0)
 		{
 			round_ = 2;
-			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
+
+			player_->Reset();
+			enemy_->Reset();
+
+			currentSeconds_ = 99;
+			UpdateNumberSprite();
+
+			migrationTimer_ = 200;
+
+			frameTime = 1.0f / 60.0f;
+			elapsedTime = 0.0f;
+
+			roundStartTimer_ = 100.0f;
+
+			isPlayerWin_ = false;
+			isDrow_ = false;
 		}
 	}
 	else if (enemy_->GetHP() <= 0 && round_ == 2 && PlayerWinCount_ == 1)
@@ -153,8 +168,23 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0)
 		{
 			round_ = 3;
-			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
+
+			player_->Reset();
+			enemy_->Reset();
+
+			currentSeconds_ = 99;
+			UpdateNumberSprite();
+
+			migrationTimer_ = 200;
+
+			frameTime = 1.0f / 60.0f;
+			elapsedTime = 0.0f;
+
+			roundStartTimer_ = 100.0f;
+
+			isPlayerWin_ = false;
+			isDrow_ = false;
 		}
 	}
 	else if (enemy_->GetHP() <= 0 && round_ == 3 && PlayerWinCount_ == 1)
@@ -164,7 +194,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		
 		if (migrationTimer_ < 0)
 		{
-			migrationTimer_ = 60;
 			PlayerWinCount_ = 2;
 		}
 	}
@@ -177,8 +206,23 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0)
 		{
 			round_ = 2;
-			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
+
+			player_->Reset();
+			enemy_->Reset();
+
+			currentSeconds_ = 99;
+			UpdateNumberSprite();
+
+			migrationTimer_ = 200;
+
+			frameTime = 1.0f / 60.0f;
+			elapsedTime = 0.0f;
+
+			roundStartTimer_ = 100.0f;
+
+			isPlayerWin_ = false;
+			isDrow_ = false;
 		}
 	}
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 2 && PlayerWinCount_ == 1)
@@ -199,8 +243,23 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0)
 		{
 			round_ = 3;
-			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
+
+			player_->Reset();
+			enemy_->Reset();
+
+			currentSeconds_ = 99;
+			UpdateNumberSprite();
+
+			migrationTimer_ = 200;
+
+			frameTime = 1.0f / 60.0f;
+			elapsedTime = 0.0f;
+
+			roundStartTimer_ = 100.0f;
+
+			isPlayerWin_ = false;
+			isDrow_ = false;
 		}
 	}
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 3 && PlayerWinCount_ == 1)
@@ -262,8 +321,23 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0)
 		{
 			round_ = 2;
-			Initialize(sceneManager);
 			EnemyWinCount_ = 1;
+
+			player_->Reset();
+			enemy_->Reset();
+
+			currentSeconds_ = 99;
+			UpdateNumberSprite();
+
+			migrationTimer_ = 200;
+
+			frameTime = 1.0f / 60.0f;
+			elapsedTime = 0.0f;
+
+			roundStartTimer_ = 100.0f;
+
+			isPlayerWin_ = false;
+			isDrow_ = false;
 		}
 	}
 	else if (player_->GetHP() <= 0 && round_ == 2 && EnemyWinCount_ == 1)
@@ -284,8 +358,23 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0)
 		{
 			round_ = 3;
-			Initialize(sceneManager);
 			EnemyWinCount_ = 1;
+
+			player_->Reset();
+			enemy_->Reset();
+
+			currentSeconds_ = 99;
+			UpdateNumberSprite();
+
+			migrationTimer_ = 200;
+
+			frameTime = 1.0f / 60.0f;
+			elapsedTime = 0.0f;
+
+			roundStartTimer_ = 100.0f;
+
+			isPlayerWin_ = false;
+			isDrow_ = false;
 		}
 	}
 	else if (player_->GetHP() <= 0 && round_ == 3 && EnemyWinCount_ == 1)
@@ -307,8 +396,23 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0)
 		{
 			round_ = 2;
-			Initialize(sceneManager);
 			EnemyWinCount_ = 1;
+
+			player_->Reset();
+			enemy_->Reset();
+
+			currentSeconds_ = 99;
+			UpdateNumberSprite();
+
+			migrationTimer_ = 200;
+
+			frameTime = 1.0f / 60.0f;
+			elapsedTime = 0.0f;
+
+			roundStartTimer_ = 100.0f;
+
+			isPlayerWin_ = false;
+			isDrow_ = false;
 		}
 	}
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 2 && EnemyWinCount_ == 1)
@@ -329,8 +433,23 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0)
 		{
 			round_ = 3;
-			Initialize(sceneManager);
 			EnemyWinCount_ = 1;
+
+			player_->Reset();
+			enemy_->Reset();
+
+			currentSeconds_ = 99;
+			UpdateNumberSprite();
+
+			migrationTimer_ = 200;
+
+			frameTime = 1.0f / 60.0f;
+			elapsedTime = 0.0f;
+
+			roundStartTimer_ = 100.0f;
+
+			isPlayerWin_ = false;
+			isDrow_ = false;
 		}
 	}
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 3 && EnemyWinCount_ == 1)
@@ -360,9 +479,24 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0)
 		{
 			round_ = 3;
-			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
 			EnemyWinCount_ = 1;
+
+			player_->Reset();
+			enemy_->Reset();
+
+			currentSeconds_ = 99;
+			UpdateNumberSprite();
+
+			migrationTimer_ = 200;
+
+			frameTime = 1.0f / 60.0f;
+			elapsedTime = 0.0f;
+
+			roundStartTimer_ = 100.0f;
+
+			isPlayerWin_ = false;
+			isDrow_ = false;
 		}
 	}
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() == player_->GetHP() && round_ == 3)
@@ -373,9 +507,24 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (migrationTimer_ < 0)
 		{
 			round_ = 3;
-			Initialize(sceneManager);
 			PlayerWinCount_ = 1;
 			EnemyWinCount_ = 1;
+
+			player_->Reset();
+			enemy_->Reset();
+
+			currentSeconds_ = 99;
+			UpdateNumberSprite();
+
+			migrationTimer_ = 200;
+
+			frameTime = 1.0f / 60.0f;
+			elapsedTime = 0.0f;
+
+			roundStartTimer_ = 100.0f;
+
+			isPlayerWin_ = false;
+			isDrow_ = false;
 		}
 	}
 

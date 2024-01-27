@@ -140,6 +140,8 @@ public:
 
 	bool GetIsShake() { return isShake_; };
 
+	void Reset();
+
 private:
 	Input* input_ = nullptr;
 
@@ -232,5 +234,8 @@ private:
 	uint32_t guardSoundHandle_ = 0u;
 
 	bool isShake_ = false;
+
+	int resetTimer_ = 60;
+	bool isReset_ = false;
 };
 
