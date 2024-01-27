@@ -38,6 +38,9 @@ private:
 
 	std::unique_ptr<Sprite>titleSprite_ = nullptr;
 	uint32_t titleTextureHandle_ = 0;
+	Vector2 titleSpritePosition_ = { 0.0f,-25.0f };
+	float titleSpriteMoveSpeed_ = 1.5f;
+	int titleSpriteMoveTimer_ = 30;
 
 	std::unique_ptr<Sprite>titleUISprite_ = nullptr;
 	uint32_t titleUITextureHandle_ = 0;

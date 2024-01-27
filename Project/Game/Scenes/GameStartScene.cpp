@@ -26,7 +26,7 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	camera_.UpdateMatrix();
 
 	titleTextureHandle_ = TextureManager::LoadTexture("resource/title.png");
-	titleSprite_.reset(Sprite::Create(titleTextureHandle_, { 0.0f,0.0f }));
+	titleSprite_.reset(Sprite::Create(titleTextureHandle_, { titleSpritePosition_.x, titleSpritePosition_.y}));
 
 	titleUITextureHandle_ = TextureManager::LoadTexture("resource/titleUI.png");
 	titleUISprite_.reset(Sprite::Create(titleUITextureHandle_, { 0.0f,0.0f }));
@@ -45,6 +45,23 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 void GameStartScene::Update(SceneManager* sceneManager)
 {
+	titleSpriteMoveTimer_ --;
+
+	float startY = titleSpritePosition_.y;
+	float endY = startY + titleSpriteMoveSpeed_;
+
+	float interpolatedY = Lerp(startY, endY, 0.4f);
+
+	titleSpritePosition_.y = interpolatedY;
+
+	if (titleSpriteMoveTimer_ < 0)
+	{
+		titleSpriteMoveSpeed_ *= -1.0f;
+		titleSpriteMoveTimer_ = 30;
+	}
+
+	titleSprite_->SetPosition(titleSpritePosition_);
+
 	skydome_->Update();
 
 	if (input_->GetJoystickState())

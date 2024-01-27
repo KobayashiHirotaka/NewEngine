@@ -42,6 +42,10 @@ float Lerp(const float& v1, const float& v2, float t);
 
 float LerpShortAngle(const float& a, const float& b, float t);
 
+float EaseInOutQuad(float t);
+
+float EaseInOutCubic(float t);
+
 //Vector3
 Vector3 Add(const Vector3& v1, const Vector3& v2);
 

@@ -36,6 +36,15 @@ float LerpShortAngle(const float& a, const float& b, float t)
 	return a + theta * t;
 }
 
+float EaseInOutQuad(float t)
+{
+	return (t < 0.5f) ? (2.0f * t * t) : (1.0f - std::pow(-2.0f * t + 2.0f, 2.0f) / 2.0f);
+}
+
+float EaseInOutCubic(float t)
+{
+	return (t < 0.5f) ? (4.0f * t * t * t) : (1.0f - std::pow(-2.0f * t + 2.0f, 3.0f) / 2.0f);
+}
 
 //Vector3
 Vector3 Add(const Vector3& v1, const Vector3& v2)

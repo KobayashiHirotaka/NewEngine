@@ -125,6 +125,7 @@ void Sprite::ImGui(const char* Title)
 {
 	ImGui::Begin(Title);
 	ImGui::DragFloat2("textureSize", &textureSize_.x, 0.01f, 0.0f, 1600.0f);
+	ImGui::DragFloat2("position", &position_.x, 1.0f, -1280.0f, 1280.0f);
 	ImGui::DragFloat("rotation", &rotation_, 0.1f, 0.0f, 100.0f);
 	ImGui::End();
 }
