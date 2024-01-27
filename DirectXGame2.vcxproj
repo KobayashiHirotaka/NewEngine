@@ -56,6 +56,8 @@
     <ClCompile Include="Engine\externals\imgui\imgui_widgets.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MinSpace</Optimization>
     </ClCompile>
+    <ClCompile Include="Engine\Framework\Game.cpp" />
+    <ClCompile Include="Engine\Framework\GameManager.cpp" />
     <ClCompile Include="Engine\Utility\Collision\CollisionManager.cpp" />
     <ClCompile Include="Engine\Utility\ConvertString\ConvertString.cpp" />
     <ClCompile Include="Engine\Utility\CSV\LoadCSV.cpp" />
@@ -140,6 +142,8 @@
     <ClInclude Include="Engine\externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="Engine\externals\imgui\imstb_textedit.h" />
     <ClInclude Include="Engine\externals\imgui\imstb_truetype.h" />
+    <ClInclude Include="Engine\Framework\Game.h" />
+    <ClInclude Include="Engine\Framework\GameManager.h" />
     <ClInclude Include="Engine\Utility\Collision\Collider.h" />
     <ClInclude Include="Engine\Utility\Collision\CollisionConfig.h" />
     <ClInclude Include="Engine\Utility\Collision\CollisionManager.h" />
