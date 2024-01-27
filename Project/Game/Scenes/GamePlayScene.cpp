@@ -55,6 +55,10 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	loseSprite_.reset(Sprite::Create(loseTextureHandle_, { 0.0f, 0.0f }));
 	drowSprite_.reset(Sprite::Create(drowTextureHandle_, { 0.0f, 0.0f }));
 
+	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
+	transitionSprite_->SetColor(transitionColor_);
+	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
+
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 0.0f,-1.0f,0.0f };
 
@@ -216,7 +220,44 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (PlayerWinCount_ == 2)
 	{
-		sceneManager->ChangeScene(new GameWinScene);
+		if (isTransitionStart_ == false && isTransitionEnd_ == true)
+		{
+			isTransitionStart_ = true;
+		}
+	}
+
+
+	if (!isTransitionEnd_)
+	{
+		transitionTimer_ += 1.0f / kTransitionTime;
+		transitionColor_.w = Lerp(transitionColor_.w, 0.0f, transitionTimer_);
+		transitionSprite_->SetColor(transitionColor_);
+
+		if (transitionColor_.w <= 0.0f)
+		{
+			isTransitionEnd_ = true;
+			transitionTimer_ = 0.0f;
+		}
+	}
+
+	if (isTransitionStart_)
+	{
+		transitionTimer_ += 1.0f / kTransitionTime;
+		transitionColor_.w = Lerp(transitionColor_.w, 1.0f, transitionTimer_);
+		transitionSprite_->SetColor(transitionColor_);
+
+		if (transitionColor_.w >= 1.0f)
+		{
+			if (PlayerWinCount_ == 2)
+			{
+				sceneManager->ChangeScene(new GameWinScene);
+			}
+
+			if (EnemyWinCount_ == 2)
+			{
+				sceneManager->ChangeScene(new GameLoseScene);
+			}
+		}
 	}
 
 	//Enemyが勝ったとき
@@ -316,7 +357,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (EnemyWinCount_ == 2)
 	{
-		sceneManager->ChangeScene(new GameLoseScene);
+		if (isTransitionStart_ == false && isTransitionEnd_ == true)
+		{
+			isTransitionStart_ = true;
+		}
 	}
 
 	if (currentSeconds_ <= 0 && enemy_->GetHP() == player_->GetHP() && round_ == 1)
@@ -540,6 +584,8 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 	{
 		attackCommandListSprite_->Draw();
 	}
+
+	transitionSprite_->Draw();
 
 	Sprite::PostDraw();
 };

@@ -17,6 +17,8 @@
 class GamePlayScene : public IScene
 {
 public:
+	static const int kTransitionTime = 60;
+
 	GamePlayScene();
 
 	~GamePlayScene();
@@ -108,4 +110,12 @@ private:
 	const int kShakeTime = 10;
 	int shakeTimer_ = 0;
 	Vector2 shakePower_ = { 1.8f,2.2f };
+
+	//トランジション
+	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
+	uint32_t transitionTextureHandle_ = 0;
+	Vector4 transitionColor_ = { 0.0f,0.0f,0.0f,1.0f };
+	float transitionTimer_ = 0;
+	bool isTransitionStart_ = false;
+	bool isTransitionEnd_ = false;
 };

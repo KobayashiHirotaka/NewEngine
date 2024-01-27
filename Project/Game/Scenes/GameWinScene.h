@@ -12,6 +12,8 @@
 class GameWinScene : public IScene
 {
 public:
+	static const int kTransitionTime = 60;
+
 	GameWinScene();
 
 	~GameWinScene();
@@ -41,5 +43,13 @@ private:
 
 	//サウンド
 	uint32_t selectSoundHandle_ = 0u;
+
+	//トランジション
+	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
+	uint32_t transitionTextureHandle_ = 0;
+	Vector4 transitionColor_ = { 0.0f,0.0f,0.0f,1.0f };
+	float transitionTimer_ = 0;
+	bool isTransitionStart_ = false;
+	bool isTransitionEnd_ = false;
 };
 

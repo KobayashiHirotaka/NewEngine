@@ -37,6 +37,10 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	attackCommandListTextureHandle_ = TextureManager::LoadTexture("resource/AttackCommandList.png");
 	attackCommandListSprite_.reset(Sprite::Create(attackCommandListTextureHandle_, { 0.0f,0.0f }));
 
+	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
+	transitionSprite_->SetColor(transitionColor_);
+	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
+
 	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
 	selectSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Select.wav");
 	audio_->StopAudio(titleSoundHandle_);
@@ -45,6 +49,7 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 void GameStartScene::Update(SceneManager* sceneManager)
 {
+	//タイトルの文字を動かす
 	titleSpriteMoveTimer_ --;
 
 	float startY = titleSpritePosition_.y;
@@ -68,15 +73,43 @@ void GameStartScene::Update(SceneManager* sceneManager)
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !isOpen_)
 		{
-			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			if (isTransitionEnd_)
+			{
+				isTransitionStart_ = true;
+				audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			}
+		}
+	}
+
+	if (!isTransitionEnd_)
+	{
+		transitionTimer_ += 1.0f / kTransitionTime;
+		transitionColor_.w = Lerp(transitionColor_.w, 0.0f, transitionTimer_);
+		transitionSprite_->SetColor(transitionColor_);
+
+		if (transitionColor_.w <= 0.0f) 
+		{
+			isTransitionEnd_ = true;
+			transitionTimer_ = 0.0f;
+		}
+	}
+
+	if (isTransitionStart_)
+	{
+		transitionTimer_ += 1.0f / kTransitionTime;
+		transitionColor_.w = Lerp(transitionColor_.w, 1.0f, transitionTimer_);
+		transitionSprite_->SetColor(transitionColor_);
+
+		if (transitionColor_.w >= 1.0f)
+		{
 			sceneManager->ChangeScene(new GamePlayScene);
 		}
 	}
 
 	if (input_->PushKey(DIK_SPACE))
 	{
+		isTransitionStart_ = true;
 		audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
-		sceneManager->ChangeScene(new GamePlayScene);
 	}
 
 	if (input_->GetJoystickState())
@@ -154,6 +187,7 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 		attackCommandListSprite_->Draw();
 	}
 
+	transitionSprite_->Draw();
 
 	Sprite::PostDraw();
 };
