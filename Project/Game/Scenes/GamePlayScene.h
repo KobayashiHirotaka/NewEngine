@@ -29,6 +29,8 @@ public:
 
 	void UpdateNumberSprite();
 
+	float Random(float min_value, float max_value);
+
 private:
 	WorldTransform worldTransform_;
 
@@ -101,4 +103,9 @@ private:
 
 	int spriteCount_ = 0;
 	bool isOpen_ = false;
+
+	bool isShake_ = false;
+	const int kShakeTime = 10;
+	int shakeTimer_ = 0;
+	Vector2 shakePower_ = { 1.8f,2.2f };
 };

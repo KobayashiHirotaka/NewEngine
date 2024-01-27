@@ -392,6 +392,23 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	
 	collisionManager_->CheckAllCollision();
 
+	if (player_->GetIsShake() || enemy_->GetIsShake())
+	{
+		isShake_ = true;
+		shakeTimer_ = kShakeTime;
+	}
+
+	if (isShake_) 
+	{
+		camera_.translation_.y = Random(shakePower_.x, shakePower_.y);
+
+		if (--shakeTimer_ < 0)
+		{
+			isShake_ = false;
+			camera_.translation_.y = 2.0f;
+		}
+	}
+
 	worldTransform_.UpdateMatrix();
 
 	camera_.UpdateMatrix();
@@ -537,4 +554,13 @@ void GamePlayScene::UpdateNumberSprite()
 
 	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, { 580.0f, 0.0f }));
 	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, { 620.0f, 0.0f }));
+}
+
+float GamePlayScene::Random(float min_value, float max_value)
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<float> dis(min_value, max_value);
+
+	return dis(gen);
 }

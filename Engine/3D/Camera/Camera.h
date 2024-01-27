@@ -28,7 +28,6 @@ public:
 	//CBV
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff_ = nullptr;
 
-private:
 	//角度
 	Vector3 rotation_ = { 0.0f,0.0f,0.0f };
 

@@ -83,6 +83,8 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	isShake_ = false;
+
 	//PlayerのBehavior
 	if (behaviorRequest_)
 	{
@@ -287,6 +289,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			damage = 30.0f;
 			HP_ -= damage;
 			isHitSwingDown_ = true;
+			isShake_ = true;
 		}
 
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsPoke() == true && isDown_ == false
@@ -296,6 +299,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			damage = 20.0f;
 			HP_ -= damage;
 			isHitPoke_ = true;
+			isShake_ = true;
 		}
 
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsMowDown() == true && isDown_ == false
@@ -305,6 +309,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			damage = 30.0f;
 			HP_ -= damage;
 			isHitMowDown_ = true;
+			isShake_ = true;
 		}
 	}
 }

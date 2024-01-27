@@ -138,6 +138,8 @@ public:
 
 	void HPBarUpdate();
 
+	bool GetIsShake() { return isShake_; };
+
 private:
 	Input* input_ = nullptr;
 
@@ -228,5 +230,7 @@ private:
 	uint32_t weaponAttackSoundHandle_ = 0u;
 	uint32_t damageSoundHandle_ = 0u;
 	uint32_t guardSoundHandle_ = 0u;
+
+	bool isShake_ = false;
 };
 
