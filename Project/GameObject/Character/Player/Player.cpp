@@ -25,7 +25,7 @@ void Player::Initialize()
 		TextureManager::LoadTexture("resource/HP.png"),
 		{60.0f, barSpace},
 		0.0f,
-		{-barSize  ,1.0f},
+		{-barSize  ,7.0f},
 		nullptr,
 	};
 
@@ -189,12 +189,15 @@ void Player::Draw(const Camera& camera)
 
 void Player::DrawSprite()
 {
-	hpBar_.sprite_->Draw();
+	if (HP_ >= 0)
+	{
+		hpBar_.sprite_->Draw();
+	}
 }
 
 void Player::HPBarUpdate()
 {
-	hpBar_.size_ = { (HP_ / maxHP_) * barSize,1.0f };
+	hpBar_.size_ = { (HP_ / maxHP_) * barSize,7.0f };
 
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 }
