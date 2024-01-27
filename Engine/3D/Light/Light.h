@@ -2,16 +2,16 @@
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Utility/Math/MyMath.h"
 
+enum class LightingType
+{
+	LambertianReflectance,
+	HalfLambert
+};
+
 class Light
 {
 public:
-	enum class LightingType
-	{
-		LambertianReflectance,
-		HalfLambert
-	};
-
-	struct LightData
+	struct ConstBuffDataLight
 	{
 		int32_t enableLighting;
 

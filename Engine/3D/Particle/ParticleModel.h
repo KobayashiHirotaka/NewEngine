@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
 #include "ParticleSystem.h"
 #include "Engine/3D/Camera/Camera.h"
@@ -56,8 +57,6 @@ public:
 
 	void Draw(const ParticleSystem* particleSystem, const Camera& camera);
 
-	void Draw(const ParticleSystem* particleSystem, const Camera& camera, uint32_t textureHandle);
-
 private:
 	static void InitializeDXC();
 
@@ -65,9 +64,9 @@ private:
 		const std::wstring& filePath,
 		const wchar_t* profile);
 
-	static void CreatePipelineStateObject();
-
 	void Initialize(const ModelData& modelData);
+
+	static void CreatePSO();
 
 	void CreateVertexResource();
 
@@ -78,17 +77,21 @@ private:
 	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
 private:
-	static ID3D12Device* sDevice_;
+	static DirectXCore* dxCore_;
 
-	static ID3D12GraphicsCommandList* sCommandList_;
+	static TextureManager* textureManager_;
 
-	static Microsoft::WRL::ComPtr<IDxcUtils> sDxcUtils_;
-	static Microsoft::WRL::ComPtr<IDxcCompiler3> sDxcCompiler_;
-	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> sIncludeHandler_;
+	static ID3D12Device* device_;
 
-	static Microsoft::WRL::ComPtr<ID3D12RootSignature> sRootSignature_;
+	static ID3D12GraphicsCommandList* commandList_;
+
+	static Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_;
+	static Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_;
+	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_;
+
+	static Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
 	
-	static Microsoft::WRL::ComPtr<ID3D12PipelineState> sGraphicsPipelineState_;
+	static Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_;
 
 	static std::list<ModelData> modelDatas_;
 	

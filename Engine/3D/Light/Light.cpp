@@ -4,9 +4,9 @@ void Light::Initialize()
 {
 	dxCore_ = DirectXCore::GetInstance();
 
-	lightingResource_ = dxCore_->CreateBufferResource(sizeof(LightData));
+	lightingResource_ = dxCore_->CreateBufferResource(sizeof(ConstBuffDataLight));
 
-	LightData* lightData = nullptr;
+	ConstBuffDataLight* lightData = nullptr;
 	lightingResource_->Map(0, nullptr, reinterpret_cast<void**>(&lightData));
 	lightData->enableLighting = enableLighting_;
 	lightData->lightingType = lightingType_;
@@ -18,8 +18,7 @@ void Light::Initialize()
 
 void Light::Update() 
 {
-	//lightingResourceに書き込む
-	LightData* lightData = nullptr;
+	ConstBuffDataLight* lightData = nullptr;
 	lightingResource_->Map(0, nullptr, reinterpret_cast<void**>(&lightData));
 	lightData->enableLighting = enableLighting_;
 	lightData->lightingType = lightingType_;

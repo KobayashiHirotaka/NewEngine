@@ -1,34 +1,65 @@
 #include "ParticleModel.h"
 
-ID3D12Device* ParticleModel::sDevice_ = nullptr;
-ID3D12GraphicsCommandList* ParticleModel::sCommandList_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcUtils> ParticleModel::sDxcUtils_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcCompiler3> ParticleModel::sDxcCompiler_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcIncludeHandler> ParticleModel::sIncludeHandler_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12RootSignature> ParticleModel::sRootSignature_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12PipelineState> ParticleModel::sGraphicsPipelineState_ = nullptr;
+DirectXCore* ParticleModel::dxCore_ = nullptr;
+TextureManager* ParticleModel::textureManager_ = nullptr;
+ID3D12Device* ParticleModel::device_ = nullptr;
+ID3D12GraphicsCommandList* ParticleModel::commandList_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcUtils> ParticleModel::dxcUtils_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcCompiler3> ParticleModel::dxcCompiler_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcIncludeHandler> ParticleModel::includeHandler_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12RootSignature> ParticleModel::rootSignature_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12PipelineState> ParticleModel::graphicsPipelineState_ = nullptr;
 std::list<ParticleModel::ModelData> ParticleModel::modelDatas_{};
 
 void ParticleModel::StaticInitialize() 
 {
-	sDevice_ = DirectXCore::GetInstance()->GetDevice();
+	dxCore_ = DirectXCore::GetInstance();
 
-	sCommandList_ = DirectXCore::GetInstance()->GetCommandList();
+	textureManager_ = TextureManager::GetInstance();
 
-	//DXCの初期化
-	ParticleModel::InitializeDXC();
+	device_ = dxCore_->GetDevice();
 
-	//PSOの作成
-	ParticleModel::CreatePipelineStateObject();
+	commandList_ = dxCore_->GetCommandList();
+
+	InitializeDXC();
+
+	CreatePSO();
+}
+
+void ParticleModel::Draw(const ParticleSystem* particleSystem, const Camera& camera)
+{
+	//DescriptorHeapを設定
+	textureManager_->SetGraphicsDescriptorHeap();
+
+	//VBVを設定
+	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+
+	//形状を設定
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	//マテリアルCBufferの場所を設定
+	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+
+	//WorldTransform用のCBufferの場所を設定
+	textureManager_->SetGraphicsRootDescriptorTable(1, particleSystem->GetSrvIndex());
+
+	//ViewProjection用のCBufferの場所を設定
+	commandList_->SetGraphicsRootConstantBufferView(2, camera.constBuff_->GetGPUVirtualAddress());
+
+	//DescriptorTableを設定
+	textureManager_->SetGraphicsRootDescriptorTable(3, textureHandle_);
+
+	//描画
+	commandList_->DrawInstanced(UINT(vertices_.size()), particleSystem->GetNumInstance(), 0, 0);
 }
 
 void ParticleModel::Release()
 {
-	sDxcUtils_.Reset();
-	sDxcCompiler_.Reset();
-	sIncludeHandler_.Reset();
-	sRootSignature_.Reset();
-	sGraphicsPipelineState_.Reset();
+	dxcUtils_.Reset();
+	dxcCompiler_.Reset();
+	includeHandler_.Reset();
+	rootSignature_.Reset();
+	graphicsPipelineState_.Reset();
 }
 
 ParticleModel* ParticleModel::CreateFromOBJ(const std::string& directoryPath, const std::string& filename)
@@ -36,29 +67,39 @@ ParticleModel* ParticleModel::CreateFromOBJ(const std::string& directoryPath, co
 	//モデルを生成
 	ParticleModel* particleModel = new ParticleModel();
 
-	for (ModelData modelData : modelDatas_) 
+	//モデルが既に存在するかチェック
+	bool modelExists = false;
+
+	//モデルデータを読み込む
+	ModelData modelData;
+
+	for (ModelData existingModelData : modelDatas_)
 	{
-		if (modelData.name == filename) 
+		if (existingModelData.name == filename)
 		{
-			particleModel->Initialize(modelData);
-			return particleModel;
+			//既に存在する場合はそのモデルを使う
+			modelData = existingModelData;
+			modelExists = true;
+			break;
 		}
 	}
 
-	//モデルデータを読み込む
-	ModelData modelData = particleModel->LoadObjFile(directoryPath, filename);
-	modelData.name = filename;
-	modelDatas_.push_back(modelData);
+	if (!modelExists)
+	{
+		//モデルデータを読み込む
+		modelData = particleModel->LoadObjFile(directoryPath, filename);
+		modelData.name = filename;
+		modelDatas_.push_back(modelData);
+	}
 
 	particleModel->Initialize(modelData);
-
 	return particleModel;
 }
 
 void ParticleModel::PreDraw()
 {
-	sCommandList_->SetGraphicsRootSignature(sRootSignature_.Get());
-	sCommandList_->SetPipelineState(sGraphicsPipelineState_.Get());
+	commandList_->SetGraphicsRootSignature(rootSignature_.Get());
+	commandList_->SetPipelineState(graphicsPipelineState_.Get());
 }
 
 void ParticleModel::PostDraw()
@@ -66,71 +107,17 @@ void ParticleModel::PostDraw()
 
 }
 
-void ParticleModel::Draw(const ParticleSystem* particleSystem, const Camera& camera) 
-{
-	//DescriptorHeapを設定
-	TextureManager::GetInstance()->SetGraphicsDescriptorHeap();
-
-	//VBVを設定
-	sCommandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
-
-	//形状を設定
-	sCommandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	//マテリアルCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
-
-	//WorldTransform用のCBufferの場所を設定
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(1, particleSystem->GetSrvIndex());
-
-	//ViewProjection用のCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(2, camera.constBuff_->GetGPUVirtualAddress());
-
-	//DescriptorTableを設定
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(3, textureHandle_);
-
-	//描画
-	sCommandList_->DrawInstanced(UINT(vertices_.size()), particleSystem->GetNumInstance(), 0, 0);
-}
-
-void ParticleModel::Draw(const ParticleSystem* particleSystem, const Camera& camera, uint32_t textureHandle)
-{
-	//DescriptorHeapを設定
-	TextureManager::GetInstance()->SetGraphicsDescriptorHeap();
-
-	//VBVを設定
-	sCommandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
-
-	//形状を設定
-	sCommandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	//マテリアルCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
-
-	//WorldTransform用のCBufferの場所を設定
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(1, particleSystem->GetSrvIndex());
-
-	//ViewProjection用のCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(2, camera.constBuff_->GetGPUVirtualAddress());
-
-	//DescriptorTableを設定
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(3, textureHandle);
-
-	//描画
-	sCommandList_->DrawInstanced(UINT(vertices_.size()), particleSystem->GetNumInstance(), 0, 0);
-}
-
 void ParticleModel::InitializeDXC()
 {
 	//dxccompilerを初期化
-	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&sDxcUtils_));
+	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
 	assert(SUCCEEDED(hr));
 
-	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&sDxcCompiler_));
+	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
 	assert(SUCCEEDED(hr));
 
 	//現時点ではincludeはしないが、includeに対応するための設定を行っておく
-	hr = sDxcUtils_->CreateDefaultIncludeHandler(&sIncludeHandler_);
+	hr = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
 	assert(SUCCEEDED(hr));
 }
 
@@ -140,7 +127,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> ParticleModel::CompileShader(const std::wstring
 	Log(ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
 	//hlslファイルを読む
 	IDxcBlobEncoding* shaderSource = nullptr;
-	HRESULT hr = sDxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
+	HRESULT hr = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
 	//読めなかったら止める
 	assert(SUCCEEDED(hr));
 	//読み込んだファイルの内容を設定する
@@ -160,11 +147,11 @@ Microsoft::WRL::ComPtr<IDxcBlob> ParticleModel::CompileShader(const std::wstring
 	};
 	//実際にShaderをコンパイルする
 	IDxcResult* shaderResult = nullptr;
-	hr = sDxcCompiler_->Compile(
+	hr = dxcCompiler_->Compile(
 		&shaderSourceBuffer,//読み込んだファイル
 		arguments,//コンパイルオプション
 		_countof(arguments),//コンパイルオプションの数
-		sIncludeHandler_.Get(),//includeが含まれた諸々
+		includeHandler_.Get(),//includeが含まれた諸々
 		IID_PPV_ARGS(&shaderResult)//コンパイル結果
 	);
 	//コンパイルエラーではなくdxcが起動できないほど致命的な状況
@@ -196,7 +183,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> ParticleModel::CompileShader(const std::wstring
 }
 
 
-void ParticleModel::CreatePipelineStateObject()
+void ParticleModel::CreatePSO()
 {
 	//RootSignature作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
@@ -257,8 +244,8 @@ void ParticleModel::CreatePipelineStateObject()
 		assert(false);
 	}
 	//バイナリを元に生成
-	hr = sDevice_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
-		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&sRootSignature_));
+	hr = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
+		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
 	assert(SUCCEEDED(hr));
 
 
@@ -331,7 +318,7 @@ void ParticleModel::CreatePipelineStateObject()
 
 	//PSOを作成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-	graphicsPipelineStateDesc.pRootSignature = sRootSignature_.Get();//RootSignature
+	graphicsPipelineStateDesc.pRootSignature = rootSignature_.Get();//RootSignature
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;//InputLayout
 	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),
 	vertexShaderBlob->GetBufferSize() };//VertexShader
@@ -353,33 +340,32 @@ void ParticleModel::CreatePipelineStateObject()
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	//実際に生成
-	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_));
+	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_));
 	assert(SUCCEEDED(hr));
 }
 
 
-void ParticleModel::Initialize(const ModelData& modelData) {
+void ParticleModel::Initialize(const ModelData& modelData)
+{
 	//頂点データの取得
 	vertices_ = modelData.vertices;
 	//頂点リソースの作成
-	ParticleModel::CreateVertexResource();
+	CreateVertexResource();
 	//マテリアル用のリソースの作成
-	ParticleModel::CreateMaterialResource();
+	CreateMaterialResource();
 	//テクスチャの読み込み
-	textureHandle_ = TextureManager::LoadTexture(modelData.material.textureFilePath);
+	textureHandle_ = textureManager_->LoadTexture(modelData.material.textureFilePath);
 }
 
 
 void ParticleModel::CreateVertexResource()
 {
-	//頂点リソースを作る
-	vertexResource_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(VertexData) * vertices_.size());
+	vertexResource_ = dxCore_->CreateBufferResource(sizeof(VertexData) * vertices_.size());
 
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * vertices_.size());
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
-	//書き込むためのアドレスを取得
 	VertexData* vertexData = nullptr;
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	std::memcpy(vertexData, vertices_.data(), sizeof(VertexData) * vertices_.size());
@@ -389,7 +375,7 @@ void ParticleModel::CreateVertexResource()
 
 void ParticleModel::CreateMaterialResource()
 {
-	materialResource_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(ConstBuffDataMaterial));
+	materialResource_ = dxCore_->CreateBufferResource(sizeof(ConstBuffDataMaterial));
 
 	ConstBuffDataMaterial* materialData = nullptr;
 	

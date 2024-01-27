@@ -5,7 +5,7 @@
 class Material 
 {
 public:
-	struct MaterialData
+	struct ConstBufferDataMaterial
 	{
 		Vector4 color;
 		Matrix4x4 uvTransform;
