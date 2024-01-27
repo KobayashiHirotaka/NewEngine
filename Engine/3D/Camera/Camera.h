@@ -25,7 +25,7 @@ public:
 
 	void TransferMatrix();
 
-	//CBV
+	//定数バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff_;
 
 	//X,Y,Z軸回りのローカル回転角
