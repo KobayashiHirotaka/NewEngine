@@ -16,18 +16,18 @@
 
 #pragma comment(lib,"dxcompiler.lib")
 
+enum class RootParameterIndex
+{
+	Material,
+	WorldTransform,
+	ViewProjection,
+	Texture,
+	Light
+};
+
 class Model 
 {
 public:
-	enum class RootParameterIndex 
-	{
-		Material,
-		WorldTransform,
-		ViewProjection,
-		Texture,
-		Light
-	};
-
 	struct MaterialData
 	{
 		std::string textureFilePath;
