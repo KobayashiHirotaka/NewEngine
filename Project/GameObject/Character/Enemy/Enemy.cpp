@@ -237,6 +237,8 @@ void Enemy::Reset()
 	workAttack_.isMowDown = false;
 	workAttack_.isJumpAttack = false;
 
+	isThrow_ = false;
+
 	behavior_ = Behavior::kRoot;
 
 	worldTransform_.Initialize();
@@ -1051,7 +1053,7 @@ void Enemy::DownAnimation()
 		isDown_ = true;
 		downAnimationTimer_[0]--;
 
-		if (downAnimationTimer_[0] > 40)
+		if (downAnimationTimer_[0] > 50)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1066,7 +1068,7 @@ void Enemy::DownAnimation()
 				.SetLifeTime(0.1f, 1.0f)
 				.SetCount(100)
 				.SetFrequency(4.0f)
-				.SetDeleteTime(2.0f)
+				.SetDeleteTime(1.0f)
 				.Build();
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
@@ -1096,7 +1098,7 @@ void Enemy::DownAnimation()
 		isDown_ = true;
 		downAnimationTimer_[0]--;
 
-		if (downAnimationTimer_[0] > 40)
+		if (downAnimationTimer_[0] > 50)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1108,10 +1110,10 @@ void Enemy::DownAnimation()
 				.SetElevation(0.0f, 0.0f)
 				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
 				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
+				.SetLifeTime(0.1f, 0.5f)
 				.SetCount(100)
 				.SetFrequency(4.0f)
-				.SetDeleteTime(2.0f)
+				.SetDeleteTime(1.0f)
 				.Build();
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
@@ -1142,7 +1144,7 @@ void Enemy::DownAnimation()
 		isDown_ = true;
 		downAnimationTimer_[1]--;
 
-		if (downAnimationTimer_[1] > 40)
+		if (downAnimationTimer_[1] > 50)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1154,10 +1156,10 @@ void Enemy::DownAnimation()
 				.SetElevation(0.0f, 0.0f)
 				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
 				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
+				.SetLifeTime(0.1f, 0.5f)
 				.SetCount(100)
 				.SetFrequency(4.0f)
-				.SetDeleteTime(2.0f)
+				.SetDeleteTime(1.0f)
 				.Build();
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
@@ -1187,7 +1189,7 @@ void Enemy::DownAnimation()
 		isDown_ = true;
 		downAnimationTimer_[1]--;
 
-		if (downAnimationTimer_[1] > 40)
+		if (downAnimationTimer_[1] > 50)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1199,10 +1201,10 @@ void Enemy::DownAnimation()
 				.SetElevation(0.0f, 0.0f)
 				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
 				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
+				.SetLifeTime(0.1f, 0.5f)
 				.SetCount(100)
 				.SetFrequency(4.0f)
-				.SetDeleteTime(2.0f)
+				.SetDeleteTime(1.0f)
 				.Build();
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
@@ -1233,7 +1235,7 @@ void Enemy::DownAnimation()
 		isDown_ = true;
 		downAnimationTimer_[2]--;
 
-		if (downAnimationTimer_[2] > 40)
+		if (downAnimationTimer_[2] > 50)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1245,10 +1247,10 @@ void Enemy::DownAnimation()
 				.SetElevation(0.0f, 0.0f)
 				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
 				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
+				.SetLifeTime(0.1f, 0.5f)
 				.SetCount(100)
 				.SetFrequency(4.0f)
-				.SetDeleteTime(2.0f)
+				.SetDeleteTime(1.0f)
 				.Build();
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
@@ -1278,7 +1280,7 @@ void Enemy::DownAnimation()
 		isDown_ = true;
 		downAnimationTimer_[2]--;
 
-		if (downAnimationTimer_[2] > 40)
+		if (downAnimationTimer_[2] > 50)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1290,10 +1292,10 @@ void Enemy::DownAnimation()
 				.SetElevation(0.0f, 0.0f)
 				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
 				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
+				.SetLifeTime(0.1f, 0.5f)
 				.SetCount(100)
 				.SetFrequency(4.0f)
-				.SetDeleteTime(2.0f)
+				.SetDeleteTime(1.0f)
 				.Build();
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
@@ -1319,8 +1321,7 @@ void Enemy::DownAnimation()
 	}
 
 	//投げ攻撃
-	if (!workAttack_.isSwingDown && !workAttack_.isPoke && !workAttack_.isMowDown &&
-		!isThrow_ && isHitThrow_ && player_->GetRotation().y == 1.7f)
+	if (isHitThrow_ && player_->GetRotation().y == 1.7f)
 	{
 		isDown_ = true;
 		if (player_->GetAttackAnimationFrame() < 30)
@@ -1347,8 +1348,7 @@ void Enemy::DownAnimation()
 		}
 	}
 
-	if (!workAttack_.isSwingDown && !workAttack_.isPoke && !workAttack_.isMowDown &&
-		!isThrow_ && isHitThrow_ && player_->GetRotation().y == 4.6f)
+	if (isHitThrow_ && player_->GetRotation().y == 4.6f)
 	{
 		isDown_ = true;
 		if (player_->GetAttackAnimationFrame() < 30)
