@@ -15,19 +15,19 @@ public:
 		kNormal,
 	};
 
-	struct RangeFloat
+	struct FloatRange
 	{
 		float min;
 		float max;
 	};
 
-	struct RangeVector3
+	struct Vector3Range
 	{
 		Vector3 min;
 		Vector3 max;
 	};
 
-	struct RangeVector4
+	struct Vector4Range
 	{
 		Vector4 min;
 		Vector4 max;
@@ -43,17 +43,17 @@ public:
 
 	void SetIsDead() { isDead_ = true; };
 
-	const std::string& GetName() { return name_; };
+	const std::string& GetEmitterName() { return emitterName_; };
 
 	void SetTranslation(const Vector3& translation) { translation_ = translation; };
 
-	void SetPopCount(uint32_t count) { particleCount_ = count; };
+	void SetParticleCount(uint32_t count) { particleCount_ = count; };
 
-	void SetPopArea(const Vector3& min, const Vector3& max) { area_ = { min,max }; };
+	void SetArea(const Vector3& min, const Vector3& max) { area_ = { min,max }; };
 
-	void SetPopAzimuth(float min, float max) { azimuth_ = { min,max }; }
+	void SetAzimuth(float min, float max) { azimuth_ = { min,max }; }
 
-	void SetPopVelocity(const Vector3& min, const Vector3& max) { area_ = { min,max }; };
+	void SetVelocity(const Vector3& min, const Vector3& max) { area_ = { min,max }; };
 
 private:
 	void EmitParticle();
@@ -61,27 +61,28 @@ private:
 private:
 	std::list<std::unique_ptr<BaseParticle>> particles_;
 	
-	std::string name_ = "nameless";
-	
+	std::string emitterName_ = " ";
+
+	//Emitterの設定項目
 	ParticleType particleType_ = ParticleType::kBase;
 	
 	Vector3 translation_ = { 0.0f,0.0f,0.0f };
 
-	RangeVector3 rotation_ = { {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	Vector3Range rotation_ = { {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 
-	RangeVector3 scale_ = { {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} };
+	Vector3Range scale_ = { {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} };
 
-	RangeVector3 velocity_ = { {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} };
+	Vector3Range velocity_ = { {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} };
 	
-	RangeVector3 area_ = { {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	Vector3Range area_ = { {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 
-	RangeVector4 color_ = { {1.0f,1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f,1.0f} };
+	Vector4Range color_ = { {1.0f,1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f,1.0f} };
 
-	RangeFloat azimuth_ = { 0.0f,360.0f };
+	FloatRange azimuth_ = { 0.0f,360.0f };
 
-	RangeFloat elevation_ = { 0.0f,180.0f };
+	FloatRange elevation_ = { 0.0f,180.0f };
 	
-	RangeFloat lifeTime_ = { 0.5f,1.0f };
+	FloatRange lifeTime_ = { 0.5f,1.0f };
 
 	uint32_t particleCount_ = 1;
 

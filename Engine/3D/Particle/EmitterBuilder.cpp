@@ -10,9 +10,9 @@ EmitterBuilder::~EmitterBuilder()
 
 }
 
-EmitterBuilder& EmitterBuilder::SetEmitterName(const std::string& name)
+EmitterBuilder& EmitterBuilder::SetEmitterName(const std::string& emitterName)
 {
-	particleEmitter_->name_ = name;
+	particleEmitter_->emitterName_ = emitterName;
 	return *this;
 }
 

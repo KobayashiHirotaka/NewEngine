@@ -27,7 +27,7 @@ VertexShaderOutput main(VertexShaderInput input)
     output.position = mul(input.position, mul(gWorldTransform.world, mul(gViewProjection.view, gViewProjection.projection)));
     output.texcoord = input.texcoord;
     output.normal = normalize(mul(input.normal, (float32_t3x3) gWorldTransform.world));
-    //ê¸å`ê[ìx
+ 
     float z = (output.position.z - 0.1f) / (100.0f - 0.1f);
     output.depth = float32_t4(z, 0, 0, 0);
 

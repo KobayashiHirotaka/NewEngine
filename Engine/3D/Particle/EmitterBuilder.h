@@ -8,7 +8,7 @@ public:
 
 	~EmitterBuilder();
 
-	EmitterBuilder& SetEmitterName(const std::string& name);
+	EmitterBuilder& SetEmitterName(const std::string& emitterName);
 
 	EmitterBuilder& SetParticleType(ParticleEmitter::ParticleType particleType);
 
