@@ -562,12 +562,6 @@
     <FxCompile Include="resource\shaders\Object3d.VS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
-    <FxCompile Include="resource\shaders\ParticlePS.hlsl">
-      <Filter>shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="resource\shaders\ParticleVS.hlsl">
-      <Filter>shaders</Filter>
-    </FxCompile>
     <FxCompile Include="resource\shaders\PostProcess.VS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
@@ -596,6 +590,12 @@
       <Filter>shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\Sprite.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Particle.PS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Particle.VS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
   </ItemGroup>

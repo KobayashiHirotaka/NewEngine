@@ -10,9 +10,9 @@ struct DirectionLight
 {
     int32_t enableLighting;
     int32_t lightingMethod;
-    float32_t4 color; //ライトの色
-    float32_t3 direction; //ライトの向き
-    float intensity; //輝度
+    float32_t4 color; 
+    float32_t3 direction; 
+    float intensity; 
 };
 
 Texture2D<float32_t4> gTexture : register(t0);

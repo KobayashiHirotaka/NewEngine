@@ -5,8 +5,8 @@ SamplerState gSampler : register(s0);
 
 struct PixelShaderOutput
 {
-    float4 color : SV_TARGET0; //’Êí
-    float4 highIntensity : SV_TARGET1; //‚‹P“x
+    float4 color : SV_TARGET0; 
+    float4 highIntensity : SV_TARGET1;
 };
 
 PixelShaderOutput main(VertexShaderOutput input)
@@ -15,15 +15,15 @@ PixelShaderOutput main(VertexShaderOutput input)
     float4 textureColor = gTexture.Sample(gSampler, input.texcoord);
     output.color = textureColor;
     
-    //‚‹P“x‚ðŽæ“¾
-    float y = output.color.r * 0.299 + output.color.g * 0.587 + output.color.b * 0.114;
-    if (y > 0.99)
+    float luminance = dot(output.color.rgb, float3(0.299, 0.587, 0.114));
+    
+    if (luminance > 0.8)
     {
-        output.highIntensity = y;
+        output.highIntensity = luminance;
     }
     else
     {
-        output.highIntensity = 0.0f;
+        output.highIntensity = float4(0.0, 0.0, 0.0, 1.0);
     }
     
     return output;
