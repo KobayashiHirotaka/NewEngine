@@ -6,190 +6,180 @@
 #include <vector>
 #pragma comment(lib,"dxcompiler.lib")
 
-class PostProcess 
+class PostProcess
 {
 public:
-	static uint32_t descriptorSizeRTV;
-	static uint32_t descriptorSizeSRV;
-	static uint32_t descriptorSizeDSV;
+    //ディスクリプタサイズ
+    static uint32_t descriptorSizeRTV;
+    static uint32_t descriptorSizeSRV;
+    static uint32_t descriptorSizeDSV;
 
-	struct Texture 
-	{
-		Microsoft::WRL::ComPtr<ID3D12Resource> resource;
-		uint32_t rtvIndex;
-		uint32_t srvIndex;
-	};
+    struct Texture
+    {
+        Microsoft::WRL::ComPtr<ID3D12Resource> resource;
+        uint32_t rtvIndex;
+        uint32_t srvIndex;
+    };
 
-	struct VertexPosUV 
-	{
-		Vector4 pos;
-		Vector2 texcoord;
-	};
+    struct VertexPosUV
+    {
+        Vector4 position;
+        Vector2 texcoord;
+    };
 
-	struct BlurData 
-	{
-		int32_t textureWidth;
-		int32_t textureHeight;
-		float padding[2];
-		float weight[8];
-	};
+    struct BlurData
+    {
+        int32_t textureWidth;
+        int32_t textureHeight;
+        float padding[2];
+        float weights[8];
+    };
 
-	struct BloomData
-	{
-		bool enable;
-		float padding[3];
-	};
+    struct BloomData
+    {
+        bool enable;
+        float padding[3];
+    };
 
-	struct VignetteData
-	{
-		bool enable;
-		float intensity;
-	};
+    struct VignetteData
+    {
+        bool enable;
+        float intensity;
+    };
 
-	static PostProcess* GetInstance();
+    static PostProcess* GetInstance();
 
-	void Initialize();
+    void Initialize();
+    void Update();
+    void PreDraw();
+    void PostDraw();
 
-	void Update();
-
-	void PreDraw();
-
-	void PostDraw();
-
-	void SetIsPostProcessActive(bool flag) { isPostProcessActive_ = flag; };
-
-	void SetIsBloomActive(bool flag) { isBloomActive_ = flag; };
-
-	void SetIsVignetteActive(bool flag) { isVignetteActive_ = flag; };
-
-	void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
+    // ポストプロセスのセッター
+    void SetIsPostProcessActive(bool isActive) { isPostProcessActive_ = isActive; };
+    void SetIsBlurActive(bool isActive) { isBlurActive_ = isActive; };
+    void SetIsShrinkBlurActive(bool isActive) { isShrinkBlurActive_ = isActive; };
+    void SetIsBloomActive(bool isActive) { isBloomActive_ = isActive; };
+    void SetIsVignetteActive(bool isActive) { isVignetteActive_ = isActive; };
+    void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
 
 private:
-	//Blurの種類
-	enum BlurState 
-	{
-		kHorizontal,
-		kVertical,
-	};
+    //ブラーの方向
+    enum class BlurState
+    {
+        Horizontal,
+        Vertical,
+    };
 
-	//DXCの初期化
-	void InitializeDXC();
+    void InitializeDXC();
+    Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
+    void InitializeVertexBuffer();
 
-	//CompileShader
-	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(
-		const std::wstring& filePath,
-		const wchar_t* profile);
+    // マルチパス描画のためのレンダーターゲットの作成
+    void CreateRenderTargets();
 
-	void InitializeVertexBuffer();
+    // ブラーエフェクトのための定数バッファのセットアップ
+    void SetupBlurConstantBuffers();
 
-	void CreateRenderTargets();
+    // グラフィックスパイプラインの作成
+    void CreatePSO();
+    void CreateBlurPSO();
+    void CreatePostProcessPSO();
 
-	void SetupBlurConstantBuffers();
+    // 描画処理
+    void Draw();
+    void PreSecondPassDraw();
+    void SecondPassDraw();
+    void PostSecondPassDraw();
 
-	//PSOの作成
-	void CreatePSO();
-	void CreateBlurPSO();
-	void CreatePostProcessPSO();
+    // ブラー
+    void PreBlur(BlurState blurState);
+    void Blur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex);
+    void PostBlur(BlurState blurState);
 
-	//描画処理
-	void Draw();
-	void PreSecondPassDraw();
-	void SecondPassDraw();
-	void PostSecondPassDraw();
+     void PreShrinkBlur(BlurState blurState);
+    void ShrinkBlur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex);
+    void PostShrinkBlur(BlurState blurState);
 
-	//Blur
-	void PreBlur(BlurState blurState);
-	void Blur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex);
-	void PostBlur(BlurState blurState);
-	void PreShrinkBlur(BlurState blurState);
-	void ShrinkBlur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex);
-	void PostShrinkBlur(BlurState blurState);
+    // ブルーム
+    void Bloom();
 
-	//Bloom
-	void Bloom();
+    // ヴィネット
+    void Vignette();
 
-	//Vignette
-	void Vignette();
+    // マルチパス用テクスチャの作成
+    Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor);
+    // 深度テクスチャの作成
+    Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(int32_t width, int32_t height);
 
-	//マルチパス用テクスチャの作成
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor);
+    // RTVの作成
+    uint32_t CreateRTV(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format);
+    // SRVの作成
+    uint32_t CreateSRV(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format);
+    // DSVの作成
+    void CreateDSV();
 
-	//深度テクスチャの作成
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(int32_t width, int32_t height);
-
-	//RTVの作成
-	uint32_t CreateRTV(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format);
-
-	//SRVの作成
-	uint32_t CreateSRV(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format);
-
-	//DSVの作成
-	void CreateDSV();
-
-	//DescriptorHandleの取得
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
+    // DescriptorHandleの取得
+    D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
+    D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
 
 private:
-	DirectXCore* dxCore_ = nullptr;
+    DirectXCore* dxCore_ = nullptr;
+    ID3D12GraphicsCommandList* commandList_;
+    ID3D12Device* device_;
 
-	ID3D12GraphicsCommandList* commandList_;
+    //DXCのポインタ
+    Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_;
+    Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_;
+    Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_;
 
-	ID3D12Device* device_;
+    //ルートシグネチャのポインタ
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> blurRootSignature_;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> postProcessRootSignature_;
 
-	//DXCompiler
-	Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_;
-	Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_;
-	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_;
+    //パイプラインステートのポインタ
+    Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState_;
+    std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, 2> blurPipelineState_;
+    Microsoft::WRL::ComPtr<ID3D12PipelineState> postProcessPipelineState_;
 
-	//RootSignature
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> blurRootSignature_;
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> postProcessRootSignature_;
+    //頂点
+    std::vector<VertexPosUV> vertices_{};
+    Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
+    D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
-	//PSO
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState_;
-	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, 2> blurPipelineState_;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> postProcessPipelineState_;
+    //ディスクリプタヒープのポインタとインデックス
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassRTVDescriptorHeap_ = nullptr;
+    uint32_t rtvIndex_ = -1;
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassSRVDescriptorHeap_ = nullptr;
+    uint32_t srvIndex_ = -1;
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassDSVDescriptorHeap_ = nullptr;
 
-	//Vertex
-	std::vector<VertexPosUV> vertices_{};
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
+    //深度テクスチャのリソース
+    Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
 
-	//DescriptorHeap
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassRTVDescriptorHeap_ = nullptr;
-	uint32_t rtvIndex_ = -1;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassSRVDescriptorHeap_ = nullptr;
-	uint32_t srvIndex_ = -1;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassDSVDescriptorHeap_ = nullptr;
+    //テクスチャリソース
+    Texture firstPassResource_ = { nullptr };
+    Texture secondPassResource_ = { nullptr };
+    Texture linearDepthResource_ = { nullptr };
+    Texture highIntensityResource_ = { nullptr };
+    std::array<Texture, 2> blurResources_ = { nullptr };
+    std::array<Texture, 2> highIntensityBlurResource_ = { nullptr };
+    std::array<Texture, 2> shrinkBlurResources_ = { nullptr };
+    std::array<Texture, 2> shrinkHighIntensityBlurResources_ = { nullptr };
 
-	//深度バッファ
-	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
+    //定数バッファのポインタ
+    Microsoft::WRL::ComPtr<ID3D12Resource> blurConstantBuffer_ = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> shrinkBlurConstantBuffer_ = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> bloomConstantBuffer_ = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> vignetteConstantBuffer_ = nullptr;
 
-	//テクスチャ
-	Texture firstPassResource_ = { nullptr };
-	Texture secondPassResource_ = { nullptr };
-	Texture linearDepthResource_ = { nullptr };
-	Texture highIntensityResource_ = { nullptr };
-	std::array<Texture, 2> blurResources_ = { nullptr };
-	std::array<Texture, 2> highIntensityBlurResource_ = { nullptr };
-	std::array<Texture, 2> shrinkBlurResources_ = { nullptr };
-	std::array<Texture, 2> shrinkHighIntensityBlurResources_ = { nullptr };
+    //ビネットの強度
+    float vignetteIntensity_ = 1.5f;
 
-	//Blur
-	Microsoft::WRL::ComPtr<ID3D12Resource> blurConstantBuffer_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> shrinkBlurConstantBuffer_ = nullptr;
-
-	//Bloom
-	Microsoft::WRL::ComPtr<ID3D12Resource> bloomConstantBuffer_ = nullptr;
-
-	//Vignette
-	Microsoft::WRL::ComPtr<ID3D12Resource> vignetteConstantBuffer_ = nullptr;
-	float vignetteIntensity_ = 1.5f;
-
-	//Flag
-	bool isPostProcessActive_ = false;
-	bool isBloomActive_ = false;
-	bool isVignetteActive_ = false;
+    //ポストエフェクトのフラグ
+    bool isPostProcessActive_ = false;
+    bool isBlurActive_ = true;
+    bool isShrinkBlurActive_ = true;
+    bool isBloomActive_ = false;
+    bool isVignetteActive_ = false;
 };

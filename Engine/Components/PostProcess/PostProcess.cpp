@@ -22,6 +22,7 @@ void PostProcess::Initialize()
 	descriptorSizeSRV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	descriptorSizeDSV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
+	// 頂点情報の設定
 	vertices_.push_back(VertexPosUV{ {-1.0f,-1.0f,1.0,1.0f},{0.0f,1.0f} });
 	vertices_.push_back(VertexPosUV{ {-1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f} });
 	vertices_.push_back(VertexPosUV{ {1.0f,-1.0f,1.0f,1.0f},{1.0f,1.0f} });
@@ -30,19 +31,16 @@ void PostProcess::Initialize()
 	vertices_.push_back(VertexPosUV{ {1.0f,-1.0f,1.0f,1.0f},{1.0f,1.0f} });
 
 	InitializeVertexBuffer();
-
 	InitializeDXC();
-
 	CreatePSO();
-
 	CreateBlurPSO();
-
 	CreatePostProcessPSO();
 
 	multiPassRTVDescriptorHeap_ = dxCore_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 14, false);
 	multiPassSRVDescriptorHeap_ = dxCore_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 14, true);
 	multiPassDSVDescriptorHeap_ = dxCore_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 
+	//深度テクスチャの作成
 	depthStencilResource_ = CreateDepthStencilTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight);
 
 	CreateDSV();
@@ -75,7 +73,7 @@ void PostProcess::PreDraw()
 		return;
 	}
 
-	//バリアを張る
+	// レンダーターゲットへのバリア
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -83,63 +81,54 @@ void PostProcess::PreDraw()
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	commandList_->ResourceBarrier(1, &barrier);
+
 	barrier.Transition.pResource = linearDepthResource_.resource.Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	commandList_->ResourceBarrier(1, &barrier);
 
-	//ディスクリプタハンドルを取得
+	// レンダーターゲットの設定
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
-	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, firstPassResource_.rtvIndex);
-	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, linearDepthResource_.rtvIndex);
+	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(),descriptorSizeRTV, firstPassResource_.rtvIndex);
+	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(),descriptorSizeRTV, linearDepthResource_.rtvIndex);
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = multiPassDSVDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
-
-	//レンダーターゲットビューを設定
 	commandList_->OMSetRenderTargets(2, rtvHandles, false, &dsvHandle);
 
-	//指定した色で画面全体をクリアする
+	// レンダーターゲットのクリア
 	float clearColor[] = { 0.1f,0.25f,0.5f,1.0f };
 	float depthColor[] = { 1.0f,0.0f,0.0f,0.0f };
 	commandList_->ClearRenderTargetView(rtvHandles[0], clearColor, 0, nullptr);
 	commandList_->ClearRenderTargetView(rtvHandles[1], depthColor, 0, nullptr);
-
-	//指定した深度で画面全体をクリアする
 	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-	//ビューポート
+	// ビューポートの設定
 	D3D12_VIEWPORT viewport{};
-
-	//クライアント領域のサイズと一緒にして画面全体に表示
 	viewport.Width = FLOAT(WindowsApp::GetInstance()->kClientWidth);
 	viewport.Height = FLOAT(WindowsApp::GetInstance()->kClientHeight);
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
-	//ビューポートを設定
 	commandList_->RSSetViewports(1, &viewport);
 
-	//シザー矩形
+	// シザー矩形の設定
 	D3D12_RECT scissorRect{};
-	//基本的にビューポートと同じ矩形が構成されるようにする
 	scissorRect.left = 0;
 	scissorRect.right = WindowsApp::GetInstance()->kClientWidth;
 	scissorRect.top = 0;
 	scissorRect.bottom = WindowsApp::GetInstance()->kClientHeight;
-
-	//シザーを設定
 	commandList_->RSSetScissorRects(1, &scissorRect);
 }
 
-
-void PostProcess::PostDraw() 
+// 描画後の処理
+void PostProcess::PostDraw()
 {
 	if (isPostProcessActive_ == false)
 	{
 		return;
 	}
 
-	//バリアを張る
+	// バリアを張る
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -147,36 +136,44 @@ void PostProcess::PostDraw()
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	commandList_->ResourceBarrier(1, &barrier);
+
 	barrier.Transition.pResource = linearDepthResource_.resource.Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	commandList_->ResourceBarrier(1, &barrier);
 
-	//2パス目の描画
+	// 2パス目の描画
 	PreSecondPassDraw();
 	SecondPassDraw();
 	PostSecondPassDraw();
 
-	PreBlur(kHorizontal);
-	Blur(kHorizontal, secondPassResource_.srvIndex, highIntensityResource_.srvIndex);
-	PostBlur(kHorizontal);
+	// 各種Blur処理
+	if (isBlurActive_)
+	{
+		PreBlur(BlurState::Horizontal);
+		Blur(BlurState::Horizontal, secondPassResource_.srvIndex, highIntensityResource_.srvIndex);
+		PostBlur(BlurState::Horizontal);
 
-	PreBlur(kVertical);
-	Blur(kVertical, blurResources_[kHorizontal].srvIndex, highIntensityBlurResource_[kHorizontal].srvIndex);
-	PostBlur(kVertical);
+		PreBlur(BlurState::Vertical);
+		Blur(BlurState::Vertical, blurResources_[static_cast<int>(BlurState::Horizontal)].srvIndex, highIntensityBlurResource_[static_cast<int>(BlurState::Horizontal)].srvIndex);
+		PostBlur(BlurState::Vertical);
+	}
 
-	PreShrinkBlur(kHorizontal);
-	ShrinkBlur(kHorizontal, blurResources_[kVertical].srvIndex, highIntensityBlurResource_[kVertical].srvIndex);
-	PostShrinkBlur(kHorizontal);
+	if (isShrinkBlurActive_)
+	{
+		PreShrinkBlur(BlurState::Horizontal);
+		ShrinkBlur(BlurState::Horizontal, blurResources_[static_cast<int>(BlurState::Vertical)].srvIndex, highIntensityBlurResource_[static_cast<int>(BlurState::Vertical)].srvIndex);
+		PostShrinkBlur(BlurState::Horizontal);
 
-	PreShrinkBlur(kVertical);
-	ShrinkBlur(kVertical, shrinkBlurResources_[kHorizontal].srvIndex, shrinkHighIntensityBlurResources_[kHorizontal].srvIndex);
-	PostShrinkBlur(kVertical);
+		PreShrinkBlur(BlurState::Vertical);
+		ShrinkBlur(BlurState::Vertical, shrinkBlurResources_[static_cast<int>(BlurState::Horizontal)].srvIndex, shrinkHighIntensityBlurResources_[static_cast<int>(BlurState::Horizontal)].srvIndex);
+		PostShrinkBlur(BlurState::Vertical);
+	}
 
-	//バックバッファ
+	// バックバッファに戻す
 	dxCore_->SetBackBuffer();
 
-	//描画
+	// 描画
 	Draw();
 }
 
@@ -330,8 +327,8 @@ void PostProcess::SetupBlurConstantBuffers()
 	float total = 0.0f;
 	for (int i = 0; i < 8; i++)
 	{
-		blurData->weight[i] = expf(-(i * i) / (2 * 5.0f * 5.0f));
-		total += blurData->weight[i];
+		blurData->weights[i] = expf(-(i * i) / (2 * 5.0f * 5.0f));
+		total += blurData->weights[i];
 	}
 
 	total = total * 2.0f - 1.0f;
@@ -339,7 +336,7 @@ void PostProcess::SetupBlurConstantBuffers()
 	//最終的な合計値で重みをわる
 	for (int i = 0; i < 8; i++)
 	{
-		blurData->weight[i] /= total;
+		blurData->weights[i] /= total;
 	}
 
 	blurConstantBuffer_->Unmap(0, nullptr);
@@ -355,7 +352,7 @@ void PostProcess::SetupBlurConstantBuffers()
 
 	for (int i = 0; i < 8; i++)
 	{
-		shrinkBlurData->weight[i] = blurData->weight[i];
+		shrinkBlurData->weights[i] = blurData->weights[i];
 	}
 
 	shrinkBlurConstantBuffer_->Unmap(0, nullptr);
@@ -597,7 +594,7 @@ void PostProcess::CreateBlurPSO()
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
 	//実際に生成
-	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&blurPipelineState_[kHorizontal]));
+	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&blurPipelineState_[static_cast<int>(BlurState::Horizontal)]));
 	assert(SUCCEEDED(hr));
 
 	//シェーダーをコンパイルする
@@ -614,7 +611,7 @@ void PostProcess::CreateBlurPSO()
 	pixelShaderBlob->GetBufferSize() };//PixelShader
 
 	//実際に生成
-	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&blurPipelineState_[kVertical]));
+	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&blurPipelineState_[static_cast<int>(BlurState::Vertical)]));
 	assert(SUCCEEDED(hr));
 }
 
@@ -807,10 +804,10 @@ void PostProcess::Draw()
 	//ディスクリプタテーブルを設定
 	D3D12_GPU_DESCRIPTOR_HANDLE srvHandles[5];
 	srvHandles[0] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, linearDepthResource_.srvIndex);
-	srvHandles[1] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, blurResources_[kVertical].srvIndex);
-	srvHandles[2] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, highIntensityBlurResource_[kVertical].srvIndex);
-	srvHandles[3] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, shrinkBlurResources_[kVertical].srvIndex);
-	srvHandles[4] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, shrinkHighIntensityBlurResources_[kVertical].srvIndex);
+	srvHandles[1] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, blurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
+	srvHandles[2] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, highIntensityBlurResource_[static_cast<int>(BlurState::Vertical)].srvIndex);
+	srvHandles[3] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, shrinkBlurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
+	srvHandles[4] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, shrinkHighIntensityBlurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
 	commandList_->SetGraphicsRootDescriptorTable(0, srvHandles[0]);
 	commandList_->SetGraphicsRootDescriptorTable(1, srvHandles[1]);
 	commandList_->SetGraphicsRootDescriptorTable(2, srvHandles[2]);
@@ -924,19 +921,19 @@ void PostProcess::PreBlur(BlurState blurState)
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = blurResources_[blurState].resource.Get();
+	barrier.Transition.pResource = blurResources_[static_cast<size_t>(blurState)].resource.Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	commandList_->ResourceBarrier(1, &barrier);
-	barrier.Transition.pResource = highIntensityBlurResource_[blurState].resource.Get();
+	barrier.Transition.pResource = highIntensityBlurResource_[static_cast<size_t>(blurState)].resource.Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	commandList_->ResourceBarrier(1, &barrier);
 
 	//RTVハンドルを取得する
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
-	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, blurResources_[blurState].rtvIndex);
-	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, highIntensityBlurResource_[blurState].rtvIndex);
+	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, blurResources_[static_cast<size_t>(blurState)].rtvIndex);
+	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, highIntensityBlurResource_[static_cast<size_t>(blurState)].rtvIndex);
 	//描画先のRTVを設定する
 	commandList_->OMSetRenderTargets(2, rtvHandles, false, nullptr);
 	//指定した色で画面をクリアする
@@ -973,7 +970,7 @@ void PostProcess::Blur(BlurState blurState, uint32_t srvIndex, uint32_t highInte
 	//ルートシグネチャを設定
 	commandList_->SetGraphicsRootSignature(blurRootSignature_.Get());
 	//パイプラインステートを設定
-	commandList_->SetPipelineState(blurPipelineState_[blurState].Get());
+	commandList_->SetPipelineState(blurPipelineState_[static_cast<size_t>(blurState)].Get());
 	//VBVを設定
 	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	//ディスクリプタテーブルを設定
@@ -997,11 +994,11 @@ void PostProcess::PostBlur(BlurState blurState)
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = blurResources_[blurState].resource.Get();
+	barrier.Transition.pResource = blurResources_[static_cast<size_t>(blurState)].resource.Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	commandList_->ResourceBarrier(1, &barrier);
-	barrier.Transition.pResource = highIntensityBlurResource_[blurState].resource.Get();
+	barrier.Transition.pResource = highIntensityBlurResource_[static_cast<size_t>(blurState)].resource.Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	commandList_->ResourceBarrier(1, &barrier);
@@ -1014,19 +1011,19 @@ void PostProcess::PreShrinkBlur(BlurState blurState)
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = shrinkBlurResources_[blurState].resource.Get();
+	barrier.Transition.pResource = shrinkBlurResources_[static_cast<size_t>(blurState)].resource.Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	commandList_->ResourceBarrier(1, &barrier);
-	barrier.Transition.pResource = shrinkHighIntensityBlurResources_[blurState].resource.Get();
+	barrier.Transition.pResource = shrinkHighIntensityBlurResources_[static_cast<size_t>(blurState)].resource.Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	commandList_->ResourceBarrier(1, &barrier);
 
 	//RTVハンドルを取得する
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
-	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, shrinkBlurResources_[blurState].rtvIndex);
-	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, shrinkHighIntensityBlurResources_[blurState].rtvIndex);
+	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, shrinkBlurResources_[static_cast<size_t>(blurState)].rtvIndex);
+	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, shrinkHighIntensityBlurResources_[static_cast<size_t>(blurState)].rtvIndex);
 	//描画先のRTVを設定する
 	commandList_->OMSetRenderTargets(2, rtvHandles, false, nullptr);
 	//指定した色で画面をクリアする
@@ -1063,7 +1060,7 @@ void PostProcess::ShrinkBlur(BlurState blurState, uint32_t srvIndex, uint32_t hi
 	//ルートシグネチャを設定
 	commandList_->SetGraphicsRootSignature(blurRootSignature_.Get());
 	//パイプラインステートを設定
-	commandList_->SetPipelineState(blurPipelineState_[blurState].Get());
+	commandList_->SetPipelineState(blurPipelineState_[static_cast<size_t>(blurState)].Get());
 	//VBVを設定
 	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	//ディスクリプタテーブルを設定
@@ -1087,11 +1084,11 @@ void PostProcess::PostShrinkBlur(BlurState blurState)
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = shrinkBlurResources_[blurState].resource.Get();
+	barrier.Transition.pResource = shrinkBlurResources_[static_cast<size_t>(blurState)].resource.Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	commandList_->ResourceBarrier(1, &barrier);
-	barrier.Transition.pResource = shrinkHighIntensityBlurResources_[blurState].resource.Get();
+	barrier.Transition.pResource = shrinkHighIntensityBlurResources_[static_cast<size_t>(blurState)].resource.Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	commandList_->ResourceBarrier(1, &barrier);
