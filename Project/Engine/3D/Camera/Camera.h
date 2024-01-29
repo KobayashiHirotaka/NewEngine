@@ -4,8 +4,9 @@
 #include <d3d12.h>
 #include <wrl.h>
 
-struct ConstBuffDataViewProjection
+struct ConstBuffDataCamera
 {
+	Vector3 worldPosition;
 	Matrix4x4 view;
 	Matrix4x4 projection;
 };

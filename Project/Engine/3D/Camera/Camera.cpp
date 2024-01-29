@@ -2,7 +2,7 @@
 
 Camera::Camera() 
 {
-	constBuff_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(ConstBuffDataViewProjection));
+	constBuff_ = DirectXCore::GetInstance()->CreateBufferResource(sizeof(ConstBuffDataCamera));
 }
 
 Camera::~Camera()
@@ -19,10 +19,11 @@ void Camera::UpdateMatrix()
 
 void Camera::TransferMatrix()
 {
-	ConstBuffDataViewProjection* viewProjectionData = nullptr;
-	constBuff_->Map(0, nullptr, reinterpret_cast<void**>(&viewProjectionData));
-	viewProjectionData->view = matView_;
-	viewProjectionData->projection = matProjection_;
+	ConstBuffDataCamera* cameraData = nullptr;
+	constBuff_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData));
+	cameraData->worldPosition = translation_;
+	cameraData->view = matView_;
+	cameraData->projection = matProjection_;
 	constBuff_->Unmap(0, nullptr);
 }
 
