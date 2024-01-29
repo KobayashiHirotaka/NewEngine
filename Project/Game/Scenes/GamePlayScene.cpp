@@ -629,9 +629,12 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	ParticleModel::PreDraw();
 
-	player_->DrawParticle(camera_);
+	if (!isOpen_)
+	{
+		player_->DrawParticle(camera_);
 
-	enemy_->DrawParticle(camera_);
+		enemy_->DrawParticle(camera_);
+	}
 
 	ParticleModel::PostDraw();
 
