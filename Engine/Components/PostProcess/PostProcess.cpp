@@ -61,9 +61,9 @@ void PostProcess::Update()
 		return;
 	}
 
-	Bloom();
+	UpdateBloom();
 
-	Vignette();
+	UpdateVignette();
 }
 
 void PostProcess::PreDraw() 
@@ -1148,11 +1148,30 @@ void PostProcess::Bloom()
 	bloomConstantBuffer_->Unmap(0, nullptr);
 }
 
+void PostProcess::UpdateBloom()
+{
+	//Bloom用のリソースに書き込む
+	BloomData* bloomData = nullptr;
+	bloomConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&bloomData));
+	bloomData->enable = isBloomActive_;
+	bloomConstantBuffer_->Unmap(0, nullptr);
+}
+
 void PostProcess::Vignette()
 {
 	//ビネット用のCBVの作成
 	vignetteConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(VignetteData));
 
+	//ビネット用のリソースに書き込む
+	VignetteData* vignetteData = nullptr;
+	vignetteConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vignetteData));
+	vignetteData->enable = isVignetteActive_;
+	vignetteData->intensity = vignetteIntensity_;
+	vignetteConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::UpdateVignette()
+{
 	//ビネット用のリソースに書き込む
 	VignetteData* vignetteData = nullptr;
 	vignetteConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vignetteData));

@@ -54,7 +54,7 @@ public:
     void PreDraw();
     void PostDraw();
 
-    // ポストプロセスのセッター
+    //ポストプロセスのセッター
     void SetIsPostProcessActive(bool isActive) { isPostProcessActive_ = isActive; };
     void SetIsBlurActive(bool isActive) { isBlurActive_ = isActive; };
     void SetIsShrinkBlurActive(bool isActive) { isShrinkBlurActive_ = isActive; };
@@ -74,24 +74,24 @@ private:
     Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
     void InitializeVertexBuffer();
 
-    // マルチパス描画のためのレンダーターゲットの作成
+    //マルチパス描画のためのレンダーターゲットの作成
     void CreateRenderTargets();
 
-    // ブラーエフェクトのための定数バッファのセットアップ
+    //ブラーエフェクトのための定数バッファのセットアップ
     void SetupBlurConstantBuffers();
 
-    // グラフィックスパイプラインの作成
+    //グラフィックスパイプラインの作成
     void CreatePSO();
     void CreateBlurPSO();
     void CreatePostProcessPSO();
 
-    // 描画処理
+    //描画処理
     void Draw();
     void PreSecondPassDraw();
     void SecondPassDraw();
     void PostSecondPassDraw();
 
-    // ブラー
+    //ブラー
     void PreBlur(BlurState blurState);
     void Blur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex);
     void PostBlur(BlurState blurState);
@@ -100,25 +100,27 @@ private:
     void ShrinkBlur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex);
     void PostShrinkBlur(BlurState blurState);
 
-    // ブルーム
+    //ブルーム
     void Bloom();
+    void UpdateBloom();
 
-    // ヴィネット
+    //ビネット
     void Vignette();
+    void UpdateVignette();
 
-    // マルチパス用テクスチャの作成
+    //マルチパス用テクスチャの作成
     Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor);
-    // 深度テクスチャの作成
+    //深度テクスチャの作成
     Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(int32_t width, int32_t height);
 
-    // RTVの作成
+    //RTVの作成
     uint32_t CreateRTV(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format);
-    // SRVの作成
+    //SRVの作成
     uint32_t CreateSRV(const Microsoft::WRL::ComPtr<ID3D12Resource>& resource, DXGI_FORMAT format);
-    // DSVの作成
+    //DSVの作成
     void CreateDSV();
 
-    // DescriptorHandleの取得
+    //DescriptorHandleの取得
     D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
     D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
 

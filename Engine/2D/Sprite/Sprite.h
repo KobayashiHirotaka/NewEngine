@@ -108,6 +108,8 @@ private:
 
 	void CreateWVPResource();
 
+	void UpdateVertex();
+
 	void UpdateMaterial();
 
 	void UpdateMatrix();
