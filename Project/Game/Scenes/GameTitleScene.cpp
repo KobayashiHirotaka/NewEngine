@@ -20,6 +20,11 @@ void GameTitleScene::Initialize(SceneManager* sceneManager)
 	//PostProcess::GetInstance()->SetIsBloomActive(true);
 	//PostProcess::GetInstance()->SetIsVignetteActive(true);
 
+	model_.reset(Model::CreateFromOBJ("resource/Ground", "Ground.obj"));
+
+	worldTransform_.Initialize();
+	worldTransform_.translation = { 0.0f,-1.0f,0.0f };
+
 	camera_.UpdateMatrix();
 
 	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
@@ -42,6 +47,8 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 		sceneManager->ChangeScene(new GamePlayScene);
 	}
 
+	worldTransform_.UpdateMatrix();
+
 	camera_.UpdateMatrix();
 
 	ImGui::Begin("TitleScene");
@@ -51,9 +58,15 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 
 void GameTitleScene::Draw(SceneManager* sceneManager)
 {
-	PostProcess::GetInstance()->PreDraw();
+	Model::PreDraw();
+
+	Model::PostDraw();
+
+	//PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
+
+	model_->Draw(worldTransform_, camera_);
 
 	Model::PostDraw();
 
@@ -61,7 +74,7 @@ void GameTitleScene::Draw(SceneManager* sceneManager)
 
 	Sprite::PostDraw();
 
-	PostProcess::GetInstance()->PostDraw();
+	//PostProcess::GetInstance()->PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 

@@ -1,5 +1,7 @@
 #include "EngineCore.h"
 
+D3DResourceLeakChecker EngineCore::leakCheck;
+
 void EngineCore::Initialize()
 {
 	win_ = WindowsApp::GetInstance();
@@ -72,9 +74,9 @@ void EngineCore::Draw()
 {
 	dxCore_->PreDraw();
 
-	imguiManager_->Draw();
-
 	sceneManager_->Draw();
+
+	imguiManager_->Draw();
 
 	dxCore_->PostDraw();
 }
