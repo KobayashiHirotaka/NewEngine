@@ -4,12 +4,25 @@
 #include "Application/Game/Scenes/GameClearScene.h"
 #include "Engine/Utility/GlobalVariables.h"
 
+SceneManager* SceneManager::instance_ = nullptr;
+
 SceneManager* SceneManager::GetInstance()
 {
-	static SceneManager instance;
-	return &instance;
+	if (instance_ == nullptr)
+	{
+		instance_ = new SceneManager();
+	}
+	return instance_;
 }
 
+void SceneManager::DeleteInstance()
+{
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
+}
 
 SceneManager::SceneManager()
 {
@@ -36,6 +49,7 @@ void SceneManager::Draw()
 
 void SceneManager::ChangeScene(IScene* newScene)
 {
+	delete currentScene_;
 	currentScene_ = nullptr;
 	currentScene_ = newScene;
 	currentScene_->Initialize(this);

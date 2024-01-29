@@ -14,8 +14,7 @@ class Input
 public:
 	static Input* GetInstance();
 
-	//Input();
-	//~Input();
+	static void DeleteInstance();
 
 	void Initialize(WindowsApp* win);
 
@@ -51,6 +50,8 @@ private:
 	const Input& operator = (const Input&) = delete;
 
 private:
+	static Input* instance_;
+
 	static Input* input_;
 
 	Microsoft::WRL::ComPtr<IDirectInput8>directInput_ = nullptr;

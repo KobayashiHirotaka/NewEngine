@@ -130,30 +130,6 @@
     <Filter Include="ヘッダー ファイル\Engine\3d\Light">
       <UniqueIdentifier>{c7ae341d-7eec-4e85-8ad1-db759020636b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Project">
-      <UniqueIdentifier>{fdfb5075-b81a-4a32-8584-fb24fe4195df}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Project\Game">
-      <UniqueIdentifier>{55ae0ec5-a4da-4e17-8204-f1a0c043443b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Project">
-      <UniqueIdentifier>{b97ed785-0c2b-4c30-aa61-7491bc3ba33d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Project\Game">
-      <UniqueIdentifier>{6afc74fe-29eb-4127-9f23-0771ac0ee0ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Project\Game\Scenes">
-      <UniqueIdentifier>{5d9d8822-66ae-403c-82d4-6647028c3560}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Project\Game\Scenes\Manager">
-      <UniqueIdentifier>{1476084c-c349-4eef-82e2-7b5720dd184b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Project\Game\Scenes">
-      <UniqueIdentifier>{1d55660e-37a2-429b-b343-f9292cfd01e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Project\Game\Scenes\Manager">
-      <UniqueIdentifier>{08e03cdb-74e3-48bc-9a25-1a347e916623}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\Engine\3d\WorldTransform">
       <UniqueIdentifier>{cd791f8b-78bf-431f-a7d1-257a87d4cd91}</UniqueIdentifier>
     </Filter>
@@ -192,6 +168,30 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\Engine\Framework">
       <UniqueIdentifier>{48f761fa-0118-49c2-9db5-a44b47b202a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application">
+      <UniqueIdentifier>{b97ed785-0c2b-4c30-aa61-7491bc3ba33d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\Game">
+      <UniqueIdentifier>{6afc74fe-29eb-4127-9f23-0771ac0ee0ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\Game\Scenes">
+      <UniqueIdentifier>{5d9d8822-66ae-403c-82d4-6647028c3560}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\Game\Scenes\Manager">
+      <UniqueIdentifier>{1476084c-c349-4eef-82e2-7b5720dd184b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application">
+      <UniqueIdentifier>{fdfb5075-b81a-4a32-8584-fb24fe4195df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\Game">
+      <UniqueIdentifier>{55ae0ec5-a4da-4e17-8204-f1a0c043443b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\Game\Scenes">
+      <UniqueIdentifier>{1d55660e-37a2-429b-b343-f9292cfd01e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\Game\Scenes\Manager">
+      <UniqueIdentifier>{08e03cdb-74e3-48bc-9a25-1a347e916623}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -310,16 +310,16 @@
       <Filter>ソース ファイル\Engine\Framework</Filter>
     </ClCompile>
     <ClCompile Include="Application\Game\Scenes\Manager\GameManager.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes\Manager</Filter>
+      <Filter>ソース ファイル\Application\Game\Scenes\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp">
-      <Filter>ソース ファイル\Project\Game</Filter>
+      <Filter>ソース ファイル\Application\Game</Filter>
     </ClCompile>
     <ClCompile Include="Application\Game\Scenes\GameClearScene.cpp">
-      <Filter>ソース ファイル\Project\Game</Filter>
+      <Filter>ソース ファイル\Application\Game</Filter>
     </ClCompile>
     <ClCompile Include="Application\Game\Scenes\GameTitleScene.cpp">
-      <Filter>ソース ファイル\Project\Game</Filter>
+      <Filter>ソース ファイル\Application\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -394,9 +394,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Components\Input\Input.h">
       <Filter>ヘッダー ファイル\Engine\Components\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Project\Game\Scenes\IScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Utility\Collision\Collider.h">
       <Filter>ヘッダー ファイル\Engine\Utility\Collision</Filter>
@@ -477,16 +474,19 @@
       <Filter>ヘッダー ファイル\Engine\Framework</Filter>
     </ClInclude>
     <ClInclude Include="Application\Game\Scenes\GameTitleScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+      <Filter>ヘッダー ファイル\Application\Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Application\Game\Scenes\GamePlayScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+      <Filter>ヘッダー ファイル\Application\Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Application\Game\Scenes\Manager\GameManager.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes\Manager</Filter>
+      <Filter>ヘッダー ファイル\Application\Game\Scenes\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Application\Game\Scenes\GameClearScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+      <Filter>ヘッダー ファイル\Application\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\IScene.h">
+      <Filter>ヘッダー ファイル\Application\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

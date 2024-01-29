@@ -6,6 +6,8 @@ class SceneManager
 public:
 	static SceneManager* GetInstance();
 
+	static void DeleteInstance();
+
 	void Update();
 
 	void Draw();
@@ -19,5 +21,7 @@ private:
 	const SceneManager& operator = (const SceneManager&) = delete;
 
 private:
+	static SceneManager* instance_;
+
 	IScene* currentScene_;
 };

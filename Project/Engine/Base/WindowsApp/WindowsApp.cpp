@@ -1,10 +1,24 @@
 #include "WindowsApp.h"
 #pragma comment(lib,"winmm.lib")
 
+WindowsApp* WindowsApp::instance_ = nullptr;
+
 WindowsApp* WindowsApp::GetInstance()
 {
-	static WindowsApp instance;
-	return &instance;
+	if (instance_ == nullptr)
+	{
+		instance_ = new WindowsApp();
+	}
+	return instance_;
+}
+
+void WindowsApp::DeleteInstance()
+{
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
 }
 
 LRESULT CALLBACK WindowsApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)

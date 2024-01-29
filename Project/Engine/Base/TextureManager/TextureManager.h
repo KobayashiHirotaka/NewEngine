@@ -30,6 +30,8 @@ public:
 
 	static TextureManager* GetInstance();
 
+	static void DeleteInstance();
+
 	void Initialize();
 
 	static uint32_t LoadTexture(const std::string& filePath);
@@ -58,6 +60,8 @@ private:
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
 
 private:
+	static TextureManager* instance_;
+
 	DirectXCore* dxCore_ = nullptr;
 
 	ID3D12Device* device_ = nullptr;

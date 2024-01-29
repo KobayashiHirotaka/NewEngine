@@ -1,8 +1,23 @@
 #include "Input.h"
+
+Input* Input::instance_ = nullptr;
+
 Input* Input::GetInstance()
 {
-	static Input instance;
-	return &instance;
+	if (instance_ == nullptr)
+	{
+		instance_ = new Input();
+	}
+	return instance_;
+}
+
+void Input::DeleteInstance()
+{
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
 }
 
 void Input::Initialize(WindowsApp* win)

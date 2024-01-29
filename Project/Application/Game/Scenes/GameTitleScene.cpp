@@ -39,12 +39,14 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
 			sceneManager->ChangeScene(new GamePlayScene);
+			return;
 		}
 	}
 
 	if (input_->PushKey(DIK_SPACE))
 	{
 		sceneManager->ChangeScene(new GamePlayScene);
+		return;
 	}
 
 	worldTransform_.UpdateMatrix();

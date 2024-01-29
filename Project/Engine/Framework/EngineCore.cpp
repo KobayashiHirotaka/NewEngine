@@ -33,7 +33,7 @@ void EngineCore::Initialize()
 
 	Sprite::StaticInitialize();
 
-	GlobalVariables::GetInstance()->LoadFiles();
+	/*GlobalVariables::GetInstance()->LoadFiles();*/
 
 	Random::Initialize();
 }
@@ -46,9 +46,19 @@ void EngineCore::Finalize()
 
 	ParticleModel::Release();
 
-	imguiManager_->ShutDown();
+	PostProcess::DeleteInstance();
+
+	Input::DeleteInstance();
 
 	audio_->Release();
+
+	SceneManager::DeleteInstance();
+
+	imguiManager_->ShutDown();
+
+	TextureManager::DeleteInstance();
+
+	DirectXCore::DeleteInstance();
 
 	win_->CloseGameWindow();
 }

@@ -2,11 +2,24 @@
 
 uint32_t DirectXCore::descriptorSizeRTV = 0;
 uint32_t DirectXCore::descriptorSizeDSV = 0;
+DirectXCore* DirectXCore::instance_ = nullptr;
 
 DirectXCore* DirectXCore::GetInstance()
 {
-	static DirectXCore instance;
-	return &instance;
+	if (instance_ == nullptr)
+	{
+		instance_ = new DirectXCore();
+	}
+	return instance_;
+}
+
+void DirectXCore::DeleteInstance()
+{
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
 }
 
 void DirectXCore::Initialize() 

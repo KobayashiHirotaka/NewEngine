@@ -20,6 +20,8 @@ public:
 
 	static DirectXCore* GetInstance();
 
+	static void DeleteInstance();
+
 	void Initialize();
 
 	void PreDraw();
@@ -67,6 +69,8 @@ private:
 	void UpdateFixFPS();
 
 private:
+	static DirectXCore* instance_;
+
 	WindowsApp* win_ = nullptr;
 
 	//DXGIファクトリーの生成

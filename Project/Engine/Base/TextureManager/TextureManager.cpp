@@ -1,11 +1,24 @@
 #include "TextureManager.h"
 
 uint32_t TextureManager::descriptorSizeSRV = 0;
+TextureManager* TextureManager::instance_ = nullptr;
 
-TextureManager* TextureManager::GetInstance() 
+TextureManager* TextureManager::GetInstance()
 {
-	static TextureManager instance;
-	return &instance;
+	if (instance_ == nullptr)
+	{
+		instance_ = new TextureManager();
+	}
+	return instance_;
+}
+
+void TextureManager::DeleteInstance()
+{
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
 }
 
 void TextureManager::Initialize()

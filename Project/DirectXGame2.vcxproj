@@ -103,6 +103,7 @@
     <ClInclude Include="Application\Game\Scenes\GameClearScene.h" />
     <ClInclude Include="Application\Game\Scenes\GamePlayScene.h" />
     <ClInclude Include="Application\Game\Scenes\GameTitleScene.h" />
+    <ClInclude Include="Application\Game\Scenes\IScene.h" />
     <ClInclude Include="Application\Game\Scenes\Manager\GameManager.h" />
     <ClInclude Include="Engine\2D\Sprite\Sprite.h" />
     <ClInclude Include="Engine\2D\Sprite\UI.h" />
@@ -146,7 +147,6 @@
     <ClInclude Include="Engine\Utility\CSV\LoadCSV.h" />
     <ClInclude Include="Engine\Utility\GlobalVariables.h" />
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
-    <ClInclude Include="Project\Game\Scenes\IScene.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\HorizontalBlur.PS.hlsl">

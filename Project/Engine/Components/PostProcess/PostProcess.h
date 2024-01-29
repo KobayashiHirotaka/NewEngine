@@ -49,6 +49,8 @@ public:
 
     static PostProcess* GetInstance();
 
+    static void DeleteInstance();
+
     void Initialize();
     void Update();
     void PreDraw();
@@ -69,6 +71,11 @@ private:
         Horizontal,
         Vertical,
     };
+
+    PostProcess() = default;
+    ~PostProcess() = default;
+    PostProcess(const PostProcess&) = delete;
+    const PostProcess& operator=(const PostProcess&) = delete;
 
     void InitializeDXC();
     Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
@@ -125,6 +132,8 @@ private:
     D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
 
 private:
+    static PostProcess* instance_;
+
     DirectXCore* dxCore_ = nullptr;
     ID3D12GraphicsCommandList* commandList_;
     ID3D12Device* device_;

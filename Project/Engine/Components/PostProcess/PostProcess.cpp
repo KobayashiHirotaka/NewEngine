@@ -3,11 +3,24 @@
 uint32_t PostProcess::descriptorSizeRTV;
 uint32_t PostProcess::descriptorSizeSRV;
 uint32_t PostProcess::descriptorSizeDSV;
+PostProcess* PostProcess::instance_ = nullptr;
 
 PostProcess* PostProcess::GetInstance()
 {
-	static PostProcess instance;
-	return &instance;
+	if (instance_ == nullptr)
+	{
+		instance_ = new PostProcess();
+	}
+	return instance_;
+}
+
+void PostProcess::DeleteInstance()
+{
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
 }
 
 void PostProcess::Initialize()
