@@ -844,6 +844,7 @@ void Player::BehaviorAttackUpdate()
 	//薙ぎ払う攻撃
 	if (workAttack_.isMowDown)
 	{
+		isGuard_ = false;
 		if (attackAnimationFrame < 10)
 		{
 			worldTransformBody_.rotation.y -= 0.1f;
