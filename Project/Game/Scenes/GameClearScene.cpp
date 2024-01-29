@@ -1,5 +1,5 @@
 #include "GameClearScene.h"
-#include "Project/Game/Scenes/Manager/SceneManager.h"
+#include "Engine/Framework/SceneManager.h"
 #include "GameTitleScene.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>

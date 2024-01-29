@@ -55,8 +55,8 @@
     <ClCompile Include="Engine\externals\imgui\imgui_widgets.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MinSpace</Optimization>
     </ClCompile>
-    <ClCompile Include="Engine\Framework\Game.cpp" />
-    <ClCompile Include="Engine\Framework\GameManager.cpp" />
+    <ClCompile Include="Engine\Framework\EngineCore.cpp" />
+    <ClCompile Include="Engine\Framework\SceneManager.cpp" />
     <ClCompile Include="Engine\Utility\Collision\CollisionManager.cpp" />
     <ClCompile Include="Engine\Utility\ConvertString\ConvertString.cpp" />
     <ClCompile Include="Engine\Utility\CSV\LoadCSV.cpp" />
@@ -66,7 +66,7 @@
     <ClCompile Include="Project\Game\Scenes\GamePlayScene.cpp" />
     <ClCompile Include="Project\Game\Scenes\GameTitleScene.cpp" />
     <ClCompile Include="Project\Game\Scenes\GameClearScene.cpp" />
-    <ClCompile Include="Project\Game\Scenes\Manager\SceneManager.cpp" />
+    <ClCompile Include="Project\Game\Scenes\Manager\GameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -133,8 +133,8 @@
     <ClInclude Include="Engine\externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="Engine\externals\imgui\imstb_textedit.h" />
     <ClInclude Include="Engine\externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="Engine\Framework\Game.h" />
-    <ClInclude Include="Engine\Framework\GameManager.h" />
+    <ClInclude Include="Engine\Framework\EngineCore.h" />
+    <ClInclude Include="Engine\Framework\SceneManager.h" />
     <ClInclude Include="Engine\Utility\Collision\Collider.h" />
     <ClInclude Include="Engine\Utility\Collision\CollisionConfig.h" />
     <ClInclude Include="Engine\Utility\Collision\CollisionManager.h" />
@@ -146,7 +146,7 @@
     <ClInclude Include="Project\Game\Scenes\GameTitleScene.h" />
     <ClInclude Include="Project\Game\Scenes\GameClearScene.h" />
     <ClInclude Include="Project\Game\Scenes\IScene.h" />
-    <ClInclude Include="Project\Game\Scenes\Manager\SceneManager.h" />
+    <ClInclude Include="Project\Game\Scenes\Manager\GameManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\HorizontalBlur.PS.hlsl">

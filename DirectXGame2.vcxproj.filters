@@ -187,6 +187,12 @@
     <Filter Include="ヘッダー ファイル\Engine\3d\Particle">
       <UniqueIdentifier>{587b5227-a9a1-4b2e-a0d2-8452d727b0ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Engine\Framework">
+      <UniqueIdentifier>{368532c3-8f2e-4060-a50e-9cdc318248b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\Framework">
+      <UniqueIdentifier>{48f761fa-0118-49c2-9db5-a44b47b202a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -236,9 +242,6 @@
     </ClCompile>
     <ClCompile Include="Engine\Components\Audio\Audio.cpp">
       <Filter>ソース ファイル\Engine\Components\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="Project\Game\Scenes\Manager\SceneManager.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Project\Game\Scenes\GameTitleScene.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes</Filter>
@@ -309,11 +312,14 @@
     <ClCompile Include="Engine\2D\Sprite\Sprite.cpp">
       <Filter>ソース ファイル\Engine\2d\Sprite</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Framework\Game.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Engine\Framework\SceneManager.cpp">
+      <Filter>ソース ファイル\Engine\Framework</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Framework\GameManager.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Project\Game\Scenes\Manager\GameManager.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Framework\EngineCore.cpp">
+      <Filter>ソース ファイル\Engine\Framework</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -388,9 +394,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Components\Input\Input.h">
       <Filter>ヘッダー ファイル\Engine\Components\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Project\Game\Scenes\Manager\SceneManager.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Project\Game\Scenes\GameTitleScene.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
@@ -476,11 +479,14 @@
     <ClInclude Include="Engine\2D\Sprite\UI.h">
       <Filter>ヘッダー ファイル\Engine\2d\Sprite</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Framework\Game.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Engine\Framework\SceneManager.h">
+      <Filter>ヘッダー ファイル\Engine\Framework</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Framework\GameManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Project\Game\Scenes\Manager\GameManager.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Framework\EngineCore.h">
+      <Filter>ヘッダー ファイル\Engine\Framework</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

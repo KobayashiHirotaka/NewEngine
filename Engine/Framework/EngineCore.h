@@ -1,3 +1,4 @@
+#pragma once
 #include "Engine/Base/WindowsApp/WindowsApp.h"
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
@@ -10,17 +11,23 @@
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/Particle/Random.h"
-#include "Project/Game/Scenes/IScene.h"
-#include <memory>
+#include "Engine/Utility/GlobalVariables.h"
+#include "Engine/Framework/SceneManager.h"
 
-class SceneManager 
+class EngineCore
 {
 public:
-	SceneManager();
+	virtual ~EngineCore() = default;
 
-	~SceneManager();
+	virtual void Initialize();
 
-	void ChangeScene(IScene* newScene);
+	virtual void Finalize();
+
+	virtual void Update();
+
+	virtual void Draw() = 0;
+
+	virtual bool IsEndRequst();
 
 	void Run();
 
@@ -41,5 +48,8 @@ private:
 
 	PostProcess* postProcess_ = nullptr;
 
-	IScene* currentScene_;
+	SceneManager* sceneManager_ = nullptr;
+
+	bool endRequst_ = false;
 };
+
