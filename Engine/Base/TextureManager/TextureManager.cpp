@@ -20,7 +20,7 @@ void TextureManager::Initialize()
 
 	srvDescriptorHeap_ = dxCore_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxDescriptors, true);
 
-	LoadInternal("resource/white.png");
+	LoadInternal("resource/images/white.png");
 }
 
 uint32_t TextureManager::LoadTexture(const std::string& filePath)
