@@ -1,23 +1,19 @@
 #pragma once
 #include "IScene.h"
-#include "Engine/3D/Model/Model.h"
+#include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
-#include "Engine/Base/TextureManager/TextureManager.h"
-#include "Engine/Utility/Collision/CollisionManager.h"
-#include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/2D/Sprite/Sprite.h"
-
 #include <memory>
 
-class GamePlayScene : public IScene
+class GameClearScene : public IScene
 {
 public:
-	GamePlayScene();
+	GameClearScene();
 
-	~GamePlayScene();
+	~GameClearScene();
 
 	void Initialize(SceneManager* sceneManager)override;
 
@@ -34,3 +30,4 @@ private:
 
 	Audio* audio_ = nullptr;
 };
+

@@ -1,14 +1,14 @@
-#include "GamePlayScene.h"
-#include "Project/Game/Scenes/Manager/SceneManager.h"
 #include "GameClearScene.h"
+#include "Project/Game/Scenes/Manager/SceneManager.h"
+#include "GameTitleScene.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>
 
-GamePlayScene::GamePlayScene() {};
+GameClearScene::GameClearScene() {};
 
-GamePlayScene::~GamePlayScene() {};
+GameClearScene::~GameClearScene() {};
 
-void GamePlayScene::Initialize(SceneManager* sceneManager)
+void GameClearScene::Initialize(SceneManager* sceneManager)
 {
 	textureManager_ = TextureManager::GetInstance();
 
@@ -23,46 +23,38 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	camera_.UpdateMatrix();
 };
 
-void GamePlayScene::Update(SceneManager* sceneManager)
+void GameClearScene::Update(SceneManager* sceneManager)
 {
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
-			sceneManager->ChangeScene(new GameClearScene);
+			sceneManager->ChangeScene(new GameTitleScene);
 		}
 	}
 
 	if (input_->PushKey(DIK_SPACE))
 	{
-		sceneManager->ChangeScene(new GameClearScene);
+		sceneManager->ChangeScene(new GameTitleScene);
 	}
 
 	camera_.UpdateMatrix();
 
-	ImGui::Begin("PlayScene");
-	ImGui::Text("Abutton or SpaceKey : ClearScene");
+	ImGui::Begin("ClearScene");
+	ImGui::Text("Abutton or SpaceKey : TitleScene");
 	ImGui::End();
 };
 
-void GamePlayScene::Draw(SceneManager* sceneManager)
+void GameClearScene::Draw(SceneManager* sceneManager)
 {
-	Model::PreDraw();
-
-	Model::PostDraw();
-
 	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
 
 	Model::PostDraw();
 
-	ParticleModel::PreDraw();
-
-	ParticleModel::PostDraw();
-
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
-	
+
 	Sprite::PostDraw();
 
 	PostProcess::GetInstance()->PostDraw();

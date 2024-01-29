@@ -1,8 +1,7 @@
 #include "SceneManager.h"
-#include "Project/Game/Scenes/GameStartScene.h"
+#include "Project/Game/Scenes/GameTitleScene.h"
 #include "Project/Game/Scenes/GamePlayScene.h"
-#include "Project/Game/Scenes/GameWinScene.h"
-#include "Project/Game/Scenes/GameLoseScene.h"
+#include "Project/Game/Scenes/GameClearScene.h"
 #include "Engine/Utility/GlobalVariables.h"
 
 SceneManager::SceneManager()
@@ -39,7 +38,7 @@ SceneManager::SceneManager()
 	Random::Initialize();
 
 	//シーンの初期化
-	currentScene_ = new GameStartScene();
+	currentScene_ = new GameTitleScene();
 	currentScene_->Initialize(this);
 }
 
