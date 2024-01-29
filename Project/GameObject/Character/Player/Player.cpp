@@ -648,6 +648,7 @@ void Player::BehaviorAttackUpdate()
 	//通常攻撃
 	if (workAttack_.isPunch)
 	{
+		isGuard_ = false;
 		if (attackAnimationFrame < 3.0f)
 		{
 			worldTransformBody_.rotation.y += 0.1f;
@@ -677,6 +678,7 @@ void Player::BehaviorAttackUpdate()
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
 	{
+		isGuard_ = false;
 		if (attackAnimationFrame < 10)
 		{
 			worldTransformL_arm_.rotation.x -= 0.05f;
@@ -751,6 +753,7 @@ void Player::BehaviorAttackUpdate()
 	//突き攻撃
 	if (workAttack_.isPoke)
 	{
+		isGuard_ = false;
 		pokeTimer_--;
 
 		if (attackAnimationFrame < 10)
@@ -990,6 +993,7 @@ void Player::BehaviorThrowUpdate()
 	//投げ
 	if (isThrow_)
 	{
+		isGuard_ = false;
 		if (attackAnimationFrame < 30)
 		{
 			worldTransformL_arm_.rotation.y -= 0.02f;
