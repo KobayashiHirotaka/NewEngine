@@ -1,7 +1,4 @@
 #include "SceneManager.h"
-#include "Application/Game/Scenes/GameTitleScene.h"
-#include "Application/Game/Scenes/GamePlayScene.h"
-#include "Application/Game/Scenes/GameClearScene.h"
 #include "Engine/Utility/GlobalVariables.h"
 
 SceneManager* SceneManager::instance_ = nullptr;
@@ -26,9 +23,7 @@ void SceneManager::DeleteInstance()
 
 SceneManager::SceneManager()
 {
-	//シーンの初期化
-	currentScene_ = new GameTitleScene();
-	currentScene_->Initialize(this);
+	
 }
 
 SceneManager::~SceneManager()
@@ -39,6 +34,26 @@ SceneManager::~SceneManager()
 
 void SceneManager::Update()
 {
+	if (nextScene_)
+	{
+		//旧シーンの終了
+		if (currentScene_)
+		{
+			currentScene_->Finalize(this);
+			delete currentScene_;
+		}
+
+		//シーン切り替え
+		currentScene_ = nextScene_;
+		nextScene_ = nullptr;
+
+		//シーンマネージャーをセット
+		currentScene_->SetSceneManager(this);
+
+		//シーンの初期化
+		currentScene_->Initialize(this);
+	}
+
 	currentScene_->Update(this);
 }
 
@@ -47,10 +62,9 @@ void SceneManager::Draw()
 	currentScene_->Draw(this);
 }
 
-void SceneManager::ChangeScene(IScene* newScene)
+void SceneManager::ChangeScene(const std::string& sceneName)
 {
-	delete currentScene_;
-	currentScene_ = nullptr;
-	currentScene_ = newScene;
-	currentScene_->Initialize(this);
+	assert(sceneFactory_);
+	assert(nextScene_ == nullptr);
+	nextScene_ = sceneFactory_->CreateScene(sceneName);
 }

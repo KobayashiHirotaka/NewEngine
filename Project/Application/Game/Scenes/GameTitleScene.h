@@ -22,6 +22,8 @@ public:
 
 	void Draw(SceneManager* sceneManager)override;
 
+	void Finalize(SceneManager* sceneManager)override;
+
 private:
 	WorldTransform worldTransform_;
 

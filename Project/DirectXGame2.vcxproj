@@ -15,6 +15,7 @@
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameTitleScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\Manager\GameManager.cpp" />
+    <ClCompile Include="Application\Game\Scenes\SceneFactory.cpp" />
     <ClCompile Include="Engine\2D\Sprite\Sprite.cpp" />
     <ClCompile Include="Engine\3D\Camera\Camera.cpp" />
     <ClCompile Include="Engine\3D\Light\Light.cpp" />
@@ -105,6 +106,7 @@
     <ClInclude Include="Application\Game\Scenes\GameTitleScene.h" />
     <ClInclude Include="Application\Game\Scenes\IScene.h" />
     <ClInclude Include="Application\Game\Scenes\Manager\GameManager.h" />
+    <ClInclude Include="Application\Game\Scenes\SceneFactory.h" />
     <ClInclude Include="Engine\2D\Sprite\Sprite.h" />
     <ClInclude Include="Engine\2D\Sprite\UI.h" />
     <ClInclude Include="Engine\3D\Camera\Camera.h" />
@@ -138,6 +140,7 @@
     <ClInclude Include="Engine\externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="Engine\externals\imgui\imstb_textedit.h" />
     <ClInclude Include="Engine\externals\imgui\imstb_truetype.h" />
+    <ClInclude Include="Engine\Framework\AbstractSceneFactory.h" />
     <ClInclude Include="Engine\Framework\EngineCore.h" />
     <ClInclude Include="Engine\Framework\SceneManager.h" />
     <ClInclude Include="Engine\Utility\Collision\Collider.h" />

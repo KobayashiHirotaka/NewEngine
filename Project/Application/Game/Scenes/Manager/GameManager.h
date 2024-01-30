@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Framework/EngineCore.h"
+#include "Application/Game/Scenes/SceneFactory.h"
 
 class GameManager : public EngineCore
 {

@@ -1,6 +1,5 @@
 #include "GameTitleScene.h"
 #include "Engine/Framework/SceneManager.h"
-#include "GamePlayScene.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>
 
@@ -38,14 +37,14 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
-			sceneManager->ChangeScene(new GamePlayScene);
+			sceneManager->ChangeScene("GamePlayScene");
 			return;
 		}
 	}
 
 	if (input_->PushKey(DIK_SPACE))
 	{
-		sceneManager->ChangeScene(new GamePlayScene);
+		sceneManager->ChangeScene("GamePlayScene");
 		return;
 	}
 
@@ -82,3 +81,8 @@ void GameTitleScene::Draw(SceneManager* sceneManager)
 
 	Sprite::PostDraw();
 };
+
+void GameTitleScene::Finalize(SceneManager* sceneManager)
+{
+
+}
