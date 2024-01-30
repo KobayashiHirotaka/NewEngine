@@ -9,6 +9,12 @@ enum class LightingType
 	HalfLambert,
 };
 
+enum class ModelType
+{
+	PhongReflectionModel,
+	BlinnPhongReflectionModel,
+};
+
 class Light
 {
 public:
@@ -17,8 +23,10 @@ public:
 		int32_t enableLighting;
 
 		LightingType lightingType;
+
+		ModelType modelType;
 	
-		float padding[2];
+		float padding;
 	
 		Vector4 color;
 	
@@ -43,6 +51,10 @@ public:
 	const int32_t& GetLightingType() const { return int32_t(lightingType_); };
 	void SetLightingType(const int32_t& lightingType) { lightingType_ = LightingType(lightingType); };
 
+	//ModelType
+	const int32_t& GetModelType() const { return int32_t(modelType_); };
+	void SetModelType(const int32_t& modelType) { modelType_ = ModelType(modelType); };
+
 	//Color
 	const Vector4& GetColor() const { return color_; };
 	void SetColor(const Vector4& color) { color_ = color; };
@@ -63,6 +75,8 @@ private:
 	int32_t enableLighting_ = true;
 
 	LightingType lightingType_ = LightingType::HalfLambert;
+
+	ModelType modelType_ = ModelType::PhongReflectionModel;
 	
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 

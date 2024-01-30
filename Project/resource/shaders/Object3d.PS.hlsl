@@ -11,6 +11,7 @@ struct DirectionLight
 {
     int32_t enableLighting;
     int32_t lightingType;
+    int32_t modelType;
     float32_t4 color; 
     float32_t3 direction; 
     float intensity; 
@@ -58,13 +59,23 @@ PixelShaderOutput main(VertexShaderOutput input)
         }
         
         float32_t specularPow = 0.0f;
-       
-        float32_t3 toEye = input.toEye;
-        float32_t3 reflectLight = reflect(gDirectionalLight.direction, normalize(input.normal));
+        if (gDirectionalLight.modelType == 0)
+        {
+            float32_t3 toEye = input.toEye;
+            float32_t3 reflectLight = reflect(gDirectionalLight.direction, normalize(input.normal));
         
-        float32_t RdotE = dot(reflectLight, toEye);
-        specularPow = pow(saturate(RdotE), gMaterial.shininess);
-    
+            float32_t RdotE = dot(reflectLight, toEye);
+            specularPow = pow(saturate(RdotE), gMaterial.shininess);
+        }
+        else if (gDirectionalLight.modelType == 1)
+        {
+            float32_t3 toEye = input.toEye;
+            float32_t3 reflectLight = reflect(gDirectionalLight.direction, normalize(input.normal));
+            
+            float32_t3 halfVector = normalize(-gDirectionalLight.direction + toEye);
+            float NdotH = dot(normalize(input.normal), halfVector);
+            specularPow = pow(saturate(NdotH), gMaterial.shininess);
+        }
         
         float32_t3 diffuse = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
         
