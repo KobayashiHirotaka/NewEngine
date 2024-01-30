@@ -68,6 +68,8 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
 
 Matrix4x4 Inverse(const Matrix4x4& m);
 
+Matrix4x4 Transpose(const Matrix4x4& m);
+
 Matrix4x4 MakeIdentity4x4();
 
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate);

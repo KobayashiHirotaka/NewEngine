@@ -5,6 +5,7 @@
 struct ConstBufferDataWorldTransform
 {
 	Matrix4x4 matWorld;
+	Matrix4x4 worldInverseTranspose;
 };
 
 class WorldTransform

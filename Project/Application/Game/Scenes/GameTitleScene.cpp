@@ -59,6 +59,7 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 
 	ImGui::Begin("TitleScene");
 	ImGui::Text("Abutton or SpaceKey : PlayScene");
+	ImGui::DragFloat3("scale", &worldTransform_.scale.x, 0.1f, 1.0f, 10.0f);
 	ImGui::End();
 };
 
