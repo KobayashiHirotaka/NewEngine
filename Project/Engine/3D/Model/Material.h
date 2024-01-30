@@ -47,5 +47,5 @@ private:
 	
 	Vector2 scale_{ 1.0f,1.0f };
 
-	float shininess_ = 40.0f;
+	float shininess_ = 40.8f;
 };
