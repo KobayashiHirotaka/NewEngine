@@ -412,7 +412,7 @@ void Enemy::BehaviorRootUpdate()
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
 		//移動処理
-		if (moveTimer_ > 40 && worldTransform_.rotation.y == 4.6f && !isHit_)
+		if (moveTimer_ > 30 && worldTransform_.rotation.y == 4.6f && !isHit_)
 		{
 			kCharacterSpeed = 0.1f;
 			velocity_.x = -0.3f;
@@ -420,7 +420,7 @@ void Enemy::BehaviorRootUpdate()
 			isGuard_ = false;
 		}
 
-		if (moveTimer_ > 40 && worldTransform_.rotation.y == 1.7f && !isHit_)
+		if (moveTimer_ > 30 && worldTransform_.rotation.y == 1.7f && !isHit_)
 		{
 			kCharacterSpeed = 0.1f;
 			velocity_.x = 0.3f;
@@ -428,7 +428,7 @@ void Enemy::BehaviorRootUpdate()
 			isGuard_ = false;
 		}
 
-		if (moveTimer_ <= 40 && worldTransform_.rotation.y == 1.7f)
+		if (moveTimer_ <= 30 && worldTransform_.rotation.y == 1.7f)
 		{
 			kCharacterSpeed = 0.05f;
 			velocity_.x = -0.3f;
@@ -436,7 +436,7 @@ void Enemy::BehaviorRootUpdate()
 			isGuard_ = true;
 		}
 
-		if (moveTimer_ <= 40 && worldTransform_.rotation.y == 4.6f)
+		if (moveTimer_ <= 30 && worldTransform_.rotation.y == 4.6f)
 		{
 			kCharacterSpeed = 0.05f;
 			velocity_.x = 0.3f;
