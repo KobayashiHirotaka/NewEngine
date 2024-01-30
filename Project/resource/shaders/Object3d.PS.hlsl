@@ -4,12 +4,13 @@ struct Material
 {
     float32_t4 color;
     float32_t4x4 uvTransform;
+    float32_t shininess;
 };
 
 struct DirectionLight
 {
     int32_t enableLighting;
-    int32_t lightingMethod;
+    int32_t lightingType;
     float32_t4 color; 
     float32_t3 direction; 
     float intensity; 
@@ -34,40 +35,52 @@ PixelShaderOutput main(VertexShaderOutput input)
     output.color = gMaterial.color * textureColor;
     output.depth = input.depth.x;
     
-    if (textureColor.a <= 0.5)
+    if (textureColor.a == 0)
     {
         discard;
+    }
+   
+    if (gDirectionalLight.enableLighting != 0)
+    {
+        float cos = 0.0f;
+        if (gDirectionalLight.lightingType == 0)
+        {
+            cos = saturate(dot(normalize(input.normal), -gDirectionalLight.direction));
+            output.color.rgb = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
+            output.color.a = gMaterial.color.a * textureColor.a;
+        }
+        else if (gDirectionalLight.lightingType == 1)
+        {
+            float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
+            cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
+            output.color.rgb = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
+            output.color.a = gMaterial.color.a * textureColor.a;
+        }
+        
+        float32_t specularPow = 0.0f;
+       
+        float32_t3 toEye = input.toEye;
+        float32_t3 reflectLight = reflect(gDirectionalLight.direction, normalize(input.normal));
+        
+        float32_t RdotE = dot(reflectLight, toEye);
+        specularPow = pow(saturate(RdotE), gMaterial.shininess);
+    
+        
+        float32_t3 diffuse = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
+        
+        float32_t3 specular = gDirectionalLight.color.rgb * gDirectionalLight.intensity * specularPow * float32_t3(1.0f, 1.0f, 1.0f);
+        
+        output.color.rgb += diffuse + specular;
+        
+    }
+    else
+    {
+        output.color = gMaterial.color * textureColor;
     }
     
     if (textureColor.a == 0)
     {
         discard;
-    }
-    
-    if (output.color.a == 0)
-    {
-        discard;
-    }
-    
-    if (gDirectionalLight.enableLighting != 0)
-    {
-        if (gDirectionalLight.lightingMethod == 0)
-        {
-            float cos = saturate(dot(normalize(input.normal), -gDirectionalLight.direction));
-            output.color.rgb = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
-            output.color.a = gMaterial.color.a * textureColor.a;
-        }
-        else if (gDirectionalLight.lightingMethod == 1)
-        {
-            float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
-            float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
-            output.color.rgb = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
-            output.color.a = gMaterial.color.a * textureColor.a;
-        }
-    }
-    else
-    {
-        output.color = gMaterial.color * textureColor;
     }
     
     return output;

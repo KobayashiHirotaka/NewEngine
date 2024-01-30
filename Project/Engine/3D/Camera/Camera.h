@@ -7,6 +7,7 @@
 struct ConstBuffDataCamera
 {
 	Vector3 worldPosition;
+	float padding;
 	Matrix4x4 view;
 	Matrix4x4 projection;
 };
@@ -33,7 +34,7 @@ public:
 	Vector3 rotation_ = { 0.0f,0.0f,0.0f };
 
 	//ローカル座標
-	Vector3 translation_ = { 0.0f,2.0f,-35.0f };
+	Vector3 translation_ = { 0.0f,0.0f,-20.0f };
 
 	//視野角
 	float fov_ = 0.45f;

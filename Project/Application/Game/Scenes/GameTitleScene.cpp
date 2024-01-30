@@ -16,14 +16,16 @@ void GameTitleScene::Initialize(SceneManager* sceneManager)
 
 	audio_ = Audio::GetInstance();
 
+	light_ = std::make_unique<Light>();
+	light_->Initialize();
+
 	//PostProcess::GetInstance()->SetIsPostProcessActive(true);
 	//PostProcess::GetInstance()->SetIsBloomActive(true);
 	//PostProcess::GetInstance()->SetIsVignetteActive(true);
 
-	model_.reset(Model::CreateFromOBJ("resource/Ground", "Ground.obj"));
+	model_.reset(Model::CreateFromOBJ("resource/models", "monsterBall.obj"));
 
 	worldTransform_.Initialize();
-	worldTransform_.translation = { 0.0f,-1.0f,0.0f };
 
 	camera_.UpdateMatrix();
 
@@ -48,6 +50,8 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 		sceneManager->ChangeScene(new GamePlayScene);
 		return;
 	}
+
+	model_->GetLight()->ImGui("Title");
 
 	worldTransform_.UpdateMatrix();
 

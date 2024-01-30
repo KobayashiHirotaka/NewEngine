@@ -1,11 +1,12 @@
 #pragma once
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Utility/Math/MyMath.h"
+#include "Engine/Base/ImGuiManager/ImGuiManager.h"
 
 enum class LightingType
 {
 	LambertianReflectance,
-	HalfLambert
+	HalfLambert,
 };
 
 class Light
@@ -32,6 +33,8 @@ public:
 
 	void SetGraphicsCommand(UINT rootParameterIndex);
 
+	void ImGui(const char* Title);
+
 	//EnableLighting
 	const int32_t& GetEnableLighting() const { return enableLighting_; };
 	void SetEnableLighting(const int32_t& enableLighting) { enableLighting_ = enableLighting; };
@@ -45,7 +48,7 @@ public:
 	void SetColor(const Vector4& color) { color_ = color; };
 
 	//Direction
-	const Vector3& GetDirection() const { return direction_; };
+	Vector3& GetDirection(){ return direction_; };
 	void SetDirection(const Vector3& direction) { direction_ = direction; };
 
 	//Intensity
