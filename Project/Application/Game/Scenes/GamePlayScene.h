@@ -19,13 +19,13 @@ public:
 
 	~GamePlayScene();
 
-	void Initialize(SceneManager* sceneManager)override;
+	void Initialize()override;
 
-	void Update(SceneManager* sceneManager)override;
+	void Update()override;
 
-	void Draw(SceneManager* sceneManager)override;
+	void Draw()override;
 
-	void Finalize(SceneManager* sceneManager)override;
+	void Finalize()override;
 
 private:
 	Camera camera_;

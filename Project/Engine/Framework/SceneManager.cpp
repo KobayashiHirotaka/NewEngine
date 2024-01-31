@@ -23,7 +23,8 @@ void SceneManager::DeleteInstance()
 
 SceneManager::SceneManager()
 {
-	
+	currentScene_ = {};
+	nextScene_ = {};
 }
 
 SceneManager::~SceneManager()
@@ -39,7 +40,7 @@ void SceneManager::Update()
 		//旧シーンの終了
 		if (currentScene_)
 		{
-			currentScene_->Finalize(this);
+			currentScene_->Finalize();
 			delete currentScene_;
 		}
 
@@ -51,15 +52,15 @@ void SceneManager::Update()
 		currentScene_->SetSceneManager(this);
 
 		//シーンの初期化
-		currentScene_->Initialize(this);
+		currentScene_->Initialize();
 	}
 
-	currentScene_->Update(this);
+	currentScene_->Update();
 }
 
 void SceneManager::Draw()
 {
-	currentScene_->Draw(this);
+	currentScene_->Draw();
 }
 
 void SceneManager::ChangeScene(const std::string& sceneName)
