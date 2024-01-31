@@ -22,7 +22,7 @@ void PostProcess::Initialize()
 	descriptorSizeSRV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	descriptorSizeDSV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
-	// 頂点情報の設定
+	//頂点情報の設定
 	vertices_.push_back(VertexPosUV{ {-1.0f,-1.0f,1.0,1.0f},{0.0f,1.0f} });
 	vertices_.push_back(VertexPosUV{ {-1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f} });
 	vertices_.push_back(VertexPosUV{ {1.0f,-1.0f,1.0f,1.0f},{1.0f,1.0f} });
@@ -73,7 +73,7 @@ void PostProcess::PreDraw()
 		return;
 	}
 
-	// レンダーターゲットへのバリア
+	//レンダーターゲットへのバリア
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -87,21 +87,21 @@ void PostProcess::PreDraw()
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	commandList_->ResourceBarrier(1, &barrier);
 
-	// レンダーターゲットの設定
+	//レンダーターゲットの設定
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
 	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(),descriptorSizeRTV, firstPassResource_.rtvIndex);
 	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(),descriptorSizeRTV, linearDepthResource_.rtvIndex);
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = multiPassDSVDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	commandList_->OMSetRenderTargets(2, rtvHandles, false, &dsvHandle);
 
-	// レンダーターゲットのクリア
+	//レンダーターゲットのクリア
 	float clearColor[] = { 0.1f,0.25f,0.5f,1.0f };
 	float depthColor[] = { 1.0f,0.0f,0.0f,0.0f };
 	commandList_->ClearRenderTargetView(rtvHandles[0], clearColor, 0, nullptr);
 	commandList_->ClearRenderTargetView(rtvHandles[1], depthColor, 0, nullptr);
 	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-	// ビューポートの設定
+	//ビューポートの設定
 	D3D12_VIEWPORT viewport{};
 	viewport.Width = FLOAT(WindowsApp::GetInstance()->kClientWidth);
 	viewport.Height = FLOAT(WindowsApp::GetInstance()->kClientHeight);
@@ -111,7 +111,7 @@ void PostProcess::PreDraw()
 	viewport.MaxDepth = 1.0f;
 	commandList_->RSSetViewports(1, &viewport);
 
-	// シザー矩形の設定
+	//シザー矩形の設定
 	D3D12_RECT scissorRect{};
 	scissorRect.left = 0;
 	scissorRect.right = WindowsApp::GetInstance()->kClientWidth;
@@ -120,7 +120,7 @@ void PostProcess::PreDraw()
 	commandList_->RSSetScissorRects(1, &scissorRect);
 }
 
-// 描画後の処理
+//描画後の処理
 void PostProcess::PostDraw()
 {
 	if (isPostProcessActive_ == false)
@@ -128,7 +128,7 @@ void PostProcess::PostDraw()
 		return;
 	}
 
-	// バリアを張る
+	//バリアを張る
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -142,12 +142,12 @@ void PostProcess::PostDraw()
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	commandList_->ResourceBarrier(1, &barrier);
 
-	// 2パス目の描画
+	//2パス目の描画
 	PreSecondPassDraw();
 	SecondPassDraw();
 	PostSecondPassDraw();
 
-	// 各種Blur処理
+	//各種Blur処理
 	if (isBlurActive_)
 	{
 		PreBlur(BlurState::Horizontal);
@@ -170,10 +170,10 @@ void PostProcess::PostDraw()
 		PostShrinkBlur(BlurState::Vertical);
 	}
 
-	// バックバッファに戻す
+	//バックバッファに戻す
 	dxCore_->SetBackBuffer();
 
-	// 描画
+	//描画
 	Draw();
 }
 
