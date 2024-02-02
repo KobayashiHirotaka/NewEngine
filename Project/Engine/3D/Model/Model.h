@@ -7,6 +7,7 @@
 #include "Engine/3D/Mesh/Mesh.h"
 #include "Engine/3D/Model/Material.h"
 #include "Engine/3D/Light/Light.h"
+#include "Engine/3D/Light/PointLight.h"
 #include <cassert>
 #include <dxcapi.h>
 #include <fstream>
@@ -64,6 +65,8 @@ public:
 
 	Light* GetLight() { return light_.get(); };
 
+	PointLight* GetPointLight() { return pointLight_.get(); };
+
 private:
 	static void InitializeDXC();
 
@@ -101,6 +104,8 @@ private:
 	std::unique_ptr<Material> material_ = nullptr;
 
 	std::unique_ptr<Light>light_;
+
+	std::unique_ptr<PointLight>pointLight_;
 	
 	uint32_t textureHandle_;
 };
