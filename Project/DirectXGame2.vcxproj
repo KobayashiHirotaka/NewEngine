@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Application\GameObject\Player.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameClearScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameTitleScene.cpp" />
@@ -23,6 +24,7 @@
     <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp" />
     <ClCompile Include="Engine\3D\Model\Material.cpp" />
     <ClCompile Include="Engine\3D\Model\Model.cpp" />
+    <ClCompile Include="Engine\3D\Model\ModelManager.cpp" />
     <ClCompile Include="Engine\3D\Particle\BaseParticle.cpp" />
     <ClCompile Include="Engine\3D\Particle\EmitterBuilder.cpp" />
     <ClCompile Include="Engine\3D\Particle\Particle.cpp" />
@@ -100,6 +102,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\GameObject\Player.h" />
     <ClInclude Include="Application\Game\Scenes\GameClearScene.h" />
     <ClInclude Include="Application\Game\Scenes\GamePlayScene.h" />
     <ClInclude Include="Application\Game\Scenes\GameTitleScene.h" />
@@ -114,6 +117,7 @@
     <ClInclude Include="Engine\3D\Model\IGame3dObject.h" />
     <ClInclude Include="Engine\3D\Model\Material.h" />
     <ClInclude Include="Engine\3D\Model\Model.h" />
+    <ClInclude Include="Engine\3D\Model\ModelManager.h" />
     <ClInclude Include="Engine\3D\Particle\BaseParticle.h" />
     <ClInclude Include="Engine\3D\Particle\EmitterBuilder.h" />
     <ClInclude Include="Engine\3D\Particle\Particle.h" />

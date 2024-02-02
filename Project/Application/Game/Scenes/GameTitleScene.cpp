@@ -12,6 +12,8 @@ void GameTitleScene::Initialize(SceneManager* sceneManager)
 {
 	textureManager_ = TextureManager::GetInstance();
 
+	modelManager_ = ModelManager::GetInstance();
+
 	input_ = Input::GetInstance();
 
 	audio_ = Audio::GetInstance();
@@ -20,10 +22,15 @@ void GameTitleScene::Initialize(SceneManager* sceneManager)
 	//PostProcess::GetInstance()->SetIsBloomActive(true);
 	//PostProcess::GetInstance()->SetIsVignetteActive(true);
 
-	model_.reset(Model::CreateFromOBJ("resource/Ground", "Ground.obj"));
+	modelManager_->LoadModel("resource/hammer", "hammer.obj");
+	modelManager_->LoadModel("resource/skydome", "skydome.obj");
 
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 0.0f,-1.0f,0.0f };
+
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
+	player_->SetModel(modelManager_->FindModel("hammer.obj"));
 
 	camera_.UpdateMatrix();
 
@@ -34,6 +41,8 @@ void GameTitleScene::Initialize(SceneManager* sceneManager)
 
 void GameTitleScene::Update(SceneManager* sceneManager)
 {
+	player_->Update();
+
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
@@ -47,6 +56,11 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 	{
 		sceneManager->ChangeScene(new GamePlayScene);
 		return;
+	}
+
+	if (input_->PushKey(DIK_RETURN))
+	{
+		player_->SetModel(modelManager_->FindModel("skydome.obj"));
 	}
 
 	worldTransform_.UpdateMatrix();
@@ -66,9 +80,9 @@ void GameTitleScene::Draw(SceneManager* sceneManager)
 
 	//PostProcess::GetInstance()->PreDraw();
 
-	Model::PreDraw();
+	player_->Draw(camera_);
 
-	model_->Draw(worldTransform_, camera_);
+	Model::PreDraw();
 
 	Model::PostDraw();
 
