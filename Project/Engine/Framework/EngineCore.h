@@ -8,6 +8,7 @@
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include "Engine/3D/Model/Model.h"
 #include "Engine/3D/Particle/ParticleModel.h"
+#include "Engine/3D/Model/ModelManager.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/Particle/Random.h"

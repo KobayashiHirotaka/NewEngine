@@ -46,6 +46,8 @@ void EngineCore::Finalize()
 
 	ParticleModel::Release();
 
+	ModelManager::DeleteInstance();
+
 	PostProcess::DeleteInstance();
 
 	Input::DeleteInstance();
