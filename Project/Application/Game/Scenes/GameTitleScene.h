@@ -19,11 +19,13 @@ public:
 
 	~GameTitleScene();
 
-	void Initialize(SceneManager* sceneManager)override;
+	void Initialize()override;
 
-	void Update(SceneManager* sceneManager)override;
+	void Update()override;
 
-	void Draw(SceneManager* sceneManager)override;
+	void Draw()override;
+
+	void Finalize()override;
 
 private:
 	WorldTransform worldTransform_;

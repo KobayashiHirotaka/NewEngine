@@ -1,3 +1,4 @@
+#include "AbstractSceneFactory.h"
 #include "Application/Game/Scenes/IScene.h"
 #include <memory>
 
@@ -12,7 +13,9 @@ public:
 
 	void Draw();
 
-	void ChangeScene(IScene* newScene);
+	void ChangeScene(const std::string& sceneName);
+
+	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; };
 
 private:
 	SceneManager();
@@ -24,4 +27,8 @@ private:
 	static SceneManager* instance_;
 
 	IScene* currentScene_;
+
+	IScene* nextScene_;
+
+	AbstractSceneFactory* sceneFactory_ = nullptr;
 };

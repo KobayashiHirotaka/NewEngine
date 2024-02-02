@@ -32,7 +32,7 @@ public:
 
 	void Run();
 
-private:
+protected:
 	static D3DResourceLeakChecker leakCheck;
 
 	WindowsApp* win_ = nullptr;
@@ -52,5 +52,7 @@ private:
 	SceneManager* sceneManager_ = nullptr;
 
 	bool endRequst_ = false;
+
+	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
 };
 

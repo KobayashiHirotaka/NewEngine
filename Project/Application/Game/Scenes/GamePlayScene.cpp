@@ -1,6 +1,5 @@
 #include "GamePlayScene.h"
 #include "Engine/Framework/SceneManager.h"
-#include "GameClearScene.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>
 
@@ -8,7 +7,7 @@ GamePlayScene::GamePlayScene() {};
 
 GamePlayScene::~GamePlayScene() {};
 
-void GamePlayScene::Initialize(SceneManager* sceneManager)
+void GamePlayScene::Initialize()
 {
 	textureManager_ = TextureManager::GetInstance();
 
@@ -23,20 +22,20 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	camera_.UpdateMatrix();
 };
 
-void GamePlayScene::Update(SceneManager* sceneManager)
+void GamePlayScene::Update()
 {
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
-			sceneManager->ChangeScene(new GameClearScene);
+			sceneManager_->ChangeScene("GameClearScene");
 			return;
 		}
 	}
 
 	if (input_->PushKey(DIK_SPACE))
 	{
-		sceneManager->ChangeScene(new GameClearScene);
+		sceneManager_->ChangeScene("GameClearScene");
 		return;
 	}
 
@@ -47,7 +46,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	ImGui::End();
 };
 
-void GamePlayScene::Draw(SceneManager* sceneManager)
+void GamePlayScene::Draw()
 {
 	Model::PreDraw();
 
@@ -73,3 +72,8 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	Sprite::PostDraw();
 };
+
+void GamePlayScene::Finalize()
+{
+
+}

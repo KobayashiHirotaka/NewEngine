@@ -1,6 +1,5 @@
 #include "GameClearScene.h"
 #include "Engine/Framework/SceneManager.h"
-#include "GameTitleScene.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>
 
@@ -8,7 +7,7 @@ GameClearScene::GameClearScene() {};
 
 GameClearScene::~GameClearScene() {};
 
-void GameClearScene::Initialize(SceneManager* sceneManager)
+void GameClearScene::Initialize()
 {
 	textureManager_ = TextureManager::GetInstance();
 
@@ -23,20 +22,20 @@ void GameClearScene::Initialize(SceneManager* sceneManager)
 	camera_.UpdateMatrix();
 };
 
-void GameClearScene::Update(SceneManager* sceneManager)
+void GameClearScene::Update()
 {
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
-			sceneManager->ChangeScene(new GameTitleScene);
+			sceneManager_->ChangeScene("GameTitleScene");
 			return;
 		}
 	}
 
 	if (input_->PushKey(DIK_SPACE))
 	{
-		sceneManager->ChangeScene(new GameTitleScene);
+		sceneManager_->ChangeScene("GameTitleScene");
 		return;
 	}
 
@@ -47,7 +46,7 @@ void GameClearScene::Update(SceneManager* sceneManager)
 	ImGui::End();
 };
 
-void GameClearScene::Draw(SceneManager* sceneManager)
+void GameClearScene::Draw()
 {
 	PostProcess::GetInstance()->PreDraw();
 
@@ -65,3 +64,8 @@ void GameClearScene::Draw(SceneManager* sceneManager)
 
 	Sprite::PostDraw();
 };
+
+void GameClearScene::Finalize()
+{
+
+}

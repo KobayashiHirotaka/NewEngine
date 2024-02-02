@@ -1,6 +1,5 @@
 #include "GameTitleScene.h"
 #include "Engine/Framework/SceneManager.h"
-#include "GamePlayScene.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>
 
@@ -8,7 +7,7 @@ GameTitleScene::GameTitleScene() {};
 
 GameTitleScene::~GameTitleScene() {};
 
-void GameTitleScene::Initialize(SceneManager* sceneManager)
+void GameTitleScene::Initialize()
 {
 	textureManager_ = TextureManager::GetInstance();
 
@@ -39,7 +38,7 @@ void GameTitleScene::Initialize(SceneManager* sceneManager)
 	audio_->SoundPlayWave(titleSoundHandle_, true, 1.0f);
 };
 
-void GameTitleScene::Update(SceneManager* sceneManager)
+void GameTitleScene::Update()
 {
 	player_->Update();
 
@@ -47,14 +46,14 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
-			sceneManager->ChangeScene(new GamePlayScene);
+			sceneManager_->ChangeScene("GamePlayScene");
 			return;
 		}
 	}
 
 	if (input_->PushKey(DIK_SPACE))
 	{
-		sceneManager->ChangeScene(new GamePlayScene);
+		sceneManager_->ChangeScene("GamePlayScene");
 		return;
 	}
 
@@ -72,7 +71,7 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 	ImGui::End();
 };
 
-void GameTitleScene::Draw(SceneManager* sceneManager)
+void GameTitleScene::Draw()
 {
 	Model::PreDraw();
 
@@ -96,3 +95,8 @@ void GameTitleScene::Draw(SceneManager* sceneManager)
 
 	Sprite::PostDraw();
 };
+
+void GameTitleScene::Finalize()
+{
+
+}
