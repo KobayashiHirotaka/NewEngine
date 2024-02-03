@@ -16,8 +16,11 @@ void GameTitleScene::Initialize(SceneManager* sceneManager)
 
 	audio_ = Audio::GetInstance();
 
-	light_ = std::make_unique<Light>();
+	/*light_ = std::make_unique<Light>();
 	light_->Initialize();
+
+	pointLight_ = std::make_unique<PointLight>();
+	pointLight_->Initialize();*/
 
 	//PostProcess::GetInstance()->SetIsPostProcessActive(true);
 	//PostProcess::GetInstance()->SetIsBloomActive(true);
@@ -56,9 +59,17 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 		return;
 	}
 
+	model_->GetLight()->ImGui("DirectionalLight");
+	
+	model_->GetPointLight()->ImGui("PointLight");
+
+	model_->GetSpotLight()->ImGui("SpotLight");
+
 	groundModel_->GetLight()->ImGui("DirectionalLight");
 
 	groundModel_->GetPointLight()->ImGui("PointLight");
+
+	groundModel_->GetSpotLight()->ImGui("SpotLight");
 
 	worldTransform_.UpdateMatrix();
 	groundWorldTransform_.UpdateMatrix();

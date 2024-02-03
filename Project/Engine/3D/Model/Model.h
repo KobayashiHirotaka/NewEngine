@@ -8,6 +8,7 @@
 #include "Engine/3D/Model/Material.h"
 #include "Engine/3D/Light/Light.h"
 #include "Engine/3D/Light/PointLight.h"
+#include "Engine/3D/Light/SpotLight.h"
 #include <cassert>
 #include <dxcapi.h>
 #include <fstream>
@@ -24,7 +25,8 @@ enum class RootParameterIndex
 	ViewProjection,
 	Texture,
 	Light,
-	PointLight
+	PointLight,
+	SpotLight
 };
 
 class Model 
@@ -68,6 +70,8 @@ public:
 
 	PointLight* GetPointLight() { return pointLight_.get(); };
 
+	SpotLight* GetSpotLight() { return spotLight_.get(); };
+
 private:
 	static void InitializeDXC();
 
@@ -107,6 +111,8 @@ private:
 	std::unique_ptr<Light>light_;
 
 	std::unique_ptr<PointLight>pointLight_;
+
+	std::unique_ptr<SpotLight>spotLight_;
 	
 	uint32_t textureHandle_;
 };

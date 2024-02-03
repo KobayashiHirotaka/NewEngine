@@ -19,6 +19,7 @@
     <ClCompile Include="Engine\3D\Camera\Camera.cpp" />
     <ClCompile Include="Engine\3D\Light\Light.cpp" />
     <ClCompile Include="Engine\3D\Light\PointLight.cpp" />
+    <ClCompile Include="Engine\3D\Light\SpotLight.cpp" />
     <ClCompile Include="Engine\3D\Mesh\Mesh.cpp" />
     <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp" />
     <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp" />
@@ -111,6 +112,7 @@
     <ClInclude Include="Engine\3D\Camera\Camera.h" />
     <ClInclude Include="Engine\3D\Light\Light.h" />
     <ClInclude Include="Engine\3D\Light\PointLight.h" />
+    <ClInclude Include="Engine\3D\Light\SpotLight.h" />
     <ClInclude Include="Engine\3D\Light\Types.h" />
     <ClInclude Include="Engine\3D\Mesh\Mesh.h" />
     <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h" />

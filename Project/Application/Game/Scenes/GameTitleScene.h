@@ -41,5 +41,6 @@ private:
 	uint32_t titleSoundHandle_ = 0u;
 
 	std::unique_ptr<Light>light_;
+	std::unique_ptr<PointLight>pointLight_;
 	Vector3 lightDirection_;
 };

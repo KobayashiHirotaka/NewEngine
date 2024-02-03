@@ -3,11 +3,12 @@
 #include "Engine/Utility/Math/MyMath.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/Light/Types.h"
+#include <numbers>
 
-class PointLight
+class SpotLight
 {
 public:
-	struct ConstBuffDataPointLight
+	struct ConstBuffDataSpotLight
 	{
 		int32_t enableLighting;
 
@@ -21,13 +22,17 @@ public:
 
 		Vector3 direction;
 
-		float intensity;
+		float distance;
 
-		float radius;
+		Vector3 position;
+
+		float intensity;
 
 		float decay;
 
-		/*float padding[2];*/
+		float cosAngle;
+
+		float cosFalloffStart;
 	};
 
 	void Initialize();
@@ -58,9 +63,25 @@ public:
 	Vector3& GetDirection() { return direction_; };
 	void SetDirection(const Vector3& direction) { direction_ = direction; };
 
+	//Distance
+	const float& GetDistance() const { return distance_; };
+	void SetDistance(const float& distance) { distance_ = distance; };
+
+	//Position
+	Vector3& GetPosition() { return position_; };
+	void SetPosition(const Vector3& position) { position_ = position; };
+
 	//Intensity
 	const float& GetIntensity() const { return intensity_; };
 	void SetIntensity(const float& intensity) { intensity_ = intensity; };
+
+	//cosAngle
+	const float& GetCosAngle() const { return cosAngle_; };
+	void SetCosAngle(const float& cosAngle) { cosAngle_ = cosAngle; };
+
+	//cosFalloffStart
+	const float& GetCosFalloffStart() const { return cosFalloffStart_; };
+	void SetCosFalloffStart(const float& cosFalloffStart) { cosFalloffStart_ = cosFalloffStart; };
 
 private:
 	DirectXCore* dxCore_ = nullptr;
@@ -75,10 +96,19 @@ private:
 
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 
-	Vector3 direction_ = { 0.0f,2.0f,0.0f };
+	Vector3 direction_ = Normalize({ -1.0f,-1.0f,0.0f });
 
-	float intensity_ = 1.0f;
+	float distance_ = 7.0f;
 
-	float radius_ = 4.0f;
-	float decay_ = 1.0f;
+	Vector3 position_ = { 2.0f,1.25f,0.0f };
+
+	float intensity_ = 4.0f;
+
+	float decay_ = 2.0f;
+
+	float cosAngle_ = std::cos(std::numbers::pi_v<float> / 3.0f);
+
+	float cosFalloffStart_ = 1.0f;
 };
+
+
