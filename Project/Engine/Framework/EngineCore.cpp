@@ -5,7 +5,7 @@ D3DResourceLeakChecker EngineCore::leakCheck;
 void EngineCore::Initialize()
 {
 	win_ = WindowsApp::GetInstance();
-	win_->CreateGameWindow(L"LE2A_10_コバヤシ_ヒロタカ_Engine", win_->kClientWidth, win_->kClientHeight);
+	win_->CreateGameWindow(L"LE2A_10_コバヤシ_ヒロタカ_CG3", win_->kClientWidth, win_->kClientHeight);
 
 	dxCore_ = DirectXCore::GetInstance();
 	dxCore_->Initialize();
