@@ -36,15 +36,11 @@ void GameTitleScene::Initialize(SceneManager* sceneManager)
 	camera_.translation_.y = 3.0f;
 
 	camera_.UpdateMatrix();
-
-	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
-	audio_->StopAudio(titleSoundHandle_);
-	audio_->SoundPlayWave(titleSoundHandle_, true, 1.0f);
 };
 
 void GameTitleScene::Update(SceneManager* sceneManager)
 {
-	if (input_->GetJoystickState())
+	/*if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
@@ -57,7 +53,7 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 	{
 		sceneManager->ChangeScene(new GamePlayScene);
 		return;
-	}
+	}*/
 
 	model_->GetLight()->ImGui("DirectionalLight");
 	
@@ -76,8 +72,7 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 
 	camera_.UpdateMatrix();
 
-	ImGui::Begin("TitleScene");
-	ImGui::Text("Abutton or SpaceKey : PlayScene");
+	ImGui::Begin("Model");
 	ImGui::DragFloat3("scale", &worldTransform_.scale.x, 0.1f, 1.0f, 10.0f);
 	ImGui::End();
 };
