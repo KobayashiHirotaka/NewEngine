@@ -16,15 +16,15 @@ void GameTitleScene::Initialize(SceneManager* sceneManager)
 
 	audio_ = Audio::GetInstance();
 
-	/*light_ = std::make_unique<Light>();
+	light_ = std::make_unique<Light>();
 	light_->Initialize();
 
 	pointLight_ = std::make_unique<PointLight>();
-	pointLight_->Initialize();*/
+	pointLight_->Initialize();
 
-	//PostProcess::GetInstance()->SetIsPostProcessActive(true);
-	//PostProcess::GetInstance()->SetIsBloomActive(true);
-	//PostProcess::GetInstance()->SetIsVignetteActive(true);
+	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	PostProcess::GetInstance()->SetIsBloomActive(true);
+	/*PostProcess::GetInstance()->SetIsVignetteActive(true);*/
 
 	model_.reset(Model::CreateFromOBJ("resource/models", "monsterBall.obj"));
 
@@ -88,7 +88,7 @@ void GameTitleScene::Draw(SceneManager* sceneManager)
 
 	Model::PostDraw();
 
-	//PostProcess::GetInstance()->PreDraw();
+	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
 
@@ -102,7 +102,7 @@ void GameTitleScene::Draw(SceneManager* sceneManager)
 
 	Sprite::PostDraw();
 
-	//PostProcess::GetInstance()->PostDraw();
+	PostProcess::GetInstance()->PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
