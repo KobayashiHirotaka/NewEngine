@@ -59,7 +59,7 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 	light_->SetGraphicsCommand(UINT(RootParameterIndex::Light));
 
 	//PointLightを設定
-	pointLight_->SetGraphicsCommand(UINT(RootParameterIndex::Light));
+	pointLight_->SetGraphicsCommand(UINT(RootParameterIndex::PointLight));
 
 	//描画
 	mesh_->Draw();
@@ -119,7 +119,7 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 	model->light_ = std::make_unique<Light>();
 	model->light_->Initialize();
 
-	//Lightの作成
+	//PointLightの作成
 	model->pointLight_ = std::make_unique<PointLight>();
 	model->pointLight_->Initialize();
 

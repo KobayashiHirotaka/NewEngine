@@ -24,6 +24,7 @@ public:
 
 private:
 	WorldTransform worldTransform_;
+	WorldTransform groundWorldTransform_;
 
 	Camera camera_;
 
@@ -34,6 +35,7 @@ private:
 	Audio* audio_ = nullptr;
 
 	std::unique_ptr<Model> model_;
+	std::unique_ptr<Model> groundModel_;
 
 	//サウンド
 	uint32_t titleSoundHandle_ = 0u;

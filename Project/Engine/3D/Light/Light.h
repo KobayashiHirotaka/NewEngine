@@ -61,7 +61,7 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> lightingResource_ = nullptr;
 	
-	int32_t enableLighting_ = true;
+	int32_t enableLighting_ = false;
 
 	LightingType lightingType_ = LightingType::HalfLambert;
 

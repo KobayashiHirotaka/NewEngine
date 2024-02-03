@@ -25,7 +25,12 @@ void GameTitleScene::Initialize(SceneManager* sceneManager)
 
 	model_.reset(Model::CreateFromOBJ("resource/models", "monsterBall.obj"));
 
+	groundModel_.reset(Model::CreateFromOBJ("resource/models", "terrain.obj"));
+
 	worldTransform_.Initialize();
+	groundWorldTransform_.Initialize();
+
+	camera_.translation_.y = 3.0f;
 
 	camera_.UpdateMatrix();
 
@@ -51,9 +56,12 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 		return;
 	}
 
-	model_->GetLight()->ImGui("Title");
+	groundModel_->GetLight()->ImGui("DirectionalLight");
+
+	groundModel_->GetPointLight()->ImGui("PointLight");
 
 	worldTransform_.UpdateMatrix();
+	groundWorldTransform_.UpdateMatrix();
 
 	camera_.UpdateMatrix();
 
@@ -74,6 +82,8 @@ void GameTitleScene::Draw(SceneManager* sceneManager)
 	Model::PreDraw();
 
 	model_->Draw(worldTransform_, camera_);
+
+	groundModel_->Draw(groundWorldTransform_, camera_);
 
 	Model::PostDraw();
 

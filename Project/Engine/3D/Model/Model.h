@@ -23,7 +23,8 @@ enum class RootParameterIndex
 	WorldTransform,
 	ViewProjection,
 	Texture,
-	Light
+	Light,
+	PointLight
 };
 
 class Model 
