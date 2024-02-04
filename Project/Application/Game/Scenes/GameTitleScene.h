@@ -7,6 +7,7 @@
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
+#include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include <memory>
 
@@ -44,4 +45,7 @@ private:
 	uint32_t titleSoundHandle_ = 0u;
 
 	std::unique_ptr<Player>player_;
+
+	std::unique_ptr<Sprite>sprite_[2];
+	int32_t textureHandle_[2];
 };
