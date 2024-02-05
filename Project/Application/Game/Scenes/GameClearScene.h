@@ -11,8 +11,6 @@
 #include "Engine/2D/Sprite/Sprite.h"
 #include <memory>
 
-#include "Application/GameObject/Player.h"
-
 class GameClearScene : public IScene
 {
 public:
@@ -38,8 +36,6 @@ private:
 	Input* input_ = nullptr;
 
 	Audio* audio_ = nullptr;
-
-	std::unique_ptr<Player>player_;
 
 	DebugCamera debugCamera_;
 	bool isDebugCamera_ = false;

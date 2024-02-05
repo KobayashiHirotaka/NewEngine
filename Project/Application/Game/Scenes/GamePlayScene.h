@@ -45,4 +45,6 @@ private:
 
 	DebugCamera debugCamera_;
 	bool isDebugCamera_ = false;
+
+	int modelCount_ = 0;
 };

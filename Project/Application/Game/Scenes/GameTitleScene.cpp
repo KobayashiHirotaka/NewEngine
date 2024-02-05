@@ -22,9 +22,10 @@ void GameTitleScene::Initialize()
 	sprite_[1].reset(Sprite::Create(textureHandle_[1], { 500.0f,-80.0f }));
 
 	worldTransform_.Initialize();
-	worldTransform_.translation = { 0.0f,-1.0f,0.0f };
 
-	debugCamera_.Initialize();
+	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
+	particleSystem_ = std::make_unique<ParticleSystem>();
+	particleSystem_->Initialize();
 
 	camera_.UpdateMatrix();
 
@@ -51,27 +52,55 @@ void GameTitleScene::Update()
 		return;
 	}
 
-	debugCamera_.Update();
+	//パーティクルの更新
+	particleSystem_->Update();
 
-	if (input_->PushKey(DIK_K))
+	if (input_->PushKey(DIK_P))
 	{
-		isDebugCamera_ = true;
-	}
-	else if (input_->PushKey(DIK_L))
-	{
-		isDebugCamera_ = false;
+		ParticleEmitter* newParticleEmitter = EmitterBuilder()
+			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+			.SetTranslation(worldTransform_.translation)
+			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetScale({ 0.2f, 0.2f,0.2f }, { 0.6f ,0.6f ,0.6f })
+			.SetAzimuth(0.0f, 360.0f)
+			.SetElevation(0.0f, 0.0f)
+			.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+			.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
+			.SetLifeTime(0.1f, 1.0f)
+			.SetCount(100)
+			.SetFrequency(4.0f)
+			.SetDeleteTime(2.0f)
+			.Build();
+		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
 
-	if (isDebugCamera_)
+	//ポストプロセス
+	if (input_->PressKey(DIK_1))
 	{
-		camera_.matView_ = debugCamera_.GetCamera().matView_;
-		camera_.matProjection_ = debugCamera_.GetCamera().matProjection_;
-		camera_.TransferMatrix();
+		PostProcess::GetInstance()->SetIsPostProcessActive(true);
 	}
-	else
+
+	//Bloom
+	if (input_->PressKey(DIK_2))
 	{
-		camera_.UpdateMatrix();
+		PostProcess::GetInstance()->SetIsBloomActive(true);
 	}
+
+	//Vignette
+	if (input_->PressKey(DIK_3))
+	{
+		PostProcess::GetInstance()->SetIsVignetteActive(true);
+	}
+
+	if (input_->PressKey(DIK_4))
+	{
+		PostProcess::GetInstance()->SetIsPostProcessActive(false);
+		PostProcess::GetInstance()->SetIsBloomActive(false);
+		PostProcess::GetInstance()->SetIsVignetteActive(false);
+	}
+
+	camera_.UpdateMatrix();
 
 	worldTransform_.UpdateMatrix();
 
@@ -92,19 +121,7 @@ void GameTitleScene::Draw()
 
 	Model::PreDraw();
 
-
-
 	Model::PostDraw();
-
-	Sprite::PreDraw(Sprite::kBlendModeNormal);
-
-	Sprite::PostDraw();
-
-	ParticleModel::PreDraw();
-
-	ParticleModel::PostDraw();
-
-	PostProcess::GetInstance()->PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
@@ -112,6 +129,18 @@ void GameTitleScene::Draw()
 	{
 		sprite_[i]->Draw();
 	}
+
+	Sprite::PostDraw();
+
+	ParticleModel::PreDraw();
+
+	particleModel_->Draw(particleSystem_.get(), camera_);
+
+	ParticleModel::PostDraw();
+
+	PostProcess::GetInstance()->PostDraw();
+
+	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
 	Sprite::PostDraw();
 };

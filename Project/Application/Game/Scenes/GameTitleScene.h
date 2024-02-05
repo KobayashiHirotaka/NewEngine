@@ -9,6 +9,7 @@
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
 #include "Engine/3D/Particle/ParticleModel.h"
+#include "Engine/3D/Particle/ParticleSystem.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include <memory>
 
@@ -32,8 +33,6 @@ private:
 
 	Camera camera_;
 
-	DebugCamera debugCamera_;
-
 	TextureManager* textureManager_ = nullptr;
 
 	ModelManager* modelManager_ = nullptr;
@@ -48,5 +47,7 @@ private:
 	std::unique_ptr<Sprite>sprite_[2];
 	int32_t textureHandle_[2] = {0u,0u};
 
-	bool isDebugCamera_ = false;
+	//パーティクル
+	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
+	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
 };
