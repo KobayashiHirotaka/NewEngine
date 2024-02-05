@@ -201,9 +201,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\externals\imgui\imgui.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
@@ -338,6 +335,9 @@
     </ClCompile>
     <ClCompile Include="Application\GameObject\Player.cpp">
       <Filter>ソース ファイル\Application\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル\Engine\Framework</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

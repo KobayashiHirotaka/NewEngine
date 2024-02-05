@@ -27,6 +27,8 @@ void GameTitleScene::Initialize()
 	particleSystem_ = std::make_unique<ParticleSystem>();
 	particleSystem_->Initialize();
 
+	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+
 	camera_.UpdateMatrix();
 
 	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
@@ -75,39 +77,35 @@ void GameTitleScene::Update()
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
 
-	//ポストプロセス
-	if (input_->PressKey(DIK_1))
-	{
-		PostProcess::GetInstance()->SetIsPostProcessActive(true);
-	}
-
 	//Bloom
-	if (input_->PressKey(DIK_2))
+	if (input_->PressKey(DIK_1))
 	{
 		PostProcess::GetInstance()->SetIsBloomActive(true);
 	}
 
 	//Vignette
-	if (input_->PressKey(DIK_3))
+	if (input_->PressKey(DIK_2))
 	{
 		PostProcess::GetInstance()->SetIsVignetteActive(true);
 	}
 
-	if (input_->PressKey(DIK_4))
+	//Disable PostEffect
+	if (input_->PressKey(DIK_3))
 	{
-		PostProcess::GetInstance()->SetIsPostProcessActive(false);
 		PostProcess::GetInstance()->SetIsBloomActive(false);
 		PostProcess::GetInstance()->SetIsVignetteActive(false);
 	}
 
-	camera_.UpdateMatrix();
-
 	worldTransform_.UpdateMatrix();
 
-	/*camera_.UpdateMatrix();*/
+	camera_.UpdateMatrix();
 
 	ImGui::Begin("TitleScene");
-	ImGui::Text("Abutton or SpaceKey : PlayScene");
+	ImGui::Text("A button or Space Key : PlayScene");
+	ImGui::Text("P Key : Particle");
+	ImGui::Text("1 Key : Bloom");
+	ImGui::Text("2 Key : Vignette");
+	ImGui::Text("3 Key : Disable PostEffect");
 	ImGui::End();
 };
 

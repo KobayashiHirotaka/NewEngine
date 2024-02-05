@@ -24,6 +24,8 @@ void GamePlayScene::Initialize()
 	player_->Initialize();
 	player_->SetModel(modelManager_->FindModel("hammer.obj"));
 
+	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+
 	debugCamera_.Initialize();
 
 	camera_.UpdateMatrix();
@@ -60,27 +62,22 @@ void GamePlayScene::Update()
 		player_->SetModel(modelManager_->FindModel("hammer.obj"));
 	}
 
-	//ポストプロセス
-	if (input_->PressKey(DIK_1))
-	{
-		PostProcess::GetInstance()->SetIsPostProcessActive(true);
-	}
-
+	
 	//Bloom
-	if (input_->PressKey(DIK_2))
+	if (input_->PressKey(DIK_1))
 	{
 		PostProcess::GetInstance()->SetIsBloomActive(true);
 	}
 
 	//Vignette
-	if (input_->PressKey(DIK_3))
+	if (input_->PressKey(DIK_2))
 	{
 		PostProcess::GetInstance()->SetIsVignetteActive(true);
 	}
 
-	if (input_->PressKey(DIK_4))
+	//Disable PostEffect
+	if (input_->PressKey(DIK_3))
 	{
-		PostProcess::GetInstance()->SetIsPostProcessActive(false);
 		PostProcess::GetInstance()->SetIsBloomActive(false);
 		PostProcess::GetInstance()->SetIsVignetteActive(false);
 	}
@@ -108,7 +105,15 @@ void GamePlayScene::Update()
 	}
 
 	ImGui::Begin("PlayScene");
-	ImGui::Text("Abutton or SpaceKey : ClearScene");
+	ImGui::Text("A button or Space Key : TitleScene");
+	ImGui::Text("Enter Key : ModelChange");
+	ImGui::Text("K Key : DebugCamera On");
+	ImGui::Text("L Key : DebugCamera Off");
+	ImGui::Text("WASD Key : DebugCamera Move");
+	ImGui::Text("Arrow Key : DebugCamera Rotate");
+	ImGui::Text("1 Key : Bloom");
+	ImGui::Text("2 Key : Vignette");
+	ImGui::Text("3 Key : Disable PostEffect");
 	ImGui::End();
 };
 
