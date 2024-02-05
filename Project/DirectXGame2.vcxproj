@@ -19,6 +19,7 @@
     <ClCompile Include="Application\Game\Scenes\SceneFactory.cpp" />
     <ClCompile Include="Engine\2D\Sprite\Sprite.cpp" />
     <ClCompile Include="Engine\3D\Camera\Camera.cpp" />
+    <ClCompile Include="Engine\3D\Camera\DebugCamera.cpp" />
     <ClCompile Include="Engine\3D\Light\Light.cpp" />
     <ClCompile Include="Engine\3D\Mesh\Mesh.cpp" />
     <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="Engine\2D\Sprite\Sprite.h" />
     <ClInclude Include="Engine\2D\Sprite\UI.h" />
     <ClInclude Include="Engine\3D\Camera\Camera.h" />
+    <ClInclude Include="Engine\3D\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\3D\Light\Light.h" />
     <ClInclude Include="Engine\3D\Mesh\Mesh.h" />
     <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h" />

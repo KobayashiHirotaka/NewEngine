@@ -19,6 +19,8 @@ public:
 
 	void DrawParticle(const Camera& camera);
 
+	WorldTransform& GetWorldTransform() { return worldTransform_; }
+
 private:
 	Input* input_ = nullptr;
 

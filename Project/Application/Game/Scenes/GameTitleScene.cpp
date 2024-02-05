@@ -33,6 +33,8 @@ void GameTitleScene::Initialize()
 	player_->Initialize();
 	player_->SetModel(modelManager_->FindModel("hammer.obj"));
 
+	debugCamera_.Initialize();
+
 	camera_.UpdateMatrix();
 
 	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
@@ -66,26 +68,26 @@ void GameTitleScene::Update()
 		player_->SetModel(modelManager_->FindModel("skydome.obj"));
 	}
 
-	//カメラ移動
-	if (input_->PressKey(DIK_A))
-	{
-		camera_.translation_.x -= 0.1f;
-	}
+	////カメラ移動
+	//if (input_->PressKey(DIK_A))
+	//{
+	//	camera_.translation_.x -= 0.1f;
+	//}
 
-	if (input_->PressKey(DIK_D))
-	{
-		camera_.translation_.x += 0.1f;
-	}
+	//if (input_->PressKey(DIK_D))
+	//{
+	//	camera_.translation_.x += 0.1f;
+	//}
 
-	if (input_->PressKey(DIK_W))
-	{
-		camera_.translation_.y += 0.1f;
-	}
+	//if (input_->PressKey(DIK_W))
+	//{
+	//	camera_.translation_.y += 0.1f;
+	//}
 
-	if (input_->PressKey(DIK_S))
-	{
-		camera_.translation_.y -= 0.1f;
-	}
+	//if (input_->PressKey(DIK_S))
+	//{
+	//	camera_.translation_.y -= 0.1f;
+	//}
 
 	//ポストプロセス
 	if (input_->PressKey(DIK_1))
@@ -112,9 +114,31 @@ void GameTitleScene::Update()
 		PostProcess::GetInstance()->SetIsVignetteActive(false);
 	}
 
+	debugCamera_.Update();
+
+	if (input_->PushKey(DIK_K))
+	{
+		isDebugCamera_ = true;
+	}
+	else if (input_->PushKey(DIK_L))
+	{
+		isDebugCamera_ = false;
+	}
+
+	if (isDebugCamera_)
+	{
+		camera_.matView_ = debugCamera_.GetCamera().matView_;
+		camera_.matProjection_ = debugCamera_.GetCamera().matProjection_;
+		camera_.TransferMatrix();
+	}
+	else
+	{
+		camera_.UpdateMatrix();
+	}
+
 	worldTransform_.UpdateMatrix();
 
-	camera_.UpdateMatrix();
+	/*camera_.UpdateMatrix();*/
 
 	ImGui::Begin("TitleScene");
 	ImGui::Text("Abutton or SpaceKey : PlayScene");

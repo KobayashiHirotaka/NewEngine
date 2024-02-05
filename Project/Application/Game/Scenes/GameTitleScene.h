@@ -5,6 +5,7 @@
 #include "Engine/3D/Model/ModelManager.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
+#include "Engine/3D/Camera/DebugCamera.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
 #include "Engine/3D/Particle/ParticleModel.h"
@@ -33,6 +34,8 @@ private:
 
 	Camera camera_;
 
+	DebugCamera debugCamera_;
+
 	TextureManager* textureManager_ = nullptr;
 
 	ModelManager* modelManager_ = nullptr;
@@ -48,4 +51,6 @@ private:
 
 	std::unique_ptr<Sprite>sprite_[2];
 	int32_t textureHandle_[2];
+
+	bool isDebugCamera_ = false;
 };
