@@ -9,6 +9,7 @@ public:
 	{
 		Vector4 color;
 		Matrix4x4 uvTransform;
+		float shininess;
 	};
 
 	void Initialize();
@@ -45,4 +46,6 @@ private:
 	float rotation_ = 0.0f;
 	
 	Vector2 scale_{ 1.0f,1.0f };
+
+	float shininess_ = 40.8f;
 };

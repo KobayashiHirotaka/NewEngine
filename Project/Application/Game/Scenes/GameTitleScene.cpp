@@ -15,6 +15,20 @@ void GameTitleScene::Initialize()
 
 	audio_ = Audio::GetInstance();
 
+	light_ = std::make_unique<Light>();
+	light_->Initialize();
+
+	pointLight_ = std::make_unique<PointLight>();
+	pointLight_->Initialize();
+
+	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	PostProcess::GetInstance()->SetIsBloomActive(true);
+	/*PostProcess::GetInstance()->SetIsVignetteActive(true);*/
+
+	model_.reset(Model::CreateFromOBJ("resource/models", "monsterBall.obj"));
+
+	groundModel_.reset(Model::CreateFromOBJ("resource/models", "terrain.obj"));
+
 	textureHandle_[0] = TextureManager::LoadTexture("resource/images/startTimer1.png");
 	sprite_[0].reset(Sprite::Create(textureHandle_[0], {-500.0f,-80.0f}));
 
@@ -22,15 +36,13 @@ void GameTitleScene::Initialize()
 	sprite_[1].reset(Sprite::Create(textureHandle_[1], { 500.0f,-80.0f }));
 
 	worldTransform_.Initialize();
-	worldTransform_.translation = { 0.0f,-1.0f,0.0f };
+	groundWorldTransform_.Initialize();
+
+	camera_.translation_.y = 3.0f;
 
 	debugCamera_.Initialize();
 
 	camera_.UpdateMatrix();
-
-	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
-	audio_->StopAudio(titleSoundHandle_);
-	audio_->SoundPlayWave(titleSoundHandle_, true, 1.0f);
 };
 
 void GameTitleScene::Update()
@@ -50,6 +62,18 @@ void GameTitleScene::Update()
 		sceneManager_->ChangeScene("GamePlayScene");
 		return;
 	}
+
+	model_->GetLight()->ImGui("DirectionalLight");
+	
+	model_->GetPointLight()->ImGui("PointLight");
+
+	model_->GetSpotLight()->ImGui("SpotLight");
+
+	groundModel_->GetLight()->ImGui("DirectionalLight");
+
+	groundModel_->GetPointLight()->ImGui("PointLight");
+
+	groundModel_->GetSpotLight()->ImGui("SpotLight");
 
 	debugCamera_.Update();
 
@@ -74,11 +98,12 @@ void GameTitleScene::Update()
 	}
 
 	worldTransform_.UpdateMatrix();
+	groundWorldTransform_.UpdateMatrix();
 
 	/*camera_.UpdateMatrix();*/
 
-	ImGui::Begin("TitleScene");
-	ImGui::Text("Abutton or SpaceKey : PlayScene");
+	ImGui::Begin("Model");
+	ImGui::DragFloat3("scale", &worldTransform_.scale.x, 0.1f, 1.0f, 10.0f);
 	ImGui::End();
 };
 
@@ -93,6 +118,8 @@ void GameTitleScene::Draw()
 	Model::PreDraw();
 
 
+
+	groundModel_->Draw(groundWorldTransform_, camera_);
 
 	Model::PostDraw();
 

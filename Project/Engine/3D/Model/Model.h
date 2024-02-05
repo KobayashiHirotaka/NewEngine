@@ -7,6 +7,8 @@
 #include "Engine/3D/Mesh/Mesh.h"
 #include "Engine/3D/Model/Material.h"
 #include "Engine/3D/Light/Light.h"
+#include "Engine/3D/Light/PointLight.h"
+#include "Engine/3D/Light/SpotLight.h"
 #include <cassert>
 #include <dxcapi.h>
 #include <fstream>
@@ -22,7 +24,9 @@ enum class RootParameterIndex
 	WorldTransform,
 	ViewProjection,
 	Texture,
-	Light
+	Light,
+	PointLight,
+	SpotLight
 };
 
 class Model 
@@ -64,6 +68,10 @@ public:
 
 	Light* GetLight() { return light_.get(); };
 
+	PointLight* GetPointLight() { return pointLight_.get(); };
+
+	SpotLight* GetSpotLight() { return spotLight_.get(); };
+
 private:
 	static void InitializeDXC();
 
@@ -101,6 +109,10 @@ private:
 	std::unique_ptr<Material> material_ = nullptr;
 
 	std::unique_ptr<Light>light_;
+
+	std::unique_ptr<PointLight>pointLight_;
+
+	std::unique_ptr<SpotLight>spotLight_;
 	
 	uint32_t textureHandle_;
 };

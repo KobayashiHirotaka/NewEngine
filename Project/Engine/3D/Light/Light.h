@@ -1,12 +1,8 @@
 #pragma once
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Utility/Math/MyMath.h"
-
-enum class LightingType
-{
-	LambertianReflectance,
-	HalfLambert
-};
+#include "Engine/Base/ImGuiManager/ImGuiManager.h"
+#include "Engine/3D/Light/Types.h"
 
 class Light
 {
@@ -16,8 +12,10 @@ public:
 		int32_t enableLighting;
 
 		LightingType lightingType;
+
+		ModelType modelType;
 	
-		float padding[2];
+		float padding;
 	
 		Vector4 color;
 	
@@ -32,6 +30,8 @@ public:
 
 	void SetGraphicsCommand(UINT rootParameterIndex);
 
+	void ImGui(const char* Title);
+
 	//EnableLighting
 	const int32_t& GetEnableLighting() const { return enableLighting_; };
 	void SetEnableLighting(const int32_t& enableLighting) { enableLighting_ = enableLighting; };
@@ -40,12 +40,16 @@ public:
 	const int32_t& GetLightingType() const { return int32_t(lightingType_); };
 	void SetLightingType(const int32_t& lightingType) { lightingType_ = LightingType(lightingType); };
 
+	//ModelType
+	const int32_t& GetModelType() const { return int32_t(modelType_); };
+	void SetModelType(const int32_t& modelType) { modelType_ = ModelType(modelType); };
+
 	//Color
 	const Vector4& GetColor() const { return color_; };
 	void SetColor(const Vector4& color) { color_ = color; };
 
 	//Direction
-	const Vector3& GetDirection() const { return direction_; };
+	Vector3& GetDirection(){ return direction_; };
 	void SetDirection(const Vector3& direction) { direction_ = direction; };
 
 	//Intensity
@@ -60,6 +64,8 @@ private:
 	int32_t enableLighting_ = true;
 
 	LightingType lightingType_ = LightingType::HalfLambert;
+
+	ModelType modelType_ = ModelType::PhongReflectionModel;
 	
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 

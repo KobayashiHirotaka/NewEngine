@@ -10,6 +10,7 @@ void Material::Initialize()
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	materialData->color = color_;
 	materialData->uvTransform = MakeIdentity4x4();
+	materialData->shininess = shininess_;
 	materialResource_->Unmap(0, nullptr);
 }
 
@@ -23,6 +24,7 @@ void Material::Update()
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	materialData->color = color_;
 	materialData->uvTransform = uvTransformMatrix;
+	materialData->shininess = shininess_;
 	materialResource_->Unmap(0, nullptr);
 }
 

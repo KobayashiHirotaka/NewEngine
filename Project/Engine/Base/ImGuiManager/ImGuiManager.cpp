@@ -28,14 +28,12 @@ void ImGuiManager::Initialize()
 
 void ImGuiManager::Draw()
 {
-#ifdef _DEBUG
 	ID3D12GraphicsCommandList* commandList = dxCore_->GetCommandList();
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap_.Get() };
 	commandList->SetDescriptorHeaps(1, descriptorHeaps);
 
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
-#endif
 }
 
 void ImGuiManager::BeginFlame()

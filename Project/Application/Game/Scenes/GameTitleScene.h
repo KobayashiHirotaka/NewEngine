@@ -29,6 +29,7 @@ public:
 
 private:
 	WorldTransform worldTransform_;
+	WorldTransform groundWorldTransform_;
 
 	Camera camera_;
 
@@ -42,8 +43,15 @@ private:
 
 	Audio* audio_ = nullptr;
 
+	std::unique_ptr<Model> model_;
+	std::unique_ptr<Model> groundModel_;
+
 	//サウンド
 	uint32_t titleSoundHandle_ = 0u;
+
+	std::unique_ptr<Light>light_;
+	std::unique_ptr<PointLight>pointLight_;
+	Vector3 lightDirection_;
 
 	std::unique_ptr<Sprite>sprite_[2];
 	int32_t textureHandle_[2] = {0u,0u};
