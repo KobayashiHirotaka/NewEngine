@@ -193,6 +193,12 @@
     <Filter Include="ソース ファイル\Application\Game\Scenes\Manager">
       <UniqueIdentifier>{08e03cdb-74e3-48bc-9a25-1a347e916623}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Application\GameObject">
+      <UniqueIdentifier>{571d57f4-073f-4de1-a163-f11f67ba209d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\GameObject">
+      <UniqueIdentifier>{a80cbaa2-97c6-4e31-b21b-117b296100bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -324,14 +330,14 @@
     <ClCompile Include="Engine\3D\Model\ModelManager.cpp">
       <Filter>ソース ファイル\Engine\3d\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Player.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Application\Game\Scenes\SceneFactory.cpp">
       <Filter>ソース ファイル\Application\Game\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\Camera\DebugCamera.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Engine\3d\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Player.cpp">
+      <Filter>ソース ファイル\Application\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -503,9 +509,6 @@
     <ClInclude Include="Engine\3D\Model\ModelManager.h">
       <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Player.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Framework\AbstractSceneFactory.h">
       <Filter>ヘッダー ファイル\Engine\Framework</Filter>
     </ClInclude>
@@ -513,7 +516,10 @@
       <Filter>ヘッダー ファイル\Application\Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Camera\DebugCamera.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Engine\3d\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Player.h">
+      <Filter>ヘッダー ファイル\Application\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
