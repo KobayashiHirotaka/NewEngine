@@ -17,10 +17,6 @@ void GameTitleScene::Initialize()
 
 	audio_ = Audio::GetInstance();
 
-	//PostProcess::GetInstance()->SetIsPostProcessActive(true);
-	//PostProcess::GetInstance()->SetIsBloomActive(true);
-	//PostProcess::GetInstance()->SetIsVignetteActive(true);
-
 	textureHandle_[0] = TextureManager::LoadTexture("resource/images/startTimer1.png");
 	sprite_[0].reset(Sprite::Create(textureHandle_[0], {-500.0f,-80.0f}));
 
@@ -48,6 +44,7 @@ void GameTitleScene::Update()
 {
 	player_->Update();
 
+	//シーン切り替え
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
@@ -63,11 +60,13 @@ void GameTitleScene::Update()
 		return;
 	}
 
+	//モデル切り替え
 	if (input_->PushKey(DIK_RETURN))
 	{
 		player_->SetModel(modelManager_->FindModel("skydome.obj"));
 	}
 
+	//カメラ移動
 	if (input_->PressKey(DIK_A))
 	{
 		camera_.translation_.x -= 0.1f;
@@ -88,6 +87,31 @@ void GameTitleScene::Update()
 		camera_.translation_.y -= 0.1f;
 	}
 
+	//ポストプロセス
+	if (input_->PressKey(DIK_1))
+	{
+		PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	}
+
+	//Bloom
+	if (input_->PressKey(DIK_2))
+	{
+		PostProcess::GetInstance()->SetIsBloomActive(true);
+	}
+	
+	//Vignette
+	if (input_->PressKey(DIK_3))
+	{
+		PostProcess::GetInstance()->SetIsVignetteActive(true);
+	}
+
+	if (input_->PressKey(DIK_4))
+	{
+		PostProcess::GetInstance()->SetIsPostProcessActive(false);
+		PostProcess::GetInstance()->SetIsBloomActive(false);
+		PostProcess::GetInstance()->SetIsVignetteActive(false);
+	}
+
 	worldTransform_.UpdateMatrix();
 
 	camera_.UpdateMatrix();
@@ -103,7 +127,7 @@ void GameTitleScene::Draw()
 
 	Model::PostDraw();
 
-	//PostProcess::GetInstance()->PreDraw();
+	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
 
@@ -121,7 +145,7 @@ void GameTitleScene::Draw()
 
 	ParticleModel::PostDraw();
 
-	//PostProcess::GetInstance()->PostDraw();
+	PostProcess::GetInstance()->PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
