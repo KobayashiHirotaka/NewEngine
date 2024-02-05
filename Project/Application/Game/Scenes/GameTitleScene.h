@@ -12,8 +12,6 @@
 #include "Engine/2D/Sprite/Sprite.h"
 #include <memory>
 
-#include "Application/GameObject/Player.h"
-
 class GameTitleScene : public IScene
 {
 public:
@@ -47,10 +45,8 @@ private:
 	//サウンド
 	uint32_t titleSoundHandle_ = 0u;
 
-	std::unique_ptr<Player>player_;
-
 	std::unique_ptr<Sprite>sprite_[2];
-	int32_t textureHandle_[2];
+	int32_t textureHandle_[2] = {0u,0u};
 
 	bool isDebugCamera_ = false;
 };

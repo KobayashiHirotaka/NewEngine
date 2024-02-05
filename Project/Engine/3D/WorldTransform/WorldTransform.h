@@ -40,7 +40,7 @@ public:
 	Vector3 translation = { 0, 0, 0 };
 
 	//ローカル → ワールド変換行列
-	Matrix4x4 matWorld;
+	Matrix4x4 matWorld = {};
 
 	//親となるワールド変換へのポインタ
 	const WorldTransform* parent_ = nullptr;

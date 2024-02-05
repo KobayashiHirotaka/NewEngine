@@ -19,8 +19,6 @@ public:
 
 	void DrawParticle(const Camera& camera);
 
-	WorldTransform& GetWorldTransform() { return worldTransform_; }
-
 private:
 	Input* input_ = nullptr;
 
@@ -31,5 +29,7 @@ private:
 	//パーティクル
 	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
 	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
+
+	bool isDebugCamera_ = false;
 };
 

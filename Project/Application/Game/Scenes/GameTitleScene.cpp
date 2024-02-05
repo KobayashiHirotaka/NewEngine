@@ -11,8 +11,6 @@ void GameTitleScene::Initialize()
 {
 	textureManager_ = TextureManager::GetInstance();
 
-	modelManager_ = ModelManager::GetInstance();
-
 	input_ = Input::GetInstance();
 
 	audio_ = Audio::GetInstance();
@@ -23,15 +21,8 @@ void GameTitleScene::Initialize()
 	textureHandle_[1] = TextureManager::LoadTexture("resource/images/startTimer2.png");
 	sprite_[1].reset(Sprite::Create(textureHandle_[1], { 500.0f,-80.0f }));
 
-	modelManager_->LoadModel("resource/hammer", "hammer.obj");
-	modelManager_->LoadModel("resource/skydome", "skydome.obj");
-
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 0.0f,-1.0f,0.0f };
-
-	player_ = std::make_unique<Player>();
-	player_->Initialize();
-	player_->SetModel(modelManager_->FindModel("hammer.obj"));
 
 	debugCamera_.Initialize();
 
@@ -44,8 +35,6 @@ void GameTitleScene::Initialize()
 
 void GameTitleScene::Update()
 {
-	player_->Update();
-
 	//シーン切り替え
 	if (input_->GetJoystickState())
 	{
@@ -60,58 +49,6 @@ void GameTitleScene::Update()
 	{
 		sceneManager_->ChangeScene("GamePlayScene");
 		return;
-	}
-
-	//モデル切り替え
-	if (input_->PushKey(DIK_RETURN))
-	{
-		player_->SetModel(modelManager_->FindModel("skydome.obj"));
-	}
-
-	////カメラ移動
-	//if (input_->PressKey(DIK_A))
-	//{
-	//	camera_.translation_.x -= 0.1f;
-	//}
-
-	//if (input_->PressKey(DIK_D))
-	//{
-	//	camera_.translation_.x += 0.1f;
-	//}
-
-	//if (input_->PressKey(DIK_W))
-	//{
-	//	camera_.translation_.y += 0.1f;
-	//}
-
-	//if (input_->PressKey(DIK_S))
-	//{
-	//	camera_.translation_.y -= 0.1f;
-	//}
-
-	//ポストプロセス
-	if (input_->PressKey(DIK_1))
-	{
-		PostProcess::GetInstance()->SetIsPostProcessActive(true);
-	}
-
-	//Bloom
-	if (input_->PressKey(DIK_2))
-	{
-		PostProcess::GetInstance()->SetIsBloomActive(true);
-	}
-	
-	//Vignette
-	if (input_->PressKey(DIK_3))
-	{
-		PostProcess::GetInstance()->SetIsVignetteActive(true);
-	}
-
-	if (input_->PressKey(DIK_4))
-	{
-		PostProcess::GetInstance()->SetIsPostProcessActive(false);
-		PostProcess::GetInstance()->SetIsBloomActive(false);
-		PostProcess::GetInstance()->SetIsVignetteActive(false);
 	}
 
 	debugCamera_.Update();
@@ -155,7 +92,7 @@ void GameTitleScene::Draw()
 
 	Model::PreDraw();
 
-	player_->Draw(camera_);
+
 
 	Model::PostDraw();
 
@@ -164,8 +101,6 @@ void GameTitleScene::Draw()
 	Sprite::PostDraw();
 
 	ParticleModel::PreDraw();
-
-	player_->DrawParticle(camera_);
 
 	ParticleModel::PostDraw();
 
