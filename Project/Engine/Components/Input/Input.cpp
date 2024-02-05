@@ -28,12 +28,25 @@ void Input::Initialize(WindowsApp* win)
 	//キーボードデバイスを生成
 	hr = directInput_->CreateDevice(GUID_SysKeyboard, &keyboard_, NULL);
 	assert(SUCCEEDED(hr));
+
+	//マウスデバイスを生成
+	hr = directInput_->CreateDevice(GUID_SysMouse, &mouseDevice_, NULL);
+	assert(SUCCEEDED(hr));
+
 	//入力データ形式のセット
 	hr = keyboard_->SetDataFormat(&c_dfDIKeyboard);
 	assert(SUCCEEDED(hr));
+
+	hr = mouseDevice_->SetDataFormat(&c_dfDIMouse);
+	assert(SUCCEEDED(hr));
+
 	//排他制御レベルのセット
 	hr = keyboard_->SetCooperativeLevel(win->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(hr));
+
+	hr = mouseDevice_->SetCooperativeLevel(win->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	assert(SUCCEEDED(hr));
+
 	keys_ = {};
 	preKeys_ = {};
 
@@ -45,11 +58,21 @@ void Input::Initialize(WindowsApp* win)
 void Input::Update()
 {
 	preKeys_ = keys_;
+
+	mousePre_ = mouse_;
+
 	//キーボード情報の取得開始
 	keyboard_->Acquire();
+
+	//マウス情報の取得開始
+	mouseDevice_->Acquire();
+
 	keys_ = {};
 	//全てのキーの入力状態を取得する
 	keyboard_->GetDeviceState(sizeof(keys_), &keys_);
+
+	//マウスの入力状態を取得する
+	mouseDevice_->GetDeviceState(sizeof(DIMOUSESTATE), &mouse_);
 
 	preState_ = state_;
 
@@ -71,6 +94,7 @@ bool Input::PushKey(uint8_t keyNumber)const
 		return false;
 	}
 }
+
 bool Input::PressKey(uint8_t keyNumber)const
 {
 	if (keys_[keyNumber])
@@ -93,6 +117,48 @@ bool Input::IsReleseKey(uint8_t keyNumber)const
 	else {
 		return false;
 	}
+}
+
+bool Input::IsPressMouse(int32_t mouseNum)
+{
+	if (mouse_.rgbButtons[mouseNum] == 0x80) 
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Input::IsReleaseMouse(int32_t mouseNum)
+{
+	if (mouse_.rgbButtons[mouseNum] == 0x00)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Input::IsPressMouseEnter(int32_t mouseNum)
+{
+	if (mouse_.rgbButtons[mouseNum] == 0x80 && mousePre_.rgbButtons[mouseNum] == 0x00)
+	{
+		return true;
+	}
+	return false;
+}
+
+
+bool Input::IsPressMouseExit(int32_t mouseNum) 
+{
+	if (mouse_.rgbButtons[mouseNum] == 0x00 && mousePre_.rgbButtons[mouseNum] == 0x80) 
+	{
+		return true;
+	}
+	return false;
+}
+
+int32_t Input::GetWheel()
+{
+	return mouse_.lZ;
 }
 
 bool Input::GetJoystickState() 

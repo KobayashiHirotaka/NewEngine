@@ -1,6 +1,5 @@
 #include "GameTitleScene.h"
 #include "Engine/Framework/SceneManager.h"
-#include "GamePlayScene.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>
 
@@ -8,7 +7,7 @@ GameTitleScene::GameTitleScene() {};
 
 GameTitleScene::~GameTitleScene() {};
 
-void GameTitleScene::Initialize(SceneManager* sceneManager)
+void GameTitleScene::Initialize()
 {
 	textureManager_ = TextureManager::GetInstance();
 
@@ -30,30 +29,39 @@ void GameTitleScene::Initialize(SceneManager* sceneManager)
 
 	groundModel_.reset(Model::CreateFromOBJ("resource/models", "terrain.obj"));
 
+	textureHandle_[0] = TextureManager::LoadTexture("resource/images/startTimer1.png");
+	sprite_[0].reset(Sprite::Create(textureHandle_[0], {-500.0f,-80.0f}));
+
+	textureHandle_[1] = TextureManager::LoadTexture("resource/images/startTimer2.png");
+	sprite_[1].reset(Sprite::Create(textureHandle_[1], { 500.0f,-80.0f }));
+
 	worldTransform_.Initialize();
 	groundWorldTransform_.Initialize();
 
 	camera_.translation_.y = 3.0f;
 
+	debugCamera_.Initialize();
+
 	camera_.UpdateMatrix();
 };
 
-void GameTitleScene::Update(SceneManager* sceneManager)
+void GameTitleScene::Update()
 {
-	/*if (input_->GetJoystickState())
+	//シーン切り替え
+	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
-			sceneManager->ChangeScene(new GamePlayScene);
+			sceneManager_->ChangeScene("GamePlayScene");
 			return;
 		}
 	}
 
 	if (input_->PushKey(DIK_SPACE))
 	{
-		sceneManager->ChangeScene(new GamePlayScene);
+		sceneManager_->ChangeScene("GamePlayScene");
 		return;
-	}*/
+	}
 
 	model_->GetLight()->ImGui("DirectionalLight");
 	
@@ -67,17 +75,39 @@ void GameTitleScene::Update(SceneManager* sceneManager)
 
 	groundModel_->GetSpotLight()->ImGui("SpotLight");
 
+	debugCamera_.Update();
+
+	if (input_->PushKey(DIK_K))
+	{
+		isDebugCamera_ = true;
+	}
+	else if (input_->PushKey(DIK_L))
+	{
+		isDebugCamera_ = false;
+	}
+
+	if (isDebugCamera_)
+	{
+		camera_.matView_ = debugCamera_.GetCamera().matView_;
+		camera_.matProjection_ = debugCamera_.GetCamera().matProjection_;
+		camera_.TransferMatrix();
+	}
+	else
+	{
+		camera_.UpdateMatrix();
+	}
+
 	worldTransform_.UpdateMatrix();
 	groundWorldTransform_.UpdateMatrix();
 
-	camera_.UpdateMatrix();
+	/*camera_.UpdateMatrix();*/
 
 	ImGui::Begin("Model");
 	ImGui::DragFloat3("scale", &worldTransform_.scale.x, 0.1f, 1.0f, 10.0f);
 	ImGui::End();
 };
 
-void GameTitleScene::Draw(SceneManager* sceneManager)
+void GameTitleScene::Draw()
 {
 	Model::PreDraw();
 
@@ -87,7 +117,7 @@ void GameTitleScene::Draw(SceneManager* sceneManager)
 
 	Model::PreDraw();
 
-	model_->Draw(worldTransform_, camera_);
+
 
 	groundModel_->Draw(groundWorldTransform_, camera_);
 
@@ -97,9 +127,23 @@ void GameTitleScene::Draw(SceneManager* sceneManager)
 
 	Sprite::PostDraw();
 
+	ParticleModel::PreDraw();
+
+	ParticleModel::PostDraw();
+
 	PostProcess::GetInstance()->PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
+	for (int i = 0; i < 2; i++)
+	{
+		sprite_[i]->Draw();
+	}
+
 	Sprite::PostDraw();
 };
+
+void GameTitleScene::Finalize()
+{
+
+}

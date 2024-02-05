@@ -8,6 +8,7 @@
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include "Engine/3D/Model/Model.h"
 #include "Engine/3D/Particle/ParticleModel.h"
+#include "Engine/3D/Model/ModelManager.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/Particle/Random.h"
@@ -31,7 +32,7 @@ public:
 
 	void Run();
 
-private:
+protected:
 	static D3DResourceLeakChecker leakCheck;
 
 	WindowsApp* win_ = nullptr;
@@ -51,5 +52,7 @@ private:
 	SceneManager* sceneManager_ = nullptr;
 
 	bool endRequst_ = false;
+
+	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
 };
 
