@@ -32,3 +32,25 @@ void Light::SetGraphicsCommand(UINT rootParameterIndex)
 {
 	dxCore_->GetCommandList()->SetGraphicsRootConstantBufferView(rootParameterIndex, lightingResource_->GetGPUVirtualAddress());
 }
+
+void Light::ImGui(const char* Title)
+{
+	Vector3 direction = Normalize(direction_);
+
+	ImGui::Begin(Title);
+	ImGui::DragInt("enableLighting", &enableLighting_, 1.0f, 0, 1);
+	ImGui::DragFloat4("color", &color_.x, 1.0f, 0.0f, 255.0f);
+	ImGui::DragFloat3("LightDirection", &direction_.x, 0.01f, -1.0f, 1.0f);
+	ImGui::DragFloat3("direction", &direction.x, 0.01f, -1.0f, 1.0f);
+	ImGui::DragFloat("intensity", &intensity_, 0.1f, 0.0f, 100.0f);
+
+	const char* light[] = { "LambertianReflectance", "HalfLambert" };
+	int currentLight = static_cast<int>(lightingType_);
+
+	if (ImGui::Combo("Select Light Type", &currentLight, light, IM_ARRAYSIZE(light)))
+	{
+		lightingType_ = static_cast<LightingType>(currentLight);
+	}
+
+	ImGui::End();
+}

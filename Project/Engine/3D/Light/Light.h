@@ -32,6 +32,8 @@ public:
 
 	void SetGraphicsCommand(UINT rootParameterIndex);
 
+	void ImGui(const char* Title);
+
 	//EnableLighting
 	const int32_t& GetEnableLighting() const { return enableLighting_; };
 	void SetEnableLighting(const int32_t& enableLighting) { enableLighting_ = enableLighting; };
