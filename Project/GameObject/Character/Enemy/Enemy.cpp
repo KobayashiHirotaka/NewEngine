@@ -100,6 +100,11 @@ void Enemy::Update()
 		guardGauge_ -= 1.0f;
 	}
 
+	if (guardGauge_ >= maxGuardGauge_)
+	{
+		behaviorRequest_ = Behavior::kStan;
+	}
+
 	if (isReset_)
 	{
 		resetTimer_--;
@@ -135,6 +140,10 @@ void Enemy::Update()
 		case Behavior::kThrow:
 			BehaviorThrowInitialize();
 			break;
+
+		case Behavior::kStan:
+			BehaviorStanInitialize();
+			break;
 		}
 
 		behaviorRequest_ = std::nullopt;
@@ -158,6 +167,10 @@ void Enemy::Update()
 
 	case Behavior::kThrow:
 		BehaviorThrowUpdate();
+		break;
+
+	case Behavior::kStan:
+		BehaviorStanUpdate();
 		break;
 	}
 
@@ -198,6 +211,10 @@ void Enemy::Update()
 	HPBarUpdate();
 
 	GuardGaugeBarUpdate();
+
+	ImGui::Begin("GuardGauge");
+	ImGui::Text("GuardGauge %f", guardGauge_);
+	ImGui::End();
 }
 
 void Enemy::Draw(const Camera& camera)
@@ -997,6 +1014,22 @@ void Enemy::BehaviorThrowUpdate()
 			}
 		}
 		attackAnimationFrame++;
+	}
+}
+
+void Enemy::BehaviorStanInitialize()
+{
+
+}
+
+void Enemy::BehaviorStanUpdate()
+{
+	stanTimer_--;
+
+	if (stanTimer_ < 0)
+	{
+		stanTimer_ = 100;
+		behaviorRequest_ = Behavior::kRoot;
 	}
 }
 

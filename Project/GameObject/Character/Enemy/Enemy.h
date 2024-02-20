@@ -24,6 +24,7 @@ public:
 		kAttack,
 		kJump,
 		kThrow,
+		kStan
 	};
 
 	struct WorkAttack
@@ -113,6 +114,10 @@ public:
 
 	void BehaviorThrowUpdate();
 
+	void BehaviorStanInitialize();
+
+	void BehaviorStanUpdate();
+
 	void FloatingGimmickInitialize();
 
 	void FloatingGimmickUpdate();
@@ -185,7 +190,7 @@ private:
 
 	float HP_ = maxHP_;
 
-	float maxGuardGauge_ = 100.0f;
+	float maxGuardGauge_ = 50.0f;
 
 	float guardGauge_ = 0.0f;
 
@@ -241,7 +246,7 @@ private:
 
 	UI guardGaugeBar_;
 	const float guardGaugeBarSpace = 48.0f;
-	float guardGaugeBarSize = 480.0f;
+	float guardGaugeBarSize = 240.0f;
 
 	//サウンド
 	uint32_t attackSoundHandle_ = 0u;
@@ -253,4 +258,6 @@ private:
 
 	int resetTimer_ = 60;
 	bool isReset_ = false;
+
+	int stanTimer_ = 100;
 };
