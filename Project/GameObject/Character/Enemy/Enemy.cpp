@@ -6,6 +6,7 @@
 Enemy::~Enemy()
 {
 	delete hpBar_.sprite_;
+	delete guardGaugeBar_.sprite_;
 }
 
 void Enemy::Initialize()
@@ -27,6 +28,17 @@ void Enemy::Initialize()
 	};
 
 	hpBar_.sprite_ = Sprite::Create(hpBar_.textureHandle_, hpBar_.position_);
+
+	guardGaugeBar_ = {
+		true,
+		TextureManager::LoadTexture("resource/HP.png"),
+		{720.0f, guardGaugeBarSpace},
+		0.0f,
+		{guardGaugeBarSize  ,7.0f},
+		nullptr,
+	};
+
+	guardGaugeBar_.sprite_ = Sprite::Create(guardGaugeBar_.textureHandle_, guardGaugeBar_.position_);
 
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 7.0f,0.0f,0.0f };
@@ -78,6 +90,15 @@ void Enemy::Initialize()
 void Enemy::Update()
 {
 	isShake_ = false;
+
+	if (Input::GetInstance()->PressKey(DIK_G) && guardGauge_ >= 0 && guardGauge_ < maxGuardGauge_)
+	{
+		guardGauge_ += 1.0f;
+	}
+	else if(guardGauge_ > 0)
+	{
+		guardGauge_ -= 1.0f;
+	}
 
 	if (isReset_)
 	{
@@ -175,6 +196,8 @@ void Enemy::Update()
 	isPlayerHit_ = false;
 
 	HPBarUpdate();
+
+	GuardGaugeBarUpdate();
 }
 
 void Enemy::Draw(const Camera& camera)
@@ -199,6 +222,8 @@ void Enemy::DrawSprite()
 	{
 		hpBar_.sprite_->Draw();
 	}
+
+	guardGaugeBar_.sprite_->Draw();
 }
 
 void Enemy::HPBarUpdate()
@@ -208,9 +233,18 @@ void Enemy::HPBarUpdate()
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 }
 
+void Enemy::GuardGaugeBarUpdate()
+{
+	guardGaugeBar_.size_ = { (guardGauge_ / maxGuardGauge_) * guardGaugeBarSize,7.0f };
+
+	guardGaugeBar_.sprite_->SetSize(guardGaugeBar_.size_);
+}
+
 void Enemy::Reset()
 {
 	HP_ = maxHP_;
+
+	guardGauge_ = 0.0f;
 
 	for (int i = 0; i < 6; i++)
 	{

@@ -143,6 +143,8 @@ public:
 
 	void HPBarUpdate();
 
+	void GuardGaugeBarUpdate();
+
 	bool GetIsShake() { return isShake_; };
 
 	void Reset();
@@ -182,6 +184,10 @@ private:
 	float maxHP_ = 100.0f;
 
 	float HP_ = maxHP_;
+
+	float maxGuardGauge_ = 100.0f;
+
+	float guardGauge_ = 0.0f;
 
 	WorkAttack workAttack_;
 
@@ -232,6 +238,10 @@ private:
 	UI hpBar_;
 	const float barSpace = 16.0f;
 	float barSize = 480.0f;
+
+	UI guardGaugeBar_;
+	const float guardGaugeBarSpace = 48.0f;
+	float guardGaugeBarSize = 480.0f;
 
 	//サウンド
 	uint32_t attackSoundHandle_ = 0u;
