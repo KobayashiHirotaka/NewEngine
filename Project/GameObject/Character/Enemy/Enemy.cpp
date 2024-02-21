@@ -91,13 +91,13 @@ void Enemy::Update()
 {
 	isShake_ = false;
 
-	if (Input::GetInstance()->PressKey(DIK_G) && guardGauge_ >= 0 && guardGauge_ < maxGuardGauge_)
+	/*if (Input::GetInstance()->PressKey(DIK_G) && guardGauge_ >= 0 && guardGauge_ < maxGuardGauge_)
 	{
 		guardGauge_ += 1.0f;
-	}
-	else if(guardGauge_ > 0)
+	}*/
+	if(guardGauge_ > 0 && behaviorRequest_ != Behavior::kStan)
 	{
-		guardGauge_ -= 1.0f;
+		guardGauge_ -= 0.03f;
 	}
 
 	if (guardGauge_ >= maxGuardGauge_)
@@ -361,6 +361,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayWave(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.3f;
+			guardGauge_ += 1.0f;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -384,6 +385,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayWave(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.3f;
+			guardGauge_ += 1.0f;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1026,10 +1028,24 @@ void Enemy::BehaviorStanUpdate()
 {
 	stanTimer_--;
 
+	worldTransformBody_.rotation.y += 0.1f;
+
 	if (stanTimer_ < 0)
 	{
 		stanTimer_ = 100;
+		guardGauge_ = 0.0f;
 		behaviorRequest_ = Behavior::kRoot;
+
+		worldTransformHead_.rotation.y = 0.0f;
+
+		worldTransformBody_.rotation.x = 0.0f;
+		worldTransformBody_.rotation.y = 0.0f;
+
+		worldTransformL_arm_.rotation.x = 0.0f;
+		worldTransformL_arm_.rotation.y = 0.0f;
+
+		worldTransformR_arm_.rotation.x = 0.0f;
+		worldTransformR_arm_.rotation.y = 0.0f;
 	}
 }
 
