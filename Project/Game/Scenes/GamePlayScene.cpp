@@ -42,10 +42,10 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	roundGetTextureHandle_ = TextureManager::LoadTexture("resource/RoundGet.png");
 
-	roundGetSprite_[0].reset(Sprite::Create(roundGetTextureHandle_, { 400.0f, 30.0f }));
-	roundGetSprite_[1].reset(Sprite::Create(roundGetTextureHandle_, { 480.0f, 30.0f }));
-	roundGetSprite_[2].reset(Sprite::Create(roundGetTextureHandle_, { 800.0f, 30.0f }));
-	roundGetSprite_[3].reset(Sprite::Create(roundGetTextureHandle_, { 720.0f, 30.0f }));
+	roundGetSprite_[0].reset(Sprite::Create(roundGetTextureHandle_, { 400.0f, 70.0f }));
+	roundGetSprite_[1].reset(Sprite::Create(roundGetTextureHandle_, { 480.0f, 70.0f }));
+	roundGetSprite_[2].reset(Sprite::Create(roundGetTextureHandle_, { 800.0f, 70.0f }));
+	roundGetSprite_[3].reset(Sprite::Create(roundGetTextureHandle_, { 720.0f, 70.0f }));
 
 	winTextureHandle_ = TextureManager::LoadTexture("resource/WIN.png");
 	loseTextureHandle_ = TextureManager::LoadTexture("resource/LOSE.png");
