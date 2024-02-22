@@ -1087,6 +1087,11 @@ void Player::BehaviorStanInitialize()
 
 void Player::BehaviorStanUpdate()
 {
+	if (stanTimer_ == 100)
+	{
+		isShake_ = true;
+	}
+
 	stanTimer_--;
 
 	worldTransformBody_.rotation.y += 0.1f;
