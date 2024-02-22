@@ -210,7 +210,10 @@ void Enemy::Update()
 
 	HPBarUpdate();
 
-	GuardGaugeBarUpdate();
+	if (guardGauge_ <= 50.0f)
+	{
+		GuardGaugeBarUpdate();
+	}
 
 	ImGui::Begin("GuardGauge");
 	ImGui::Text("GuardGauge %f", guardGauge_);

@@ -6,6 +6,7 @@
 Player::~Player()
 {
 	delete hpBar_.sprite_;
+	delete guardGaugeBar_.sprite_;
 }
 
 void Player::Initialize()
@@ -30,6 +31,17 @@ void Player::Initialize()
 	};
 
 	hpBar_.sprite_ = Sprite::Create(hpBar_.textureHandle_, hpBar_.position_);
+
+	guardGaugeBar_ = {
+		true,
+		TextureManager::LoadTexture("resource/HP.png"),
+		{60.0f, guardGaugeBarSpace},
+		0.0f,
+		{-guardGaugeBarSize  ,7.0f},
+		nullptr,
+	};
+
+	guardGaugeBar_.sprite_ = Sprite::Create(guardGaugeBar_.textureHandle_, guardGaugeBar_.position_);
 
 	//WorldTransform(Player)の初期化
 	worldTransform_.Initialize();
@@ -84,6 +96,16 @@ void Player::Initialize()
 void Player::Update()
 {
 	isShake_ = false;
+
+	if (guardGauge_ > 0 && behaviorRequest_ != Behavior::kStan)
+	{
+		guardGauge_ -= 0.03f;
+	}
+
+	if (guardGauge_ >= maxGuardGauge_)
+	{
+		behaviorRequest_ = Behavior::kStan;
+	}
 	
 	if (isReset_)
 	{
@@ -120,6 +142,10 @@ void Player::Update()
 		case Behavior::kThrow:
 			BehaviorThrowInitialize();
 			break;
+
+		case Behavior::kStan:
+			BehaviorStanInitialize();
+			break;
 		}
 
 		behaviorRequest_ = std::nullopt;
@@ -143,6 +169,10 @@ void Player::Update()
 
 	case Behavior::kThrow:
 		BehaviorThrowUpdate();
+		break;
+
+	case Behavior::kStan:
+		BehaviorStanUpdate();
 		break;
 	}
 
@@ -182,6 +212,11 @@ void Player::Update()
 	isHit_ = false;
 
 	HPBarUpdate();
+
+	if (guardGauge_ <= 50.0f)
+	{
+		GuardGaugeBarUpdate();
+	}
 }
 
 void Player::Draw(const Camera& camera)
@@ -206,6 +241,8 @@ void Player::DrawSprite()
 	{
 		hpBar_.sprite_->Draw();
 	}
+
+	guardGaugeBar_.sprite_->Draw();
 }
 
 void Player::HPBarUpdate()
@@ -215,9 +252,18 @@ void Player::HPBarUpdate()
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 }
 
+void Player::GuardGaugeBarUpdate()
+{
+	guardGaugeBar_.size_ = { (guardGauge_ / maxGuardGauge_) * guardGaugeBarSize,7.0f };
+
+	guardGaugeBar_.sprite_->SetSize(guardGaugeBar_.size_);
+}
+
 void Player::Reset()
 {
 	HP_ = maxHP_;
+
+	guardGauge_ = 0.0f;
 
 	for (int i = 0; i < 6; i++)
 	{
@@ -317,6 +363,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayWave(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.3f;
+			guardGauge_ += 2.0f;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -340,6 +387,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayWave(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.3f;
+			guardGauge_ += 2.0f;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1029,6 +1077,36 @@ void Player::BehaviorThrowUpdate()
 			}
 		}
 		attackAnimationFrame++;
+	}
+}
+
+void Player::BehaviorStanInitialize()
+{
+
+}
+
+void Player::BehaviorStanUpdate()
+{
+	stanTimer_--;
+
+	worldTransformBody_.rotation.y += 0.1f;
+
+	if (stanTimer_ < 0)
+	{
+		stanTimer_ = 100;
+		guardGauge_ = 0.0f;
+		behaviorRequest_ = Behavior::kRoot;
+
+		worldTransformHead_.rotation.y = 0.0f;
+
+		worldTransformBody_.rotation.x = 0.0f;
+		worldTransformBody_.rotation.y = 0.0f;
+
+		worldTransformL_arm_.rotation.x = 0.0f;
+		worldTransformL_arm_.rotation.y = 0.0f;
+
+		worldTransformR_arm_.rotation.x = 0.0f;
+		worldTransformR_arm_.rotation.y = 0.0f;
 	}
 }
 

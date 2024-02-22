@@ -24,6 +24,7 @@ public:
 		kAttack,
 		kJump,
 		kThrow,
+		kStan
 	};
 
 	struct WorkAttack
@@ -110,6 +111,10 @@ public:
 
 	void BehaviorThrowUpdate();
 
+	void BehaviorStanInitialize();
+
+	void BehaviorStanUpdate();
+
 	void FloatingGimmickInitialize();
 
 	void FloatingGimmickUpdate();
@@ -137,6 +142,8 @@ public:
 	void DrawSprite();
 
 	void HPBarUpdate();
+
+	void GuardGaugeBarUpdate();
 
 	bool GetIsShake() { return isShake_; };
 
@@ -177,6 +184,10 @@ private:
 	float maxHP_ = 100.0f;
 
 	float HP_ = maxHP_;
+
+	float maxGuardGauge_ = 50.0f;
+
+	float guardGauge_ = 0.0f;
 
 	std::unique_ptr<PlayerWeapon> playerWeapon_ = nullptr;
 
@@ -227,6 +238,10 @@ private:
 	const float barSpace = 16.0f;
 	float barSize = 480.0f;
 
+	UI guardGaugeBar_;
+	const float guardGaugeBarSpace = 48.0f;
+	float guardGaugeBarSize = 240.0f;
+
 	//サウンド
 	uint32_t attackSoundHandle_ = 0u;
 	uint32_t weaponAttackSoundHandle_ = 0u;
@@ -237,5 +252,7 @@ private:
 
 	int resetTimer_ = 60;
 	bool isReset_ = false;
+
+	int stanTimer_ = 100;
 };
 
