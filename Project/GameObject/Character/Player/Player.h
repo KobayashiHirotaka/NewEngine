@@ -169,6 +169,8 @@ private:
 	std::unique_ptr<Model> modelFighterL_arm_;
 	std::unique_ptr<Model> modelFighterR_arm_;
 
+	std::unique_ptr<Model> playerCursol_;
+
 	Vector3 velocity_ = {};
 
 	float speed_ = 0.3f;
@@ -253,6 +255,6 @@ private:
 	int resetTimer_ = 60;
 	bool isReset_ = false;
 
-	int stanTimer_ = 100;
+	int stanTimer_ = 200;
 };
 

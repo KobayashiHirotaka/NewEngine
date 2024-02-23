@@ -1025,9 +1025,14 @@ void Enemy::BehaviorStanInitialize()
 
 void Enemy::BehaviorStanUpdate()
 {
-	if (stanTimer_ == 100)
+	if (stanTimer_ == 200)
 	{
 		isShake_ = true;
+	}
+
+	if (stanTimer_ <= 170)
+	{
+		isGuard_ = false;
 	}
 
 	guardGauge_ = maxGuardGauge_;
@@ -1036,9 +1041,10 @@ void Enemy::BehaviorStanUpdate()
 
 	worldTransformBody_.rotation.y += 0.1f;
 
-	if (stanTimer_ < 0)
+	if (stanTimer_ < 0 || isHitMowDown_ || isHitPoke_ || isHitPunch_ ||
+		isHitSwingDown_ || isThrow_)
 	{
-		stanTimer_ = 100;
+		stanTimer_ = 200;
 		guardGauge_ = 0.0f;
 		behaviorRequest_ = Behavior::kRoot;
 

@@ -21,6 +21,8 @@ void Player::Initialize()
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
 	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
 
+	playerCursol_.reset(Model::CreateFromOBJ("resource/playerCursol", "playerCursol.obj"));
+
 	hpBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/HP.png"),
@@ -226,6 +228,11 @@ void Player::Draw(const Camera& camera)
 	modelFighterPHead_->Draw(worldTransformHead_, camera);
 	modelFighterL_arm_->Draw(worldTransformL_arm_, camera);
 	modelFighterR_arm_->Draw(worldTransformR_arm_, camera);
+
+	if (!isDown_)
+	{
+		playerCursol_->Draw(worldTransform_, camera);
+	}
 
 	//Weaponの描画
 	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_
@@ -1087,9 +1094,14 @@ void Player::BehaviorStanInitialize()
 
 void Player::BehaviorStanUpdate()
 {
-	if (stanTimer_ == 100)
+	if (stanTimer_ == 200)
 	{
 		isShake_ = true;
+	}
+
+	if (stanTimer_ <= 170)
+	{
+		isGuard_ = false;
 	}
 
 	guardGauge_ = maxGuardGauge_;
@@ -1098,9 +1110,10 @@ void Player::BehaviorStanUpdate()
 
 	worldTransformBody_.rotation.y += 0.1f;
 
-	if (stanTimer_ < 0)
+	if (stanTimer_ < 0 || isHitMowDown_ || isHitPoke_ || isHitPunch_ ||
+		isHitSwingDown_ || isThrow_)
 	{
-		stanTimer_ = 100;
+		stanTimer_ = 200;
 		guardGauge_ = 0.0f;
 		behaviorRequest_ = Behavior::kRoot;
 
