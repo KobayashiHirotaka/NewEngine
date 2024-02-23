@@ -91,6 +91,9 @@ private:
 	std::unique_ptr<Sprite>attackCommandListSprite_ = nullptr;
 	uint32_t attackCommandListTextureHandle_ = 0;
 
+	std::unique_ptr<Sprite>frameUISprite_ = nullptr;
+	uint32_t frameUITextureHandle_ = 0;
+
 	int currentSeconds_;
 
 	float frameTime = 1.0f / 60.0f;  // 60FPSを仮定
