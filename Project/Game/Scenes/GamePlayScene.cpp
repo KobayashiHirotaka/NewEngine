@@ -56,7 +56,6 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	drowSprite_.reset(Sprite::Create(drowTextureHandle_, { 0.0f, 0.0f }));
 
 	frameUITextureHandle_ = TextureManager::LoadTexture("resource/frameUI.png");
-
 	frameUISprite_.reset(Sprite::Create(frameUITextureHandle_, { 0.0f, 0.0f }));
 
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));

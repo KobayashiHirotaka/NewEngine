@@ -97,7 +97,7 @@ void Player::Update()
 {
 	isShake_ = false;
 
-	if (guardGauge_ > 0 && behaviorRequest_ != Behavior::kStan)
+	if (guardGauge_ > 0 && guardGauge_ < maxGuardGauge_)
 	{
 		guardGauge_ -= 0.03f;
 	}
@@ -1091,6 +1091,8 @@ void Player::BehaviorStanUpdate()
 	{
 		isShake_ = true;
 	}
+
+	guardGauge_ = maxGuardGauge_;
 
 	stanTimer_--;
 

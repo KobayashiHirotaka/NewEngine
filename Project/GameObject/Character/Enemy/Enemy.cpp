@@ -91,11 +91,7 @@ void Enemy::Update()
 {
 	isShake_ = false;
 
-	/*if (Input::GetInstance()->PressKey(DIK_G) && guardGauge_ >= 0 && guardGauge_ < maxGuardGauge_)
-	{
-		guardGauge_ += 1.0f;
-	}*/
-	if(guardGauge_ > 0 && behaviorRequest_ != Behavior::kStan)
+	if (guardGauge_ > 0 && guardGauge_ < maxGuardGauge_)
 	{
 		guardGauge_ -= 0.03f;
 	}
@@ -1033,6 +1029,8 @@ void Enemy::BehaviorStanUpdate()
 	{
 		isShake_ = true;
 	}
+
+	guardGauge_ = maxGuardGauge_;
 
 	stanTimer_--;
 
