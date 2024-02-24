@@ -36,7 +36,7 @@ void Player::Initialize()
 
 	guardGaugeBar_ = {
 		true,
-		TextureManager::LoadTexture("resource/HP.png"),
+		TextureManager::LoadTexture("resource/guardGauge.png"),
 		{60.0f, guardGaugeBarSpace},
 		0.0f,
 		{-guardGaugeBarSize  ,7.0f},

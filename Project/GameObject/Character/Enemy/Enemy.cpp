@@ -31,7 +31,7 @@ void Enemy::Initialize()
 
 	guardGaugeBar_ = {
 		true,
-		TextureManager::LoadTexture("resource/HP.png"),
+		TextureManager::LoadTexture("resource/guardGauge.png"),
 		{720.0f, guardGaugeBarSpace},
 		0.0f,
 		{guardGaugeBarSize  ,7.0f},
