@@ -7,6 +7,7 @@ Player::~Player()
 {
 	delete hpBar_.sprite_;
 	delete guardGaugeBar_.sprite_;
+	delete finisherGaugeBar_.sprite_;
 }
 
 void Player::Initialize()
@@ -44,6 +45,17 @@ void Player::Initialize()
 	};
 
 	guardGaugeBar_.sprite_ = Sprite::Create(guardGaugeBar_.textureHandle_, guardGaugeBar_.position_);
+
+	finisherGaugeBar_ = {
+		true,
+		TextureManager::LoadTexture("resource/guardGauge.png"),
+		{60.0f, finisherGaugeBarSpace},
+		0.0f,
+		{-finisherGaugeBarSize  ,20.0f},
+		nullptr,
+	};
+
+	finisherGaugeBar_.sprite_ = Sprite::Create(finisherGaugeBar_.textureHandle_, finisherGaugeBar_.position_);
 
 	//WorldTransform(Player)の初期化
 	worldTransform_.Initialize();
@@ -102,6 +114,11 @@ void Player::Update()
 	if (guardGauge_ > 0 && guardGauge_ < maxGuardGauge_)
 	{
 		guardGauge_ -= 0.03f;
+	}
+
+	if (finisherGauge_ < maxFinisherGauge_ && input_->PressKey(DIK_L))
+	{
+		finisherGauge_ += 0.08f;
 	}
 
 	if (guardGauge_ >= maxGuardGauge_)
@@ -219,6 +236,11 @@ void Player::Update()
 	{
 		GuardGaugeBarUpdate();
 	}
+
+	if (finisherGauge_ <= 50.0f)
+	{
+		FinisherGaugeBarUpdate();
+	}
 }
 
 void Player::Draw(const Camera& camera)
@@ -250,6 +272,8 @@ void Player::DrawSprite()
 	}
 
 	guardGaugeBar_.sprite_->Draw();
+
+	finisherGaugeBar_.sprite_->Draw();
 }
 
 void Player::HPBarUpdate()
@@ -264,6 +288,13 @@ void Player::GuardGaugeBarUpdate()
 	guardGaugeBar_.size_ = { (guardGauge_ / maxGuardGauge_) * guardGaugeBarSize,7.0f };
 
 	guardGaugeBar_.sprite_->SetSize(guardGaugeBar_.size_);
+}
+
+void Player::FinisherGaugeBarUpdate()
+{
+	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize,20.0f };
+
+	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
 }
 
 void Player::Reset()

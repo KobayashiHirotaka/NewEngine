@@ -145,6 +145,8 @@ public:
 
 	void GuardGaugeBarUpdate();
 
+	void FinisherGaugeBarUpdate();
+
 	bool GetIsShake() { return isShake_; };
 
 	void Reset();
@@ -190,6 +192,10 @@ private:
 	float maxGuardGauge_ = 50.0f;
 
 	float guardGauge_ = 0.0f;
+
+	float maxFinisherGauge_ = 50.0f;
+
+	float finisherGauge_ = 0.0f;
 
 	std::unique_ptr<PlayerWeapon> playerWeapon_ = nullptr;
 
@@ -243,6 +249,10 @@ private:
 	UI guardGaugeBar_;
 	const float guardGaugeBarSpace = 48.0f;
 	float guardGaugeBarSize = 240.0f;
+
+	UI finisherGaugeBar_;
+	const float finisherGaugeBarSpace = 578.0f;
+	float finisherGaugeBarSize = 240.0f;
 
 	//サウンド
 	uint32_t attackSoundHandle_ = 0u;

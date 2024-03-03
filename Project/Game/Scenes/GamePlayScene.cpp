@@ -721,10 +721,10 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	if (roundStartTimer_ <= 0 && !isOpen_)
+	/*if (roundStartTimer_ <= 0 && !isOpen_)
 	{
 		UICommandListSprite_->Draw();
-	}
+	}*/
 
 	if (isOpen_ && spriteCount_ == 1)
 	{
