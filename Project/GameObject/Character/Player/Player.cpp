@@ -116,7 +116,7 @@ void Player::Update()
 		guardGauge_ -= 0.03f;
 	}
 
-	if (finisherGauge_ < maxFinisherGauge_ && input_->PressKey(DIK_L))
+	if (finisherGauge_ < maxFinisherGauge_ && input_->PressKey(DIK_K))
 	{
 		finisherGauge_ += 0.08f;
 	}

@@ -7,6 +7,7 @@ Enemy::~Enemy()
 {
 	delete hpBar_.sprite_;
 	delete guardGaugeBar_.sprite_;
+	delete finisherGaugeBar_.sprite_;
 }
 
 void Enemy::Initialize()
@@ -39,6 +40,17 @@ void Enemy::Initialize()
 	};
 
 	guardGaugeBar_.sprite_ = Sprite::Create(guardGaugeBar_.textureHandle_, guardGaugeBar_.position_);
+
+	finisherGaugeBar_ = {
+		true,
+		TextureManager::LoadTexture("resource/guardGauge.png"),
+		{980.0f, finisherGaugeBarSpace},
+		0.0f,
+		{-finisherGaugeBarSize  ,20.0f},
+		nullptr,
+	};
+
+	finisherGaugeBar_.sprite_ = Sprite::Create(finisherGaugeBar_.textureHandle_, finisherGaugeBar_.position_);
 
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 7.0f,0.0f,0.0f };
@@ -94,6 +106,11 @@ void Enemy::Update()
 	if (guardGauge_ > 0 && guardGauge_ < maxGuardGauge_)
 	{
 		guardGauge_ -= 0.03f;
+	}
+
+	if (finisherGauge_ < maxFinisherGauge_ && Input::GetInstance()->PressKey(DIK_L))
+	{
+		finisherGauge_ += 0.08f;
 	}
 
 	if (guardGauge_ >= maxGuardGauge_)
@@ -211,6 +228,11 @@ void Enemy::Update()
 		GuardGaugeBarUpdate();
 	}
 
+	if (finisherGauge_ <= 50.0f)
+	{
+		FinisherGaugeBarUpdate();
+	}
+
 	ImGui::Begin("GuardGauge");
 	ImGui::Text("GuardGauge %f", guardGauge_);
 	ImGui::End();
@@ -240,6 +262,8 @@ void Enemy::DrawSprite()
 	}
 
 	guardGaugeBar_.sprite_->Draw();
+
+	finisherGaugeBar_.sprite_->Draw();
 }
 
 void Enemy::HPBarUpdate()
@@ -255,6 +279,14 @@ void Enemy::GuardGaugeBarUpdate()
 
 	guardGaugeBar_.sprite_->SetSize(guardGaugeBar_.size_);
 }
+
+void Enemy::FinisherGaugeBarUpdate()
+{
+	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize,20.0f };
+
+	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
+}
+
 
 void Enemy::Reset()
 {
