@@ -59,6 +59,9 @@ public:
 		//薙ぎ払う
 		bool isMowDown = false;
 
+		//finisher
+		bool isFinisher = false;
+
 		//ジャンプ攻撃
 		bool isJumpAttack = false;
 	};
@@ -88,6 +91,8 @@ public:
 	bool GetIsPoke() { return workAttack_.isPoke; };
 
 	bool GetIsMowDown() { return workAttack_.isMowDown; };
+
+	bool GetIsFinisher() { return workAttack_.isFinisher; };
 
 	bool GetIsThrow() { return isThrow_; };
 
@@ -195,7 +200,7 @@ private:
 
 	float maxFinisherGauge_ = 50.0f;
 
-	float finisherGauge_ = 0.0f;
+	float finisherGauge_ = 50.0f;
 
 	std::unique_ptr<PlayerWeapon> playerWeapon_ = nullptr;
 
@@ -205,7 +210,7 @@ private:
 
 	int jumpAttackTimer_ = 15;
 
-	bool isAttack_[4];
+	bool isAttack_[5];
 
 	Behavior behavior_ = Behavior::kRoot;
 
