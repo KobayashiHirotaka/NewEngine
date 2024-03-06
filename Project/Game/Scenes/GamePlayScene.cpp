@@ -594,6 +594,16 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		}
 	}
 
+	/*if (player_->GetIsFinisher())
+	{
+		camera_.translation_.x = player_->GetWorldPosition().x;
+		camera_.translation_.z = player_->GetWorldPosition().z - 35.0f;
+	}
+	else
+	{
+		camera_.translation_ = { 0.0f,2.0f,-35.0f };
+	}*/
+
 	worldTransform_.UpdateMatrix();
 
 	camera_.UpdateMatrix();
