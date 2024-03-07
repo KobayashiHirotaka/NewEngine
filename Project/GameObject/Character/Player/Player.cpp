@@ -257,7 +257,7 @@ void Player::Draw(const Camera& camera)
 	}
 
 	//Weaponの描画
-	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke || workAttack_.isFinisher
+	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke || workAttack_.isFinisher && finisherEffectTimer <= 0
 		&& !isHitSwingDown_ && !isHitPoke_ && !isHitMowDown_ && !isDown_ && behaviorRequest_ != Behavior::kRoot)
 	{
 		playerWeapon_->Draw(camera);
@@ -330,6 +330,9 @@ void Player::Reset()
 	workAttack_.isJumpAttack = false;
 
 	isThrow_ = false;
+
+	finisherEffectTimer = 60;
+	isFinisherEffect = false;
 
 	behavior_ = Behavior::kRoot;
 
@@ -746,8 +749,8 @@ void Player::BehaviorAttackInitialize()
 	//Finisher
 	if (workAttack_.isFinisher)
 	{
-		worldTransformL_arm_.rotation.x = -1.3f;
-		worldTransformR_arm_.rotation.x = -1.3f;
+		worldTransformL_arm_.rotation.x = 0.0f;
+		worldTransformR_arm_.rotation.x = 0.0f;
 		worldTransformL_arm_.rotation.y = 0.0f;
 		worldTransformR_arm_.rotation.y = 0.0f;
 		workAttack_.translation = { 0.0f,0.5f,0.0f };
@@ -1037,8 +1040,21 @@ void Player::BehaviorAttackUpdate()
 	if (workAttack_.isFinisher)
 	{
 		isGuard_ = false;
-		if (attackAnimationFrame < 104)
+
+		if (finisherEffectTimer > 0)
 		{
+			finisherEffectTimer--;
+			isFinisherEffect = true;
+		}
+		else if (attackAnimationFrame < 104)
+		{
+			isFinisherEffect = false;
+
+			worldTransformL_arm_.rotation.x = -1.3f;
+			worldTransformR_arm_.rotation.x = -1.3f;
+			worldTransformL_arm_.rotation.y = 0.0f;
+			worldTransformR_arm_.rotation.y = 0.0f;
+
 			float rotationSpeed = 0.1f;
 			rotationSpeed += 0.1f;
 			worldTransformBody_.rotation.y += rotationSpeed;
@@ -1058,9 +1074,11 @@ void Player::BehaviorAttackUpdate()
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
+				finisherEffectTimer = 60;
 				workAttack_.isAttack = false;
 				playerWeapon_->SetIsAttack(false);
 				workAttack_.isFinisher = false;
+				isFinisherEffect = false;
 			}
 
 		}
@@ -1107,9 +1125,11 @@ void Player::BehaviorAttackUpdate()
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
+				finisherEffectTimer = 60;
 				workAttack_.isAttack = false;
 				playerWeapon_->SetIsAttack(false);
 				workAttack_.isFinisher = false;
+				isFinisherEffect = false;
 			}
 		}
 		else
@@ -1126,9 +1146,11 @@ void Player::BehaviorAttackUpdate()
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
+				finisherEffectTimer = 60;
 				workAttack_.isAttack = false;
 				playerWeapon_->SetIsAttack(false);
 				workAttack_.isFinisher = false;
+				isFinisherEffect = false;
 			}
 
 			if (workAttack_.stiffnessTimer <= 0)
@@ -1139,8 +1161,10 @@ void Player::BehaviorAttackUpdate()
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
+				finisherEffectTimer = 60;
 				workAttack_.isAttack = false;
 				workAttack_.isFinisher = false;
+				isFinisherEffect = false;
 			}
 		}
 		attackAnimationFrame++;

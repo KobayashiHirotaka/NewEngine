@@ -107,7 +107,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		player_->Update();
 
-		enemy_->Update();
+		if (player_->GetIsFinisherEffect() == false)
+		{
+			enemy_->Update();
+		}
 
 		// 時間経過を加算
 		elapsedTime += frameTime;
@@ -594,15 +597,38 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		}
 	}
 
-	/*if (player_->GetIsFinisher())
+	if (player_->GetFinisherEffectTimer() < 60 && player_->GetFinisherEffectTimer() > 0)
 	{
-		camera_.translation_.x = player_->GetWorldPosition().x;
-		camera_.translation_.z = player_->GetWorldPosition().z - 35.0f;
+		if (player_->GetWorldTransform().rotation.y == 1.7f)
+		{
+			Vector3 finisherPosition = { player_->GetWorldPosition().x + 18.0f,
+			player_->GetWorldPosition().y + 2.0f, player_->GetWorldPosition().z - 15.0f };
+
+			Vector3 finisherRotationPosition = { 0.0f,-1.0f, 0.0f };
+
+			camera_.translation_ = Lerp(camera_.translation_, finisherPosition, 0.1f);
+			camera_.rotation_ = Lerp(camera_.rotation_, finisherRotationPosition, 0.1f);
+		}
+
+		if (player_->GetWorldTransform().rotation.y == 4.6f)
+		{
+			Vector3 finisherPosition = { player_->GetWorldPosition().x - 18.0f,
+			player_->GetWorldPosition().y + 2.0f, player_->GetWorldPosition().z - 15.0f };
+
+			Vector3 finisherRotationPosition = { 0.0f,1.0f, 0.0f };
+
+			camera_.translation_ = Lerp(camera_.translation_, finisherPosition, 0.05f);
+			camera_.rotation_ = Lerp(camera_.rotation_, finisherRotationPosition, 0.05f);
+		}
 	}
 	else
 	{
-		camera_.translation_ = { 0.0f,2.0f,-35.0f };
-	}*/
+		Vector3 finisherPosition = { 0.0f,2.0f,-35.0f };
+		camera_.translation_ = Lerp(camera_.translation_, finisherPosition, 0.05f);
+
+		Vector3 finisherRotationPosition = { 0.0f,0.0f, 0.0f };
+		camera_.rotation_ = Lerp(camera_.rotation_, finisherRotationPosition, 0.05f);
+	}
 
 	worldTransform_.UpdateMatrix();
 

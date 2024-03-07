@@ -156,6 +156,10 @@ public:
 
 	void Reset();
 
+	int GetFinisherEffectTimer() { return finisherEffectTimer; };
+
+	bool GetIsFinisherEffect() { return isFinisherEffect; };
+
 private:
 	Input* input_ = nullptr;
 
@@ -271,5 +275,9 @@ private:
 	bool isReset_ = false;
 
 	int stanTimer_ = 200;
+
+	int finisherEffectTimer = 60;
+
+	bool isFinisherEffect = false;
 };
 
