@@ -1082,6 +1082,7 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.isFinisher = false;
 				isFinisherEffect = false;
 				finisherCount_ = 0;
+				finisherGauge_ = 0.0f;
 			}
 
 		}
@@ -1136,6 +1137,7 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.isFinisher = false;
 				isFinisherEffect = false;
 				finisherCount_ = 0;
+				finisherGauge_ = 0.0f;
 			}
 		}
 		else
@@ -1158,6 +1160,7 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.isFinisher = false;
 				isFinisherEffect = false;
 				finisherCount_ = 0;
+				finisherGauge_ = 0.0f;
 			}
 
 			if (workAttack_.stiffnessTimer <= 0)
@@ -1173,6 +1176,7 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.isFinisher = false;
 				isFinisherEffect = false;
 				finisherCount_ = 0;
+				finisherGauge_ = 0.0f;
 			}
 		}
 		attackAnimationFrame++;
