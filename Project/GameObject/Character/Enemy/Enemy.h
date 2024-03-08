@@ -226,7 +226,7 @@ private:
 
 	bool isPlayerHit_ = false;
 
-	int downAnimationTimer_[7] = { 60,60,60,60,60,60,30 };
+	int downAnimationTimer_[7] = { 60,60,60,60,60,60,40 };
 	bool isHitPunch_ = false;
 	bool isHitSwingDown_ = false;
 	bool isHitPoke_ = false;

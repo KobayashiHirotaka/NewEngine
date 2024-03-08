@@ -468,11 +468,21 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			isShake_ = true;
 		}
 
-		if (player_->GetIsAttack() == true && player_->GetIsFinisher() == true && isDown_ == false
-			&& isGuard_ == false)
+		if (player_->GetIsAttack() == true && player_->GetIsFinisher() == true
+			&& isGuard_ == false && player_->GetFinisherCount() == 1)
 		{
 			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
-			damage = 10.0f;
+			damage = 0.5f;
+			HP_ -= damage;
+			isHitFinisher_ = true;
+			isShake_ = true;
+		}
+
+		if (player_->GetIsAttack() == true && player_->GetIsFinisher() == true
+			&& isGuard_ == false && player_->GetFinisherCount() == 2)
+		{
+			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
+			damage = 1.0f;
 			HP_ -= damage;
 			isHitFinisher_ = true;
 			isShake_ = true;
@@ -1515,12 +1525,12 @@ void Enemy::DownAnimation()
 	}
 
 	//Finisher
-	if (isHitFinisher_ && player_->GetRotation().y == 1.7f)
+	if (isHitFinisher_ && player_->GetRotation().y == 1.7f && player_->GetFinisherCount() == 1)
 	{
 		isDown_ = true;
 		downAnimationTimer_[6]--;
 
-		if (downAnimationTimer_[6] > 10)
+		if (downAnimationTimer_[6] > 20)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1554,12 +1564,12 @@ void Enemy::DownAnimation()
 		}
 	}
 
-	if (isHitFinisher_ && player_->GetRotation().y == 4.6f)
+	if (isHitFinisher_ && player_->GetRotation().y == 4.6f && player_->GetFinisherCount() == 1)
 	{
 		isDown_ = true;
 		downAnimationTimer_[6]--;
 
-		if (downAnimationTimer_[6] > 10)
+		if (downAnimationTimer_[6] > 20)
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1590,6 +1600,96 @@ void Enemy::DownAnimation()
 			isHitFinisher_ = false;
 			isDown_ = false;
 			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitFinisher_ && player_->GetRotation().y == 1.7f && player_->GetFinisherCount() == 2)
+	{
+		isDown_ = true;
+		downAnimationTimer_[2]--;
+
+		if (downAnimationTimer_[2] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(1.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
+		if (downAnimationTimer_[2] > 0)
+		{
+			worldTransform_.translation.x += 0.1f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[2] <= 0)
+		{
+			behaviorRequest_ = Behavior::kRoot;
+			downAnimationTimer_[2] = 60;
+			isHitFinisher_ = false;
+			workAttack_.isSwingDown = false;
+			workAttack_.isPoke = false;
+			workAttack_.isMowDown = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+			worldTransformBody_.rotation.y = 0.0f;
+		}
+	}
+
+	if (isHitFinisher_ && player_->GetRotation().y == 4.6f && player_->GetFinisherCount() == 2)
+	{
+		isDown_ = true;
+		downAnimationTimer_[2]--;
+
+		if (downAnimationTimer_[2] > 40)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(100)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(1.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
+		if (downAnimationTimer_[2] > 0)
+		{
+			worldTransform_.translation.x -= 0.1f;
+			worldTransformBody_.rotation.x -= 0.03f;
+		}
+
+		if (downAnimationTimer_[2] <= 0)
+		{
+			behaviorRequest_ = Behavior::kRoot;
+			downAnimationTimer_[2] = 60;
+			isHitFinisher_ = false;
+			workAttack_.isSwingDown = false;
+			workAttack_.isPoke = false;
+			workAttack_.isMowDown = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+			worldTransformBody_.rotation.y = 0.0f;
 		}
 	}
 }

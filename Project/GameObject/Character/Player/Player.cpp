@@ -333,6 +333,7 @@ void Player::Reset()
 
 	finisherEffectTimer = 60;
 	isFinisherEffect = false;
+	finisherCount_ = 0;
 
 	behavior_ = Behavior::kRoot;
 
@@ -1049,6 +1050,7 @@ void Player::BehaviorAttackUpdate()
 		else if (attackAnimationFrame < 104)
 		{
 			isFinisherEffect = false;
+			finisherCount_ = 1;
 
 			worldTransformL_arm_.rotation.x = -1.3f;
 			worldTransformR_arm_.rotation.x = -1.3f;
@@ -1079,6 +1081,7 @@ void Player::BehaviorAttackUpdate()
 				playerWeapon_->SetIsAttack(false);
 				workAttack_.isFinisher = false;
 				isFinisherEffect = false;
+				finisherCount_ = 0;
 			}
 
 		}
@@ -1105,6 +1108,8 @@ void Player::BehaviorAttackUpdate()
 		}
 		else if (workAttack_.rotation.x < 2.0f)
 		{
+			finisherCount_ = 2;
+
 			worldTransformL_arm_.rotation.x += 0.1f;
 			worldTransformR_arm_.rotation.x += 0.1f;
 
@@ -1130,6 +1135,7 @@ void Player::BehaviorAttackUpdate()
 				playerWeapon_->SetIsAttack(false);
 				workAttack_.isFinisher = false;
 				isFinisherEffect = false;
+				finisherCount_ = 0;
 			}
 		}
 		else
@@ -1151,6 +1157,7 @@ void Player::BehaviorAttackUpdate()
 				playerWeapon_->SetIsAttack(false);
 				workAttack_.isFinisher = false;
 				isFinisherEffect = false;
+				finisherCount_ = 0;
 			}
 
 			if (workAttack_.stiffnessTimer <= 0)
@@ -1165,6 +1172,7 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.isAttack = false;
 				workAttack_.isFinisher = false;
 				isFinisherEffect = false;
+				finisherCount_ = 0;
 			}
 		}
 		attackAnimationFrame++;

@@ -160,6 +160,8 @@ public:
 
 	bool GetIsFinisherEffect() { return isFinisherEffect; };
 
+	int GetFinisherCount() { return finisherCount_; };
+
 private:
 	Input* input_ = nullptr;
 
@@ -279,5 +281,6 @@ private:
 	int finisherEffectTimer = 60;
 
 	bool isFinisherEffect = false;
+	int finisherCount_ = 0;
 };
 
