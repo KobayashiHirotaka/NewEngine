@@ -226,12 +226,13 @@ private:
 
 	bool isPlayerHit_ = false;
 
-	int downAnimationTimer_[6] = { 60,60,60,60,60,60 };
+	int downAnimationTimer_[7] = { 60,60,60,60,60,60,30 };
 	bool isHitPunch_ = false;
 	bool isHitSwingDown_ = false;
 	bool isHitPoke_ = false;
 	bool isHitMowDown_ = false;
 	bool isHitThrow_ = false;
+	bool isHitFinisher_ = false;
 	bool isDown_ = false;
 
 	int patternCount_ = 1;

@@ -299,6 +299,8 @@ void Enemy::Reset()
 		downAnimationTimer_[i] = 60;
 	}
 
+	downAnimationTimer_[6] = 30;
+
 	isReset_ = true;
 
 	isHitPunch_ = false;
@@ -472,7 +474,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
 			damage = 10.0f;
 			HP_ -= damage;
-			isHitSwingDown_ = true;
+			isHitFinisher_ = true;
 			isShake_ = true;
 		}
 	}
@@ -1507,6 +1509,85 @@ void Enemy::DownAnimation()
 		{
 			downAnimationTimer_[4] = 60;
 			isHitThrow_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	//Finisher
+	if (isHitFinisher_ && player_->GetRotation().y == 1.7f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[6]--;
+
+		if (downAnimationTimer_[6] > 10)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.4f ,0.4f ,0.4f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(50)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(1.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
+		if (downAnimationTimer_[6] > 0)
+		{
+			worldTransformBody_.rotation.x -= 0.01f;
+		}
+
+		if (downAnimationTimer_[6] <= 0)
+		{
+			downAnimationTimer_[6] = 30;
+			isHitFinisher_ = false;
+			isDown_ = false;
+			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	if (isHitFinisher_ && player_->GetRotation().y == 4.6f)
+	{
+		isDown_ = true;
+		downAnimationTimer_[6]--;
+
+		if (downAnimationTimer_[6] > 10)
+		{
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+				.SetTranslation(worldTransform_.translation)
+				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.4f ,0.4f ,0.4f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
+				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(50)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(1.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+
+		if (downAnimationTimer_[6] > 0)
+		{
+			worldTransformBody_.rotation.x -= 0.01f;
+		}
+
+		if (downAnimationTimer_[6] <= 0)
+		{
+			downAnimationTimer_[6] = 30;
+			isHitFinisher_ = false;
 			isDown_ = false;
 			worldTransformBody_.rotation.x = 0.0f;
 		}
