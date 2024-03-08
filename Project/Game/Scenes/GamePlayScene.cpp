@@ -534,6 +534,14 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		}
 	}
 
+	if (player_->GetIsFinisherEffect())
+	{
+		PostProcess::GetInstance()->SetVignetteIntensity(1.8f);
+	}
+	else {
+		PostProcess::GetInstance()->SetVignetteIntensity(1.5f);
+	}
+
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !isOpen_ && roundStartTimer_ < 0)
