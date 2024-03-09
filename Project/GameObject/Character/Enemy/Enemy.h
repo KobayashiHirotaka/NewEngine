@@ -154,6 +154,12 @@ public:
 
 	bool GetIsShake() { return isShake_; };
 
+	bool GetIsHitPunch() { return isHitPunch_; };
+	bool GetIsHitSwingDown() { return isHitSwingDown_; };
+	bool GetIsHitPoke() { return isHitPoke_; };
+	bool GetIsHitMowDown() { return isHitMowDown_; };
+	bool GetIsHitThrow() { return isHitThrow_; };
+	
 	void Reset();
 
 private:

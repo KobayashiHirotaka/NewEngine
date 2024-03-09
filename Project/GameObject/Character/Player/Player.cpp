@@ -116,9 +116,9 @@ void Player::Update()
 		guardGauge_ -= 0.03f;
 	}
 
-	if (finisherGauge_ < maxFinisherGauge_ && input_->PressKey(DIK_K))
+	if (finisherGauge_ >= maxFinisherGauge_)
 	{
-		finisherGauge_ += 0.08f;
+		finisherGauge_ = 50.0f;
 	}
 
 	if (guardGauge_ >= maxGuardGauge_)
@@ -305,6 +305,32 @@ void Player::GuardGaugeBarUpdate()
 
 void Player::FinisherGaugeBarUpdate()
 {
+
+	if (enemy_->GetIsDown() == false && enemy_->GetIsHitPunch())
+	{
+		finisherGauge_ += 3.0f;
+	}
+
+	if (enemy_->GetIsDown() == false && enemy_->GetIsHitSwingDown())
+	{
+		finisherGauge_ += 8.0f;
+	}
+
+	if (enemy_->GetIsDown() == false && enemy_->GetIsHitPoke())
+	{
+		finisherGauge_ += 6.0f;
+	}
+
+	if (enemy_->GetIsDown() == false && enemy_->GetIsHitMowDown())
+	{
+		finisherGauge_ += 8.0f;
+	}
+
+	if (enemy_->GetIsDown() == false && enemy_->GetIsHitThrow())
+	{
+		finisherGauge_ += 5.0f;
+	}
+
 	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize,20.0f };
 
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
