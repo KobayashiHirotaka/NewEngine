@@ -281,6 +281,20 @@ void Player::HPBarUpdate()
 	hpBar_.size_ = { (HP_ / maxHP_) * barSize,7.0f };
 
 	hpBar_.sprite_->SetSize(hpBar_.size_);
+
+	if (HP_ > 50)
+	{
+		hpBar_.sprite_->SetColor({ 0.0f, 1.0f, 0.0f, 1.0f });
+	}
+
+	if (HP_ <= 50 && HP_ > 25)
+	{
+		hpBar_.sprite_->SetColor({ 1.0f, 0.8f, 0.0f, 1.0f });
+	}
+	else if (HP_ <= 25)
+	{
+		hpBar_.sprite_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
+	}
 }
 
 void Player::GuardGaugeBarUpdate()
