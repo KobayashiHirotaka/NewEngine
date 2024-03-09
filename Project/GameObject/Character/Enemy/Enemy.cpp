@@ -228,10 +228,7 @@ void Enemy::Update()
 		GuardGaugeBarUpdate();
 	}
 
-	if (finisherGauge_ <= 50.0f)
-	{
-		FinisherGaugeBarUpdate();
-	}
+	FinisherGaugeBarUpdate();
 
 	ImGui::Begin("GuardGauge");
 	ImGui::Text("GuardGauge %f", guardGauge_);
@@ -292,6 +289,8 @@ void Enemy::GuardGaugeBarUpdate()
 	guardGaugeBar_.size_ = { (guardGauge_ / maxGuardGauge_) * guardGaugeBarSize,7.0f };
 
 	guardGaugeBar_.sprite_->SetSize(guardGaugeBar_.size_);
+
+	guardGaugeBar_.sprite_->SetColor({ 0.0f, 0.5f, 1.0f, 1.0f });
 }
 
 void Enemy::FinisherGaugeBarUpdate()
@@ -299,6 +298,15 @@ void Enemy::FinisherGaugeBarUpdate()
 	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize,20.0f };
 
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
+
+	if (finisherGauge_ < maxFinisherGauge_)
+	{
+		finisherGaugeBar_.sprite_->SetColor({ 0.0f, 0.5f, 1.0f, 1.0f });
+	}
+	else
+	{
+		finisherGaugeBar_.sprite_->SetColor({ 1.0f, 0.5f, 0.0f, 1.0f });
+	}
 }
 
 
