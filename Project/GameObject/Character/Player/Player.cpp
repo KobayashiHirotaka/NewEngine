@@ -832,17 +832,38 @@ void Player::BehaviorAttackUpdate()
 
 			if (workAttack_.stiffnessTimer < 0)
 			{
-				behaviorRequest_ = Behavior::kRoot;
+				/*behaviorRequest_ = Behavior::kRoot;
+				workAttack_.stiffnessTimer = 20;
+				worldTransformHead_.rotation.y = 0.0f;
+				worldTransformBody_.rotation.y = 0.0f;
+				worldTransformL_arm_.rotation.y = 0.0f;
+				worldTransformR_arm_.rotation.y = 0.0f;
+				workAttack_.isPunch = false;*/
+
+				audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+				behaviorRequest_ = Behavior::kAttack;
 				workAttack_.stiffnessTimer = 20;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.isPunch = false;
+				workAttack_.isMowDown = true;
 			}
 		}
+
 		attackAnimationFrame++;
 	}
+
+	if (input_->GetJoystickState())
+	{
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && workAttack_.stiffnessTimer > 30)
+		{
+			ImGui::Begin("Player");
+			ImGui::End();
+		}
+	}
+
 
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
