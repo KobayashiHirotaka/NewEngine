@@ -206,7 +206,7 @@ private:
 
 	float maxFinisherGauge_ = 50.0f;
 
-	float finisherGauge_ = 50.0f;
+	float finisherGauge_ = 40.0f;
 
 	std::unique_ptr<PlayerWeapon> playerWeapon_ = nullptr;
 
