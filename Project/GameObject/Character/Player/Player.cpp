@@ -861,15 +861,15 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.stiffnessTimer = 60;
 				worldTransformL_arm_.rotation.x = -1.3f;
 				worldTransformR_arm_.rotation.x = -1.3f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.translation = { 0.0f,0.5f,0.0f };
-				workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
+				workAttack_.rotation = { 1.5f,0.0f,0.0f };
+				pokeTimer_ = 30;
 
 				playerWeapon_->SetTranslation(workAttack_.translation);
 				playerWeapon_->SetRotation(workAttack_.rotation);
 				workAttack_.isPunch = false;
-				workAttack_.isMowDown = true;
+				workAttack_.isPoke = true;
+				workAttack_.isPokeRight = true;
 			}
 		}
 

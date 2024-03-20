@@ -159,6 +159,8 @@ public:
 	bool GetIsHitPoke() { return isHitPoke_; };
 	bool GetIsHitMowDown() { return isHitMowDown_; };
 	bool GetIsHitThrow() { return isHitThrow_; };
+
+	bool GetIsGuard() { return isGuard_; };
 	
 	void Reset();
 
