@@ -832,15 +832,15 @@ void Player::BehaviorAttackUpdate()
 
 			if (workAttack_.stiffnessTimer < 0)
 			{
-				/*behaviorRequest_ = Behavior::kRoot;
-				workAttack_.stiffnessTimer = 20;
+				behaviorRequest_ = Behavior::kRoot;
+				workAttack_.stiffnessTimer = 60;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
-				workAttack_.isPunch = false;*/
+				workAttack_.isPunch = false;
 
-				audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+				/*audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
 				behaviorRequest_ = Behavior::kAttack;
 				workAttack_.stiffnessTimer = 20;
 				worldTransformHead_.rotation.y = 0.0f;
@@ -848,20 +848,32 @@ void Player::BehaviorAttackUpdate()
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.isPunch = false;
+				workAttack_.isMowDown = true;*/
+			}
+		}
+
+		if (input_->GetJoystickState())
+		{
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && workAttack_.stiffnessTimer > 30 && enemy_->GetIsHitPunch())
+			{
+				audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+				behaviorRequest_ = Behavior::kAttack;
+				workAttack_.stiffnessTimer = 60;
+				worldTransformL_arm_.rotation.x = -1.3f;
+				worldTransformR_arm_.rotation.x = -1.3f;
+				worldTransformL_arm_.rotation.y = 0.0f;
+				worldTransformR_arm_.rotation.y = 0.0f;
+				workAttack_.translation = { 0.0f,0.5f,0.0f };
+				workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
+
+				playerWeapon_->SetTranslation(workAttack_.translation);
+				playerWeapon_->SetRotation(workAttack_.rotation);
+				workAttack_.isPunch = false;
 				workAttack_.isMowDown = true;
 			}
 		}
 
 		attackAnimationFrame++;
-	}
-
-	if (input_->GetJoystickState())
-	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && workAttack_.stiffnessTimer > 30)
-		{
-			ImGui::Begin("Player");
-			ImGui::End();
-		}
 	}
 
 
