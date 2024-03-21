@@ -359,6 +359,7 @@ void Player::Reset()
 	isReset_ = true;
 	
 	isHitPunch_ = false;
+	isHitCPunch_ = false;
 	isHitSwingDown_ = false;
 	isHitPoke_ = false;
 	isHitMowDown_ = false;
@@ -369,6 +370,7 @@ void Player::Reset()
 
 	workAttack_.isAttack = false;
 	workAttack_.isPunch = false;
+	workAttack_.isCPunch = false;
 	workAttack_.isSwingDown = false;
 	workAttack_.isPoke = false;
 	workAttack_.isPokeRight = false;
@@ -755,6 +757,14 @@ void Player::BehaviorAttackInitialize()
 		worldTransformR_arm_.rotation.y = 0.0f;
 	}
 
+	if (workAttack_.isCPunch)
+	{
+		worldTransformL_arm_.rotation.x = 0.0f;
+		worldTransformR_arm_.rotation.x = -1.3f;
+		worldTransformL_arm_.rotation.y = 0.0f;
+		worldTransformR_arm_.rotation.y = 0.0f;
+	}
+
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
 	{
@@ -852,30 +862,116 @@ void Player::BehaviorAttackUpdate()
 			}
 		}
 
+		if (isDown_)
+		{
+			behaviorRequest_ = Behavior::kRoot;
+			workAttack_.stiffnessTimer = 60;
+			worldTransformHead_.rotation.y = 0.0f;
+			worldTransformBody_.rotation.y = 0.0f;
+			worldTransformL_arm_.rotation.y = 0.0f;
+			worldTransformR_arm_.rotation.y = 0.0f;
+			workAttack_.isPunch = false;
+		}
+
 		if (input_->GetJoystickState())
 		{
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && workAttack_.stiffnessTimer > 30 && enemy_->GetIsHitPunch())
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && workAttack_.stiffnessTimer > 30)
 			{
 				audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
 				behaviorRequest_ = Behavior::kAttack;
+				attackAnimationFrame = 0;
 				workAttack_.stiffnessTimer = 60;
-				worldTransformL_arm_.rotation.x = -1.3f;
+				worldTransformHead_.rotation.y = 0.0f;
+				worldTransformBody_.rotation.y = 0.0f;
+				worldTransformL_arm_.rotation.x = 0.0f;
 				worldTransformR_arm_.rotation.x = -1.3f;
-				workAttack_.translation = { 0.0f,0.5f,0.0f };
-				workAttack_.rotation = { 1.5f,0.0f,0.0f };
-				pokeTimer_ = 30;
+				worldTransformL_arm_.rotation.y = 0.0f;
+				worldTransformR_arm_.rotation.y = 0.0f;
 
-				playerWeapon_->SetTranslation(workAttack_.translation);
-				playerWeapon_->SetRotation(workAttack_.rotation);
 				workAttack_.isPunch = false;
-				workAttack_.isPoke = true;
-				workAttack_.isPokeRight = true;
+				workAttack_.isCPunch = true;
 			}
 		}
 
 		attackAnimationFrame++;
 	}
 
+	if (workAttack_.isCPunch)
+	{
+		isGuard_ = false;
+
+		if (attackAnimationFrame < 3.0f)
+		{
+			worldTransformBody_.rotation.y -= 0.1f;
+		}
+		else if (worldTransformBody_.rotation.y < 1.0f)
+		{
+			worldTransformBody_.rotation.y += 0.1f;
+		}
+		else
+		{
+			workAttack_.stiffnessTimer--;
+
+			if (workAttack_.stiffnessTimer < 0)
+			{
+				behaviorRequest_ = Behavior::kRoot;
+				workAttack_.stiffnessTimer = 60;
+				worldTransformHead_.rotation.y = 0.0f;
+				worldTransformBody_.rotation.y = 0.0f;
+				worldTransformL_arm_.rotation.y = 0.0f;
+				worldTransformR_arm_.rotation.y = 0.0f;
+				workAttack_.isCPunch = false;
+
+				/*audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+				behaviorRequest_ = Behavior::kAttack;
+				workAttack_.stiffnessTimer = 20;
+				worldTransformHead_.rotation.y = 0.0f;
+				worldTransformBody_.rotation.y = 0.0f;
+				worldTransformL_arm_.rotation.y = 0.0f;
+				worldTransformR_arm_.rotation.y = 0.0f;
+				workAttack_.isPunch = false;
+				workAttack_.isMowDown = true;*/
+			}
+		}
+
+		if (isDown_)
+		{
+			behaviorRequest_ = Behavior::kRoot;
+			workAttack_.stiffnessTimer = 60;
+			worldTransformHead_.rotation.y = 0.0f;
+			worldTransformBody_.rotation.y = 0.0f;
+			worldTransformL_arm_.rotation.y = 0.0f;
+			worldTransformR_arm_.rotation.y = 0.0f;
+			workAttack_.isCPunch = false;
+		}
+
+		if (input_->GetJoystickState())
+		{
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && workAttack_.stiffnessTimer > 30)
+			{
+				audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+				behaviorRequest_ = Behavior::kAttack;
+				attackAnimationFrame = 0;
+				workAttack_.stiffnessTimer = 60;
+				worldTransformHead_.rotation.y = 0.0f;
+				worldTransformBody_.rotation.y = 0.0f;
+				worldTransformL_arm_.rotation.x = -1.3f;
+				worldTransformR_arm_.rotation.x = -1.3f;
+				worldTransformL_arm_.rotation.y = 0.0f;
+				worldTransformR_arm_.rotation.y = 0.0f;
+				workAttack_.translation = { 0.0f,0.5f,0.0f };
+				workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
+
+				playerWeapon_->SetTranslation(workAttack_.translation);
+				playerWeapon_->SetRotation(workAttack_.rotation);
+
+				workAttack_.isCPunch = false;
+				workAttack_.isMowDown = true;
+			}
+		}
+
+		attackAnimationFrame++;
+	}
 
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)

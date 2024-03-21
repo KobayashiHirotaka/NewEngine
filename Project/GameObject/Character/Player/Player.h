@@ -47,6 +47,7 @@ public:
 
 		//パンチ
 		bool isPunch = false;
+		bool isCPunch = false;
 
 		//振り下ろす
 		bool isSwingDown = false;
@@ -85,6 +86,8 @@ public:
 	bool GetIsAttack() { return workAttack_.isAttack; };
 
 	bool GetIsPunch() { return workAttack_.isPunch; };
+
+	bool GetIsCPunch() { return workAttack_.isCPunch; };
 
 	bool GetIsSwingDown() { return workAttack_.isSwingDown; };
 
@@ -238,6 +241,7 @@ private:
 
 	int downAnimationTimer_[6] = { 60,60,60,60,60,60 };
 	bool isHitPunch_ = false;
+	bool isHitCPunch_ = false;
 	bool isHitSwingDown_ = false;
 	bool isHitPoke_ = false;
 	bool isHitMowDown_ = false;
