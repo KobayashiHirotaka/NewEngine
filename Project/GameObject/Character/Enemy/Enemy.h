@@ -155,6 +155,7 @@ public:
 	bool GetIsShake() { return isShake_; };
 
 	bool GetIsHitPunch() { return isHitPunch_; };
+	bool GetIsHitCPunch() { return isHitCPunch_; };
 	bool GetIsHitSwingDown() { return isHitSwingDown_; };
 	bool GetIsHitPoke() { return isHitPoke_; };
 	bool GetIsHitMowDown() { return isHitMowDown_; };
@@ -236,6 +237,7 @@ private:
 
 	int downAnimationTimer_[7] = { 60,60,60,60,60,60,40 };
 	bool isHitPunch_ = false;
+	bool isHitCPunch_ = false;
 	bool isHitSwingDown_ = false;
 	bool isHitPoke_ = false;
 	bool isHitMowDown_ = false;
