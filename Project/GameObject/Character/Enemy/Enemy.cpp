@@ -52,6 +52,9 @@ void Enemy::Initialize()
 
 	finisherGaugeBar_.sprite_ = Sprite::Create(finisherGaugeBar_.textureHandle_, finisherGaugeBar_.position_);
 
+	hitTextureHandle_ = TextureManager::LoadTexture("resource/Hit.png");
+	hitSprite_.reset(Sprite::Create(hitTextureHandle_, { 40.0f, 180.0f }));
+
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 7.0f,0.0f,0.0f };
 
@@ -293,6 +296,13 @@ void Enemy::DrawSprite()
 	guardGaugeBar_.sprite_->Draw();
 
 	finisherGaugeBar_.sprite_->Draw();
+
+	if (comboCount_ >= 2)
+	{
+		hitSprite_->Draw();
+	}
+
+		hitSprite_->Draw();
 }
 
 void Enemy::HPBarUpdate()

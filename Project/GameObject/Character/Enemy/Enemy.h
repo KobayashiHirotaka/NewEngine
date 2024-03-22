@@ -284,4 +284,7 @@ private:
 
 	int comboTimer_ = 60;
 	int comboCount_ = 0;
+
+	std::unique_ptr<Sprite>hitSprite_ = nullptr;
+	uint32_t hitTextureHandle_;
 };
