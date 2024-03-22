@@ -230,8 +230,40 @@ void Enemy::Update()
 
 	FinisherGaugeBarUpdate();
 
+	if (isHitPunch_)
+	{
+		comboCount_ = 1;
+		comboTimer_--;
+	}
+
+	if (isHitCPunch_)
+	{
+		comboCount_ = 2;
+		comboTimer_ = 60;
+		comboTimer_--;
+	}
+
+	if (comboCount_ == 2 && isHitMowDown_)
+	{
+		comboCount_ = 3;
+		comboTimer_--;
+	}
+
+	if (comboTimer_ < 60)
+	{
+		comboTimer_--;
+	}
+
+	if (comboTimer_ < 0)
+	{
+		comboTimer_ = 60;
+		comboCount_ = 0;
+	}
+
 	ImGui::Begin("GuardGauge");
 	ImGui::Text("GuardGauge %f", guardGauge_);
+	ImGui::Text("ComboC %d", comboCount_);
+	ImGui::Text("ComboT %d", comboTimer_);
 	ImGui::End();
 }
 
@@ -345,6 +377,8 @@ void Enemy::Reset()
 	workAttack_.isJumpAttack = false;
 
 	isThrow_ = false;
+
+	comboCount_ = 0;
 
 	behavior_ = Behavior::kRoot;
 

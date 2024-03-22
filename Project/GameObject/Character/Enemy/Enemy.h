@@ -281,4 +281,7 @@ private:
 	bool isReset_ = false;
 
 	int stanTimer_ = 200;
+
+	int comboTimer_ = 60;
+	int comboCount_ = 0;
 };
