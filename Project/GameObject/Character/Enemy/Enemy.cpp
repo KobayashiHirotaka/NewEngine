@@ -302,7 +302,7 @@ void Enemy::DrawSprite()
 		hitSprite_->Draw();
 	}
 
-		hitSprite_->Draw();
+		/*hitSprite_->Draw();*/
 }
 
 void Enemy::HPBarUpdate()
