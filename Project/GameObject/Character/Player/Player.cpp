@@ -238,6 +238,22 @@ void Player::Update()
 	}
 
 	FinisherGaugeBarUpdate();
+
+	if (workAttack_.isCPunch == true)
+	{
+		cancelCount_ = 1;
+	}
+
+	if (cancelCount_ == 1)
+	{
+		cancelTimer_--;
+
+		if (cancelTimer_ < 0)
+		{
+			cancelCount_ = 0;
+			cancelTimer_ = 60;
+		}
+	}
 }
 
 void Player::Draw(const Camera& camera)

@@ -547,6 +547,16 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			isShake_ = true;
 		}
 
+		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true && 
+			player_->GetIsCancelCount() == 1)
+		{
+			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
+			damage = 0.6f;
+			HP_ -= damage;
+			isHitMowDown_ = true;
+			isShake_ = true;
+		}
+
 		if (player_->GetIsAttack() == true && player_->GetIsFinisher() == true
 			&& isGuard_ == false && player_->GetFinisherCount() == 1)
 		{

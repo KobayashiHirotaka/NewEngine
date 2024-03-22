@@ -165,6 +165,8 @@ public:
 
 	int GetFinisherCount() { return finisherCount_; };
 
+	int GetIsCancelCount() { return cancelCount_; };
+
 private:
 	Input* input_ = nullptr;
 
@@ -286,5 +288,8 @@ private:
 
 	bool isFinisherEffect = false;
 	int finisherCount_ = 0;
+
+	int cancelCount_ = 0;
+	int cancelTimer_ = 60;
 };
 
