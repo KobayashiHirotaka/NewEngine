@@ -361,6 +361,10 @@ void Enemy::UpdateComboNumberSprite()
 	comboNumSprite_.reset(Sprite::Create(comboNumTextureHandle_, { 10.0f, 290.0f }));
 }
 
+void HitStop(int milliseconds)
+{
+	std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+}
 
 void Enemy::Reset()
 {
@@ -502,6 +506,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			damage = 8.0f;
 			HP_ -= damage;
 			isHitPunch_ = true;
+
+			HitStop(20);
 		}
 
 		if (player_->GetIsCPunch() == true && isDown_ == false && isGuard_ == false)
@@ -579,6 +585,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			HP_ -= damage;
 			isHitSwingDown_ = true;
 			isShake_ = true;
+
+			HitStop(50);
 		}
 
 		if (player_->GetIsAttack() == true && player_->GetIsPoke() == true && isDown_ == false
@@ -589,6 +597,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			HP_ -= damage;
 			isHitPoke_ = true;
 			isShake_ = true;
+
+			HitStop(50);
 		}
 
 		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true && isDown_ == false
@@ -599,6 +609,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			HP_ -= damage;
 			isHitMowDown_ = true;
 			isShake_ = true;
+
+			HitStop(50);
 		}
 
 		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true && 
@@ -609,6 +621,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			HP_ -= damage;
 			isHitMowDown_ = true;
 			isShake_ = true;
+
+			HitStop(50);
 		}
 
 		if (player_->GetIsAttack() == true && player_->GetIsFinisher() == true
