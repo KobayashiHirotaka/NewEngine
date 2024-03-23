@@ -361,6 +361,12 @@ void Player::FinisherGaugeBarUpdate()
 	}
 }
 
+
+void Player::HitStop(int milliseconds)
+{
+	std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+}
+
 void Player::Reset()
 {
 	HP_ = maxHP_;
@@ -454,6 +460,8 @@ void Player::OnCollision(Collider* collider, float damage)
 			damage = 15.0f;
 			HP_ -= damage;
 			isHitPunch_ = true;
+
+			HitStop(20);
 		}
 
 		if (enemy_->GetIsThrow() == true && isDown_ == false)
@@ -524,6 +532,8 @@ void Player::OnCollision(Collider* collider, float damage)
 			HP_ -= damage;
 			isHitSwingDown_ = true;
 			isShake_ = true;
+
+			HitStop(50);
 		}
 
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsPoke() == true && isDown_ == false
@@ -534,6 +544,8 @@ void Player::OnCollision(Collider* collider, float damage)
 			HP_ -= damage;
 			isHitPoke_ = true;
 			isShake_ = true;
+
+			HitStop(50);
 		}
 
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsMowDown() == true && isDown_ == false
@@ -544,6 +556,8 @@ void Player::OnCollision(Collider* collider, float damage)
 			HP_ -= damage;
 			isHitMowDown_ = true;
 			isShake_ = true;
+
+			HitStop(50);
 		}
 	}
 }

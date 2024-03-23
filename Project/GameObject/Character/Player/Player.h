@@ -155,6 +155,8 @@ public:
 
 	void FinisherGaugeBarUpdate();
 
+	void HitStop(int milliseconds);
+
 	bool GetIsShake() { return isShake_; };
 
 	void Reset();

@@ -361,7 +361,7 @@ void Enemy::UpdateComboNumberSprite()
 	comboNumSprite_.reset(Sprite::Create(comboNumTextureHandle_, { 10.0f, 290.0f }));
 }
 
-void HitStop(int milliseconds)
+void Enemy::HitStop(int milliseconds)
 {
 	std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
@@ -621,8 +621,6 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			HP_ -= damage;
 			isHitMowDown_ = true;
 			isShake_ = true;
-
-			HitStop(50);
 		}
 
 		if (player_->GetIsAttack() == true && player_->GetIsFinisher() == true

@@ -140,6 +140,8 @@ public:
 
 	int Random(int min_value, int max_value);
 
+	void HitStop(int milliseconds);
+
 	Vector3 GetRotation() { return worldTransform_.rotation; };
 
 	void DrawParticle(const Camera& camera);
