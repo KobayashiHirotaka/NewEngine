@@ -586,7 +586,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			isHitSwingDown_ = true;
 			isShake_ = true;
 
-			HitStop(50);
+			HitStop(100);
 		}
 
 		if (player_->GetIsAttack() == true && player_->GetIsPoke() == true && isDown_ == false
@@ -598,7 +598,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			isHitPoke_ = true;
 			isShake_ = true;
 
-			HitStop(50);
+			HitStop(100);
 		}
 
 		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true && isDown_ == false
@@ -610,7 +610,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			isHitMowDown_ = true;
 			isShake_ = true;
 
-			HitStop(50);
+			HitStop(100);
 		}
 
 		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true && 
