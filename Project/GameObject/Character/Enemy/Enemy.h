@@ -152,6 +152,8 @@ public:
 
 	void FinisherGaugeBarUpdate();
 
+	void UpdateComboNumberSprite();
+
 	bool GetIsShake() { return isShake_; };
 
 	bool GetIsHitPunch() { return isHitPunch_; };
@@ -287,4 +289,7 @@ private:
 
 	std::unique_ptr<Sprite>hitSprite_ = nullptr;
 	uint32_t hitTextureHandle_;
+
+	std::unique_ptr<Sprite>comboNumSprite_ = nullptr;
+	uint32_t comboNumTextureHandle_;
 };

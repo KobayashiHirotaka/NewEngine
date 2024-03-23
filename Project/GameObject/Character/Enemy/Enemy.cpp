@@ -263,6 +263,8 @@ void Enemy::Update()
 		comboCount_ = 0;
 	}
 
+	UpdateComboNumberSprite();
+
 	ImGui::Begin("GuardGauge");
 	ImGui::Text("GuardGauge %f", guardGauge_);
 	ImGui::Text("ComboC %d", comboCount_);
@@ -300,9 +302,8 @@ void Enemy::DrawSprite()
 	if (comboCount_ >= 2)
 	{
 		hitSprite_->Draw();
+		comboNumSprite_->Draw();
 	}
-
-		/*hitSprite_->Draw();*/
 }
 
 void Enemy::HPBarUpdate()
@@ -349,6 +350,15 @@ void Enemy::FinisherGaugeBarUpdate()
 	{
 		finisherGaugeBar_.sprite_->SetColor({ 1.0f, 0.5f, 0.0f, 1.0f });
 	}
+}
+
+void Enemy::UpdateComboNumberSprite()
+{
+	int comboNum = comboCount_;
+
+	comboNumTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(comboNum) + ".png");
+	
+	comboNumSprite_.reset(Sprite::Create(comboNumTextureHandle_, { 10.0f, 290.0f }));
 }
 
 
