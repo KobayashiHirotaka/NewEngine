@@ -521,6 +521,9 @@
     <ClInclude Include="Application\GameObject\Player.h">
       <Filter>ヘッダー ファイル\Application\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\3D\Model\VertexData.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\Object3d.PS.hlsl">

@@ -355,75 +355,94 @@ void Model::CreatePSO()
 Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std::string& filename)
 {
 	ModelData modelData;
-	std::vector<Vector4> positions;
-	std::vector<Vector3> normals;
-	std::vector<Vector2> texcoords;
-	std::string line;
-	std::ifstream file(directoryPath + "/" + filename);
-	assert(file.is_open());
 
-	while (std::getline(file, line))
+	Assimp::Importer importer;
+
+	std::string file(directoryPath + "/" + filename);
+
+	const aiScene* scene = importer.ReadFile(file.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+
+	//meshが存在しない物は対応しない
+	assert(scene->HasMeshes());
+
+	//meshの解析
+	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) 
 	{
-		std::string identifier;
-		std::istringstream s(line);
-		s >> identifier;
+		aiMesh* mesh = scene->mMeshes[meshIndex];
 
-		if (identifier == "v") 
+		//法線がないmeshは非対応
+		assert(mesh->HasNormals());
+
+		//TexCoordの確認
+		if (mesh->HasTextureCoords(0) == true) 
 		{
-			Vector4 position;
-			s >> position.x >> position.y >> position.z;
-			position.z *= -1.0f;
-			position.w = 1.0f;
-			positions.push_back(position);
+			isLoadTexCoord_ = true;
 		}
-		else if (identifier == "vt")
+		else
 		{
-			Vector2 texcoord;
-			s >> texcoord.x >> texcoord.y;
-			texcoord.y = 1.0f - texcoord.y;
-			texcoords.push_back(texcoord);
+			//TexCoordがない場合
+			isLoadTexCoord_ = false;
 		}
-		else if (identifier == "vn") 
+
+		//meshの中身(face)の解析を行う
+		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex)
 		{
-			Vector3 normal;
-			s >> normal.x >> normal.y >> normal.z;
-			normal.z *= -1.0f;
-			normals.push_back(normal);
-		}
-		else if (identifier == "f") 
-		{
-			Mesh::VertexData triangle[3];
-			for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex)
+			aiFace& face = mesh->mFaces[faceIndex];
+
+			//三角形のみ対応
+			assert(face.mNumIndices == 3);
+
+			//faceの中身(vertex)の解析を行う
+			for (uint32_t element = 0; element < face.mNumIndices; ++element) 
 			{
-				std::string vertexDefinition;
-				s >> vertexDefinition;
-				std::istringstream v(vertexDefinition);
+				//faceから取得したvertexIndexでmeshからデータを取り出す
+				uint32_t vertexIndex = face.mIndices[element];
+				aiVector3D& position = mesh->mVertices[vertexIndex];
+				aiVector3D& normal = mesh->mNormals[vertexIndex];
+				aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+				VertexData vertex;
+				vertex.position = { position.x,position.y,position.z,1.0f };
+				vertex.normal = { normal.x,normal.y,normal.z };
 
-				uint32_t elementIndices[3];
-				for (int32_t element = 0; element < 3; ++element) 
+				if (isLoadTexCoord_ == true) 
 				{
-					std::string index;
-					std::getline(v, index, '/');
-					elementIndices[element] = std::stoi(index);
+					//TexCoordの設定
+					vertex.texcoord = { texcoord.x,texcoord.y };
 				}
-			
-				Vector4 position = positions[elementIndices[0] - 1];
-				Vector2 texcoord = texcoords[elementIndices[1] - 1];
-				Vector3 normal = normals[elementIndices[2] - 1];
-				triangle[faceVertex] = { position,texcoord,normal };
+				else 
+				{
+					//無い場合、手動で設定する
+					vertex.texcoord = { 32.0f,32.0f };
+				}
+
+				modelData.vertices.push_back(vertex);
 			}
-			
-			modelData.vertices.push_back(triangle[2]);
-			modelData.vertices.push_back(triangle[1]);
-			modelData.vertices.push_back(triangle[0]);
-		}
-		else if (identifier == "mtllib")
-		{
-			std::string materialFilename;
-			s >> materialFilename;
-			modelData.material = LoadMaterialTemplateFile(directoryPath, materialFilename);
 		}
 	}
+
+	//materialの解析(現在はマルチマテリアル非対応)
+	if (isLoadTexCoord_ == true)
+	{
+		//モデルにテクスチャがテクスチャが設定されている場合
+		for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex) 
+		{
+			aiMaterial* material = scene->mMaterials[materialIndex];
+
+			//Materialに設定されているTextureを用途に応じて取得する
+			if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0)
+			{
+				aiString textureFilePath;
+				material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
+				modelData.material.textureFilePath = directoryPath + "/" + textureFilePath.C_Str();
+			}
+		}
+	}
+	else 
+	{
+		//モデルにテクスチャがテクスチャが設定されていない場合
+		modelData.material.textureFilePath = "project/gamedata/resources/null.png";
+	}
+
 	return modelData;
 }
 

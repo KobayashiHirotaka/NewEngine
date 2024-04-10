@@ -1,18 +1,12 @@
 #pragma once
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Utility/Math/MyMath.h"
+#include "Engine/3D/Model/VertexData.h"
 #include <vector>
 
 class Mesh
 {
 public:
-	struct VertexData
-	{
-		Vector4 position;
-		Vector2 texcoord;
-		Vector3 normal;
-	};
-
 	void Initialize(const std::vector<VertexData>& vertices);
 
 	void Draw();

@@ -13,6 +13,11 @@
 #include <list>
 #include <string>
 #include <sstream>
+#include "Engine/3D/Model/VertexData.h"
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #pragma comment(lib,"dxcompiler.lib")
 
@@ -35,7 +40,7 @@ public:
 
 	struct ModelData 
 	{
-		std::vector<Mesh::VertexData> vertices;
+		std::vector<VertexData> vertices;
 		MaterialData material;
 		std::string name;
 	};
@@ -103,4 +108,8 @@ private:
 	std::unique_ptr<Light>light_;
 	
 	uint32_t textureHandle_;
+
+	bool isLoadTexCoord_ = false;
+
+	VertexData* vertexData_;
 };
