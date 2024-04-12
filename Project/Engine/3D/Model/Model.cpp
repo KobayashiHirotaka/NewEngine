@@ -93,7 +93,7 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 	if (!modelExists)
 	{
 		//モデルデータを読み込む
-		modelData = model->LoadObjFile(directoryPath, filename);
+		modelData = model->LoadModelFile(directoryPath, filename);
 		modelData.name = filename;
 		modelDatas_.push_back(modelData);
 	}
@@ -352,7 +352,7 @@ void Model::CreatePSO()
 	assert(SUCCEEDED(hr));
 }
 
-Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std::string& filename)
+Model::ModelData Model::LoadModelFile(const std::string& directoryPath, const std::string& filename)
 {
 	ModelData modelData;
 

@@ -18,7 +18,7 @@ void GamePlayScene::Initialize()
 	audio_ = Audio::GetInstance();
 
 	modelManager_->LoadModel("resource/hammer", "hammer.obj");
-	modelManager_->LoadModel("resource/models", "monsterBall.obj");
+	modelManager_->LoadModel("resource/models", "tryangle.gltf");
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
@@ -54,7 +54,7 @@ void GamePlayScene::Update()
 	if (input_->PushKey(DIK_RETURN) && modelCount_ == 0)
 	{
 		modelCount_ = 1;
-		player_->SetModel(modelManager_->FindModel("monsterBall.obj"));
+		player_->SetModel(modelManager_->FindModel("tryangle.gltf"));
 	}
 	else if (input_->PushKey(DIK_RETURN) && modelCount_ == 1)
 	{
@@ -63,7 +63,7 @@ void GamePlayScene::Update()
 	}
 
 	modelManager_->FindModel("hammer.obj")->GetLight()->ImGui("Light");
-	modelManager_->FindModel("monsterBall.obj")->GetLight()->ImGui("Light");
+	//modelManager_->FindModel("monsterBall.obj")->GetLight()->ImGui("Light");
 	
 	//Bloom
 	if (input_->PressKey(DIK_1))
