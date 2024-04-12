@@ -339,7 +339,7 @@
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル\Engine\Framework</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\3D\Model\Animation.cpp">
+    <ClCompile Include="Engine\3D\Model\KeyframeAnimation.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -527,7 +527,7 @@
     <ClInclude Include="Engine\3D\Model\VertexData.h">
       <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\3D\Model\Animation.h">
+    <ClInclude Include="Engine\3D\Model\KeyframeAnimation.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
