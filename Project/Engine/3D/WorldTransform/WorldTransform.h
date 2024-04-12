@@ -7,6 +7,12 @@ struct ConstBufferDataWorldTransform
 	Matrix4x4 matWorld;
 };
 
+enum class RotationType
+{
+	Euler,
+	Quaternion
+};
+
 class WorldTransform
 {
 public:
@@ -18,7 +24,7 @@ public:
 
 	void TransferMatrix();
 
-	void UpdateMatrix();
+	void UpdateMatrix(RotationType rotationType);
 
 	void SetParent(const WorldTransform* parent);
 
@@ -44,4 +50,6 @@ public:
 
 	//親となるワールド変換へのポインタ
 	const WorldTransform* parent_ = nullptr;
+
+	Quaternion quaternion = { 0.0f,0.0f,0.0f,1.0f };
 };

@@ -96,7 +96,7 @@ void GameTitleScene::Update()
 		PostProcess::GetInstance()->SetIsVignetteActive(false);
 	}
 
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrix(RotationType::Euler);
 
 	camera_.UpdateMatrix();
 
