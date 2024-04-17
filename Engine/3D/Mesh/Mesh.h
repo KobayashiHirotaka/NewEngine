@@ -6,13 +6,6 @@
 class Mesh
 {
 public:
-	struct VertexData
-	{
-		Vector4 position;
-		Vector2 texcoord;
-		Vector3 normal;
-	};
-
 	void Initialize(const std::vector<VertexData>& vertices);
 
 	void Draw();

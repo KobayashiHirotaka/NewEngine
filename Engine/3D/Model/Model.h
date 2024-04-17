@@ -14,6 +14,10 @@
 #include <string>
 #include <sstream>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #pragma comment(lib,"dxcompiler.lib")
 
 enum class RootParameterIndex
@@ -35,7 +39,7 @@ public:
 
 	struct ModelData 
 	{
-		std::vector<Mesh::VertexData> vertices;
+		std::vector<VertexData> vertices;
 		MaterialData material;
 		std::string name;
 	};
@@ -103,4 +107,8 @@ private:
 	std::unique_ptr<Light>light_;
 	
 	uint32_t textureHandle_;
+
+	VertexData* vertexData_;
+
+	bool isLoadTexCoord_ = false;//TexCoordがモデルに設定されているか
 };
