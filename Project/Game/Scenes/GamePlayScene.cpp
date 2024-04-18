@@ -28,6 +28,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	ground_.reset(Model::CreateFromOBJ("resource/Ground", "Ground.obj"));
 
+	block_.reset(Model::CreateFromOBJ("resource/AnimatedCube", "AnimatedCube.gltf"));
+
 	roundTextureHandle_[0] = TextureManager::LoadTexture("resource/Round1.png");
 	roundTextureHandle_[1] = TextureManager::LoadTexture("resource/Round2.png");
 	roundTextureHandle_[2] = TextureManager::LoadTexture("resource/Round3.png");
@@ -64,6 +66,9 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 0.0f,-1.0f,0.0f };
+
+	worldTransformB_.Initialize();
+	worldTransformB_.translation = { 0.0f,0.0f,0.0f };
 
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
@@ -639,6 +644,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 
 	worldTransform_.UpdateMatrix();
+	worldTransformB_.UpdateMatrix();
 
 	camera_.UpdateMatrix();
 
@@ -669,6 +675,8 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 	{
 		ground_->Draw(worldTransform_, camera_);
 	}
+
+	block_->Draw(worldTransformB_, camera_);
 
 	skydome_->Draw(camera_);
 

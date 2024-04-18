@@ -121,4 +121,8 @@ private:
 	float transitionTimer_ = 0;
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
+
+	std::unique_ptr<Model>block_;
+
+	WorldTransform worldTransformB_;
 };
