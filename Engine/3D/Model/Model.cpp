@@ -99,7 +99,7 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 	if (!modelExists)
 	{
 		//モデルデータを読み込む
-		modelData = model->LoadObjFile(directoryPath, filename);
+		modelData = model->LoadModelFile(directoryPath, filename);
 		modelData.name = filename;
 		modelDatas_.push_back(modelData);
 	}
@@ -358,7 +358,7 @@ void Model::CreatePSO()
 	assert(SUCCEEDED(hr));
 }
 
-Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std::string& filename)
+Model::ModelData Model::LoadModelFile(const std::string& directoryPath, const std::string& filename)
 {
 	Model::ModelData modelData;
 	Assimp::Importer importer;
@@ -509,6 +509,59 @@ Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directory
 		}
 	}
 	return materialData;
+}
+
+Animation Model::LoadAnimationFile(const std::string& directoryPath, const std::string& filename)
+{
+	Animation animation{};
+
+	Assimp::Importer importer;
+
+	std::string filePath = directoryPath + "/" + filename;
+
+	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
+
+	assert(scene->mAnimations != 0);//アニメーションがない
+
+	aiAnimation* animationAssimp = scene->mAnimations[0];//最初のアニメーションだけ採用。もちろん複数対応することに越したことはない
+	animation.duration = float(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);//時間の単位を秒に変換
+
+	//assimpでは個々のNodeのAnimationをchannelと読んでいるのでchannelを回してNodeAnimationの情報を取ってくる
+	for (uint32_t channelIndex = 0; channelIndex < animationAssimp->mNumChannels; ++channelIndex)
+	{
+		aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
+		NodeAnimation& nodeAnimation = animation.nodeAnimations[nodeAnimationAssimp->mNodeName.C_Str()];
+
+		//Translate
+		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex)
+		{
+			aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
+			KeyframeVector3 keyframe;
+			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);//ここも秒に変換
+			keyframe.value = { -keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };//右手->左手
+			nodeAnimation.translate.keyframes.push_back(keyframe);
+		}
+		//Rotate
+		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex)
+		{
+			aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
+			KeyframeQuaternion keyframe;
+			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+			keyframe.value = { keyAssimp.mValue.x,-keyAssimp.mValue.y,-keyAssimp.mValue.z,keyAssimp.mValue.w };
+			nodeAnimation.rotate.keyframes.push_back(keyframe);
+		}
+		//Scale
+		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex)
+		{
+			aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
+			KeyframeVector3 keyframe;
+			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+			keyframe.value = { keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };
+			nodeAnimation.scale.keyframes.push_back(keyframe);
+		}
+	}
+
+	return animation;
 }
 
 Model::Node Model::ReadNode(aiNode* node)
