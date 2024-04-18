@@ -28,6 +28,12 @@ void Model::StaticInitialize()
 
 void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 {
+	ModelData modelData;
+
+	WorldTransform world = worldTransform;
+	world.constMap->matWorld = Multiply(modelData.rootNode.localMatrix, worldTransform.matWorld);
+	world.TransferMatrix();
+
 	//マテリアルの更新
 	material_->Update();
 
@@ -41,7 +47,7 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 	material_->SetGraphicsCommand(UINT(RootParameterIndex::Material));
 
 	//WorldTransform用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldTransform), worldTransform.constBuff->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldTransform), world.constBuff->GetGPUVirtualAddress());
 
 	//ViewProjection用のCBufferの場所を設定
 	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff_->GetGPUVirtualAddress());
@@ -360,6 +366,8 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 	assert(scene->HasMeshes());//メッシュがないのは対応しない
 
+	modelData.rootNode = ReadNode(scene->mRootNode);
+
 	//Meshの解析
 	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
 	{
@@ -501,4 +509,35 @@ Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directory
 		}
 	}
 	return materialData;
+}
+
+Model::Node Model::ReadNode(aiNode* node)
+{
+	Node result;
+	//nodeのlocalMatrixを取得
+	aiMatrix4x4 aiLocalMatrix = node->mTransformation;
+
+	//列ベクトル形式を行ベクトル形式に転置
+	aiLocalMatrix.Transpose();
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			result.localMatrix.m[i][j] = aiLocalMatrix[i][j];
+		}
+	}
+
+	//Node名を格納
+	result.name = node->mName.C_Str();
+
+	//子供の数だけ確保
+	result.children.resize(node->mNumChildren);
+	for (uint32_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex)
+	{
+		//再帰的に読んで階層構造を作っていく
+		result.children[childIndex] = ReadNode(node->mChildren[childIndex]);
+	}
+
+	return result;
 }

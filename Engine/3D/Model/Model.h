@@ -32,6 +32,13 @@ enum class RootParameterIndex
 class Model 
 {
 public:
+	struct Node
+	{
+		Matrix4x4 localMatrix;
+		std::string name;
+		std::vector<Node> children;
+	};
+
 	struct MaterialData
 	{
 		std::string textureFilePath;
@@ -42,6 +49,7 @@ public:
 		std::vector<VertexData> vertices;
 		MaterialData material;
 		std::string name;
+		Node rootNode;
 	};
 
 	struct ModelTransformationData
@@ -80,6 +88,8 @@ private:
 	ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
 
 	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
+
+	Node ReadNode(aiNode* node);
 
 private:
 	static DirectXCore* dxCore_;
