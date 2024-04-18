@@ -386,6 +386,29 @@ Matrix4x4 MakeRotateZMatrix(float radian)
 	return result;
 }
 
+Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion)
+{
+	Matrix4x4 result{};
+	result.m[0][0] = quaternion.w * quaternion.w + quaternion.x * quaternion.x - quaternion.y * quaternion.y - quaternion.z * quaternion.z;
+	result.m[0][1] = 2.0f * (quaternion.x * quaternion.y + quaternion.w * quaternion.z);
+	result.m[0][2] = 2.0f * (quaternion.x * quaternion.z - quaternion.w * quaternion.y);
+	result.m[0][3] = 0.0f;
+	result.m[1][0] = 2.0f * (quaternion.x * quaternion.y - quaternion.w * quaternion.z);
+	result.m[1][1] = quaternion.w * quaternion.w - quaternion.x * quaternion.x + quaternion.y * quaternion.y - quaternion.z * quaternion.z;
+	result.m[1][2] = 2.0f * (quaternion.y * quaternion.z + quaternion.w * quaternion.x);
+	result.m[1][3] = 0.0f;
+	result.m[2][0] = 2.0f * (quaternion.x * quaternion.z + quaternion.w * quaternion.y);
+	result.m[2][1] = 2.0f * (quaternion.y * quaternion.z - quaternion.w * quaternion.x);
+	result.m[2][2] = quaternion.w * quaternion.w - quaternion.x * quaternion.x - quaternion.y * quaternion.y + quaternion.z * quaternion.z;
+	result.m[2][3] = 0.0f;
+	result.m[3][0] = 0.0f;
+	result.m[3][1] = 0.0f;
+	result.m[3][2] = 0.0f;
+	result.m[3][3] = 1.0f;
+	return result;
+}
+
+
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate)
 {
 	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
@@ -413,6 +436,16 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 	result.m[3][2] = translate.z;
 	result.m[3][3] = 1.0f;
 
+	return result;
+}
+
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Quaternion& quaternion, const Vector3& translation)
+{
+	Matrix4x4 result{};
+	Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
+	Matrix4x4 rotateMatrix = MakeRotateMatrix(quaternion);
+	Matrix4x4 translateMatrix = MakeTranslateMatrix(translation);
+	result = scaleMatrix * rotateMatrix * translateMatrix;
 	return result;
 }
 
@@ -466,6 +499,40 @@ Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float botto
 	result.m[3][1] = (top + bottom) / (bottom - top);
 	result.m[3][2] = nearClip / (nearClip - farClip);
 	result.m[3][3] = 1.0f;
+
+	return result;
+}
+
+Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
+{
+	Quaternion result{};
+	Quaternion localQ0 = q0;
+	Quaternion localQ1 = q1;
+
+	float dot = localQ0.x * localQ1.x + localQ0.y * localQ1.y + localQ0.z * localQ1.z + localQ0.w * localQ1.w;
+	if (dot < 0.0f)
+	{
+		localQ0 = { -localQ0.x,-localQ0.y,-localQ0.z,-localQ0.w };
+		dot = -dot;
+	}
+
+	if (dot >= 1.0f - std::numeric_limits<float>::epsilon())
+	{
+		result.x = (1.0f - t) * localQ0.x + t * localQ1.x;
+		result.y = (1.0f - t) * localQ0.y + t * localQ1.y;
+		result.z = (1.0f - t) * localQ0.z + t * localQ1.z;
+		result.w = (1.0f - t) * localQ0.w + t * localQ1.w;
+		return result;
+	}
+
+	float theta = std::acos(dot);
+	float scale0 = std::sin((1 - t) * theta) / std::sin(theta);
+	float scale1 = std::sin(t * theta) / std::sin(theta);
+
+	result.x = scale0 * localQ0.x + scale1 * localQ1.x;
+	result.y = scale0 * localQ0.y + scale1 * localQ1.y;
+	result.z = scale0 * localQ0.z + scale1 * localQ1.z;
+	result.w = scale0 * localQ0.w + scale1 * localQ1.w;
 
 	return result;
 }

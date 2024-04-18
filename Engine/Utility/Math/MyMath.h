@@ -48,11 +48,17 @@ Matrix4x4 MakeRotateYMatrix(float radian);
 
 Matrix4x4 MakeRotateZMatrix(float radian);
 
+Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion);
+
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Quaternion& quaternion, const Vector3& translation);
 
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
 
 Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip);
+
+Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t);
 
 //演算子オーバーロード
 Vector3 operator+(const Vector3& v1, const Vector3& v2);

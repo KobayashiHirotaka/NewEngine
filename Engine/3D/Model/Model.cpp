@@ -30,6 +30,18 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 {
 	ModelData modelData;
 
+	//animationTime_ += 1.0f / 60.0f;//時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
+	//animationTime_ = std::fmod(animationTime_, animation_.duration);//最後までいったら最初からリピート再生。リピートしなくても別にいい
+	//NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData.rootNode.name];
+	//Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
+	//Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
+	//Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
+	//Matrix4x4 localMatrix = MakeAffineMatrix(scale, rotate, translate);
+
+	//WorldTransform world = worldTransform;
+	//world.constMap->matWorld = Multiply(modelData.rootNode.localMatrix, worldTransform.matWorld);
+	//world.TransferMatrix();
+
 	WorldTransform world = worldTransform;
 	world.constMap->matWorld = Multiply(modelData.rootNode.localMatrix, worldTransform.matWorld);
 	world.TransferMatrix();
@@ -593,4 +605,50 @@ Model::Node Model::ReadNode(aiNode* node)
 	}
 
 	return result;
+}
+
+Vector3 Model::CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time)
+{
+	assert(!keyframes.empty());//キーがないものは返す値が分からないのでダメ
+	//キーが2つか、時刻がキーフレーム前なら最初の値とする
+	if (keyframes.size() == 1 || time <= keyframes[0].time)
+	{
+		return keyframes[0].value;
+	}
+
+	for (size_t index = 0; index < keyframes.size() - 1; ++index)
+	{
+		size_t nextIndex = index + 1;
+		//indexとnextIndexの2つのkeyframeを取得して範囲内に時刻があるかを判定
+		if (keyframes[index].time <= time && time <= keyframes[nextIndex].time)
+		{
+			//範囲内を補間する
+			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
+			return Lerp(keyframes[index].value, keyframes[nextIndex].value, t);
+		}
+	}
+	return (*keyframes.rbegin()).value;
+}
+
+Quaternion Model::CalculateValue(const std::vector<KeyframeQuaternion>& keyframes, float time)
+{
+	assert(!keyframes.empty());//キーがないものは返す値が分からないのでダメ
+	//キーが2つか、時刻がキーフレーム前なら最初の値とする
+	if (keyframes.size() == 1 || time <= keyframes[0].time)
+	{
+		return keyframes[0].value;
+	}
+
+	for (size_t index = 0; index < keyframes.size() - 1; ++index)
+	{
+		size_t nextIndex = index + 1;
+		//indexとnextIndexの2つのkeyframeを取得して範囲内に時刻があるかを判定
+		if (keyframes[index].time <= time && time <= keyframes[nextIndex].time)
+		{
+			//範囲内を補間する
+			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
+			return Slerp(keyframes[index].value, keyframes[nextIndex].value, t);
+		}
+	}
+	return (*keyframes.rbegin()).value;
 }

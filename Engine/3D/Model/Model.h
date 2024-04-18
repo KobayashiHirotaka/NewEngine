@@ -92,6 +92,10 @@ private:
 
 	Node ReadNode(aiNode* node);
 
+	Vector3 CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time);
+
+	Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframes, float time);
+
 private:
 	static DirectXCore* dxCore_;
 
@@ -121,5 +125,6 @@ private:
 
 	VertexData* vertexData_;
 
-	bool isLoadTexCoord_ = false;//TexCoordがモデルに設定されているか
+	float animationTime_ = 0.0f;
+	Animation animation_;
 };
