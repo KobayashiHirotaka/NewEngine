@@ -24,27 +24,40 @@ void Model::StaticInitialize()
 	InitializeDXC();
 
 	CreatePSO();
+
 }
 
-void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
+void Model::Update()
 {
-	ModelData modelData;
 
-	//animationTime_ += 1.0f / 60.0f;//時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
-	//animationTime_ = std::fmod(animationTime_, animation_.duration);//最後までいったら最初からリピート再生。リピートしなくても別にいい
-	//NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData.rootNode.name];
-	//Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
-	//Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
-	//Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
-	//Matrix4x4 localMatrix = MakeAffineMatrix(scale, rotate, translate);
+}
 
-	//WorldTransform world = worldTransform;
-	//world.constMap->matWorld = Multiply(modelData.rootNode.localMatrix, worldTransform.matWorld);
-	//world.TransferMatrix();
+void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
+{
+	//ModelData modelData;
 
-	WorldTransform world = worldTransform;
-	world.constMap->matWorld = Multiply(modelData.rootNode.localMatrix, worldTransform.matWorld);
-	world.TransferMatrix();
+	if (isKeyframeAnimation_)
+	{
+		animationTime_ += 1.0f / 60.0f;//時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
+		animationTime_ = std::fmod(animationTime_, animation_.duration);//最後までいったら最初からリピート再生。リピートしなくても別にいい
+		NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
+		Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
+		Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
+		Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
+		Matrix4x4 localMatrix = MakeAffineMatrix(scale, rotate, translate);
+
+		worldTransform.matWorld = Multiply(localMatrix, worldTransform.matWorld);
+		worldTransform.TransferMatrix();
+	}
+	/*else
+	{
+		world_ = worldTransform;
+		world_.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
+		world_.TransferMatrix();
+	}*/
+
+ 	worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
+	worldTransform.TransferMatrix();
 
 	//マテリアルの更新
 	material_->Update();
@@ -59,7 +72,7 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 	material_->SetGraphicsCommand(UINT(RootParameterIndex::Material));
 
 	//WorldTransform用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldTransform), world.constBuff->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldTransform), worldTransform.constBuff->GetGPUVirtualAddress());
 
 	//ViewProjection用のCBufferの場所を設定
 	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff_->GetGPUVirtualAddress());
@@ -97,12 +110,17 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 	//モデルデータを読み込む
 	ModelData modelData;
 
+	Animation animation;
+
+	//animation_ = animation;
+
 	for (ModelData existingModelData : modelDatas_)
 	{
 		if (existingModelData.name == filename)
 		{
 			//既に存在する場合はそのモデルを使う
 			modelData = existingModelData;
+			model->modelData_ = modelData;
 			modelExists = true;
 			break;
 		}
@@ -113,8 +131,11 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 		//モデルデータを読み込む
 		modelData = model->LoadModelFile(directoryPath, filename);
 		modelData.name = filename;
+		model->modelData_ = modelData;
 		modelDatas_.push_back(modelData);
 	}
+
+	model->animation_ = model->LoadAnimationFile(directoryPath, filename);
 
 	//メッシュの作成
 	model->mesh_ = std::make_unique<Mesh>();
@@ -533,43 +554,46 @@ Animation Model::LoadAnimationFile(const std::string& directoryPath, const std::
 
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
 
-	assert(scene->mAnimations != 0);//アニメーションがない
-
-	aiAnimation* animationAssimp = scene->mAnimations[0];//最初のアニメーションだけ採用。もちろん複数対応することに越したことはない
-	animation.duration = float(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);//時間の単位を秒に変換
-
-	//assimpでは個々のNodeのAnimationをchannelと読んでいるのでchannelを回してNodeAnimationの情報を取ってくる
-	for (uint32_t channelIndex = 0; channelIndex < animationAssimp->mNumChannels; ++channelIndex)
+	if(scene->mAnimations != 0)
 	{
-		aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
-		NodeAnimation& nodeAnimation = animation.nodeAnimations[nodeAnimationAssimp->mNodeName.C_Str()];
+		isKeyframeAnimation_ = true;
 
-		//Translate
-		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex)
+		aiAnimation* animationAssimp = scene->mAnimations[0];//最初のアニメーションだけ採用。もちろん複数対応することに越したことはない
+		animation.duration = float(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);//時間の単位を秒に変換
+
+		//assimpでは個々のNodeのAnimationをchannelと読んでいるのでchannelを回してNodeAnimationの情報を取ってくる
+		for (uint32_t channelIndex = 0; channelIndex < animationAssimp->mNumChannels; ++channelIndex)
 		{
-			aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
-			KeyframeVector3 keyframe;
-			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);//ここも秒に変換
-			keyframe.value = { -keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };//右手->左手
-			nodeAnimation.translate.keyframes.push_back(keyframe);
-		}
-		//Rotate
-		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex)
-		{
-			aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
-			KeyframeQuaternion keyframe;
-			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
-			keyframe.value = { keyAssimp.mValue.x,-keyAssimp.mValue.y,-keyAssimp.mValue.z,keyAssimp.mValue.w };
-			nodeAnimation.rotate.keyframes.push_back(keyframe);
-		}
-		//Scale
-		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex)
-		{
-			aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
-			KeyframeVector3 keyframe;
-			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
-			keyframe.value = { keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };
-			nodeAnimation.scale.keyframes.push_back(keyframe);
+			aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
+			NodeAnimation& nodeAnimation = animation.nodeAnimations[nodeAnimationAssimp->mNodeName.C_Str()];
+
+			//Translate
+			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex)
+			{
+				aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
+				KeyframeVector3 keyframe;
+				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);//ここも秒に変換
+				keyframe.value = { -keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };//右手->左手
+				nodeAnimation.translate.keyframes.push_back(keyframe);
+			}
+			//Rotate
+			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex)
+			{
+				aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
+				KeyframeQuaternion keyframe;
+				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+				keyframe.value = { keyAssimp.mValue.x,-keyAssimp.mValue.y,-keyAssimp.mValue.z,keyAssimp.mValue.w };
+				nodeAnimation.rotate.keyframes.push_back(keyframe);
+			}
+			//Scale
+			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex)
+			{
+				aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
+				KeyframeVector3 keyframe;
+				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+				keyframe.value = { keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };
+				nodeAnimation.scale.keyframes.push_back(keyframe);
+			}
 		}
 	}
 

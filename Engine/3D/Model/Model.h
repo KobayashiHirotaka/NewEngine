@@ -62,7 +62,9 @@ public:
 
 	//void Initialize();
 
-	void Draw(const WorldTransform& worldTransform, const Camera& camera);
+	void Update();
+
+	void Draw(WorldTransform& worldTransform, const Camera& camera);
 
 	static void Release();
 
@@ -125,6 +127,9 @@ private:
 
 	VertexData* vertexData_;
 
+	ModelData modelData_;
+
 	float animationTime_ = 0.0f;
 	Animation animation_;
+	bool isKeyframeAnimation_ = false;
 };

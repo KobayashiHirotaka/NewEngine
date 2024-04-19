@@ -68,7 +68,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	worldTransform_.translation = { 0.0f,-1.0f,0.0f };
 
 	worldTransformB_.Initialize();
-	worldTransformB_.translation = { 0.0f,0.0f,0.0f };
+	worldTransformB_.translation = { 0.0f,3.0f,20.0f };
 
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
@@ -642,6 +642,8 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		Vector3 finisherRotationPosition = { 0.0f,0.0f, 0.0f };
 		camera_.rotation_ = Lerp(camera_.rotation_, finisherRotationPosition, 0.05f);
 	}
+
+	block_->Update();
 
 	worldTransform_.UpdateMatrix();
 	worldTransformB_.UpdateMatrix();
