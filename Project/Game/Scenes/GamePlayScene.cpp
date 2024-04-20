@@ -28,7 +28,11 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	ground_.reset(Model::CreateFromOBJ("resource/Ground", "Ground.obj"));
 
-	block_.reset(Model::CreateFromOBJ("resource/AnimatedCube", "AnimatedCube.gltf"));
+	stageObject_[0].reset(Model::CreateFromOBJ("resource/StageObject", "StageObject.gltf"));
+	stageObject_[1].reset(Model::CreateFromOBJ("resource/StagePillar", "StagePillar.obj"));
+	stageObject_[2].reset(Model::CreateFromOBJ("resource/StageObject", "StageObject.gltf"));
+	stageObject_[3].reset(Model::CreateFromOBJ("resource/StagePillar", "StagePillar.obj"));
+	//stageObject_[1].reset(Model::CreateFromOBJ("resource/BackStage", "BackStage.obj"));
 
 	roundTextureHandle_[0] = TextureManager::LoadTexture("resource/Round1.png");
 	roundTextureHandle_[1] = TextureManager::LoadTexture("resource/Round2.png");
@@ -67,8 +71,17 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 0.0f,-1.0f,0.0f };
 
-	worldTransformB_.Initialize();
-	worldTransformB_.translation = { 0.0f,3.0f,20.0f };
+	worldTransformStageObject_[0].Initialize();
+	worldTransformStageObject_[0].translation = { -15.0f,-2.0f,50.0f };
+
+	worldTransformStageObject_[1].Initialize();
+	worldTransformStageObject_[1].translation = { -15.0f,-2.0f,50.0f };
+
+	worldTransformStageObject_[2].Initialize();
+	worldTransformStageObject_[2].translation = { 15.0f,-2.0f,50.0f };
+
+	worldTransformStageObject_[3].Initialize();
+	worldTransformStageObject_[3].translation = { 15.0f,-2.0f,50.0f };
 
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
@@ -643,10 +656,16 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		camera_.rotation_ = Lerp(camera_.rotation_, finisherRotationPosition, 0.05f);
 	}
 
-	block_->Update();
+	stageObject_[0]->Update();
+	stageObject_[1]->Update();
+	stageObject_[2]->Update();
+	stageObject_[3]->Update();
 
 	worldTransform_.UpdateMatrix();
-	worldTransformB_.UpdateMatrix();
+	worldTransformStageObject_[0].UpdateMatrix();
+	worldTransformStageObject_[1].UpdateMatrix();
+	worldTransformStageObject_[2].UpdateMatrix();
+	worldTransformStageObject_[3].UpdateMatrix();
 
 	camera_.UpdateMatrix();
 
@@ -678,7 +697,13 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 		ground_->Draw(worldTransform_, camera_);
 	}
 
-	block_->Draw(worldTransformB_, camera_);
+	stageObject_[0]->Draw(worldTransformStageObject_[0], camera_);
+
+	stageObject_[1]->Draw(worldTransformStageObject_[1], camera_);
+
+	stageObject_[2]->Draw(worldTransformStageObject_[2], camera_);
+
+	stageObject_[3]->Draw(worldTransformStageObject_[3], camera_);
 
 	skydome_->Draw(camera_);
 

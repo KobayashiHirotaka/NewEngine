@@ -122,7 +122,7 @@ private:
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
 
-	std::unique_ptr<Model>block_;
+	std::unique_ptr<Model>stageObject_[4];
 
-	WorldTransform worldTransformB_;
+	WorldTransform worldTransformStageObject_[4];
 };
