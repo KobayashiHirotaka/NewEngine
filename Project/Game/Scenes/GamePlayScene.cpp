@@ -29,8 +29,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	ground_.reset(Model::CreateFromOBJ("resource/Ground", "Ground.obj"));
 
 	stageObject_[0].reset(Model::CreateFromOBJ("resource/StageObject", "StageObject.gltf"));
-	stageObject_[1].reset(Model::CreateFromOBJ("resource/StagePillar", "StagePillar.obj"));
-	stageObject_[2].reset(Model::CreateFromOBJ("resource/StageObject", "StageObject.gltf"));
+	stageObject_[1].reset(Model::CreateFromOBJ("resource/StageObject", "StageObject.gltf"));
+	stageObject_[2].reset(Model::CreateFromOBJ("resource/StagePillar", "StagePillar.obj"));
 	stageObject_[3].reset(Model::CreateFromOBJ("resource/StagePillar", "StagePillar.obj"));
 	//stageObject_[1].reset(Model::CreateFromOBJ("resource/BackStage", "BackStage.obj"));
 
@@ -75,10 +75,10 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	worldTransformStageObject_[0].translation = { -25.0f,-2.5f,50.0f };
 
 	worldTransformStageObject_[1].Initialize();
-	worldTransformStageObject_[1].translation = { -25.0f,-2.5f,50.0f };
+	worldTransformStageObject_[1].translation = { 25.0f,-2.5f,50.0f };
 
 	worldTransformStageObject_[2].Initialize();
-	worldTransformStageObject_[2].translation = { 25.0f,-2.5f,50.0f };
+	worldTransformStageObject_[2].translation = { -25.0f,-2.5f,50.0f };
 
 	worldTransformStageObject_[3].Initialize();
 	worldTransformStageObject_[3].translation = { 25.0f,-2.5f,50.0f };
@@ -656,11 +656,16 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		camera_.rotation_ = Lerp(camera_.rotation_, finisherRotationPosition, 0.05f);
 	}
 
-	stageObject_[0]->Update();
-	stageObject_[1]->Update();
-	stageObject_[2]->Update();
-	stageObject_[3]->Update();
+	//Animation
+	for (int i = 0; i < 2; i++)
+	{
+		float animationTime[2];
+		animationTime[i] = stageObject_[i]->GetAnimationTime();
+		animationTime[i] += 1.0f / 60.0f;
 
+		stageObject_[i]->SetAnimationTime(animationTime[i]);
+	}
+	
 	worldTransform_.UpdateMatrix();
 	worldTransformStageObject_[0].UpdateMatrix();
 	worldTransformStageObject_[1].UpdateMatrix();

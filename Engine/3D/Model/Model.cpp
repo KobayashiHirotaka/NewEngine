@@ -38,7 +38,7 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
 
 	if (isKeyframeAnimation_)
 	{
-		animationTime_ += 1.0f / 60.0f;//時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
+		//animationTime_ += 1.0f / 60.0f;//時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
 		animationTime_ = std::fmod(animationTime_, animation_.duration);//最後までいったら最初からリピート再生。リピートしなくても別にいい
 		NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
 		Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);

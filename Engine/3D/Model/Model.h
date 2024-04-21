@@ -78,6 +78,10 @@ public:
 
 	Light* GetLight() { return light_.get(); };
 
+	float GetAnimationTime() { return animationTime_; };
+
+	void SetAnimationTime(float animationTime) { animationTime_ = animationTime; };
+
 private:
 	static void InitializeDXC();
 
