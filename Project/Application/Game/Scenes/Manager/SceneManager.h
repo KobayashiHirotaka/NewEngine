@@ -10,7 +10,7 @@
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/Particle/Random.h"
-#include "Project/Game/Scenes/IScene.h"
+#include "Application/Game/Scenes/IScene.h"
 #include <memory>
 
 class SceneManager 

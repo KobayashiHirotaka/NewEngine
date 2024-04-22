@@ -11,7 +11,7 @@
 #include "Engine/3D/Particle/ParticleSystem.h"
 #include "Engine/2D/Sprite/UI.h"
 
-#include "Project/GameObject/Character/Player/PlayerWeapon.h"
+#include "Application/GameObject/Character/Player/PlayerWeapon.h"
 
 class Enemy;
 

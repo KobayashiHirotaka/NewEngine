@@ -6,7 +6,7 @@
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
 #include "Engine/2D/Sprite/Sprite.h"
-#include "Project/GameObject/Skydome/Skydome.h"
+#include "Application/GameObject/Skydome/Skydome.h"
 #include <memory>
 
 class GameStartScene : public IScene

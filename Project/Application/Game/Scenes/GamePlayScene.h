@@ -9,9 +9,9 @@
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/2D/Sprite/Sprite.h"
 
-#include "Project/GameObject/Character/Player/Player.h"
-#include "Project/GameObject/Character/Enemy/Enemy.h"
-#include "Project/GameObject/Skydome/Skydome.h"
+#include "Application/GameObject/Character/Player/Player.h"
+#include "Application/GameObject/Character/Enemy/Enemy.h"
+#include "Application/GameObject/Skydome/Skydome.h"
 #include <memory>
 
 class GamePlayScene : public IScene

@@ -267,18 +267,6 @@
     <ClCompile Include="Engine\Components\Audio\Audio.cpp">
       <Filter>ソース ファイル\Engine\Components\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="Project\Game\Scenes\Manager\SceneManager.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Project\Game\Scenes\GameStartScene.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Project\Game\Scenes\GamePlayScene.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Project\Game\Scenes\GameLoseScene.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Utility\Collision\CollisionManager.cpp">
       <Filter>ソース ファイル\Engine\Utility\Collision</Filter>
     </ClCompile>
@@ -315,24 +303,6 @@
     <ClCompile Include="Engine\3D\Model\Material.cpp">
       <Filter>ソース ファイル\Engine\3d\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Project\GameObject\Skydome\Skydome.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Skydome</Filter>
-    </ClCompile>
-    <ClCompile Include="Project\GameObject\Character\Player\Player.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Project\GameObject\Character\ICharacter.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="Project\GameObject\Character\Enemy\Enemy.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Project\GameObject\Character\Player\PlayerWeapon.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Project\GameObject\Character\Enemy\EnemyWeapon.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\3D\Particle\Random.cpp">
       <Filter>ソース ファイル\Engine\3d\Particle</Filter>
     </ClCompile>
@@ -354,9 +324,6 @@
     <ClCompile Include="Engine\3D\Particle\ParticleSystem.cpp">
       <Filter>ソース ファイル\Engine\3d\Particle</Filter>
     </ClCompile>
-    <ClCompile Include="Project\Game\Scenes\GameWinScene.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\2D\Sprite\Sprite.cpp">
       <Filter>ソース ファイル\Engine\2d\Sprite</Filter>
     </ClCompile>
@@ -365,6 +332,39 @@
     </ClCompile>
     <ClCompile Include="Engine\Framework\GameManager.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\Manager\SceneManager.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GameLoseScene.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GameStartScene.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GameWinScene.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyWeapon.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Player\Player.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Player\PlayerWeapon.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\ICharacter.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Skydome</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -440,21 +440,6 @@
     <ClInclude Include="Engine\Components\Input\Input.h">
       <Filter>ヘッダー ファイル\Engine\Components\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Project\Game\Scenes\Manager\SceneManager.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Project\Game\Scenes\GameStartScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Project\Game\Scenes\IScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Project\Game\Scenes\GamePlayScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Project\Game\Scenes\GameLoseScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Utility\Collision\Collider.h">
       <Filter>ヘッダー ファイル\Engine\Utility\Collision</Filter>
     </ClInclude>
@@ -497,24 +482,6 @@
     <ClInclude Include="Engine\Base\D3DResourceLeakChecker.h">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Project\GameObject\Skydome\Skydome.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Skydome</Filter>
-    </ClInclude>
-    <ClInclude Include="Project\GameObject\Character\Player\Player.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Project\GameObject\Character\Enemy\Enemy.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Project\GameObject\Character\ICharacter.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="Project\GameObject\Character\Enemy\EnemyWeapon.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Project\GameObject\Character\Player\PlayerWeapon.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\3D\Particle\BaseParticle.h">
       <Filter>ヘッダー ファイル\Engine\3d\Particle</Filter>
     </ClInclude>
@@ -536,9 +503,6 @@
     <ClInclude Include="Engine\3D\Particle\ParticleModel.h">
       <Filter>ヘッダー ファイル\Engine\3d\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="Project\Game\Scenes\GameWinScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\3D\Model\Material.h">
       <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
@@ -556,6 +520,42 @@
     </ClInclude>
     <ClInclude Include="Engine\Utility\Structs.h">
       <Filter>ヘッダー ファイル\Engine\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GameLoseScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GamePlayScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GameStartScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GameWinScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\IScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\Manager\SceneManager.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyWeapon.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Player\Player.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Player\PlayerWeapon.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\ICharacter.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Skydome\Skydome.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Skydome</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

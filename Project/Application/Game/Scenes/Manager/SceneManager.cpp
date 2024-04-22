@@ -1,8 +1,8 @@
 #include "SceneManager.h"
-#include "Project/Game/Scenes/GameStartScene.h"
-#include "Project/Game/Scenes/GamePlayScene.h"
-#include "Project/Game/Scenes/GameWinScene.h"
-#include "Project/Game/Scenes/GameLoseScene.h"
+#include "Application/Game/Scenes/GameStartScene.h"
+#include "Application/Game/Scenes/GamePlayScene.h"
+#include "Application/Game/Scenes/GameWinScene.h"
+#include "Application/Game/Scenes/GameLoseScene.h"
 #include "Engine/Utility/GlobalVariables.h"
 
 SceneManager::SceneManager()

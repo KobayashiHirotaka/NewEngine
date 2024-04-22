@@ -1,5 +1,5 @@
 #include "GamePlayScene.h"
-#include "Project/Game/Scenes/Manager/SceneManager.h"
+#include "Application/Game/Scenes/Manager/SceneManager.h"
 #include "GameWinScene.h"
 #include "GameLoseScene.h"
 #include "Engine/Components/PostProcess/PostProcess.h"

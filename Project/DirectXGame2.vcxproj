@@ -11,6 +11,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp" />
+    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyWeapon.cpp" />
+    <ClCompile Include="Application\GameObject\Character\ICharacter.cpp" />
+    <ClCompile Include="Application\GameObject\Character\Player\Player.cpp" />
+    <ClCompile Include="Application\GameObject\Character\Player\PlayerWeapon.cpp" />
+    <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp" />
+    <ClCompile Include="Application\Game\Scenes\GameLoseScene.cpp" />
+    <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
+    <ClCompile Include="Application\Game\Scenes\GameStartScene.cpp" />
+    <ClCompile Include="Application\Game\Scenes\GameWinScene.cpp" />
+    <ClCompile Include="Application\Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Engine\2D\Sprite\Sprite.cpp" />
     <ClCompile Include="Engine\3D\Camera\Camera.cpp" />
     <ClCompile Include="Engine\3D\Light\Light.cpp" />
@@ -63,17 +74,6 @@
     <ClCompile Include="Engine\Utility\GlobalVariables.cpp" />
     <ClCompile Include="Engine\Utility\Math\MyMath.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Project\GameObject\Character\Enemy\Enemy.cpp" />
-    <ClCompile Include="Project\GameObject\Character\Enemy\EnemyWeapon.cpp" />
-    <ClCompile Include="Project\GameObject\Character\ICharacter.cpp" />
-    <ClCompile Include="Project\GameObject\Character\Player\Player.cpp" />
-    <ClCompile Include="Project\GameObject\Character\Player\PlayerWeapon.cpp" />
-    <ClCompile Include="Project\GameObject\Skydome\Skydome.cpp" />
-    <ClCompile Include="Project\Game\Scenes\GameLoseScene.cpp" />
-    <ClCompile Include="Project\Game\Scenes\GamePlayScene.cpp" />
-    <ClCompile Include="Project\Game\Scenes\GameStartScene.cpp" />
-    <ClCompile Include="Project\Game\Scenes\GameWinScene.cpp" />
-    <ClCompile Include="Project\Game\Scenes\Manager\SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -107,6 +107,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h" />
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyWeapon.h" />
+    <ClInclude Include="Application\GameObject\Character\ICharacter.h" />
+    <ClInclude Include="Application\GameObject\Character\Player\Player.h" />
+    <ClInclude Include="Application\GameObject\Character\Player\PlayerWeapon.h" />
+    <ClInclude Include="Application\GameObject\Skydome\Skydome.h" />
+    <ClInclude Include="Application\Game\Scenes\GameLoseScene.h" />
+    <ClInclude Include="Application\Game\Scenes\GamePlayScene.h" />
+    <ClInclude Include="Application\Game\Scenes\GameStartScene.h" />
+    <ClInclude Include="Application\Game\Scenes\GameWinScene.h" />
+    <ClInclude Include="Application\Game\Scenes\IScene.h" />
+    <ClInclude Include="Application\Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Engine\2D\Sprite\Sprite.h" />
     <ClInclude Include="Engine\2D\Sprite\UI.h" />
     <ClInclude Include="Engine\3D\Camera\Camera.h" />
@@ -150,18 +162,6 @@
     <ClInclude Include="Engine\Utility\GlobalVariables.h" />
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
     <ClInclude Include="Engine\Utility\Structs.h" />
-    <ClInclude Include="Project\GameObject\Character\Enemy\Enemy.h" />
-    <ClInclude Include="Project\GameObject\Character\Enemy\EnemyWeapon.h" />
-    <ClInclude Include="Project\GameObject\Character\ICharacter.h" />
-    <ClInclude Include="Project\GameObject\Character\Player\Player.h" />
-    <ClInclude Include="Project\GameObject\Character\Player\PlayerWeapon.h" />
-    <ClInclude Include="Project\GameObject\Skydome\Skydome.h" />
-    <ClInclude Include="Project\Game\Scenes\GameLoseScene.h" />
-    <ClInclude Include="Project\Game\Scenes\GamePlayScene.h" />
-    <ClInclude Include="Project\Game\Scenes\GameStartScene.h" />
-    <ClInclude Include="Project\Game\Scenes\GameWinScene.h" />
-    <ClInclude Include="Project\Game\Scenes\IScene.h" />
-    <ClInclude Include="Project\Game\Scenes\Manager\SceneManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\HorizontalBlur.PS.hlsl">
