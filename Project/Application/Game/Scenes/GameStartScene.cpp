@@ -42,7 +42,7 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
 
 	titleSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Title.mp3");
-	selectSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Select.wav");
+	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 	audio_->StopAudio(titleSoundHandle_);
 	audio_->SoundPlayMP3(titleSoundHandle_, true, 1.0f);
 };
@@ -76,7 +76,7 @@ void GameStartScene::Update(SceneManager* sceneManager)
 			if (isTransitionEnd_)
 			{
 				isTransitionStart_ = true;
-				audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+				audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			}
 		}
 	}
@@ -109,34 +109,34 @@ void GameStartScene::Update(SceneManager* sceneManager)
 	if (input_->PushKey(DIK_SPACE))
 	{
 		isTransitionStart_ = true;
-		audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 	}
 
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !isOpen_)
 		{
-			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			isOpen_ = true;
 			spriteCount_ = 1;
 		}
 
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isOpen_)
 		{
-			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			isOpen_ = false;
 			spriteCount_ = 0;
 		}
 
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) && isOpen_ && spriteCount_ == 1)
 		{
-			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			spriteCount_ = 2;
 		}
 
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) && isOpen_ && spriteCount_ == 2)
 		{
-			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			spriteCount_ = 1;
 		}
 	}

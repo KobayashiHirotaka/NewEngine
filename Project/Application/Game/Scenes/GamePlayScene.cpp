@@ -114,7 +114,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	isPlayerWin_ = false;
 	isDrow_ = false;
 
-	selectSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Select.wav");
+	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 };
 
 void GamePlayScene::Update(SceneManager* sceneManager)
@@ -564,27 +564,27 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !isOpen_ && roundStartTimer_ < 0)
 		{
-			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			isOpen_ = true;
 			spriteCount_ = 1;
 		}
 
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isOpen_)
 		{
-			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			isOpen_ = false;
 			spriteCount_ = 0;
 		}
 
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) && isOpen_ && spriteCount_ == 1)
 		{
-			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			spriteCount_ = 2;
 		}
 
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) && isOpen_ && spriteCount_ == 2)
 		{
-			audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			spriteCount_ = 1;
 		}
 	}

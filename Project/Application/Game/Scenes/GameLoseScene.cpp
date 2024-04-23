@@ -32,7 +32,7 @@ void GameLoseScene::Initialize(SceneManager* sceneManager)
 	transitionSprite_->SetColor(transitionColor_);
 	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
 
-	selectSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Select.wav");
+	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 };
 
 void GameLoseScene::Update(SceneManager* sceneManager)
@@ -46,7 +46,7 @@ void GameLoseScene::Update(SceneManager* sceneManager)
 			if (isTransitionEnd_)
 			{
 				isTransitionStart_ = true;
-				audio_->SoundPlayWave(selectSoundHandle_, false, 1.0f);
+				audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			}
 		}
 	}

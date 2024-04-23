@@ -101,10 +101,10 @@ void Player::Initialize()
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
 
-	attackSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Attack.wav");
-	weaponAttackSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/WeaponAttack.wav");
-	damageSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Damage.wav");
-	guardSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Guard.wav");
+	attackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Attack.mp3");
+	weaponAttackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/WeaponAttack.mp3");
+	damageSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Damage.mp3");
+	guardSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Guard.mp3");
 }
 
 void Player::Update()
@@ -456,7 +456,7 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (enemy_->GetIsPunch() == true && isDown_ == false)
 		{
-			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 15.0f;
 			HP_ -= damage;
 			isHitPunch_ = true;
@@ -466,7 +466,7 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (enemy_->GetIsThrow() == true && isDown_ == false)
 		{
-			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 50.0f;
 			HP_ -= damage;
 			isEnemyHit_ = true;
@@ -478,7 +478,7 @@ void Player::OnCollision(Collider* collider, float damage)
 	{
 		if (isGuard_ && worldTransform_.rotation.y == 1.7f)
 		{
-			audio_->SoundPlayWave(guardSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.3f;
 			guardGauge_ += 2.0f;
 
@@ -502,7 +502,7 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (isGuard_ && worldTransform_.rotation.y == 4.6f)
 		{
-			audio_->SoundPlayWave(guardSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.3f;
 			guardGauge_ += 2.0f;
 
@@ -527,7 +527,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsSwingDown() == true && isDown_ == false 
 			&& isGuard_ == false)
 		{
-			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 30.0f;
 			HP_ -= damage;
 			isHitSwingDown_ = true;
@@ -539,7 +539,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsPoke() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 20.0f;
 			HP_ -= damage;
 			isHitPoke_ = true;
@@ -551,7 +551,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		if (enemy_->GetIsAttack() == true && enemy_->GetIsMowDown() == true && isDown_ == false
 			&& isGuard_ == false)
 		{
-			audio_->SoundPlayWave(damageSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 30.0f;
 			HP_ -= damage;
 			isHitMowDown_ = true;
@@ -700,7 +700,7 @@ void Player::BehaviorRootUpdate()
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
 		{
-			audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPunch = true;
 		}
@@ -713,7 +713,7 @@ void Player::BehaviorRootUpdate()
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
 		{
-			audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isSwingDown = true;
 		}
@@ -726,7 +726,7 @@ void Player::BehaviorRootUpdate()
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
 		{
-			audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPoke = true;
 			workAttack_.isPokeRight = true;
@@ -736,7 +736,7 @@ void Player::BehaviorRootUpdate()
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
 		{
-			audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isPoke = true;
 			workAttack_.isPokeLeft = true;
@@ -753,7 +753,7 @@ void Player::BehaviorRootUpdate()
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
 		{
-			audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isMowDown = true;
 		}
@@ -769,7 +769,7 @@ void Player::BehaviorRootUpdate()
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
 		{
-			audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isFinisher = true;
 		}
@@ -880,7 +880,7 @@ void Player::BehaviorAttackUpdate()
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.isPunch = false;
 
-				/*audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+				/*audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 				behaviorRequest_ = Behavior::kAttack;
 				workAttack_.stiffnessTimer = 20;
 				worldTransformHead_.rotation.y = 0.0f;
@@ -907,7 +907,7 @@ void Player::BehaviorAttackUpdate()
 		{
 			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && workAttack_.stiffnessTimer > 30)
 			{
-				audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 				behaviorRequest_ = Behavior::kAttack;
 				attackAnimationFrame = 0;
 				workAttack_.stiffnessTimer = 60;
@@ -952,7 +952,7 @@ void Player::BehaviorAttackUpdate()
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.isCPunch = false;
 
-				/*audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+				/*audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 				behaviorRequest_ = Behavior::kAttack;
 				workAttack_.stiffnessTimer = 20;
 				worldTransformHead_.rotation.y = 0.0f;
@@ -979,7 +979,7 @@ void Player::BehaviorAttackUpdate()
 		{
 			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && workAttack_.stiffnessTimer > 30)
 			{
-				audio_->SoundPlayWave(attackSoundHandle_, false, 1.0f);
+				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 				behaviorRequest_ = Behavior::kAttack;
 				attackAnimationFrame = 0;
 				workAttack_.stiffnessTimer = 60;

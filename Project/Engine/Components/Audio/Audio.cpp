@@ -183,9 +183,6 @@ uint32_t Audio::SoundLoadMP3(const std::filesystem::path& filename)
 	pMFMediaType->Release();
 	pMFSourceReader->Release();
 
-	MFShutdown();
-	CoUninitialize();
-
 	return audioHandle_;
 }
 
@@ -297,4 +294,7 @@ void Audio::Release()
 	{
 		SoundUnloadMP3(&soundDatas_[i]);
 	}
+
+	MFShutdown();
+	CoUninitialize();
 }
