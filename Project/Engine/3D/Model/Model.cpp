@@ -49,15 +49,11 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
 		worldTransform.matWorld = Multiply(localMatrix, worldTransform.matWorld);
 		worldTransform.TransferMatrix();
 	}
-	/*else
+	else
 	{
-		world_ = worldTransform;
-		world_.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
-		world_.TransferMatrix();
-	}*/
-
- 	worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
-	worldTransform.TransferMatrix();
+		worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
+		worldTransform.TransferMatrix();
+	}
 
 	//マテリアルの更新
 	material_->Update();
