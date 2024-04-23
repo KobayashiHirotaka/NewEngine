@@ -592,6 +592,10 @@ Animation Model::LoadAnimationFile(const std::string& directoryPath, const std::
 			}
 		}
 	}
+	else
+	{
+		isKeyframeAnimation_ = false;
+	}
 
 	return animation;
 }
