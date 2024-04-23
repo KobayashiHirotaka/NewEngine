@@ -29,9 +29,9 @@ void GameTitleScene::Initialize()
 
 	camera_.UpdateMatrix();
 
-	titleSoundHandle_ = audio_->SoundLoadWave("resource/Sounds/Title.wav");
+	titleSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Title.mp3");
 	audio_->StopAudio(titleSoundHandle_);
-	audio_->SoundPlayWave(titleSoundHandle_, true, 1.0f);
+	audio_->SoundPlayMP3(titleSoundHandle_, true, 1.0f);
 };
 
 void GameTitleScene::Update()
