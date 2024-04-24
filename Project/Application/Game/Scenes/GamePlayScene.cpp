@@ -656,15 +656,18 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		camera_.rotation_ = Lerp(camera_.rotation_, finisherRotationPosition, 0.05f);
 	}
 
-	//Animation
-	for (int i = 0; i < 2; i++)
+	if (migrationTimer_ >= 150)
 	{
-		float animationTime[2];
-		animationTime[i] = stageObject_[i]->GetAnimationTime();
-		animationTime[i] += 1.0f / 60.0f;
-		animationTime[i] = std::fmod(animationTime[i], stageObject_[i]->GetAnimation().duration);
+		//Animation
+		for (int i = 0; i < 2; i++)
+		{
+			float animationTime[2];
+			animationTime[i] = stageObject_[i]->GetAnimationTime();
+			animationTime[i] += 1.0f / 60.0f;
+			animationTime[i] = std::fmod(animationTime[i], stageObject_[i]->GetAnimation().duration);
 
-		stageObject_[i]->SetAnimationTime(animationTime[i]);
+			stageObject_[i]->SetAnimationTime(animationTime[i]);
+		}
 	}
 	
 	worldTransform_.UpdateMatrix();
