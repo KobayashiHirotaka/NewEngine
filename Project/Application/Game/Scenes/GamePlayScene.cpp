@@ -560,7 +560,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		PostProcess::GetInstance()->SetVignetteIntensity(1.5f);
 	}
 
-	if (input_->GetJoystickState())
+	/*if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !isOpen_ && roundStartTimer_ < 0)
 		{
@@ -587,7 +587,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			spriteCount_ = 1;
 		}
-	}
+	}*/
 
 	collisionManager_->ClearColliders();
 	collisionManager_->AddCollider(player_.get());
