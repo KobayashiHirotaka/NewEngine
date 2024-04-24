@@ -213,7 +213,7 @@ private:
 
 	float maxFinisherGauge_ = 50.0f;
 
-	float finisherGauge_ = 40.0f;
+	float finisherGauge_ = 50.0f;
 
 	std::unique_ptr<PlayerWeapon> playerWeapon_ = nullptr;
 
@@ -286,7 +286,7 @@ private:
 
 	int stanTimer_ = 200;
 
-	int finisherEffectTimer = 60;
+	int finisherEffectTimer = 90;
 
 	bool isFinisherEffect = false;
 	int finisherCount_ = 0;

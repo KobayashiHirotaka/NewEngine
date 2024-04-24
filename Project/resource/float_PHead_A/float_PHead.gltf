@@ -66,7 +66,7 @@
     "materials" : [
         {
             "doubleSided" : true,
-            "name" : "Material",
+            "name" : "Material.002",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0
@@ -78,7 +78,7 @@
     ],
     "meshes" : [
         {
-            "name" : "Cube",
+            "name" : "Cube.001",
             "primitives" : [
                 {
                     "attributes" : {
@@ -143,9 +143,9 @@
         {
             "bufferView" : 4,
             "componentType" : 5126,
-            "count" : 15,
+            "count" : 35,
             "max" : [
-                0.625
+                1.4583333333333333
             ],
             "min" : [
                 0.041666666666666664
@@ -155,19 +155,19 @@
         {
             "bufferView" : 5,
             "componentType" : 5126,
-            "count" : 15,
+            "count" : 35,
             "type" : "VEC3"
         },
         {
             "bufferView" : 6,
             "componentType" : 5126,
-            "count" : 15,
+            "count" : 35,
             "type" : "VEC4"
         },
         {
             "bufferView" : 7,
             "componentType" : 5126,
-            "count" : 15,
+            "count" : 35,
             "type" : "VEC3"
         }
     ],
@@ -198,23 +198,23 @@
         },
         {
             "buffer" : 0,
-            "byteLength" : 60,
+            "byteLength" : 140,
             "byteOffset" : 840
         },
         {
             "buffer" : 0,
-            "byteLength" : 180,
-            "byteOffset" : 900
+            "byteLength" : 420,
+            "byteOffset" : 980
         },
         {
             "buffer" : 0,
-            "byteLength" : 240,
-            "byteOffset" : 1080
+            "byteLength" : 560,
+            "byteOffset" : 1400
         },
         {
             "buffer" : 0,
-            "byteLength" : 180,
-            "byteOffset" : 1320
+            "byteLength" : 420,
+            "byteOffset" : 1960
         }
     ],
     "samplers" : [
@@ -225,7 +225,7 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 1500,
+            "byteLength" : 2380,
             "uri" : "float_PHead.bin"
         }
     ]

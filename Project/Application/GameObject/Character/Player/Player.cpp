@@ -2,6 +2,7 @@
 #include <cassert>
 #include <numbers>
 #include "Application/GameObject/Character/Enemy/Enemy.h"
+#include "Application/Game/Scenes/GamePlayScene.h"
 
 Player::~Player()
 {
@@ -17,7 +18,7 @@ void Player::Initialize()
 
 	audio_ = Audio::GetInstance();
 
-	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
+	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_PBody", "float_Body.gltf"));
 	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead_A", "float_PHead.gltf"));
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
 	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
@@ -220,6 +221,22 @@ void Player::Update()
 		modelFighterPHead_->SetAnimationTime(animationTime);
 	}
 
+	float animationTime = 0.0f;
+
+	if (enemy_->GetHP() > 0 && isFinisherEffect)
+	{
+		//Animation
+		animationTime = modelFighterPHead_->GetAnimationTime();
+		animationTime += 1.0f / 60.0f;
+		animationTime = std::fmod(animationTime, modelFighterPHead_->GetAnimation().duration);
+
+		modelFighterPHead_->SetAnimationTime(animationTime);
+	}
+	else
+	{
+		animationTime -= 1.0f / 60.0f;
+	}
+
 	DownAnimation();
 
 	//パーティクルの更新
@@ -264,6 +281,10 @@ void Player::Update()
 			cancelTimer_ = 60;
 		}
 	}
+
+	ImGui::Begin("FinisherGauge");
+	ImGui::DragFloat("FinisherGauge", &finisherGauge_, 1.0f);
+	ImGui::End();
 }
 
 void Player::Draw(const Camera& camera)
@@ -413,7 +434,7 @@ void Player::Reset()
 
 	isThrow_ = false;
 
-	finisherEffectTimer = 60;
+	finisherEffectTimer = 90;
 	isFinisherEffect = false;
 	finisherCount_ = 0;
 
@@ -440,6 +461,12 @@ void Player::Reset()
 	worldTransformR_arm_.translation.x = -0.5f;
 	worldTransformR_arm_.rotation.x = 0.0f;
 	worldTransformR_arm_.rotation.y = 0.0f;
+
+	workAttack_.translation = { 0.0f,2.5f,0.0f };
+	workAttack_.rotation = { 0.0f,0.0f,0.0f };
+
+	playerWeapon_->SetTranslation(workAttack_.translation);
+	playerWeapon_->SetRotation(workAttack_.rotation);
 
 	worldTransform_.UpdateMatrix();
 
@@ -1264,10 +1291,13 @@ void Player::BehaviorAttackUpdate()
 			finisherEffectTimer--;
 			isFinisherEffect = true;
 		}
-		else if (attackAnimationFrame < 104)
+		else if (attackAnimationFrame < 134)
 		{
 			isFinisherEffect = false;
 			finisherCount_ = 1;
+
+			worldTransformHead_.translation = { 0.0f,0.0f,0.0f };
+			worldTransformHead_.rotation = { 0.0f,0.0f,0.0f };
 
 			worldTransformL_arm_.rotation.x = -1.3f;
 			worldTransformR_arm_.rotation.x = -1.3f;
@@ -1293,7 +1323,7 @@ void Player::BehaviorAttackUpdate()
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
-				finisherEffectTimer = 60;
+				finisherEffectTimer = 90;
 				workAttack_.isAttack = false;
 				playerWeapon_->SetIsAttack(false);
 				workAttack_.isFinisher = false;
@@ -1303,7 +1333,7 @@ void Player::BehaviorAttackUpdate()
 			}
 
 		}
-		else if (attackAnimationFrame >= 104 && attackAnimationFrame < 114)
+		else if (attackAnimationFrame >= 134 && attackAnimationFrame < 144)
 		{
 			worldTransformHead_.rotation.y = 0.0f;
 			worldTransformBody_.rotation.y = 0.0f;
@@ -1348,7 +1378,7 @@ void Player::BehaviorAttackUpdate()
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
-				finisherEffectTimer = 60;
+				finisherEffectTimer = 90;
 				workAttack_.isAttack = false;
 				playerWeapon_->SetIsAttack(false);
 				workAttack_.isFinisher = false;
@@ -1371,7 +1401,7 @@ void Player::BehaviorAttackUpdate()
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
-				finisherEffectTimer = 60;
+				finisherEffectTimer = 90;
 				workAttack_.isAttack = false;
 				playerWeapon_->SetIsAttack(false);
 				workAttack_.isFinisher = false;
@@ -1388,7 +1418,7 @@ void Player::BehaviorAttackUpdate()
 				worldTransformL_arm_.rotation.y = 0.0f;
 				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
-				finisherEffectTimer = 60;
+				finisherEffectTimer = 90;
 				workAttack_.isAttack = false;
 				workAttack_.isFinisher = false;
 				isFinisherEffect = false;

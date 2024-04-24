@@ -606,7 +606,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	
 	collisionManager_->CheckAllCollision();
 
-	if (player_->GetIsShake() || enemy_->GetIsShake())
+	if (player_->GetIsShake() || enemy_->GetIsShake() && !isPlayerWin_ && roundStartTimer_ <= 0)
 	{
 		isShake_ = true;
 		shakeTimer_ = kShakeTime;
@@ -623,7 +623,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		}
 	}
 
-	if (player_->GetFinisherEffectTimer() < 60 && player_->GetFinisherEffectTimer() > 0)
+	if (player_->GetFinisherEffectTimer() < 90 && player_->GetFinisherEffectTimer() > 0)
 	{
 		if (player_->GetWorldTransform().rotation.y == 1.7f)
 		{
@@ -662,6 +662,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		float animationTime[2];
 		animationTime[i] = stageObject_[i]->GetAnimationTime();
 		animationTime[i] += 1.0f / 60.0f;
+		animationTime[i] = std::fmod(animationTime[i], stageObject_[i]->GetAnimation().duration);
 
 		stageObject_[i]->SetAnimationTime(animationTime[i]);
 	}

@@ -203,7 +203,7 @@ private:
 
 	float maxHP_ = 100.0f;
 
-	float HP_ = maxHP_;
+	float HP_ = 10.0f;
 
 	float maxGuardGauge_ = 50.0f;
 
