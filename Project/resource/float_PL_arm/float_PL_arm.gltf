@@ -143,9 +143,9 @@
         {
             "bufferView" : 4,
             "componentType" : 5126,
-            "count" : 36,
+            "count" : 31,
             "max" : [
-                1.4583333333333333
+                1.25
             ],
             "min" : [
                 0
@@ -155,19 +155,19 @@
         {
             "bufferView" : 5,
             "componentType" : 5126,
-            "count" : 36,
+            "count" : 31,
             "type" : "VEC3"
         },
         {
             "bufferView" : 6,
             "componentType" : 5126,
-            "count" : 36,
+            "count" : 31,
             "type" : "VEC4"
         },
         {
             "bufferView" : 7,
             "componentType" : 5126,
-            "count" : 36,
+            "count" : 31,
             "type" : "VEC3"
         }
     ],
@@ -198,23 +198,23 @@
         },
         {
             "buffer" : 0,
-            "byteLength" : 144,
+            "byteLength" : 124,
             "byteOffset" : 840
         },
         {
             "buffer" : 0,
-            "byteLength" : 432,
-            "byteOffset" : 984
+            "byteLength" : 372,
+            "byteOffset" : 964
         },
         {
             "buffer" : 0,
-            "byteLength" : 576,
-            "byteOffset" : 1416
+            "byteLength" : 496,
+            "byteOffset" : 1336
         },
         {
             "buffer" : 0,
-            "byteLength" : 432,
-            "byteOffset" : 1992
+            "byteLength" : 372,
+            "byteOffset" : 1832
         }
     ],
     "samplers" : [
@@ -225,7 +225,7 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 2424,
+            "byteLength" : 2204,
             "uri" : "float_PL_arm.bin"
         }
     ]

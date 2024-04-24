@@ -238,21 +238,21 @@ void Player::Update()
 		//Animation
 		animationTime[0] = modelFighterPAHead_->GetAnimationTime();
 		animationTime[0] += 1.0f / 60.0f;
-		animationTime[0] = std::fmod(animationTime[0], modelFighterPAHead_->GetAnimation().duration);
+		//animationTime[0] = std::fmod(animationTime[0], modelFighterPAHead_->GetAnimation().duration);
 
 		modelFighterPAHead_->SetAnimationTime(animationTime[0]);
 
 		//Animation
 		animationTime[1] = modelFighterLA_arm_->GetAnimationTime();
 		animationTime[1] += 1.0f / 60.0f;
-		animationTime[1] = std::fmod(animationTime[1], modelFighterLA_arm_->GetAnimation().duration);
+		//animationTime[1] = std::fmod(animationTime[1], modelFighterLA_arm_->GetAnimation().duration);
 
 		modelFighterLA_arm_->SetAnimationTime(animationTime[1]);
 
 		//Animation
 		animationTime[2] = modelFighterRA_arm_->GetAnimationTime();
 		animationTime[2] += 1.0f / 60.0f;
-		animationTime[2] = std::fmod(animationTime[2], modelFighterRA_arm_->GetAnimation().duration);
+		//animationTime[2] = std::fmod(animationTime[2], modelFighterRA_arm_->GetAnimation().duration);
 
 		modelFighterRA_arm_->SetAnimationTime(animationTime[2]);
 	}
@@ -260,7 +260,11 @@ void Player::Update()
 	{
 		for (int i = 0; i < 3; i++)
 		{
-			animationTime[i] -= 1.0f / 60.0f;
+			animationTime[i] = 0.0f;
+
+			modelFighterPAHead_->SetAnimationTime(animationTime[0]);
+			modelFighterLA_arm_->SetAnimationTime(animationTime[1]);
+			modelFighterRA_arm_->SetAnimationTime(animationTime[2]);
 		}
 	}
 

@@ -43,7 +43,7 @@
                     }
                 }
             ],
-            "name" : "Action",
+            "name" : "\u7acb\u65b9\u4f53Action",
             "samplers" : [
                 {
                     "input" : 4,
@@ -143,9 +143,9 @@
         {
             "bufferView" : 4,
             "componentType" : 5126,
-            "count" : 36,
+            "count" : 30,
             "max" : [
-                1.4583333333333333
+                1.2083333333333333
             ],
             "min" : [
                 0
@@ -155,19 +155,19 @@
         {
             "bufferView" : 5,
             "componentType" : 5126,
-            "count" : 36,
+            "count" : 30,
             "type" : "VEC3"
         },
         {
             "bufferView" : 6,
             "componentType" : 5126,
-            "count" : 36,
+            "count" : 30,
             "type" : "VEC4"
         },
         {
             "bufferView" : 7,
             "componentType" : 5126,
-            "count" : 36,
+            "count" : 30,
             "type" : "VEC3"
         }
     ],
@@ -198,23 +198,23 @@
         },
         {
             "buffer" : 0,
-            "byteLength" : 144,
+            "byteLength" : 120,
             "byteOffset" : 840
         },
         {
             "buffer" : 0,
-            "byteLength" : 432,
-            "byteOffset" : 984
+            "byteLength" : 360,
+            "byteOffset" : 960
         },
         {
             "buffer" : 0,
-            "byteLength" : 576,
-            "byteOffset" : 1416
+            "byteLength" : 480,
+            "byteOffset" : 1320
         },
         {
             "buffer" : 0,
-            "byteLength" : 432,
-            "byteOffset" : 1992
+            "byteLength" : 360,
+            "byteOffset" : 1800
         }
     ],
     "samplers" : [
@@ -225,7 +225,7 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 2424,
+            "byteLength" : 2160,
             "uri" : "float_PR_arm.bin"
         }
     ]
