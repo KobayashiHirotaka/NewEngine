@@ -20,8 +20,12 @@ void Player::Initialize()
 
 	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_PBody", "float_Body.gltf"));
 	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead_A", "float_PHead.gltf"));
-	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
-	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
+	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_PL_arm", "float_PL_arm.gltf"));
+	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_PR_arm", "float_PR_arm.gltf"));
+
+	modelFighterPAHead_.reset(Model::CreateFromOBJ("resource/float_PHead_A", "float_PHead.gltf"));
+	modelFighterLA_arm_.reset(Model::CreateFromOBJ("resource/float_PL_arm", "float_PL_arm.gltf"));
+	modelFighterRA_arm_.reset(Model::CreateFromOBJ("resource/float_PR_arm", "float_PR_arm.gltf"));
 
 	playerCursol_.reset(Model::CreateFromOBJ("resource/playerCursol", "playerCursol.obj"));
 
@@ -74,11 +78,23 @@ void Player::Initialize()
 	worldTransformR_arm_.Initialize();
 	worldTransformR_arm_.translation.x = -0.5f;
 
+	worldTransformAHead_.Initialize();
+
+	worldTransformAL_arm_.Initialize();
+	worldTransformAL_arm_.translation.x = 0.5f;
+
+	worldTransformAR_arm_.Initialize();
+	worldTransformAR_arm_.translation.x = -0.5f;
+
 	//親子付け
 	worldTransformBody_.parent_ = &worldTransform_;
 	worldTransformHead_.parent_ = &worldTransformBody_;
 	worldTransformL_arm_.parent_ = &worldTransformBody_;
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
+
+	worldTransformAHead_.parent_ = &worldTransformBody_;
+	worldTransformAL_arm_.parent_ = &worldTransformBody_;
+	worldTransformAR_arm_.parent_ = &worldTransformBody_;
 
 	//Weaponの生成
 	playerWeapon_ = std::make_unique<PlayerWeapon>();
@@ -101,6 +117,10 @@ void Player::Initialize()
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
+
+	worldTransformAHead_.UpdateMatrix();
+	worldTransformAL_arm_.UpdateMatrix();
+	worldTransformAR_arm_.UpdateMatrix();
 
 	attackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Attack.mp3");
 	weaponAttackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/WeaponAttack.mp3");
@@ -211,30 +231,37 @@ void Player::Update()
 		worldTransform_.translation.y = 0.0f;
 	}
 
-	if (input_->PressKey(DIK_M))
-	{
-		//Animation
-		float animationTime;
-		animationTime = modelFighterPHead_->GetAnimationTime();
-		animationTime += 1.0f / 60.0f;
-
-		modelFighterPHead_->SetAnimationTime(animationTime);
-	}
-
-	float animationTime = 0.0f;
+	float animationTime[3] = { 0.0f,0.0f,0.0f };
 
 	if (enemy_->GetHP() > 0 && isFinisherEffect)
 	{
 		//Animation
-		animationTime = modelFighterPHead_->GetAnimationTime();
-		animationTime += 1.0f / 60.0f;
-		animationTime = std::fmod(animationTime, modelFighterPHead_->GetAnimation().duration);
+		animationTime[0] = modelFighterPAHead_->GetAnimationTime();
+		animationTime[0] += 1.0f / 60.0f;
+		animationTime[0] = std::fmod(animationTime[0], modelFighterPAHead_->GetAnimation().duration);
 
-		modelFighterPHead_->SetAnimationTime(animationTime);
+		modelFighterPAHead_->SetAnimationTime(animationTime[0]);
+
+		//Animation
+		animationTime[1] = modelFighterLA_arm_->GetAnimationTime();
+		animationTime[1] += 1.0f / 60.0f;
+		animationTime[1] = std::fmod(animationTime[1], modelFighterLA_arm_->GetAnimation().duration);
+
+		modelFighterLA_arm_->SetAnimationTime(animationTime[1]);
+
+		//Animation
+		animationTime[2] = modelFighterRA_arm_->GetAnimationTime();
+		animationTime[2] += 1.0f / 60.0f;
+		animationTime[2] = std::fmod(animationTime[2], modelFighterRA_arm_->GetAnimation().duration);
+
+		modelFighterRA_arm_->SetAnimationTime(animationTime[2]);
 	}
 	else
 	{
-		animationTime -= 1.0f / 60.0f;
+		for (int i = 0; i < 3; i++)
+		{
+			animationTime[i] -= 1.0f / 60.0f;
+		}
 	}
 
 	DownAnimation();
@@ -249,6 +276,10 @@ void Player::Update()
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
+
+	worldTransformAHead_.UpdateMatrix();
+	worldTransformAL_arm_.UpdateMatrix();
+	worldTransformAR_arm_.UpdateMatrix();
 
 	//Weaponの更新
 	playerWeapon_->Update();
@@ -291,9 +322,19 @@ void Player::Draw(const Camera& camera)
 {
 	//Playerの描画
 	modelFighterBody_->Draw(worldTransformBody_, camera);
-	modelFighterPHead_->Draw(worldTransformHead_, camera);
-	modelFighterL_arm_->Draw(worldTransformL_arm_, camera);
-	modelFighterR_arm_->Draw(worldTransformR_arm_, camera);
+
+	if (enemy_->GetHP() > 0 && isFinisherEffect)
+	{
+		modelFighterPAHead_->Draw(worldTransformAHead_, camera);
+		modelFighterLA_arm_->Draw(worldTransformAL_arm_, camera);
+		modelFighterRA_arm_->Draw(worldTransformAR_arm_, camera);
+	}
+	else
+	{
+		modelFighterPHead_->Draw(worldTransformHead_, camera);
+		modelFighterL_arm_->Draw(worldTransformL_arm_, camera);
+		modelFighterR_arm_->Draw(worldTransformR_arm_, camera);
+	}
 
 	if (!isDown_)
 	{

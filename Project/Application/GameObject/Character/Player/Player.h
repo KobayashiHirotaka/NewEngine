@@ -184,10 +184,20 @@ private:
 	WorldTransform worldTransformL_arm_;
 	WorldTransform worldTransformR_arm_;
 
+	//Animation用
+	WorldTransform worldTransformAHead_;
+	WorldTransform worldTransformAL_arm_;
+	WorldTransform worldTransformAR_arm_;
+
 	std::unique_ptr<Model> modelFighterBody_;
 	std::unique_ptr<Model> modelFighterPHead_;
 	std::unique_ptr<Model> modelFighterL_arm_;
 	std::unique_ptr<Model> modelFighterR_arm_;
+
+	//Animation用
+	std::unique_ptr<Model> modelFighterPAHead_;
+	std::unique_ptr<Model> modelFighterLA_arm_;
+	std::unique_ptr<Model> modelFighterRA_arm_;
 
 	std::unique_ptr<Model> playerCursol_;
 
