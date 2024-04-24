@@ -210,6 +210,16 @@ void Player::Update()
 		worldTransform_.translation.y = 0.0f;
 	}
 
+	if (input_->PressKey(DIK_M))
+	{
+		//Animation
+		float animationTime;
+		animationTime = modelFighterPHead_->GetAnimationTime();
+		animationTime += 1.0f / 60.0f;
+
+		modelFighterPHead_->SetAnimationTime(animationTime);
+	}
+
 	DownAnimation();
 
 	//パーティクルの更新
