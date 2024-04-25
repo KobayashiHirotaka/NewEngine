@@ -28,7 +28,7 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	titleTextureHandle_ = TextureManager::LoadTexture("resource/title.png");
 	titleSprite_.reset(Sprite::Create(titleTextureHandle_, { titleSpritePosition_.x, titleSpritePosition_.y}));
 
-	titleUITextureHandle_ = TextureManager::LoadTexture("resource/titleUISub.png");
+	titleUITextureHandle_ = TextureManager::LoadTexture("resource/titleUI.png");
 	titleUISprite_.reset(Sprite::Create(titleUITextureHandle_, { 0.0f,0.0f }));
 
 	generalCommandListTextureHandle_ = TextureManager::LoadTexture("resource/GeneralCommandList.png");
@@ -112,7 +112,7 @@ void GameStartScene::Update(SceneManager* sceneManager)
 		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 	}
 
-	/*if (input_->GetJoystickState())
+	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !isOpen_)
 		{
@@ -139,7 +139,7 @@ void GameStartScene::Update(SceneManager* sceneManager)
 			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			spriteCount_ = 1;
 		}
-	}*/
+	}
 
 	camera_.UpdateMatrix();
 
@@ -177,7 +177,7 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 		titleUISprite_->Draw();
 	}
 
-	/*if (isOpen_ && spriteCount_ == 1)
+	if (isOpen_ && spriteCount_ == 1)
 	{
 		generalCommandListSprite_->Draw();
 	}
@@ -185,7 +185,7 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 	if (isOpen_ && spriteCount_ == 2)
 	{
 		attackCommandListSprite_->Draw();
-	}*/
+	}
 
 	transitionSprite_->Draw();
 
