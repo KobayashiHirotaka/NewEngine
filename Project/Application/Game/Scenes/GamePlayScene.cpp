@@ -560,7 +560,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		PostProcess::GetInstance()->SetVignetteIntensity(1.5f);
 	}
 
-	if (input_->GetJoystickState())
+	/*if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !isOpen_ && roundStartTimer_ < 0)
 		{
@@ -587,7 +587,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			spriteCount_ = 1;
 		}
-	}
+	}*/
 
 	collisionManager_->ClearColliders();
 	collisionManager_->AddCollider(player_.get());
@@ -606,7 +606,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	
 	collisionManager_->CheckAllCollision();
 
-	if (player_->GetIsShake() || enemy_->GetIsShake())
+	if (player_->GetIsShake() || enemy_->GetIsShake() && !isPlayerWin_ && roundStartTimer_ <= 0)
 	{
 		isShake_ = true;
 		shakeTimer_ = kShakeTime;
@@ -623,7 +623,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		}
 	}
 
-	if (player_->GetFinisherEffectTimer() < 60 && player_->GetFinisherEffectTimer() > 0)
+	if (player_->GetFinisherEffectTimer() < 90 && player_->GetFinisherEffectTimer() > 0)
 	{
 		if (player_->GetWorldTransform().rotation.y == 1.7f)
 		{
@@ -656,14 +656,18 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		camera_.rotation_ = Lerp(camera_.rotation_, finisherRotationPosition, 0.05f);
 	}
 
-	//Animation
-	for (int i = 0; i < 2; i++)
+	if (migrationTimer_ >= 150)
 	{
-		float animationTime[2];
-		animationTime[i] = stageObject_[i]->GetAnimationTime();
-		animationTime[i] += 1.0f / 60.0f;
+		//Animation
+		for (int i = 0; i < 2; i++)
+		{
+			float animationTime[2];
+			animationTime[i] = stageObject_[i]->GetAnimationTime();
+			animationTime[i] += 1.0f / 60.0f;
+			animationTime[i] = std::fmod(animationTime[i], stageObject_[i]->GetAnimation().duration);
 
-		stageObject_[i]->SetAnimationTime(animationTime[i]);
+			stageObject_[i]->SetAnimationTime(animationTime[i]);
+		}
 	}
 	
 	worldTransform_.UpdateMatrix();

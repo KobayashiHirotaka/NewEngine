@@ -39,7 +39,7 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
 	if (isKeyframeAnimation_)
 	{
 		//animationTime_ += 1.0f / 60.0f;//時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
-		animationTime_ = std::fmod(animationTime_, animation_.duration);//最後までいったら最初からリピート再生。リピートしなくても別にいい
+		//animationTime_ = std::fmod(animationTime_, animation_.duration);//最後までいったら最初からリピート再生。リピートしなくても別にいい
 		NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
 		Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
 		Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
@@ -51,12 +51,10 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
 	}
 	/*else
 	{
-		world_ = worldTransform;
-		world_.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
-		world_.TransferMatrix();
+		
 	}*/
 
- 	worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
+	worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
 	worldTransform.TransferMatrix();
 
 	//マテリアルの更新
@@ -595,6 +593,10 @@ Animation Model::LoadAnimationFile(const std::string& directoryPath, const std::
 				nodeAnimation.scale.keyframes.push_back(keyframe);
 			}
 		}
+	}
+	else
+	{
+		isKeyframeAnimation_ = false;
 	}
 
 	return animation;

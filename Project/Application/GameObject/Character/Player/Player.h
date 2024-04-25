@@ -184,10 +184,20 @@ private:
 	WorldTransform worldTransformL_arm_;
 	WorldTransform worldTransformR_arm_;
 
+	//Animation用
+	WorldTransform worldTransformAHead_;
+	WorldTransform worldTransformAL_arm_;
+	WorldTransform worldTransformAR_arm_;
+
 	std::unique_ptr<Model> modelFighterBody_;
 	std::unique_ptr<Model> modelFighterPHead_;
 	std::unique_ptr<Model> modelFighterL_arm_;
 	std::unique_ptr<Model> modelFighterR_arm_;
+
+	//Animation用
+	std::unique_ptr<Model> modelFighterPAHead_;
+	std::unique_ptr<Model> modelFighterLA_arm_;
+	std::unique_ptr<Model> modelFighterRA_arm_;
 
 	std::unique_ptr<Model> playerCursol_;
 
@@ -213,7 +223,7 @@ private:
 
 	float maxFinisherGauge_ = 50.0f;
 
-	float finisherGauge_ = 40.0f;
+	float finisherGauge_ = 50.0f;
 
 	std::unique_ptr<PlayerWeapon> playerWeapon_ = nullptr;
 
@@ -286,7 +296,7 @@ private:
 
 	int stanTimer_ = 200;
 
-	int finisherEffectTimer = 60;
+	int finisherEffectTimer = 90;
 
 	bool isFinisherEffect = false;
 	int finisherCount_ = 0;

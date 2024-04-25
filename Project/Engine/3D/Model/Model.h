@@ -82,6 +82,8 @@ public:
 
 	void SetAnimationTime(float animationTime) { animationTime_ = animationTime; };
 
+	Animation GetAnimation() { return animation_; };
+
 private:
 	static void InitializeDXC();
 
