@@ -96,9 +96,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	skydome_->Initialize();
 
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
-	PostProcess::GetInstance()->SetIsBloomActive(false);
+	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
-	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 
 	camera_.UpdateMatrix();
 
@@ -121,6 +120,15 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 void GamePlayScene::Update(SceneManager* sceneManager)
 {
 	roundStartTimer_--;
+
+	if (input_->PressKey(DIK_P))
+	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
+	}
+	else
+	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+	}
 
 	if (migrationTimer_ >= 150 && roundStartTimer_ <= 0 && !isOpen_)
 	{
