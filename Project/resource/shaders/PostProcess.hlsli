@@ -15,3 +15,8 @@ struct Vignette
     float intensity;
 };
 
+struct GrayScale
+{
+    bool enable;
+};
+

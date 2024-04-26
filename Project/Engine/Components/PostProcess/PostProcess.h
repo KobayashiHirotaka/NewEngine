@@ -47,6 +47,12 @@ public:
         float intensity;
     };
 
+    struct GrayScaleData
+    {
+        bool enable;
+        float padding[3];
+    };
+
     static PostProcess* GetInstance();
 
     void Initialize();
@@ -61,6 +67,7 @@ public:
     void SetIsBloomActive(bool isActive) { isBloomActive_ = isActive; };
     void SetIsVignetteActive(bool isActive) { isVignetteActive_ = isActive; };
     void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
+    void SetIsGrayScaleActive(float isActive) { isGrayScaleActive_ = isActive; };
 
 private:
     //ブラーの方向
@@ -107,6 +114,10 @@ private:
     //ビネット
     void Vignette();
     void UpdateVignette();
+
+    //グレイスケール
+    void GrayScale();
+    void UpdateGrayScale();
 
     //マルチパス用テクスチャの作成
     Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor);
@@ -174,6 +185,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> shrinkBlurConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> bloomConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> vignetteConstantBuffer_ = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> grayScaleConstantBuffer_ = nullptr;
 
     //ビネットの強度
     float vignetteIntensity_ = 1.5f;
@@ -184,4 +196,5 @@ private:
     bool isShrinkBlurActive_ = true;
     bool isBloomActive_ = false;
     bool isVignetteActive_ = false;
+    bool isGrayScaleActive_ = false;
 };
