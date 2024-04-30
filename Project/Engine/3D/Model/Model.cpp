@@ -444,81 +444,6 @@ Model::ModelData Model::LoadModelFile(const std::string& directoryPath, const st
 	return modelData;
 }
 
-//Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std::string& filename)
-//{
-//	ModelData modelData;
-//	std::vector<Vector4> positions;
-//	std::vector<Vector3> normals;
-//	std::vector<Vector2> texcoords;
-//	std::string line;
-//	std::ifstream file(directoryPath + "/" + filename);
-//	assert(file.is_open());
-//
-//	while (std::getline(file, line))
-//	{
-//		std::string identifier;
-//		std::istringstream s(line);
-//		s >> identifier;
-//
-//		if (identifier == "v") 
-//		{
-//			Vector4 position;
-//			s >> position.x >> position.y >> position.z;
-//			position.z *= -1.0f;
-//			position.w = 1.0f;
-//			positions.push_back(position);
-//		}
-//		else if (identifier == "vt")
-//		{
-//			Vector2 texcoord;
-//			s >> texcoord.x >> texcoord.y;
-//			texcoord.y = 1.0f - texcoord.y;
-//			texcoords.push_back(texcoord);
-//		}
-//		else if (identifier == "vn") 
-//		{
-//			Vector3 normal;
-//			s >> normal.x >> normal.y >> normal.z;
-//			normal.z *= -1.0f;
-//			normals.push_back(normal);
-//		}
-//		else if (identifier == "f") 
-//		{
-//			Mesh::VertexData triangle[3];
-//			for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex)
-//			{
-//				std::string vertexDefinition;
-//				s >> vertexDefinition;
-//				std::istringstream v(vertexDefinition);
-//
-//				uint32_t elementIndices[3];
-//				for (int32_t element = 0; element < 3; ++element) 
-//				{
-//					std::string index;
-//					std::getline(v, index, '/');
-//					elementIndices[element] = std::stoi(index);
-//				}
-//			
-//				Vector4 position = positions[elementIndices[0] - 1];
-//				Vector2 texcoord = texcoords[elementIndices[1] - 1];
-//				Vector3 normal = normals[elementIndices[2] - 1];
-//				triangle[faceVertex] = { position,texcoord,normal };
-//			}
-//			
-//			modelData.vertices.push_back(triangle[2]);
-//			modelData.vertices.push_back(triangle[1]);
-//			modelData.vertices.push_back(triangle[0]);
-//		}
-//		else if (identifier == "mtllib")
-//		{
-//			std::string materialFilename;
-//			s >> materialFilename;
-//			modelData.material = LoadMaterialTemplateFile(directoryPath, materialFilename);
-//		}
-//	}
-//	return modelData;
-//}
-
 Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) 
 {
 	MaterialData materialData;
@@ -605,19 +530,16 @@ Animation Model::LoadAnimationFile(const std::string& directoryPath, const std::
 Model::Node Model::ReadNode(aiNode* node)
 {
 	Node result;
-	//nodeのlocalMatrixを取得
-	aiMatrix4x4 aiLocalMatrix = node->mTransformation;
 
-	//列ベクトル形式を行ベクトル形式に転置
-	aiLocalMatrix.Transpose();
+	aiVector3D scale, translate;
+	aiQuaternion rotate;
 
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			result.localMatrix.m[i][j] = aiLocalMatrix[i][j];
-		}
-	}
+	node->mTransformation.Decompose(scale, rotate, translate);
+
+	result.scale = { scale.x,scale.y,scale.z };
+	result.rotate = { rotate.x,-rotate.y,-rotate.z,rotate.w };
+	result.translate = { -translate.x,translate.y,translate.z };
+	result.localMatrix = MakeAffineMatrix(result.scale, result.rotate, result.translate);
 
 	//Node名を格納
 	result.name = node->mName.C_Str();

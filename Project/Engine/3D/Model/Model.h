@@ -34,6 +34,9 @@ class Model
 public:
 	struct Node
 	{
+		Vector3 translate;
+		Quaternion rotate;
+		Vector3 scale;
 		Matrix4x4 localMatrix;
 		std::string name;
 		std::vector<Node> children;
