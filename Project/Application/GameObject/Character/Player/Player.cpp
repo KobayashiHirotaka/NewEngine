@@ -111,16 +111,16 @@ void Player::Initialize()
 	particleSystem_->Initialize();
 
 	//WorldTransform(Player)の更新
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
 
-	worldTransformBody_.UpdateMatrix();
-	worldTransformHead_.UpdateMatrix();
-	worldTransformL_arm_.UpdateMatrix();
-	worldTransformR_arm_.UpdateMatrix();
+	worldTransformBody_.UpdateMatrixEuler();
+	worldTransformHead_.UpdateMatrixEuler();
+	worldTransformL_arm_.UpdateMatrixEuler();
+	worldTransformR_arm_.UpdateMatrixEuler();
 
-	worldTransformAHead_.UpdateMatrix();
-	worldTransformAL_arm_.UpdateMatrix();
-	worldTransformAR_arm_.UpdateMatrix();
+	worldTransformAHead_.UpdateMatrixEuler();
+	worldTransformAL_arm_.UpdateMatrixEuler();
+	worldTransformAR_arm_.UpdateMatrixEuler();
 
 	attackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Attack.mp3");
 	weaponAttackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/WeaponAttack.mp3");
@@ -274,16 +274,16 @@ void Player::Update()
 	particleSystem_->Update();
 
 	//WorldTransform(Player)の更新
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
 
-	worldTransformBody_.UpdateMatrix();
-	worldTransformHead_.UpdateMatrix();
-	worldTransformL_arm_.UpdateMatrix();
-	worldTransformR_arm_.UpdateMatrix();
+	worldTransformBody_.UpdateMatrixEuler();
+	worldTransformHead_.UpdateMatrixEuler();
+	worldTransformL_arm_.UpdateMatrixEuler();
+	worldTransformR_arm_.UpdateMatrixEuler();
 
-	worldTransformAHead_.UpdateMatrix();
-	worldTransformAL_arm_.UpdateMatrix();
-	worldTransformAR_arm_.UpdateMatrix();
+	worldTransformAHead_.UpdateMatrixEuler();
+	worldTransformAL_arm_.UpdateMatrixEuler();
+	worldTransformAR_arm_.UpdateMatrixEuler();
 
 	//Weaponの更新
 	playerWeapon_->Update();
@@ -513,12 +513,12 @@ void Player::Reset()
 	playerWeapon_->SetTranslation(workAttack_.translation);
 	playerWeapon_->SetRotation(workAttack_.rotation);
 
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
 
-	worldTransformBody_.UpdateMatrix();
-	worldTransformHead_.UpdateMatrix();
-	worldTransformL_arm_.UpdateMatrix();
-	worldTransformR_arm_.UpdateMatrix();
+	worldTransformBody_.UpdateMatrixEuler();
+	worldTransformHead_.UpdateMatrixEuler();
+	worldTransformL_arm_.UpdateMatrixEuler();
+	worldTransformR_arm_.UpdateMatrixEuler();
 }
 
 void Player::DrawParticle(const Camera& camera) 
@@ -737,7 +737,7 @@ void Player::BehaviorRootUpdate()
 			// 平行移動
 			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
-			worldTransform_.UpdateMatrix();
+			worldTransform_.UpdateMatrixEuler();
 		}
 
 		Vector3 playerWorldPosition = GetWorldPosition();

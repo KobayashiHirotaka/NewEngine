@@ -23,9 +23,22 @@ void WorldTransform::TransferMatrix()
 	constMap->matWorld = matWorld;
 }
 
-void WorldTransform::UpdateMatrix()
+void WorldTransform::UpdateMatrixEuler()
 {
 	Matrix4x4 AffineMatrix = MakeAffineMatrix(scale, rotation, translation);
+	matWorld = AffineMatrix;
+
+	if (parent_)
+	{
+		matWorld = Multiply(matWorld, parent_->matWorld);
+	}
+
+	TransferMatrix();
+}
+
+void WorldTransform::UpdateMatrixQuaternion()
+{
+	Matrix4x4 AffineMatrix = MakeAffineMatrix(scale, quaternion, translation);
 	matWorld = AffineMatrix;
 
 	if (parent_)

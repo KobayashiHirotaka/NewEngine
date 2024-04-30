@@ -89,12 +89,12 @@ void Enemy::Initialize()
 	particleSystem_->Initialize();
 
 	//WorldTransform(Player)の更新
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
 
-	worldTransformBody_.UpdateMatrix();
-	worldTransformHead_.UpdateMatrix();
-	worldTransformL_arm_.UpdateMatrix();
-	worldTransformR_arm_.UpdateMatrix();
+	worldTransformBody_.UpdateMatrixEuler();
+	worldTransformHead_.UpdateMatrixEuler();
+	worldTransformL_arm_.UpdateMatrixEuler();
+	worldTransformR_arm_.UpdateMatrixEuler();
 
 	attackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Attack.mp3");
 	weaponAttackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/WeaponAttack.mp3");
@@ -213,12 +213,12 @@ void Enemy::Update()
 	//パーティクルの更新
 	particleSystem_->Update();
 
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
 
-	worldTransformBody_.UpdateMatrix();
-	worldTransformHead_.UpdateMatrix();
-	worldTransformL_arm_.UpdateMatrix();
-	worldTransformR_arm_.UpdateMatrix();
+	worldTransformBody_.UpdateMatrixEuler();
+	worldTransformHead_.UpdateMatrixEuler();
+	worldTransformL_arm_.UpdateMatrixEuler();
+	worldTransformR_arm_.UpdateMatrixEuler();
 
 	isHit_ = false;
 
@@ -428,12 +428,12 @@ void Enemy::Reset()
 	worldTransformR_arm_.rotation.x = 0.0f;
 	worldTransformR_arm_.rotation.y = 0.0f;
 
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
 
-	worldTransformBody_.UpdateMatrix();
-	worldTransformHead_.UpdateMatrix();
-	worldTransformL_arm_.UpdateMatrix();
-	worldTransformR_arm_.UpdateMatrix();
+	worldTransformBody_.UpdateMatrixEuler();
+	worldTransformHead_.UpdateMatrixEuler();
+	worldTransformL_arm_.UpdateMatrixEuler();
+	worldTransformR_arm_.UpdateMatrixEuler();
 }
 
 void Enemy::DrawParticle(const Camera& camera)
@@ -713,7 +713,7 @@ void Enemy::BehaviorRootUpdate()
 			// 平行移動
 			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
-			worldTransform_.UpdateMatrix();
+			worldTransform_.UpdateMatrixEuler();
 		}
 
 		if (moveTimer_ < 0)

@@ -7,7 +7,7 @@ void IGame3dObject::Initialize()
 
 void IGame3dObject::Update()
 {
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
 }
 
 void IGame3dObject::Draw(const Camera& camera)

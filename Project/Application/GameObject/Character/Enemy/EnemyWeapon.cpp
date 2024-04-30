@@ -33,8 +33,8 @@ void EnemyWeapon::Update()
 	collisionWorldTransform_.translation = Add(collisionWorldTransform_.translation, direction);
 
 
-	worldTransform_.UpdateMatrix();
-	collisionWorldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
+	collisionWorldTransform_.UpdateMatrixEuler();
 }
 
 void EnemyWeapon::Draw(const Camera& camera)

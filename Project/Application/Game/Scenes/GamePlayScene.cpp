@@ -670,11 +670,11 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		}
 	}
 	
-	worldTransform_.UpdateMatrix();
-	worldTransformStageObject_[0].UpdateMatrix();
-	worldTransformStageObject_[1].UpdateMatrix();
-	worldTransformStageObject_[2].UpdateMatrix();
-	worldTransformStageObject_[3].UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
+	worldTransformStageObject_[0].UpdateMatrixEuler();
+	worldTransformStageObject_[1].UpdateMatrixEuler();
+	worldTransformStageObject_[2].UpdateMatrixEuler();
+	worldTransformStageObject_[3].UpdateMatrixEuler();
 
 	camera_.UpdateMatrix();
 

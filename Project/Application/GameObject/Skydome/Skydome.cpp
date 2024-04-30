@@ -8,14 +8,14 @@ void Skydome::Initialize()
 	worldTransform_.Initialize();
 	worldTransform_.scale = { 250.0f,250.0f,250.0f };
 
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
 }
 
 void Skydome::Update()
 {
 	worldTransform_.rotation.y += 0.001f;
 	worldTransform_.rotation.z += 0.001f;
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
 }
 
 void Skydome::Draw(const Camera camera)
