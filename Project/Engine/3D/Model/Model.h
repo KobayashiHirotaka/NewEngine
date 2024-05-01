@@ -69,7 +69,7 @@ public:
 		Matrix4x4 localMatrix;
 		Matrix4x4 skeletonSpaceMatrix;
 		std::string name;
-		std::vector<Node> children;
+		std::vector<int32_t> children;
 		int32_t index;
 		std::optional<int32_t> parent;
 	};
@@ -126,6 +126,10 @@ private:
 	Vector3 CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time);
 
 	Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframes, float time);
+
+	Skeleton CreateSkelton(const Node& rootNode);
+
+	int32_t CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Model::Joint>& joints);
 
 private:
 	static DirectXCore* dxCore_;

@@ -600,3 +600,38 @@ Quaternion Model::CalculateValue(const std::vector<KeyframeQuaternion>& keyframe
 	}
 	return (*keyframes.rbegin()).value;
 }
+
+Model::Skeleton Model::CreateSkelton(const Node& rootNode)
+{
+	Skeleton skeleton;
+	skeleton.root = CreateJoint(rootNode,{},skeleton.joints);
+
+	for (const Joint& joint : skeleton.joints)
+	{
+		skeleton.jointMap.emplace(joint.name, joint.index);
+	}
+
+	return skeleton;
+}
+
+int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Model::Joint>& joints)
+{
+	Joint joint;
+	joint.name = node.name;
+	joint.localMatrix = node.localMatrix;
+	joint.skeletonSpaceMatrix = MakeIdentity4x4();
+	joint.translate = node.translate;
+	joint.rotate = node.rotate;
+	joint.scale = node.scale;
+	joint.index = int32_t(joints.size());
+	joint.parent = parent;
+	joints.push_back(joint);
+
+	for (const Model::Node& child : node.children)
+	{
+		int32_t childIndex = CreateJoint(child, joint.index, joints);
+		joints[joint.index].children.push_back(childIndex);
+	}
+
+	return joint.index;
+}
