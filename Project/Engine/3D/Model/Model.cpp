@@ -9,7 +9,7 @@ Microsoft::WRL::ComPtr<IDxcCompiler3> Model::dxcCompiler_ = nullptr;
 Microsoft::WRL::ComPtr<IDxcIncludeHandler> Model::includeHandler_ = nullptr;
 Microsoft::WRL::ComPtr<ID3D12RootSignature> Model::rootSignature_ = nullptr;
 Microsoft::WRL::ComPtr<ID3D12PipelineState> Model::graphicsPipelineState_ = nullptr;
-std::list<Model::ModelData> Model::modelDatas_{};
+std::list<ModelData> Model::modelDatas_{};
 
 void Model::StaticInitialize()
 {
@@ -404,9 +404,9 @@ void Model::CreatePSO()
 	assert(SUCCEEDED(hr));
 }
 
-Model::ModelData Model::LoadModelFile(const std::string& directoryPath, const std::string& filename)
+ModelData Model::LoadModelFile(const std::string& directoryPath, const std::string& filename)
 {
-	Model::ModelData modelData;
+	ModelData modelData;
 	Assimp::Importer importer;
 	std::string filePath = directoryPath + "/" + filename;
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
@@ -420,26 +420,31 @@ Model::ModelData Model::LoadModelFile(const std::string& directoryPath, const st
 		aiMesh* mesh = scene->mMeshes[meshIndex];
 		assert(mesh->HasNormals());//法線がないMeshは今回は非対応
 		assert(mesh->HasTextureCoords(0));//TexcoordがないMeshは今回は非対応
+		modelData.vertices.resize(mesh->mNumVertices);
+
 		//ここからMeshの中身(Face)の解析を行っていく
-		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex)
+		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumFaces; ++vertexIndex)
 		{
-			aiFace& face = mesh->mFaces[faceIndex];
-			assert(face.mNumIndices == 3);//三角形のみサポート
+			aiVector3D& position = mesh->mVertices[vertexIndex];
+			aiVector3D& normal = mesh->mNormals[vertexIndex];
+			aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+
+			modelData.vertices[vertexIndex].position = { -position.x, position.y, position.z, 1.0f };
+			modelData.vertices[vertexIndex].normal = { -normal.x, normal.y, normal.z };
+			modelData.vertices[vertexIndex].texcoord = { texcoord.x, texcoord.y };
+
 			//ここからFaceの中身(Vertex)の解析を行っていく
-			for (uint32_t element = 0; element < face.mNumIndices; ++element)
+			for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex)
 			{
-				uint32_t vertexIndex = face.mIndices[element];
-				aiVector3D& position = mesh->mVertices[vertexIndex];
-				aiVector3D& normal = mesh->mNormals[vertexIndex];
-				aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
-				VertexData vertex{};
-				vertex.position = { position.x,position.y,position.z,1.0f };
-				vertex.normal = { normal.x,normal.y,normal.z };
-				vertex.texcoord = { texcoord.x,texcoord.y };
-				//aiProcess_MakeLeftHandedはz*=-1で、右手->左手に変換するので手動で対処
-				vertex.position.x *= -1.0f;
-				vertex.normal.x *= -1.0f;
-				modelData.vertices.push_back(vertex);
+				aiFace& face = mesh->mFaces[faceIndex];
+				assert(face.mNumIndices == 3);
+
+				for (uint32_t element = 0; element < face.mNumIndices; ++element)
+				{
+					uint32_t vertexIndex = face.mIndices[element];
+					modelData.indices.push_back(vertexIndex);
+
+				}
 			}
 		}
 	}
@@ -459,7 +464,8 @@ Model::ModelData Model::LoadModelFile(const std::string& directoryPath, const st
 	return modelData;
 }
 
-Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) 
+
+MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) 
 {
 	MaterialData materialData;
 	std::string line;
@@ -542,7 +548,7 @@ Animation Model::LoadAnimationFile(const std::string& directoryPath, const std::
 	return animation;
 }
 
-Model::Node Model::ReadNode(aiNode* node)
+Node Model::ReadNode(aiNode* node)
 {
 	Node result;
 
@@ -616,7 +622,7 @@ Quaternion Model::CalculateValue(const std::vector<KeyframeQuaternion>& keyframe
 	return (*keyframes.rbegin()).value;
 }
 
-Model::Skeleton Model::CreateSkelton(const Node& rootNode)
+Skeleton Model::CreateSkelton(const Node& rootNode)
 {
 	Skeleton skeleton;
 	skeleton.root = CreateJoint(rootNode,{},skeleton.joints);
@@ -629,7 +635,7 @@ Model::Skeleton Model::CreateSkelton(const Node& rootNode)
 	return skeleton;
 }
 
-int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Model::Joint>& joints)
+int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints)
 {
 	Joint joint;
 	joint.name = node.name;
@@ -642,7 +648,7 @@ int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& paren
 	joint.parent = parent;
 	joints.push_back(joint);
 
-	for (const Model::Node& child : node.children)
+	for (const Node& child : node.children)
 	{
 		int32_t childIndex = CreateJoint(child, joint.index, joints);
 		joints[joint.index].children.push_back(childIndex);

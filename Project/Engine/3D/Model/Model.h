@@ -32,56 +32,6 @@ enum class RootParameterIndex
 class Model 
 {
 public:
-	struct Node
-	{
-		Vector3 translate;
-		Quaternion rotate;
-		Vector3 scale;
-		Matrix4x4 localMatrix;
-		std::string name;
-		std::vector<Node> children;
-	};
-
-	struct MaterialData
-	{
-		std::string textureFilePath;
-	};
-
-	struct ModelData 
-	{
-		std::vector<VertexData> vertices;
-		std::vector<uint32_t> indices;
-		MaterialData material;
-		std::string name;
-		Node rootNode;
-	};
-
-	struct ModelTransformationData
-	{
-		Matrix4x4 WVP;
-		Matrix4x4 World;
-	};
-
-	struct Joint
-	{
-		Vector3 translate;
-		Quaternion rotate;
-		Vector3 scale;
-		Matrix4x4 localMatrix;
-		Matrix4x4 skeletonSpaceMatrix;
-		std::string name;
-		std::vector<int32_t> children;
-		int32_t index;
-		std::optional<int32_t> parent;
-	};
-
-	struct Skeleton
-	{
-		int32_t root;
-		std::map<std::string, int32_t> jointMap;
-		std::vector<Joint> joints;
-	};
-
 	static void StaticInitialize();
 
 	//void Initialize();
@@ -132,7 +82,7 @@ private:
 
 	Skeleton CreateSkelton(const Node& rootNode);
 
-	int32_t CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Model::Joint>& joints);
+	int32_t CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints);
 
 private:
 	static DirectXCore* dxCore_;
