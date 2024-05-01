@@ -667,7 +667,13 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			animationTime[i] = std::fmod(animationTime[i], stageObject_[i]->GetAnimation().duration);
 
 			stageObject_[i]->SetAnimationTime(animationTime[i]);
+
+			stageObject_[i]->ApplyAnimation();
+
+			stageObject_[i]->Update(worldTransformStageObject_[i]);
 		}
+
+		
 	}
 	
 	worldTransform_.UpdateMatrixEuler();

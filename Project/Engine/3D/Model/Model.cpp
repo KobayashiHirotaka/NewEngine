@@ -653,8 +653,8 @@ int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& paren
 
 void Model::ApplyAnimation()
 {
-	animationTime_ += 1.0f / 60.0f;
-    animationTime_ = std::fmod(animationTime_, animation_.duration);
+	//animationTime_ += 1.0f / 60.0f;
+    //animationTime_ = std::fmod(animationTime_, animation_.duration);
 
 	for (Joint& joint : skeleton_.joints)
 	{
