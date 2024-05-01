@@ -85,7 +85,7 @@ public:
 
 	//void Initialize();
 
-	void Update();
+	void Update(WorldTransform& worldTransform);
 
 	void Draw(WorldTransform& worldTransform, const Camera& camera);
 
@@ -106,6 +106,8 @@ public:
 	void SetAnimationTime(float animationTime) { animationTime_ = animationTime; };
 
 	Animation GetAnimation() { return animation_; };
+
+	void ApplyAnimation();
 
 private:
 	static void InitializeDXC();
@@ -165,4 +167,6 @@ private:
 	float animationTime_ = 0.0f;
 	Animation animation_;
 	bool isKeyframeAnimation_ = false;
+
+	Skeleton skeleton_;
 };

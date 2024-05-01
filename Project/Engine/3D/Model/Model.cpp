@@ -27,9 +27,22 @@ void Model::StaticInitialize()
 
 }
 
-void Model::Update()
+void Model::Update(WorldTransform& worldTransform)
 {
+	for (Joint& joint : skeleton_.joints)
+	{
+		joint.localMatrix = MakeAffineMatrix(joint.scale, joint.rotate, joint.translate);
+		worldTransform.matWorld = joint.localMatrix * worldTransform.matWorld;
 
+		if (joint.parent)
+		{
+			joint.skeletonSpaceMatrix = joint.localMatrix * skeleton_.joints[*joint.parent].skeletonSpaceMatrix;
+		}
+		else
+		{
+			joint.skeletonSpaceMatrix = joint.localMatrix;
+		}
+	}
 }
 
 void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
@@ -49,13 +62,11 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
 		worldTransform.matWorld = Multiply(localMatrix, worldTransform.matWorld);
 		worldTransform.TransferMatrix();
 	}
-	/*else
+	else
 	{
-		
-	}*/
-
-	worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
-	worldTransform.TransferMatrix();
+		worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
+		worldTransform.TransferMatrix();
+	}
 
 	//マテリアルの更新
 	material_->Update();
@@ -110,6 +121,8 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 
 	Animation animation;
 
+	Skeleton skeleton;
+
 	//animation_ = animation;
 
 	for (ModelData existingModelData : modelDatas_)
@@ -134,6 +147,8 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 	}
 
 	model->animation_ = model->LoadAnimationFile(directoryPath, filename);
+
+	model->skeleton_ = model->CreateSkelton(modelData.rootNode);
 
 	//メッシュの作成
 	model->mesh_ = std::make_unique<Mesh>();
@@ -634,4 +649,21 @@ int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& paren
 	}
 
 	return joint.index;
+}
+
+void Model::ApplyAnimation()
+{
+	animationTime_ += 1.0f / 60.0f;
+    animationTime_ = std::fmod(animationTime_, animation_.duration);
+
+	for (Joint& joint : skeleton_.joints)
+	{
+		if (auto it = animation_.nodeAnimations.find(joint.name); it != animation_.nodeAnimations.end())
+		{
+			const NodeAnimation& rootNodeAnimation = (*it).second;
+			joint.translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
+			joint.rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
+			joint.scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
+		}
+	}
 }
