@@ -152,7 +152,7 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 
 	//メッシュの作成
 	model->mesh_ = std::make_unique<Mesh>();
-	model->mesh_->Initialize(modelData.vertices);
+	model->mesh_->Initialize(modelData.vertices, modelData.indices);
 
 	//テクスチャのハンドルの取得
 	model->textureHandle_ = textureManager_->LoadTexture(modelData.material.textureFilePath);

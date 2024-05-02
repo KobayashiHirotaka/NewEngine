@@ -1,20 +1,22 @@
 #include "Mesh.h"
 
-void Mesh::Initialize(const std::vector<VertexData>& vertices)
+void Mesh::Initialize(const std::vector<VertexData>& vertices, const std::vector<uint32_t>& indices)
 {
 	dxCore_ = DirectXCore::GetInstance();
 
 	vertices_ = vertices;
 
+	indices_ = indices;
+
 	vertexBuffer_ = dxCore_->CreateBufferResource(sizeof(VertexData) * vertices_.size());
-	indexBuffer_ = dxCore_->CreateBufferResource(sizeof(uint32_t) * modelData_.indices.size());
+	indexBuffer_ = dxCore_->CreateBufferResource(sizeof(uint32_t) * indices_.size());
 
 	vertexBufferView_.BufferLocation = vertexBuffer_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * vertices_.size());
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
 	indexBufferView_.BufferLocation = indexBuffer_->GetGPUVirtualAddress();
-	indexBufferView_.SizeInBytes = UINT(sizeof(uint32_t) * modelData_.indices.size());
+	indexBufferView_.SizeInBytes = UINT(sizeof(uint32_t) * indices_.size());
 	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
 
 	VertexData* vertexData = nullptr;
@@ -24,14 +26,14 @@ void Mesh::Initialize(const std::vector<VertexData>& vertices)
 
 	uint32_t* indexData;
 	indexBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
-	std::memcpy(indexData, modelData_.indices.data(), sizeof(uint32_t) * modelData_.indices.size());
+	std::memcpy(indexData, indices_.data(), sizeof(uint32_t) * indices_.size());
 	indexBuffer_->Unmap(0, nullptr);
 }
 
 void Mesh::Draw() 
 {
 	//dxCore_->GetCommandList()->DrawInstanced(UINT(vertices_.size()), 1, 0, 0);
-	dxCore_->GetCommandList()->DrawIndexedInstanced(UINT(modelData_.indices.size()), 1, 0, 0, 0);
+	dxCore_->GetCommandList()->DrawIndexedInstanced(UINT(indices_.size()), 1, 0, 0, 0);
 }
 
 void Mesh::SetGraphicsCommand()

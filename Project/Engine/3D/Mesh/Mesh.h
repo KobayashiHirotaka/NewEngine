@@ -6,7 +6,7 @@
 class Mesh
 {
 public:
-	void Initialize(const std::vector<VertexData>& vertices);
+	void Initialize(const std::vector<VertexData>& vertices, const std::vector<uint32_t>& indices);
 
 	void Draw();
 
@@ -25,5 +25,5 @@ private:
 
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
 
-	ModelData modelData_;
+	std::vector<uint32_t> indices_{};
 };
