@@ -121,15 +121,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 {
 	roundStartTimer_--;
 
-	if (input_->PressKey(DIK_P))
-	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-	}
-	else
-	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-	}
-
 	if (migrationTimer_ >= 150 && roundStartTimer_ <= 0 && !isOpen_)
 	{
 		player_->Update();
@@ -137,6 +128,11 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (player_->GetIsFinisherEffect() == false)
 		{
 			enemy_->Update();
+			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+		}
+		else
+		{
+			PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		}
 
 		// 時間経過を加算
