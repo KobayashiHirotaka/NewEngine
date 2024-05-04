@@ -72,10 +72,10 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	worldTransform_.translation = { 0.0f,-1.0f,0.0f };
 
 	worldTransformStageObject_[0].Initialize();
-	worldTransformStageObject_[0].translation = { -25.0f,-2.5f,50.0f };
+	worldTransformStageObject_[0].translation = { -25.0f,-2.3f,50.0f };
 
 	worldTransformStageObject_[1].Initialize();
-	worldTransformStageObject_[1].translation = { 25.0f,-2.5f,50.0f };
+	worldTransformStageObject_[1].translation = { 25.0f,-2.3f,50.0f };
 
 	worldTransformStageObject_[2].Initialize();
 	worldTransformStageObject_[2].translation = { -25.0f,-2.5f,50.0f };

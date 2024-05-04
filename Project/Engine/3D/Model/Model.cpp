@@ -423,7 +423,7 @@ ModelData Model::LoadModelFile(const std::string& directoryPath, const std::stri
 		modelData.vertices.resize(mesh->mNumVertices);
 
 		//ここからMeshの中身(Face)の解析を行っていく
-		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumFaces; ++vertexIndex)
+		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex)
 		{
 			aiVector3D& position = mesh->mVertices[vertexIndex];
 			aiVector3D& normal = mesh->mNormals[vertexIndex];
@@ -432,19 +432,18 @@ ModelData Model::LoadModelFile(const std::string& directoryPath, const std::stri
 			modelData.vertices[vertexIndex].position = { -position.x, position.y, position.z, 1.0f };
 			modelData.vertices[vertexIndex].normal = { -normal.x, normal.y, normal.z };
 			modelData.vertices[vertexIndex].texcoord = { texcoord.x, texcoord.y };
+		}
 
-			//ここからFaceの中身(Vertex)の解析を行っていく
-			for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex)
+		//ここからFaceの中身(Vertex)の解析を行っていく
+		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex)
+		{
+			aiFace& face = mesh->mFaces[faceIndex];
+			assert(face.mNumIndices == 3);
+
+			for (uint32_t element = 0; element < face.mNumIndices; ++element)
 			{
-				aiFace& face = mesh->mFaces[faceIndex];
-				assert(face.mNumIndices == 3);
-
-				for (uint32_t element = 0; element < face.mNumIndices; ++element)
-				{
-					uint32_t vertexIndex = face.mIndices[element];
-					modelData.indices.push_back(vertexIndex);
-
-				}
+				uint32_t vertexIndex = face.mIndices[element];
+				modelData.indices.push_back(vertexIndex);
 			}
 		}
 	}
