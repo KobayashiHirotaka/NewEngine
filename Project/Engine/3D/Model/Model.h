@@ -111,6 +111,8 @@ private:
 
 	int32_t CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints);
 
+	SkinCluster CreateSkinCluster(const Skeleton& skeleton,const ModelData& modelData);
+
 private:
 	static DirectXCore* dxCore_;
 

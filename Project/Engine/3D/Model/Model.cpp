@@ -695,3 +695,15 @@ void Model::ApplyAnimation()
 		}
 	}
 }
+
+SkinCluster Model::CreateSkinCluster(const Skeleton& skeleton,const ModelData& modelData)
+{
+	SkinCluster skinCluster;
+	skinCluster.paletteResource = dxCore_->CreateBufferResource(sizeof(WellForGPU) * skeleton.joints.size());
+	WellForGPU* mappedPalette = nullptr;
+	skinCluster.paletteResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedPalette));
+	skinCluster.mappedPalette = { mappedPalette, skeleton.joints.size() };
+	skinCluster.paletteSrvHandle.first;
+
+	return skinCluster;
+}
