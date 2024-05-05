@@ -149,4 +149,6 @@ private:
 	bool isKeyframeAnimation_ = false;
 
 	Skeleton skeleton_;
+
+	SkinCluster skinCluster_;
 };

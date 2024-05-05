@@ -601,6 +601,7 @@
     <FxCompile Include="resource\shaders\Particle.VS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
+    <FxCompile Include="resource\shaders\SkinningObject3d.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Engine\externals\imgui\LICENSE.txt">
