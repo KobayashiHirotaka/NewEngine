@@ -13,12 +13,15 @@
 #include <list>
 #include <string>
 #include <sstream>
+#include <span>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
 #pragma comment(lib,"dxcompiler.lib")
+
+static const uint32_t kNumMaxInfluence = 4;
 
 enum class RootParameterIndex
 {
@@ -27,6 +30,30 @@ enum class RootParameterIndex
 	ViewProjection,
 	Texture,
 	Light
+};
+
+struct VertexInfluence
+{
+	std::array<float, kNumMaxInfluence> weights;
+	std::array<int32_t, kNumMaxInfluence> jointIndices;
+};
+
+struct WellForGPU
+{
+	Matrix4x4 skeletonSpaceMatrix;
+	Matrix4x4 skeletonSpaceInverseTransposeMatrix;
+};
+
+
+struct SkinCluster
+{
+	std::vector<Matrix4x4> inverseBindPoseMatrices;
+	Microsoft::WRL::ComPtr<ID3D12Resource> influenceResource;
+	D3D12_VERTEX_BUFFER_VIEW influenceBufferView;
+	std::span<VertexInfluence> mappedInfluence;
+	Microsoft::WRL::ComPtr<ID3D12Resource> paletteResource;
+	std::span<WellForGPU> mappedPalette;
+	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> paletteSrvHandle;
 };
 
 class Model 
