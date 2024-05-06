@@ -704,6 +704,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	ImGui::Begin("Play");
 	ImGui::DragInt("PlayerWinCount", &PlayerWinCount_, 1, 0, 2);
 	ImGui::DragInt("EnemyWinCount", &EnemyWinCount_, 1, 0, 2);
+	ImGui::DragFloat3("TestWTF", &worldTransformTestObject_.translation.x, 1.0f, 0.0f, 1280.0f);
 	ImGui::End();
 };
 

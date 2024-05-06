@@ -63,8 +63,8 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
 		//animationTime_ = std::fmod(animationTime_, animation_.duration);//最後までいったら最初からリピート再生。リピートしなくても別にいい
 		NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
 
-		Vector3 translate;
-		Quaternion rotate;
+		Vector3 translate{};
+		Quaternion rotate{ 1.0f,0.0f,0.0f,0.0f };
 		Vector3 scale = { 1.0f,1.0f,1.0f };
 
 		if (!rootNodeAnimation.translate.keyframes.empty())
@@ -325,7 +325,7 @@ void Model::CreatePSO()
 	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
 	rootParameters[5].DescriptorTable.pDescriptorRanges = skinningDescriptorRange;//Tableの中身の配列を指定
 	rootParameters[5].DescriptorTable.NumDescriptorRanges = _countof(skinningDescriptorRange);//Tableで利用する数
-	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//PixelShaderで使う
+	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
 	descriptionRootSignature.pParameters = rootParameters;//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);//配列の長さ
 
