@@ -3,10 +3,12 @@
 struct WorldTransform
 {
     float32_t4x4 world;
+    float32_t4x4 worldInverseTranspose;
 };
 
 struct Camera
 {
+    float32_t3 worldPosition;
     float32_t4x4 view;
     float32_t4x4 projection;
 };

@@ -10,7 +10,7 @@ public:
 
 	void Draw();
 
-	void SetGraphicsCommand();
+	void SetGraphicsCommand(D3D12_VERTEX_BUFFER_VIEW influenceBufferView);
 
 private:
 	DirectXCore* dxCore_ = nullptr;

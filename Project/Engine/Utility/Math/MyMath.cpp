@@ -503,6 +503,19 @@ Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float botto
 	return result;
 }
 
+Matrix4x4 Transpose(const Matrix4x4& m) 
+{
+	Matrix4x4 result;
+	for (int i = 0; i < 4; ++i)
+	{
+		for (int j = 0; j < 4; ++j) 
+		{
+			result.m[j][i] = m.m[i][j];
+		}
+	}
+	return result;
+}
+
 Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
 {
 	Quaternion result{};

@@ -21,6 +21,7 @@ void WorldTransform::Map()
 void WorldTransform::TransferMatrix()
 {
 	constMap->matWorld = matWorld;
+	constMap->worldInverseTranspose = Transpose(Inverse(matWorld));
 }
 
 void WorldTransform::UpdateMatrixEuler()

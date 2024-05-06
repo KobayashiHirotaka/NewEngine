@@ -83,7 +83,7 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
 	light_->Update();
 
 	//頂点データを設定
-	mesh_->SetGraphicsCommand();
+	mesh_->SetGraphicsCommand(skinCluster_.influenceBufferView);
 
 	//マテリアルCBufferの場所を設定
 	material_->SetGraphicsCommand(UINT(RootParameterIndex::Material));
@@ -131,6 +131,8 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 
 	Skeleton skeleton;
 
+	SkinCluster skinCluster;
+
 	//animation_ = animation;
 
 	for (ModelData existingModelData : modelDatas_)
@@ -157,6 +159,8 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 	model->animation_ = model->LoadAnimationFile(directoryPath, filename);
 
 	model->skeleton_ = model->CreateSkelton(modelData.rootNode);
+
+	model->skinCluster_ = model->CreateSkinCluster(model->skeleton_,modelData);
 
 	//メッシュの作成
 	model->mesh_ = std::make_unique<Mesh>();
@@ -729,9 +733,8 @@ SkinCluster Model::CreateSkinCluster(const Skeleton& skeleton,const ModelData& m
 	skinCluster.paletteResource = dxCore_->CreateBufferResource(sizeof(WellForGPU) * skeleton.joints.size());
 	WellForGPU* mappedPalette = nullptr;
 	skinCluster.paletteResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedPalette));
-	skinCluster.mappedPalette = { mappedPalette, skeleton.joints.size() };
-	skinCluster.paletteSrvHandle.first;
-	skinCluster.paletteSrvHandle.second;
+	skinCluster.mappedPalette = { mappedPalette, skeleton.joints.size()};
+	skinCluster.paletteSrvHandle.ptr = textureManager_->CreateInstancingSRV(skinCluster.paletteResource, UINT(skeleton.joints.size()), sizeof(WellForGPU));
 
 	//palette用のsrvを作成
 	D3D12_SHADER_RESOURCE_VIEW_DESC paletteSrvDesc{};
@@ -742,7 +745,6 @@ SkinCluster Model::CreateSkinCluster(const Skeleton& skeleton,const ModelData& m
 	paletteSrvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 	paletteSrvDesc.Buffer.NumElements = UINT(skeleton.joints.size());
 	paletteSrvDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
-	device_->CreateShaderResourceView(skinCluster.paletteResource.Get(), &paletteSrvDesc, skinCluster.paletteSrvHandle.first);
 
 	//influence用のResourceを確保
 	skinCluster.influenceResource = dxCore_->CreateBufferResource(sizeof(VertexInfluence) * modelData.vertices.size());
@@ -758,7 +760,11 @@ SkinCluster Model::CreateSkinCluster(const Skeleton& skeleton,const ModelData& m
 
 	//InverseBindPoseMatrixを格納する場所を作成して、単位行列で埋める
 	skinCluster.inverseBindPoseMatrices.resize(skeleton.joints.size());
-	std::generate(skinCluster.inverseBindPoseMatrices.begin(), skinCluster.inverseBindPoseMatrices.end(), MakeIdentity4x4());
+
+	for (Matrix4x4& inverseBindPoseMatrix : skinCluster.inverseBindPoseMatrices)
+	{
+		inverseBindPoseMatrix = MakeIdentity4x4();
+	}
 
 	//ModelDataを解析してInfluenceを埋める
 	for (const auto& jointWeight : modelData.skinClusterData)

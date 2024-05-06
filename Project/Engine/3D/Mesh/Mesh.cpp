@@ -36,9 +36,11 @@ void Mesh::Draw()
 	dxCore_->GetCommandList()->DrawIndexedInstanced(UINT(indices_.size()), 1, 0, 0, 0);
 }
 
-void Mesh::SetGraphicsCommand()
+void Mesh::SetGraphicsCommand(D3D12_VERTEX_BUFFER_VIEW influenceBufferView)
 {
-	dxCore_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	D3D12_VERTEX_BUFFER_VIEW vbvs[2] = { vertexBufferView_,influenceBufferView };
+
+	dxCore_->GetCommandList()->IASetVertexBuffers(0, 2, vbvs);
 	dxCore_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
 	dxCore_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }

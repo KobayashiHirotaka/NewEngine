@@ -3,16 +3,18 @@
 struct WorldTransform
 {
     float32_t4x4 world;
+    float32_t4x4 worldInverseTranspose;
 };
 
-struct ViewProjection
+struct Camera
 {
+    float32_t3 worldPosition;
     float32_t4x4 view;
     float32_t4x4 projection;
 };
 
 ConstantBuffer<WorldTransform> gWorldTransform : register(b0);
-ConstantBuffer<ViewProjection> gViewProjection : register(b1);
+ConstantBuffer<Camera> gCamera : register(b1);
 
 struct VertexShaderInput
 {
@@ -24,10 +26,11 @@ struct VertexShaderInput
 VertexShaderOutput main(VertexShaderInput input)
 {
     VertexShaderOutput output;
-    output.position = mul(input.position, mul(gWorldTransform.world, mul(gViewProjection.view, gViewProjection.projection)));
+    output.position = mul(input.position, mul(gWorldTransform.world, mul(gCamera.view, gCamera.projection)));
     output.texcoord = input.texcoord;
     output.normal = normalize(mul(input.normal, (float32_t3x3) gWorldTransform.world));
- 
+    output.worldPosition = mul(input.position, gWorldTransform.world).xyz;
+    
     float z = (output.position.z - 0.1f) / (100.0f - 0.1f);
     output.depth = float32_t4(z, 0, 0, 0);
 

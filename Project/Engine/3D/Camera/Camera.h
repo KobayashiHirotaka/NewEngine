@@ -6,6 +6,8 @@
 
 struct ConstBuffDataCamera
 {
+	Vector3 worldPosition;
+	float padding;
 	Matrix4x4 view;
 	Matrix4x4 projection;
 };
