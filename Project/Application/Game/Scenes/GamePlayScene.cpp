@@ -34,6 +34,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	stageObject_[3].reset(Model::CreateFromOBJ("resource/StagePillar", "StagePillar.obj"));
 	//stageObject_[1].reset(Model::CreateFromOBJ("resource/BackStage", "BackStage.obj"));
 
+	testObject_.reset(Model::CreateFromOBJ("resource/Test", "Test.gltf"));
+
 	roundTextureHandle_[0] = TextureManager::LoadTexture("resource/Round1.png");
 	roundTextureHandle_[1] = TextureManager::LoadTexture("resource/Round2.png");
 	roundTextureHandle_[2] = TextureManager::LoadTexture("resource/Round3.png");
@@ -82,6 +84,9 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	worldTransformStageObject_[3].Initialize();
 	worldTransformStageObject_[3].translation = { 25.0f,-2.5f,50.0f };
+
+	worldTransformTestObject_.Initialize();
+	worldTransformTestObject_.translation = { 0.0f,1.0f,0.0f };
 
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
@@ -673,6 +678,16 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			stageObject_[i]->Update(worldTransformStageObject_[i]);
 		}
 
+		float animationTime;
+		animationTime = testObject_->GetAnimationTime();
+		animationTime += 1.0f / 60.0f;
+		animationTime = std::fmod(animationTime, testObject_->GetAnimation().duration);
+
+		testObject_->SetAnimationTime(animationTime);
+
+		testObject_->ApplyAnimation();
+
+		testObject_->Update(worldTransformTestObject_);
 		
 	}
 	
@@ -681,6 +696,8 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	worldTransformStageObject_[1].UpdateMatrixEuler();
 	worldTransformStageObject_[2].UpdateMatrixEuler();
 	worldTransformStageObject_[3].UpdateMatrixEuler();
+
+	worldTransformTestObject_.UpdateMatrixEuler();
 
 	camera_.UpdateMatrix();
 
@@ -719,6 +736,8 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 	stageObject_[2]->Draw(worldTransformStageObject_[2], camera_);
 
 	stageObject_[3]->Draw(worldTransformStageObject_[3], camera_);
+
+	testObject_->Draw(worldTransformTestObject_,camera_);
 
 	skydome_->Draw(camera_);
 

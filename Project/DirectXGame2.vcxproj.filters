@@ -601,7 +601,7 @@
     <FxCompile Include="resource\shaders\Particle.VS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
-    <FxCompile Include="resource\shaders\SkinningObject3d.hlsl">
+    <FxCompile Include="resource\shaders\SkinningObject3d.VS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
   </ItemGroup>

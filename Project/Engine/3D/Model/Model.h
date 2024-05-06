@@ -29,7 +29,8 @@ enum class RootParameterIndex
 	WorldTransform,
 	ViewProjection,
 	Texture,
-	Light
+	Light,
+	Skinning
 };
 
 struct VertexInfluence
@@ -151,4 +152,6 @@ private:
 	Skeleton skeleton_;
 
 	SkinCluster skinCluster_;
+
+	uint32_t skinningTextureHandle_;
 };

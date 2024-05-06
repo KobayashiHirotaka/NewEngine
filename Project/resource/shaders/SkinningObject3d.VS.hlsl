@@ -62,10 +62,23 @@ VertexShaderOutput main(VertexShaderInput input)
     VertexShaderOutput output;
     Skinned skinned = Skinning(input); 
     
-    output.position = mul(skinned.position, mul(gWorldTransform.world, mul(gCamera.view, gCamera.projection)));
-    output.texcoord = input.texcoord;
-    output.normal = normalize(mul(skinned.normal, (float32_t3x3) gWorldTransform.world));
-    output.worldPosition = mul(skinned.position, gWorldTransform.world).xyz;
+    if (input.weight.x == 0.0f && input.weight.y == 0.0f && input.weight.z == 0.0f && input.weight.w == 0.0f)
+    {
+        output.position = mul(input.position, mul(gWorldTransform.world, mul(gCamera.view, gCamera.projection)));
+        output.texcoord = input.texcoord;
+        output.normal = normalize(mul(input.normal, (float32_t3x3) gWorldTransform.world));
+        output.worldPosition = mul(input.position, gWorldTransform.world).xyz;
+    }
+    else
+    {
+        output.position = mul(skinned.position, mul(gWorldTransform.world, mul(gCamera.view, gCamera.projection)));
+        output.texcoord = input.texcoord;
+        output.normal = normalize(mul(skinned.normal, (float32_t3x3) gWorldTransform.world));
+        output.worldPosition = mul(skinned.position, gWorldTransform.world).xyz;
+    }
+    
+    float z = (output.position.z - 0.1f) / (100.0f - 0.1f);
+    output.depth = float32_t4(z, 0, 0, 0);
 
     return output;
 }

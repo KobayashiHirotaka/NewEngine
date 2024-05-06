@@ -62,9 +62,26 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
 		//animationTime_ += 1.0f / 60.0f;//時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
 		//animationTime_ = std::fmod(animationTime_, animation_.duration);//最後までいったら最初からリピート再生。リピートしなくても別にいい
 		NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
-		Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
-		Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
-		Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
+
+		Vector3 translate;
+		Quaternion rotate;
+		Vector3 scale = { 1.0f,1.0f,1.0f };
+
+		if (!rootNodeAnimation.translate.keyframes.empty())
+		{
+			translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
+		}
+
+		if (!rootNodeAnimation.rotate.keyframes.empty())
+		{
+			rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
+		}
+
+		if (!rootNodeAnimation.scale.keyframes.empty())
+		{
+			scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
+		}
+
 		Matrix4x4 localMatrix = MakeAffineMatrix(scale, rotate, translate);
 
 		worldTransform.matWorld = Multiply(localMatrix, worldTransform.matWorld);
@@ -102,6 +119,8 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
 
 	//Lightを設定
 	light_->SetGraphicsCommand(UINT(RootParameterIndex::Light));
+
+	textureManager_->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Skinning), skinningTextureHandle_);
 
 	//描画
 	mesh_->Draw();
@@ -279,8 +298,14 @@ void Model::CreatePSO()
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使う
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
 
+	D3D12_DESCRIPTOR_RANGE skinningDescriptorRange[1] = {};
+	skinningDescriptorRange[0].BaseShaderRegister = 0;//0から始まる
+	skinningDescriptorRange[0].NumDescriptors = 1;//数は1つ
+	skinningDescriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使う
+	skinningDescriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
+
 	//RootParameter作成。複数設定できるので配列。今回は結果一つだけなので長さ1の配列
-	D3D12_ROOT_PARAMETER rootParameters[5] = {};
+	D3D12_ROOT_PARAMETER rootParameters[6] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVで使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	rootParameters[0].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
@@ -297,6 +322,10 @@ void Model::CreatePSO()
 	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	rootParameters[4].Descriptor.ShaderRegister = 1;//レジスタ番号１を使う
+	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
+	rootParameters[5].DescriptorTable.pDescriptorRanges = skinningDescriptorRange;//Tableの中身の配列を指定
+	rootParameters[5].DescriptorTable.NumDescriptorRanges = _countof(skinningDescriptorRange);//Tableで利用する数
+	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//PixelShaderで使う
 	descriptionRootSignature.pParameters = rootParameters;//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);//配列の長さ
 
@@ -389,7 +418,7 @@ void Model::CreatePSO()
 
 
 	//Shaderをコンパイルする
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"resource/shaders/Object3d.VS.hlsl", L"vs_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"resource/shaders/SkinningObject3d.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
 	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"resource/shaders/Object3d.PS.hlsl", L"ps_6_0");
@@ -719,9 +748,21 @@ void Model::ApplyAnimation()
 		if (auto it = animation_.nodeAnimations.find(joint.name); it != animation_.nodeAnimations.end())
 		{
 			const NodeAnimation& rootNodeAnimation = (*it).second;
-			joint.translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
-			joint.rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
-			joint.scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
+
+			if (!rootNodeAnimation.translate.keyframes.empty())
+			{
+				joint.translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
+			}
+
+			if (!rootNodeAnimation.rotate.keyframes.empty())
+			{
+				joint.rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
+			}
+
+			if (!rootNodeAnimation.scale.keyframes.empty())
+			{
+				joint.scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
+			}
 		}
 	}
 }
@@ -734,7 +775,7 @@ SkinCluster Model::CreateSkinCluster(const Skeleton& skeleton,const ModelData& m
 	WellForGPU* mappedPalette = nullptr;
 	skinCluster.paletteResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedPalette));
 	skinCluster.mappedPalette = { mappedPalette, skeleton.joints.size()};
-	skinCluster.paletteSrvHandle.ptr = textureManager_->CreateInstancingSRV(skinCluster.paletteResource, UINT(skeleton.joints.size()), sizeof(WellForGPU));
+	skinningTextureHandle_ = textureManager_->CreateInstancingSRV(skinCluster.paletteResource, UINT(skeleton.joints.size()), sizeof(WellForGPU));
 
 	//palette用のsrvを作成
 	D3D12_SHADER_RESOURCE_VIEW_DESC paletteSrvDesc{};
