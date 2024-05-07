@@ -86,7 +86,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	worldTransformStageObject_[3].translation = { 25.0f,-2.5f,50.0f };
 
 	worldTransformTestObject_.Initialize();
-	worldTransformTestObject_.translation = { 0.0f,1.0f,0.0f };
+	worldTransformTestObject_.translation = { 0.0f,3.0f,0.0f };
 
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();

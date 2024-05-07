@@ -32,7 +32,6 @@ void Model::Update(WorldTransform& worldTransform)
 	for (Joint& joint : skeleton_.joints)
 	{
 		joint.localMatrix = MakeAffineMatrix(joint.scale, joint.rotate, joint.translate);
-		worldTransform.matWorld = joint.localMatrix * worldTransform.matWorld;
 
 		if (joint.parent)
 		{
@@ -753,15 +752,27 @@ void Model::ApplyAnimation()
 			{
 				joint.translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
 			}
+			else
+			{
+				joint.translate = { 0.0f,0.0f,0.0f };
+			}
 
 			if (!rootNodeAnimation.rotate.keyframes.empty())
 			{
 				joint.rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
 			}
+			else
+			{
+				joint.rotate = { 1.0f,0.0f,0.0f,0.0f };
+			}
 
 			if (!rootNodeAnimation.scale.keyframes.empty())
 			{
 				joint.scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
+			}
+			else
+			{
+				joint.scale = { 1.0f,1.0f,1.0f };
 			}
 		}
 	}
