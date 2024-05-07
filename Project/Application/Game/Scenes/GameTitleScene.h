@@ -9,6 +9,7 @@
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
 #include "Engine/3D/Particle/ParticleModel.h"
+#include "Engine/3D/Particle/ParticleSystem.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include <memory>
 

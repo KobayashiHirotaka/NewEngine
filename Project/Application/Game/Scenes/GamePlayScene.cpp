@@ -76,6 +76,12 @@ void GamePlayScene::Update()
 		camera_.UpdateMatrix();
 	}
 
+	modelManager_->FindModel("skydome.obj")->GetLight()->ImGui("DirectionalLight");
+
+	modelManager_->FindModel("skydome.obj")->GetPointLight()->ImGui("PointLight");
+
+	modelManager_->FindModel("skydome.obj")->GetSpotLight()->ImGui("SpotLight");
+
 	ImGui::Begin("PlayScene");
 	ImGui::Text("Abutton or SpaceKey : ClearScene");
 	ImGui::End();
