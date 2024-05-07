@@ -126,6 +126,8 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 {
 	roundStartTimer_--;
 
+	worldTransformTestObject_.rotation.y += 0.01f;
+
 	if (migrationTimer_ >= 150 && roundStartTimer_ <= 0 && !isOpen_)
 	{
 		player_->Update();

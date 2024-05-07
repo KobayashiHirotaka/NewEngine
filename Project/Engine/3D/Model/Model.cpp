@@ -62,7 +62,7 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
 		//animationTime_ = std::fmod(animationTime_, animation_.duration);//最後までいったら最初からリピート再生。リピートしなくても別にいい
 		NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
 
-		Vector3 translate{};
+		Vector3 translate{ 0.0f,0.0f,0.0f};
 		Quaternion rotate{ 1.0f,0.0f,0.0f,0.0f };
 		Vector3 scale = { 1.0f,1.0f,1.0f };
 
