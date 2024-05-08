@@ -63,7 +63,7 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
 		NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
 
 		Vector3 translate{ 0.0f,0.0f,0.0f};
-		Quaternion rotate{ 1.0f,0.0f,0.0f,0.0f };
+		Quaternion rotate{ 0.0f,0.0f,0.0f,1.0f };
 		Vector3 scale = { 1.0f,1.0f,1.0f };
 
 		if (!rootNodeAnimation.translate.keyframes.empty())
@@ -763,7 +763,7 @@ void Model::ApplyAnimation()
 			}
 			else
 			{
-				joint.rotate = { 1.0f,0.0f,0.0f,0.0f };
+				joint.rotate = { 0.0f,0.0f,0.0f,1.0f };
 			}
 
 			if (!rootNodeAnimation.scale.keyframes.empty())
