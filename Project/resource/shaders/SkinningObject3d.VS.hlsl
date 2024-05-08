@@ -66,12 +66,12 @@ VertexShaderOutput main(VertexShaderInput input)
     {
         output.position = mul(input.position, mul(gWorldTransform.world, mul(gCamera.view, gCamera.projection)));
         output.texcoord = input.texcoord;
-        output.normal = normalize(mul(input.normal, (float32_t3x3) gWorldTransform.world));
+        output.normal = normalize(mul(input.normal, (float32_t3x3) gWorldTransform.worldInverseTranspose));
         output.worldPosition = mul(input.position, gWorldTransform.world).xyz;
     }
     else
     {
-        output.position = mul(skinned.position, mul(gWorldTransform.world, mul(gCamera.view, gCamera.projection)));
+        output.position = mul(skinned.position, mul(gWorldTransform.world, mul(gCamera.view, gCamera.worldInverseTranspose)));
         output.texcoord = input.texcoord;
         output.normal = normalize(mul(skinned.normal, (float32_t3x3) gWorldTransform.world));
         output.worldPosition = mul(skinned.position, gWorldTransform.world).xyz;
