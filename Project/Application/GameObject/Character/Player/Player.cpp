@@ -18,10 +18,10 @@ void Player::Initialize()
 
 	audio_ = Audio::GetInstance();
 
-	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_PBody", "float_Body.gltf"));
-	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead_A", "float_PHead.gltf"));
-	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_PL_arm", "float_PL_arm.gltf"));
-	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_PR_arm", "float_PR_arm.gltf"));
+	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
+	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
+	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
+	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
 
 	modelFighterPAHead_.reset(Model::CreateFromOBJ("resource/float_PHead_A", "float_PHead.gltf"));
 	modelFighterLA_arm_.reset(Model::CreateFromOBJ("resource/float_PL_arm", "float_PL_arm.gltf"));
