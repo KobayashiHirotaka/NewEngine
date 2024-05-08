@@ -196,7 +196,12 @@ void Player::Update()
 	case Behavior::kRoot:
 	default:
 		BehaviorRootUpdate();
-		FloatingGimmickUpdate();
+
+		if (!isDown_)
+		{
+			FloatingGimmickUpdate();
+		}
+
 		break;
 
 	case Behavior::kAttack:
@@ -319,6 +324,7 @@ void Player::Update()
 
 	ImGui::Begin("FinisherGauge");
 	ImGui::DragFloat("FinisherGauge", &finisherGauge_, 1.0f);
+	ImGui::SliderFloat3("WTFR", &worldTransformBody_.rotation.x, 0.0f, 16.0f);
 	ImGui::End();
 }
 
@@ -663,197 +669,200 @@ void Player::BehaviorRootUpdate()
 	//コントローラーの移動処理
 	if (input_->GetJoystickState())
 	{
-		const float deadZone = 0.7f;
-		bool isMove_ = false;
-		float kCharacterSpeed = 0.1f;
-		velocity_ = { 0.0f, 0.0f, 0.0f };
-
-		//移動処理
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && worldTransform_.rotation.y == 4.6f && isDown_ == false && !isHit_)
+		if (GamePlayScene::migrationTimer >= 150)
 		{
-			kCharacterSpeed = 0.1f;
-			velocity_.x = -0.3f;
-			isMove_ = true;
-			isGuard_ = false;
-		}
+			const float deadZone = 0.7f;
+			bool isMove_ = false;
+			float kCharacterSpeed = 0.1f;
+			velocity_ = { 0.0f, 0.0f, 0.0f };
 
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && worldTransform_.rotation.y == 1.7f && isDown_ == false && !isHit_ )
-		{
-			kCharacterSpeed = 0.1f;
-			velocity_.x = 0.3f;
-			isMove_ = true;
-			isGuard_ = false;
-		}
-
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
-		{
-			isGuard_ = true;
-
-			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
+			//移動処理
+			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && worldTransform_.rotation.y == 4.6f && isDown_ == false && !isHit_)
 			{
-				kCharacterSpeed = 0.05f;
+				kCharacterSpeed = 0.1f;
 				velocity_.x = -0.3f;
 				isMove_ = true;
+				isGuard_ = false;
 			}
 
-			if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && worldTransform_.rotation.y == 1.7f && isDown_ == false && !isHit_)
 			{
-				kCharacterSpeed = 0.0f;
-				velocity_.x = 0.0f;
-				isMove_ = false;
-			}
-		}
-
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
-		{
-
-			isGuard_ = true;
-
-			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
-			{
-				kCharacterSpeed = 0.05f;
+				kCharacterSpeed = 0.1f;
 				velocity_.x = 0.3f;
 				isMove_ = true;
+				isGuard_ = false;
 			}
 
-			if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
 			{
-				kCharacterSpeed = 0.0f;
-				velocity_.x = 0.0f;
-				isMove_ = false;
+				isGuard_ = true;
+
+				if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
+				{
+					kCharacterSpeed = 0.05f;
+					velocity_.x = -0.3f;
+					isMove_ = true;
+				}
+
+				if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+				{
+					kCharacterSpeed = 0.0f;
+					velocity_.x = 0.0f;
+					isMove_ = false;
+				}
+			}
+
+			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
+			{
+
+				isGuard_ = true;
+
+				if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
+				{
+					kCharacterSpeed = 0.05f;
+					velocity_.x = 0.3f;
+					isMove_ = true;
+				}
+
+				if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+				{
+					kCharacterSpeed = 0.0f;
+					velocity_.x = 0.0f;
+					isMove_ = false;
+				}
+			}
+
+			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+			{
+				isGuard_ = false;
+			}
+
+			if (isMove_)
+			{
+				velocity_ = Normalize(velocity_);
+				velocity_ = Multiply(kCharacterSpeed, velocity_);
+
+				// 平行移動
+				worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+				worldTransform_.UpdateMatrixEuler();
+			}
+
+			Vector3 playerWorldPosition = GetWorldPosition();
+
+			Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
+
+			if (enemyWorldPosition.x > playerWorldPosition.x)
+			{
+				worldTransform_.rotation.y = 1.7f;
+			}
+
+			if (enemyWorldPosition.x < playerWorldPosition.x)
+			{
+				worldTransform_.rotation.y = 4.6f;
 			}
 		}
 
-		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+		//ジャンプ
+		if (input_->GetJoystickState())
 		{
-			isGuard_ = false;
-		}
-		
-		if (isMove_)
-		{
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(kCharacterSpeed, velocity_);
-
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
-
-			worldTransform_.UpdateMatrixEuler();
+			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isDown_ == false)
+			{
+				behaviorRequest_ = Behavior::kJump;
+			}
 		}
 
-		Vector3 playerWorldPosition = GetWorldPosition();
-
-		Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
-
-		if (enemyWorldPosition.x > playerWorldPosition.x)
+		//投げ
+		if (input_->GetJoystickState())
 		{
-			worldTransform_.rotation.y = 1.7f;
+			if (input_->IsPressButton(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_Y) && isDown_ == false)
+			{
+				behaviorRequest_ = Behavior::kThrow;
+				isThrow_ = true;
+			}
 		}
 
-		if (enemyWorldPosition.x < playerWorldPosition.x)
+		//攻撃
+		//通常攻撃
+		if (input_->GetJoystickState())
 		{
-			worldTransform_.rotation.y = 4.6f;
-		}
-	}
-
-	//ジャンプ
-	if (input_->GetJoystickState())
-	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isDown_ == false)
-		{
-			behaviorRequest_ = Behavior::kJump;
-		}
-	}
-
-	//投げ
-	if (input_->GetJoystickState())
-	{
-		if (input_->IsPressButton(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_Y) && isDown_ == false)
-		{
-			behaviorRequest_ = Behavior::kThrow;
-			isThrow_ = true;
-		}
-	}
-
-	//攻撃
-	//通常攻撃
-	if (input_->GetJoystickState())
-	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
-		{
-			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isPunch = true;
-		}
-	}
-
-	//振り下ろし攻撃
-	if (input_->GetJoystickState())
-	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
-		{
-			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isSwingDown = true;
-		}
-	}
-
-	//突き攻撃
-	if (input_->GetJoystickState())
-	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
-		{
-			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isPoke = true;
-			workAttack_.isPokeRight = true;
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
+			{
+				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+				behaviorRequest_ = Behavior::kAttack;
+				workAttack_.isPunch = true;
+			}
 		}
 
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
+		//振り下ろし攻撃
+		if (input_->GetJoystickState())
 		{
-			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isPoke = true;
-			workAttack_.isPokeLeft = true;
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
+			{
+				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+				behaviorRequest_ = Behavior::kAttack;
+				workAttack_.isSwingDown = true;
+			}
 		}
-	}
 
-	//薙ぎ払う攻撃
-	if (input_->GetJoystickState())
-	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
-			input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+		//突き攻撃
+		if (input_->GetJoystickState())
 		{
-			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isMowDown = true;
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+			{
+				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+				behaviorRequest_ = Behavior::kAttack;
+				workAttack_.isPoke = true;
+				workAttack_.isPokeRight = true;
+			}
+
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
+			{
+				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+				behaviorRequest_ = Behavior::kAttack;
+				workAttack_.isPoke = true;
+				workAttack_.isPokeLeft = true;
+			}
 		}
-	}
 
-	//finisher
-	if (input_->GetJoystickState())
-	{
-		if (finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
-			finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+		//薙ぎ払う攻撃
+		if (input_->GetJoystickState())
 		{
-			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isFinisher = true;
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
+				input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+			{
+				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+				behaviorRequest_ = Behavior::kAttack;
+				workAttack_.isMowDown = true;
+			}
+		}
+
+		//finisher
+		if (input_->GetJoystickState())
+		{
+			if (finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
+				finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+			{
+				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+				behaviorRequest_ = Behavior::kAttack;
+				workAttack_.isFinisher = true;
+			}
 		}
 	}
 }
@@ -1774,7 +1783,7 @@ void Player::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[0] <= 0)
+		if (downAnimationTimer_[0] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[0] = 60;
@@ -1819,7 +1828,7 @@ void Player::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[0] <= 0)
+		if (downAnimationTimer_[0] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[0] = 60;
@@ -1865,7 +1874,7 @@ void Player::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[1] <= 0)
+		if (downAnimationTimer_[1] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[1] = 60;
@@ -1910,7 +1919,7 @@ void Player::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[1] <= 0)
+		if (downAnimationTimer_[1] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[1] = 60;
@@ -1956,7 +1965,7 @@ void Player::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[2] <= 0)
+		if (downAnimationTimer_[2] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[2] = 60;
@@ -2001,7 +2010,7 @@ void Player::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[2] <= 0)
+		if (downAnimationTimer_[2] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[2] = 60;
@@ -2069,6 +2078,27 @@ void Player::DownAnimation()
 			isDown_ = false;
 			isEnemyHit_ = false;
 			worldTransformBody_.rotation.x = 0.0f;
+		}
+	}
+
+	for (int i = 0; i < 6; i++)
+	{
+		if (downAnimationTimer_[i] <= 0 && HP_ <= 0)
+		{
+			worldTransform_.translation.y -= 0.1f;
+
+			worldTransformBody_.rotation.x = 4.7f;
+
+			worldTransformL_arm_.rotation.x = 0.0f;
+			worldTransformL_arm_.rotation.y = 0.0f;
+
+			worldTransformR_arm_.rotation.x = 0.0f;
+			worldTransformR_arm_.rotation.y = 0.0f;
+
+			if (worldTransform_.translation.y <= -0.5f)
+			{
+				worldTransform_.translation.y = -0.5f;
+			}
 		}
 	}
 }

@@ -19,6 +19,8 @@ class GamePlayScene : public IScene
 public:
 	static const int kTransitionTime = 60;
 
+	static int migrationTimer;
+
 	GamePlayScene();
 
 	~GamePlayScene();
@@ -53,7 +55,6 @@ private:
 	std::unique_ptr<Skydome>skydome_;
 
 	int round_ = 1;
-	int migrationTimer_;
 	int PlayerWinCount_ = 0;
 	int EnemyWinCount_ = 0;
 

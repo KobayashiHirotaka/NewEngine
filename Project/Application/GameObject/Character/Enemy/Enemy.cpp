@@ -2,6 +2,7 @@
 #include <cassert>
 #include <numbers>
 #include "Application/GameObject/Character/Player/Player.h"
+#include "Application/Game/Scenes/GamePlayScene.h"
 
 Enemy::~Enemy()
 {
@@ -170,7 +171,12 @@ void Enemy::Update()
 	case Behavior::kRoot:
 	default:
 		BehaviorRootUpdate();
-		FloatingGimmickUpdate();
+
+		if (!isDown_)
+		{
+			FloatingGimmickUpdate();
+		}
+		
 		break;
 
 	case Behavior::kAttack:
@@ -269,6 +275,7 @@ void Enemy::Update()
 	ImGui::Text("GuardGauge %f", guardGauge_);
 	ImGui::Text("ComboC %d", comboCount_);
 	ImGui::Text("ComboT %d", comboTimer_);
+	ImGui::SliderFloat3("WTFR", &worldTransformBody_.rotation.x, 0.0f, 16.0f);
 	ImGui::End();
 }
 
@@ -661,157 +668,160 @@ void Enemy::BehaviorRootInitialize()
 
 void Enemy::BehaviorRootUpdate()
 {
-	patternCount_ = 1;
-	//コントローラーの移動処理
-	if (patternCount_ == 1  && isDown_ == false)
+	if (GamePlayScene::migrationTimer >= 150)
 	{
-		moveTimer_--;
-
-		const float deadZone = 0.7f;
-		bool isMove_ = false;
-		float kCharacterSpeed = 0.1f;
-		velocity_ = { 0.0f, 0.0f, 0.0f };
-
-		//移動処理
-		if (moveTimer_ > 30 && worldTransform_.rotation.y == 4.6f && !isHit_)
+		patternCount_ = 1;
+		//コントローラーの移動処理
+		if (patternCount_ == 1 && isDown_ == false)
 		{
-			kCharacterSpeed = 0.1f;
-			velocity_.x = -0.3f;
-			isMove_ = true;
-			isGuard_ = false;
-		}
+			moveTimer_--;
 
-		if (moveTimer_ > 30 && worldTransform_.rotation.y == 1.7f && !isHit_)
-		{
-			kCharacterSpeed = 0.1f;
-			velocity_.x = 0.3f;
-			isMove_ = true;
-			isGuard_ = false;
-		}
+			const float deadZone = 0.7f;
+			bool isMove_ = false;
+			float kCharacterSpeed = 0.1f;
+			velocity_ = { 0.0f, 0.0f, 0.0f };
 
-		if (moveTimer_ <= 30 && worldTransform_.rotation.y == 1.7f)
-		{
-			kCharacterSpeed = 0.05f;
-			velocity_.x = -0.3f;
-			isMove_ = true;
-			isGuard_ = true;
-		}
-
-		if (moveTimer_ <= 30 && worldTransform_.rotation.y == 4.6f)
-		{
-			kCharacterSpeed = 0.05f;
-			velocity_.x = 0.3f;
-			isMove_ = true;
-			isGuard_ = true;
-		}
-
-		if (isMove_)
-		{
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(kCharacterSpeed, velocity_);
-
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
-
-			worldTransform_.UpdateMatrixEuler();
-		}
-
-		if (moveTimer_ < 0)
-		{
-			if (!isHit_)
+			//移動処理
+			if (moveTimer_ > 30 && worldTransform_.rotation.y == 4.6f && !isHit_)
 			{
-				moveTimer_ = Random(30, 90);;
-				patternCount_ = Random(5, 7);
-
+				kCharacterSpeed = 0.1f;
+				velocity_.x = -0.3f;
+				isMove_ = true;
+				isGuard_ = false;
 			}
-			else {
-				moveTimer_ = Random(30,90);
-				patternCount_ = Random(4, 7);
+
+			if (moveTimer_ > 30 && worldTransform_.rotation.y == 1.7f && !isHit_)
+			{
+				kCharacterSpeed = 0.1f;
+				velocity_.x = 0.3f;
+				isMove_ = true;
+				isGuard_ = false;
+			}
+
+			if (moveTimer_ <= 30 && worldTransform_.rotation.y == 1.7f)
+			{
+				kCharacterSpeed = 0.05f;
+				velocity_.x = -0.3f;
+				isMove_ = true;
+				isGuard_ = true;
+			}
+
+			if (moveTimer_ <= 30 && worldTransform_.rotation.y == 4.6f)
+			{
+				kCharacterSpeed = 0.05f;
+				velocity_.x = 0.3f;
+				isMove_ = true;
+				isGuard_ = true;
+			}
+
+			if (isMove_)
+			{
+				velocity_ = Normalize(velocity_);
+				velocity_ = Multiply(kCharacterSpeed, velocity_);
+
+				// 平行移動
+				worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+				worldTransform_.UpdateMatrixEuler();
+			}
+
+			if (moveTimer_ < 0)
+			{
+				if (!isHit_)
+				{
+					moveTimer_ = Random(30, 90);;
+					patternCount_ = Random(5, 7);
+
+				}
+				else {
+					moveTimer_ = Random(30, 90);
+					patternCount_ = Random(4, 7);
+				}
+			}
+
+			Vector3 playerWorldPosition = player_->GetWorldPosition();
+
+			Vector3 enemyWorldPosition = GetWorldPosition();
+
+			if (enemyWorldPosition.x > playerWorldPosition.x)
+			{
+				worldTransform_.rotation.y = 4.6f;
+			}
+
+			if (enemyWorldPosition.x < playerWorldPosition.x)
+			{
+				worldTransform_.rotation.y = 1.7f;
+			}
+
+			if (worldTransform_.translation.x >= 12.0f)
+			{
+				worldTransform_.translation.x = 12.0f;
+			}
+
+			if (worldTransform_.translation.x <= -12.0f)
+			{
+				worldTransform_.translation.x = -12.0f;
 			}
 		}
 
-		Vector3 playerWorldPosition = player_->GetWorldPosition();
-
-		Vector3 enemyWorldPosition = GetWorldPosition();
-
-		if (enemyWorldPosition.x > playerWorldPosition.x)
+		//ジャンプ
+		if (patternCount_ == 3 && isDown_ == false)
 		{
-			worldTransform_.rotation.y = 4.6f;
+			behaviorRequest_ = Behavior::kJump;
 		}
 
-		if (enemyWorldPosition.x < playerWorldPosition.x)
+		//投げ
+		if (patternCount_ == 4 && isDown_ == false)
 		{
-			worldTransform_.rotation.y = 1.7f;
+			behaviorRequest_ = Behavior::kThrow;
+			isThrow_ = true;
 		}
 
-		if (worldTransform_.translation.x >= 12.0f)
-		{
-			worldTransform_.translation.x = 12.0f;
-		}
-
-		if (worldTransform_.translation.x <= -12.0f)
-		{
-			worldTransform_.translation.x = -12.0f;
-		}
-	}
-
-	//ジャンプ
-	if (patternCount_ == 3 && isDown_ == false)
-	{
-		behaviorRequest_ = Behavior::kJump;
-	}
-
-	//投げ
-	if (patternCount_ == 4 && isDown_ == false)
-	{
-		behaviorRequest_ = Behavior::kThrow;
-		isThrow_ = true;
-	}
-
-	//攻撃
-	//通常攻撃
-	if (patternCount_ == 2 && isDown_ == false)
-	{
-		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-		behaviorRequest_ = Behavior::kAttack;
-		workAttack_.isPunch = true;
-	}
-
-	//振り下ろし攻撃
-	if (patternCount_ == 5 && isDown_ == false)
-	{
-		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-		behaviorRequest_ = Behavior::kAttack;
-		workAttack_.isSwingDown = true;
-	}
-
-	//突き攻撃
-	if (patternCount_ == 6 && isDown_ == false)
-	{
-		if (worldTransform_.rotation.y == 1.7f)
+		//攻撃
+		//通常攻撃
+		if (patternCount_ == 2 && isDown_ == false)
 		{
 			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isPoke = true;
-			workAttack_.isPokeRight = true;
+			workAttack_.isPunch = true;
 		}
-		
 
-		if (worldTransform_.rotation.y == 4.6f)
+		//振り下ろし攻撃
+		if (patternCount_ == 5 && isDown_ == false)
 		{
 			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isPoke = true;
-			workAttack_.isPokeLeft = true;
+			workAttack_.isSwingDown = true;
 		}
-	}
 
-	//薙ぎ払う攻撃
-	if (patternCount_ == 7 && isDown_ == false)
-	{
-		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-		behaviorRequest_ = Behavior::kAttack;
-		workAttack_.isMowDown = true;
+		//突き攻撃
+		if (patternCount_ == 6 && isDown_ == false)
+		{
+			if (worldTransform_.rotation.y == 1.7f)
+			{
+				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+				behaviorRequest_ = Behavior::kAttack;
+				workAttack_.isPoke = true;
+				workAttack_.isPokeRight = true;
+			}
+
+
+			if (worldTransform_.rotation.y == 4.6f)
+			{
+				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+				behaviorRequest_ = Behavior::kAttack;
+				workAttack_.isPoke = true;
+				workAttack_.isPokeLeft = true;
+			}
+		}
+
+		//薙ぎ払う攻撃
+		if (patternCount_ == 7 && isDown_ == false)
+		{
+			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+			behaviorRequest_ = Behavior::kAttack;
+			workAttack_.isMowDown = true;
+		}
 	}
 }
 
@@ -1462,7 +1472,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[0] <= 0)
+		if (downAnimationTimer_[0] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[0] = 60;
@@ -1507,7 +1517,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[0] <= 0)
+		if (downAnimationTimer_[0] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[0] = 60;
@@ -1553,7 +1563,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[1] <= 0)
+		if (downAnimationTimer_[1] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[1] = 60;
@@ -1598,7 +1608,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[1] <= 0)
+		if (downAnimationTimer_[1] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[1] = 60;
@@ -1644,7 +1654,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[2] <= 0)
+		if (downAnimationTimer_[2] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[2] = 60;
@@ -1689,7 +1699,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[2] <= 0)
+		if (downAnimationTimer_[2] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[2] = 60;
@@ -1789,7 +1799,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.01f;
 		}
 
-		if (downAnimationTimer_[6] <= 0)
+		if (downAnimationTimer_[6] <= 0 && HP_ > 0)
 		{
 			downAnimationTimer_[6] = 30;
 			isHitFinisher_ = false;
@@ -1828,7 +1838,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.01f;
 		}
 
-		if (downAnimationTimer_[6] <= 0)
+		if (downAnimationTimer_[6] <= 0 && HP_ > 0)
 		{
 			downAnimationTimer_[6] = 30;
 			isHitFinisher_ = false;
@@ -1868,7 +1878,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[2] <= 0)
+		if (downAnimationTimer_[2] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[2] = 60;
@@ -1913,7 +1923,7 @@ void Enemy::DownAnimation()
 			worldTransformBody_.rotation.x -= 0.03f;
 		}
 
-		if (downAnimationTimer_[2] <= 0)
+		if (downAnimationTimer_[2] <= 0 && HP_ > 0)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			downAnimationTimer_[2] = 60;
@@ -1924,6 +1934,27 @@ void Enemy::DownAnimation()
 			isDown_ = false;
 			worldTransformBody_.rotation.x = 0.0f;
 			worldTransformBody_.rotation.y = 0.0f;
+		}
+	}
+
+	for (int i = 0; i < 7; i++)
+	{
+		if (downAnimationTimer_[i] <= 0 && HP_ <= 0)
+		{
+			worldTransform_.translation.y -= 0.1f;
+			
+			worldTransformBody_.rotation.x = 4.7f;
+
+			worldTransformL_arm_.rotation.x = 0.0f;
+			worldTransformL_arm_.rotation.y = 0.0f;
+
+			worldTransformR_arm_.rotation.x = 0.0f;
+			worldTransformR_arm_.rotation.y = 0.0f;
+			
+			if (worldTransform_.translation.y <= -0.5f)
+			{
+				worldTransform_.translation.y = -0.5f;
+			}
 		}
 	}
 }

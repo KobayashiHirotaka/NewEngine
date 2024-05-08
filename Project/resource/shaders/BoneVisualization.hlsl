@@ -1,0 +1,34 @@
+#include "Object3d.hlsli"
+
+struct WorldTransform
+{
+    float32_t4x4 world;
+    float32_t4x4 worldInverseTranspose;
+};
+
+struct Camera
+{
+    float32_t3 worldPosition;
+    float32_t4x4 view;
+    float32_t4x4 projection;
+};
+
+ConstantBuffer<WorldTransform> gWorldTransform : register(b0);
+ConstantBuffer<Camera> gCamera : register(b1);
+
+struct VertexShaderInput
+{
+    float32_t4 position : POSITION0;
+};
+
+VertexShaderOutput main(VertexShaderInput input)
+{
+    VertexShaderOutput output;
+    output.position = mul(input.position, mul(gWorldTransform.world, mul(gCamera.view, gCamera.projection)));
+    output.worldPosition = mul(input.position, gWorldTransform.world).xyz;
+
+    float z = (output.position.z - 0.1f) / (100.0f - 0.1f);
+    output.depth = float32_t4(z, 0, 0, 0);
+    
+    return output;
+}
