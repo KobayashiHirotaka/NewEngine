@@ -677,7 +677,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 			stageObject_[i]->ApplyAnimation();
 
-			stageObject_[i]->Update(worldTransformStageObject_[i]);
+			//stageObject_[i]->Update(worldTransformStageObject_[i]);
 		}
 
 		float animationTime;

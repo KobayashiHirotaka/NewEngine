@@ -62,7 +62,7 @@ VertexShaderOutput main(VertexShaderInput input)
     VertexShaderOutput output;
     Skinned skinned = Skinning(input); 
     
-    if (input.weight.x == 0.0f && input.weight.y == 0.0f && input.weight.z == 0.0f && input.weight.w == 1.0f)
+    if (input.weight.x == 0.0f && input.weight.y == 0.0f && input.weight.z == 0.0f && input.weight.w == 0.0f)
     {
         output.position = mul(input.position, mul(gWorldTransform.world, mul(gCamera.view, gCamera.projection)));
         output.texcoord = input.texcoord;
