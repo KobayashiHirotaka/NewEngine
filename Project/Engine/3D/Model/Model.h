@@ -68,6 +68,8 @@ public:
 
 	void Draw(WorldTransform& worldTransform, const Camera& camera);
 
+	void BoneDraw(WorldTransform& worldTransform, const Camera& camera);
+
 	static void Release();
 
 	static Model* CreateFromOBJ(const std::string& directoryPath, const std::string& filename);
@@ -75,6 +77,10 @@ public:
 	static void PreDraw();
 
 	static void PostDraw();
+
+	static void BonePreDraw();
+
+	static void BonePostDraw();
 
 	Material* GetMaterial() { return material_.get(); };
 
@@ -114,7 +120,9 @@ private:
 
 	SkinCluster CreateSkinCluster(const Skeleton& skeleton,const ModelData& modelData);
 
+	void CreateBoneVertexBuffer();
 
+	static void CreateBonePSO();
 
 private:
 	static DirectXCore* dxCore_;
@@ -156,4 +164,14 @@ private:
 	SkinCluster skinCluster_;
 
 	uint32_t skinningTextureHandle_;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> boneVertexBuffer_ = nullptr;
+
+	D3D12_VERTEX_BUFFER_VIEW boneVertexBufferView_{};
+
+	std::vector<Vector4> boneVertices_{};
+
+	static Microsoft::WRL::ComPtr<ID3D12RootSignature> boneRootSignature_;
+
+	static Microsoft::WRL::ComPtr<ID3D12PipelineState> boneGraphicsPipelineState_;
 };

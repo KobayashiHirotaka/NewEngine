@@ -723,6 +723,12 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	Model::PostDraw();
 
+	Model::BonePreDraw();
+
+	//testObject_->BoneDraw(worldTransformTestObject_, camera_);
+
+	Model::BonePostDraw();
+
 	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
