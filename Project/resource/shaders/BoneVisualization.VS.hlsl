@@ -1,4 +1,4 @@
-#include "Object3d.hlsli"
+#include "BoneVisualization.hlsli"
 
 struct WorldTransform
 {
@@ -25,10 +25,6 @@ VertexShaderOutput main(VertexShaderInput input)
 {
     VertexShaderOutput output;
     output.position = mul(input.position, mul(gWorldTransform.world, mul(gCamera.view, gCamera.projection)));
-    output.worldPosition = mul(input.position, gWorldTransform.world).xyz;
-
-    float z = (output.position.z - 0.1f) / (100.0f - 0.1f);
-    output.depth = float32_t4(z, 0, 0, 0);
-    
+   
     return output;
 }

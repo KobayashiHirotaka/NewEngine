@@ -390,6 +390,9 @@
     <None Include="resource\shaders\Sprite.hlsli">
       <Filter>shaders</Filter>
     </None>
+    <None Include="resource\shaders\BoneVisualization.hlsli">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\externals\imgui\imconfig.h">
@@ -607,7 +610,10 @@
     <FxCompile Include="resource\shaders\SkinningObject3d.VS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
-    <FxCompile Include="resource\shaders\BoneVisualization.hlsl">
+    <FxCompile Include="resource\shaders\BoneVisualization.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\BoneVisualization.PS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
   </ItemGroup>

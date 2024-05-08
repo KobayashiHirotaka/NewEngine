@@ -13,6 +13,11 @@ public:
 	void SetGraphicsCommand(D3D12_VERTEX_BUFFER_VIEW influenceBufferView);
 
 private:
+	void CreateVertexBuffer();
+
+	void CreateIndexBuffer();
+
+private:
 	DirectXCore* dxCore_ = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexBuffer_ = nullptr;

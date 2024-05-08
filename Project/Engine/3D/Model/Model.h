@@ -114,6 +114,8 @@ private:
 
 	SkinCluster CreateSkinCluster(const Skeleton& skeleton,const ModelData& modelData);
 
+
+
 private:
 	static DirectXCore* dxCore_;
 
