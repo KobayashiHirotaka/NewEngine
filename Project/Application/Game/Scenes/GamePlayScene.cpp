@@ -663,9 +663,9 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		camera_.rotation_ = Lerp(camera_.rotation_, finisherRotationPosition, 0.05f);
 	}
 
+	//Animation
 	if (migrationTimer_ >= 150)
 	{
-		//Animation
 		for (int i = 0; i < 2; i++)
 		{
 			float animationTime[2];
@@ -676,8 +676,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			stageObject_[i]->SetAnimationTime(animationTime[i]);
 
 			stageObject_[i]->ApplyAnimation();
-
-			//stageObject_[i]->Update(worldTransformStageObject_[i]);
 		}
 
 		float animationTime;
