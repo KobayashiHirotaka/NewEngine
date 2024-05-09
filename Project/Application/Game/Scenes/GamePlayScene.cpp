@@ -36,7 +36,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	stageObject_[3].reset(Model::CreateFromOBJ("resource/StagePillar", "StagePillar.obj"));
 	//stageObject_[1].reset(Model::CreateFromOBJ("resource/BackStage", "BackStage.obj"));
 
-	testObject_.reset(Model::CreateFromOBJ("resource/Test", "walk.gltf"));
+	testObject_.reset(Model::CreateFromOBJ("resource/newEnemy", "newEnemy.gltf"));
 
 	roundTextureHandle_[0] = TextureManager::LoadTexture("resource/Round1.png");
 	roundTextureHandle_[1] = TextureManager::LoadTexture("resource/Round2.png");
@@ -90,7 +90,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	worldTransformTestObject_.Initialize();
 	worldTransformTestObject_.translation = { 0.0f,0.0f,20.0f };
 	worldTransformTestObject_.rotation = { 0.0f,0.0f,0.0f };
-	worldTransformTestObject_.scale = { 0.1f,0.1f,0.1f };
+	worldTransformTestObject_.scale = { 0.01f,0.01f,0.01f };
 
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
@@ -684,8 +684,8 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 		float animationTime;
 		animationTime = testObject_->GetAnimationTime();
-		animationTime += 1.0f / 60.0f;
-		animationTime = std::fmod(animationTime, testObject_->GetAnimation()[0].duration);
+		/*animationTime += 1.0f / 60.0f;
+		animationTime = std::fmod(animationTime, testObject_->GetAnimation()[0].duration);*/
 
 		testObject_->SetAnimationTime(animationTime);
 
