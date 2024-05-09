@@ -291,4 +291,6 @@ private:
 
 	std::unique_ptr<Sprite>comboNumSprite_ = nullptr;
 	uint32_t comboNumTextureHandle_;
+
+	uint32_t animationIndex = 0;
 };

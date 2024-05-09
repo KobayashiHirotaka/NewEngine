@@ -109,18 +109,25 @@ void Enemy::Update()
 {
 	isShake_ = false;
 
+	if (behaviorRequest_ == Behavior::kRoot)
+	{
+		animationIndex = 1;
+	}
+	else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isMowDown)
+	{
+		animationIndex = 0;
+	}
+
 	float animationTime;
 	animationTime = modelFighterBody_->GetAnimationTime();
-	animationTime += 1.0f / 60.0f;
-	animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[1].duration);
+	/*animationTime += 1.0f / 60.0f;
+	animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[animationIndex].duration);*/
 
 	modelFighterBody_->SetAnimationTime(animationTime);
 
-	modelFighterBody_->ApplyAnimation(1);
+	modelFighterBody_->ApplyAnimation(animationIndex);
 
 	modelFighterBody_->Update();
-
-
 
 	if (guardGauge_ > 0 && guardGauge_ < maxGuardGauge_)
 	{
@@ -297,7 +304,7 @@ void Enemy::Update()
 void Enemy::Draw(const Camera& camera)
 {
 	//Enemyの描画
-	modelFighterBody_->Draw(worldTransformBody_, camera, 1);
+	modelFighterBody_->Draw(worldTransformBody_, camera, animationIndex);
 
 	//Weaponの描画
 	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_
@@ -682,6 +689,17 @@ void Enemy::BehaviorRootUpdate()
 {
 	if (GamePlayScene::migrationTimer >= 150)
 	{
+		float animationTime;
+		animationTime = modelFighterBody_->GetAnimationTime();
+		animationTime += 1.0f / 60.0f;
+		animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[1].duration);
+
+		modelFighterBody_->SetAnimationTime(animationTime);
+
+		modelFighterBody_->ApplyAnimation(1);
+
+		modelFighterBody_->Update();
+
 		patternCount_ = 1;
 		//コントローラーの移動処理
 		if (patternCount_ == 1 && isDown_ == false && Input::GetInstance()->PressKey(DIK_L))
@@ -841,8 +859,6 @@ void Enemy::BehaviorAttackInitialize()
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
 	{
-		worldTransformL_arm_.rotation.x = (float)std::numbers::pi;
-		worldTransformR_arm_.rotation.x = (float)std::numbers::pi;
 		workAttack_.translation = { 0.0f,2.5f,0.0f };
 		workAttack_.rotation = { 0.0f,0.0f,0.0f };
 		workAttack_.stiffnessTimer = 60;
@@ -911,11 +927,19 @@ void Enemy::BehaviorAttackUpdate()
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
 	{
+		float animationTime;
+		animationTime = modelFighterBody_->GetAnimationTime();
+		animationTime += 1.0f / 60.0f;
+		/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
+
+		modelFighterBody_->SetAnimationTime(animationTime);
+
+		modelFighterBody_->ApplyAnimation(0);
+
+		modelFighterBody_->Update();
+
 		if (attackAnimationFrame < 10)
 		{
-			worldTransformL_arm_.rotation.x -= 0.05f;
-			worldTransformR_arm_.rotation.x -= 0.05f;
-
 			workAttack_.rotation.x -= 0.05f;
 
 			enemyWeapon_->SetTranslation(workAttack_.translation);
@@ -924,9 +948,6 @@ void Enemy::BehaviorAttackUpdate()
 		}
 		else if (workAttack_.rotation.x < 2.0f)
 		{
-			worldTransformL_arm_.rotation.x += 0.1f;
-			worldTransformR_arm_.rotation.x += 0.1f;
-
 			workAttack_.translation.z += 0.05f;
 			workAttack_.translation.y -= 0.05f;
 			workAttack_.rotation.x += 0.1f;
@@ -941,8 +962,6 @@ void Enemy::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				enemyWeapon_->SetIsAttack(false);
@@ -960,8 +979,6 @@ void Enemy::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				enemyWeapon_->SetIsAttack(false);
@@ -977,10 +994,10 @@ void Enemy::BehaviorAttackUpdate()
 			}
 		}
 
-		if (isHitSwingDown_ || isHitPoke_ || isHitMowDown_)
+		/*if (isHitSwingDown_ || isHitPoke_ || isHitMowDown_)
 		{
 
-		}
+		}*/
 		attackAnimationFrame++;
 	}
 
