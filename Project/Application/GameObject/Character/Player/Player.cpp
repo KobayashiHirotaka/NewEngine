@@ -18,6 +18,9 @@ void Player::Initialize()
 
 	audio_ = Audio::GetInstance();
 
+	AABB aabb = { {-1.0f,-1.0f,-10.0f},{1.0f,1.0f,10.0f} };
+	SetAABB(aabb);
+
 	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
 	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
@@ -64,7 +67,7 @@ void Player::Initialize()
 
 	//WorldTransform(Player)の初期化
 	worldTransform_.Initialize();
-	worldTransform_.translation = { -7.0f,0.0f,0.0f };
+	worldTransform_.translation = { -7.0f,0.0f,6.5f };
 
 	worldTransformHead_.Initialize();
 	worldTransform_.rotation.y = 1.7f;
@@ -221,14 +224,14 @@ void Player::Update()
 		break;
 	}
 
-	if (worldTransform_.translation.x >= 12.0f)
+	if (worldTransform_.translation.x >= 16.0f)
 	{
-		worldTransform_.translation.x = 12.0f;
+		worldTransform_.translation.x = 16.0f;
 	}
 
-	if (worldTransform_.translation.x <= -12.0f)
+	if (worldTransform_.translation.x <= -16.0f)
 	{
-		worldTransform_.translation.x = -12.0f;
+		worldTransform_.translation.x = -16.0f;
 	}
 
 	if (behaviorRequest_ == Behavior::kJump && isHit_)
@@ -324,6 +327,7 @@ void Player::Update()
 
 	ImGui::Begin("FinisherGauge");
 	ImGui::DragFloat("FinisherGauge", &finisherGauge_, 1.0f);
+	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -10.0f, 16.0f);
 	ImGui::SliderFloat3("WTFR", &worldTransformBody_.rotation.x, 0.0f, 16.0f);
 	ImGui::End();
 }

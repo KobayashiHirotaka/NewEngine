@@ -15,12 +15,10 @@ void Enemy::Initialize()
 {
 	audio_ = Audio::GetInstance();
 
+	AABB aabb= { {-0.3f,-1.0f,-10.0f},{3.0f,1.0f,10.0f} };
+	SetAABB(aabb);
 
-
-	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
-	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
-	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
-	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
+	modelFighterBody_.reset(Model::CreateFromOBJ("resource/newEnemy", "newEnemy.gltf"));
 
 	hpBar_ = {
 		true,
@@ -65,7 +63,9 @@ void Enemy::Initialize()
 	worldTransform_.rotation.y = 4.6f;
 
 	worldTransformBody_.Initialize();
-	worldTransformBody_.translation = { 0.0f,1.0f,0.0f };
+	worldTransformBody_.translation = { 0.0f,0.0f,0.0f };
+	worldTransformBody_.rotation = { 7.75f,0.0f,0.0f };
+	worldTransformBody_.scale = { 0.007f,0.007f,0.007f };
 
 	worldTransformL_arm_.Initialize();
 	worldTransformL_arm_.translation.x = 0.5f;
@@ -108,6 +108,19 @@ void Enemy::Initialize()
 void Enemy::Update()
 {
 	isShake_ = false;
+
+	float animationTime;
+	animationTime = modelFighterBody_->GetAnimationTime();
+	animationTime += 1.0f / 60.0f;
+	animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[1].duration);
+
+	modelFighterBody_->SetAnimationTime(animationTime);
+
+	modelFighterBody_->ApplyAnimation(1);
+
+	modelFighterBody_->Update();
+
+
 
 	if (guardGauge_ > 0 && guardGauge_ < maxGuardGauge_)
 	{
@@ -198,14 +211,14 @@ void Enemy::Update()
 		break;
 	}
 
-	if (worldTransform_.translation.x >= 12.0f)
+	if (worldTransform_.translation.x >= 16.0f)
 	{
-		worldTransform_.translation.x = 12.0f;
+		worldTransform_.translation.x = 16.0f;
 	}
 
-	if (worldTransform_.translation.x <= -12.0f)
+	if (worldTransform_.translation.x <= -16.0f)
 	{
-		worldTransform_.translation.x = -12.0f;
+		worldTransform_.translation.x = -16.0f;
 	}
 
 	if (behaviorRequest_ == Behavior::kJump && isHit_)
@@ -284,10 +297,7 @@ void Enemy::Update()
 void Enemy::Draw(const Camera& camera)
 {
 	//Enemyの描画
-	modelFighterBody_->Draw(worldTransformBody_, camera, 0);
-	modelFighterPHead_->Draw(worldTransformHead_, camera, 0);
-	modelFighterL_arm_->Draw(worldTransformL_arm_, camera, 0);
-	modelFighterR_arm_->Draw(worldTransformR_arm_, camera, 0);
+	modelFighterBody_->Draw(worldTransformBody_, camera, 1);
 
 	//Weaponの描画
 	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_
@@ -732,12 +742,12 @@ void Enemy::BehaviorRootUpdate()
 				if (!isHit_)
 				{
 					moveTimer_ = Random(30, 90);;
-					patternCount_ = Random(5, 7);
+					patternCount_ = Random(5, 5);
 
 				}
 				else {
 					moveTimer_ = Random(30, 90);
-					patternCount_ = Random(4, 7);
+					patternCount_ = Random(5, 5);
 				}
 			}
 
@@ -753,16 +763,6 @@ void Enemy::BehaviorRootUpdate()
 			if (enemyWorldPosition.x < playerWorldPosition.x)
 			{
 				worldTransform_.rotation.y = 1.7f;
-			}
-
-			if (worldTransform_.translation.x >= 12.0f)
-			{
-				worldTransform_.translation.x = 12.0f;
-			}
-
-			if (worldTransform_.translation.x <= -12.0f)
-			{
-				worldTransform_.translation.x = -12.0f;
 			}
 		}
 
