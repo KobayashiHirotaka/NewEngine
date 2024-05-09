@@ -56,7 +56,7 @@ void Model::Update(WorldTransform& worldTransform)
 	}
 }
 
-void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
+void Model::Draw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData)
 {
 	//ModelData modelData;
 
@@ -64,7 +64,7 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
 	{
 		//animationTime_ += 1.0f / 60.0f;//時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
 		//animationTime_ = std::fmod(animationTime_, animation_.duration);//最後までいったら最初からリピート再生。リピートしなくても別にいい
-		NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
+		NodeAnimation& rootNodeAnimation = animation_[animationData].nodeAnimations[modelData_.rootNode.name];
 
 		Vector3 translate{ 0.0f,0.0f,0.0f};
 		Quaternion rotate{ 0.0f,0.0f,0.0f,1.0f };
@@ -129,53 +129,22 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera)
 	mesh_->Draw();
 }
 
-void Model::BoneDraw(WorldTransform& worldTransform, const Camera& camera)
+void Model::BoneDraw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData)
 {
-	if (isKeyframeAnimation_)
-	{
-		//animationTime_ += 1.0f / 60.0f;//時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
-		//animationTime_ = std::fmod(animationTime_, animation_.duration);//最後までいったら最初からリピート再生。リピートしなくても別にいい
-		NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
+	worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
+	worldTransform.TransferMatrix();
 
-		Vector3 translate{ 0.0f,0.0f,0.0f };
-		Quaternion rotate{ 0.0f,0.0f,0.0f,1.0f };
-		Vector3 scale = { 1.0f,1.0f,1.0f };
-
-		if (!rootNodeAnimation.translate.keyframes.empty())
-		{
-			translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
-		}
-
-		if (!rootNodeAnimation.rotate.keyframes.empty())
-		{
-			rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
-		}
-
-		if (!rootNodeAnimation.scale.keyframes.empty())
-		{
-			scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
-		}
-
-		Matrix4x4 localMatrix = MakeAffineMatrix(scale, rotate, translate);
-
-		worldTransform.matWorld = Multiply(localMatrix, worldTransform.matWorld);
-		worldTransform.TransferMatrix();
-	}
-	else
-	{
-		worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
-		worldTransform.TransferMatrix();
-	}
+	UpdateBoneVertices(skeleton_, skeleton_.root, boneVertices_);
 
 	dxCore_->GetCommandList()->IASetVertexBuffers(0, 1, &boneVertexBufferView_);
 	
 	dxCore_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	//WorldTransform用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldTransform), worldTransform.constBuff->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(UINT(0), worldTransform.constBuff->GetGPUVirtualAddress());
 
 	//ViewProjection用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(UINT(1), camera.constBuff_->GetGPUVirtualAddress());
 	
 	//描画
 	dxCore_->GetCommandList()->DrawInstanced(UINT(boneVertices_.size()), 1, 0, 0);
@@ -232,8 +201,11 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 
 	model->skinCluster_ = model->CreateSkinCluster(model->skeleton_,modelData);
 
-	/*model->CreateBone(model->skeleton_, model->boneVertices_, model->skeleton_.root);
-	model->CreateBoneVertexBuffer();*/
+	if (!modelData.skinClusterData.empty())
+	{
+		model->CreateBoneVertices(model->skeleton_, model->skeleton_.root, model->boneVertices_);
+		model->CreateBoneVertexBuffer();
+	}
 
 	//メッシュの作成
 	model->mesh_ = std::make_unique<Mesh>();
@@ -651,7 +623,7 @@ void Model::CreateBonePSO()
 	graphicsPipelineStateDesc.RTVFormats[1] = DXGI_FORMAT_R32_FLOAT;
 	//利用するトポロジ(形状)のタイプ。三角形
 	graphicsPipelineStateDesc.PrimitiveTopologyType =
-		D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 	//どのように画面に色を打ち込むかの設定(気にしなくて良い)
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
@@ -770,9 +742,9 @@ MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, c
 	return materialData;
 }
 
-Animation Model::LoadAnimationFile(const std::string& directoryPath, const std::string& filename)
+std::vector<Animation> Model::LoadAnimationFile(const std::string& directoryPath, const std::string& filename)
 {
-	Animation animation{};
+	std::vector<Animation> animation{};
 
 	Assimp::Importer importer;
 
@@ -780,46 +752,51 @@ Animation Model::LoadAnimationFile(const std::string& directoryPath, const std::
 
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
 
-	if(scene->mAnimations != 0)
+	if(scene->mNumAnimations != 0)
 	{
 		isKeyframeAnimation_ = true;
 
-		aiAnimation* animationAssimp = scene->mAnimations[0];//最初のアニメーションだけ採用。もちろん複数対応することに越したことはない
-		animation.duration = float(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);//時間の単位を秒に変換
-
-		//assimpでは個々のNodeのAnimationをchannelと読んでいるのでchannelを回してNodeAnimationの情報を取ってくる
-		for (uint32_t channelIndex = 0; channelIndex < animationAssimp->mNumChannels; ++channelIndex)
+		for (uint32_t animationIndex = 0; animationIndex < scene->mNumAnimations; animationIndex++)
 		{
-			aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
-			NodeAnimation& nodeAnimation = animation.nodeAnimations[nodeAnimationAssimp->mNodeName.C_Str()];
+			Animation animationData;
+			aiAnimation* animationAssimp = scene->mAnimations[animationIndex];//最初のアニメーションだけ採用。もちろん複数対応することに越したことはない
+			animationData.duration = float(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);//時間の単位を秒に変換
 
-			//Translate
-			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex)
+			//assimpでは個々のNodeのAnimationをchannelと読んでいるのでchannelを回してNodeAnimationの情報を取ってくる
+			for (uint32_t channelIndex = 0; channelIndex < animationAssimp->mNumChannels; ++channelIndex)
 			{
-				aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
-				KeyframeVector3 keyframe;
-				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);//ここも秒に変換
-				keyframe.value = { -keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };//右手->左手
-				nodeAnimation.translate.keyframes.push_back(keyframe);
+				aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
+				NodeAnimation& nodeAnimation = animationData.nodeAnimations[nodeAnimationAssimp->mNodeName.C_Str()];
+
+				//Translate
+				for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex)
+				{
+					aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
+					KeyframeVector3 keyframe;
+					keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);//ここも秒に変換
+					keyframe.value = { -keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };//右手->左手
+					nodeAnimation.translate.keyframes.push_back(keyframe);
+				}
+				//Rotate
+				for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex)
+				{
+					aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
+					KeyframeQuaternion keyframe;
+					keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+					keyframe.value = { keyAssimp.mValue.x,-keyAssimp.mValue.y,-keyAssimp.mValue.z,keyAssimp.mValue.w };
+					nodeAnimation.rotate.keyframes.push_back(keyframe);
+				}
+				//Scale
+				for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex)
+				{
+					aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
+					KeyframeVector3 keyframe;
+					keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+					keyframe.value = { keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };
+					nodeAnimation.scale.keyframes.push_back(keyframe);
+				}
 			}
-			//Rotate
-			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex)
-			{
-				aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
-				KeyframeQuaternion keyframe;
-				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
-				keyframe.value = { keyAssimp.mValue.x,-keyAssimp.mValue.y,-keyAssimp.mValue.z,keyAssimp.mValue.w };
-				nodeAnimation.rotate.keyframes.push_back(keyframe);
-			}
-			//Scale
-			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex)
-			{
-				aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
-				KeyframeVector3 keyframe;
-				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
-				keyframe.value = { keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };
-				nodeAnimation.scale.keyframes.push_back(keyframe);
-			}
+			animation.push_back(animationData);
 		}
 	}
 	else
@@ -939,45 +916,50 @@ int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& paren
 	return joint.index;
 }
 
-void Model::ApplyAnimation()
+void Model::ApplyAnimation(const uint32_t animationData)
 {
 	//animationTime_ += 1.0f / 60.0f;
     //animationTime_ = std::fmod(animationTime_, animation_.duration);
 
-	for (Joint& joint : skeleton_.joints)
+	if (animation_.size() != 0)
 	{
-		if (auto it = animation_.nodeAnimations.find(joint.name); it != animation_.nodeAnimations.end())
+		for (Joint& joint : skeleton_.joints)
 		{
-			const NodeAnimation& rootNodeAnimation = (*it).second;
+			if (auto it = animation_[animationData].nodeAnimations.find(joint.name); it != animation_[animationData].nodeAnimations.end())
+			{
+				const NodeAnimation& rootNodeAnimation = (*it).second;
 
-			if (!rootNodeAnimation.translate.keyframes.empty())
-			{
-				joint.translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
-			}
-			else
-			{
-				joint.translate = { 0.0f,0.0f,0.0f };
-			}
+				if (!rootNodeAnimation.translate.keyframes.empty())
+				{
+					joint.translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
+				}
+				else
+				{
+					joint.translate = { 0.0f,0.0f,0.0f };
+				}
 
-			if (!rootNodeAnimation.rotate.keyframes.empty())
-			{
-				joint.rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
-			}
-			else
-			{
-				joint.rotate = { 0.0f,0.0f,0.0f,1.0f };
-			}
+				if (!rootNodeAnimation.rotate.keyframes.empty())
+				{
+					joint.rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
+				}
+				else
+				{
+					joint.rotate = { 0.0f,0.0f,0.0f,1.0f };
+				}
 
-			if (!rootNodeAnimation.scale.keyframes.empty())
-			{
-				joint.scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
-			}
-			else
-			{
-				joint.scale = { 1.0f,1.0f,1.0f };
+				if (!rootNodeAnimation.scale.keyframes.empty())
+				{
+					joint.scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
+				}
+				else
+				{
+					joint.scale = { 1.0f,1.0f,1.0f };
+				}
 			}
 		}
 	}
+
+	
 }
 
 SkinCluster Model::CreateSkinCluster(const Skeleton& skeleton,const ModelData& modelData)
@@ -1060,5 +1042,38 @@ void Model::CreateBoneVertexBuffer()
 	Vector4* vertexData = nullptr;
 	boneVertexBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	std::memcpy(vertexData, boneVertices_.data(), sizeof(Vector4) * boneVertices_.size());
+	boneVertexBuffer_->Unmap(0, nullptr);
+}
+
+
+void Model::CreateBoneVertices(const Skeleton& skeleton, uint32_t index,std::vector<Vector4>& vertices)
+{
+	const Joint& parentJoint = skeleton.joints[index];
+
+	for (uint32_t childIndex : parentJoint.children)
+	{
+		const Joint& childJoint = skeleton.joints[index];
+		vertices.push_back({ parentJoint.skeletonSpaceMatrix.m[3][0], parentJoint.skeletonSpaceMatrix.m[3][1], parentJoint.skeletonSpaceMatrix.m[3][2],1.0f });
+		vertices.push_back({ childJoint.skeletonSpaceMatrix.m[3][0], childJoint.skeletonSpaceMatrix.m[3][1], childJoint.skeletonSpaceMatrix.m[3][2],1.0f });
+		CreateBoneVertices(skeleton, childIndex, vertices);
+	}
+}
+
+void Model::UpdateBoneVertices(const Skeleton& skeleton, uint32_t index, std::vector<Vector4>& vertices)
+{
+	vertices.clear();
+	const Joint& parentJoint = skeleton.joints[index];
+
+	for (uint32_t childIndex : parentJoint.children)
+	{
+		const Joint& childJoint = skeleton.joints[index];
+		vertices.push_back({ parentJoint.skeletonSpaceMatrix.m[3][0], parentJoint.skeletonSpaceMatrix.m[3][1], parentJoint.skeletonSpaceMatrix.m[3][2],1.0f });
+		vertices.push_back({ childJoint.skeletonSpaceMatrix.m[3][0], childJoint.skeletonSpaceMatrix.m[3][1], childJoint.skeletonSpaceMatrix.m[3][2],1.0f });
+		CreateBoneVertices(skeleton, childIndex, vertices);
+	}
+
+	Vector4* vertexData = nullptr;
+	boneVertexBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+	std::memcpy(vertexData, vertices.data(), sizeof(Vector4) * vertices.size());
 	boneVertexBuffer_->Unmap(0, nullptr);
 }

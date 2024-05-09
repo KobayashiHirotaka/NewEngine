@@ -66,9 +66,9 @@ public:
 
 	void Update(WorldTransform& worldTransform);
 
-	void Draw(WorldTransform& worldTransform, const Camera& camera);
+	void Draw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData);
 
-	void BoneDraw(WorldTransform& worldTransform, const Camera& camera);
+	void BoneDraw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData);
 
 	static void Release();
 
@@ -90,9 +90,9 @@ public:
 
 	void SetAnimationTime(float animationTime) { animationTime_ = animationTime; };
 
-	Animation GetAnimation() { return animation_; };
+	std::vector<Animation> GetAnimation() const { return animation_; };
 
-	void ApplyAnimation();
+	void ApplyAnimation(const uint32_t animationData);
 
 private:
 	static void InitializeDXC();
@@ -104,7 +104,7 @@ private:
 	static void CreatePSO();
 
 	ModelData LoadModelFile(const std::string& directoryPath, const std::string& filename);
-	Animation LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
+	std::vector<Animation> LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
 
 	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
@@ -121,6 +121,10 @@ private:
 	SkinCluster CreateSkinCluster(const Skeleton& skeleton,const ModelData& modelData);
 
 	void CreateBoneVertexBuffer();
+
+	void CreateBoneVertices(const Skeleton& skeleton, uint32_t index, std::vector<Vector4>& vertices);
+
+	void UpdateBoneVertices(const Skeleton& skeleton, uint32_t index, std::vector<Vector4>& vertices);
 
 	static void CreateBonePSO();
 
@@ -156,7 +160,7 @@ private:
 	ModelData modelData_;
 
 	float animationTime_ = 0.0f;
-	Animation animation_;
+	std::vector<Animation> animation_;
 	bool isKeyframeAnimation_ = false;
 
 	Skeleton skeleton_;

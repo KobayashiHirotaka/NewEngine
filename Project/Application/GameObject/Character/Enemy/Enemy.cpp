@@ -282,10 +282,10 @@ void Enemy::Update()
 void Enemy::Draw(const Camera& camera)
 {
 	//Enemyの描画
-	modelFighterBody_->Draw(worldTransformBody_, camera);
-	modelFighterPHead_->Draw(worldTransformHead_, camera);
-	modelFighterL_arm_->Draw(worldTransformL_arm_, camera);
-	modelFighterR_arm_->Draw(worldTransformR_arm_, camera);
+	modelFighterBody_->Draw(worldTransformBody_, camera, 0);
+	modelFighterPHead_->Draw(worldTransformHead_, camera, 0);
+	modelFighterL_arm_->Draw(worldTransformL_arm_, camera, 0);
+	modelFighterR_arm_->Draw(worldTransformR_arm_, camera, 0);
 
 	//Weaponの描画
 	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_

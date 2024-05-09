@@ -36,7 +36,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	stageObject_[3].reset(Model::CreateFromOBJ("resource/StagePillar", "StagePillar.obj"));
 	//stageObject_[1].reset(Model::CreateFromOBJ("resource/BackStage", "BackStage.obj"));
 
-	testObject_.reset(Model::CreateFromOBJ("resource/Castle", "Castle.gltf"));
+	testObject_.reset(Model::CreateFromOBJ("resource/Test", "Test.gltf"));
 
 	roundTextureHandle_[0] = TextureManager::LoadTexture("resource/Round1.png");
 	roundTextureHandle_[1] = TextureManager::LoadTexture("resource/Round2.png");
@@ -88,8 +88,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	worldTransformStageObject_[3].translation = { 25.0f,-2.5f,50.0f };
 
 	worldTransformTestObject_.Initialize();
-	worldTransformTestObject_.translation = { 0.0f,-7.0f,225.0f };
-	worldTransformTestObject_.rotation = { 0.0f,-4.7f,0.0f };
+	worldTransformTestObject_.translation = { 0.0f,0.0f,0.0f };
+	worldTransformTestObject_.rotation = { 0.0f,0.0,0.0f };
 
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
@@ -129,7 +129,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 {
 	roundStartTimer_--;
 
-	//worldTransformTestObject_.rotation.y += 0.01f;
+	worldTransformTestObject_.rotation.y += 0.01f;
 
 	if (roundStartTimer_ <= 0 && !isOpen_)
 	{
@@ -674,23 +674,23 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			float animationTime[2];
 			animationTime[i] = stageObject_[i]->GetAnimationTime();
 			animationTime[i] += 1.0f / 60.0f;
-			animationTime[i] = std::fmod(animationTime[i], stageObject_[i]->GetAnimation().duration);
+			animationTime[i] = std::fmod(animationTime[i], stageObject_[i]->GetAnimation()[0].duration);
 
 			stageObject_[i]->SetAnimationTime(animationTime[i]);
 
-			stageObject_[i]->ApplyAnimation();
+			stageObject_[i]->ApplyAnimation(0);
 		}
 
-		/*float animationTime;
+		float animationTime;
 		animationTime = testObject_->GetAnimationTime();
 		animationTime += 1.0f / 60.0f;
-		animationTime = std::fmod(animationTime, testObject_->GetAnimation().duration);
+		animationTime = std::fmod(animationTime, testObject_->GetAnimation()[0].duration);
 
 		testObject_->SetAnimationTime(animationTime);
 
-		testObject_->ApplyAnimation();
+		testObject_->ApplyAnimation(0);
 
-		testObject_->Update(worldTransformTestObject_);*/
+		testObject_->Update(worldTransformTestObject_);
 		
 	}
 	
@@ -727,7 +727,7 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	Model::BonePreDraw();
 
-	//testObject_->BoneDraw(worldTransformTestObject_, camera_);
+	testObject_->BoneDraw(worldTransformTestObject_, camera_,0);
 
 	Model::BonePostDraw();
 
@@ -737,18 +737,18 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	if (!isOpen_)
 	{
-		ground_->Draw(worldTransform_, camera_);
+		ground_->Draw(worldTransform_, camera_, 0);
 	}
 
-	stageObject_[0]->Draw(worldTransformStageObject_[0], camera_);
+	stageObject_[0]->Draw(worldTransformStageObject_[0], camera_, 0);
 
-	stageObject_[1]->Draw(worldTransformStageObject_[1], camera_);
+	stageObject_[1]->Draw(worldTransformStageObject_[1], camera_, 0);
 
-	stageObject_[2]->Draw(worldTransformStageObject_[2], camera_);
+	stageObject_[2]->Draw(worldTransformStageObject_[2], camera_, 0);
 
-	stageObject_[3]->Draw(worldTransformStageObject_[3], camera_);
+	stageObject_[3]->Draw(worldTransformStageObject_[3], camera_, 0);
 
-	testObject_->Draw(worldTransformTestObject_,camera_);
+	testObject_->Draw(worldTransformTestObject_,camera_, 0);
 
 	skydome_->Draw(camera_);
 

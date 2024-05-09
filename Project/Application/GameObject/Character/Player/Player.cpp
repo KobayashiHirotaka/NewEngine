@@ -331,24 +331,24 @@ void Player::Update()
 void Player::Draw(const Camera& camera)
 {
 	//Playerの描画
-	modelFighterBody_->Draw(worldTransformBody_, camera);
+	modelFighterBody_->Draw(worldTransformBody_, camera, 0);
 
 	if (enemy_->GetHP() > 0 && isFinisherEffect)
 	{
-		modelFighterPAHead_->Draw(worldTransformAHead_, camera);
-		modelFighterLA_arm_->Draw(worldTransformAL_arm_, camera);
-		modelFighterRA_arm_->Draw(worldTransformAR_arm_, camera);
+		modelFighterPAHead_->Draw(worldTransformAHead_, camera, 0);
+		modelFighterLA_arm_->Draw(worldTransformAL_arm_, camera, 0);
+		modelFighterRA_arm_->Draw(worldTransformAR_arm_, camera, 0);
 	}
 	else
 	{
-		modelFighterPHead_->Draw(worldTransformHead_, camera);
-		modelFighterL_arm_->Draw(worldTransformL_arm_, camera);
-		modelFighterR_arm_->Draw(worldTransformR_arm_, camera);
+		modelFighterPHead_->Draw(worldTransformHead_, camera, 0);
+		modelFighterL_arm_->Draw(worldTransformL_arm_, camera, 0);
+		modelFighterR_arm_->Draw(worldTransformR_arm_, camera, 0);
 	}
 
 	if (!isDown_)
 	{
-		playerCursol_->Draw(worldTransform_, camera);
+		playerCursol_->Draw(worldTransform_, camera, 0);
 	}
 
 	//Weaponの描画

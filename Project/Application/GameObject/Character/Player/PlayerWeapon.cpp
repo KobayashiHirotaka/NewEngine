@@ -39,7 +39,7 @@ void PlayerWeapon::Update()
 
 void PlayerWeapon::Draw(const Camera& camera)
 {
-	playerWeaponModel_->Draw(worldTransform_, camera);
+	playerWeaponModel_->Draw(worldTransform_, camera, 0);
 }
 
 void PlayerWeapon::OnCollision(Collider* collider, float damage)

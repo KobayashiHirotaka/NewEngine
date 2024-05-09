@@ -15,6 +15,6 @@ void ICharacter::Draw(const Camera& camera)
 {
 	for (Model* model : models_)
 	{
-		model->Draw(worldTransform_, camera);
+		model->Draw(worldTransform_, camera,0);
 	}
 }
