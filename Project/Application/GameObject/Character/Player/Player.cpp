@@ -70,7 +70,7 @@ void Player::Initialize()
 	worldTransform_.rotation.y = 1.7f;
 
 	worldTransformBody_.Initialize();
-	worldTransformBody_.translation = { 0.0f,1.0f,0.0f };
+	worldTransformBody_.translation = { -8.0f,1.0f,0.0f };
 
 	worldTransformL_arm_.Initialize();
 	worldTransformL_arm_.translation.x = 0.5f;
@@ -221,14 +221,14 @@ void Player::Update()
 		break;
 	}
 
-	if (worldTransform_.translation.x >= 12.0f)
+	if (worldTransform_.translation.x >= 18.0f)
 	{
-		worldTransform_.translation.x = 12.0f;
+		worldTransform_.translation.x = 18.0f;
 	}
 
-	if (worldTransform_.translation.x <= -12.0f)
+	if (worldTransform_.translation.x <= -18.0f)
 	{
-		worldTransform_.translation.x = -12.0f;
+		worldTransform_.translation.x = -18.0f;
 	}
 
 	if (behaviorRequest_ == Behavior::kJump && isHit_)
@@ -324,6 +324,8 @@ void Player::Update()
 
 	ImGui::Begin("FinisherGauge");
 	ImGui::DragFloat("FinisherGauge", &finisherGauge_, 1.0f);
+	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
+	ImGui::SliderFloat3("WTFTB", &worldTransformBody_.translation.x, -100.0f, 100.0f);
 	ImGui::SliderFloat3("WTFR", &worldTransformBody_.rotation.x, 0.0f, 16.0f);
 	ImGui::End();
 }
@@ -348,7 +350,7 @@ void Player::Draw(const Camera& camera)
 
 	if (!isDown_)
 	{
-		playerCursol_->Draw(worldTransform_, camera, 0);
+		playerCursol_->Draw(worldTransformBody_, camera, 0);
 	}
 
 	//Weaponの描画
@@ -499,7 +501,7 @@ void Player::Reset()
 	worldTransform_.rotation.y = 1.7f;
 
 	worldTransformBody_.Initialize();
-	worldTransformBody_.translation = { 0.0f,1.0f,0.0f };
+	worldTransformBody_.translation = { -8.0f,1.0f,0.0f };
 	worldTransformBody_.rotation.x = 0.0f;
 	worldTransformBody_.rotation.y = 0.0f;
 
@@ -754,12 +756,12 @@ void Player::BehaviorRootUpdate()
 
 			if (enemyWorldPosition.x > playerWorldPosition.x)
 			{
-				worldTransform_.rotation.y = 1.7f;
+				worldTransformBody_.rotation.y = 0.0f;
 			}
 
 			if (enemyWorldPosition.x < playerWorldPosition.x)
 			{
-				worldTransform_.rotation.y = 4.6f;
+				worldTransformBody_.rotation.y = 3.0f;
 			}
 		}
 

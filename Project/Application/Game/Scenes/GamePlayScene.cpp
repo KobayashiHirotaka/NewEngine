@@ -7,6 +7,8 @@
 
 int GamePlayScene::migrationTimer = 200;
 
+float GamePlayScene::roundStartTimer_ = 100.0f;
+
 GamePlayScene::GamePlayScene() {};
 
 GamePlayScene::~GamePlayScene() {};
@@ -136,11 +138,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	{
 		player_->Update();
 
-		if (player_->GetIsFinisherEffect() == false)
-		{
-			enemy_->Update();
-		}
-
 		// 時間経過を加算
 		elapsedTime += frameTime;
 
@@ -152,6 +149,11 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			// elapsedTimeをリセット
 			elapsedTime = 0.0f;
 		}
+	}
+
+	if (player_->GetIsFinisherEffect() == false)
+	{
+		enemy_->Update();
 	}
 
 
@@ -742,15 +744,11 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	stageObject_[3]->Draw(worldTransformStageObject_[3], camera_, 0);
 
-	testObject_->Draw(worldTransformTestObject_,camera_, 0);
-
 	skydome_->Draw(camera_);
 
 	Model::PostDraw();
 
 	Model::BonePreDraw();
-
-	testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
 
 	Model::BonePostDraw();
 

@@ -177,15 +177,8 @@ private:
 	Audio* audio_ = nullptr;
 
 	WorldTransform worldTransform_;
-	WorldTransform worldTransformBody_;
-	WorldTransform worldTransformHead_;
-	WorldTransform worldTransformL_arm_;
-	WorldTransform worldTransformR_arm_;
 
-	std::unique_ptr<Model> modelFighterBody_;
-	std::unique_ptr<Model> modelFighterPHead_;
-	std::unique_ptr<Model> modelFighterL_arm_;
-	std::unique_ptr<Model> modelFighterR_arm_;
+	std::unique_ptr<Model> model_;
 
 	Vector3 velocity_ = {};
 

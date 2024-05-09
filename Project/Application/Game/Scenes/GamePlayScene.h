@@ -21,6 +21,8 @@ public:
 
 	static int migrationTimer;
 
+	static float roundStartTimer_;
+
 	GamePlayScene();
 
 	~GamePlayScene();
@@ -99,8 +101,6 @@ private:
 
 	float frameTime = 1.0f / 60.0f;  // 60FPSを仮定
 	float elapsedTime = 0.0f;
-
-	float roundStartTimer_ = 100.0f;
 
 	bool isPlayerWin_ = false;
 	bool isDrow_ = false;
