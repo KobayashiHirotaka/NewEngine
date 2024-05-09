@@ -64,7 +64,7 @@ public:
 
 	//void Initialize();
 
-	void Update(WorldTransform& worldTransform);
+	void Update();
 
 	void Draw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData);
 
@@ -122,9 +122,9 @@ private:
 
 	void CreateBoneVertexBuffer();
 
-	void CreateBoneVertices(const Skeleton& skeleton, uint32_t index, std::vector<Vector4>& vertices);
+	void CreateBoneVertices(const Skeleton& skeleton, int32_t index, std::vector<Vector4>& vertices);
 
-	void UpdateBoneVertices(const Skeleton& skeleton, uint32_t index, std::vector<Vector4>& vertices);
+	void UpdateBoneVertices(const Skeleton& skeleton, int32_t index, std::vector<Vector4>& vertices);
 
 	static void CreateBonePSO();
 

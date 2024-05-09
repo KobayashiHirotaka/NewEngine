@@ -31,7 +31,7 @@ void Model::StaticInitialize()
 
 }
 
-void Model::Update(WorldTransform& worldTransform)
+void Model::Update()
 {
 	for (Joint& joint : skeleton_.joints)
 	{
@@ -131,8 +131,8 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera, const uin
 
 void Model::BoneDraw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData)
 {
-	worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
-	worldTransform.TransferMatrix();
+	/*worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
+	worldTransform.TransferMatrix();*/
 
 	UpdateBoneVertices(skeleton_, skeleton_.root, boneVertices_);
 
@@ -1046,27 +1046,27 @@ void Model::CreateBoneVertexBuffer()
 }
 
 
-void Model::CreateBoneVertices(const Skeleton& skeleton, uint32_t index,std::vector<Vector4>& vertices)
+void Model::CreateBoneVertices(const Skeleton& skeleton, int32_t index,std::vector<Vector4>& vertices)
 {
 	const Joint& parentJoint = skeleton.joints[index];
 
-	for (uint32_t childIndex : parentJoint.children)
+	for (int32_t childIndex : parentJoint.children)
 	{
-		const Joint& childJoint = skeleton.joints[index];
+		const Joint& childJoint = skeleton.joints[childIndex];
 		vertices.push_back({ parentJoint.skeletonSpaceMatrix.m[3][0], parentJoint.skeletonSpaceMatrix.m[3][1], parentJoint.skeletonSpaceMatrix.m[3][2],1.0f });
 		vertices.push_back({ childJoint.skeletonSpaceMatrix.m[3][0], childJoint.skeletonSpaceMatrix.m[3][1], childJoint.skeletonSpaceMatrix.m[3][2],1.0f });
 		CreateBoneVertices(skeleton, childIndex, vertices);
 	}
 }
 
-void Model::UpdateBoneVertices(const Skeleton& skeleton, uint32_t index, std::vector<Vector4>& vertices)
+void Model::UpdateBoneVertices(const Skeleton& skeleton, int32_t index, std::vector<Vector4>& vertices)
 {
 	vertices.clear();
 	const Joint& parentJoint = skeleton.joints[index];
 
-	for (uint32_t childIndex : parentJoint.children)
+	for (int32_t childIndex : parentJoint.children)
 	{
-		const Joint& childJoint = skeleton.joints[index];
+		const Joint& childJoint = skeleton.joints[childIndex];
 		vertices.push_back({ parentJoint.skeletonSpaceMatrix.m[3][0], parentJoint.skeletonSpaceMatrix.m[3][1], parentJoint.skeletonSpaceMatrix.m[3][2],1.0f });
 		vertices.push_back({ childJoint.skeletonSpaceMatrix.m[3][0], childJoint.skeletonSpaceMatrix.m[3][1], childJoint.skeletonSpaceMatrix.m[3][2],1.0f });
 		CreateBoneVertices(skeleton, childIndex, vertices);
