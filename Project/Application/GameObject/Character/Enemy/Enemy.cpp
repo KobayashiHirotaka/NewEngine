@@ -672,7 +672,7 @@ void Enemy::BehaviorRootUpdate()
 	{
 		patternCount_ = 1;
 		//コントローラーの移動処理
-		if (patternCount_ == 1 && isDown_ == false)
+		if (patternCount_ == 1 && isDown_ == false && Input::GetInstance()->PressKey(DIK_L))
 		{
 			moveTimer_--;
 

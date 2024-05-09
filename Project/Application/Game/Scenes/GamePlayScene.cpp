@@ -36,7 +36,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	stageObject_[3].reset(Model::CreateFromOBJ("resource/StagePillar", "StagePillar.obj"));
 	//stageObject_[1].reset(Model::CreateFromOBJ("resource/BackStage", "BackStage.obj"));
 
-	testObject_.reset(Model::CreateFromOBJ("resource/Test", "Test.gltf"));
+	testObject_.reset(Model::CreateFromOBJ("resource/Castle", "Castle.gltf"));
 
 	roundTextureHandle_[0] = TextureManager::LoadTexture("resource/Round1.png");
 	roundTextureHandle_[1] = TextureManager::LoadTexture("resource/Round2.png");
@@ -88,7 +88,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	worldTransformStageObject_[3].translation = { 25.0f,-2.5f,50.0f };
 
 	worldTransformTestObject_.Initialize();
-	worldTransformTestObject_.translation = { 0.0f,3.0f,0.0f };
+	worldTransformTestObject_.translation = { 0.0f,-7.0f,225.0f };
+	worldTransformTestObject_.rotation = { 0.0f,-4.7f,0.0f };
 
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
@@ -128,7 +129,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 {
 	roundStartTimer_--;
 
-	worldTransformTestObject_.rotation.y += 0.01f;
+	//worldTransformTestObject_.rotation.y += 0.01f;
 
 	if (roundStartTimer_ <= 0 && !isOpen_)
 	{
@@ -680,7 +681,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			stageObject_[i]->ApplyAnimation();
 		}
 
-		float animationTime;
+		/*float animationTime;
 		animationTime = testObject_->GetAnimationTime();
 		animationTime += 1.0f / 60.0f;
 		animationTime = std::fmod(animationTime, testObject_->GetAnimation().duration);
@@ -689,7 +690,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 		testObject_->ApplyAnimation();
 
-		testObject_->Update(worldTransformTestObject_);
+		testObject_->Update(worldTransformTestObject_);*/
 		
 	}
 	
@@ -706,7 +707,8 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	ImGui::Begin("Play");
 	ImGui::DragInt("PlayerWinCount", &PlayerWinCount_, 1, 0, 2);
 	ImGui::DragInt("EnemyWinCount", &EnemyWinCount_, 1, 0, 2);
-	ImGui::DragFloat3("TestWTF", &worldTransformTestObject_.translation.x, 1.0f, 0.0f, 1280.0f);
+	ImGui::DragFloat3("TestWTFT", &worldTransformTestObject_.translation.x, 1.0f, -100.0f, 1280.0f);
+	ImGui::DragFloat3("TestWTFR", &worldTransformTestObject_.rotation.x, 1.0f, -20.0f, 20.0f);
 	ImGui::End();
 };
 
