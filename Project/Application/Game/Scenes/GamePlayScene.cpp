@@ -140,7 +140,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 		if (player_->GetIsFinisherEffect() == false)
 		{
-			enemy_->Update();
 			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
 		}
 		else

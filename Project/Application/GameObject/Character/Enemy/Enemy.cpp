@@ -112,12 +112,6 @@ void Enemy::Update()
 		animationIndex = 0;
 	}
 
-	float animationTime;
-	animationTime = modelFighterBody_->GetAnimationTime();
-	/*animationTime += 1.0f / 60.0f;
-	animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[animationIndex].duration);*/
-
-	modelFighterBody_->SetAnimationTime(animationTime);
 
 	modelFighterBody_->ApplyAnimation(animationIndex);
 
@@ -425,15 +419,6 @@ void Enemy::Reset()
 	isThrow_ = false;
 
 	comboCount_ = 0;
-
-	float animationTime;
-	animationTime = modelFighterBody_->GetAnimationTime();
-	
-	modelFighterBody_->SetAnimationTime(animationTime);
-
-	modelFighterBody_->ApplyAnimation(0);
-
-	modelFighterBody_->Update();
 
 	behavior_ = Behavior::kRoot;
 
