@@ -99,11 +99,15 @@ void Enemy::Update()
 {
 	isShake_ = false;
 
-	if (behaviorRequest_ == Behavior::kRoot)
+	if (behaviorRequest_ == Behavior::kRoot && HP_ > 0)
+	{
+		animationIndex = 2;
+	}
+	else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isMowDown)
 	{
 		animationIndex = 1;
 	}
-	else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isMowDown)
+	else if (HP_ <= 0 || isDown_ || GamePlayScene::roundStartTimer_ <= 0)
 	{
 		animationIndex = 0;
 	}
@@ -118,6 +122,7 @@ void Enemy::Update()
 	modelFighterBody_->ApplyAnimation(animationIndex);
 
 	modelFighterBody_->Update();
+
 
 	if (guardGauge_ > 0 && guardGauge_ < maxGuardGauge_)
 	{
@@ -421,6 +426,15 @@ void Enemy::Reset()
 
 	comboCount_ = 0;
 
+	float animationTime;
+	animationTime = modelFighterBody_->GetAnimationTime();
+	
+	modelFighterBody_->SetAnimationTime(animationTime);
+
+	modelFighterBody_->ApplyAnimation(0);
+
+	modelFighterBody_->Update();
+
 	behavior_ = Behavior::kRoot;
 
 	worldTransform_.Initialize();
@@ -668,12 +682,12 @@ void Enemy::BehaviorRootUpdate()
 		if (!isDown_)
 		{
 			animationTime += 1.0f / 60.0f;
-			animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[1].duration);
+			animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[2].duration);
 		}
 
 		modelFighterBody_->SetAnimationTime(animationTime);
 
-		modelFighterBody_->ApplyAnimation(1);
+		modelFighterBody_->ApplyAnimation(2);
 
 		modelFighterBody_->Update();
 
@@ -898,14 +912,18 @@ void Enemy::BehaviorAttackUpdate()
 	{
 		float animationTime, animationDuration;
 		animationTime = modelFighterBody_->GetAnimationTime();
-		animationTime += 1.0f / 60.0f;
-		/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
 
-		animationDuration = modelFighterBody_->GetAnimation()[0].duration;
+		if (!isDown_)
+		{
+			animationTime += 1.0f / 60.0f;
+			/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
+		}
+	
+		animationDuration = modelFighterBody_->GetAnimation()[1].duration;
 
 		modelFighterBody_->SetAnimationTime(animationTime);
 
-		modelFighterBody_->ApplyAnimation(0);
+		modelFighterBody_->ApplyAnimation(1);
 
 		modelFighterBody_->Update();
 
