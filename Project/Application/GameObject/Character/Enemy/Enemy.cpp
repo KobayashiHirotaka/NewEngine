@@ -299,8 +299,9 @@ void Enemy::Draw(const Camera& camera)
 	modelFighterBody_->Draw(worldTransformBody_, camera, animationIndex);
 
 	//Weaponの描画
-	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_
-		&& !isHitPoke_ && !isHitMowDown_ && !isDown_ && behaviorRequest_ != Behavior::kRoot)
+	if (workAttack_.isAttack && workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_
+		&& !isHitPoke_ && !isHitMowDown_ && !isDown_ && behaviorRequest_ != Behavior::kRoot
+		&& workAttack_.isAttack)
 	{
 		enemyWeapon_->Draw(camera);
 	}
