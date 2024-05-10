@@ -127,7 +127,7 @@ private:
 
 	WorldTransform worldTransformStageObject_[4];
 
-	std::unique_ptr<Model>testObject_;
+	//std::unique_ptr<Model>testObject_;
 
 	WorldTransform worldTransformTestObject_;
 };

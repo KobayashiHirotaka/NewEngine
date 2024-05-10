@@ -36,7 +36,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	stageObject_[3].reset(Model::CreateFromOBJ("resource/StagePillar", "StagePillar.obj"));
 	//stageObject_[1].reset(Model::CreateFromOBJ("resource/BackStage", "BackStage.obj"));
 
-	testObject_.reset(Model::CreateFromOBJ("resource/newEnemy", "newEnemy.gltf"));
+	//testObject_.reset(Model::CreateFromOBJ("resource/newEnemy", "newEnemy.gltf"));
 
 	roundTextureHandle_[0] = TextureManager::LoadTexture("resource/Round1.png");
 	roundTextureHandle_[1] = TextureManager::LoadTexture("resource/Round2.png");
@@ -682,16 +682,16 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			stageObject_[i]->ApplyAnimation(0);
 		}
 
-		float animationTime;
+		/*float animationTime;
 		animationTime = testObject_->GetAnimationTime();
-		/*animationTime += 1.0f / 60.0f;
-		animationTime = std::fmod(animationTime, testObject_->GetAnimation()[0].duration);*/
+		animationTime += 1.0f / 60.0f;
+		animationTime = std::fmod(animationTime, testObject_->GetAnimation()[0].duration);
 
 		testObject_->SetAnimationTime(animationTime);
 
 		testObject_->ApplyAnimation(0);
 
-		testObject_->Update();
+		testObject_->Update();*/
 	}
 	
 	worldTransform_.UpdateMatrixEuler();
@@ -725,6 +725,18 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	Model::PostDraw();
 
+	Model::BonePreDraw();
+
+	if (!isOpen_)
+	{
+		enemy_->BoneDraw(camera_);
+	}
+
+
+	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
+
+	Model::BonePostDraw();
+
 	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
@@ -742,17 +754,11 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	stageObject_[3]->Draw(worldTransformStageObject_[3], camera_, 0);
 
-	testObject_->Draw(worldTransformTestObject_,camera_, 0);
+	//testObject_->Draw(worldTransformTestObject_,camera_, 0);
 
 	skydome_->Draw(camera_);
 
 	Model::PostDraw();
-
-	Model::BonePreDraw();
-
-	testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
-
-	Model::BonePostDraw();
 
 	ParticleModel::PreDraw();
 

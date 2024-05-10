@@ -74,6 +74,8 @@ public:
 
 	void Draw(const Camera& camera);
 
+	void BoneDraw(const Camera& camera);
+
 	WorldTransform& GetWorldTransform()override { return worldTransform_; }
 
 	Vector3 GetWorldPosition() override;
@@ -164,6 +166,8 @@ public:
 	bool GetIsGuard() { return isGuard_; };
 	
 	void Reset();
+
+	uint32_t GetANimationIndex() { return animationIndex; };
 
 private:
 	const WorldTransform* parent_ = nullptr;

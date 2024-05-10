@@ -306,6 +306,12 @@ void Enemy::Draw(const Camera& camera)
 	}
 }
 
+void Enemy::BoneDraw(const Camera& camera)
+{
+	//Enemyの描画
+	modelFighterBody_->BoneDraw(worldTransformBody_, camera, animationIndex);
+}
+
 void Enemy::DrawSprite()
 {
 	if (HP_ >= 0)
