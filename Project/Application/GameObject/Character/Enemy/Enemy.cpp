@@ -666,8 +666,11 @@ void Enemy::BehaviorRootUpdate()
 	{
 		float animationTime;
 		animationTime = modelFighterBody_->GetAnimationTime();
-		animationTime += 1.0f / 60.0f;
-		animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[1].duration);
+		if (!isDown_)
+		{
+			animationTime += 1.0f / 60.0f;
+			animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[1].duration);
+		}
 
 		modelFighterBody_->SetAnimationTime(animationTime);
 
@@ -676,6 +679,7 @@ void Enemy::BehaviorRootUpdate()
 		modelFighterBody_->Update();
 
 		patternCount_ = 1;
+
 		//コントローラーの移動処理
 		if (patternCount_ == 1 && isDown_ == false)
 		{
@@ -787,6 +791,8 @@ void Enemy::BehaviorRootUpdate()
 			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
 			workAttack_.isSwingDown = true;
+			animationTime = 0.0f;
+			modelFighterBody_->SetAnimationTime(animationTime);
 		}
 
 		//突き攻撃
@@ -902,10 +908,12 @@ void Enemy::BehaviorAttackUpdate()
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
 	{
-		float animationTime;
+		float animationTime, animationDuration;
 		animationTime = modelFighterBody_->GetAnimationTime();
 		animationTime += 1.0f / 60.0f;
 		/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
+
+		animationDuration = modelFighterBody_->GetAnimation()[0].duration;
 
 		modelFighterBody_->SetAnimationTime(animationTime);
 
@@ -961,12 +969,22 @@ void Enemy::BehaviorAttackUpdate()
 			}
 
 
-			if (workAttack_.stiffnessTimer <= 0)
+			if (animationTime >= animationDuration)
+			{
+				// アニメーションが終了した場合の処理
+				behaviorRequest_ = Behavior::kRoot;
+				workAttack_.stiffnessTimer = 60;
+				workAttack_.isSwingDown = false;
+				animationTime = 0.0f;
+				modelFighterBody_->SetAnimationTime(animationTime);
+			}
+
+			/*if (workAttack_.stiffnessTimer <= 0)
 			{
 				behaviorRequest_ = Behavior::kRoot;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isSwingDown = false;
-			}
+			}*/
 		}
 
 		/*if (isHitSwingDown_ || isHitPoke_ || isHitMowDown_)
