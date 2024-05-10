@@ -52,6 +52,8 @@ void PostProcess::Initialize()
 	Bloom();
 
 	Vignette();
+
+	GrayScale();
 }
 
 void PostProcess::Update()
@@ -64,6 +66,8 @@ void PostProcess::Update()
 	UpdateBloom();
 
 	UpdateVignette();
+
+	UpdateGrayScale();
 }
 
 void PostProcess::PreDraw() 
@@ -816,6 +820,7 @@ void PostProcess::Draw()
 	//CBVを設定
 	commandList_->SetGraphicsRootConstantBufferView(5, bloomConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(6, vignetteConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(7, grayScaleConstantBuffer_->GetGPUVirtualAddress());
 	//形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//描画
@@ -1178,6 +1183,27 @@ void PostProcess::UpdateVignette()
 	vignetteData->enable = isVignetteActive_;
 	vignetteData->intensity = vignetteIntensity_;
 	vignetteConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::GrayScale()
+{
+	//グレイスケール用のCBVの作成
+	grayScaleConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(GrayScaleData));
+
+	//グレイスケール用のリソースに書き込む
+	GrayScaleData* grayScaleData = nullptr;
+	grayScaleConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&grayScaleData));
+	grayScaleData->enable = isGrayScaleActive_;
+	grayScaleConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::UpdateGrayScale()
+{
+	//グレイスケール用のリソースに書き込む
+	GrayScaleData* grayScaleData = nullptr;
+	grayScaleConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&grayScaleData));
+	grayScaleData->enable = isGrayScaleActive_;
+	grayScaleConstantBuffer_->Unmap(0, nullptr);
 }
 
 
