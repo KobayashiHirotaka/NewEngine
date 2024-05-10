@@ -128,6 +128,11 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		if (player_->GetIsFinisherEffect() == false)
 		{
 			enemy_->Update();
+			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+		}
+		else
+		{
+			PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		}
 
 		// 時間経過を加算
