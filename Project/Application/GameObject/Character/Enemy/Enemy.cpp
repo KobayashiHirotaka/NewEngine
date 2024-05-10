@@ -67,16 +67,8 @@ void Enemy::Initialize()
 	worldTransformBody_.rotation = { 7.75f,0.0f,0.0f };
 	worldTransformBody_.scale = { 0.007f,0.007f,0.007f };
 
-	worldTransformL_arm_.Initialize();
-	worldTransformL_arm_.translation.x = 0.5f;
-
-	worldTransformR_arm_.Initialize();
-	worldTransformR_arm_.translation.x = -0.5f;
-
 	worldTransformBody_.parent_ = &worldTransform_;
 	worldTransformHead_.parent_ = &worldTransformBody_;
-	worldTransformL_arm_.parent_ = &worldTransformBody_;
-	worldTransformR_arm_.parent_ = &worldTransformBody_;
 
 	//Weaponの生成
 	enemyWeapon_ = std::make_unique<EnemyWeapon>();
@@ -96,8 +88,6 @@ void Enemy::Initialize()
 
 	worldTransformBody_.UpdateMatrixEuler();
 	worldTransformHead_.UpdateMatrixEuler();
-	worldTransformL_arm_.UpdateMatrixEuler();
-	worldTransformR_arm_.UpdateMatrixEuler();
 
 	attackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Attack.mp3");
 	weaponAttackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/WeaponAttack.mp3");
@@ -840,10 +830,7 @@ void Enemy::BehaviorAttackInitialize()
 	//通常攻撃
 	if (workAttack_.isPunch)
 	{
-		worldTransformL_arm_.rotation.x = -1.3f;
-		worldTransformR_arm_.rotation.x = 0.0f;
-		worldTransformL_arm_.rotation.y = 0.0f;
-		worldTransformR_arm_.rotation.y = 0.0f;
+		
 	}
 
 	//振り下ろし攻撃
@@ -857,8 +844,6 @@ void Enemy::BehaviorAttackInitialize()
 	//突き攻撃
 	if (workAttack_.isPoke)
 	{
-		worldTransformL_arm_.rotation.x = -1.3f;
-		worldTransformR_arm_.rotation.x = -1.3f;
 		workAttack_.translation = { 0.0f,0.5f,0.0f };
 		workAttack_.rotation = { 1.5f,0.0f,0.0f };
 		workAttack_.stiffnessTimer = 60;
@@ -868,10 +853,6 @@ void Enemy::BehaviorAttackInitialize()
 	//薙ぎ払う攻撃
 	if (workAttack_.isMowDown)
 	{
-		worldTransformL_arm_.rotation.x = -1.3f;
-		worldTransformR_arm_.rotation.x = -1.3f;
-		worldTransformL_arm_.rotation.y = 0.0f;
-		worldTransformR_arm_.rotation.y = 0.0f;
 		workAttack_.translation = { 0.0f,0.5f,0.0f };
 		workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
 		workAttack_.stiffnessTimer = 60;
@@ -906,8 +887,6 @@ void Enemy::BehaviorAttackUpdate()
 				workAttack_.stiffnessTimer = 20;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.isPunch = false;
 			}
 		}
@@ -1048,8 +1027,6 @@ void Enemy::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				enemyWeapon_->SetIsAttack(false);
@@ -1069,8 +1046,6 @@ void Enemy::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				enemyWeapon_->SetIsAttack(false);
@@ -1084,8 +1059,7 @@ void Enemy::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
+			
 				workAttack_.stiffnessTimer = 60;
 				pokeTimer_ = 30;
 				workAttack_.isPoke = false;
@@ -1125,8 +1099,6 @@ void Enemy::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				enemyWeapon_->SetIsAttack(false);
@@ -1144,8 +1116,6 @@ void Enemy::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				enemyWeapon_->SetIsAttack(false);
@@ -1157,8 +1127,6 @@ void Enemy::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				workAttack_.isMowDown = false;
@@ -1194,8 +1162,6 @@ void Enemy::BehaviorJumpUpdate()
 		patternCount_ = 1;
 		behaviorRequest_ = Behavior::kRoot;
 		workAttack_.isJumpAttack = false;
-		worldTransformL_arm_.rotation.x = 0.0f;
-		worldTransformR_arm_.rotation.x = 0.0f;
 		worldTransform_.translation.y = 0.0f;
 	}
 }
@@ -1204,10 +1170,6 @@ void Enemy::BehaviorThrowInitialize()
 {
 	if (isThrow_)
 	{
-		worldTransformL_arm_.rotation.x = -1.3f;
-		worldTransformR_arm_.rotation.x = -1.3f;
-		worldTransformL_arm_.rotation.y = 0.0f;
-		worldTransformR_arm_.rotation.y = 0.0f;
 		attackAnimationFrame = 0;
 	}
 
@@ -1221,21 +1183,15 @@ void Enemy::BehaviorThrowUpdate()
 	{
 		if (attackAnimationFrame < 30)
 		{
-			worldTransformL_arm_.rotation.y -= 0.02f;
-			worldTransformR_arm_.rotation.y += 0.02f;
 		}
 		else if (player_->GetIsEnemyHit() == true)
 		{
 			throwTimer_--;
-			worldTransformL_arm_.rotation.x += 0.2f;
-			worldTransformR_arm_.rotation.x += 0.2f;
 
 			if (throwTimer_ <= 0)
 			{
 				behaviorRequest_ = Behavior::kRoot;
 				throwTimer_ = 100;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				isThrow_ = false;
 			}
 		}
@@ -1247,8 +1203,6 @@ void Enemy::BehaviorThrowUpdate()
 			{
 				patternCount_ = 1;
 				behaviorRequest_ = Behavior::kRoot;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				throwTimer_ = 100;
 				workAttack_.stiffnessTimer = 60;
 				isThrow_ = false;
@@ -1293,11 +1247,6 @@ void Enemy::BehaviorStanUpdate()
 		worldTransformBody_.rotation.x = 0.0f;
 		worldTransformBody_.rotation.y = 0.0f;
 
-		worldTransformL_arm_.rotation.x = 0.0f;
-		worldTransformL_arm_.rotation.y = 0.0f;
-
-		worldTransformR_arm_.rotation.x = 0.0f;
-		worldTransformR_arm_.rotation.y = 0.0f;
 	}
 }
 
