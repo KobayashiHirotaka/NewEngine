@@ -7,6 +7,8 @@
 
 int GamePlayScene::migrationTimer = 200;
 
+float GamePlayScene::roundStartTimer_ = 100.0f;
+
 GamePlayScene::GamePlayScene() {};
 
 GamePlayScene::~GamePlayScene() {};

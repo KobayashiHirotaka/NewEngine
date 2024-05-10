@@ -191,8 +191,10 @@ void Enemy::Update()
 	{
 	case Behavior::kRoot:
 	default:
-		BehaviorRootUpdate();
-		
+		if (GamePlayScene::roundStartTimer_ <= 0)
+		{
+			BehaviorRootUpdate();
+		}
 		break;
 
 	case Behavior::kAttack:
