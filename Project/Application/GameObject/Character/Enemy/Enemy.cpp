@@ -165,7 +165,6 @@ void Enemy::Update()
 		case Behavior::kRoot:
 		default:
 			BehaviorRootInitialize();
-			FloatingGimmickInitialize();
 			break;
 
 		case Behavior::kAttack:
@@ -193,11 +192,6 @@ void Enemy::Update()
 	case Behavior::kRoot:
 	default:
 		BehaviorRootUpdate();
-
-		if (!isDown_)
-		{
-			FloatingGimmickUpdate();
-		}
 		
 		break;
 
@@ -218,14 +212,14 @@ void Enemy::Update()
 		break;
 	}
 
-	if (worldTransform_.translation.x >= 16.0f)
+	if (worldTransform_.translation.x >= 12.4f)
 	{
-		worldTransform_.translation.x = 16.0f;
+		worldTransform_.translation.x = 12.4f;
 	}
 
-	if (worldTransform_.translation.x <= -16.0f)
+	if (worldTransform_.translation.x <= -12.4f)
 	{
-		worldTransform_.translation.x = -16.0f;
+		worldTransform_.translation.x = -12.4f;
 	}
 
 	if (behaviorRequest_ == Behavior::kJump && isHit_)
@@ -244,9 +238,6 @@ void Enemy::Update()
 	worldTransform_.UpdateMatrixEuler();
 
 	worldTransformBody_.UpdateMatrixEuler();
-	worldTransformHead_.UpdateMatrixEuler();
-	worldTransformL_arm_.UpdateMatrixEuler();
-	worldTransformR_arm_.UpdateMatrixEuler();
 
 	isHit_ = false;
 
@@ -297,6 +288,7 @@ void Enemy::Update()
 	ImGui::Text("GuardGauge %f", guardGauge_);
 	ImGui::Text("ComboC %d", comboCount_);
 	ImGui::Text("ComboT %d", comboTimer_);
+	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -16.0f, 16.0f);
 	ImGui::SliderFloat3("WTFR", &worldTransformBody_.rotation.x, 0.0f, 16.0f);
 	ImGui::End();
 }
@@ -434,32 +426,15 @@ void Enemy::Reset()
 
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 7.0f,0.0f,0.0f };
-
-	worldTransformHead_.Initialize();
-	worldTransformHead_.rotation.y = 0.0f;
 	worldTransform_.rotation.y = 4.6f;
 
 	worldTransformBody_.Initialize();
-	worldTransformBody_.translation = { 0.0f,1.0f,0.0f };
-	worldTransformBody_.rotation.x = 0.0f;
-	worldTransformBody_.rotation.y = 0.0f;
-
-	worldTransformL_arm_.Initialize();
-	worldTransformL_arm_.translation.x = 0.5f;
-	worldTransformL_arm_.rotation.x = 0.0f;
-	worldTransformL_arm_.rotation.y = 0.0f;
-
-	worldTransformR_arm_.Initialize();
-	worldTransformR_arm_.translation.x = -0.5f;
-	worldTransformR_arm_.rotation.x = 0.0f;
-	worldTransformR_arm_.rotation.y = 0.0f;
+	worldTransformBody_.translation = { 0.0f,0.0f,0.0f };
+	worldTransformBody_.rotation = { 7.75f,0.0f,0.0f };
+	worldTransformBody_.scale = { 0.007f,0.007f,0.007f };
 
 	worldTransform_.UpdateMatrixEuler();
-
 	worldTransformBody_.UpdateMatrixEuler();
-	worldTransformHead_.UpdateMatrixEuler();
-	worldTransformL_arm_.UpdateMatrixEuler();
-	worldTransformR_arm_.UpdateMatrixEuler();
 }
 
 void Enemy::DrawParticle(const Camera& camera)
@@ -702,7 +677,7 @@ void Enemy::BehaviorRootUpdate()
 
 		patternCount_ = 1;
 		//コントローラーの移動処理
-		if (patternCount_ == 1 && isDown_ == false && Input::GetInstance()->PressKey(DIK_L))
+		if (patternCount_ == 1 && isDown_ == false)
 		{
 			moveTimer_--;
 
@@ -1958,52 +1933,33 @@ void Enemy::DownAnimation()
 
 	for (int i = 0; i < 7; i++)
 	{
-		if (downAnimationTimer_[i] <= 0 && HP_ <= 0)
+		if (isDown_ && worldTransform_.translation.x >= 9.5f)
 		{
-			worldTransform_.translation.y -= 0.1f;
-			
-			worldTransformBody_.rotation.x = 4.7f;
+			worldTransform_.translation.x = 9.5f;
+		}
 
-			worldTransformL_arm_.rotation.x = 0.0f;
-			worldTransformL_arm_.rotation.y = 0.0f;
+		if (isDown_ && worldTransform_.translation.x <= -9.5f)
+		{
+			worldTransform_.translation.x = -9.5f;
+		}
 
-			worldTransformR_arm_.rotation.x = 0.0f;
-			worldTransformR_arm_.rotation.y = 0.0f;
-			
-			if (worldTransform_.translation.y <= -0.5f)
+		if (worldTransformBody_.rotation.x <= 6.3f)
+		{
+			worldTransformBody_.rotation.x = 6.3f;
+		}
+
+		if (downAnimationTimer_[i] <= 0 && HP_ <= 0)
+		{	
+			if (worldTransform_.translation.y <= 0.2f)
 			{
-				worldTransform_.translation.y = -0.5f;
+				worldTransform_.translation.y = 0.2f;
 			}
 		}
+		else if (isDown_ && worldTransform_.translation.y <= 0.2f)
+		{
+			worldTransform_.translation.y = 0.2f;
+		}
 	}
-}
-
-void Enemy::FloatingGimmickInitialize()
-{
-	for (int i = 0; i < kMaxModelParts; i++)
-	{
-		floatingParameter_[i] = 0.0f;
-	}
-}
-
-void Enemy::FloatingGimmickUpdate()
-{
-	floatingCycle_[0] = 120;
-	floatingCycle_[1] = 120;
-
-	float step[2]{};
-
-	for (int i = 0; i < kMaxModelParts; i++)
-	{
-		step[i] = 2.0f * (float)std::numbers::pi / floatingCycle_[i];
-
-		floatingParameter_[i] += step[i];
-
-		floatingParameter_[i] = (float)std::fmod(floatingParameter_[i], 2.0f * (float)std::numbers::pi);
-	}
-
-	worldTransformL_arm_.rotation.x = std::sin(floatingParameter_[1]) * 0.35f;
-	worldTransformR_arm_.rotation.x = -std::sin(floatingParameter_[1]) * 0.35f;
 }
 
 int Enemy::Random(int min_value, int max_value)

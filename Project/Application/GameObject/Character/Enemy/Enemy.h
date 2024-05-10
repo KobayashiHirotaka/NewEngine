@@ -118,10 +118,6 @@ public:
 
 	void BehaviorStanUpdate();
 
-	void FloatingGimmickInitialize();
-
-	void FloatingGimmickUpdate();
-
 	float GetHP() { return HP_; };
 
 	void SetHP(float HP) { HP_ = HP; };

@@ -224,14 +224,14 @@ void Player::Update()
 		break;
 	}
 
-	if (worldTransform_.translation.x >= 16.0f)
+	if (worldTransform_.translation.x >= 13.4f)
 	{
-		worldTransform_.translation.x = 16.0f;
+		worldTransform_.translation.x = 13.4f;
 	}
 
-	if (worldTransform_.translation.x <= -16.0f)
+	if (worldTransform_.translation.x <= -13.4f)
 	{
-		worldTransform_.translation.x = -16.0f;
+		worldTransform_.translation.x = -13.4f;
 	}
 
 	if (behaviorRequest_ == Behavior::kJump && isHit_)
@@ -496,7 +496,7 @@ void Player::Reset()
 	behavior_ = Behavior::kRoot;
 
 	worldTransform_.Initialize();
-	worldTransform_.translation = { -7.0f,0.0f,0.0f };
+	worldTransform_.translation = { -7.0f,0.0f,6.5f };
 
 	worldTransformHead_.Initialize();
 	worldTransformHead_.rotation.y = 0.0f;
@@ -1348,11 +1348,13 @@ void Player::BehaviorAttackUpdate()
 		{
 			finisherEffectTimer--;
 			isFinisherEffect = true;
+			worldTransform_.translation.z = 3.0f;
 		}
 		else if (attackAnimationFrame < 134)
 		{
 			isFinisherEffect = false;
 			finisherCount_ = 1;
+			worldTransform_.translation.z = 6.5f;
 
 			worldTransformHead_.translation = { 0.0f,0.0f,0.0f };
 			worldTransformHead_.rotation = { 0.0f,0.0f,0.0f };
@@ -2099,9 +2101,9 @@ void Player::DownAnimation()
 			worldTransformR_arm_.rotation.x = 0.0f;
 			worldTransformR_arm_.rotation.y = 0.0f;
 
-			if (worldTransform_.translation.y <= -0.5f)
+			if (worldTransform_.translation.y <= -0.8f)
 			{
-				worldTransform_.translation.y = -0.5f;
+				worldTransform_.translation.y = -0.8f;
 			}
 		}
 	}
