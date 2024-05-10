@@ -33,13 +33,13 @@ void EnemyWeapon::Update()
 	collisionWorldTransform_.translation = Add(collisionWorldTransform_.translation, direction);
 
 
-	worldTransform_.UpdateMatrix();
-	collisionWorldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
+	collisionWorldTransform_.UpdateMatrixEuler();
 }
 
 void EnemyWeapon::Draw(const Camera& camera)
 {
-	enemyWeaponModel_->Draw(worldTransform_, camera);
+	enemyWeaponModel_->Draw(worldTransform_, camera, 0);
 }
 
 void EnemyWeapon::OnCollision(Collider* collider, float damage)

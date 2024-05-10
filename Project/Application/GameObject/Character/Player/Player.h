@@ -213,7 +213,7 @@ private:
 
 	float floatingAmplitude_;
 
-	float maxHP_ = 100.0f;
+	float maxHP_ = 10.0f;
 
 	float HP_ = maxHP_;
 

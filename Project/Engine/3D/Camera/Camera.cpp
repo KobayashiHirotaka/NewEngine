@@ -21,6 +21,7 @@ void Camera::TransferMatrix()
 {
 	ConstBuffDataCamera* cameraData = nullptr;
 	constBuff_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData));
+	cameraData->worldPosition = translation_;
 	cameraData->view = matView_;
 	cameraData->projection = matProjection_;
 	constBuff_->Unmap(0, nullptr);

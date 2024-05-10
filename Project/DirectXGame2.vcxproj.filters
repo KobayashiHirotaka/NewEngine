@@ -390,6 +390,9 @@
     <None Include="resource\shaders\Sprite.hlsli">
       <Filter>shaders</Filter>
     </None>
+    <None Include="resource\shaders\BoneVisualization.hlsli">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\externals\imgui\imconfig.h">
@@ -557,6 +560,9 @@
     <ClInclude Include="Application\GameObject\Skydome\Skydome.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Skydome</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\Object3d.PS.hlsl">
@@ -599,6 +605,15 @@
       <Filter>shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\Particle.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\SkinningObject3d.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\BoneVisualization.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\BoneVisualization.PS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
   </ItemGroup>

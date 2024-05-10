@@ -8,13 +8,13 @@ void ICharacter::Initialize(const std::vector<Model*>& models)
 
 void ICharacter::Update()
 {
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
 }
 
 void ICharacter::Draw(const Camera& camera)
 {
 	for (Model* model : models_)
 	{
-		model->Draw(worldTransform_, camera);
+		model->Draw(worldTransform_, camera,0);
 	}
 }

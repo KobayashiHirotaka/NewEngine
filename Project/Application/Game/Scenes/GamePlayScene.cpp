@@ -5,6 +5,10 @@
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>
 
+int GamePlayScene::migrationTimer = 200;
+
+float GamePlayScene::roundStartTimer_ = 100.0f;
+
 GamePlayScene::GamePlayScene() {};
 
 GamePlayScene::~GamePlayScene() {};
@@ -33,6 +37,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	stageObject_[2].reset(Model::CreateFromOBJ("resource/StagePillar", "StagePillar.obj"));
 	stageObject_[3].reset(Model::CreateFromOBJ("resource/StagePillar", "StagePillar.obj"));
 	//stageObject_[1].reset(Model::CreateFromOBJ("resource/BackStage", "BackStage.obj"));
+
+	//testObject_.reset(Model::CreateFromOBJ("resource/newEnemy", "newEnemy.gltf"));
 
 	roundTextureHandle_[0] = TextureManager::LoadTexture("resource/Round1.png");
 	roundTextureHandle_[1] = TextureManager::LoadTexture("resource/Round2.png");
@@ -72,16 +78,21 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	worldTransform_.translation = { 0.0f,-1.0f,0.0f };
 
 	worldTransformStageObject_[0].Initialize();
-	worldTransformStageObject_[0].translation = { -25.0f,-2.5f,50.0f };
+	worldTransformStageObject_[0].translation = { -25.0f,-2.3f,50.0f };
 
 	worldTransformStageObject_[1].Initialize();
-	worldTransformStageObject_[1].translation = { 25.0f,-2.5f,50.0f };
+	worldTransformStageObject_[1].translation = { 25.0f,-2.3f,50.0f };
 
 	worldTransformStageObject_[2].Initialize();
 	worldTransformStageObject_[2].translation = { -25.0f,-2.5f,50.0f };
 
 	worldTransformStageObject_[3].Initialize();
 	worldTransformStageObject_[3].translation = { 25.0f,-2.5f,50.0f };
+
+	worldTransformTestObject_.Initialize();
+	worldTransformTestObject_.translation = { 0.0f,0.0f,20.0f };
+	worldTransformTestObject_.rotation = { 0.0f,0.0f,0.0f };
+	worldTransformTestObject_.scale = { 0.01f,0.01f,0.01f };
 
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
@@ -104,7 +115,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	currentSeconds_ = 99;
 	UpdateNumberSprite();
 
-	migrationTimer_ = 200;
+	migrationTimer = 200;
 
 	frameTime = 1.0f / 60.0f; 
 	elapsedTime = 0.0f;
@@ -121,7 +132,9 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 {
 	roundStartTimer_--;
 
-	if (migrationTimer_ >= 150 && roundStartTimer_ <= 0 && !isOpen_)
+	//worldTransformTestObject_.rotation.y += 0.01f;
+
+	if (roundStartTimer_ <= 0 && !isOpen_)
 	{
 		player_->Update();
 
@@ -148,16 +161,21 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		}
 	}
 
+	if (player_->GetIsFinisherEffect() == false)
+	{
+		enemy_->Update();
+	}
+
 
 	skydome_->Update();
 
 	//Playerが勝ったとき
 	if (enemy_->GetHP() <= 0 && round_ == 1)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			round_ = 2;
 			PlayerWinCount_ = 1;
@@ -168,7 +186,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			currentSeconds_ = 99;
 			UpdateNumberSprite();
 
-			migrationTimer_ = 200;
+			migrationTimer = 200;
 
 			frameTime = 1.0f / 60.0f;
 			elapsedTime = 0.0f;
@@ -181,20 +199,20 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 	else if (enemy_->GetHP() <= 0 && round_ == 2 && PlayerWinCount_ == 1)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = true;
 		
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			PlayerWinCount_ = 2;
 		}
 	}
 	else if (enemy_->GetHP() <= 0 && round_ == 2 && PlayerWinCount_ == 0)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = true;
 		
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			round_ = 3;
 			PlayerWinCount_ = 1;
@@ -205,7 +223,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			currentSeconds_ = 99;
 			UpdateNumberSprite();
 
-			migrationTimer_ = 200;
+			migrationTimer = 200;
 
 			frameTime = 1.0f / 60.0f;
 			elapsedTime = 0.0f;
@@ -218,10 +236,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 	else if (enemy_->GetHP() <= 0 && round_ == 3 && PlayerWinCount_ == 1)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = true;
 		
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -229,10 +247,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 1)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			round_ = 2;
 			PlayerWinCount_ = 1;
@@ -243,7 +261,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			currentSeconds_ = 99;
 			UpdateNumberSprite();
 
-			migrationTimer_ = 200;
+			migrationTimer = 200;
 
 			frameTime = 1.0f / 60.0f;
 			elapsedTime = 0.0f;
@@ -256,20 +274,20 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 2 && PlayerWinCount_ == 1)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = true;
 		
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			PlayerWinCount_ = 2;
 		}
 	}
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 2 && PlayerWinCount_ == 0)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			round_ = 3;
 			PlayerWinCount_ = 1;
@@ -280,7 +298,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			currentSeconds_ = 99;
 			UpdateNumberSprite();
 
-			migrationTimer_ = 200;
+			migrationTimer = 200;
 
 			frameTime = 1.0f / 60.0f;
 			elapsedTime = 0.0f;
@@ -293,10 +311,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 3 && PlayerWinCount_ == 1)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -344,10 +362,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	//Enemyが勝ったとき
 	if (player_->GetHP() <= 0 && round_ == 1)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = false;
 		
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			round_ = 2;
 			EnemyWinCount_ = 1;
@@ -358,7 +376,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			currentSeconds_ = 99;
 			UpdateNumberSprite();
 
-			migrationTimer_ = 200;
+			migrationTimer = 200;
 
 			frameTime = 1.0f / 60.0f;
 			elapsedTime = 0.0f;
@@ -371,20 +389,20 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 	else if (player_->GetHP() <= 0 && round_ == 2 && EnemyWinCount_ == 1)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = false;
 		
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			EnemyWinCount_ = 2;
 		}
 	}
 	else if (player_->GetHP() <= 0 && round_ == 2 && EnemyWinCount_ == 0)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = false;
 	
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			round_ = 3;
 			EnemyWinCount_ = 1;
@@ -395,7 +413,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			currentSeconds_ = 99;
 			UpdateNumberSprite();
 
-			migrationTimer_ = 200;
+			migrationTimer = 200;
 
 			frameTime = 1.0f / 60.0f;
 			elapsedTime = 0.0f;
@@ -408,10 +426,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 	else if (player_->GetHP() <= 0 && round_ == 3 && EnemyWinCount_ == 1)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = false;
 		
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			EnemyWinCount_ = 2;
 		}
@@ -419,10 +437,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 1)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = false;
 	
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			round_ = 2;
 			EnemyWinCount_ = 1;
@@ -433,7 +451,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			currentSeconds_ = 99;
 			UpdateNumberSprite();
 
-			migrationTimer_ = 200;
+			migrationTimer = 200;
 
 			frameTime = 1.0f / 60.0f;
 			elapsedTime = 0.0f;
@@ -446,20 +464,20 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 2 && EnemyWinCount_ == 1)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = false;
 		
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			EnemyWinCount_ = 2;
 		}
 	}
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 2 && EnemyWinCount_ == 0)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = false;
 		
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			round_ = 3;
 			EnemyWinCount_ = 1;
@@ -470,7 +488,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			currentSeconds_ = 99;
 			UpdateNumberSprite();
 
-			migrationTimer_ = 200;
+			migrationTimer = 200;
 
 			frameTime = 1.0f / 60.0f;
 			elapsedTime = 0.0f;
@@ -483,10 +501,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() > player_->GetHP() && round_ == 3 && EnemyWinCount_ == 1)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isPlayerWin_ = false;
 		
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			EnemyWinCount_ = 2;
 		}
@@ -502,10 +520,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (currentSeconds_ <= 0 && enemy_->GetHP() == player_->GetHP() && round_ == 1)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isDrow_ = true;
 
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			round_ = 3;
 			PlayerWinCount_ = 1;
@@ -517,7 +535,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			currentSeconds_ = 99;
 			UpdateNumberSprite();
 
-			migrationTimer_ = 200;
+			migrationTimer = 200;
 
 			frameTime = 1.0f / 60.0f;
 			elapsedTime = 0.0f;
@@ -530,10 +548,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 	else if (currentSeconds_ <= 0 && enemy_->GetHP() == player_->GetHP() && round_ == 3)
 	{
-		migrationTimer_--;
+		migrationTimer--;
 		isDrow_ = true;
 		
-		if (migrationTimer_ < 0)
+		if (migrationTimer < 0)
 		{
 			round_ = 3;
 			PlayerWinCount_ = 1;
@@ -545,7 +563,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			currentSeconds_ = 99;
 			UpdateNumberSprite();
 
-			migrationTimer_ = 200;
+			migrationTimer = 200;
 
 			frameTime = 1.0f / 60.0f;
 			elapsedTime = 0.0f;
@@ -661,31 +679,48 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		camera_.rotation_ = Lerp(camera_.rotation_, finisherRotationPosition, 0.05f);
 	}
 
-	if (migrationTimer_ >= 150)
+	//Animation
+	if (migrationTimer >= 150)
 	{
-		//Animation
 		for (int i = 0; i < 2; i++)
 		{
 			float animationTime[2];
 			animationTime[i] = stageObject_[i]->GetAnimationTime();
 			animationTime[i] += 1.0f / 60.0f;
-			animationTime[i] = std::fmod(animationTime[i], stageObject_[i]->GetAnimation().duration);
+			animationTime[i] = std::fmod(animationTime[i], stageObject_[i]->GetAnimation()[0].duration);
 
 			stageObject_[i]->SetAnimationTime(animationTime[i]);
+
+			stageObject_[i]->ApplyAnimation(0);
 		}
+
+		/*float animationTime;
+		animationTime = testObject_->GetAnimationTime();
+		animationTime += 1.0f / 60.0f;
+		animationTime = std::fmod(animationTime, testObject_->GetAnimation()[0].duration);
+
+		testObject_->SetAnimationTime(animationTime);
+
+		testObject_->ApplyAnimation(0);
+
+		testObject_->Update();*/
 	}
 	
-	worldTransform_.UpdateMatrix();
-	worldTransformStageObject_[0].UpdateMatrix();
-	worldTransformStageObject_[1].UpdateMatrix();
-	worldTransformStageObject_[2].UpdateMatrix();
-	worldTransformStageObject_[3].UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
+	worldTransformStageObject_[0].UpdateMatrixEuler();
+	worldTransformStageObject_[1].UpdateMatrixEuler();
+	worldTransformStageObject_[2].UpdateMatrixEuler();
+	worldTransformStageObject_[3].UpdateMatrixEuler();
+
+	worldTransformTestObject_.UpdateMatrixEuler();
 
 	camera_.UpdateMatrix();
 
 	ImGui::Begin("Play");
 	ImGui::DragInt("PlayerWinCount", &PlayerWinCount_, 1, 0, 2);
 	ImGui::DragInt("EnemyWinCount", &EnemyWinCount_, 1, 0, 2);
+	ImGui::DragFloat3("TestWTFT", &worldTransformTestObject_.translation.x, 1.0f, -100.0f, 1280.0f);
+	ImGui::DragFloat3("TestWTFR", &worldTransformTestObject_.rotation.x, 1.0f, -20.0f, 20.0f);
 	ImGui::End();
 };
 
@@ -702,22 +737,36 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	Model::PostDraw();
 
+	Model::BonePreDraw();
+
+	if (!isOpen_)
+	{
+		enemy_->BoneDraw(camera_);
+	}
+
+
+	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
+
+	Model::BonePostDraw();
+
 	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
 
 	if (!isOpen_)
 	{
-		ground_->Draw(worldTransform_, camera_);
+		ground_->Draw(worldTransform_, camera_, 0);
 	}
 
-	stageObject_[0]->Draw(worldTransformStageObject_[0], camera_);
+	stageObject_[0]->Draw(worldTransformStageObject_[0], camera_, 0);
 
-	stageObject_[1]->Draw(worldTransformStageObject_[1], camera_);
+	stageObject_[1]->Draw(worldTransformStageObject_[1], camera_, 0);
 
-	stageObject_[2]->Draw(worldTransformStageObject_[2], camera_);
+	stageObject_[2]->Draw(worldTransformStageObject_[2], camera_, 0);
 
-	stageObject_[3]->Draw(worldTransformStageObject_[3], camera_);
+	stageObject_[3]->Draw(worldTransformStageObject_[3], camera_, 0);
+
+	//testObject_->Draw(worldTransformTestObject_,camera_, 0);
 
 	skydome_->Draw(camera_);
 
@@ -736,7 +785,7 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	if (migrationTimer_ < 150)
+	if (migrationTimer < 150)
 	{
 		if (isPlayerWin_)
 		{

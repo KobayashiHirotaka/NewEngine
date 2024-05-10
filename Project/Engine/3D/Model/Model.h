@@ -13,6 +13,7 @@
 #include <list>
 #include <string>
 #include <sstream>
+#include <span>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -20,51 +21,54 @@
 
 #pragma comment(lib,"dxcompiler.lib")
 
+static const uint32_t kNumMaxInfluence = 4;
+
 enum class RootParameterIndex
 {
 	Material,
 	WorldTransform,
 	ViewProjection,
 	Texture,
-	Light
+	Light,
+	Skinning
+};
+
+struct VertexInfluence
+{
+	std::array<float, kNumMaxInfluence> weights;
+	std::array<int32_t, kNumMaxInfluence> jointIndices;
+};
+
+struct WellForGPU
+{
+	Matrix4x4 skeletonSpaceMatrix;
+	Matrix4x4 skeletonSpaceInverseTransposeMatrix;
+};
+
+
+struct SkinCluster
+{
+	std::vector<Matrix4x4> inverseBindPoseMatrices;
+	Microsoft::WRL::ComPtr<ID3D12Resource> influenceResource;
+	D3D12_VERTEX_BUFFER_VIEW influenceBufferView;
+	std::span<VertexInfluence> mappedInfluence;
+	Microsoft::WRL::ComPtr<ID3D12Resource> paletteResource;
+	std::span<WellForGPU> mappedPalette;
+	D3D12_GPU_DESCRIPTOR_HANDLE paletteSrvHandle;
 };
 
 class Model 
 {
 public:
-	struct Node
-	{
-		Matrix4x4 localMatrix;
-		std::string name;
-		std::vector<Node> children;
-	};
-
-	struct MaterialData
-	{
-		std::string textureFilePath;
-	};
-
-	struct ModelData 
-	{
-		std::vector<VertexData> vertices;
-		MaterialData material;
-		std::string name;
-		Node rootNode;
-	};
-
-	struct ModelTransformationData
-	{
-		Matrix4x4 WVP;
-		Matrix4x4 World;
-	};
-
 	static void StaticInitialize();
 
 	//void Initialize();
 
 	void Update();
 
-	void Draw(WorldTransform& worldTransform, const Camera& camera);
+	void Draw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData);
+
+	void BoneDraw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData);
 
 	static void Release();
 
@@ -74,6 +78,10 @@ public:
 
 	static void PostDraw();
 
+	static void BonePreDraw();
+
+	static void BonePostDraw();
+
 	Material* GetMaterial() { return material_.get(); };
 
 	Light* GetLight() { return light_.get(); };
@@ -82,7 +90,9 @@ public:
 
 	void SetAnimationTime(float animationTime) { animationTime_ = animationTime; };
 
-	Animation GetAnimation() { return animation_; };
+	std::vector<Animation> GetAnimation() const { return animation_; };
+
+	void ApplyAnimation(const uint32_t animationData);
 
 private:
 	static void InitializeDXC();
@@ -94,7 +104,7 @@ private:
 	static void CreatePSO();
 
 	ModelData LoadModelFile(const std::string& directoryPath, const std::string& filename);
-	Animation LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
+	std::vector<Animation> LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
 
 	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
@@ -103,6 +113,20 @@ private:
 	Vector3 CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time);
 
 	Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframes, float time);
+
+	Skeleton CreateSkelton(const Node& rootNode);
+
+	int32_t CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints);
+
+	SkinCluster CreateSkinCluster(const Skeleton& skeleton,const ModelData& modelData);
+
+	void CreateBoneVertexBuffer();
+
+	void CreateBoneVertices(const Skeleton& skeleton, int32_t index, std::vector<Vector4>& vertices);
+
+	void UpdateBoneVertices(const Skeleton& skeleton, int32_t index, std::vector<Vector4>& vertices);
+
+	static void CreateBonePSO();
 
 private:
 	static DirectXCore* dxCore_;
@@ -136,6 +160,22 @@ private:
 	ModelData modelData_;
 
 	float animationTime_ = 0.0f;
-	Animation animation_;
+	std::vector<Animation> animation_;
 	bool isKeyframeAnimation_ = false;
+
+	Skeleton skeleton_;
+
+	SkinCluster skinCluster_;
+
+	uint32_t skinningTextureHandle_;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> boneVertexBuffer_ = nullptr;
+
+	D3D12_VERTEX_BUFFER_VIEW boneVertexBufferView_{};
+
+	std::vector<Vector4> boneVertices_{};
+
+	static Microsoft::WRL::ComPtr<ID3D12RootSignature> boneRootSignature_;
+
+	static Microsoft::WRL::ComPtr<ID3D12PipelineState> boneGraphicsPipelineState_;
 };

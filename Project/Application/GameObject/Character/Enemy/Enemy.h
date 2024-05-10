@@ -74,6 +74,8 @@ public:
 
 	void Draw(const Camera& camera);
 
+	void BoneDraw(const Camera& camera);
+
 	WorldTransform& GetWorldTransform()override { return worldTransform_; }
 
 	Vector3 GetWorldPosition() override;
@@ -117,10 +119,6 @@ public:
 	void BehaviorStanInitialize();
 
 	void BehaviorStanUpdate();
-
-	void FloatingGimmickInitialize();
-
-	void FloatingGimmickUpdate();
 
 	float GetHP() { return HP_; };
 
@@ -169,6 +167,8 @@ public:
 	
 	void Reset();
 
+	uint32_t GetANimationIndex() { return animationIndex; };
+
 private:
 	const WorldTransform* parent_ = nullptr;
 
@@ -179,13 +179,8 @@ private:
 	WorldTransform worldTransform_;
 	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformHead_;
-	WorldTransform worldTransformL_arm_;
-	WorldTransform worldTransformR_arm_;
 
 	std::unique_ptr<Model> modelFighterBody_;
-	std::unique_ptr<Model> modelFighterPHead_;
-	std::unique_ptr<Model> modelFighterL_arm_;
-	std::unique_ptr<Model> modelFighterR_arm_;
 
 	Vector3 velocity_ = {};
 
@@ -201,7 +196,7 @@ private:
 
 	std::unique_ptr<EnemyWeapon> enemyWeapon_ = nullptr;
 
-	float maxHP_ = 100.0f;
+	float maxHP_ = 10.0f;
 
 	float HP_ = maxHP_;
 
@@ -294,4 +289,6 @@ private:
 
 	std::unique_ptr<Sprite>comboNumSprite_ = nullptr;
 	uint32_t comboNumTextureHandle_;
+
+	uint32_t animationIndex = 0;
 };

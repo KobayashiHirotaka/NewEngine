@@ -19,6 +19,10 @@ class GamePlayScene : public IScene
 public:
 	static const int kTransitionTime = 60;
 
+	static int migrationTimer;
+
+	static float roundStartTimer_;
+
 	GamePlayScene();
 
 	~GamePlayScene();
@@ -53,7 +57,6 @@ private:
 	std::unique_ptr<Skydome>skydome_;
 
 	int round_ = 1;
-	int migrationTimer_;
 	int PlayerWinCount_ = 0;
 	int EnemyWinCount_ = 0;
 
@@ -99,8 +102,6 @@ private:
 	float frameTime = 1.0f / 60.0f;  // 60FPSを仮定
 	float elapsedTime = 0.0f;
 
-	float roundStartTimer_ = 100.0f;
-
 	bool isPlayerWin_ = false;
 	bool isDrow_ = false;
 
@@ -125,4 +126,8 @@ private:
 	std::unique_ptr<Model>stageObject_[4];
 
 	WorldTransform worldTransformStageObject_[4];
+
+	//std::unique_ptr<Model>testObject_;
+
+	WorldTransform worldTransformTestObject_;
 };

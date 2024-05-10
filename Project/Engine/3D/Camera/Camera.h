@@ -6,6 +6,8 @@
 
 struct ConstBuffDataCamera
 {
+	Vector3 worldPosition;
+	float padding;
 	Matrix4x4 view;
 	Matrix4x4 projection;
 };
@@ -44,7 +46,7 @@ public:
 	float nearClip_ = 0.1f;
 
 	//遠平面への距離（奥側）
-	float farClip_ = 100.0f;
+	float farClip_ = 300.0f;
 
 	//ビュー行列
 	Matrix4x4 matView_{};
