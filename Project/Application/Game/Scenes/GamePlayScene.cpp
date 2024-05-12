@@ -576,10 +576,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (player_->GetIsFinisherEffect())
 	{
-		PostProcess::GetInstance()->SetVignetteIntensity(1.8f);
+		PostProcess::GetInstance()->SetVignetteIntensity(1.5f);
 	}
 	else {
-		PostProcess::GetInstance()->SetVignetteIntensity(1.5f);
+		PostProcess::GetInstance()->SetVignetteIntensity(0.8f);
 	}
 
 	/*if (input_->GetJoystickState())
