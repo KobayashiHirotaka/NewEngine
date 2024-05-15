@@ -20,3 +20,8 @@ struct GrayScale
     bool enable;
 };
 
+struct BoxFilter
+{
+    bool enable;
+};
+

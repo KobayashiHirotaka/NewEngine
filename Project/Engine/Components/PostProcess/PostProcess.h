@@ -53,6 +53,12 @@ public:
         float padding[3];
     };
 
+    struct BoxFilterData
+    {
+        bool enable;
+        float padding[3];
+    };
+
     static PostProcess* GetInstance();
 
     void Initialize();
@@ -118,6 +124,10 @@ private:
     //グレイスケール
     void GrayScale();
     void UpdateGrayScale();
+
+    //ボックスフィルター
+    void BoxFilter();
+    void UpdateBoxFilter();
 
     //マルチパス用テクスチャの作成
     Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor);
@@ -186,6 +196,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> bloomConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> vignetteConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> grayScaleConstantBuffer_ = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> boxFilterConstantBuffer_ = nullptr;
 
     //ビネットの強度
     float vignetteIntensity_ = 0.8f;
@@ -197,4 +208,5 @@ private:
     bool isBloomActive_ = false;
     bool isVignetteActive_ = false;
     bool isGrayScaleActive_ = false;
+    bool isBoxFilterActive_ = false;
 };

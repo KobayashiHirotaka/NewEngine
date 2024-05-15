@@ -54,6 +54,8 @@ void PostProcess::Initialize()
 	Vignette();
 
 	GrayScale();
+
+	BoxFilter();
 }
 
 void PostProcess::Update()
@@ -68,6 +70,8 @@ void PostProcess::Update()
 	UpdateVignette();
 
 	UpdateGrayScale();
+
+	UpdateBoxFilter();
 }
 
 void PostProcess::PreDraw() 
@@ -821,6 +825,7 @@ void PostProcess::Draw()
 	commandList_->SetGraphicsRootConstantBufferView(5, bloomConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(6, vignetteConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(7, grayScaleConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(8, boxFilterConstantBuffer_->GetGPUVirtualAddress());
 	//形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//描画
@@ -1206,6 +1211,26 @@ void PostProcess::UpdateGrayScale()
 	grayScaleConstantBuffer_->Unmap(0, nullptr);
 }
 
+void PostProcess::BoxFilter()
+{
+	//グレイスケール用のCBVの作成
+	boxFilterConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(GrayScaleData));
+
+	//グレイスケール用のリソースに書き込む
+	BoxFilterData* boxFilterData = nullptr;
+	boxFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&boxFilterData));
+	boxFilterData->enable = isBoxFilterActive_;
+	boxFilterConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::UpdateBoxFilter()
+{
+	//グレイスケール用のリソースに書き込む
+	BoxFilterData* boxFilterData = nullptr;
+	boxFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&boxFilterData));
+	boxFilterData->enable = isBoxFilterActive_;
+	boxFilterConstantBuffer_->Unmap(0, nullptr);
+}
 
 Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateDepthStencilTextureResource(int32_t width, int32_t height)
 {

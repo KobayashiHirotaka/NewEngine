@@ -12,6 +12,14 @@ SamplerState gSampler : register(s0);
 ConstantBuffer<Bloom> gBloomParameter : register(b0);
 ConstantBuffer<Vignette> gVignetteParameter : register(b1);
 ConstantBuffer<GrayScale> gGrayScaleParameter : register(b2);
+ConstantBuffer<BoxFilter> gBoxFilterParameter : register(b3);
+
+static const float32_t kIndex3x3[3][3] =
+{
+    { 1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f },
+    { 1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f },
+    { 1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f },
+};
 
 struct PixelShaderOutput
 {
@@ -51,12 +59,38 @@ PixelShaderOutput main(VertexShaderOutput input)
         textureColor.rgb *= vignette;
     }
     
-     //GrayScale
+    //GrayScale
     if (gGrayScaleParameter.enable)
     {
         float4 color = textureColor;
         float32_t value = dot(textureColor.rgb, float32_t3(0.2125f, 0.7154f, 0.0721f));
         textureColor.rgb = value * float32_t3(1.0f, 74.0f / 107.0f, 43.0f / 107.0f);
+    }
+    
+    //BoxFilter
+    if (gBoxFilterParameter.enable)
+    {
+        float4 color = textureColor;
+        
+        uint32_t width, height;
+        gTexture.GetDimensions(width, height);
+        float32_t2 uvStepSize = float32_t2(rcp(width), rcp(height));
+        
+        textureColor.rgb = float32_t3(0.0f, 0.0f, 0.0f);
+        textureColor.a = 1.0f;
+        
+        for (int32_t x = 0; x < 3; ++x)
+        {
+            for (int32_t y = 0; y < 3; ++y)
+            {
+                float32_t2 texcoord = input.texcoord + kIndex3x3[x][y] * uvStepSize;
+                float32_t3 fetchColor = gTexture.Sample(gSampler, texcoord).rgb;
+                
+                textureColor.rgb += fetchColor * kIndex3x3[x][y];
+            }
+
+        }
+
     }
 
     output.color = textureColor;
