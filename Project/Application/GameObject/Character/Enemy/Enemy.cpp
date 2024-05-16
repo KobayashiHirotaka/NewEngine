@@ -15,11 +15,15 @@ void Enemy::Initialize()
 {
 	audio_ = Audio::GetInstance();
 
+	//当たり判定の大きさの設定
 	AABB aabb= { {-0.3f,-1.0f,-10.0f},{3.0f,1.0f,10.0f} };
 	SetAABB(aabb);
 
+	//モデル読み込み
 	modelFighterBody_.reset(Model::CreateFromOBJ("resource/newEnemy", "newEnemy.gltf"));
 
+	//ゲージ系の初期化
+	//HPゲージ
 	hpBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/HP.png"),
@@ -31,6 +35,7 @@ void Enemy::Initialize()
 
 	hpBar_.sprite_ = Sprite::Create(hpBar_.textureHandle_, hpBar_.position_);
 
+	//ガードゲージ
 	guardGaugeBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/guardGauge.png"),
@@ -42,6 +47,7 @@ void Enemy::Initialize()
 
 	guardGaugeBar_.sprite_ = Sprite::Create(guardGaugeBar_.textureHandle_, guardGaugeBar_.position_);
 
+	//必殺技ゲージ
 	finisherGaugeBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/guardGauge.png"),
