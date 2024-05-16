@@ -332,10 +332,11 @@ void PostProcess::SetupBlurConstantBuffers()
 	blurData->textureWidth = WindowsApp::GetInstance()->kClientWidth;
 	blurData->textureHeight = WindowsApp::GetInstance()->kClientHeight;
 
+	float sigma = 5.0f;
 	float total = 0.0f;
 	for (int i = 0; i < 8; i++)
 	{
-		blurData->weights[i] = expf(-(i * i) / (2 * 5.0f * 5.0f));
+		blurData->weights[i] = expf(-(i * i) / (2 * sigma * sigma));
 		total += blurData->weights[i];
 	}
 
