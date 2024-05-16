@@ -178,7 +178,6 @@ private:
 
 	WorldTransform worldTransform_;
 	WorldTransform worldTransformBody_;
-	WorldTransform worldTransformHead_;
 
 	std::unique_ptr<Model> modelFighterBody_;
 

@@ -58,8 +58,6 @@ void Enemy::Initialize()
 
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 7.0f,0.0f,0.0f };
-
-	worldTransformHead_.Initialize();
 	worldTransform_.rotation.y = 4.6f;
 
 	worldTransformBody_.Initialize();
@@ -68,7 +66,6 @@ void Enemy::Initialize()
 	worldTransformBody_.scale = { 0.007f,0.007f,0.007f };
 
 	worldTransformBody_.parent_ = &worldTransform_;
-	worldTransformHead_.parent_ = &worldTransformBody_;
 
 	//Weaponの生成
 	enemyWeapon_ = std::make_unique<EnemyWeapon>();
@@ -87,7 +84,6 @@ void Enemy::Initialize()
 	worldTransform_.UpdateMatrixEuler();
 
 	worldTransformBody_.UpdateMatrixEuler();
-	worldTransformHead_.UpdateMatrixEuler();
 
 	attackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Attack.mp3");
 	weaponAttackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/WeaponAttack.mp3");
@@ -884,7 +880,6 @@ void Enemy::BehaviorAttackUpdate()
 				patternCount_ = 1;
 				behaviorRequest_ = Behavior::kRoot;
 				workAttack_.stiffnessTimer = 20;
-				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
 				workAttack_.isPunch = false;
 			}
@@ -934,7 +929,6 @@ void Enemy::BehaviorAttackUpdate()
 			if (isDown_)
 			{
 				behaviorRequest_ = Behavior::kRoot;
-				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
@@ -951,7 +945,6 @@ void Enemy::BehaviorAttackUpdate()
 			if (isDown_)
 			{
 				behaviorRequest_ = Behavior::kRoot;
-				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
@@ -1028,7 +1021,6 @@ void Enemy::BehaviorAttackUpdate()
 			if (isHit_ || isDown_)
 			{
 				behaviorRequest_ = Behavior::kRoot;
-				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
@@ -1047,7 +1039,6 @@ void Enemy::BehaviorAttackUpdate()
 			if (isDown_)
 			{
 				behaviorRequest_ = Behavior::kRoot;
-				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
@@ -1060,7 +1051,6 @@ void Enemy::BehaviorAttackUpdate()
 			if (workAttack_.stiffnessTimer <= 0)
 			{
 				behaviorRequest_ = Behavior::kRoot;
-				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
 			
 				workAttack_.stiffnessTimer = 60;
@@ -1100,7 +1090,6 @@ void Enemy::BehaviorAttackUpdate()
 			if (isDown_)
 			{
 				behaviorRequest_ = Behavior::kRoot;
-				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
@@ -1117,7 +1106,6 @@ void Enemy::BehaviorAttackUpdate()
 			if (isDown_)
 			{
 				behaviorRequest_ = Behavior::kRoot;
-				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
@@ -1128,7 +1116,6 @@ void Enemy::BehaviorAttackUpdate()
 			if (workAttack_.stiffnessTimer <= 0)
 			{
 				behaviorRequest_ = Behavior::kRoot;
-				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
@@ -1244,8 +1231,6 @@ void Enemy::BehaviorStanUpdate()
 		stanTimer_ = 200;
 		guardGauge_ = 0.0f;
 		behaviorRequest_ = Behavior::kRoot;
-
-		worldTransformHead_.rotation.y = 0.0f;
 
 		worldTransformBody_.rotation.x = 0.0f;
 		worldTransformBody_.rotation.y = 0.0f;
