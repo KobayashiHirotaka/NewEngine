@@ -367,7 +367,7 @@
       <Filter>ソース ファイル\Project\GameObject\Skydome</Filter>
     </ClCompile>
     <ClCompile Include="..\..\NewEngine\CG2-newEngine\Project\Engine\3D\Model\SkyBox.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Engine\3d\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -567,7 +567,7 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="..\..\NewEngine\CG2-newEngine\Project\Engine\3D\Model\SkyBox.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

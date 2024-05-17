@@ -546,16 +546,6 @@ void Player::OnCollision(Collider* collider, float damage)
 	{
 		isHit_ = true;
 
-		if (enemy_->GetIsPunch() == true && isDown_ == false)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 15.0f;
-			HP_ -= damage;
-			isHitPunch_ = true;
-
-			HitStop(20);
-		}
-
 		if (enemy_->GetIsThrow() == true && isDown_ == false)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
@@ -1678,85 +1668,6 @@ void Player::FloatingGimmickUpdate()
 
 void Player::DownAnimation()
 {
-	//通常攻撃
-	if (isHitPunch_ && enemy_->GetRotation().y == 1.7f)
-	{
-		isDown_ = true;
-		downAnimationTimer_[3]--;
-
-		if (downAnimationTimer_[3] > 40)
-		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation(worldTransform_.translation)
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.4f ,0.4f ,0.4f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
-		}
-
-		if (downAnimationTimer_[3] > 0)
-		{
-			worldTransformBody_.rotation.x -= 0.01f;
-		}
-
-		if (enemy_->GetIsPunch() == false)
-		{
-			downAnimationTimer_[3] = 60;
-			isHitPunch_ = false;
-			isDown_ = false;
-			worldTransformBody_.rotation.x = 0.0f;
-		}
-	}
-
-	if (isHitPunch_ && enemy_->GetRotation().y == 4.6f)
-	{
-		isDown_ = true;
-		downAnimationTimer_[3]--;
-
-		if (downAnimationTimer_[3] > 40)
-		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation(worldTransform_.translation)
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.4f ,0.4f ,0.4f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
-		}
-
-		if (downAnimationTimer_[3] > 0)
-		{
-			worldTransformBody_.rotation.x -= 0.01f;
-		}
-
-		if (enemy_->GetIsPunch() == false)
-		{
-			downAnimationTimer_[3] = 60;
-			isHitPunch_ = false;
-			isDown_ = false;
-			worldTransformBody_.rotation.x = 0.0f;
-		}
-	}
-
 	//振り下ろし攻撃
 	if (isHitSwingDown_ && enemy_->GetRotation().y == 1.7f)
 	{

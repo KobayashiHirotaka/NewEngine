@@ -410,7 +410,6 @@ void Enemy::Reset()
 	isHit_ = false;
 
 	workAttack_.isAttack = false;
-	workAttack_.isPunch = false;
 	workAttack_.isSwingDown = false;
 	workAttack_.isPoke = false;
 	workAttack_.isPokeRight = false;
@@ -782,7 +781,6 @@ void Enemy::BehaviorRootUpdate()
 		{
 			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 			behaviorRequest_ = Behavior::kAttack;
-			workAttack_.isPunch = true;
 		}
 
 		//振り下ろし攻撃
@@ -828,12 +826,6 @@ void Enemy::BehaviorRootUpdate()
 
 void Enemy::BehaviorAttackInitialize()
 {
-	//通常攻撃
-	if (workAttack_.isPunch)
-	{
-		
-	}
-
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
 	{
@@ -866,33 +858,6 @@ void Enemy::BehaviorAttackInitialize()
 
 void Enemy::BehaviorAttackUpdate()
 {
-	//通常攻撃
-	if (workAttack_.isPunch)
-	{
-		if (attackAnimationFrame < 3.0f)
-		{
-			worldTransformBody_.rotation.y += 0.1f;
-		}
-		else if (worldTransformBody_.rotation.y > -1.0f)
-		{
-			worldTransformBody_.rotation.y -= 0.1f;
-		}
-		else
-		{
-			workAttack_.stiffnessTimer--;
-
-			if (workAttack_.stiffnessTimer < 0)
-			{
-				patternCount_ = 1;
-				behaviorRequest_ = Behavior::kRoot;
-				workAttack_.stiffnessTimer = 20;
-				worldTransformBody_.rotation.y = 0.0f;
-				workAttack_.isPunch = false;
-			}
-		}
-		attackAnimationFrame++;
-	}
-
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
 	{

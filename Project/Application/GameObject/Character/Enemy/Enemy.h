@@ -30,13 +30,9 @@ public:
 	struct WorkAttack
 	{
 		Vector3 translation;
-
 		Vector3 rotation;
 
 		uint32_t attackParameter = 0;
-
-		int count = 0;
-		int pokeCount = 0;
 
 		int stiffnessTimer = 60;
 
@@ -44,9 +40,6 @@ public:
 
 		//攻撃しているか
 		bool isAttack = false;
-
-		//パンチ
-		bool isPunch = false;
 
 		//振り下ろす
 		bool isSwingDown = false;
@@ -61,9 +54,6 @@ public:
 
 		//ジャンプ攻撃
 		bool isJumpAttack = false;
-
-		//跳ね返す
-		bool isReject = false;
 	};
 
 	~Enemy();
@@ -85,8 +75,6 @@ public:
 	EnemyWeapon* GetEnemyWeapon() { return enemyWeapon_.get(); };
 	
 	bool GetIsAttack() { return workAttack_.isAttack; };
-
-	bool GetIsPunch() { return workAttack_.isPunch; };
 
 	bool GetIsSwingDown() { return workAttack_.isSwingDown; };
 

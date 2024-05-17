@@ -30,13 +30,8 @@ public:
 	struct WorkAttack
 	{
 		Vector3 translation;
-
 		Vector3 rotation;
-
 		uint32_t attackParameter = 0;
-
-		int count = 0;
-		int pokeCount = 0;
 
 		int stiffnessTimer = 60;
 
