@@ -95,30 +95,33 @@ void Enemy::Initialize()
 	weaponAttackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/WeaponAttack.mp3");
 	damageSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Damage.mp3");
 	guardSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Guard.mp3");
+
+	animationIndex = 0;
 }
 
 void Enemy::Update()
 {
 	isShake_ = false;
 
-	if (behaviorRequest_ == Behavior::kRoot && HP_ > 0)
-	{
-		animationIndex = 2;
-	}
-	else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isMowDown)
-	{
-		animationIndex = 1;
-	}
-	else if (HP_ <= 0 || isDown_ || GamePlayScene::roundStartTimer_ <= 0)
+	if (HP_ <= 0 || isDown_ || GamePlayScene::roundStartTimer_ <= 0)
 	{
 		animationIndex = 0;
-	}
+		float animationTime;
+		animationTime = modelFighterBody_->GetAnimationTime();
+		
+		/*animationTime += 1.0f / 60.0f;
+		animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
 
+		modelFighterBody_->SetAnimationTime(animationTime);
+
+		modelFighterBody_->ApplyAnimation(0);
+
+		modelFighterBody_->Update();
+	}
 
 	modelFighterBody_->ApplyAnimation(animationIndex);
 
 	modelFighterBody_->Update();
-
 
 	if (guardGauge_ > 0 && guardGauge_ < maxGuardGauge_)
 	{
@@ -663,6 +666,7 @@ void Enemy::BehaviorRootUpdate()
 {
 	if (GamePlayScene::migrationTimer >= 150)
 	{
+		animationIndex = 2;
 		float animationTime;
 		animationTime = modelFighterBody_->GetAnimationTime();
 		if (!isDown_)
@@ -861,6 +865,7 @@ void Enemy::BehaviorAttackUpdate()
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
 	{
+		animationIndex = 1;
 		float animationTime, animationDuration;
 		animationTime = modelFighterBody_->GetAnimationTime();
 
