@@ -88,8 +88,19 @@ uint32_t TextureManager::LoadInternal(const std::string& filePath)
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = metadata.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
+
+	if (metadata.IsCubemap())
+	{
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+		srvDesc.TextureCube.MostDetailedMip = 0;
+		srvDesc.TextureCube.MipLevels = UINT_MAX;
+		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+	}
+	else
+	{
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
+		srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
+	}
 
 	//SRVを作成するDescriptorHeapの場所を決める
 	textures_[textureHandle_].textureSrvHandleCPU = GetCPUDescriptorHandle(srvDescriptorHeap_.Get(), descriptorSizeSRV, textureHandle_);
@@ -109,7 +120,15 @@ DirectX::ScratchImage TextureManager::OpenImage(const std::string& filePath)
 	//テクスチャファイルを読んでプログラムで扱えるようにする
 	DirectX::ScratchImage image{};
 	std::wstring filePathW = ConvertString(filePath);
-	HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	HRESULT hr;
+	if (filePathW.ends_with(L".dds"))
+	{
+		hr = DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
+	}
+	else
+	{
+		hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	}
 	assert(SUCCEEDED(hr));
 
 	//ミップマップの作成
