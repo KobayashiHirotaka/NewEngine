@@ -19,7 +19,9 @@ public:
 
 	void TransferMatrix();
 
-	void UpdateMatrix();
+	void UpdateMatrixEuler();
+
+	void UpdateMatrixQuaternion();
 
 	void SetParent(const WorldTransform* parent);
 
@@ -39,6 +41,8 @@ public:
 
 	//ローカル座標
 	Vector3 translation = { 0, 0, 0 };
+
+	Quaternion quaternion = { 0, 0, 0, 1 };
 
 	//ローカル → ワールド変換行列
 	Matrix4x4 matWorld = {};

@@ -22,7 +22,6 @@ void GameClearScene::Initialize()
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
-	player_->SetModel(modelManager_->FindModel("hammer.obj"));
 
 	debugCamera_.Initialize();
 
@@ -71,12 +70,6 @@ void GameClearScene::Update()
 		PostProcess::GetInstance()->SetIsPostProcessActive(false);
 		PostProcess::GetInstance()->SetIsBloomActive(false);
 		PostProcess::GetInstance()->SetIsVignetteActive(false);
-	}
-
-	//モデル切り替え
-	if (input_->PushKey(DIK_RETURN))
-	{
-		player_->SetModel(modelManager_->FindModel("skydome.obj"));
 	}
 
 	debugCamera_.Update();

@@ -270,12 +270,6 @@
     <ClCompile Include="Engine\Utility\GlobalVariables.cpp">
       <Filter>ソース ファイル\Engine\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp">
-      <Filter>ソース ファイル\Engine\3d\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp">
-      <Filter>ソース ファイル\Engine\3d\Model</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Components\PostProcess\PostProcess.cpp">
       <Filter>ソース ファイル\Engine\Components\PostProcess</Filter>
     </ClCompile>
@@ -445,12 +439,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Utility\GlobalVariables.h">
       <Filter>ヘッダー ファイル\Engine\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\3D\Model\IGame3dObject.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Components\PostProcess\PostProcess.h">
       <Filter>ヘッダー ファイル\Engine\Components\PostProcess</Filter>

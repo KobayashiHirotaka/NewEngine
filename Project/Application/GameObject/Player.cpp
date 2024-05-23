@@ -4,7 +4,9 @@ void Player::Initialize()
 {
 	input_ = Input::GetInstance();
 
-	IGame3dObject::Initialize();
+	modelFighterBody_.reset(Model::CreateFromOBJ("resource/models", "monsterBall.obj"));
+
+	worldTransform_.Initialize();
 	worldTransform_.translation.y = 3.0f;
 
 	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
@@ -14,8 +16,6 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	IGame3dObject::Update();
-
 	//パーティクルの更新
 	particleSystem_->Update();
 
@@ -38,11 +38,13 @@ void Player::Update()
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
+
+	worldTransform_.UpdateMatrixEuler();
 }
 
 void Player::Draw(const Camera& camera)
 {
-	IGame3dObject::Draw(camera);
+	modelFighterBody_->Draw(worldTransform_, camera);
 }
 
 void Player::DrawParticle(const Camera& camera)

@@ -123,8 +123,8 @@ void GameTitleScene::Update()
 		camera_.UpdateMatrix();
 	}
 
-	worldTransform_.UpdateMatrix();
-	groundWorldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrixEuler();
+	groundWorldTransform_.UpdateMatrixEuler();
 
 	/*camera_.UpdateMatrix();*/
 
