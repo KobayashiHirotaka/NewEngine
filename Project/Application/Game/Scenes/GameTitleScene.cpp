@@ -63,24 +63,24 @@ void GameTitleScene::Update()
 		return;
 	}
 
-	if (input_->PushKey(DIK_W))
+	if (input_->PressKey(DIK_W))
 	{
-		worldTransform_.translation.y += 1.0f;
+		worldTransform_.translation.y += 0.2f;
 	}
 
-	if (input_->PushKey(DIK_S))
+	if (input_->PressKey(DIK_S))
 	{
-		worldTransform_.translation.y -= 1.0f;
+		worldTransform_.translation.y -= 0.2f;
 	}
 
-	if (input_->PushKey(DIK_A))
+	if (input_->PressKey(DIK_A))
 	{
-		worldTransform_.translation.x -= 1.0f;
+		worldTransform_.translation.x -= 0.2f;
 	}
 
-	if (input_->PushKey(DIK_D))
+	if (input_->PressKey(DIK_D))
 	{
-		worldTransform_.translation.x += 1.0f;
+		worldTransform_.translation.x += 0.2f;
 	}
 
 	model_->GetLight()->ImGui("DirectionalLight");
