@@ -18,7 +18,7 @@ void GamePlayScene::Initialize()
 	audio_ = Audio::GetInstance();
 
 	modelManager_->LoadModel("resource/hammer", "hammer.obj");
-	modelManager_->LoadModel("resource/skydome", "skydome.obj");
+	modelManager_->LoadModel("resource/models", "monsterBall.obj");
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
@@ -51,7 +51,7 @@ void GamePlayScene::Update()
 	//モデル切り替え
 	if (input_->PushKey(DIK_RETURN))
 	{
-		player_->SetModel(modelManager_->FindModel("skydome.obj"));
+		player_->SetModel(modelManager_->FindModel("monsterBall.obj"));
 	}
 
 	debugCamera_.Update();
@@ -76,11 +76,11 @@ void GamePlayScene::Update()
 		camera_.UpdateMatrix();
 	}
 
-	modelManager_->FindModel("skydome.obj")->GetLight()->ImGui("DirectionalLight");
+	modelManager_->FindModel("monsterBall.obj")->GetLight()->ImGui("DirectionalLight");
 
-	modelManager_->FindModel("skydome.obj")->GetPointLight()->ImGui("PointLight");
+	modelManager_->FindModel("monsterBall.obj")->GetPointLight()->ImGui("PointLight");
 
-	modelManager_->FindModel("skydome.obj")->GetSpotLight()->ImGui("SpotLight");
+	modelManager_->FindModel("monsterBall.obj")->GetSpotLight()->ImGui("SpotLight");
 
 	ImGui::Begin("PlayScene");
 	ImGui::Text("Abutton or SpaceKey : ClearScene");

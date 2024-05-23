@@ -63,6 +63,26 @@ void GameTitleScene::Update()
 		return;
 	}
 
+	if (input_->PushKey(DIK_W))
+	{
+		worldTransform_.translation.y += 1.0f;
+	}
+
+	if (input_->PushKey(DIK_S))
+	{
+		worldTransform_.translation.y -= 1.0f;
+	}
+
+	if (input_->PushKey(DIK_A))
+	{
+		worldTransform_.translation.x -= 1.0f;
+	}
+
+	if (input_->PushKey(DIK_D))
+	{
+		worldTransform_.translation.x += 1.0f;
+	}
+
 	model_->GetLight()->ImGui("DirectionalLight");
 	
 	model_->GetPointLight()->ImGui("PointLight");
@@ -118,6 +138,8 @@ void GameTitleScene::Draw()
 	Model::PreDraw();
 
 	groundModel_->Draw(groundWorldTransform_, camera_);
+
+	model_->Draw(worldTransform_, camera_);
 
 	Model::PostDraw();
 
