@@ -366,9 +366,6 @@
     <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp">
       <Filter>ソース ファイル\Project\GameObject\Skydome</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\NewEngine\CG2-newEngine\Project\Engine\3D\Model\SkyBox.cpp">
-      <Filter>ソース ファイル\Engine\3d\Model</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -565,9 +562,6 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\NewEngine\CG2-newEngine\Project\Engine\3D\Model\SkyBox.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
