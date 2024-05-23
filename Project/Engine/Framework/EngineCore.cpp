@@ -33,7 +33,7 @@ void EngineCore::Initialize()
 
 	Sprite::StaticInitialize();
 
-	/*GlobalVariables::GetInstance()->LoadFiles();*/
+	GlobalVariables::GetInstance()->LoadFiles();
 
 	Random::Initialize();
 }

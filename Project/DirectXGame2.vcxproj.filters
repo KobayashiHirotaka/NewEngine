@@ -536,6 +536,9 @@
     <ClInclude Include="Application\GameObject\Player.h">
       <Filter>ヘッダー ファイル\Application\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Utility\Structs.h">
+      <Filter>ソース ファイル\Engine\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\Object3d.PS.hlsl">
