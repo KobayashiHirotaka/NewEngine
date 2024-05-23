@@ -62,8 +62,6 @@ private:
 private:
 	static Input* instance_;
 
-	static Input* input_;
-
 	Microsoft::WRL::ComPtr<IDirectInput8>directInput_ = nullptr;
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> keyboard_ = nullptr;
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> mouseDevice_ = nullptr;

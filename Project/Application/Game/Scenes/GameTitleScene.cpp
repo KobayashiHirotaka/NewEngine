@@ -44,6 +44,11 @@ void GameTitleScene::Initialize()
 	debugCamera_.Initialize();
 
 	camera_.UpdateMatrix();
+
+	titleSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Title.mp3");
+	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
+	audio_->StopAudio(titleSoundHandle_);
+	audio_->SoundPlayMP3(titleSoundHandle_, true, 1.0f);
 };
 
 void GameTitleScene::Update()
