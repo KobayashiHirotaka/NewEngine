@@ -65,6 +65,8 @@ void PostProcess::Initialize()
 	Bloom();
 
 	Vignette();
+
+	GrayScale();
 }
 
 void PostProcess::Update()
@@ -77,6 +79,8 @@ void PostProcess::Update()
 	UpdateBloom();
 
 	UpdateVignette();
+
+	UpdateGrayScale();
 }
 
 void PostProcess::PreDraw() 
@@ -558,7 +562,7 @@ void PostProcess::CreateBlurPSO()
 	inputElementDescs[1].SemanticIndex = 0;
 	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	
+
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
@@ -803,7 +807,7 @@ void PostProcess::CreatePostProcessPSO()
 }
 
 
-void PostProcess::Draw() 
+void PostProcess::Draw()
 {
 	//ルートシグネチャを設定
 	commandList_->SetGraphicsRootSignature(postProcessRootSignature_.Get());
@@ -829,6 +833,7 @@ void PostProcess::Draw()
 	//CBVを設定
 	commandList_->SetGraphicsRootConstantBufferView(5, bloomConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(6, vignetteConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(7, grayScaleConstantBuffer_->GetGPUVirtualAddress());
 	//形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//描画
@@ -888,7 +893,7 @@ void PostProcess::PreSecondPassDraw()
 }
 
 
-void PostProcess::SecondPassDraw() 
+void PostProcess::SecondPassDraw()
 {
 	//ルートシグネチャを設定
 	commandList_->SetGraphicsRootSignature(rootSignature_.Get());
@@ -1018,7 +1023,7 @@ void PostProcess::PostBlur(BlurState blurState)
 }
 
 
-void PostProcess::PreShrinkBlur(BlurState blurState) 
+void PostProcess::PreShrinkBlur(BlurState blurState)
 {
 	//バリアを張る
 	D3D12_RESOURCE_BARRIER barrier{};
@@ -1191,6 +1196,27 @@ void PostProcess::UpdateVignette()
 	vignetteData->enable = isVignetteActive_;
 	vignetteData->intensity = vignetteIntensity_;
 	vignetteConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::GrayScale()
+{
+	//グレイスケール用のCBVの作成
+	grayScaleConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(GrayScaleData));
+
+	//グレイスケール用のリソースに書き込む
+	GrayScaleData* grayScaleData = nullptr;
+	grayScaleConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&grayScaleData));
+	grayScaleData->enable = isGrayScaleActive_;
+	grayScaleConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::UpdateGrayScale()
+{
+	//グレイスケール用のリソースに書き込む
+	GrayScaleData* grayScaleData = nullptr;
+	grayScaleConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&grayScaleData));
+	grayScaleData->enable = isGrayScaleActive_;
+	grayScaleConstantBuffer_->Unmap(0, nullptr);
 }
 
 
