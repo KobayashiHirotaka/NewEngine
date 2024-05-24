@@ -6,25 +6,29 @@
 class Mesh
 {
 public:
-	struct VertexData
-	{
-		Vector4 position;
-		Vector2 texcoord;
-		Vector3 normal;
-	};
-
-	void Initialize(const std::vector<VertexData>& vertices);
+	void Initialize(const std::vector<VertexData>& vertices, const std::vector<uint32_t>& indices);
 
 	void Draw();
 
-	void SetGraphicsCommand();
+	void SetGraphicsCommand(D3D12_VERTEX_BUFFER_VIEW influenceBufferView);
+
+private:
+	void CreateVertexBuffer();
+
+	void CreateIndexBuffer();
 
 private:
 	DirectXCore* dxCore_ = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexBuffer_ = nullptr;
-	
+
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
-	
+
 	std::vector<VertexData> vertices_{};
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexBuffer_ = nullptr;
+
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
+
+	std::vector<uint32_t> indices_{};
 };

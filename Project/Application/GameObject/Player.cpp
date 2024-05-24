@@ -44,7 +44,7 @@ void Player::Update()
 
 void Player::Draw(const Camera& camera)
 {
-	modelFighterBody_->Draw(worldTransform_, camera);
+	modelFighterBody_->Draw(worldTransform_, camera,0);
 }
 
 void Player::DrawParticle(const Camera& camera)

@@ -143,9 +143,9 @@ void GameTitleScene::Draw()
 
 	Model::PreDraw();
 
-	groundModel_->Draw(groundWorldTransform_, camera_);
+	groundModel_->Draw(groundWorldTransform_, camera_,0);
 
-	model_->Draw(worldTransform_, camera_);
+	model_->Draw(worldTransform_, camera_,0);
 
 	Model::PostDraw();
 

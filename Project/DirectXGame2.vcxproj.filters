@@ -525,7 +525,7 @@
       <Filter>ヘッダー ファイル\Application\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Utility\Structs.h">
-      <Filter>ソース ファイル\Engine\Utility</Filter>
+      <Filter>ヘッダー ファイル\Engine\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -569,6 +569,18 @@
       <Filter>shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\Particle.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\BoneVisualization.PS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\BoneVisualization.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\SkinningObject3d.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\BoneVisualization.hlsli">
       <Filter>shaders</Filter>
     </FxCompile>
   </ItemGroup>
