@@ -86,6 +86,12 @@ void GamePlayScene::Draw()
 
 	PostProcess::GetInstance()->PreDraw();
 
+	Sprite::PreDraw(Sprite::kBlendModeNormal);
+	
+	Sprite::PostDraw();
+
+	PostProcess::GetInstance()->PostDraw();
+
 	Model::PreDraw();
 
 	player_->Draw(camera_);
@@ -97,12 +103,6 @@ void GamePlayScene::Draw()
 	player_->DrawParticle(camera_);
 
 	ParticleModel::PostDraw();
-
-	Sprite::PreDraw(Sprite::kBlendModeNormal);
-	
-	Sprite::PostDraw();
-
-	PostProcess::GetInstance()->PostDraw();
 
 	Model::BonePreDraw();
 

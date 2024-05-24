@@ -16,6 +16,8 @@
 class GameTitleScene : public IScene
 {
 public:
+	static const int kTransitionTime = 60;
+
 	GameTitleScene();
 
 	~GameTitleScene();
@@ -29,30 +31,50 @@ public:
 	void Finalize()override;
 
 private:
-	WorldTransform worldTransform_;
-	WorldTransform groundWorldTransform_;
-
+	//Camera
 	Camera camera_;
-
 	DebugCamera debugCamera_;
+	bool isDebugCamera_ = false;
 
+	//TextureManager
 	TextureManager* textureManager_ = nullptr;
 
+	//ModelManager
 	ModelManager* modelManager_ = nullptr;
 
+	//Input
 	Input* input_ = nullptr;
 
+	//Audio
 	Audio* audio_ = nullptr;
 
-	std::unique_ptr<Model> model_;
-	std::unique_ptr<Model> groundModel_;
+	std::unique_ptr<Sprite>titleSprite_ = nullptr;
+	uint32_t titleTextureHandle_ = 0;
+	Vector2 titleSpritePosition_ = { 0.0f,-25.0f };
+	float titleSpriteMoveSpeed_ = 1.5f;
+	int titleSpriteMoveTimer_ = 30;
+
+	std::unique_ptr<Sprite>titleUISprite_ = nullptr;
+	uint32_t titleUITextureHandle_ = 0;
+
+	std::unique_ptr<Sprite>generalCommandListSprite_ = nullptr;
+	uint32_t generalCommandListTextureHandle_ = 0;
+
+	std::unique_ptr<Sprite>attackCommandListSprite_ = nullptr;
+	uint32_t attackCommandListTextureHandle_ = 0;
 
 	//サウンド
 	uint32_t titleSoundHandle_ = 0u;
 	uint32_t selectSoundHandle_ = 0u;
 
-	std::unique_ptr<Sprite>sprite_[2];
-	int32_t textureHandle_[2] = {0u,0u};
+	int spriteCount_ = 0;
+	bool isOpen_ = false;
 
-	bool isDebugCamera_ = false;
+	//トランジション
+	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
+	uint32_t transitionTextureHandle_ = 0;
+	Vector4 transitionColor_ = { 0.0f,0.0f,0.0f,1.0f };
+	float transitionTimer_ = 0;
+	bool isTransitionStart_ = false;
+	bool isTransitionEnd_ = false;
 };

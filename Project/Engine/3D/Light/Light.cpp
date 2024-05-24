@@ -42,7 +42,7 @@ void Light::ImGui(const char* Title)
 	ImGui::Begin(Title);
 	ImGui::DragInt("enableLighting", &enableLighting_, 1.0f, 0, 1);
 	ImGui::DragFloat4("color", &color_.x, 1.0f, 0.0f, 255.0f);
-	ImGui::DragFloat3("LightDirection", &direction_.x, 0.01f, -1.0f, 1.0f);
+	ImGui::DragFloat3("LightDirection", &direction_.x, 0.01f, -10.0f, 10.0f);
 	ImGui::DragFloat3("direction", &direction.x, 0.01f, -1.0f, 1.0f);
 	ImGui::DragFloat("intensity", &intensity_, 0.1f, 0.0f, 100.0f);
 
