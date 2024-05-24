@@ -26,6 +26,8 @@ void Model::StaticInitialize()
 	InitializeDXC();
 
 	CreatePSO();
+
+	CreateBonePSO();
 }
 
 void Model::Update()

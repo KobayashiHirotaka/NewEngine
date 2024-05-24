@@ -87,6 +87,14 @@ void GamePlayScene::Draw()
 
 	Model::PostDraw();
 
+	Model::BonePreDraw();
+
+	player_->BoneDraw(camera_);
+
+	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
+
+	Model::BonePostDraw();
+
 	ParticleModel::PreDraw();
 
 	player_->DrawParticle(camera_);

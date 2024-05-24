@@ -17,6 +17,8 @@ public:
 
 	void Draw(const Camera& camera);
 
+	void BoneDraw(const Camera& camera);
+
 	void DrawParticle(const Camera& camera);
 
 private:
@@ -33,5 +35,7 @@ private:
 	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
 
 	bool isDebugCamera_ = false;
+
+	uint32_t animationIndex = 0;
 };
 

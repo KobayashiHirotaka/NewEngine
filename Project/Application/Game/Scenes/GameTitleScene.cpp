@@ -22,9 +22,9 @@ void GameTitleScene::Initialize()
 	pointLight_->Initialize();
 
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
-	PostProcess::GetInstance()->SetIsBloomActive(true);
+	/*PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
-	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
+	PostProcess::GetInstance()->SetIsGrayScaleActive(true);*/
 
 	model_.reset(Model::CreateFromOBJ("resource/models", "monsterBall.obj"));
 
