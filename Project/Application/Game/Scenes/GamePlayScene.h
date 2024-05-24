@@ -41,6 +41,10 @@ private:
 
 	Audio* audio_ = nullptr;
 
+	std::unique_ptr<Light>light_;
+	std::unique_ptr<PointLight>pointLight_;
+	Vector3 lightDirection_;
+
 	std::unique_ptr<Player>player_;
 
 	DebugCamera debugCamera_;

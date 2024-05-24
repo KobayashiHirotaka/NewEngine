@@ -197,7 +197,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> grayScaleConstantBuffer_ = nullptr;
 
     //ビネットの強度
-    float vignetteIntensity_ = 1.5f;
+    float vignetteIntensity_ = 0.8f;
 
     //ポストエフェクトのフラグ
     bool isPostProcessActive_ = false;

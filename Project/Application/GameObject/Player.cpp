@@ -4,6 +4,12 @@ void Player::Initialize()
 {
 	input_ = Input::GetInstance();
 
+	light_ = std::make_unique<Light>();
+	light_->Initialize();
+
+	pointLight_ = std::make_unique<PointLight>();
+	pointLight_->Initialize();
+
 	modelFighterBody_.reset(Model::CreateFromOBJ("resource/newEnemy", "newEnemy.gltf"));
 
 	worldTransform_.Initialize();
@@ -97,6 +103,12 @@ void Player::Update()
 	}
 
 	worldTransform_.UpdateMatrixEuler();
+
+	modelFighterBody_->GetLight()->ImGui("DirectionalLight");
+
+	modelFighterBody_->GetPointLight()->ImGui("PointLight");
+
+	modelFighterBody_->GetSpotLight()->ImGui("SpotLight");
 }
 
 void Player::Draw(const Camera& camera)

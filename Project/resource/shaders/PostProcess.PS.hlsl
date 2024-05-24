@@ -39,9 +39,16 @@ PixelShaderOutput main(VertexShaderOutput input)
     //ビネット
     if (gVignetteParameter.enable)
     {
-        float2 uv = input.texcoord;
-        uv = gVignetteParameter.intensity * uv - gVignetteParameter.intensity / 2;
-        textureColor *= 1.0 - dot(uv, uv);
+        float4 color = textureColor;
+        color = gTexture.Sample(gSampler, input.texcoord);
+        
+        float2 correct = input.texcoord * (1.0f - input.texcoord.yx);
+        
+        float vignette = correct.x * correct.y * 16.0f;
+        
+        vignette = saturate(pow(vignette, gVignetteParameter.intensity));
+        
+        textureColor.rgb *= vignette;
     }
     
      //GrayScale

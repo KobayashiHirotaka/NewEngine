@@ -15,12 +15,6 @@ void GameTitleScene::Initialize()
 
 	audio_ = Audio::GetInstance();
 
-	light_ = std::make_unique<Light>();
-	light_->Initialize();
-
-	pointLight_ = std::make_unique<PointLight>();
-	pointLight_->Initialize();
-
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
 	/*PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);

@@ -17,6 +17,11 @@ void GamePlayScene::Initialize()
 
 	audio_ = Audio::GetInstance();
 
+	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	PostProcess::GetInstance()->SetIsBloomActive(true);
+	PostProcess::GetInstance()->SetIsVignetteActive(true);
+	//PostProcess::GetInstance()->SetIsGrayScaleActive(true);
+
 	modelManager_->LoadModel("resource/hammer", "hammer.obj");
 
 	player_ = std::make_unique<Player>();
@@ -87,14 +92,6 @@ void GamePlayScene::Draw()
 
 	Model::PostDraw();
 
-	Model::BonePreDraw();
-
-	player_->BoneDraw(camera_);
-
-	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
-
-	Model::BonePostDraw();
-
 	ParticleModel::PreDraw();
 
 	player_->DrawParticle(camera_);
@@ -106,6 +103,14 @@ void GamePlayScene::Draw()
 	Sprite::PostDraw();
 
 	PostProcess::GetInstance()->PostDraw();
+
+	Model::BonePreDraw();
+
+	player_->BoneDraw(camera_);
+
+	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
+
+	Model::BonePostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 

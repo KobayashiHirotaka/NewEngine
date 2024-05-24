@@ -37,5 +37,9 @@ private:
 	bool isDebugCamera_ = false;
 
 	uint32_t animationIndex = 0;
+
+	std::unique_ptr<Light>light_;
+	std::unique_ptr<PointLight>pointLight_;
+	Vector3 lightDirection_;
 };
 
