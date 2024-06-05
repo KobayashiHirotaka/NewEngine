@@ -4,9 +4,10 @@
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Utility/Collision/Collider.h"
 #include "Engine/Utility/Collision/CollisionConfig.h"
+#include "Engine/3D/Model/IGame3dObject.h"
 #include <numbers>
 
-class EnemyWeapon : public Collider
+class EnemyWeapon : public Collider, public IGame3dObject
 {
 public:
 	void Initialize();

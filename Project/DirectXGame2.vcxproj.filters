@@ -217,12 +217,6 @@
     <Filter Include="ヘッダー ファイル\Engine\3d\Particle">
       <UniqueIdentifier>{587b5227-a9a1-4b2e-a0d2-8452d727b0ea}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Engine\Utility\LevelData">
-      <UniqueIdentifier>{23116512-fffc-4471-9eab-6aee413586db}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Engine\Utility\LevelData">
-      <UniqueIdentifier>{7eb7c225-a3a8-4eaa-8fb1-58a2eed29143}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -372,8 +366,14 @@
     <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp">
       <Filter>ソース ファイル\Project\GameObject\Skydome</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Utility\Level\LevelData.cpp">
-      <Filter>ソース ファイル\Engine\Utility\LevelData</Filter>
+    <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp">
+      <Filter>ソース ファイル\Engine\3d\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Utility\LevelLoader\LevelLoader.cpp">
+      <Filter>ソース ファイル\Engine\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="TestObject.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -572,8 +572,14 @@
     <ClInclude Include="resource.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Utility\Level\LevelData.h">
-      <Filter>ヘッダー ファイル\Engine\Utility\LevelData</Filter>
+    <ClInclude Include="Engine\Utility\LevelLoader\LevelLoader.h">
+      <Filter>ヘッダー ファイル\Engine\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\Game3dObjectFactory.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="TestObject.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

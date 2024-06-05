@@ -18,6 +18,12 @@ public:
 
 	void SetModel(Model* model) { model_ = model; };
 
+	void SetPosition(const Vector3& position) { worldTransform_.translation = position; };
+
+	void SetRotation(const Vector3& rotation) { worldTransform_.rotation = rotation; };
+
+	void SetScale(const Vector3& scale) { worldTransform_.scale = scale; };
+
 	void SetGameObjectManager(Game3dObjectManager* game3dObjectManager) { game3dObjectManager_ = game3dObjectManager; };
 
 private:

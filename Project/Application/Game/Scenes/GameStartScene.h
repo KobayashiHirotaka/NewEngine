@@ -1,13 +1,14 @@
 #pragma once
 #include "IScene.h"
+#include "Engine/3D/Model/Game3dObjectManager.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
+#include "Engine/Utility/LevelLoader/LevelLoader.h"
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Application/GameObject/Skydome/Skydome.h"
-#include "Engine/Utility/Level/LevelData.h"
 #include <memory>
 
 class GameStartScene : public IScene
@@ -36,7 +37,9 @@ private:
 
 	Audio* audio_ = nullptr;
 
-	LevelData* levelData_ = nullptr;
+	LevelLoader* levelLoarder_ = nullptr;
+
+	Game3dObjectManager* game3dObjectManager_ = nullptr;
 
 	std::unique_ptr<Skydome>skydome_;
 	std::unique_ptr<Model>skydomeModel_;

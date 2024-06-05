@@ -36,6 +36,9 @@ SceneManager::SceneManager()
 
 	GlobalVariables::GetInstance()->LoadFiles();
 
+	game3dObjectFactory_ = std::make_unique<Game3dObjectFactory>();
+	Game3dObjectManager::GetInstance()->SetGameObjectFactory(game3dObjectFactory_.get());
+
 	Random::Initialize();
 
 	//シーンの初期化

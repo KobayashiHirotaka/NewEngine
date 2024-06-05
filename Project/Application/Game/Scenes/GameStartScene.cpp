@@ -16,8 +16,10 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 	audio_ = Audio::GetInstance();
 
-	levelData_ = LevelData::GetInstance();
-	levelData_->Initialize("LevelData");
+	levelLoarder_ = LevelLoader::GetInstance();
+	levelLoarder_->LoadLevel("LevelData");
+
+	game3dObjectManager_ = Game3dObjectManager::GetInstance();
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
@@ -171,6 +173,8 @@ void GameStartScene::Update(SceneManager* sceneManager)
 		}
 	}
 
+	game3dObjectManager_->Update();
+
 	camera_.UpdateMatrix();
 
 	ImGui::Begin("Text");
@@ -185,7 +189,9 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 
 	Model::PreDraw();
 
-	skydome_->Draw(camera_);
+	//skydome_->Draw(camera_);
+
+	game3dObjectManager_->Draw(camera_);
 
 	Model::PostDraw();
 

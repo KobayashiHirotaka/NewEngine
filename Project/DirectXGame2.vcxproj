@@ -26,6 +26,7 @@
     <ClCompile Include="Engine\3D\Camera\Camera.cpp" />
     <ClCompile Include="Engine\3D\Light\Light.cpp" />
     <ClCompile Include="Engine\3D\Mesh\Mesh.cpp" />
+    <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp" />
     <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp" />
     <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp" />
     <ClCompile Include="Engine\3D\Model\Material.cpp" />
@@ -72,9 +73,10 @@
     <ClCompile Include="Engine\Utility\ConvertString\ConvertString.cpp" />
     <ClCompile Include="Engine\Utility\CSV\LoadCSV.cpp" />
     <ClCompile Include="Engine\Utility\GlobalVariables.cpp" />
-    <ClCompile Include="Engine\Utility\Level\LevelData.cpp" />
+    <ClCompile Include="Engine\Utility\LevelLoader\LevelLoader.cpp" />
     <ClCompile Include="Engine\Utility\Math\MyMath.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TestObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -129,6 +131,7 @@
     <ClInclude Include="Engine\3D\Camera\Camera.h" />
     <ClInclude Include="Engine\3D\Light\Light.h" />
     <ClInclude Include="Engine\3D\Mesh\Mesh.h" />
+    <ClInclude Include="Engine\3D\Model\Game3dObjectFactory.h" />
     <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h" />
     <ClInclude Include="Engine\3D\Model\IGame3dObject.h" />
     <ClInclude Include="Engine\3D\Model\Material.h" />
@@ -165,10 +168,11 @@
     <ClInclude Include="Engine\Utility\ConvertString\ConvertString.h" />
     <ClInclude Include="Engine\Utility\CSV\LoadCSV.h" />
     <ClInclude Include="Engine\Utility\GlobalVariables.h" />
-    <ClInclude Include="Engine\Utility\Level\LevelData.h" />
+    <ClInclude Include="Engine\Utility\LevelLoader\LevelLoader.h" />
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
     <ClInclude Include="Engine\Utility\Structs.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="TestObject.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\BoneVisualization.PS.hlsl">

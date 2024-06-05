@@ -10,12 +10,13 @@
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"
 #include "Engine/2D/Sprite/UI.h"
+#include "Engine/3D/Model/IGame3dObject.h"
 
 #include "Application/GameObject/Character/Player/PlayerWeapon.h"
 
 class Enemy;
 
-class Player : public Collider
+class Player : public Collider, public IGame3dObject
 {
 public:
 	enum class Behavior
