@@ -4,7 +4,6 @@
 #include "Application/Game/Scenes/GameWinScene.h"
 #include "Application/Game/Scenes/GameLoseScene.h"
 #include "Engine/Utility/GlobalVariables.h"
-#include "Engine/Utility/Level/LevelData.h"
 
 SceneManager::SceneManager()
 {
@@ -37,7 +36,8 @@ SceneManager::SceneManager()
 
 	GlobalVariables::GetInstance()->LoadFiles();
 
-	LevelData::GetInstance()->Initialize("LevelData");
+	levelData_ = LevelData::GetInstance();
+	levelData_->Initialize("LevelData");
 
 	Random::Initialize();
 

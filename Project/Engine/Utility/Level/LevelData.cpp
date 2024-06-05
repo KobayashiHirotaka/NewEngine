@@ -87,3 +87,33 @@ void LevelData::Initialize(const std::string fileName)
 		}
 	}
 }
+
+//void LevelData::Update()
+//{
+//	//レベルデータからobjectを生成、配置
+//	for (auto& objectData : levelData_->objects)
+//	{
+//		//ファイル名から登録済みモデルを検索
+//		Model* model = nullptr;
+//		decltype(models)::iterator it = models.find(objectData.fileName);
+//		if (it != models.end())
+//		{
+//			model = it->second;
+//		}
+//
+//		//モデルを指定してobjectを生成
+//		Object3d newObject = Object::Create(model);
+//
+//		//座標
+//		newObject->SetPosition(objectData.worldTransform.translation);
+//
+//		//回転角
+//		newObject->SetRotation(objectData.worldTransform.rotation);
+//
+//		//座標
+//		newObject->SetScale(objectData.worldTransform.scale);
+//
+//		//配列に登録
+//		objects.pushback(newObject);
+//	}
+//}

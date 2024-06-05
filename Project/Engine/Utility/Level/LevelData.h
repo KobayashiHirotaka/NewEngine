@@ -22,6 +22,8 @@ public:
 
 	void Initialize(const std::string fileName);
 
+    //void Update();
+
 public:
     std::vector<ObjectData> objects;
 
