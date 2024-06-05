@@ -72,6 +72,7 @@
     <ClCompile Include="Engine\Utility\ConvertString\ConvertString.cpp" />
     <ClCompile Include="Engine\Utility\CSV\LoadCSV.cpp" />
     <ClCompile Include="Engine\Utility\GlobalVariables.cpp" />
+    <ClCompile Include="Engine\Utility\Level\LevelData.cpp" />
     <ClCompile Include="Engine\Utility\Math\MyMath.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -164,6 +165,7 @@
     <ClInclude Include="Engine\Utility\ConvertString\ConvertString.h" />
     <ClInclude Include="Engine\Utility\CSV\LoadCSV.h" />
     <ClInclude Include="Engine\Utility\GlobalVariables.h" />
+    <ClInclude Include="Engine\Utility\Level\LevelData.h" />
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
     <ClInclude Include="Engine\Utility\Structs.h" />
     <ClInclude Include="resource.h" />
