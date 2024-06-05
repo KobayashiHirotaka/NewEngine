@@ -8,7 +8,7 @@
 SceneManager::SceneManager()
 {
 	win_ = WindowsApp::GetInstance();
-	win_->CreateGameWindow(L"LE2A_10_コバヤシ_ヒロタカ_モノクロファイター", win_->kClientWidth, win_->kClientHeight);
+	win_->CreateGameWindow(L"LE3A_08_コバヤシ_ヒロタカ_モノクロファイター", win_->kClientWidth, win_->kClientHeight);
 
 	dxCore_ = DirectXCore::GetInstance();
 	dxCore_->Initialize();

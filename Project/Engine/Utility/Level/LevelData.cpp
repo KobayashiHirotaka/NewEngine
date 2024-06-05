@@ -102,7 +102,7 @@ void LevelData::Initialize(const std::string fileName)
 //		}
 //
 //		//モデルを指定してobjectを生成
-//		Object3d newObject = Object::Create(model);
+//		Object3d newObject = Object3d::Create(model);
 //
 //		//座標
 //		newObject->SetPosition(objectData.worldTransform.translation);
