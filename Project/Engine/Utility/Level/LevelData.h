@@ -20,7 +20,7 @@ public:
 
     static LevelData* GetInstance();
 
-	void Update(const std::string fileName);
+	void Initialize(const std::string fileName);
 
 public:
     std::vector<ObjectData> objects;

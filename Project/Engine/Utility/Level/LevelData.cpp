@@ -7,7 +7,7 @@ LevelData* LevelData::GetInstance()
 	return &instance;
 }
 
-void LevelData::Update(const std::string fileName)
+void LevelData::Initialize(const std::string fileName)
 {
 	const std::string fullpath = kDirectoryPath_ + fileName + kExtension_;
 
