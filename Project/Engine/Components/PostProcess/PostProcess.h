@@ -74,6 +74,7 @@ public:
     void SetIsVignetteActive(bool isActive) { isVignetteActive_ = isActive; };
     void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
     void SetIsGrayScaleActive(float isActive) { isGrayScaleActive_ = isActive; };
+    void SetIsBoxFilterActive(float isActive) { isBoxFilterActive_ = isActive; };
 
 private:
     //ブラーの方向
@@ -203,8 +204,8 @@ private:
 
     //ポストエフェクトのフラグ
     bool isPostProcessActive_ = false;
-    bool isBlurActive_ = true;
-    bool isShrinkBlurActive_ = true;
+    bool isBlurActive_ = false;
+    bool isShrinkBlurActive_ = false;
     bool isBloomActive_ = false;
     bool isVignetteActive_ = false;
     bool isGrayScaleActive_ = false;
