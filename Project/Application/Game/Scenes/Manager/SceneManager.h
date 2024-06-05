@@ -10,7 +10,6 @@
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/Particle/Random.h"
-#include "Engine/Utility/Level/LevelData.h"
 #include "Application/Game/Scenes/IScene.h"
 #include <memory>
 
@@ -41,8 +40,6 @@ private:
 	Input* input_ = nullptr;
 
 	PostProcess* postProcess_ = nullptr;
-
-	LevelData* levelData_ = nullptr;
 
 	IScene* currentScene_;
 };

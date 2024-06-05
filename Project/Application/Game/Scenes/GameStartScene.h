@@ -7,6 +7,7 @@
 #include "Engine/Components/Audio/Audio.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Application/GameObject/Skydome/Skydome.h"
+#include "Engine/Utility/Level/LevelData.h"
 #include <memory>
 
 class GameStartScene : public IScene
@@ -34,6 +35,8 @@ private:
 	Input* input_ = nullptr;
 
 	Audio* audio_ = nullptr;
+
+	LevelData* levelData_ = nullptr;
 
 	std::unique_ptr<Skydome>skydome_;
 	std::unique_ptr<Model>skydomeModel_;
@@ -67,4 +70,7 @@ private:
 	float transitionTimer_ = 0;
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
+
+	//モデル
+	std::map < std::string,  Model*> models_;
 };

@@ -36,9 +36,6 @@ SceneManager::SceneManager()
 
 	GlobalVariables::GetInstance()->LoadFiles();
 
-	levelData_ = LevelData::GetInstance();
-	levelData_->Initialize("LevelData");
-
 	Random::Initialize();
 
 	//シーンの初期化
