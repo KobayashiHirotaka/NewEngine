@@ -56,23 +56,6 @@ Camera* Game3dObjectManager::CreateCameraObjectInternal(const std::string& objec
 	return cameraObject;
 }
 
-template <typename Type>
-Type* Game3dObjectManager::CreateGameObjectFromType()
-{
-	Type* gameObject = Game3dObjectManager::GetInstance()->CreateGameObjectInternalFromType<Type>();
-	return gameObject;
-}
-
-template <typename Type>
-Type* Game3dObjectManager::CreateGameObjectInternalFromType()
-{
-	Type* gameObject = new Type();
-	gameObject->Initialize();
-	gameObject->SetGameObjectManager(this);
-	gameObjects_.push_back(std::unique_ptr<IGame3dObject>(gameObject));
-	return gameObject;
-}
-
 
 
 

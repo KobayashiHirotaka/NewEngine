@@ -47,6 +47,22 @@ private:
 	Game3dObjectFactory* gameObjectFactory_;
 };
 
+template <typename Type>
+Type* Game3dObjectManager::CreateGameObjectFromType()
+{
+	Type* gameObject = Game3dObjectManager::GetInstance()->CreateGameObjectInternalFromType<Type>();
+	return gameObject;
+}
+
+template <typename Type>
+Type* Game3dObjectManager::CreateGameObjectInternalFromType()
+{
+	Type* gameObject = new Type();
+	gameObject->Initialize();
+	gameObject->SetGameObjectManager(this);
+	gameObjects_.push_back(std::unique_ptr<IGame3dObject>(gameObject));
+	return gameObject;
+}
 
 template <typename Type>
 Type* Game3dObjectManager::GetGameObject(const std::string& tag)
