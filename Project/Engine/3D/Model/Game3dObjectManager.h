@@ -30,7 +30,8 @@ public:
 
 	void SetGameObjectFactory(Game3dObjectFactory* gameObjectFactory) { gameObjectFactory_ = gameObjectFactory; };
 
-	//IGame3dObject* GetGameObject() { return gameObjects_.get(); };
+	template <typename Type>
+	Type* GetGameObject(const std::string& tag);
 
 private:
 	Game3dObjectManager() = default;
@@ -47,4 +48,18 @@ private:
 };
 
 
+template <typename Type>
+Type* Game3dObjectManager::GetGameObject(const std::string& tag)
+{
+	for (std::unique_ptr<IGame3dObject>& gameObject : gameObjects_)
+	{
+		gameObject->GetTag();
 
+		if (gameObject->GetTag() == tag)
+		{
+			return dynamic_cast<Type*> (gameObject.get());
+		}
+	}
+
+	return nullptr;
+}

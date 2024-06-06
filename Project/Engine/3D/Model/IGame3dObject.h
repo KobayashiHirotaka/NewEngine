@@ -26,11 +26,17 @@ public:
 
 	void SetGameObjectManager(Game3dObjectManager* game3dObjectManager) { game3dObjectManager_ = game3dObjectManager; };
 
+	const std::string GetTag() { return tag_; };
+
+	void SetTag(const std::string tag) { tag_ = tag; };
+
 private:
 	Game3dObjectManager* game3dObjectManager_ = nullptr;
 
 	WorldTransform worldTransform_{};
 
 	Model* model_ = nullptr;
+
+	std::string tag_;
 };
 

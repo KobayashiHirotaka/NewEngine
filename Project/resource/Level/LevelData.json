@@ -2,6 +2,50 @@
     "name": "scene",
     "objects": [
         {
+            "type": "MESH",
+            "name": "Enemy",
+            "transform": {
+                "translation": [
+                    0.0,
+                    -3.213111162185669,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "newEnemy"
+        },
+        {
+            "type": "MESH",
+            "name": "Player",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "newEnemy"
+        },
+        {
             "type": "LIGHT",
             "name": "Light",
             "transform": {
@@ -42,28 +86,6 @@
                     1.0
                 ]
             }
-        },
-        {
-            "type": "MESH",
-            "name": "TestObject",
-            "transform": {
-                "translation": [
-                    0.0,
-                    -4.887709140777588,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "StagePillar"
         }
     ]
 }

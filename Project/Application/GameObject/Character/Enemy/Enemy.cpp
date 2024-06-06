@@ -15,6 +15,8 @@ void Enemy::Initialize()
 {
 	audio_ = Audio::GetInstance();
 
+	IGame3dObject::SetTag("Enemy");
+
 	AABB aabb= { {-0.3f,-1.0f,-10.0f},{3.0f,1.0f,10.0f} };
 	SetAABB(aabb);
 

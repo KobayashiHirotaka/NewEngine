@@ -17,7 +17,6 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	audio_ = Audio::GetInstance();
 
 	levelLoarder_ = LevelLoader::GetInstance();
-	levelLoarder_->LoadLevel("LevelData");
 
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
 
@@ -50,33 +49,6 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 	audio_->StopAudio(titleSoundHandle_);
 	audio_->SoundPlayMP3(titleSoundHandle_, true, 1.0f);
-
-	////レベルデータからobjectを生成、配置
-	//for (auto& objectData : levelData_->objects)
-	//{
-	//	//ファイル名から登録済みモデルを検索
-	//	Model* model = nullptr;
-	//	decltype(models_)::iterator it = models_.find(objectData.fileName);
-	//	if (it != models_.end())
-	//	{
-	//		model = it->second;
-	//	}
-
-	//	//モデルを指定してobjectを生成
-	//	Object3d newObject = Object3d::Create(model);
-
-	//	//座標
-	//	newObject->SetPosition(objectData.worldTransform.translation);
-
-	//	//回転角
-	//	newObject->SetRotation(objectData.worldTransform.rotation);
-
-	//	//座標
-	//	newObject->SetScale(objectData.worldTransform.scale);
-
-	//	//配列に登録
-	//	objects.pushback(newObject);
-	//}
 };
 
 void GameStartScene::Update(SceneManager* sceneManager)
@@ -189,7 +161,7 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 
 	Model::PreDraw();
 
-	//skydome_->Draw(camera_);
+	skydome_->Draw(camera_);
 
 	game3dObjectManager_->Draw(camera_);
 

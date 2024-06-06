@@ -73,3 +73,6 @@ Type* Game3dObjectManager::CreateGameObjectInternalFromType()
 	return gameObject;
 }
 
+
+
+

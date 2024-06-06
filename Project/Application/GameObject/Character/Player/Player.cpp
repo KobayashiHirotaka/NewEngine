@@ -18,6 +18,8 @@ void Player::Initialize()
 
 	audio_ = Audio::GetInstance();
 
+	IGame3dObject::SetTag("Player");
+
 	AABB aabb = { {-1.0f,-1.0f,-10.0f},{1.0f,1.0f,10.0f} };
 	SetAABB(aabb);
 

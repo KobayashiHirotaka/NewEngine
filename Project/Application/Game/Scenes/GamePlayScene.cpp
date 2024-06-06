@@ -21,6 +21,11 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
+	game3dObjectManager_ = Game3dObjectManager::GetInstance();
+
+	levelLoarder_ = LevelLoader::GetInstance();
+	levelLoarder_->LoadLevel("LevelData");
+
 	UICommandListTextureHandle_ = TextureManager::LoadTexture("resource/UICommandList.png");
 	UICommandListSprite_.reset(Sprite::Create(UICommandListTextureHandle_, { 0.0f,0.0f }));
 
@@ -94,14 +99,12 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	worldTransformTestObject_.rotation = { 0.0f,0.0f,0.0f };
 	worldTransformTestObject_.scale = { 0.01f,0.01f,0.01f };
 
-	enemy_ = std::make_unique<Enemy>();
-	enemy_->Initialize();
+	enemy_ = game3dObjectManager_->GetGameObject<Enemy>("Enemy");
 	
-	player_ = std::make_unique<Player>();
-	player_->Initialize();
+	player_ = game3dObjectManager_->GetGameObject<Player>("Player");
 
-	player_->SetEnemy(enemy_.get());
-	enemy_->SetPlayer(player_.get());
+	player_->SetEnemy(enemy_);
+	enemy_->SetPlayer(player_);
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
@@ -612,7 +615,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}*/
 
 	collisionManager_->ClearColliders();
-	collisionManager_->AddCollider(player_.get());
+	collisionManager_->AddCollider(player_);
 
 	if (player_->GetPlayerWeapon()->GetIsAttack())
 	{
@@ -624,7 +627,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		collisionManager_->AddCollider(enemy_->GetEnemyWeapon());
 	}
 
-	collisionManager_->AddCollider(enemy_.get());
+	collisionManager_->AddCollider(enemy_);
 	
 	collisionManager_->CheckAllCollision();
 
@@ -713,6 +716,8 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	worldTransformTestObject_.UpdateMatrixEuler();
 
+	game3dObjectManager_->Update();
+
 	camera_.UpdateMatrix();
 
 	ImGui::Begin("Play");
@@ -731,7 +736,9 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 	{
 		player_->Draw(camera_);
 
-		enemy_->Draw(camera_);
+		//enemy_->Draw(camera_);
+
+		game3dObjectManager_->Draw(camera_);
 	}
 
 	Model::PostDraw();
@@ -740,7 +747,7 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	if (!isOpen_)
 	{
-		enemy_->BoneDraw(camera_);
+		//enemy_->BoneDraw(camera_);
 	}
 
 
