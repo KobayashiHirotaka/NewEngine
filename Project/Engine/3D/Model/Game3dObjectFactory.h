@@ -4,7 +4,7 @@
 #include "Application/GameObject/Character/Player/PlayerWeapon.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Character/Enemy/EnemyWeapon.h"
-#include "TestObject.h"
+#include "Application/GameObject/TestObject/TestObject.h"
 
 class Game3dObjectFactory
 {

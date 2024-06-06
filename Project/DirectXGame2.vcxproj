@@ -17,6 +17,7 @@
     <ClCompile Include="Application\GameObject\Character\Player\Player.cpp" />
     <ClCompile Include="Application\GameObject\Character\Player\PlayerWeapon.cpp" />
     <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp" />
+    <ClCompile Include="Application\GameObject\TestObject\TestObject.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameLoseScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameStartScene.cpp" />
@@ -76,7 +77,6 @@
     <ClCompile Include="Engine\Utility\LevelLoader\LevelLoader.cpp" />
     <ClCompile Include="Engine\Utility\Math\MyMath.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="TestObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -120,6 +120,7 @@
     <ClInclude Include="Application\GameObject\Character\Player\Player.h" />
     <ClInclude Include="Application\GameObject\Character\Player\PlayerWeapon.h" />
     <ClInclude Include="Application\GameObject\Skydome\Skydome.h" />
+    <ClInclude Include="Application\GameObject\TestObject\TestObject.h" />
     <ClInclude Include="Application\Game\Scenes\GameLoseScene.h" />
     <ClInclude Include="Application\Game\Scenes\GamePlayScene.h" />
     <ClInclude Include="Application\Game\Scenes\GameStartScene.h" />
@@ -172,7 +173,6 @@
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
     <ClInclude Include="Engine\Utility\Structs.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="TestObject.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\BoneVisualization.PS.hlsl">
