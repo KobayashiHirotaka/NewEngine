@@ -139,7 +139,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (roundStartTimer_ <= 0 && !isOpen_)
 	{
-		player_->Update();
+		//player_->Update();
 
 		if (player_->GetIsFinisherEffect() == false)
 		{
@@ -165,7 +165,8 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (player_->GetIsFinisherEffect() == false)
 	{
-		enemy_->Update();
+		//enemy_->Update();
+
 	}
 
 
