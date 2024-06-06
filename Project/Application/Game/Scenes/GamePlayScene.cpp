@@ -23,6 +23,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
 
+	//Levelの読み込み
 	levelLoarder_ = LevelLoader::GetInstance();
 	levelLoarder_->LoadLevel("LevelData");
 
