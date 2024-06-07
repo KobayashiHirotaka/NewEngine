@@ -424,11 +424,9 @@ void Enemy::Reset()
 
 	behavior_ = Behavior::kRoot;
 
-	worldTransform_.Initialize();
 	worldTransform_.translation = { 7.0f,0.0f,0.0f };
 	worldTransform_.rotation.y = 4.6f;
 
-	worldTransformBody_.Initialize();
 	worldTransformBody_.translation = { 0.0f,0.0f,0.0f };
 	worldTransformBody_.rotation = { 7.75f,0.0f,0.0f };
 	worldTransformBody_.scale = { 0.007f,0.007f,0.007f };

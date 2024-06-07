@@ -23,7 +23,7 @@ void Player::Initialize()
 	AABB aabb = { {-1.0f,-1.0f,-10.0f},{1.0f,1.0f,10.0f} };
 	SetAABB(aabb);
 
-	modelFighterBody_.reset(Model::CreateFromOBJ("resource/models", "newPlayer.gltf"));
+	modelFighterBody_.reset(Model::CreateFromOBJ("resource/models", "newEnemy.gltf"));
 
 	playerCursol_.reset(Model::CreateFromOBJ("resource/playerCursol", "playerCursol.obj"));
 
@@ -488,17 +488,14 @@ void Player::Reset()
 
 	behavior_ = Behavior::kRoot;
 
-	worldTransform_.Initialize();
 	worldTransform_.translation = { -7.0f,0.0f,0.0f };
 
 	worldTransform_.rotation.y = 1.7f;
 
-	worldTransformBody_.Initialize();
 	worldTransformBody_.translation = { 0.0f,0.0f,0.0f };
 	worldTransformBody_.rotation = { 7.75f,0.0f,0.0f };
 	worldTransformBody_.scale = { 0.007f,0.007f,0.007f };
 
-	worldTransformCursol_.Initialize();
 	worldTransformCursol_.translation.x = 0.9f;
 	worldTransformCursol_.translation.y = worldTransform_.translation.y + 2.0f;
 
@@ -511,7 +508,6 @@ void Player::Reset()
 	worldTransform_.UpdateMatrixEuler();
 
 	worldTransformBody_.UpdateMatrixEuler();
-	worldTransformHead_.UpdateMatrixEuler();
 }
 
 void Player::DrawParticle(const Camera& camera) 

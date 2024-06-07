@@ -39,8 +39,6 @@ private:
 
 	LevelLoader* levelLoarder_ = nullptr;
 
-	Game3dObjectManager* game3dObjectManager_ = nullptr;
-
 	std::unique_ptr<Skydome>skydome_;
 	std::unique_ptr<Model>skydomeModel_;
 

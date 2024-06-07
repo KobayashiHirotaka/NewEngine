@@ -56,9 +56,13 @@ private:
 
 	Game3dObjectManager* game3dObjectManager_;
 
-	Player* player_;
+	/*Player* player_;
 
-	Enemy* enemy_;
+	Enemy* enemy_;*/
+
+	std::unique_ptr<Player>player_;
+
+	std::unique_ptr<Enemy>enemy_;
 
 	std::unique_ptr<Skydome>skydome_;
 

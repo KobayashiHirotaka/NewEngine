@@ -24,8 +24,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
 
 	//Levelの読み込み
-	levelLoarder_ = LevelLoader::GetInstance();
-	levelLoarder_->LoadLevel("LevelData");
+	//levelLoarder_ = LevelLoader::GetInstance();
+	//levelLoarder_->LoadLevel("LevelData");
 
 	UICommandListTextureHandle_ = TextureManager::LoadTexture("resource/UICommandList.png");
 	UICommandListSprite_.reset(Sprite::Create(UICommandListTextureHandle_, { 0.0f,0.0f }));
@@ -100,12 +100,21 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	worldTransformTestObject_.rotation = { 0.0f,0.0f,0.0f };
 	worldTransformTestObject_.scale = { 0.01f,0.01f,0.01f };
 
-	enemy_ = game3dObjectManager_->GetGameObject<Enemy>("Enemy");
+	/*enemy_ = game3dObjectManager_->GetGameObject<Enemy>("Enemy");
 	
 	player_ = game3dObjectManager_->GetGameObject<Player>("Player");
 
 	player_->SetEnemy(enemy_);
-	enemy_->SetPlayer(player_);
+	enemy_->SetPlayer(player_);*/
+
+	enemy_ = std::make_unique<Enemy>();
+	enemy_->Initialize();
+
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
+
+	player_->SetEnemy(enemy_.get());
+	enemy_->SetPlayer(player_.get());
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
@@ -140,8 +149,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (roundStartTimer_ <= 0 && !isOpen_)
 	{
-		//player_->Update();
-
 		if (player_->GetIsFinisherEffect() == false)
 		{
 			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
@@ -166,8 +173,9 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (player_->GetIsFinisherEffect() == false)
 	{
-		//enemy_->Update();
+		player_->Update();
 
+		enemy_->Update();
 	}
 
 
@@ -617,7 +625,8 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}*/
 
 	collisionManager_->ClearColliders();
-	collisionManager_->AddCollider(player_);
+	collisionManager_->AddCollider(player_.get());
+	//collisionManager_->AddCollider(player_);
 
 	if (player_->GetPlayerWeapon()->GetIsAttack())
 	{
@@ -629,7 +638,8 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		collisionManager_->AddCollider(enemy_->GetEnemyWeapon());
 	}
 
-	collisionManager_->AddCollider(enemy_);
+	collisionManager_->AddCollider(enemy_.get());
+	//collisionManager_->AddCollider(enemy_);
 	
 	collisionManager_->CheckAllCollision();
 
@@ -738,9 +748,9 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 	{
 		player_->Draw(camera_);
 
-		//enemy_->Draw(camera_);
+		enemy_->Draw(camera_);
 
-		game3dObjectManager_->Draw(camera_);
+		//game3dObjectManager_->Draw(camera_);
 	}
 
 	Model::PostDraw();
