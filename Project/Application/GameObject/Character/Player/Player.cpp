@@ -744,6 +744,22 @@ void Player::BehaviorRootUpdate()
 
 				worldTransform_.UpdateMatrixEuler();
 			}
+			else
+			{
+				float animationTime;
+				animationTime = modelFighterBody_->GetAnimationTime();
+				if (!isDown_)
+				{
+					animationTime += 1.0f / 60.0f;
+					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);
+				}
+
+				modelFighterBody_->SetAnimationTime(animationTime);
+
+				modelFighterBody_->ApplyAnimation(0);
+
+				modelFighterBody_->Update();
+			}
 
 			Vector3 playerWorldPosition = GetWorldPosition();
 
