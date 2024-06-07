@@ -183,6 +183,8 @@ private:
 	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformHead_;
 
+	WorldTransform worldTransformCursol_;
+
 	std::unique_ptr<Model> modelFighterBody_;
 
 	std::unique_ptr<Model> playerCursol_;

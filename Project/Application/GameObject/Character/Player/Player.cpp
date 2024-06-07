@@ -62,7 +62,7 @@ void Player::Initialize()
 
 	//WorldTransform(Player)の初期化
 	worldTransform_.Initialize();
-	worldTransform_.translation = { -7.0f,0.0f,6.5f };
+	worldTransform_.translation = { -7.0f,0.0f,0.0f };
 
 	worldTransformHead_.Initialize();
 	worldTransform_.rotation.y = 1.7f;
@@ -72,9 +72,16 @@ void Player::Initialize()
 	worldTransformBody_.rotation = { 7.75f,0.0f,0.0f };
 	worldTransformBody_.scale = { 0.007f,0.007f,0.007f };
 
+	worldTransformCursol_.Initialize();
+	worldTransformCursol_.translation.x = worldTransform_.translation.x;
+	worldTransformCursol_.translation.y = worldTransform_.translation.y + 2.0f;
+	worldTransformCursol_.translation.z = worldTransform_.translation.z;
+
 	//親子付け
 	worldTransformBody_.parent_ = &worldTransform_;
 	worldTransformHead_.parent_ = &worldTransformBody_;
+
+	worldTransformCursol_.parent_ = &worldTransform_;
 	
 	//Weaponの生成
 	playerWeapon_ = std::make_unique<PlayerWeapon>();
@@ -272,6 +279,8 @@ void Player::Update()
 	worldTransformBody_.UpdateMatrixEuler();
 	worldTransformHead_.UpdateMatrixEuler();
 
+	worldTransformCursol_.UpdateMatrixEuler();
+
 	//Weaponの更新
 	playerWeapon_->Update();
 
@@ -331,7 +340,7 @@ void Player::Draw(const Camera& camera)
 
 	if (!isDown_)
 	{
-		playerCursol_->Draw(worldTransform_, camera, 0);
+		playerCursol_->Draw(worldTransformCursol_, camera, 0);
 	}
 
 	//Weaponの描画
@@ -1468,16 +1477,14 @@ void Player::BehaviorJumpUpdate()
 		}
 		attackAnimationFrame++;
 		
-	}
+	}*/
 
 	if (worldTransform_.translation.y <= 0.0f)
 	{
 		behaviorRequest_ = Behavior::kRoot;
 		workAttack_.isJumpAttack = false;
-		worldTransformL_arm_.rotation.x = 0.0f;
-		worldTransformR_arm_.rotation.x = 0.0f;
 		worldTransform_.translation.y = 0.0f;
-	}*/
+	}
 }
 
 void Player::BehaviorThrowInitialize()
