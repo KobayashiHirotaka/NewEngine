@@ -23,14 +23,7 @@ void Player::Initialize()
 	AABB aabb = { {-1.0f,-1.0f,-10.0f},{1.0f,1.0f,10.0f} };
 	SetAABB(aabb);
 
-	modelFighterBody_.reset(Model::CreateFromOBJ("resource/float_Body", "float_Body.obj"));
-	modelFighterPHead_.reset(Model::CreateFromOBJ("resource/float_PHead", "playerHead.obj"));
-	modelFighterL_arm_.reset(Model::CreateFromOBJ("resource/float_L_arm", "float_L_arm.obj"));
-	modelFighterR_arm_.reset(Model::CreateFromOBJ("resource/float_R_arm", "float_R_arm.obj"));
-
-	modelFighterPAHead_.reset(Model::CreateFromOBJ("resource/float_PHead_A", "float_PHead.gltf"));
-	modelFighterLA_arm_.reset(Model::CreateFromOBJ("resource/float_PL_arm", "float_PL_arm.gltf"));
-	modelFighterRA_arm_.reset(Model::CreateFromOBJ("resource/float_PR_arm", "float_PR_arm.gltf"));
+	modelFighterBody_.reset(Model::CreateFromOBJ("resource/models", "newPlayer.gltf"));
 
 	playerCursol_.reset(Model::CreateFromOBJ("resource/playerCursol", "playerCursol.obj"));
 
@@ -75,32 +68,14 @@ void Player::Initialize()
 	worldTransform_.rotation.y = 1.7f;
 
 	worldTransformBody_.Initialize();
-	worldTransformBody_.translation = { 0.0f,1.0f,0.0f };
-
-	worldTransformL_arm_.Initialize();
-	worldTransformL_arm_.translation.x = 0.5f;
-
-	worldTransformR_arm_.Initialize();
-	worldTransformR_arm_.translation.x = -0.5f;
-
-	worldTransformAHead_.Initialize();
-
-	worldTransformAL_arm_.Initialize();
-	worldTransformAL_arm_.translation.x = 0.5f;
-
-	worldTransformAR_arm_.Initialize();
-	worldTransformAR_arm_.translation.x = -0.5f;
+	worldTransformBody_.translation = { 0.0f,0.0f,0.0f };
+	worldTransformBody_.rotation = { 7.75f,0.0f,0.0f };
+	worldTransformBody_.scale = { 0.007f,0.007f,0.007f };
 
 	//親子付け
 	worldTransformBody_.parent_ = &worldTransform_;
 	worldTransformHead_.parent_ = &worldTransformBody_;
-	worldTransformL_arm_.parent_ = &worldTransformBody_;
-	worldTransformR_arm_.parent_ = &worldTransformBody_;
-
-	worldTransformAHead_.parent_ = &worldTransformBody_;
-	worldTransformAL_arm_.parent_ = &worldTransformBody_;
-	worldTransformAR_arm_.parent_ = &worldTransformBody_;
-
+	
 	//Weaponの生成
 	playerWeapon_ = std::make_unique<PlayerWeapon>();
 	playerWeapon_->Initialize();
@@ -120,12 +95,6 @@ void Player::Initialize()
 
 	worldTransformBody_.UpdateMatrixEuler();
 	worldTransformHead_.UpdateMatrixEuler();
-	worldTransformL_arm_.UpdateMatrixEuler();
-	worldTransformR_arm_.UpdateMatrixEuler();
-
-	worldTransformAHead_.UpdateMatrixEuler();
-	worldTransformAL_arm_.UpdateMatrixEuler();
-	worldTransformAR_arm_.UpdateMatrixEuler();
 
 	attackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Attack.mp3");
 	weaponAttackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/WeaponAttack.mp3");
@@ -136,6 +105,24 @@ void Player::Initialize()
 void Player::Update()
 {
 	isShake_ = false;
+
+	if (behaviorRequest_ == Behavior::kRoot && HP_ > 0)
+	{
+		animationIndex = 2;
+	}
+	else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isMowDown)
+	{
+		animationIndex = 1;
+	}
+	else if (HP_ <= 0 || isDown_ || GamePlayScene::roundStartTimer_ <= 0)
+	{
+		animationIndex = 0;
+	}
+
+	modelFighterBody_->ApplyAnimation(animationIndex);
+
+	modelFighterBody_->Update();
+
 
 	if (guardGauge_ > 0 && guardGauge_ < maxGuardGauge_)
 	{
@@ -173,7 +160,6 @@ void Player::Update()
 		case Behavior::kRoot:
 		default:
 			BehaviorRootInitialize();
-			FloatingGimmickInitialize();
 			break;
 
 		case Behavior::kAttack:
@@ -200,13 +186,10 @@ void Player::Update()
 	{
 	case Behavior::kRoot:
 	default:
-		BehaviorRootUpdate();
-
-		if (!isDown_)
+		if (GamePlayScene::roundStartTimer_ <= 0)
 		{
-			FloatingGimmickUpdate();
+			BehaviorRootUpdate();
 		}
-
 		break;
 
 	case Behavior::kAttack:
@@ -241,42 +224,42 @@ void Player::Update()
 		worldTransform_.translation.y = 0.0f;
 	}
 
-	float animationTime[3] = { 0.0f,0.0f,0.0f };
+	//float animationTime[3] = { 0.0f,0.0f,0.0f };
 
-	if (enemy_->GetHP() > 0 && isFinisherEffect)
-	{
-		//Animation
-		animationTime[0] = modelFighterPAHead_->GetAnimationTime();
-		animationTime[0] += 1.0f / 60.0f;
-		//animationTime[0] = std::fmod(animationTime[0], modelFighterPAHead_->GetAnimation().duration);
+	//if (enemy_->GetHP() > 0 && isFinisherEffect)
+	//{
+	//	//Animation
+	//	animationTime[0] = modelFighterPAHead_->GetAnimationTime();
+	//	animationTime[0] += 1.0f / 60.0f;
+	//	//animationTime[0] = std::fmod(animationTime[0], modelFighterPAHead_->GetAnimation().duration);
 
-		modelFighterPAHead_->SetAnimationTime(animationTime[0]);
+	//	modelFighterPAHead_->SetAnimationTime(animationTime[0]);
 
-		//Animation
-		animationTime[1] = modelFighterLA_arm_->GetAnimationTime();
-		animationTime[1] += 1.0f / 60.0f;
-		//animationTime[1] = std::fmod(animationTime[1], modelFighterLA_arm_->GetAnimation().duration);
+	//	//Animation
+	//	animationTime[1] = modelFighterLA_arm_->GetAnimationTime();
+	//	animationTime[1] += 1.0f / 60.0f;
+	//	//animationTime[1] = std::fmod(animationTime[1], modelFighterLA_arm_->GetAnimation().duration);
 
-		modelFighterLA_arm_->SetAnimationTime(animationTime[1]);
+	//	modelFighterLA_arm_->SetAnimationTime(animationTime[1]);
 
-		//Animation
-		animationTime[2] = modelFighterRA_arm_->GetAnimationTime();
-		animationTime[2] += 1.0f / 60.0f;
-		//animationTime[2] = std::fmod(animationTime[2], modelFighterRA_arm_->GetAnimation().duration);
+	//	//Animation
+	//	animationTime[2] = modelFighterRA_arm_->GetAnimationTime();
+	//	animationTime[2] += 1.0f / 60.0f;
+	//	//animationTime[2] = std::fmod(animationTime[2], modelFighterRA_arm_->GetAnimation().duration);
 
-		modelFighterRA_arm_->SetAnimationTime(animationTime[2]);
-	}
-	else
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			animationTime[i] = 0.0f;
+	//	modelFighterRA_arm_->SetAnimationTime(animationTime[2]);
+	//}
+	//else
+	//{
+	//	for (int i = 0; i < 3; i++)
+	//	{
+	//		animationTime[i] = 0.0f;
 
-			modelFighterPAHead_->SetAnimationTime(animationTime[0]);
-			modelFighterLA_arm_->SetAnimationTime(animationTime[1]);
-			modelFighterRA_arm_->SetAnimationTime(animationTime[2]);
-		}
-	}
+	//		modelFighterPAHead_->SetAnimationTime(animationTime[0]);
+	//		modelFighterLA_arm_->SetAnimationTime(animationTime[1]);
+	//		modelFighterRA_arm_->SetAnimationTime(animationTime[2]);
+	//	}
+	//}
 
 	DownAnimation();
 
@@ -288,12 +271,6 @@ void Player::Update()
 
 	worldTransformBody_.UpdateMatrixEuler();
 	worldTransformHead_.UpdateMatrixEuler();
-	worldTransformL_arm_.UpdateMatrixEuler();
-	worldTransformR_arm_.UpdateMatrixEuler();
-
-	worldTransformAHead_.UpdateMatrixEuler();
-	worldTransformAL_arm_.UpdateMatrixEuler();
-	worldTransformAR_arm_.UpdateMatrixEuler();
 
 	//Weaponの更新
 	playerWeapon_->Update();
@@ -339,7 +316,7 @@ void Player::Draw(const Camera& camera)
 	//Playerの描画
 	modelFighterBody_->Draw(worldTransformBody_, camera, 0);
 
-	if (enemy_->GetHP() > 0 && isFinisherEffect)
+	/*if (enemy_->GetHP() > 0 && isFinisherEffect)
 	{
 		modelFighterPAHead_->Draw(worldTransformAHead_, camera, 0);
 		modelFighterLA_arm_->Draw(worldTransformAL_arm_, camera, 0);
@@ -350,7 +327,7 @@ void Player::Draw(const Camera& camera)
 		modelFighterPHead_->Draw(worldTransformHead_, camera, 0);
 		modelFighterL_arm_->Draw(worldTransformL_arm_, camera, 0);
 		modelFighterR_arm_->Draw(worldTransformR_arm_, camera, 0);
-	}
+	}*/
 
 	if (!isDown_)
 	{
@@ -509,16 +486,6 @@ void Player::Reset()
 	worldTransformBody_.rotation.x = 0.0f;
 	worldTransformBody_.rotation.y = 0.0f;
 
-	worldTransformL_arm_.Initialize();
-	worldTransformL_arm_.translation.x = 0.5f;
-	worldTransformL_arm_.rotation.x = 0.0f;
-	worldTransformL_arm_.rotation.y = 0.0f;
-
-	worldTransformR_arm_.Initialize();
-	worldTransformR_arm_.translation.x = -0.5f;
-	worldTransformR_arm_.rotation.x = 0.0f;
-	worldTransformR_arm_.rotation.y = 0.0f;
-
 	workAttack_.translation = { 0.0f,2.5f,0.0f };
 	workAttack_.rotation = { 0.0f,0.0f,0.0f };
 
@@ -529,8 +496,6 @@ void Player::Reset()
 
 	worldTransformBody_.UpdateMatrixEuler();
 	worldTransformHead_.UpdateMatrixEuler();
-	worldTransformL_arm_.UpdateMatrixEuler();
-	worldTransformR_arm_.UpdateMatrixEuler();
 }
 
 void Player::DrawParticle(const Camera& camera) 
@@ -677,6 +642,20 @@ void Player::BehaviorRootUpdate()
 	{
 		if (GamePlayScene::migrationTimer >= 150)
 		{
+			float animationTime;
+			animationTime = modelFighterBody_->GetAnimationTime();
+			if (!isDown_)
+			{
+				animationTime += 1.0f / 60.0f;
+				animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[2].duration);
+			}
+
+			modelFighterBody_->SetAnimationTime(animationTime);
+
+			modelFighterBody_->ApplyAnimation(2);
+
+			modelFighterBody_->Update();
+
 			const float deadZone = 0.7f;
 			bool isMove_ = false;
 			float kCharacterSpeed = 0.1f;
@@ -767,107 +746,109 @@ void Player::BehaviorRootUpdate()
 			{
 				worldTransform_.rotation.y = 4.6f;
 			}
-		}
 
-		//ジャンプ
-		if (input_->GetJoystickState())
-		{
-			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isDown_ == false)
+			//ジャンプ
+			if (input_->GetJoystickState())
 			{
-				behaviorRequest_ = Behavior::kJump;
-			}
-		}
-
-		//投げ
-		if (input_->GetJoystickState())
-		{
-			if (input_->IsPressButton(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_Y) && isDown_ == false)
-			{
-				behaviorRequest_ = Behavior::kThrow;
-				isThrow_ = true;
-			}
-		}
-
-		//攻撃
-		//通常攻撃
-		if (input_->GetJoystickState())
-		{
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
-			{
-				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-				behaviorRequest_ = Behavior::kAttack;
-				workAttack_.isPunch = true;
-			}
-		}
-
-		//振り下ろし攻撃
-		if (input_->GetJoystickState())
-		{
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
-			{
-				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-				behaviorRequest_ = Behavior::kAttack;
-				workAttack_.isSwingDown = true;
-			}
-		}
-
-		//突き攻撃
-		if (input_->GetJoystickState())
-		{
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
-			{
-				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-				behaviorRequest_ = Behavior::kAttack;
-				workAttack_.isPoke = true;
-				workAttack_.isPokeRight = true;
+				if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isDown_ == false)
+				{
+					behaviorRequest_ = Behavior::kJump;
+				}
 			}
 
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
+			//投げ
+			if (input_->GetJoystickState())
 			{
-				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-				behaviorRequest_ = Behavior::kAttack;
-				workAttack_.isPoke = true;
-				workAttack_.isPokeLeft = true;
+				if (input_->IsPressButton(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_Y) && isDown_ == false)
+				{
+					behaviorRequest_ = Behavior::kThrow;
+					isThrow_ = true;
+				}
 			}
-		}
 
-		//薙ぎ払う攻撃
-		if (input_->GetJoystickState())
-		{
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
-				input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+			//攻撃
+			//通常攻撃
+			if (input_->GetJoystickState())
 			{
-				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-				behaviorRequest_ = Behavior::kAttack;
-				workAttack_.isMowDown = true;
+				if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
+				{
+					audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+					behaviorRequest_ = Behavior::kAttack;
+					workAttack_.isPunch = true;
+				}
 			}
-		}
 
-		//finisher
-		if (input_->GetJoystickState())
-		{
-			if (finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
-				finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-				&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+			//振り下ろし攻撃
+			if (input_->GetJoystickState())
 			{
-				audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-				behaviorRequest_ = Behavior::kAttack;
-				workAttack_.isFinisher = true;
+				if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
+				{
+					audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+					behaviorRequest_ = Behavior::kAttack;
+					animationTime = 0.0f;
+					modelFighterBody_->SetAnimationTime(animationTime);
+					workAttack_.isSwingDown = true;
+				}
+			}
+
+			//突き攻撃
+			if (input_->GetJoystickState())
+			{
+				if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+				{
+					audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+					behaviorRequest_ = Behavior::kAttack;
+					workAttack_.isPoke = true;
+					workAttack_.isPokeRight = true;
+				}
+
+				if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
+				{
+					audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+					behaviorRequest_ = Behavior::kAttack;
+					workAttack_.isPoke = true;
+					workAttack_.isPokeLeft = true;
+				}
+			}
+
+			//薙ぎ払う攻撃
+			if (input_->GetJoystickState())
+			{
+				if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
+					input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+				{
+					audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+					behaviorRequest_ = Behavior::kAttack;
+					workAttack_.isMowDown = true;
+				}
+			}
+
+			//finisher
+			if (input_->GetJoystickState())
+			{
+				if (finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
+					finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+				{
+					audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+					behaviorRequest_ = Behavior::kAttack;
+					workAttack_.isFinisher = true;
+				}
 			}
 		}
 	}
@@ -878,25 +859,17 @@ void Player::BehaviorAttackInitialize()
 	//通常攻撃
 	if (workAttack_.isPunch)
 	{
-		worldTransformL_arm_.rotation.x = -1.3f;
-		worldTransformR_arm_.rotation.x = 0.0f;
-		worldTransformL_arm_.rotation.y = 0.0f;
-		worldTransformR_arm_.rotation.y = 0.0f;
+		
 	}
 
 	if (workAttack_.isCPunch)
 	{
-		worldTransformL_arm_.rotation.x = 0.0f;
-		worldTransformR_arm_.rotation.x = -1.3f;
-		worldTransformL_arm_.rotation.y = 0.0f;
-		worldTransformR_arm_.rotation.y = 0.0f;
+		
 	}
 
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
 	{
-		worldTransformL_arm_.rotation.x = (float)std::numbers::pi;
-		worldTransformR_arm_.rotation.x = (float)std::numbers::pi;
 		workAttack_.translation = { 0.0f,2.5f,0.0f };
 		workAttack_.rotation = { 0.0f,0.0f,0.0f };
 
@@ -907,8 +880,6 @@ void Player::BehaviorAttackInitialize()
 	//突き攻撃
 	if (workAttack_.isPoke)
 	{
-		worldTransformL_arm_.rotation.x = -1.3f;
-		worldTransformR_arm_.rotation.x = -1.3f;
 		workAttack_.translation = { 0.0f,0.5f,0.0f };
 		workAttack_.rotation = { 1.5f,0.0f,0.0f };
 		workAttack_.stiffnessTimer = 60;
@@ -921,10 +892,6 @@ void Player::BehaviorAttackInitialize()
 	//薙ぎ払う攻撃
 	if (workAttack_.isMowDown)
 	{
-		worldTransformL_arm_.rotation.x = -1.3f;
-		worldTransformR_arm_.rotation.x = -1.3f;
-		worldTransformL_arm_.rotation.y = 0.0f;
-		worldTransformR_arm_.rotation.y = 0.0f;
 		workAttack_.translation = { 0.0f,0.5f,0.0f };
 		workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
 
@@ -935,10 +902,6 @@ void Player::BehaviorAttackInitialize()
 	//Finisher
 	if (workAttack_.isFinisher)
 	{
-		worldTransformL_arm_.rotation.x = 0.0f;
-		worldTransformR_arm_.rotation.x = 0.0f;
-		worldTransformL_arm_.rotation.y = 0.0f;
-		worldTransformR_arm_.rotation.y = 0.0f;
 		workAttack_.translation = { 0.0f,0.5f,0.0f };
 		workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
 
@@ -973,8 +936,6 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.stiffnessTimer = 60;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.isPunch = false;
 
 				/*audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
@@ -995,8 +956,6 @@ void Player::BehaviorAttackUpdate()
 			workAttack_.stiffnessTimer = 60;
 			worldTransformHead_.rotation.y = 0.0f;
 			worldTransformBody_.rotation.y = 0.0f;
-			worldTransformL_arm_.rotation.y = 0.0f;
-			worldTransformR_arm_.rotation.y = 0.0f;
 			workAttack_.isPunch = false;
 		}
 
@@ -1010,10 +969,6 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.stiffnessTimer = 60;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.x = 0.0f;
-				worldTransformR_arm_.rotation.x = -1.3f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 
 				workAttack_.isPunch = false;
 				workAttack_.isCPunch = true;
@@ -1045,8 +1000,6 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.stiffnessTimer = 60;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.isCPunch = false;
 
 				/*audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
@@ -1067,8 +1020,6 @@ void Player::BehaviorAttackUpdate()
 			workAttack_.stiffnessTimer = 60;
 			worldTransformHead_.rotation.y = 0.0f;
 			worldTransformBody_.rotation.y = 0.0f;
-			worldTransformL_arm_.rotation.y = 0.0f;
-			worldTransformR_arm_.rotation.y = 0.0f;
 			workAttack_.isCPunch = false;
 		}
 
@@ -1082,10 +1033,6 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.stiffnessTimer = 60;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.x = -1.3f;
-				worldTransformR_arm_.rotation.x = -1.3f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.translation = { 0.0f,0.5f,0.0f };
 				workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
 
@@ -1104,11 +1051,25 @@ void Player::BehaviorAttackUpdate()
 	if (workAttack_.isSwingDown)
 	{
 		isGuard_ = false;
+		float animationTime, animationDuration;
+		animationTime = modelFighterBody_->GetAnimationTime();
+
+		if (!isDown_)
+		{
+			animationTime += 1.0f / 60.0f;
+			/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
+		}
+
+		animationDuration = modelFighterBody_->GetAnimation()[1].duration;
+
+		modelFighterBody_->SetAnimationTime(animationTime);
+
+		modelFighterBody_->ApplyAnimation(1);
+
+		modelFighterBody_->Update();
+
 		if (attackAnimationFrame < 10)
 		{
-			worldTransformL_arm_.rotation.x -= 0.05f;
-			worldTransformR_arm_.rotation.x -= 0.05f;
-
 			workAttack_.rotation.x -= 0.05f;
 
 			playerWeapon_->SetTranslation(workAttack_.translation);
@@ -1117,9 +1078,6 @@ void Player::BehaviorAttackUpdate()
 		}
 		else if (workAttack_.rotation.x < 2.0f)
 		{
-			worldTransformL_arm_.rotation.x += 0.1f;
-			worldTransformR_arm_.rotation.x += 0.1f;
-
 			workAttack_.translation.z += 0.05f;
 			workAttack_.translation.y -= 0.05f;
 			workAttack_.rotation.x += 0.1f;
@@ -1134,8 +1092,6 @@ void Player::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				playerWeapon_->SetIsAttack(false);
@@ -1153,25 +1109,35 @@ void Player::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				playerWeapon_->SetIsAttack(false);
 				workAttack_.isSwingDown = false;
 			}
-			
-			if (workAttack_.stiffnessTimer <= 0)
+
+
+			if (animationTime >= animationDuration)
 			{
+				// アニメーションが終了した場合の処理
 				behaviorRequest_ = Behavior::kRoot;
-				worldTransformHead_.rotation.y = 0.0f;
-				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isSwingDown = false;
+				animationTime = 0.0f;
+				modelFighterBody_->SetAnimationTime(animationTime);
 			}
+
+			/*if (workAttack_.stiffnessTimer <= 0)
+			{
+				behaviorRequest_ = Behavior::kRoot;
+				workAttack_.stiffnessTimer = 60;
+				workAttack_.isSwingDown = false;
+			}*/
 		}
+
+		/*if (isHitSwingDown_ || isHitPoke_ || isHitMowDown_)
+		{
+
+		}*/
 		attackAnimationFrame++;
 	}
 
@@ -1221,8 +1187,6 @@ void Player::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				playerWeapon_->SetIsAttack(false);
@@ -1242,8 +1206,6 @@ void Player::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				playerWeapon_->SetIsAttack(false);
@@ -1257,8 +1219,6 @@ void Player::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				pokeTimer_ = 30;
 				workAttack_.isPoke = false;
@@ -1299,8 +1259,6 @@ void Player::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				playerWeapon_->SetIsAttack(false);
@@ -1318,8 +1276,6 @@ void Player::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				playerWeapon_->SetIsAttack(false);
@@ -1331,8 +1287,6 @@ void Player::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				workAttack_.isMowDown = false;
@@ -1361,11 +1315,6 @@ void Player::BehaviorAttackUpdate()
 			worldTransformHead_.translation = { 0.0f,0.0f,0.0f };
 			worldTransformHead_.rotation = { 0.0f,0.0f,0.0f };
 
-			worldTransformL_arm_.rotation.x = -1.3f;
-			worldTransformR_arm_.rotation.x = -1.3f;
-			worldTransformL_arm_.rotation.y = 0.0f;
-			worldTransformR_arm_.rotation.y = 0.0f;
-
 			float rotationSpeed = 0.1f;
 			rotationSpeed += 0.1f;
 			worldTransformBody_.rotation.y += rotationSpeed;
@@ -1382,8 +1331,6 @@ void Player::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				finisherEffectTimer = 90;
 				workAttack_.isAttack = false;
@@ -1400,16 +1347,11 @@ void Player::BehaviorAttackUpdate()
 			worldTransformHead_.rotation.y = 0.0f;
 			worldTransformBody_.rotation.y = 0.0f;
 
-			worldTransformL_arm_.rotation.x = (float)std::numbers::pi;
-			worldTransformR_arm_.rotation.x = (float)std::numbers::pi;
 			workAttack_.translation = { 0.0f,2.5f,0.0f };
 			workAttack_.rotation = { 0.0f,0.0f,0.0f };
 
 			playerWeapon_->SetTranslation(workAttack_.translation);
 			playerWeapon_->SetRotation(workAttack_.rotation);
-
-			worldTransformL_arm_.rotation.x -= 0.05f;
-			worldTransformR_arm_.rotation.x -= 0.05f;
 
 			workAttack_.rotation.x -= 0.05f;
 
@@ -1419,9 +1361,6 @@ void Player::BehaviorAttackUpdate()
 		else if (workAttack_.rotation.x < 2.0f)
 		{
 			finisherCount_ = 2;
-
-			worldTransformL_arm_.rotation.x += 0.1f;
-			worldTransformR_arm_.rotation.x += 0.1f;
 
 			workAttack_.translation.z += 0.05f;
 			workAttack_.translation.y -= 0.05f;
@@ -1437,8 +1376,6 @@ void Player::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				finisherEffectTimer = 90;
 				workAttack_.isAttack = false;
@@ -1460,8 +1397,6 @@ void Player::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				finisherEffectTimer = 90;
 				workAttack_.isAttack = false;
@@ -1477,8 +1412,6 @@ void Player::BehaviorAttackUpdate()
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
 				worldTransformBody_.rotation.y = 0.0f;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
 				workAttack_.stiffnessTimer = 60;
 				finisherEffectTimer = 90;
 				workAttack_.isAttack = false;
@@ -1511,15 +1444,11 @@ void Player::BehaviorJumpUpdate()
 
 	velocity_ = Add(velocity_, accelerationVector_);
 
-	if (input_->GetJoystickState())
+	/*if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
 		{
 			workAttack_.isJumpAttack = true;
-			worldTransformL_arm_.rotation.x = -1.3f;
-			worldTransformR_arm_.rotation.x = -1.3f;
-			worldTransformL_arm_.rotation.y = 0.0f;
-			worldTransformR_arm_.rotation.y = 0.0f;
 
 			attackAnimationFrame = 0;
 		}
@@ -1548,17 +1477,13 @@ void Player::BehaviorJumpUpdate()
 		worldTransformL_arm_.rotation.x = 0.0f;
 		worldTransformR_arm_.rotation.x = 0.0f;
 		worldTransform_.translation.y = 0.0f;
-	}
+	}*/
 }
 
 void Player::BehaviorThrowInitialize()
 {
 	if (isThrow_)
 	{
-		worldTransformL_arm_.rotation.x = -1.3f;
-		worldTransformR_arm_.rotation.x = -1.3f;
-		worldTransformL_arm_.rotation.y = 0.0f;
-		worldTransformR_arm_.rotation.y = 0.0f;
 		attackAnimationFrame = 0;
 	}
 }
@@ -1571,21 +1496,18 @@ void Player::BehaviorThrowUpdate()
 		isGuard_ = false;
 		if (attackAnimationFrame < 30)
 		{
-			worldTransformL_arm_.rotation.y -= 0.02f;
-			worldTransformR_arm_.rotation.y += 0.02f;
+		
 		}
 		else if (enemy_->GetIsPlayerHit() == true)
 		{
 			throwTimer_--;
-			worldTransformL_arm_.rotation.x += 0.2f;
-			worldTransformR_arm_.rotation.x += 0.2f;
+			
 
 			if (throwTimer_ <= 0)
 			{
 				behaviorRequest_ = Behavior::kRoot;
 				throwTimer_ = 100;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
+				
 				isThrow_ = false;
 			}
 		}
@@ -1596,8 +1518,7 @@ void Player::BehaviorThrowUpdate()
 			if (workAttack_.stiffnessTimer <= 0)
 			{
 				behaviorRequest_ = Behavior::kRoot;
-				worldTransformL_arm_.rotation.y = 0.0f;
-				worldTransformR_arm_.rotation.y = 0.0f;
+			
 				throwTimer_ = 100;
 				workAttack_.stiffnessTimer = 60;
 				isThrow_ = false;
@@ -1641,41 +1562,7 @@ void Player::BehaviorStanUpdate()
 
 		worldTransformBody_.rotation.x = 0.0f;
 		worldTransformBody_.rotation.y = 0.0f;
-
-		worldTransformL_arm_.rotation.x = 0.0f;
-		worldTransformL_arm_.rotation.y = 0.0f;
-
-		worldTransformR_arm_.rotation.x = 0.0f;
-		worldTransformR_arm_.rotation.y = 0.0f;
 	}
-}
-
-void Player::FloatingGimmickInitialize()
-{
-	for (int i = 0; i < kMaxModelParts; i++)
-	{
-		floatingParameter_[i] = 0.0f;
-	}
-}
-
-void Player::FloatingGimmickUpdate()
-{
-	floatingCycle_[0] = 120;
-	floatingCycle_[1] = 120;
-
-	float step[2]{};
-
-	for (int i = 0; i < kMaxModelParts; i++)
-	{
-		step[i] = 2.0f * (float)std::numbers::pi / floatingCycle_[i];
-
-		floatingParameter_[i] += step[i];
-
-		floatingParameter_[i] = (float)std::fmod(floatingParameter_[i], 2.0f * (float)std::numbers::pi);
-	}
-
-	worldTransformL_arm_.rotation.x = std::sin(floatingParameter_[1]) * 0.35f;
-	worldTransformR_arm_.rotation.x = -std::sin(floatingParameter_[1]) * 0.35f;
 }
 
 void Player::DownAnimation()
@@ -2096,12 +1983,6 @@ void Player::DownAnimation()
 			worldTransform_.translation.y -= 0.1f;
 
 			worldTransformBody_.rotation.x = 4.7f;
-
-			worldTransformL_arm_.rotation.x = 0.0f;
-			worldTransformL_arm_.rotation.y = 0.0f;
-
-			worldTransformR_arm_.rotation.x = 0.0f;
-			worldTransformR_arm_.rotation.y = 0.0f;
 
 			if (worldTransform_.translation.y <= -0.8f)
 			{

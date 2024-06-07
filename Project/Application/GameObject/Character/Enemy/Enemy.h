@@ -189,12 +189,6 @@ private:
 
 	const uint16_t kMaxModelParts = 2;
 
-	float floatingParameter_[2];
-
-	int floatingCycle_[2];
-
-	float floatingAmplitude_;
-
 	std::unique_ptr<EnemyWeapon> enemyWeapon_ = nullptr;
 
 	float maxHP_ = 10.0f;

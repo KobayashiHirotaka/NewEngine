@@ -76,6 +76,8 @@ public:
 
 	void Draw(const Camera& camera);
 
+	void BoneDraw(const Camera& camera);
+
 	WorldTransform& GetWorldTransform()override { return worldTransform_; }
 
 	Vector3 GetWorldPosition() override;
@@ -124,10 +126,6 @@ public:
 
 	void BehaviorStanUpdate();
 
-	void FloatingGimmickInitialize();
-
-	void FloatingGimmickUpdate();
-
 	float GetHP() { return HP_; };
 
 	void SetHP(float HP) { HP_ = HP; };
@@ -170,6 +168,8 @@ public:
 
 	int GetIsCancelCount() { return cancelCount_; };
 
+	uint32_t GetANimationIndex() { return animationIndex; };
+
 private:
 	Input* input_ = nullptr;
 
@@ -182,23 +182,8 @@ private:
 	WorldTransform worldTransform_;
 	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformHead_;
-	WorldTransform worldTransformL_arm_;
-	WorldTransform worldTransformR_arm_;
-
-	//Animation用
-	WorldTransform worldTransformAHead_;
-	WorldTransform worldTransformAL_arm_;
-	WorldTransform worldTransformAR_arm_;
 
 	std::unique_ptr<Model> modelFighterBody_;
-	std::unique_ptr<Model> modelFighterPHead_;
-	std::unique_ptr<Model> modelFighterL_arm_;
-	std::unique_ptr<Model> modelFighterR_arm_;
-
-	//Animation用
-	std::unique_ptr<Model> modelFighterPAHead_;
-	std::unique_ptr<Model> modelFighterLA_arm_;
-	std::unique_ptr<Model> modelFighterRA_arm_;
 
 	std::unique_ptr<Model> playerCursol_;
 
@@ -207,12 +192,6 @@ private:
 	float speed_ = 0.3f;
 
 	const uint16_t kMaxModelParts = 2;
-
-	float floatingParameter_[2];
-
-	int floatingCycle_[2];
-
-	float floatingAmplitude_;
 
 	float maxHP_ = 10.0f;
 
@@ -304,5 +283,7 @@ private:
 
 	int cancelCount_ = 0;
 	int cancelTimer_ = 60;
+
+	uint32_t animationIndex = 0;
 };
 
