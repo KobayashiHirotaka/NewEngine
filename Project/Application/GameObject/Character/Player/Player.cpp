@@ -73,9 +73,8 @@ void Player::Initialize()
 	worldTransformBody_.scale = { 0.007f,0.007f,0.007f };
 
 	worldTransformCursol_.Initialize();
-	worldTransformCursol_.translation.x = worldTransform_.translation.x;
+	worldTransformCursol_.translation.x = 0.9f;
 	worldTransformCursol_.translation.y = worldTransform_.translation.y + 2.0f;
-	worldTransformCursol_.translation.z = worldTransform_.translation.z;
 
 	//親子付け
 	worldTransformBody_.parent_ = &worldTransform_;
@@ -315,7 +314,7 @@ void Player::Update()
 
 	ImGui::Begin("FinisherGauge");
 	ImGui::DragFloat("FinisherGauge", &finisherGauge_, 1.0f);
-	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -10.0f, 16.0f);
+	ImGui::SliderFloat3("WTFT", &worldTransformCursol_.translation.x, -10.0f, 16.0f);
 	ImGui::SliderFloat3("WTFR", &worldTransformBody_.rotation.x, 0.0f, 16.0f);
 	ImGui::End();
 }
@@ -349,6 +348,12 @@ void Player::Draw(const Camera& camera)
 	{
 		playerWeapon_->Draw(camera);
 	}
+}
+
+void Player::BoneDraw(const Camera& camera)
+{
+	//Enemyの描画
+	modelFighterBody_->BoneDraw(worldTransformBody_, camera, animationIndex);
 }
 
 void Player::DrawSprite()
@@ -484,16 +489,18 @@ void Player::Reset()
 	behavior_ = Behavior::kRoot;
 
 	worldTransform_.Initialize();
-	worldTransform_.translation = { -7.0f,0.0f,6.5f };
+	worldTransform_.translation = { -7.0f,0.0f,0.0f };
 
-	worldTransformHead_.Initialize();
-	worldTransformHead_.rotation.y = 0.0f;
 	worldTransform_.rotation.y = 1.7f;
 
 	worldTransformBody_.Initialize();
-	worldTransformBody_.translation = { 0.0f,1.0f,0.0f };
-	worldTransformBody_.rotation.x = 0.0f;
-	worldTransformBody_.rotation.y = 0.0f;
+	worldTransformBody_.translation = { 0.0f,0.0f,0.0f };
+	worldTransformBody_.rotation = { 7.75f,0.0f,0.0f };
+	worldTransformBody_.scale = { 0.007f,0.007f,0.007f };
+
+	worldTransformCursol_.Initialize();
+	worldTransformCursol_.translation.x = 0.9f;
+	worldTransformCursol_.translation.y = worldTransform_.translation.y + 2.0f;
 
 	workAttack_.translation = { 0.0f,2.5f,0.0f };
 	workAttack_.rotation = { 0.0f,0.0f,0.0f };
@@ -1985,16 +1992,31 @@ void Player::DownAnimation()
 
 	for (int i = 0; i < 6; i++)
 	{
+		if (isDown_ && worldTransform_.translation.x >= 9.5f)
+		{
+			worldTransform_.translation.x = 9.5f;
+		}
+
+		if (isDown_ && worldTransform_.translation.x <= -9.5f)
+		{
+			worldTransform_.translation.x = -9.5f;
+		}
+
+		if (worldTransformBody_.rotation.x <= 6.3f)
+		{
+			worldTransformBody_.rotation.x = 6.3f;
+		}
+
 		if (downAnimationTimer_[i] <= 0 && HP_ <= 0)
 		{
-			worldTransform_.translation.y -= 0.1f;
-
-			worldTransformBody_.rotation.x = 4.7f;
-
-			if (worldTransform_.translation.y <= -0.8f)
+			if (worldTransform_.translation.y <= 0.2f)
 			{
-				worldTransform_.translation.y = -0.8f;
+				worldTransform_.translation.y = 0.2f;
 			}
+		}
+		else if (isDown_ && worldTransform_.translation.y <= 0.2f)
+		{
+			worldTransform_.translation.y = 0.2f;
 		}
 	}
 }

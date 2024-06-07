@@ -749,7 +749,9 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	if (!isOpen_)
 	{
-		//enemy_->BoneDraw(camera_);
+		player_->BoneDraw(camera_);
+
+		enemy_->BoneDraw(camera_);
 	}
 
 
