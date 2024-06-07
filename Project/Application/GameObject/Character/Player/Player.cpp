@@ -23,7 +23,7 @@ void Player::Initialize()
 	AABB aabb = { {-1.0f,-1.0f,-10.0f},{1.0f,1.0f,10.0f} };
 	SetAABB(aabb);
 
-	modelFighterBody_.reset(Model::CreateFromOBJ("resource/models", "newEnemy.gltf"));
+	modelFighterBody_.reset(Model::CreateFromOBJ("resource/models", "newPlayer.gltf"));
 
 	playerCursol_.reset(Model::CreateFromOBJ("resource/playerCursol", "playerCursol.obj"));
 
@@ -312,9 +312,14 @@ void Player::Update()
 		}
 	}
 
+	ImGui::Begin("PlayerSpeed");
+	ImGui::DragFloat("characterFrontSpeed", &characterFrontSpeed_, 0.1f);
+	ImGui::DragFloat("characterBackSpeed", &characterBackSpeed_, 0.1f);
+	ImGui::End();
+
 	ImGui::Begin("FinisherGauge");
 	ImGui::DragFloat("FinisherGauge", &finisherGauge_, 1.0f);
-	ImGui::SliderFloat3("WTFT", &worldTransformCursol_.translation.x, -10.0f, 16.0f);
+	ImGui::SliderFloat3("WTFT", &worldTransformBody_.translation.x, -10.0f, 16.0f);
 	ImGui::SliderFloat3("WTFR", &worldTransformBody_.rotation.x, 0.0f, 16.0f);
 	ImGui::End();
 }
@@ -654,39 +659,26 @@ void Player::BehaviorRootUpdate()
 	{
 		if (GamePlayScene::migrationTimer >= 150)
 		{
-			float animationTime;
-			animationTime = modelFighterBody_->GetAnimationTime();
-			if (!isDown_)
-			{
-				animationTime += 1.0f / 60.0f;
-				animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[2].duration);
-			}
-
-			modelFighterBody_->SetAnimationTime(animationTime);
-
-			modelFighterBody_->ApplyAnimation(2);
-
-			modelFighterBody_->Update();
-
 			const float deadZone = 0.7f;
-			bool isMove_ = false;
-			float kCharacterSpeed = 0.1f;
+			bool isFrontMove_ = false;
+			bool isBackMove_ = false;
+
+			float animationTime;
+
 			velocity_ = { 0.0f, 0.0f, 0.0f };
 
 			//移動処理
 			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && worldTransform_.rotation.y == 4.6f && isDown_ == false && !isHit_)
 			{
-				kCharacterSpeed = 0.1f;
 				velocity_.x = -0.3f;
-				isMove_ = true;
+				isFrontMove_ = true;
 				isGuard_ = false;
 			}
 
 			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && worldTransform_.rotation.y == 1.7f && isDown_ == false && !isHit_)
 			{
-				kCharacterSpeed = 0.1f;
 				velocity_.x = 0.3f;
-				isMove_ = true;
+				isFrontMove_ = true;
 				isGuard_ = false;
 			}
 
@@ -696,16 +688,14 @@ void Player::BehaviorRootUpdate()
 
 				if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 				{
-					kCharacterSpeed = 0.05f;
 					velocity_.x = -0.3f;
-					isMove_ = true;
+					isBackMove_ = true;
 				}
 
 				if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
 				{
-					kCharacterSpeed = 0.0f;
 					velocity_.x = 0.0f;
-					isMove_ = false;
+					isBackMove_ = false;
 				}
 			}
 
@@ -716,16 +706,14 @@ void Player::BehaviorRootUpdate()
 
 				if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 				{
-					kCharacterSpeed = 0.05f;
 					velocity_.x = 0.3f;
-					isMove_ = true;
+					isBackMove_ = true;
 				}
 
 				if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
 				{
-					kCharacterSpeed = 0.0f;
 					velocity_.x = 0.0f;
-					isMove_ = false;
+					isBackMove_ = false;
 				}
 			}
 
@@ -734,10 +722,46 @@ void Player::BehaviorRootUpdate()
 				isGuard_ = false;
 			}
 
-			if (isMove_)
+			if (isFrontMove_)
 			{
+				animationTime = modelFighterBody_->GetAnimationTime();
+				if (!isDown_)
+				{
+					animationTime += 1.0f / 30.0f;
+					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[2].duration);
+				}
+
+				modelFighterBody_->SetAnimationTime(animationTime);
+
+				modelFighterBody_->ApplyAnimation(2);
+
+				modelFighterBody_->Update();
+
 				velocity_ = Normalize(velocity_);
-				velocity_ = Multiply(kCharacterSpeed, velocity_);
+				velocity_ = Multiply(characterFrontSpeed_, velocity_);
+
+				// 平行移動
+				worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+				worldTransform_.UpdateMatrixEuler();
+			}
+			else if (isBackMove_)
+			{
+				animationTime = modelFighterBody_->GetAnimationTime();
+				if (!isDown_)
+				{
+					animationTime += 1.0f / 60.0f;
+					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[2].duration);
+				}
+
+				modelFighterBody_->SetAnimationTime(animationTime);
+
+				modelFighterBody_->ApplyAnimation(2);
+
+				modelFighterBody_->Update();
+
+				velocity_ = Normalize(velocity_);
+				velocity_ = Multiply(characterBackSpeed_, velocity_);
 
 				// 平行移動
 				worldTransform_.translation = Add(worldTransform_.translation, velocity_);
@@ -746,7 +770,6 @@ void Player::BehaviorRootUpdate()
 			}
 			else
 			{
-				float animationTime;
 				animationTime = modelFighterBody_->GetAnimationTime();
 				if (!isDown_)
 				{
