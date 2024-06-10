@@ -25,3 +25,8 @@ struct BoxFilter
     bool enable;
 };
 
+struct GaussianFilter
+{
+    bool enable;
+};
+

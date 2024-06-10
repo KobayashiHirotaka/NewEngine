@@ -59,6 +59,12 @@ public:
         float padding[3];
     };
 
+    struct GaussianFilterData
+    {
+        bool enable;
+        float padding[3];
+    };
+
     static PostProcess* GetInstance();
 
     void Initialize();
@@ -75,6 +81,7 @@ public:
     void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
     void SetIsGrayScaleActive(float isActive) { isGrayScaleActive_ = isActive; };
     void SetIsBoxFilterActive(float isActive) { isBoxFilterActive_ = isActive; };
+    void SetIsGaussianFilterActive(float isActive) { isGaussianFilterActive_ = isActive; };
 
 private:
     //ブラーの方向
@@ -129,6 +136,10 @@ private:
     //ボックスフィルター
     void BoxFilter();
     void UpdateBoxFilter();
+
+    //ガウシアンフィルター
+    void GaussianFilter();
+    void UpdateGaussianFilter();
 
     //マルチパス用テクスチャの作成
     Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor);
@@ -198,16 +209,18 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> vignetteConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> grayScaleConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> boxFilterConstantBuffer_ = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> gaussianFilterConstantBuffer_ = nullptr;
 
     //ビネットの強度
     float vignetteIntensity_ = 0.8f;
 
     //ポストエフェクトのフラグ
     bool isPostProcessActive_ = false;
-    bool isBlurActive_ = false;
-    bool isShrinkBlurActive_ = false;
+    bool isBlurActive_ = true;
+    bool isShrinkBlurActive_ = true;
     bool isBloomActive_ = false;
     bool isVignetteActive_ = false;
     bool isGrayScaleActive_ = false;
     bool isBoxFilterActive_ = false;
+    bool isGaussianFilterActive_ = false;
 };

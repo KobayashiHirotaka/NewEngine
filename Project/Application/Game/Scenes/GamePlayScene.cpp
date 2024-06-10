@@ -107,8 +107,11 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	skydome_->Initialize();
 
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	PostProcess::GetInstance()->SetIsBlurActive(true);
+	PostProcess::GetInstance()->SetIsShrinkBlurActive(true);
 	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
+	//PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 
 	camera_.UpdateMatrix();
 
@@ -130,12 +133,26 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 void GamePlayScene::Update(SceneManager* sceneManager)
 {
+	/*if (input_->PushKey(DIK_N))
+	{
+		PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
+		PostProcess::GetInstance()->SetIsBoxFilterActive(true);
+	}
+
+	if (input_->PushKey(DIK_M))
+	{
+		PostProcess::GetInstance()->SetIsGaussianFilterActive(false);
+		PostProcess::GetInstance()->SetIsBoxFilterActive(false);
+	}*/
+
 	roundStartTimer_--;
 
 	//worldTransformTestObject_.rotation.y += 0.01f;
 
 	if (roundStartTimer_ <= 0 && !isOpen_)
 	{
+		PostProcess::GetInstance()->SetIsBoxFilterActive(false);
+
 		player_->Update();
 
 		if (player_->GetIsFinisherEffect() == false)
@@ -158,6 +175,11 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			// elapsedTimeをリセット
 			elapsedTime = 0.0f;
 		}
+	}
+	
+	if (roundStartTimer_ > 0)
+	{
+		PostProcess::GetInstance()->SetIsBoxFilterActive(true);
 	}
 
 	if (player_->GetIsFinisherEffect() == false)
@@ -725,6 +747,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 void GamePlayScene::Draw(SceneManager* sceneManager)
 {
+	PostProcess::GetInstance()->PreDraw();
 	Model::PreDraw();
 
 	if (!isOpen_)
@@ -747,8 +770,6 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
 
 	Model::BonePostDraw();
-
-	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
 

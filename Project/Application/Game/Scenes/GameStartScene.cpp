@@ -20,8 +20,10 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	skydome_->Initialize();
 
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
-	PostProcess::GetInstance()->SetIsBoxFilterActive(true);
-	//PostProcess::GetInstance()->SetIsBloomActive(true);
+	PostProcess::GetInstance()->SetIsBlurActive(true);
+	PostProcess::GetInstance()->SetIsShrinkBlurActive(true);
+    //PostProcess::GetInstance()->SetIsBoxFilterActive(true);
+	PostProcess::GetInstance()->SetIsBloomActive(true);
 	//PostProcess::GetInstance()->SetIsVignetteActive(true);
 
 	camera_.UpdateMatrix();
@@ -50,6 +52,16 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 void GameStartScene::Update(SceneManager* sceneManager)
 {
+	if (input_->PushKey(DIK_K))
+	{
+		PostProcess::GetInstance()->SetIsBoxFilterActive(true);
+	}
+
+	if (input_->PushKey(DIK_L))
+	{
+		PostProcess::GetInstance()->SetIsBoxFilterActive(false);
+	}
+
 	//タイトルの文字を動かす
 	titleSpriteMoveTimer_ --;
 
@@ -167,16 +179,17 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 		titleSprite_->Draw();
 	}
 
-	if (!isOpen_)
-	{
-		titleUISprite_->Draw();
-	}
-
 	Sprite::PostDraw();
 
 	PostProcess::GetInstance()->PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
+
+	if (!isOpen_)
+	{
+		titleUISprite_->Draw();
+	}
+
 
 	if (isOpen_ && spriteCount_ == 1)
 	{
