@@ -52,16 +52,6 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 void GameStartScene::Update(SceneManager* sceneManager)
 {
-	if (input_->PushKey(DIK_K))
-	{
-		PostProcess::GetInstance()->SetIsBoxFilterActive(true);
-	}
-
-	if (input_->PushKey(DIK_L))
-	{
-		PostProcess::GetInstance()->SetIsBoxFilterActive(false);
-	}
-
 	//タイトルの文字を動かす
 	titleSpriteMoveTimer_ --;
 

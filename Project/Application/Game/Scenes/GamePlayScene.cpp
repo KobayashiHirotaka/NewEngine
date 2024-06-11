@@ -111,7 +111,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	PostProcess::GetInstance()->SetIsShrinkBlurActive(true);
 	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
-	//PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(false);
 
 	camera_.UpdateMatrix();
 
@@ -151,8 +151,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (roundStartTimer_ <= 0 && !isOpen_)
 	{
-		PostProcess::GetInstance()->SetIsBoxFilterActive(false);
-
 		player_->Update();
 
 		if (player_->GetIsFinisherEffect() == false)
@@ -177,11 +175,6 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 		}
 	}
 	
-	if (roundStartTimer_ > 0)
-	{
-		PostProcess::GetInstance()->SetIsBoxFilterActive(true);
-	}
-
 	if (player_->GetIsFinisherEffect() == false)
 	{
 		enemy_->Update();
@@ -750,22 +743,15 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 	PostProcess::GetInstance()->PreDraw();
 	Model::PreDraw();
 
-	if (!isOpen_)
-	{
-		player_->Draw(camera_);
+	player_->Draw(camera_);
 
-		enemy_->Draw(camera_);
-	}
+	enemy_->Draw(camera_);
 
 	Model::PostDraw();
 
 	Model::BonePreDraw();
 
-	if (!isOpen_)
-	{
-		enemy_->BoneDraw(camera_);
-	}
-
+	enemy_->BoneDraw(camera_);
 
 	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
 
@@ -773,10 +759,7 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	Model::PreDraw();
 
-	if (!isOpen_)
-	{
-		ground_->Draw(worldTransform_, camera_, 0);
-	}
+	ground_->Draw(worldTransform_, camera_, 0);
 
 	stageObject_[0]->Draw(worldTransformStageObject_[0], camera_, 0);
 
