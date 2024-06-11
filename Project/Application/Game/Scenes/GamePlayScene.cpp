@@ -111,7 +111,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	PostProcess::GetInstance()->SetIsShrinkBlurActive(true);
 	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
-	PostProcess::GetInstance()->SetIsGaussianFilterActive(false);
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 
 	camera_.UpdateMatrix();
 
