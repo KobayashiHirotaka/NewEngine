@@ -116,19 +116,23 @@ void Player::Update()
 
 	if (behaviorRequest_ == Behavior::kRoot && HP_ > 0)
 	{
-		animationIndex = 3;
+		animationIndex = 4;
 	}
 	else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isSwingDown)
 	{
-		animationIndex = 2;
+		animationIndex = 3;
 	}
 	else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isMowDown)
+	{
+		animationIndex = 1;
+	}
+	else if (behaviorRequest_ == Behavior::kJump)
 	{
 		animationIndex = 0;
 	}
 	else if (HP_ <= 0 || isDown_ || GamePlayScene::roundStartTimer_ <= 0)
 	{
-		animationIndex = 1;
+		animationIndex = 2;
 	}
 
 	modelFighterBody_->ApplyAnimation(animationIndex);
@@ -736,12 +740,12 @@ void Player::BehaviorRootUpdate()
 				if (!isDown_)
 				{
 					animationTime += 1.0f / 30.0f;
-					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[3].duration);
+					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[4].duration);
 				}
 
 				modelFighterBody_->SetAnimationTime(animationTime);
 
-				modelFighterBody_->ApplyAnimation(3);
+				modelFighterBody_->ApplyAnimation(4);
 
 				modelFighterBody_->Update();
 
@@ -759,12 +763,12 @@ void Player::BehaviorRootUpdate()
 				if (!isDown_)
 				{
 					animationTime += 1.0f / 60.0f;
-					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[3].duration);
+					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[4].duration);
 				}
 
 				modelFighterBody_->SetAnimationTime(animationTime);
 
-				modelFighterBody_->ApplyAnimation(3);
+				modelFighterBody_->ApplyAnimation(4);
 
 				modelFighterBody_->Update();
 
@@ -782,12 +786,12 @@ void Player::BehaviorRootUpdate()
 				if (!isDown_)
 				{
 					animationTime += 1.0f / 60.0f;
-					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[1].duration);
+					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[2].duration);
 				}
 
 				modelFighterBody_->SetAnimationTime(animationTime);
 
-				modelFighterBody_->ApplyAnimation(1);
+				modelFighterBody_->ApplyAnimation(2);
 
 				modelFighterBody_->Update();
 			}
@@ -1121,11 +1125,11 @@ void Player::BehaviorAttackUpdate()
 			/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
 		}
 
-		animationDuration = modelFighterBody_->GetAnimation()[2].duration;
+		animationDuration = modelFighterBody_->GetAnimation()[3].duration;
 
 		modelFighterBody_->SetAnimationTime(animationTime);
 
-		modelFighterBody_->ApplyAnimation(2);
+		modelFighterBody_->ApplyAnimation(3);
 
 		modelFighterBody_->Update();
 
@@ -1303,11 +1307,11 @@ void Player::BehaviorAttackUpdate()
 			/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
 		}
 
-		animationDuration = modelFighterBody_->GetAnimation()[0].duration;
+		animationDuration = modelFighterBody_->GetAnimation()[1].duration;
 
 		modelFighterBody_->SetAnimationTime(animationTime);
 
-		modelFighterBody_->ApplyAnimation(0);
+		modelFighterBody_->ApplyAnimation(1);
 
 		modelFighterBody_->Update();
 
@@ -1526,6 +1530,23 @@ void Player::BehaviorJumpInitialize()
 
 void Player::BehaviorJumpUpdate()
 {
+	float animationTime, animationDuration;
+	animationTime = modelFighterBody_->GetAnimationTime();
+
+	if (!isDown_)
+	{
+		animationTime += 1.0f / 60.0f;
+		/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
+	}
+
+	animationDuration = modelFighterBody_->GetAnimation()[0].duration;
+
+	modelFighterBody_->SetAnimationTime(animationTime);
+
+	modelFighterBody_->ApplyAnimation(0);
+
+	modelFighterBody_->Update();
+
 	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
 	const float kGravityAcceleration_ = 0.03f;
@@ -1565,6 +1586,8 @@ void Player::BehaviorJumpUpdate()
 		behaviorRequest_ = Behavior::kRoot;
 		workAttack_.isJumpAttack = false;
 		worldTransform_.translation.y = 0.0f;
+		animationTime = 0.0f;
+		modelFighterBody_->SetAnimationTime(animationTime);
 	}
 }
 
