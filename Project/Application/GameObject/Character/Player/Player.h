@@ -286,7 +286,7 @@ private:
 	int cancelCount_ = 0;
 	int cancelTimer_ = 60;
 
-	uint32_t animationIndex = 0;
+	uint32_t animationIndex = 1;
 
 	//移動パラメーター
 	//足の速さ(向いている方向に移動する場合)

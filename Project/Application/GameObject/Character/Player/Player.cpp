@@ -106,6 +106,8 @@ void Player::Initialize()
 	weaponAttackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/WeaponAttack.mp3");
 	damageSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Damage.mp3");
 	guardSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Guard.mp3");
+
+	animationIndex = 1;
 }
 
 void Player::Update()
@@ -114,20 +116,20 @@ void Player::Update()
 
 	if (behaviorRequest_ == Behavior::kRoot && HP_ > 0)
 	{
-		animationIndex = 2;
+		animationIndex = 3;
 	}
 	else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isSwingDown)
 	{
-		animationIndex = 1;
+		animationIndex = 2;
 	}
-	else if (HP_ <= 0 || isDown_ || GamePlayScene::roundStartTimer_ <= 0)
+	else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isMowDown)
 	{
 		animationIndex = 0;
 	}
-	/*else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isMowDown)
+	else if (HP_ <= 0 || isDown_ || GamePlayScene::roundStartTimer_ <= 0)
 	{
 		animationIndex = 1;
-	}*/
+	}
 
 	modelFighterBody_->ApplyAnimation(animationIndex);
 
@@ -331,7 +333,7 @@ void Player::Update()
 void Player::Draw(const Camera& camera)
 {
 	//Playerの描画
-	modelFighterBody_->Draw(worldTransformBody_, camera, 0);
+	modelFighterBody_->Draw(worldTransformBody_, camera, animationIndex);
 
 	/*if (enemy_->GetHP() > 0 && isFinisherEffect)
 	{
@@ -362,7 +364,6 @@ void Player::Draw(const Camera& camera)
 
 void Player::BoneDraw(const Camera& camera)
 {
-	//Enemyの描画
 	modelFighterBody_->BoneDraw(worldTransformBody_, camera, animationIndex);
 }
 
@@ -495,6 +496,8 @@ void Player::Reset()
 	finisherEffectTimer = 90;
 	isFinisherEffect = false;
 	finisherCount_ = 0;
+
+	animationIndex = 1;
 
 	behavior_ = Behavior::kRoot;
 
@@ -733,12 +736,12 @@ void Player::BehaviorRootUpdate()
 				if (!isDown_)
 				{
 					animationTime += 1.0f / 30.0f;
-					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[2].duration);
+					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[3].duration);
 				}
 
 				modelFighterBody_->SetAnimationTime(animationTime);
 
-				modelFighterBody_->ApplyAnimation(2);
+				modelFighterBody_->ApplyAnimation(3);
 
 				modelFighterBody_->Update();
 
@@ -756,12 +759,12 @@ void Player::BehaviorRootUpdate()
 				if (!isDown_)
 				{
 					animationTime += 1.0f / 60.0f;
-					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[2].duration);
+					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[3].duration);
 				}
 
 				modelFighterBody_->SetAnimationTime(animationTime);
 
-				modelFighterBody_->ApplyAnimation(2);
+				modelFighterBody_->ApplyAnimation(3);
 
 				modelFighterBody_->Update();
 
@@ -779,12 +782,12 @@ void Player::BehaviorRootUpdate()
 				if (!isDown_)
 				{
 					animationTime += 1.0f / 60.0f;
-					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);
+					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[1].duration);
 				}
 
 				modelFighterBody_->SetAnimationTime(animationTime);
 
-				modelFighterBody_->ApplyAnimation(0);
+				modelFighterBody_->ApplyAnimation(1);
 
 				modelFighterBody_->Update();
 			}
@@ -887,6 +890,8 @@ void Player::BehaviorRootUpdate()
 				{
 					audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
 					behaviorRequest_ = Behavior::kAttack;
+					animationTime = 0.0f;
+					modelFighterBody_->SetAnimationTime(animationTime);
 					workAttack_.isMowDown = true;
 				}
 			}
@@ -1116,11 +1121,11 @@ void Player::BehaviorAttackUpdate()
 			/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
 		}
 
-		animationDuration = modelFighterBody_->GetAnimation()[1].duration;
+		animationDuration = modelFighterBody_->GetAnimation()[2].duration;
 
 		modelFighterBody_->SetAnimationTime(animationTime);
 
-		modelFighterBody_->ApplyAnimation(1);
+		modelFighterBody_->ApplyAnimation(2);
 
 		modelFighterBody_->Update();
 
@@ -1289,6 +1294,23 @@ void Player::BehaviorAttackUpdate()
 	if (workAttack_.isMowDown)
 	{
 		isGuard_ = false;
+		float animationTime, animationDuration;
+		animationTime = modelFighterBody_->GetAnimationTime();
+
+		if (!isDown_)
+		{
+			animationTime += 1.0f / 60.0f;
+			/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
+		}
+
+		animationDuration = modelFighterBody_->GetAnimation()[0].duration;
+
+		modelFighterBody_->SetAnimationTime(animationTime);
+
+		modelFighterBody_->ApplyAnimation(0);
+
+		modelFighterBody_->Update();
+
 		if (attackAnimationFrame < 10)
 		{
 			worldTransformBody_.rotation.y -= 0.1f;
@@ -1338,7 +1360,19 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.isMowDown = false;
 			}
 
-			if (workAttack_.stiffnessTimer <= 0)
+
+			if (animationTime >= animationDuration)
+			{
+				// アニメーションが終了した場合の処理
+				behaviorRequest_ = Behavior::kRoot;
+				workAttack_.stiffnessTimer = 60;
+				worldTransformBody_.rotation.y = 0.0f;
+				workAttack_.isMowDown = false;
+				animationTime = 0.0f;
+				modelFighterBody_->SetAnimationTime(animationTime);
+			}
+
+			/*if (workAttack_.stiffnessTimer <= 0)
 			{
 				behaviorRequest_ = Behavior::kRoot;
 				worldTransformHead_.rotation.y = 0.0f;
@@ -1346,7 +1380,7 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.stiffnessTimer = 60;
 				workAttack_.isAttack = false;
 				workAttack_.isMowDown = false;
-			}
+			}*/
 		}
 		attackAnimationFrame++;
 	}

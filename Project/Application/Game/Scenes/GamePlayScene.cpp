@@ -743,7 +743,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	worldTransformTestObject_.UpdateMatrixEuler();
 
-	game3dObjectManager_->Update();
+	//game3dObjectManager_->Update();
 
 	camera_.UpdateMatrix();
 
