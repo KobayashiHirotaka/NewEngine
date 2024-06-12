@@ -116,7 +116,7 @@ void Player::Update()
 	{
 		animationIndex = 2;
 	}
-	else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isMowDown)
+	else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isSwingDown)
 	{
 		animationIndex = 1;
 	}
@@ -124,6 +124,10 @@ void Player::Update()
 	{
 		animationIndex = 0;
 	}
+	/*else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isMowDown)
+	{
+		animationIndex = 1;
+	}*/
 
 	modelFighterBody_->ApplyAnimation(animationIndex);
 
@@ -348,8 +352,9 @@ void Player::Draw(const Camera& camera)
 	}
 
 	//Weaponの描画
-	if (workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke || workAttack_.isFinisher && finisherEffectTimer <= 0
-		&& !isHitSwingDown_ && !isHitPoke_ && !isHitMowDown_ && !isDown_ && behaviorRequest_ != Behavior::kRoot)
+	if (workAttack_.isAttack && workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_
+		&& !isHitPoke_ && !isHitMowDown_ && !isDown_ && behaviorRequest_ != Behavior::kRoot
+		&& workAttack_.isAttack)
 	{
 		playerWeapon_->Draw(camera);
 	}
@@ -886,21 +891,21 @@ void Player::BehaviorRootUpdate()
 				}
 			}
 
-			//finisher
-			if (input_->GetJoystickState())
-			{
-				if (finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
-					finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
-				{
-					audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-					behaviorRequest_ = Behavior::kAttack;
-					workAttack_.isFinisher = true;
-				}
-			}
+			////finisher
+			//if (input_->GetJoystickState())
+			//{
+			//	if (finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
+			//		finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+			//	{
+			//		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+			//		behaviorRequest_ = Behavior::kAttack;
+			//		workAttack_.isFinisher = true;
+			//	}
+			//}
 		}
 	}
 }

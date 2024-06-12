@@ -290,9 +290,9 @@ private:
 
 	//移動パラメーター
 	//足の速さ(向いている方向に移動する場合)
-	float characterFrontSpeed_ = 0.2f;
+	float characterFrontSpeed_ = 0.1f;
 
 	//足の速さ(向いている方向とは逆に移動する場合)
-	float characterBackSpeed_ = 0.15f;
+	float characterBackSpeed_ = 0.05f;
 };
 
