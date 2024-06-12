@@ -22,8 +22,10 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	skydome_->Initialize();
 
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	PostProcess::GetInstance()->SetIsBlurActive(true);
+	PostProcess::GetInstance()->SetIsShrinkBlurActive(true);
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 	PostProcess::GetInstance()->SetIsBloomActive(true);
-	//PostProcess::GetInstance()->SetIsVignetteActive(true);
 
 	camera_.UpdateMatrix();
 
@@ -178,6 +180,7 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 	{
 		titleUISprite_->Draw();
 	}
+
 
 	if (isOpen_ && spriteCount_ == 1)
 	{

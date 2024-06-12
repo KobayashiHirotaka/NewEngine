@@ -120,8 +120,11 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	skydome_->Initialize();
 
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	PostProcess::GetInstance()->SetIsBlurActive(true);
+	PostProcess::GetInstance()->SetIsShrinkBlurActive(true);
 	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 
 	camera_.UpdateMatrix();
 
@@ -143,6 +146,18 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 void GamePlayScene::Update(SceneManager* sceneManager)
 {
+	/*if (input_->PushKey(DIK_N))
+	{
+		PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
+		PostProcess::GetInstance()->SetIsBoxFilterActive(true);
+	}
+
+	if (input_->PushKey(DIK_M))
+	{
+		PostProcess::GetInstance()->SetIsGaussianFilterActive(false);
+		PostProcess::GetInstance()->SetIsBoxFilterActive(false);
+	}*/
+
 	roundStartTimer_--;
 
 	//worldTransformTestObject_.rotation.y += 0.01f;
@@ -170,7 +185,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			elapsedTime = 0.0f;
 		}
 	}
-
+	
 	if (player_->GetIsFinisherEffect() == false)
 	{
 		player_->Update();
@@ -589,10 +604,10 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	if (player_->GetIsFinisherEffect())
 	{
-		PostProcess::GetInstance()->SetVignetteIntensity(1.8f);
+		PostProcess::GetInstance()->SetVignetteIntensity(1.5f);
 	}
 	else {
-		PostProcess::GetInstance()->SetVignetteIntensity(1.5f);
+		PostProcess::GetInstance()->SetVignetteIntensity(0.8f);
 	}
 
 	/*if (input_->GetJoystickState())
@@ -742,41 +757,30 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 void GamePlayScene::Draw(SceneManager* sceneManager)
 {
+	PostProcess::GetInstance()->PreDraw();
 	Model::PreDraw();
 
-	if (!isOpen_)
-	{
-		player_->Draw(camera_);
+	player_->Draw(camera_);
 
-		enemy_->Draw(camera_);
+	enemy_->Draw(camera_);
 
-		//game3dObjectManager_->Draw(camera_);
-	}
+	//game3dObjectManager_->Draw(camera_);
 
 	Model::PostDraw();
 
 	Model::BonePreDraw();
 
-	if (!isOpen_)
-	{
-		player_->BoneDraw(camera_);
+	enemy_->BoneDraw(camera_);
 
-		enemy_->BoneDraw(camera_);
-	}
-
+	player_->BoneDraw(camera_);
 
 	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
 
 	Model::BonePostDraw();
 
-	PostProcess::GetInstance()->PreDraw();
-
 	Model::PreDraw();
 
-	if (!isOpen_)
-	{
-		ground_->Draw(worldTransform_, camera_, 0);
-	}
+	ground_->Draw(worldTransform_, camera_, 0);
 
 	stageObject_[0]->Draw(worldTransformStageObject_[0], camera_, 0);
 
