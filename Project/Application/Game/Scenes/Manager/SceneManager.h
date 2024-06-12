@@ -10,6 +10,8 @@
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/Particle/Random.h"
+#include "Engine/3D/Model/Game3dObjectFactory.h"
+#include "Engine/3D/Model/Game3dObjectManager.h"
 #include "Application/Game/Scenes/IScene.h"
 #include <memory>
 
@@ -40,6 +42,8 @@ private:
 	Input* input_ = nullptr;
 
 	PostProcess* postProcess_ = nullptr;
+
+	std::unique_ptr<Game3dObjectFactory> game3dObjectFactory_ = nullptr;
 
 	IScene* currentScene_;
 };

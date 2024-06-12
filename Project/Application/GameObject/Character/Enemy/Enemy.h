@@ -9,13 +9,14 @@
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"
 #include "Engine/2D/Sprite/UI.h"
+#include "Engine/3D/Model/IGame3dObject.h"
 #include <random>
 
 #include "Application/GameObject/Character/Enemy/EnemyWeapon.h"
 
 class Player;
 
-class Enemy : public Collider
+class Enemy : public Collider, public IGame3dObject
 {
 public:
 	enum class Behavior
@@ -187,12 +188,6 @@ private:
 	float speed_ = 0.3f;
 
 	const uint16_t kMaxModelParts = 2;
-
-	float floatingParameter_[2];
-
-	int floatingCycle_[2];
-
-	float floatingAmplitude_;
 
 	std::unique_ptr<EnemyWeapon> enemyWeapon_ = nullptr;
 

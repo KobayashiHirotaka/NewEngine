@@ -16,6 +16,8 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 	audio_ = Audio::GetInstance();
 
+	levelLoarder_ = LevelLoader::GetInstance();
+
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 

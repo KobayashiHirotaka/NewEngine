@@ -10,12 +10,13 @@
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"
 #include "Engine/2D/Sprite/UI.h"
+#include "Engine/3D/Model/IGame3dObject.h"
 
 #include "Application/GameObject/Character/Player/PlayerWeapon.h"
 
 class Enemy;
 
-class Player : public Collider
+class Player : public Collider, public IGame3dObject
 {
 public:
 	enum class Behavior
@@ -75,6 +76,8 @@ public:
 
 	void Draw(const Camera& camera);
 
+	void BoneDraw(const Camera& camera);
+
 	WorldTransform& GetWorldTransform()override { return worldTransform_; }
 
 	Vector3 GetWorldPosition() override;
@@ -123,10 +126,6 @@ public:
 
 	void BehaviorStanUpdate();
 
-	void FloatingGimmickInitialize();
-
-	void FloatingGimmickUpdate();
-
 	float GetHP() { return HP_; };
 
 	void SetHP(float HP) { HP_ = HP; };
@@ -169,6 +168,8 @@ public:
 
 	int GetIsCancelCount() { return cancelCount_; };
 
+	uint32_t GetANimationIndex() { return animationIndex; };
+
 private:
 	Input* input_ = nullptr;
 
@@ -181,23 +182,10 @@ private:
 	WorldTransform worldTransform_;
 	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformHead_;
-	WorldTransform worldTransformL_arm_;
-	WorldTransform worldTransformR_arm_;
 
-	//Animation用
-	WorldTransform worldTransformAHead_;
-	WorldTransform worldTransformAL_arm_;
-	WorldTransform worldTransformAR_arm_;
+	WorldTransform worldTransformCursol_;
 
 	std::unique_ptr<Model> modelFighterBody_;
-	std::unique_ptr<Model> modelFighterPHead_;
-	std::unique_ptr<Model> modelFighterL_arm_;
-	std::unique_ptr<Model> modelFighterR_arm_;
-
-	//Animation用
-	std::unique_ptr<Model> modelFighterPAHead_;
-	std::unique_ptr<Model> modelFighterLA_arm_;
-	std::unique_ptr<Model> modelFighterRA_arm_;
 
 	std::unique_ptr<Model> playerCursol_;
 
@@ -206,12 +194,6 @@ private:
 	float speed_ = 0.3f;
 
 	const uint16_t kMaxModelParts = 2;
-
-	float floatingParameter_[2];
-
-	int floatingCycle_[2];
-
-	float floatingAmplitude_;
 
 	float maxHP_ = 10.0f;
 
@@ -303,5 +285,14 @@ private:
 
 	int cancelCount_ = 0;
 	int cancelTimer_ = 60;
+
+	uint32_t animationIndex = 0;
+
+	//移動パラメーター
+	//足の速さ(向いている方向に移動する場合)
+	float characterFrontSpeed_ = 0.2f;
+
+	//足の速さ(向いている方向とは逆に移動する場合)
+	float characterBackSpeed_ = 0.15f;
 };
 
