@@ -107,7 +107,7 @@ void Player::Initialize()
 	damageSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Damage.mp3");
 	guardSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Guard.mp3");
 
-	animationIndex = 1;
+	animationIndex = 2;
 }
 
 void Player::Update()
@@ -501,7 +501,7 @@ void Player::Reset()
 	isFinisherEffect = false;
 	finisherCount_ = 0;
 
-	animationIndex = 1;
+	animationIndex = 2;
 
 	behavior_ = Behavior::kRoot;
 
@@ -957,7 +957,7 @@ void Player::BehaviorAttackInitialize()
 	//薙ぎ払う攻撃
 	if (workAttack_.isMowDown)
 	{
-		workAttack_.translation = { 0.0f,0.5f,0.0f };
+		workAttack_.translation = { 0.5f,2.5f,0.0f };
 		workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
 
 		playerWeapon_->SetTranslation(workAttack_.translation);
@@ -1121,7 +1121,7 @@ void Player::BehaviorAttackUpdate()
 
 		if (!isDown_)
 		{
-			animationTime += 1.0f / 60.0f;
+			animationTime += 1.0f / 50.0f;
 			/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
 		}
 
