@@ -833,6 +833,7 @@ void Player::BehaviorAttackInitialize()
 	{
 
 	}
+
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
 	{
@@ -874,6 +875,7 @@ void Player::BehaviorAttackInitialize()
 		playerWeapon_->SetTranslation(workAttack_.translation);
 		playerWeapon_->SetRotation(workAttack_.rotation);
 	}
+
 	attackAnimationFrame = 0;
 }
 
@@ -1011,6 +1013,7 @@ void Player::BehaviorAttackUpdate()
 
 		attackAnimationFrame++;
 	}
+
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
 	{
@@ -1092,6 +1095,7 @@ void Player::BehaviorAttackUpdate()
 
 		attackAnimationFrame++;
 	}
+
 	//突き攻撃
 	if (workAttack_.isPoke)
 	{
