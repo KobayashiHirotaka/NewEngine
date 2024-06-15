@@ -830,18 +830,18 @@ void Player::BehaviorRootUpdate()
 			}
 
 			//攻撃
-			//通常攻撃
-			if (input_->GetJoystickState())
-			{
-				if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
-				{
-					audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-					behaviorRequest_ = Behavior::kAttack;
-					workAttack_.isPunch = true;
-				}
-			}
+			////通常攻撃
+			//if (input_->GetJoystickState())
+			//{
+			//	if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
+			//	{
+			//		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+			//		behaviorRequest_ = Behavior::kAttack;
+			//		workAttack_.isPunch = true;
+			//	}
+			//}
 
 			//振り下ろし攻撃
 			if (input_->GetJoystickState())
@@ -858,47 +858,47 @@ void Player::BehaviorRootUpdate()
 				}
 			}
 
-			//突き攻撃
-			if (input_->GetJoystickState())
-			{
-				if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
-				{
-					audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-					behaviorRequest_ = Behavior::kAttack;
-					workAttack_.isPoke = true;
-					workAttack_.isPokeRight = true;
-				}
+			////突き攻撃
+			//if (input_->GetJoystickState())
+			//{
+			//	if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+			//	{
+			//		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+			//		behaviorRequest_ = Behavior::kAttack;
+			//		workAttack_.isPoke = true;
+			//		workAttack_.isPokeRight = true;
+			//	}
 
-				if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
-				{
-					audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-					behaviorRequest_ = Behavior::kAttack;
-					workAttack_.isPoke = true;
-					workAttack_.isPokeLeft = true;
-				}
-			}
+			//	if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
+			//	{
+			//		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+			//		behaviorRequest_ = Behavior::kAttack;
+			//		workAttack_.isPoke = true;
+			//		workAttack_.isPokeLeft = true;
+			//	}
+			//}
 
-			//薙ぎ払う攻撃
-			if (input_->GetJoystickState())
-			{
-				if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
-					input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-					&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
-				{
-					audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-					behaviorRequest_ = Behavior::kAttack;
-					animationTime = 0.0f;
-					modelFighterBody_->SetAnimationTime(animationTime);
-					workAttack_.isMowDown = true;
-				}
-			}
+			////薙ぎ払う攻撃
+			//if (input_->GetJoystickState())
+			//{
+			//	if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
+			//		input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+			//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
+			//	{
+			//		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+			//		behaviorRequest_ = Behavior::kAttack;
+			//		animationTime = 0.0f;
+			//		modelFighterBody_->SetAnimationTime(animationTime);
+			//		workAttack_.isMowDown = true;
+			//	}
+			//}
 
 			////finisher
 			//if (input_->GetJoystickState())

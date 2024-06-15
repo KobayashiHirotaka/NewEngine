@@ -38,7 +38,7 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	generalCommandListTextureHandle_ = TextureManager::LoadTexture("resource/GeneralCommandList.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
-	attackCommandListTextureHandle_ = TextureManager::LoadTexture("resource/AttackCommandList.png");
+	attackCommandListTextureHandle_ = TextureManager::LoadTexture("resource/PlayAttackCommandList2.png");
 	attackCommandListSprite_.reset(Sprite::Create(attackCommandListTextureHandle_, { 0.0f,0.0f }));
 
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
