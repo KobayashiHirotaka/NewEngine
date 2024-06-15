@@ -170,6 +170,9 @@ public:
 
 	uint32_t GetANimationIndex() { return animationIndex; };
 
+	void UpdateAnimationTime(float animationTime, float frameRate, int animationIndex,
+		std::unique_ptr<Model>& modelFighterBody);
+
 private:
 	Input* input_ = nullptr;
 
