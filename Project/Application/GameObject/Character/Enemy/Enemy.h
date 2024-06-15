@@ -170,6 +170,9 @@ public:
 
 	uint32_t GetANimationIndex() { return animationIndex; };
 
+	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex,
+		std::unique_ptr<Model>& modelFighterBody);
+
 private:
 	const WorldTransform* parent_ = nullptr;
 

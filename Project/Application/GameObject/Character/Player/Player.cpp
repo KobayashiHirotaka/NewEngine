@@ -219,43 +219,6 @@ void Player::Update()
 		worldTransform_.translation.y = 0.0f;
 	}
 
-	//float animationTime[3] = { 0.0f,0.0f,0.0f };
-
-	//if (enemy_->GetHP() > 0 && isFinisherEffect)
-	//{
-	//	//Animation
-	//	animationTime[0] = modelFighterPAHead_->GetAnimationTime();
-	//	animationTime[0] += 1.0f / 60.0f;
-	//	//animationTime[0] = std::fmod(animationTime[0], modelFighterPAHead_->GetAnimation().duration);
-
-	//	modelFighterPAHead_->SetAnimationTime(animationTime[0]);
-
-	//	//Animation
-	//	animationTime[1] = modelFighterLA_arm_->GetAnimationTime();
-	//	animationTime[1] += 1.0f / 60.0f;
-	//	//animationTime[1] = std::fmod(animationTime[1], modelFighterLA_arm_->GetAnimation().duration);
-
-	//	modelFighterLA_arm_->SetAnimationTime(animationTime[1]);
-
-	//	//Animation
-	//	animationTime[2] = modelFighterRA_arm_->GetAnimationTime();
-	//	animationTime[2] += 1.0f / 60.0f;
-	//	//animationTime[2] = std::fmod(animationTime[2], modelFighterRA_arm_->GetAnimation().duration);
-
-	//	modelFighterRA_arm_->SetAnimationTime(animationTime[2]);
-	//}
-	//else
-	//{
-	//	for (int i = 0; i < 3; i++)
-	//	{
-	//		animationTime[i] = 0.0f;
-
-	//		modelFighterPAHead_->SetAnimationTime(animationTime[0]);
-	//		modelFighterLA_arm_->SetAnimationTime(animationTime[1]);
-	//		modelFighterRA_arm_->SetAnimationTime(animationTime[2]);
-	//	}
-	//}
-
 	DownAnimation();
 
 	//パーティクルの更新
@@ -317,19 +280,6 @@ void Player::Draw(const Camera& camera)
 {
 	//Playerの描画
 	modelFighterBody_->Draw(worldTransformBody_, camera, animationIndex);
-
-	/*if (enemy_->GetHP() > 0 && isFinisherEffect)
-	{
-		modelFighterPAHead_->Draw(worldTransformAHead_, camera, 0);
-		modelFighterLA_arm_->Draw(worldTransformAL_arm_, camera, 0);
-		modelFighterRA_arm_->Draw(worldTransformAR_arm_, camera, 0);
-	}
-	else
-	{
-		modelFighterPHead_->Draw(worldTransformHead_, camera, 0);
-		modelFighterL_arm_->Draw(worldTransformL_arm_, camera, 0);
-		modelFighterR_arm_->Draw(worldTransformR_arm_, camera, 0);
-	}*/
 
 	if (!isDown_)
 	{
@@ -715,18 +665,9 @@ void Player::BehaviorRootUpdate()
 
 			if (isFrontMove_)
 			{
-				animationTime = modelFighterBody_->GetAnimationTime();
-				if (!isDown_)
-				{
-					animationTime += 1.0f / 30.0f;
-					animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[4].duration);
-				}
+				animationIndex = 4;
 
-				modelFighterBody_->SetAnimationTime(animationTime);
-
-				modelFighterBody_->ApplyAnimation(4);
-
-				modelFighterBody_->Update();
+				UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, modelFighterBody_);
 
 				velocity_ = Normalize(velocity_);
 				velocity_ = Multiply(characterFrontSpeed_, velocity_);
@@ -740,7 +681,7 @@ void Player::BehaviorRootUpdate()
 			{
 				animationIndex = 4;
 
-				UpdateAnimationTime(animationTime, 60.0f, animationIndex,modelFighterBody_);
+				UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, modelFighterBody_);
 
 				velocity_ = Normalize(velocity_);
 				velocity_ = Multiply(characterBackSpeed_, velocity_);
@@ -754,7 +695,7 @@ void Player::BehaviorRootUpdate()
 			{
 				animationIndex = 2;
 
-				UpdateAnimationTime(animationTime, 60.0f, animationIndex, modelFighterBody_);
+				UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, modelFighterBody_);
 			}
 
 			Vector3 playerWorldPosition = GetWorldPosition();
@@ -780,15 +721,15 @@ void Player::BehaviorRootUpdate()
 				}
 			}
 
-			//投げ
-			if (input_->GetJoystickState())
-			{
-				if (input_->IsPressButton(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_Y) && isDown_ == false)
-				{
-					behaviorRequest_ = Behavior::kThrow;
-					isThrow_ = true;
-				}
-			}
+			////投げ
+			//if (input_->GetJoystickState())
+			//{
+			//	if (input_->IsPressButton(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_Y) && isDown_ == false)
+			//	{
+			//		behaviorRequest_ = Behavior::kThrow;
+			//		isThrow_ = true;
+			//	}
+			//}
 
 			//攻撃
 			////通常攻撃
@@ -803,7 +744,7 @@ void Player::BehaviorRootUpdate()
 			//		workAttack_.isPunch = true;
 			//	}
 			//}
-
+		
 			//振り下ろし攻撃
 			if (input_->GetJoystickState())
 			{
@@ -885,14 +826,13 @@ void Player::BehaviorAttackInitialize()
 	//通常攻撃
 	if (workAttack_.isPunch)
 	{
-		
+
 	}
 
 	if (workAttack_.isCPunch)
 	{
-		
-	}
 
+	}
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
 	{
@@ -934,7 +874,6 @@ void Player::BehaviorAttackInitialize()
 		playerWeapon_->SetTranslation(workAttack_.translation);
 		playerWeapon_->SetRotation(workAttack_.rotation);
 	}
-
 	attackAnimationFrame = 0;
 }
 
@@ -1072,7 +1011,6 @@ void Player::BehaviorAttackUpdate()
 
 		attackAnimationFrame++;
 	}
-
 	//振り下ろし攻撃
 	if (workAttack_.isSwingDown)
 	{
@@ -1083,7 +1021,6 @@ void Player::BehaviorAttackUpdate()
 		if (!isDown_)
 		{
 			animationTime += 1.0f / 50.0f;
-			/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
 		}
 
 		animationDuration = modelFighterBody_->GetAnimation()[3].duration;
@@ -1151,22 +1088,10 @@ void Player::BehaviorAttackUpdate()
 				animationTime = 0.0f;
 				modelFighterBody_->SetAnimationTime(animationTime);
 			}
-
-			/*if (workAttack_.stiffnessTimer <= 0)
-			{
-				behaviorRequest_ = Behavior::kRoot;
-				workAttack_.stiffnessTimer = 60;
-				workAttack_.isSwingDown = false;
-			}*/
 		}
 
-		/*if (isHitSwingDown_ || isHitPoke_ || isHitMowDown_)
-		{
-
-		}*/
 		attackAnimationFrame++;
 	}
-
 	//突き攻撃
 	if (workAttack_.isPoke)
 	{
@@ -1308,7 +1233,7 @@ void Player::BehaviorAttackUpdate()
 				workAttack_.isMowDown = false;
 			}
 		}
-		else 
+		else
 		{
 			workAttack_.stiffnessTimer--;
 			workAttack_.isAttack = false;
@@ -1491,22 +1416,10 @@ void Player::BehaviorJumpInitialize()
 
 void Player::BehaviorJumpUpdate()
 {
-	float animationTime, animationDuration;
-	animationTime = modelFighterBody_->GetAnimationTime();
+	float animationTime = 0.0f;
+	animationIndex = 0;
 
-	if (!isDown_)
-	{
-		animationTime += 1.0f / 60.0f;
-		/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
-	}
-
-	animationDuration = modelFighterBody_->GetAnimation()[0].duration;
-
-	modelFighterBody_->SetAnimationTime(animationTime);
-
-	modelFighterBody_->ApplyAnimation(0);
-
-	modelFighterBody_->Update();
+	UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, modelFighterBody_);
 
 	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
@@ -1515,32 +1428,6 @@ void Player::BehaviorJumpUpdate()
 	Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
 
 	velocity_ = Add(velocity_, accelerationVector_);
-
-	/*if (input_->GetJoystickState())
-	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
-		{
-			workAttack_.isJumpAttack = true;
-
-			attackAnimationFrame = 0;
-		}
-	}
-
-	if (workAttack_.isJumpAttack)
-	{
-		if (attackAnimationFrame < 10)
-		{
-			worldTransformL_arm_.rotation.x -= 0.1f;
-			worldTransformR_arm_.rotation.x -= 0.1f;
-		}
-		else if (worldTransformL_arm_.rotation.x > -0.8f && worldTransformR_arm_.rotation.x > -0.8f)
-		{
-			worldTransformL_arm_.rotation.x += 0.1f;
-			worldTransformR_arm_.rotation.x += 0.1f;
-		}
-		attackAnimationFrame++;
-		
-	}*/
 
 	if (worldTransform_.translation.y <= 0.0f)
 	{
@@ -2079,14 +1966,18 @@ void Player::DownAnimation()
 	}
 }
 
-void Player::UpdateAnimationTime(float animationTime, float frameRate, int animationIndex, std::unique_ptr<Model>& modelFighterBody)
+void Player::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex, std::unique_ptr<Model>& modelFighterBody)
 {
 	animationTime = modelFighterBody->GetAnimationTime();
 
 	if (!isDown_)
 	{
 		animationTime += 1.0f / frameRate;
-		animationTime = std::fmod(animationTime, modelFighterBody->GetAnimation()[animationIndex].duration);
+
+		if (isLoop)
+		{
+			animationTime = std::fmod(animationTime, modelFighterBody->GetAnimation()[animationIndex].duration);
+		}
 	}
 
 	modelFighterBody->SetAnimationTime(animationTime);

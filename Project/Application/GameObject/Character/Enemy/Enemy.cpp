@@ -101,20 +101,6 @@ void Enemy::Update()
 {
 	isShake_ = false;
 
-	if (behaviorRequest_ == Behavior::kRoot && HP_ > 0)
-	{
-		animationIndex = 2;
-	}
-	else if (behaviorRequest_ == Behavior::kAttack && workAttack_.isMowDown)
-	{
-		animationIndex = 1;
-	}
-	else if (HP_ <= 0 || isDown_ || GamePlayScene::roundStartTimer_ <= 0)
-	{
-		animationIndex = 0;
-	}
-
-
 	modelFighterBody_->ApplyAnimation(animationIndex);
 
 	modelFighterBody_->Update();
@@ -451,54 +437,6 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 		isHit_ = true;
 
-		/*if (isGuard_ && worldTransform_.rotation.y == 1.7f && player_->GetIsPunch() == true)
-		{
-			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x -= 0.3f;
-			guardGauge_ += 1.0f;
-
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation(worldTransform_.translation)
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.6f ,0.6f ,0.6f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
-				.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(100)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(2.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
-		}
-
-		if (isGuard_ && worldTransform_.rotation.y == 4.6f && player_->GetIsPunch() == true)
-		{
-			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x += 0.3f;
-			guardGauge_ += 1.0f;
-
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation(worldTransform_.translation)
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.6f ,0.6f ,0.6f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
-				.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(100)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(2.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
-		}*/
-
 		if (player_->GetIsPunch() == true && isDown_ == false && isGuard_ == false)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
@@ -662,19 +600,10 @@ void Enemy::BehaviorRootUpdate()
 {
 	if (GamePlayScene::migrationTimer >= 150)
 	{
-		float animationTime;
-		animationTime = modelFighterBody_->GetAnimationTime();
-		if (!isDown_)
-		{
-			animationTime += 1.0f / 60.0f;
-			animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[2].duration);
-		}
+		float animationTime = 0.0f;
+		animationIndex = 2;
 
-		modelFighterBody_->SetAnimationTime(animationTime);
-
-		modelFighterBody_->ApplyAnimation(2);
-
-		modelFighterBody_->Update();
+		UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, modelFighterBody_);
 
 		patternCount_ = 1;
 
@@ -901,7 +830,6 @@ void Enemy::BehaviorAttackUpdate()
 		if (!isDown_)
 		{
 			animationTime += 1.0f / 60.0f;
-			/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
 		}
 	
 		animationDuration = modelFighterBody_->GetAnimation()[1].duration;
@@ -969,19 +897,8 @@ void Enemy::BehaviorAttackUpdate()
 				animationTime = 0.0f;
 				modelFighterBody_->SetAnimationTime(animationTime);
 			}
-
-			/*if (workAttack_.stiffnessTimer <= 0)
-			{
-				behaviorRequest_ = Behavior::kRoot;
-				workAttack_.stiffnessTimer = 60;
-				workAttack_.isSwingDown = false;
-			}*/
 		}
 
-		/*if (isHitSwingDown_ || isHitPoke_ || isHitMowDown_)
-		{
-
-		}*/
 		attackAnimationFrame++;
 	}
 
@@ -1940,6 +1857,26 @@ void Enemy::DownAnimation()
 		}
 	}
 }
+
+void Enemy::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex, std::unique_ptr<Model>& modelFighterBody)
+{
+	animationTime = modelFighterBody->GetAnimationTime();
+
+	if (!isDown_)
+	{
+		animationTime += 1.0f / frameRate;
+
+		if (isLoop)
+		{
+			animationTime = std::fmod(animationTime, modelFighterBody->GetAnimation()[animationIndex].duration);
+		}
+	}
+
+	modelFighterBody->SetAnimationTime(animationTime);
+	modelFighterBody->ApplyAnimation(animationIndex);
+	modelFighterBody->Update();
+}
+
 
 int Enemy::Random(int min_value, int max_value)
 {
