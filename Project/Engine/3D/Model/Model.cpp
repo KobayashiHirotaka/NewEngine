@@ -131,9 +131,6 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera, const uin
 
 void Model::BoneDraw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData)
 {
-	/*worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
-	worldTransform.TransferMatrix();*/
-
 	UpdateBoneVertices(skeleton_, skeleton_.root, boneVertices_);
 
 	dxCore_->GetCommandList()->IASetVertexBuffers(0, 1, &boneVertexBufferView_);
