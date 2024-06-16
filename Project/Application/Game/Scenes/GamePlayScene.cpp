@@ -23,10 +23,6 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
 
-	//Levelの読み込み
-	//levelLoarder_ = LevelLoader::GetInstance();
-	//levelLoarder_->LoadLevel("LevelData");
-
 	UICommandListTextureHandle_ = TextureManager::LoadTexture("resource/UICommandList.png");
 	UICommandListSprite_.reset(Sprite::Create(UICommandListTextureHandle_, { 0.0f,0.0f }));
 
@@ -100,13 +96,6 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	worldTransformTestObject_.rotation = { 0.0f,0.0f,0.0f };
 	worldTransformTestObject_.scale = { 0.01f,0.01f,0.01f };
 
-	/*enemy_ = game3dObjectManager_->GetGameObject<Enemy>("Enemy");
-	
-	player_ = game3dObjectManager_->GetGameObject<Player>("Player");
-
-	player_->SetEnemy(enemy_);
-	enemy_->SetPlayer(player_);*/
-
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
 
@@ -146,21 +135,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 void GamePlayScene::Update(SceneManager* sceneManager)
 {
-	/*if (input_->PushKey(DIK_N))
-	{
-		PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
-		PostProcess::GetInstance()->SetIsBoxFilterActive(true);
-	}
-
-	if (input_->PushKey(DIK_M))
-	{
-		PostProcess::GetInstance()->SetIsGaussianFilterActive(false);
-		PostProcess::GetInstance()->SetIsBoxFilterActive(false);
-	}*/
-
 	roundStartTimer_--;
-
-	//worldTransformTestObject_.rotation.y += 0.01f;
 
 	if (roundStartTimer_ <= 0 && !isOpen_)
 	{
