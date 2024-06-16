@@ -136,6 +136,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 void GamePlayScene::Update(SceneManager* sceneManager)
 {
 	roundStartTimer_--;
+
+	//Bone描画用の処理
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !isBoneDraw_)
