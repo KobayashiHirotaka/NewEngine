@@ -4,6 +4,8 @@
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
+#include "Engine/Utility/LevelLoader/LevelLoader.h"
+#include "Engine/3D/Model/Game3dObjectManager.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/Utility/Collision/CollisionManager.h"
 #include "Engine/3D/Particle/ParticleModel.h"
@@ -49,6 +51,14 @@ private:
 	Input* input_ = nullptr;
 
 	Audio* audio_ = nullptr;
+
+	LevelLoader* levelLoarder_ = nullptr;
+
+	Game3dObjectManager* game3dObjectManager_;
+
+	/*Player* player_;
+
+	Enemy* enemy_;*/
 
 	std::unique_ptr<Player>player_;
 

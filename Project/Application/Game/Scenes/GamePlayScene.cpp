@@ -21,6 +21,8 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
+	game3dObjectManager_ = Game3dObjectManager::GetInstance();
+
 	UICommandListTextureHandle_ = TextureManager::LoadTexture("resource/UICommandList.png");
 	UICommandListSprite_.reset(Sprite::Create(UICommandListTextureHandle_, { 0.0f,0.0f }));
 
@@ -96,7 +98,7 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
-	
+
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
 
@@ -107,8 +109,11 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 	skydome_->Initialize();
 
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	PostProcess::GetInstance()->SetIsBlurActive(true);
+	PostProcess::GetInstance()->SetIsShrinkBlurActive(true);
 	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 
 	camera_.UpdateMatrix();
 
@@ -132,12 +137,8 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 {
 	roundStartTimer_--;
 
-	//worldTransformTestObject_.rotation.y += 0.01f;
-
 	if (roundStartTimer_ <= 0 && !isOpen_)
 	{
-		player_->Update();
-
 		if (player_->GetIsFinisherEffect() == false)
 		{
 			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
@@ -159,9 +160,11 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 			elapsedTime = 0.0f;
 		}
 	}
-
+	
 	if (player_->GetIsFinisherEffect() == false)
 	{
+		player_->Update();
+
 		enemy_->Update();
 	}
 
@@ -613,6 +616,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	collisionManager_->ClearColliders();
 	collisionManager_->AddCollider(player_.get());
+	//collisionManager_->AddCollider(player_);
 
 	if (player_->GetPlayerWeapon()->GetIsAttack())
 	{
@@ -625,6 +629,7 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 	}
 
 	collisionManager_->AddCollider(enemy_.get());
+	//collisionManager_->AddCollider(enemy_);
 	
 	collisionManager_->CheckAllCollision();
 
@@ -713,6 +718,8 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 	worldTransformTestObject_.UpdateMatrixEuler();
 
+	//game3dObjectManager_->Update();
+
 	camera_.UpdateMatrix();
 
 	ImGui::Begin("Play");
@@ -725,37 +732,30 @@ void GamePlayScene::Update(SceneManager* sceneManager)
 
 void GamePlayScene::Draw(SceneManager* sceneManager)
 {
+	PostProcess::GetInstance()->PreDraw();
 	Model::PreDraw();
 
-	if (!isOpen_)
-	{
-		player_->Draw(camera_);
+	player_->Draw(camera_);
 
-		enemy_->Draw(camera_);
-	}
+	enemy_->Draw(camera_);
+
+	//game3dObjectManager_->Draw(camera_);
 
 	Model::PostDraw();
 
 	Model::BonePreDraw();
 
-	if (!isOpen_)
-	{
-		enemy_->BoneDraw(camera_);
-	}
+	enemy_->BoneDraw(camera_);
 
+	player_->BoneDraw(camera_);
 
 	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
 
 	Model::BonePostDraw();
 
-	PostProcess::GetInstance()->PreDraw();
-
 	Model::PreDraw();
 
-	if (!isOpen_)
-	{
-		ground_->Draw(worldTransform_, camera_, 0);
-	}
+	ground_->Draw(worldTransform_, camera_, 0);
 
 	stageObject_[0]->Draw(worldTransformStageObject_[0], camera_, 0);
 

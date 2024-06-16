@@ -16,12 +16,16 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 
 	audio_ = Audio::GetInstance();
 
+	levelLoarder_ = LevelLoader::GetInstance();
+
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	PostProcess::GetInstance()->SetIsBlurActive(true);
+	PostProcess::GetInstance()->SetIsShrinkBlurActive(true);
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 	PostProcess::GetInstance()->SetIsBloomActive(true);
-	//PostProcess::GetInstance()->SetIsVignetteActive(true);
 
 	camera_.UpdateMatrix();
 
@@ -34,7 +38,7 @@ void GameStartScene::Initialize(SceneManager* sceneManager)
 	generalCommandListTextureHandle_ = TextureManager::LoadTexture("resource/GeneralCommandList.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
-	attackCommandListTextureHandle_ = TextureManager::LoadTexture("resource/AttackCommandList.png");
+	attackCommandListTextureHandle_ = TextureManager::LoadTexture("resource/PlayAttackCommandList2.png");
 	attackCommandListSprite_.reset(Sprite::Create(attackCommandListTextureHandle_, { 0.0f,0.0f }));
 
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
@@ -176,6 +180,7 @@ void GameStartScene::Draw(SceneManager* sceneManager)
 	{
 		titleUISprite_->Draw();
 	}
+
 
 	if (isOpen_ && spriteCount_ == 1)
 	{

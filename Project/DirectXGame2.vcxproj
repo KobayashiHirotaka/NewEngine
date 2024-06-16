@@ -17,6 +17,7 @@
     <ClCompile Include="Application\GameObject\Character\Player\Player.cpp" />
     <ClCompile Include="Application\GameObject\Character\Player\PlayerWeapon.cpp" />
     <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp" />
+    <ClCompile Include="Application\GameObject\TestObject\TestObject.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameLoseScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameStartScene.cpp" />
@@ -26,6 +27,7 @@
     <ClCompile Include="Engine\3D\Camera\Camera.cpp" />
     <ClCompile Include="Engine\3D\Light\Light.cpp" />
     <ClCompile Include="Engine\3D\Mesh\Mesh.cpp" />
+    <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp" />
     <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp" />
     <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp" />
     <ClCompile Include="Engine\3D\Model\Material.cpp" />
@@ -72,6 +74,7 @@
     <ClCompile Include="Engine\Utility\ConvertString\ConvertString.cpp" />
     <ClCompile Include="Engine\Utility\CSV\LoadCSV.cpp" />
     <ClCompile Include="Engine\Utility\GlobalVariables.cpp" />
+    <ClCompile Include="Engine\Utility\LevelLoader\LevelLoader.cpp" />
     <ClCompile Include="Engine\Utility\Math\MyMath.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -117,6 +120,7 @@
     <ClInclude Include="Application\GameObject\Character\Player\Player.h" />
     <ClInclude Include="Application\GameObject\Character\Player\PlayerWeapon.h" />
     <ClInclude Include="Application\GameObject\Skydome\Skydome.h" />
+    <ClInclude Include="Application\GameObject\TestObject\TestObject.h" />
     <ClInclude Include="Application\Game\Scenes\GameLoseScene.h" />
     <ClInclude Include="Application\Game\Scenes\GamePlayScene.h" />
     <ClInclude Include="Application\Game\Scenes\GameStartScene.h" />
@@ -128,6 +132,7 @@
     <ClInclude Include="Engine\3D\Camera\Camera.h" />
     <ClInclude Include="Engine\3D\Light\Light.h" />
     <ClInclude Include="Engine\3D\Mesh\Mesh.h" />
+    <ClInclude Include="Engine\3D\Model\Game3dObjectFactory.h" />
     <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h" />
     <ClInclude Include="Engine\3D\Model\IGame3dObject.h" />
     <ClInclude Include="Engine\3D\Model\Material.h" />
@@ -164,6 +169,7 @@
     <ClInclude Include="Engine\Utility\ConvertString\ConvertString.h" />
     <ClInclude Include="Engine\Utility\CSV\LoadCSV.h" />
     <ClInclude Include="Engine\Utility\GlobalVariables.h" />
+    <ClInclude Include="Engine\Utility\LevelLoader\LevelLoader.h" />
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
     <ClInclude Include="Engine\Utility\Structs.h" />
     <ClInclude Include="resource.h" />

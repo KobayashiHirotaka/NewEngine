@@ -1,7 +1,9 @@
 #pragma once
 #include "IScene.h"
+#include "Engine/3D/Model/Game3dObjectManager.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
+#include "Engine/Utility/LevelLoader/LevelLoader.h"
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
@@ -35,6 +37,8 @@ private:
 
 	Audio* audio_ = nullptr;
 
+	LevelLoader* levelLoarder_ = nullptr;
+
 	std::unique_ptr<Skydome>skydome_;
 	std::unique_ptr<Model>skydomeModel_;
 
@@ -67,4 +71,7 @@ private:
 	float transitionTimer_ = 0;
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
+
+	//モデル
+	std::map < std::string,  Model*> models_;
 };
