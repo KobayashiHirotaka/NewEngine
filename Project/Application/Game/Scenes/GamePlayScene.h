@@ -140,4 +140,6 @@ private:
 	//std::unique_ptr<Model>testObject_;
 
 	WorldTransform worldTransformTestObject_;
+
+	bool isBoneDraw_ = true;
 };

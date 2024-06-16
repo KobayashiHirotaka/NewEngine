@@ -136,6 +136,18 @@ void GamePlayScene::Initialize(SceneManager* sceneManager)
 void GamePlayScene::Update(SceneManager* sceneManager)
 {
 	roundStartTimer_--;
+	if (input_->GetJoystickState())
+	{
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !isBoneDraw_)
+		{
+			isBoneDraw_ = true;
+		}
+
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && isBoneDraw_)
+		{
+			isBoneDraw_ = false;
+		}
+	}
 
 	if (roundStartTimer_ <= 0 && !isOpen_)
 	{
@@ -745,11 +757,12 @@ void GamePlayScene::Draw(SceneManager* sceneManager)
 
 	Model::BonePreDraw();
 
-	enemy_->BoneDraw(camera_);
+	if (isBoneDraw_)
+	{
+		enemy_->BoneDraw(camera_);
 
-	player_->BoneDraw(camera_);
-
-	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
+		player_->BoneDraw(camera_);
+	}
 
 	Model::BonePostDraw();
 
