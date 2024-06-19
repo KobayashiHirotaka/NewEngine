@@ -12,24 +12,25 @@
 class Player : public IGame3dObject
 {
 public:
-	void Initialize();
+	void Initialize()override;
 
-	void Update(Model* model);
+	void Update()override;
 
-	void Draw(Model* model, const Camera& camera);
+	void Draw(const Camera& camera)override;
 
-	void BoneDraw(Model* model, const Camera& camera);
+	void BoneDraw(const Camera& camera);
 
 	void DrawParticle(const Camera& camera);
 
 	uint32_t GetAnimationIndex() { return animationIndex; };
 
 private:
+	//modelManager
+	ModelManager* modelManager_ = nullptr;
+
 	Input* input_ = nullptr;
 
 	const Camera* camera_ = nullptr;
-
-	WorldTransform worldTransform_;
 
 	//パーティクル
 	std::unique_ptr<ParticleModel> particleModel_ = nullptr;

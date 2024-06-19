@@ -56,8 +56,8 @@ private:
 	DebugCamera debugCamera_;
 	bool isDebugCamera_ = false;
 
-	//Player* player_;
-	std::unique_ptr<Player>player_;
+	Player* player_;
+	//std::unique_ptr<Player>player_;
 
 	std::unique_ptr<Skydome> skydome_;
 };

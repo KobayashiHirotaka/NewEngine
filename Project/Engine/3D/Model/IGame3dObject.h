@@ -12,7 +12,7 @@ public:
 
 	virtual void Update();
 
-	virtual void Draw(const Camera camera);
+	virtual void Draw(const Camera& camera);
 
 	const Model* GetModel() const { return model_; };
 
@@ -30,7 +30,7 @@ public:
 
 	void SetTag(const std::string tag) { tag_ = tag; };
 
-private:
+protected:
 	Game3dObjectManager* game3dObjectManager_ = nullptr;
 
 	WorldTransform worldTransform_{};

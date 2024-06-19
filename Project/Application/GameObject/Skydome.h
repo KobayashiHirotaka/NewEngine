@@ -3,7 +3,7 @@
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/3D/Model/IGame3dObject.h"
 
-class Skydome : public IGame3dObject
+class Skydome
 {
 public:
 	void Initialize();
