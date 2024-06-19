@@ -35,7 +35,6 @@ void GameTitleScene::Initialize()
 	//skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
-	skydome_->SetModel(modelManager_->FindModel("skydome.obj"));
 
 	//debugCameraの初期化
 	debugCamera_.Initialize();
@@ -176,7 +175,8 @@ void GameTitleScene::Draw()
 
 	Model::PreDraw();
 
-	skydome_->Draw(camera_);
+	//skydomeの描画
+	skydome_->Draw(modelManager_->FindModel("skydome.obj"),camera_);
 
 	Model::PostDraw();
 

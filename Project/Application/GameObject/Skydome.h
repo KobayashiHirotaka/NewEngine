@@ -6,11 +6,11 @@
 class Skydome : public IGame3dObject
 {
 public:
-	void Initialize()override;
+	void Initialize();
 
-	void Update()override;
+	void Update();
 
-	void Draw(const Camera camera)override;
+	void Draw(Model* model, const Camera camera);
 
 	void ImGui();
 

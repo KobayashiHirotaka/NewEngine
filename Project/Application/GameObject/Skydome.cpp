@@ -3,8 +3,10 @@
 
 void Skydome::Initialize()
 {
-	IGame3dObject::Initialize();
+	worldTransform_.Initialize();
 	worldTransform_.scale = { 250.0f,250.0f,250.0f };
+
+	worldTransform_.UpdateMatrixEuler();
 }
 
 void Skydome::Update()
@@ -12,12 +14,12 @@ void Skydome::Update()
 	worldTransform_.rotation.y += 0.001f;
 	worldTransform_.rotation.z += 0.001f;
 
-	IGame3dObject::Update();
+	worldTransform_.UpdateMatrixEuler();
 }
 
-void Skydome::Draw(const Camera camera)
+void Skydome::Draw(Model* model, const Camera camera)
 {
-	IGame3dObject::Draw(camera);
+	model->Draw(worldTransform_, camera, 0);
 }
 
 void Skydome::ImGui()
