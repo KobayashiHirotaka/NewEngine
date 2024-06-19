@@ -67,6 +67,10 @@ void PostProcess::Initialize()
 	Vignette();
 
 	GrayScale();
+
+	BoxFilter();
+
+	GaussianFilter();
 }
 
 void PostProcess::Update()
@@ -81,6 +85,10 @@ void PostProcess::Update()
 	UpdateVignette();
 
 	UpdateGrayScale();
+
+	UpdateBoxFilter();
+
+	UpdateGaussianFilter();
 }
 
 void PostProcess::PreDraw() 
@@ -341,10 +349,11 @@ void PostProcess::SetupBlurConstantBuffers()
 	blurData->textureWidth = WindowsApp::GetInstance()->kClientWidth;
 	blurData->textureHeight = WindowsApp::GetInstance()->kClientHeight;
 
+	float sigma = 5.0f;
 	float total = 0.0f;
 	for (int i = 0; i < 8; i++)
 	{
-		blurData->weights[i] = expf(-(i * i) / (2 * 5.0f * 5.0f));
+		blurData->weights[i] = expf(-(i * i) / (2 * sigma * sigma));
 		total += blurData->weights[i];
 	}
 
@@ -355,6 +364,7 @@ void PostProcess::SetupBlurConstantBuffers()
 	{
 		blurData->weights[i] /= total;
 	}
+
 
 	blurConstantBuffer_->Unmap(0, nullptr);
 
@@ -834,6 +844,9 @@ void PostProcess::Draw()
 	commandList_->SetGraphicsRootConstantBufferView(5, bloomConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(6, vignetteConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(7, grayScaleConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(8, boxFilterConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(9, gaussianFilterConstantBuffer_->GetGPUVirtualAddress());
+
 	//形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//描画
@@ -1217,6 +1230,48 @@ void PostProcess::UpdateGrayScale()
 	grayScaleConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&grayScaleData));
 	grayScaleData->enable = isGrayScaleActive_;
 	grayScaleConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::BoxFilter()
+{
+	//BoxFilter用のCBVの作成
+	boxFilterConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(BoxFilterData));
+
+	//BoxFilter用のリソースに書き込む
+	BoxFilterData* boxFilterData = nullptr;
+	boxFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&boxFilterData));
+	boxFilterData->enable = isBoxFilterActive_;
+	boxFilterConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::UpdateBoxFilter()
+{
+	//BoxFilter用のリソースに書き込む
+	BoxFilterData* boxFilterData = nullptr;
+	boxFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&boxFilterData));
+	boxFilterData->enable = isBoxFilterActive_;
+	boxFilterConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::GaussianFilter()
+{
+	//GaussianFilter用のCBVの作成
+	gaussianFilterConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(GaussianFilterData));
+
+	//GaussianFilter用のリソースに書き込む
+	GaussianFilterData* gaussianFilterData = nullptr;
+	gaussianFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&gaussianFilterData));
+	gaussianFilterData->enable = isGaussianFilterActive_;
+	gaussianFilterConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::UpdateGaussianFilter()
+{
+	//GaussianFilter用のリソースに書き込む
+	GaussianFilterData* gaussianFilterData = nullptr;
+	gaussianFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&gaussianFilterData));
+	gaussianFilterData->enable = isGaussianFilterActive_;
+	gaussianFilterConstantBuffer_->Unmap(0, nullptr);
 }
 
 

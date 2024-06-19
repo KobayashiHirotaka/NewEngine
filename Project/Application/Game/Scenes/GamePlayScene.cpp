@@ -20,7 +20,8 @@ void GamePlayScene::Initialize()
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
 	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
-	//PostProcess::GetInstance()->SetIsGrayScaleActive(true);
+	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 
 	//modelの読み込み
 	modelManager_->LoadModel("resource/skydome", "skydome.obj");
@@ -54,6 +55,11 @@ void GamePlayScene::Update()
 			sceneManager_->ChangeScene("GameClearScene");
 			return;
 		}
+	}
+
+	if (input_->PushKey(DIK_N))
+	{
+		PostProcess::GetInstance()->SetIsGaussianFilterActive(false);
 	}
 
 	if (input_->PushKey(DIK_SPACE))
@@ -97,12 +103,6 @@ void GamePlayScene::Draw()
 
 	PostProcess::GetInstance()->PreDraw();
 
-	Sprite::PreDraw(Sprite::kBlendModeNormal);
-	
-	Sprite::PostDraw();
-
-	PostProcess::GetInstance()->PostDraw();
-
 	Model::PreDraw();
 
 	//playerの描画
@@ -126,6 +126,12 @@ void GamePlayScene::Draw()
 	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
 
 	Model::BonePostDraw();
+
+	Sprite::PreDraw(Sprite::kBlendModeNormal);
+	
+	Sprite::PostDraw();
+
+	PostProcess::GetInstance()->PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 

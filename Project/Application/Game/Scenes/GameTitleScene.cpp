@@ -26,8 +26,9 @@ void GameTitleScene::Initialize()
 
 	//postEffectの切り替え
 	PostProcess::GetInstance()->SetIsBloomActive(true);
-	/*PostProcess::GetInstance()->SetIsVignetteActive(true);
-	PostProcess::GetInstance()->SetIsGrayScaleActive(true);*/
+	PostProcess::GetInstance()->SetIsVignetteActive(true);
+	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 
 	//modelの読み込み
 	modelManager_->LoadModel("resource/skydome", "skydome.obj");
