@@ -12,6 +12,8 @@
 #include "Engine/3D/Particle/ParticleModel.h"
 #include <memory>
 
+#include "Application/GameObject/Skydome.h"
+
 class GameClearScene : public IScene
 {
 public:
@@ -28,17 +30,25 @@ public:
 	void Finalize()override;
 
 private:
-	Camera camera_;
-
+	//textureManager
 	TextureManager* textureManager_ = nullptr;
 
+	//modelManager
 	ModelManager* modelManager_ = nullptr;
 
+	//input
 	Input* input_ = nullptr;
 
+	//audio
 	Audio* audio_ = nullptr;
 
+	//camera
+	Camera camera_;
 	DebugCamera debugCamera_;
 	bool isDebugCamera_ = false;
+
+
+	//skydome
+	std::unique_ptr<Skydome> skydome_;
 };
 

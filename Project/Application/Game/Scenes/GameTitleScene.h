@@ -90,5 +90,4 @@ private:
 
 	//skydome
 	std::unique_ptr<Skydome> skydome_;
-
 };

@@ -17,7 +17,12 @@ void GameClearScene::Initialize()
 
 	audio_ = Audio::GetInstance();
 
+	//modelの読み込み
 	modelManager_->LoadModel("resource/skydome", "skydome.obj");
+
+	//skydomeの生成、初期化
+	skydome_ = std::make_unique<Skydome>();
+	skydome_->Initialize();
 
 	debugCamera_.Initialize();
 
@@ -26,6 +31,9 @@ void GameClearScene::Initialize()
 
 void GameClearScene::Update()
 {
+	//skydomeの更新
+	skydome_->Update();
+
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
@@ -98,6 +106,9 @@ void GameClearScene::Draw()
 	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
+
+	//skydomeの描画
+	skydome_->Draw(modelManager_->FindModel("skydome.obj"), camera_);
 
 	Model::PostDraw();
 
