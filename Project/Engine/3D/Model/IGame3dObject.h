@@ -12,7 +12,7 @@ public:
 
 	virtual void Update();
 
-	virtual void Draw(Model* model, const Camera camera);
+	virtual void Draw(const Camera camera);
 
 	const Model* GetModel() const { return model_; };
 

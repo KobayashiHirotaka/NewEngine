@@ -19,9 +19,9 @@ void GamePlayScene::Initialize()
 
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
 
-	//Levelの読み込み
-	levelLoarder_ = LevelLoader::GetInstance();
-	levelLoarder_->LoadLevel("LevelData");
+	////Levelの読み込み
+	//levelLoarder_ = LevelLoader::GetInstance();
+	//levelLoarder_->LoadLevel("LevelData");
 
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
 	PostProcess::GetInstance()->SetIsBloomActive(true);
@@ -38,10 +38,9 @@ void GamePlayScene::Initialize()
 	skydome_->Initialize();
 
 	//playerの生成、初期化
-	player_ = game3dObjectManager_->GetGameObject<Player>("Player");
-	player_->SetModel();
-	/*player_ = std::make_unique<Player>();
-	player_->Initialize();*/
+	//player_ = game3dObjectManager_->GetGameObject<Player>("Player");
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
 
 	debugCamera_.Initialize();
 
@@ -51,7 +50,7 @@ void GamePlayScene::Initialize()
 void GamePlayScene::Update()
 {
 	//playerの更新
-	//player_->Update(modelManager_->FindModel("newEnemy.gltf"));
+	player_->Update(modelManager_->FindModel("newEnemy.gltf"));
 
 	//skydomeの更新
 	skydome_->Update();
@@ -115,10 +114,10 @@ void GamePlayScene::Draw()
 
 	Model::PreDraw();
 
-	game3dObjectManager_->Draw(camera_);
+	//game3dObjectManager_->Draw(camera_);
 
 	//playerの描画
-	//player_->Draw(modelManager_->FindModel("newEnemy.gltf"), camera_);
+	player_->Draw(modelManager_->FindModel("newEnemy.gltf"), camera_);
 
 	//skydomeの描画
 	skydome_->Draw(modelManager_->FindModel("skydome.obj"), camera_);
