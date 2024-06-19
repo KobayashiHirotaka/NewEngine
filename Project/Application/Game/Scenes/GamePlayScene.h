@@ -14,6 +14,7 @@
 #include <memory>
 
 #include "Application/GameObject/Player.h"
+#include "Application/GameObject/Skydome.h"
 
 class GamePlayScene : public IScene
 {
@@ -45,8 +46,10 @@ private:
 	std::unique_ptr<PointLight>pointLight_;
 	Vector3 lightDirection_;
 
-	std::unique_ptr<Player>player_;
-
 	DebugCamera debugCamera_;
 	bool isDebugCamera_ = false;
+
+	std::unique_ptr<Player>player_;
+
+	std::unique_ptr<Skydome> skydome_;
 };

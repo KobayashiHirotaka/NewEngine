@@ -22,8 +22,15 @@ void GamePlayScene::Initialize()
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
 	//PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 
-	modelManager_->LoadModel("resource/hammer", "hammer.obj");
+	//modelの読み込み
+	modelManager_->LoadModel("resource/skydome", "skydome.obj");
+	modelManager_->LoadModel("resource/newEnemy", "newEnemy.gltf");
 
+	//skydomeの生成、初期化
+	skydome_ = std::make_unique<Skydome>();
+	skydome_->Initialize();
+
+	//playerの生成、初期化
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
 
@@ -34,7 +41,11 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
-	player_->Update();
+	//playerの更新
+	player_->Update(modelManager_->FindModel("newEnemy.gltf"));
+
+	//skydomeの更新
+	skydome_->Update();
 
 	if (input_->GetJoystickState())
 	{
@@ -94,7 +105,11 @@ void GamePlayScene::Draw()
 
 	Model::PreDraw();
 
-	player_->Draw(camera_);
+	//playerの描画
+	player_->Draw(modelManager_->FindModel("newEnemy.gltf"), camera_);
+
+	//skydomeの描画
+	skydome_->Draw(modelManager_->FindModel("skydome.obj"), camera_);
 
 	Model::PostDraw();
 
@@ -106,7 +121,7 @@ void GamePlayScene::Draw()
 
 	Model::BonePreDraw();
 
-	player_->BoneDraw(camera_);
+	player_->BoneDraw(modelManager_->FindModel("newEnemy.gltf"), camera_);
 
 	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
 

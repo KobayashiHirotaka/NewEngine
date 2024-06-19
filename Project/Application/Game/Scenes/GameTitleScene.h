@@ -33,46 +33,54 @@ public:
 	void Finalize()override;
 
 private:
-	//Camera
+	//textureManager
+	TextureManager* textureManager_ = nullptr;
+
+	//modelManager
+	ModelManager* modelManager_ = nullptr;
+
+	//input
+	Input* input_ = nullptr;
+
+	//audio
+	Audio* audio_ = nullptr;
+
+	//camera
 	Camera camera_;
 	DebugCamera debugCamera_;
 	bool isDebugCamera_ = false;
 
-	//TextureManager
-	TextureManager* textureManager_ = nullptr;
 
-	//ModelManager
-	ModelManager* modelManager_ = nullptr;
-
-	//Input
-	Input* input_ = nullptr;
-
-	//Audio
-	Audio* audio_ = nullptr;
-
+	//title(モノクロファイター)のsprite
 	std::unique_ptr<Sprite>titleSprite_ = nullptr;
 	uint32_t titleTextureHandle_ = 0;
 	Vector2 titleSpritePosition_ = { 0.0f,-25.0f };
 	float titleSpriteMoveSpeed_ = 1.5f;
 	int titleSpriteMoveTimer_ = 30;
 
+	//title(操作用)のsprite
 	std::unique_ptr<Sprite>titleUISprite_ = nullptr;
 	uint32_t titleUITextureHandle_ = 0;
 
+	//基本操作説明用のsprite
 	std::unique_ptr<Sprite>generalCommandListSprite_ = nullptr;
 	uint32_t generalCommandListTextureHandle_ = 0;
 
+	//攻撃操作説明用のsprite
 	std::unique_ptr<Sprite>attackCommandListSprite_ = nullptr;
 	uint32_t attackCommandListTextureHandle_ = 0;
 
-	//サウンド
+	//sounds
 	uint32_t titleSoundHandle_ = 0u;
 	uint32_t selectSoundHandle_ = 0u;
 
+	//何枚目のspriteが表示されているか
 	int spriteCount_ = 0;
+
+	//説明が開かれているか
 	bool isOpen_ = false;
 
-	//トランジション
+	//transition
 	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
 	uint32_t transitionTextureHandle_ = 0;
 	Vector4 transitionColor_ = { 0.0f,0.0f,0.0f,1.0f };
@@ -80,6 +88,7 @@ private:
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
 
+	//skydome
 	std::unique_ptr<Skydome> skydome_;
 
 };

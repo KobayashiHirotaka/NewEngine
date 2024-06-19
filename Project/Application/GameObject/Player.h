@@ -14,13 +14,15 @@ class Player : public IGame3dObject
 public:
 	void Initialize();
 
-	void Update();
+	void Update(Model* model);
 
-	void Draw(const Camera& camera);
+	void Draw(Model* model, const Camera& camera);
 
-	void BoneDraw(const Camera& camera);
+	void BoneDraw(Model* model, const Camera& camera);
 
 	void DrawParticle(const Camera& camera);
+
+	uint32_t GetAnimationIndex() { return animationIndex; };
 
 private:
 	Input* input_ = nullptr;
@@ -28,8 +30,6 @@ private:
 	const Camera* camera_ = nullptr;
 
 	WorldTransform worldTransform_;
-
-	std::unique_ptr<Model> modelFighterBody_;
 
 	//パーティクル
 	std::unique_ptr<ParticleModel> particleModel_ = nullptr;

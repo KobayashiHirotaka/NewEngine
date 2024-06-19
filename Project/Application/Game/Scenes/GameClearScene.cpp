@@ -17,11 +17,7 @@ void GameClearScene::Initialize()
 
 	audio_ = Audio::GetInstance();
 
-	modelManager_->LoadModel("resource/hammer", "hammer.obj");
 	modelManager_->LoadModel("resource/skydome", "skydome.obj");
-
-	player_ = std::make_unique<Player>();
-	player_->Initialize();
 
 	debugCamera_.Initialize();
 
@@ -30,8 +26,6 @@ void GameClearScene::Initialize()
 
 void GameClearScene::Update()
 {
-	player_->Update();
-
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
@@ -105,13 +99,9 @@ void GameClearScene::Draw()
 
 	Model::PreDraw();
 
-	player_->Draw(camera_);
-
 	Model::PostDraw();
 
 	ParticleModel::PreDraw();
-
-	player_->DrawParticle(camera_);
 
 	ParticleModel::PostDraw();
 

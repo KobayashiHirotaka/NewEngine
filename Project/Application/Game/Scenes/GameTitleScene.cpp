@@ -42,32 +42,32 @@ void GameTitleScene::Initialize()
 	camera_.UpdateMatrix();
 
 	//UIの初期化
-	//タイトル(モノクロファイター)のスプライト
+	//title(モノクロファイター)のsprite
 	titleTextureHandle_ = TextureManager::LoadTexture("resource/images/title.png");
 	titleSprite_.reset(Sprite::Create(titleTextureHandle_, { titleSpritePosition_.x, titleSpritePosition_.y }));
 
-	//タイトル(操作用)のスプライト
+	//title(操作用)のsprite
 	titleUITextureHandle_ = TextureManager::LoadTexture("resource/images/titleUI.png");
 	titleUISprite_.reset(Sprite::Create(titleUITextureHandle_, { 0.0f,0.0f }));
 
-	//基本操作説明用のスプライト
+	//基本操作説明用のsprite
 	generalCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/GeneralCommandList.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
-	//攻撃操作説明用のスプライト
+	//攻撃操作説明用のsprite
 	attackCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/AttackCommandList.png");
 	attackCommandListSprite_.reset(Sprite::Create(attackCommandListTextureHandle_, { 0.0f,0.0f }));
 
-	//トランジション用のスプライト
+	//トランジション用のsprite
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
 	transitionSprite_->SetColor(transitionColor_);
 	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
 
-	//BGM,SEの読み込み
+	//bgm,seの読み込み
 	titleSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Title.mp3");
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 
-	//BGMの再生
+	//bgmの再生
 	audio_->StopAudio(titleSoundHandle_);
 	audio_->SoundPlayMP3(titleSoundHandle_, true, 1.0f);
 };

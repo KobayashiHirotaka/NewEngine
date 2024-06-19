@@ -10,7 +10,7 @@ void Player::Initialize()
 	pointLight_ = std::make_unique<PointLight>();
 	pointLight_->Initialize();
 
-	modelFighterBody_.reset(Model::CreateFromOBJ("resource/newEnemy", "newEnemy.gltf"));
+	//modelFighterBody_.reset(Model::CreateFromOBJ("resource/newEnemy", "newEnemy.gltf"));
 
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 0.065f,-2.5f,0.0f };
@@ -26,59 +26,59 @@ void Player::Initialize()
 	animationIndex = 0;
 }
 
-void Player::Update()
+void Player::Update(Model* model)
 {
 	if (input_->PressKey(DIK_0))
 	{
 		animationIndex = 0;
 		float animationTime;
-		animationTime = modelFighterBody_->GetAnimationTime();
+		animationTime = model->GetAnimationTime();
 
 		animationTime += 1.0f / 60.0f;
-		animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);
+		animationTime = std::fmod(animationTime, model->GetAnimation()[0].duration);
 
-		modelFighterBody_->SetAnimationTime(animationTime);
+		model->SetAnimationTime(animationTime);
 
-		modelFighterBody_->ApplyAnimation(0);
+		model->ApplyAnimation(0);
 
-		modelFighterBody_->Update();
+		model->Update();
 	}
 
 	if (input_->PressKey(DIK_1))
 	{
 		animationIndex = 1;
 		float animationTime;
-		animationTime = modelFighterBody_->GetAnimationTime();
+		animationTime = model->GetAnimationTime();
 
 		animationTime += 1.0f / 60.0f;
-		animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[1].duration);
+		animationTime = std::fmod(animationTime, model->GetAnimation()[1].duration);
 
-		modelFighterBody_->SetAnimationTime(animationTime);
+		model->SetAnimationTime(animationTime);
 
-		modelFighterBody_->ApplyAnimation(1);
+		model->ApplyAnimation(1);
 
-		modelFighterBody_->Update();
+		model->Update();
 	}
 
 	if (input_->PressKey(DIK_2))
 	{
 		animationIndex = 2;
 		float animationTime;
-		animationTime = modelFighterBody_->GetAnimationTime();
+		animationTime = model->GetAnimationTime();
 
 		animationTime += 1.0f / 60.0f;
-		animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[2].duration);
+		animationTime = std::fmod(animationTime, model->GetAnimation()[2].duration);
 
-		modelFighterBody_->SetAnimationTime(animationTime);
+		model->SetAnimationTime(animationTime);
 
-		modelFighterBody_->ApplyAnimation(2);
+		model->ApplyAnimation(2);
 
-		modelFighterBody_->Update();
+		model->Update();
 	}
 
-	modelFighterBody_->ApplyAnimation(animationIndex);
+	model->ApplyAnimation(animationIndex);
 
-	modelFighterBody_->Update();
+	model->Update();
 
 	//パーティクルの更新
 	particleSystem_->Update();
@@ -105,11 +105,11 @@ void Player::Update()
 
 	worldTransform_.UpdateMatrixEuler();
 
-	modelFighterBody_->GetLight()->ImGui("DirectionalLight");
+	model->GetLight()->ImGui("DirectionalLight");
 
-	modelFighterBody_->GetPointLight()->ImGui("PointLight");
+	model->GetPointLight()->ImGui("PointLight");
 
-	modelFighterBody_->GetSpotLight()->ImGui("SpotLight");
+	model->GetSpotLight()->ImGui("SpotLight");
 
 	ImGui::Begin("Player");
 	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -10.0f, 16.0f);
@@ -117,14 +117,14 @@ void Player::Update()
 	ImGui::End();
 }
 
-void Player::Draw(const Camera& camera)
+void Player::Draw(Model* model, const Camera& camera)
 {
-	modelFighterBody_->Draw(worldTransform_, camera, animationIndex);
+	model->Draw(worldTransform_, camera, animationIndex);
 }
 
-void Player::BoneDraw(const Camera& camera)
+void Player::BoneDraw(Model* model, const Camera& camera)
 {
-	modelFighterBody_->BoneDraw(worldTransform_, camera, animationIndex);
+	model->BoneDraw(worldTransform_, camera, animationIndex);
 }
 
 void Player::DrawParticle(const Camera& camera)
