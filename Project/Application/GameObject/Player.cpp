@@ -10,6 +10,8 @@ void Player::Initialize()
 	pointLight_ = std::make_unique<PointLight>();
 	pointLight_->Initialize();
 
+	IGame3dObject::SetTag("Player");
+
 	worldTransform_.Initialize();
 	worldTransform_.translation = { 0.065f,-2.5f,0.0f };
 	worldTransform_.rotation = { 7.85f,1.72f,0.0f };

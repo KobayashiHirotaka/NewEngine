@@ -10,10 +10,10 @@ void IGame3dObject::Update()
 	worldTransform_.UpdateMatrixEuler();
 }
 
-void IGame3dObject::Draw(const Camera camera)
+void IGame3dObject::Draw(Model* model, const Camera camera)
 {
-	if (model_ != nullptr)
+	if (model != nullptr)
 	{
-		model_->Draw(worldTransform_, camera, 0);
+		model->Draw(worldTransform_, camera, 0);
 	}
 }

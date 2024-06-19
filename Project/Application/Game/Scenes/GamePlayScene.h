@@ -11,6 +11,7 @@
 #include "Engine/Utility/Collision/CollisionManager.h"
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/2D/Sprite/Sprite.h"
+#include "Engine/Utility/LevelLoader/LevelLoader.h"
 #include <memory>
 
 #include "Application/GameObject/Player.h"
@@ -38,6 +39,12 @@ private:
 	//modelManager
 	ModelManager* modelManager_ = nullptr;
 
+	//levelLoader
+	LevelLoader* levelLoarder_ = nullptr;
+
+	//gameObjectManager
+	Game3dObjectManager* game3dObjectManager_;
+
 	//input
 	Input* input_ = nullptr;
 
@@ -49,7 +56,8 @@ private:
 	DebugCamera debugCamera_;
 	bool isDebugCamera_ = false;
 
-	std::unique_ptr<Player>player_;
+	Player* player_;
+	//std::unique_ptr<Player>player_;
 
 	std::unique_ptr<Skydome> skydome_;
 };
