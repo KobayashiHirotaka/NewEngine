@@ -13,6 +13,8 @@
 #include "Engine/2D/Sprite/Sprite.h"
 #include <memory>
 
+#include "Application/GameObject/Skydome.h"
+
 class GameTitleScene : public IScene
 {
 public:
@@ -77,4 +79,7 @@ private:
 	float transitionTimer_ = 0;
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
+
+	std::unique_ptr<Skydome> skydome_;
+
 };

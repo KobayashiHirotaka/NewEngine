@@ -9,46 +9,74 @@ GameTitleScene::~GameTitleScene() {};
 
 void GameTitleScene::Initialize()
 {
+	//textureManagerのinstance
 	textureManager_ = TextureManager::GetInstance();
 
+	//modelManagerのinstance
+	modelManager_ = ModelManager::GetInstance();
+
+	//inputのinstance
 	input_ = Input::GetInstance();
 
+	//audioのinstance
 	audio_ = Audio::GetInstance();
 
+	//postProcessのinstance
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
-	PostProcess::GetInstance()->SetIsBloomActive(true);
 
+	//postEffectの切り替え
+	PostProcess::GetInstance()->SetIsBloomActive(true);
 	/*PostProcess::GetInstance()->SetIsVignetteActive(true);
 	PostProcess::GetInstance()->SetIsGrayScaleActive(true);*/
 
+	//modelの読み込み
+	modelManager_->LoadModel("resource/skydome", "skydome.obj");
+
+	//skydomeの生成、初期化
+	skydome_ = std::make_unique<Skydome>();
+	skydome_->Initialize();
+	skydome_->SetModel(modelManager_->FindModel("skydome.obj"));
+
+	//debugCameraの初期化
 	debugCamera_.Initialize();
 
 	camera_.UpdateMatrix();
 
+	//UIの初期化
+	//タイトル(モノクロファイター)のスプライト
 	titleTextureHandle_ = TextureManager::LoadTexture("resource/images/title.png");
 	titleSprite_.reset(Sprite::Create(titleTextureHandle_, { titleSpritePosition_.x, titleSpritePosition_.y }));
 
+	//タイトル(操作用)のスプライト
 	titleUITextureHandle_ = TextureManager::LoadTexture("resource/images/titleUI.png");
 	titleUISprite_.reset(Sprite::Create(titleUITextureHandle_, { 0.0f,0.0f }));
 
+	//基本操作説明用のスプライト
 	generalCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/GeneralCommandList.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
+	//攻撃操作説明用のスプライト
 	attackCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/AttackCommandList.png");
 	attackCommandListSprite_.reset(Sprite::Create(attackCommandListTextureHandle_, { 0.0f,0.0f }));
 
+	//トランジション用のスプライト
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
 	transitionSprite_->SetColor(transitionColor_);
 	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
 
+	//BGM,SEの読み込み
 	titleSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Title.mp3");
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
+
+	//BGMの再生
 	audio_->StopAudio(titleSoundHandle_);
 	audio_->SoundPlayMP3(titleSoundHandle_, true, 1.0f);
 };
 
 void GameTitleScene::Update()
 {
+	skydome_->Update();
+
 	//タイトルの文字を動かす
 	titleSpriteMoveTimer_--;
 
@@ -109,6 +137,7 @@ void GameTitleScene::Update()
 		}
 	}
 
+	//camera、debugCameraの処理
 	debugCamera_.Update();
 
 	if (input_->PushKey(DIK_K))
@@ -131,9 +160,10 @@ void GameTitleScene::Update()
 		camera_.UpdateMatrix();
 	}
 
-
+	//imGui
 	ImGui::Begin("Model");
 	ImGui::End();
+	skydome_->ImGui();
 };
 
 void GameTitleScene::Draw()
@@ -145,6 +175,8 @@ void GameTitleScene::Draw()
 	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
+
+	skydome_->Draw(camera_);
 
 	Model::PostDraw();
 

@@ -199,6 +199,18 @@
     <Filter Include="ソース ファイル\Application\GameObject">
       <UniqueIdentifier>{a80cbaa2-97c6-4e31-b21b-117b296100bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Application\GameObject\Skydome">
+      <UniqueIdentifier>{7e0572da-1d53-47b8-8261-46ca9986053b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\GameObject\Player">
+      <UniqueIdentifier>{cbe41325-1d26-4f55-8ba8-2be36733507b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\GameObject\Skydome">
+      <UniqueIdentifier>{597d5a1e-5136-40f4-9762-6d992460bdd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\GameObject\Player">
+      <UniqueIdentifier>{28e996e0-1d50-4dda-a9e8-bbb0a96b0d22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -337,7 +349,19 @@
       <Filter>ソース ファイル\Engine\3d\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Application\GameObject\Player.cpp">
-      <Filter>ソース ファイル\Application\GameObject</Filter>
+      <Filter>ソース ファイル\Application\GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Skydome.cpp">
+      <Filter>ソース ファイル\Application\GameObject\Skydome</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -521,11 +545,23 @@
     <ClInclude Include="Engine\3D\Camera\DebugCamera.h">
       <Filter>ヘッダー ファイル\Engine\3d\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Player.h">
-      <Filter>ヘッダー ファイル\Application\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Utility\Structs.h">
       <Filter>ヘッダー ファイル\Engine\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Player.h">
+      <Filter>ヘッダー ファイル\Application\GameObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Skydome.h">
+      <Filter>ヘッダー ファイル\Application\GameObject\Skydome</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\IGame3dObject.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\Game3dObjectFactory.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

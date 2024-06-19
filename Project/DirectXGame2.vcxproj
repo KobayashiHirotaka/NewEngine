@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\GameObject\Player.cpp" />
+    <ClCompile Include="Application\GameObject\Skydome.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameClearScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameTitleScene.cpp" />
@@ -24,6 +25,9 @@
     <ClCompile Include="Engine\3D\Light\PointLight.cpp" />
     <ClCompile Include="Engine\3D\Light\SpotLight.cpp" />
     <ClCompile Include="Engine\3D\Mesh\Mesh.cpp" />
+    <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp" />
+    <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp" />
+    <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp" />
     <ClCompile Include="Engine\3D\Model\Material.cpp" />
     <ClCompile Include="Engine\3D\Model\Model.cpp" />
     <ClCompile Include="Engine\3D\Model\ModelManager.cpp" />
@@ -110,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameObject\Player.h" />
+    <ClInclude Include="Application\GameObject\Skydome.h" />
     <ClInclude Include="Application\Game\Scenes\GameClearScene.h" />
     <ClInclude Include="Application\Game\Scenes\GamePlayScene.h" />
     <ClInclude Include="Application\Game\Scenes\GameTitleScene.h" />
@@ -125,6 +130,9 @@
     <ClInclude Include="Engine\3D\Light\SpotLight.h" />
     <ClInclude Include="Engine\3D\Light\Types.h" />
     <ClInclude Include="Engine\3D\Mesh\Mesh.h" />
+    <ClInclude Include="Engine\3D\Model\Game3dObjectFactory.h" />
+    <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h" />
+    <ClInclude Include="Engine\3D\Model\IGame3dObject.h" />
     <ClInclude Include="Engine\3D\Model\Material.h" />
     <ClInclude Include="Engine\3D\Model\Model.h" />
     <ClInclude Include="Engine\3D\Model\ModelManager.h" />
