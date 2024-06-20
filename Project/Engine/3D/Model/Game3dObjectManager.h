@@ -10,6 +10,8 @@ class Game3dObjectManager
 public:
 	static Game3dObjectManager* GetInstance();
 
+	static void DeleteInstance();
+
 	void Initialize();
 
 	void Update();
@@ -40,6 +42,8 @@ private:
 	const Game3dObjectManager& operator=(const Game3dObjectManager&) = delete;
 
 private:
+	static Game3dObjectManager* instance_;
+
 	std::vector<std::unique_ptr<IGame3dObject>> gameObjects_{};
 
 	std::vector<std::unique_ptr<Camera>> cameraObjects_{};

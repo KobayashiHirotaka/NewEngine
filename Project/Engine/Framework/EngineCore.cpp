@@ -35,6 +35,12 @@ void EngineCore::Initialize()
 
 	GlobalVariables::GetInstance()->LoadFiles();
 
+	game3dObjectFactory_ = std::make_unique<Game3dObjectFactory>();
+	game3dObjectManager_ = Game3dObjectManager::GetInstance();
+	game3dObjectManager_->SetGameObjectFactory(game3dObjectFactory_.get());
+
+	levelLoader_ = LevelLoader::GetInstance();
+
 	Random::Initialize();
 }
 
@@ -49,6 +55,10 @@ void EngineCore::Finalize()
 	ModelManager::DeleteInstance();
 
 	PostProcess::DeleteInstance();
+
+	Game3dObjectManager::DeleteInstance();
+
+	LevelLoader::DeleteInstance();
 
 	Input::DeleteInstance();
 

@@ -13,6 +13,9 @@
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/Particle/Random.h"
 #include "Engine/Utility/GlobalVariables.h"
+#include "Engine/3D/Model/Game3dObjectFactory.h"
+#include "Engine/3D/Model/Game3dObjectManager.h"
+#include "Engine/Utility/LevelLoader/LevelLoader.h"
 #include "Engine/Framework/SceneManager.h"
 
 class EngineCore
@@ -48,6 +51,12 @@ protected:
 	Input* input_ = nullptr;
 
 	PostProcess* postProcess_ = nullptr;
+
+	std::unique_ptr<Game3dObjectFactory> game3dObjectFactory_ = nullptr;
+
+	Game3dObjectManager* game3dObjectManager_ = nullptr;
+
+	LevelLoader* levelLoader_ = nullptr;
 
 	SceneManager* sceneManager_ = nullptr;
 

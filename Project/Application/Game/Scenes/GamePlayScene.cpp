@@ -150,5 +150,5 @@ void GamePlayScene::Draw()
 
 void GamePlayScene::Finalize()
 {
-
+	
 }
