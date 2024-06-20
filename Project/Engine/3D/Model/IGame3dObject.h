@@ -14,9 +14,9 @@ public:
 
 	virtual void Draw(const Camera& camera);
 
-	const Model* GetModel() const { return model_; };
+	const Model* GetModel() const { return model_.get(); }
 
-	void SetModel(Model* model) { model_ = model; };
+	void SetModel(std::unique_ptr<Model> model) { model_ = std::move(model); }
 
 	void SetPosition(const Vector3& position) { worldTransform_.translation = position; };
 
@@ -35,7 +35,7 @@ protected:
 
 	WorldTransform worldTransform_{};
 
-	Model* model_ = nullptr;
+	std::unique_ptr<Model> model_ = nullptr;
 
 	std::string tag_;
 };

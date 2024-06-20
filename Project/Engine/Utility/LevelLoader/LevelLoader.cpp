@@ -163,13 +163,14 @@ void LevelLoader::Create(const LevelData* levelData)
 		}
 
 		//ファイル名から登録済みモデルを検索
-		Model* model = Model::CreateFromOBJ(directoryPath, fileName);
+		std::unique_ptr<Model> model;
+		model.reset(Model::CreateFromOBJ(directoryPath, fileName));
 
 		//モデルを指定してobjectを生成
 		IGame3dObject* newObject = Game3dObjectManager::CreateGameObject(objectData.objectName);
 
 		//モデルをセット
-		newObject->SetModel(model);
+		newObject->SetModel(std::move(model));
 
 		//座標
 		newObject->SetPosition(objectData.translation);
