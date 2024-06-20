@@ -18,21 +18,19 @@ void Player::Initialize()
 	IGame3dObject::SetTag("Player");
 
 	worldTransform_.Initialize();
-	worldTransform_.translation = { 0.0f,0.0f,100.0f };
+	/*worldTransform_.translation = { 0.0f,0.0f,100.0f };
 	worldTransform_.rotation = { 7.85f,1.72f,0.0f };
-	worldTransform_.scale = { 0.007f,0.007f,0.007f };
+	worldTransform_.scale = { 0.007f,0.007f,0.007f };*/
 
 	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
 	particleSystem_ = std::make_unique<ParticleSystem>();
 	particleSystem_->Initialize();
 
-	animationIndex = 0;
+	animationIndex = 0; 
 }
 
 void Player::Update()
 {
-	worldTransform_.UpdateMatrixEuler();
-
 	if (input_->PressKey(DIK_0))
 	{
 		animationIndex = 0;
@@ -116,6 +114,8 @@ void Player::Update()
 	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -1000.0f, 1000.0f);
 	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
 	ImGui::End();
+
+	worldTransform_.UpdateMatrixEuler();
 }
 
 void Player::Draw(const Camera& camera)

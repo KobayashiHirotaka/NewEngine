@@ -43,33 +43,11 @@ void GamePlayScene::Initialize()
 	//player_ = std::make_unique<Player>();
 	//player_->Initialize();
 
-	debugCamera_.Initialize();
+	//debugCamera_.Initialize();
 };
 
 void GamePlayScene::Update()
 {
-	debugCamera_.Update();
-
-	if (input_->PushKey(DIK_K))
-	{
-		isDebugCamera_ = true;
-	}
-	else if (input_->PushKey(DIK_L))
-	{
-		isDebugCamera_ = false;
-	}
-
-	if (isDebugCamera_)
-	{
-		camera_.matView_ = debugCamera_.GetCamera().matView_;
-		camera_.matProjection_ = debugCamera_.GetCamera().matProjection_;
-		camera_.TransferMatrix();
-	}
-	else
-	{
-		camera_.UpdateMatrix();
-	}
-
 	//playerの更新
 	//player_->Update();
 
@@ -96,6 +74,28 @@ void GamePlayScene::Update()
 	{
 		sceneManager_->ChangeScene("GameClearScene");
 		return;
+	}
+
+	//debugCamera_.Update();
+
+	if (input_->PushKey(DIK_K))
+	{
+		isDebugCamera_ = true;
+	}
+	else if (input_->PushKey(DIK_L))
+	{
+		isDebugCamera_ = false;
+	}
+
+	if (isDebugCamera_)
+	{
+		camera_.matView_ = debugCamera_.GetCamera().matView_;
+		camera_.matProjection_ = debugCamera_.GetCamera().matProjection_;
+		camera_.TransferMatrix();
+	}
+	else
+	{
+		camera_.UpdateMatrix();
 	}
 
 	ImGui::Begin("PlayScene");

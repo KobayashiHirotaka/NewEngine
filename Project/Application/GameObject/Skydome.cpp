@@ -5,8 +5,6 @@ void Skydome::Initialize()
 {
 	worldTransform_.Initialize();
 	worldTransform_.scale = { 250.0f,250.0f,250.0f };
-
-	worldTransform_.UpdateMatrixEuler();
 }
 
 void Skydome::Update()
