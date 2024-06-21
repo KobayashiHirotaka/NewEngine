@@ -111,7 +111,7 @@ void Player::Update()
 	model_->GetSpotLight()->ImGui("SpotLight");
 
 	ImGui::Begin("Player");
-	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -1000.0f, 1000.0f);
+	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, 0.0f, 100.0f);
 	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
 	ImGui::End();
 
