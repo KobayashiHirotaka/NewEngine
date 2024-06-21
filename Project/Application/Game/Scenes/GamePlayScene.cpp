@@ -43,7 +43,7 @@ void GamePlayScene::Initialize()
 	//player_ = std::make_unique<Player>();
 	//player_->Initialize();
 
-	//debugCamera_.Initialize();
+	debugCamera_.Initialize();
 };
 
 void GamePlayScene::Update()
@@ -76,7 +76,7 @@ void GamePlayScene::Update()
 		return;
 	}
 
-	//debugCamera_.Update();
+	debugCamera_.Update();
 
 	if (input_->PushKey(DIK_K))
 	{
