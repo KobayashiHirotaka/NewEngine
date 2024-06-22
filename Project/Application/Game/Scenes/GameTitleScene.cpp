@@ -40,8 +40,6 @@ void GameTitleScene::Initialize()
 	//debugCameraの初期化
 	debugCamera_.Initialize();
 
-	camera_.UpdateMatrix();
-
 	//UIの初期化
 	//title(モノクロファイター)のsprite
 	titleTextureHandle_ = TextureManager::LoadTexture("resource/images/title.png");
