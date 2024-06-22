@@ -48,7 +48,7 @@ public:
 
     void LoadLevel(const std::string fileName);
 
-    void Create(const LevelData* levelData);
+    void CreateObjectsFromLevelData(const LevelData* levelData);
 
     void LoadObjectFromJson(LevelData* levelData, json& parent);
 

@@ -64,8 +64,9 @@ void LevelLoader::LoadLevel(const std::string fileName)
 		LoadObjectFromJson(levelData, object);
 	}
 
-	Create(levelData);
+	CreateObjectsFromLevelData(levelData);
 
+	//levelDataの保存
 	levelDatas_[fileName] = std::unique_ptr<LevelData>(levelData);
 }
 
@@ -145,7 +146,7 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 	}
 }
 
-void LevelLoader::Create(const LevelData* levelData)
+void LevelLoader::CreateObjectsFromLevelData(const LevelData* levelData)
 {
 	std::string directoryPath = "resource/models/";
 	std::string fileName;

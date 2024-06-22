@@ -18,20 +18,25 @@ public:
 
 	void Draw(const Camera& camera);
 
+	//objectの生成
 	static IGame3dObject* CreateGameObject(const std::string& objectName);
 	IGame3dObject* CreateGameObjectInternal(const std::string& objectName);
 
-	Camera* CreateCameraObject(const std::string& objectName);
+	//cameraの生成
+	static Camera* CreateCameraObject(const std::string& objectName);
 	Camera* CreateCameraObjectInternal(const std::string& objectName);
 
+	//gameObjectFactoryのsetter
+	void SetGameObjectFactory(Game3dObjectFactory* gameObjectFactory) { gameObjectFactory_ = gameObjectFactory; };
+
+	//typeごとのobjectの生成
 	template <typename Type>
 	Type* CreateGameObjectFromType();
 
 	template <typename Type>
 	Type* CreateGameObjectInternalFromType();
 
-	void SetGameObjectFactory(Game3dObjectFactory* gameObjectFactory) { gameObjectFactory_ = gameObjectFactory; };
-
+	//typeごとのobjectのgetter
 	template <typename Type>
 	Type* GetGameObject(const std::string& tag);
 
@@ -48,7 +53,7 @@ private:
 
 	std::vector<std::unique_ptr<Camera>> cameraObjects_{};
 
-	Game3dObjectFactory* gameObjectFactory_;
+	Game3dObjectFactory* gameObjectFactory_ = nullptr;
 };
 
 template <typename Type>
