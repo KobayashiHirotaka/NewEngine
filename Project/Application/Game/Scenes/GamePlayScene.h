@@ -14,8 +14,8 @@
 #include "Engine/Utility/LevelLoader/LevelLoader.h"
 #include <memory>
 
-#include "Application/GameObject/Player.h"
-#include "Application/GameObject/Skydome.h"
+#include "Application/GameObject/Character/Player/Player.h"
+#include "Application/GameObject/Skydome/Skydome.h"
 
 class GamePlayScene : public IScene
 {

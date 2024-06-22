@@ -12,7 +12,7 @@
 #include "Engine/3D/Particle/ParticleModel.h"
 #include <memory>
 
-#include "Application/GameObject/Skydome.h"
+#include "Application/GameObject/Skydome/Skydome.h"
 
 class GameClearScene : public IScene
 {

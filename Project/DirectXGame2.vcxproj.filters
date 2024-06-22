@@ -202,20 +202,32 @@
     <Filter Include="ヘッダー ファイル\Application\GameObject\Skydome">
       <UniqueIdentifier>{7e0572da-1d53-47b8-8261-46ca9986053b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Application\GameObject\Player">
-      <UniqueIdentifier>{cbe41325-1d26-4f55-8ba8-2be36733507b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Application\GameObject\Skydome">
       <UniqueIdentifier>{597d5a1e-5136-40f4-9762-6d992460bdd9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Application\GameObject\Player">
-      <UniqueIdentifier>{28e996e0-1d50-4dda-a9e8-bbb0a96b0d22}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\Engine\Utility\LevelLoader">
       <UniqueIdentifier>{884d24ce-0c60-4793-91f9-80baf6457b09}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Engine\Utility\LevelLoader">
       <UniqueIdentifier>{a303c3a3-8139-446d-af86-af5a3ac9163b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\GameObject\Character">
+      <UniqueIdentifier>{6dec2ec3-ad79-402e-83fd-b97d1f8d889e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\GameObject\Character\Player">
+      <UniqueIdentifier>{cbe41325-1d26-4f55-8ba8-2be36733507b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\GameObject\Character\Enemy">
+      <UniqueIdentifier>{1cafccf6-b4ac-4ed9-99f7-040e557357b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\GameObject\Character">
+      <UniqueIdentifier>{c0e4678e-0709-41fd-b31f-888c3906673f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\GameObject\Character\Player">
+      <UniqueIdentifier>{28e996e0-1d50-4dda-a9e8-bbb0a96b0d22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\GameObject\Character\Enemy">
+      <UniqueIdentifier>{57ccee8f-efec-46a4-bbec-aee94933ffa3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -354,12 +366,6 @@
     <ClCompile Include="Engine\3D\Camera\DebugCamera.cpp">
       <Filter>ソース ファイル\Engine\3d\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Player.cpp">
-      <Filter>ソース ファイル\Application\GameObject\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\GameObject\Skydome.cpp">
-      <Filter>ソース ファイル\Application\GameObject\Skydome</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp">
       <Filter>ソース ファイル\Engine\3d\Model</Filter>
     </ClCompile>
@@ -371,6 +377,15 @@
     </ClCompile>
     <ClCompile Include="Engine\Utility\LevelLoader\LevelLoader.cpp">
       <Filter>ソース ファイル\Engine\Utility\LevelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp">
+      <Filter>ソース ファイル\Application\GameObject\Skydome</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Player\Player.cpp">
+      <Filter>ソース ファイル\Application\GameObject\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp">
+      <Filter>ソース ファイル\Application\GameObject\Character\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -557,12 +572,6 @@
     <ClInclude Include="Engine\Utility\Structs.h">
       <Filter>ヘッダー ファイル\Engine\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Player.h">
-      <Filter>ヘッダー ファイル\Application\GameObject\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\GameObject\Skydome.h">
-      <Filter>ヘッダー ファイル\Application\GameObject\Skydome</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\3D\Model\Game3dObjectFactory.h">
       <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
@@ -574,6 +583,15 @@
     </ClInclude>
     <ClInclude Include="Engine\Utility\LevelLoader\LevelLoader.h">
       <Filter>ヘッダー ファイル\Engine\Utility\LevelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Player\Player.h">
+      <Filter>ヘッダー ファイル\Application\GameObject\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Skydome\Skydome.h">
+      <Filter>ヘッダー ファイル\Application\GameObject\Skydome</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h">
+      <Filter>ヘッダー ファイル\Application\GameObject\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

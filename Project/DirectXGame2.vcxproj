@@ -11,8 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Application\GameObject\Player.cpp" />
-    <ClCompile Include="Application\GameObject\Skydome.cpp" />
+    <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp" />
+    <ClCompile Include="Application\GameObject\Character\Player\Player.cpp" />
+    <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameClearScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameTitleScene.cpp" />
@@ -114,8 +115,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\GameObject\Player.h" />
-    <ClInclude Include="Application\GameObject\Skydome.h" />
+    <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h" />
+    <ClInclude Include="Application\GameObject\Character\Player\Player.h" />
+    <ClInclude Include="Application\GameObject\Skydome\Skydome.h" />
     <ClInclude Include="Application\Game\Scenes\GameClearScene.h" />
     <ClInclude Include="Application\Game\Scenes\GamePlayScene.h" />
     <ClInclude Include="Application\Game\Scenes\GameTitleScene.h" />

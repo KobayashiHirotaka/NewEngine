@@ -13,7 +13,7 @@
 #include "Engine/2D/Sprite/Sprite.h"
 #include <memory>
 
-#include "Application/GameObject/Skydome.h"
+#include "Application/GameObject/Skydome/Skydome.h"
 
 class GameTitleScene : public IScene
 {
