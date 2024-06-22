@@ -2,31 +2,21 @@
 
 void Player::Initialize()
 {
-	modelManager_ = ModelManager::GetInstance();
-
-	input_ = Input::GetInstance();
-
-	light_ = std::make_unique<Light>();
-	light_->Initialize();
-
-	pointLight_ = std::make_unique<PointLight>();
-	pointLight_->Initialize();
-
-	/*modelManager_->ModelManager::LoadModel("resource/newEnemy", "newEnemy.gltf");
-	model_ = modelManager_->FindModel("newEnemy.gltf");*/
-
 	IGame3dObject::SetTag("Player");
 
-	worldTransform_.Initialize();
-	/*worldTransform_.translation = { 0.0f,0.0f,100.0f };
-	worldTransform_.rotation = { 7.85f,1.72f,0.0f };
-	worldTransform_.scale = { 0.007f,0.007f,0.007f };*/
+	//modelManagerのinstance
+	modelManager_ = ModelManager::GetInstance();
 
+	//inputのinstance
+	input_ = Input::GetInstance();
+
+	//worldTransformの初期化
+	worldTransform_.Initialize();
+
+	//particleModelの初期化
 	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
 	particleSystem_ = std::make_unique<ParticleSystem>();
 	particleSystem_->Initialize();
-
-	animationIndex = 0; 
 }
 
 void Player::Update()
@@ -111,10 +101,11 @@ void Player::Update()
 	model_->GetSpotLight()->ImGui("SpotLight");
 
 	ImGui::Begin("Player");
-	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, 0.0f, 100.0f);
+	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
 	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
 	ImGui::End();
 
+	//worldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 }
 

@@ -28,20 +28,13 @@ private:
 	//modelManager
 	ModelManager* modelManager_ = nullptr;
 
+	//input
 	Input* input_ = nullptr;
 
-	const Camera* camera_ = nullptr;
-
-	//パーティクル
+	//particle
 	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
 	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
 
-	bool isDebugCamera_ = false;
-
 	uint32_t animationIndex = 0;
-
-	std::unique_ptr<Light>light_;
-	std::unique_ptr<PointLight>pointLight_;
-	Vector3 lightDirection_;
 };
 

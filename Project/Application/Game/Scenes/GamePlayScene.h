@@ -15,6 +15,7 @@
 #include <memory>
 
 #include "Application/GameObject/Character/Player/Player.h"
+#include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Skydome/Skydome.h"
 
 class GamePlayScene : public IScene
@@ -58,7 +59,9 @@ private:
 
 	//player
 	Player* player_;
-	//std::unique_ptr<Player>player_;
+
+	//enemy
+	Enemy* enemy_;
 
 	//skydome
 	std::unique_ptr<Skydome> skydome_;

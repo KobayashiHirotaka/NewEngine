@@ -40,16 +40,16 @@ void GamePlayScene::Initialize()
 
 	//modelの読み込み
 	modelManager_->LoadModel("resource/skydome", "skydome.obj");
-	//modelManager_->LoadModel("resource/newEnemy", "newEnemy.gltf");
+
+	//playerの生成、初期化
+	player_ = game3dObjectManager_->GetGameObject<Player>("Player");
+
+	//enemyの生成、初期化
+	enemy_ = game3dObjectManager_->GetGameObject<Enemy>("Enemy");
 
 	//skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
-
-	//playerの生成、初期化
-	player_ = game3dObjectManager_->GetGameObject<Player>("Player");
-	//player_ = std::make_unique<Player>();
-	//player_->Initialize();
 
 	//debugCameraの初期化
 	debugCamera_.Initialize();
@@ -57,8 +57,7 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
-	//playerの更新
-	//player_->Update();
+	//player,enemyの更新
 	game3dObjectManager_->Update();
 
 	//skydomeの更新
@@ -119,8 +118,7 @@ void GamePlayScene::Draw()
 
 	Model::PreDraw();
 
-	//playerの描画
-	//player_->Draw(camera_);
+	//player,enemyの描画
 	game3dObjectManager_->Draw(camera_);
 
 	//skydomeの描画
@@ -130,15 +128,21 @@ void GamePlayScene::Draw()
 
 	ParticleModel::PreDraw();
 
+	//playerのparticle描画
 	player_->DrawParticle(camera_);
+
+	//enemyのparticle描画
+	enemy_->DrawParticle(camera_);
 
 	ParticleModel::PostDraw();
 
 	Model::BonePreDraw();
 
+	//playerのbone描画
 	player_->BoneDraw(camera_);
 
-	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
+	//enemyのbone描画
+	enemy_->BoneDraw(camera_);
 
 	Model::BonePostDraw();
 
