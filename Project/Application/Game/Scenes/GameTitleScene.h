@@ -18,6 +18,7 @@
 class GameTitleScene : public IScene
 {
 public:
+	//transition用の時間
 	static const int kTransitionTime = 60;
 
 	GameTitleScene();
@@ -31,6 +32,10 @@ public:
 	void Draw()override;
 
 	void Finalize()override;
+
+private:
+	//タイトルの文字を動かす
+	void AnimationTitle();
 
 private:
 	//textureManager

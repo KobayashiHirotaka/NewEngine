@@ -73,25 +73,10 @@ void GameTitleScene::Initialize()
 
 void GameTitleScene::Update()
 {
+	//skydomeの更新
 	skydome_->Update();
 
-	//タイトルの文字を動かす
-	titleSpriteMoveTimer_--;
-
-	float startY = titleSpritePosition_.y;
-	float endY = startY + titleSpriteMoveSpeed_;
-
-	float interpolatedY = Lerp(startY, endY, 0.4f);
-
-	titleSpritePosition_.y = interpolatedY;
-
-	if (titleSpriteMoveTimer_ < 0)
-	{
-		titleSpriteMoveSpeed_ *= -1.0f;
-		titleSpriteMoveTimer_ = 30;
-	}
-
-	titleSprite_->SetPosition(titleSpritePosition_);
+	AnimationTitle();
 
 	//シーン切り替え
 	if (input_->GetJoystickState())
@@ -159,9 +144,8 @@ void GameTitleScene::Update()
 	}
 
 	//imGui
-	ImGui::Begin("Model");
+	ImGui::Begin("TitleScene");
 	ImGui::End();
-	skydome_->ImGui();
 };
 
 void GameTitleScene::Draw()
@@ -219,4 +203,25 @@ void GameTitleScene::Draw()
 void GameTitleScene::Finalize()
 {
 
+}
+
+void GameTitleScene::AnimationTitle()
+{
+	//タイトルの文字を動かす
+	titleSpriteMoveTimer_--;
+
+	float startY = titleSpritePosition_.y;
+	float endY = startY + titleSpriteMoveSpeed_;
+
+	float interpolatedY = Lerp(startY, endY, 0.4f);
+
+	titleSpritePosition_.y = interpolatedY;
+
+	if (titleSpriteMoveTimer_ < 0)
+	{
+		titleSpriteMoveSpeed_ *= -1.0f;
+		titleSpriteMoveTimer_ = 30;
+	}
+
+	titleSprite_->SetPosition(titleSpritePosition_);
 }

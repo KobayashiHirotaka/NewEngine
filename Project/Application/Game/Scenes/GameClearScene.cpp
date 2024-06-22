@@ -9,13 +9,26 @@ GameClearScene::~GameClearScene() {};
 
 void GameClearScene::Initialize()
 {
+	//textureManagerのinstance
 	textureManager_ = TextureManager::GetInstance();
 
+	//modelManagerのinstance
 	modelManager_ = ModelManager::GetInstance();
 
+	//inputのinstance
 	input_ = Input::GetInstance();
 
+	//audioのinstance
 	audio_ = Audio::GetInstance();
+
+	//postProcessのinstance
+	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+
+	//postEffectの切り替え
+	PostProcess::GetInstance()->SetIsBloomActive(true);
+	PostProcess::GetInstance()->SetIsVignetteActive(true);
+	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 
 	//modelの読み込み
 	modelManager_->LoadModel("resource/skydome", "skydome.obj");
@@ -24,9 +37,8 @@ void GameClearScene::Initialize()
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
+	//debugCameraの初期化
 	debugCamera_.Initialize();
-
-	camera_.UpdateMatrix();
 };
 
 void GameClearScene::Update()
@@ -34,6 +46,7 @@ void GameClearScene::Update()
 	//skydomeの更新
 	skydome_->Update();
 
+	//シーン切り替え
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
@@ -49,31 +62,7 @@ void GameClearScene::Update()
 		return;
 	}
 
-	//ポストプロセス
-	if (input_->PressKey(DIK_1))
-	{
-		PostProcess::GetInstance()->SetIsPostProcessActive(true);
-	}
-
-	//Bloom
-	if (input_->PressKey(DIK_2))
-	{
-		PostProcess::GetInstance()->SetIsBloomActive(true);
-	}
-
-	//Vignette
-	if (input_->PressKey(DIK_3))
-	{
-		PostProcess::GetInstance()->SetIsVignetteActive(true);
-	}
-
-	if (input_->PressKey(DIK_4))
-	{
-		PostProcess::GetInstance()->SetIsPostProcessActive(false);
-		PostProcess::GetInstance()->SetIsBloomActive(false);
-		PostProcess::GetInstance()->SetIsVignetteActive(false);
-	}
-
+	//camera、debugCameraの処理
 	debugCamera_.Update();
 
 	if (input_->PushKey(DIK_K))
@@ -96,6 +85,7 @@ void GameClearScene::Update()
 		camera_.UpdateMatrix();
 	}
 
+	//imGui
 	ImGui::Begin("ClearScene");
 	ImGui::Text("Abutton or SpaceKey : TitleScene");
 	ImGui::End();

@@ -9,26 +9,34 @@ GamePlayScene::~GamePlayScene() {};
 
 void GamePlayScene::Initialize()
 {
+	//textureManagerのinstance
 	textureManager_ = TextureManager::GetInstance();
 
+	//modelManagerのinstance
 	modelManager_ = ModelManager::GetInstance();
 
+	//inputのinstance
 	input_ = Input::GetInstance();
 
+	//audioのinstance
 	audio_ = Audio::GetInstance();
 
+	//game3dObjectManagerのinstance
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
 	game3dObjectManager_->Initialize();
 
-	//Levelの読み込み
-	levelLoarder_ = LevelLoader::GetInstance();
-	levelLoarder_->LoadLevel("LevelData");
-
+	//postProcessのinstance
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+
+	//postEffectの切り替え
 	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
 	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
+
+	//Levelの読み込み
+	levelLoarder_ = LevelLoader::GetInstance();
+	levelLoarder_->LoadLevel("LevelData");
 
 	//modelの読み込み
 	modelManager_->LoadModel("resource/skydome", "skydome.obj");
@@ -43,6 +51,7 @@ void GamePlayScene::Initialize()
 	//player_ = std::make_unique<Player>();
 	//player_->Initialize();
 
+	//debugCameraの初期化
 	debugCamera_.Initialize();
 };
 
@@ -50,12 +59,12 @@ void GamePlayScene::Update()
 {
 	//playerの更新
 	//player_->Update();
-
 	game3dObjectManager_->Update();
 
 	//skydomeの更新
 	skydome_->Update();
 
+	//シーン切り替え
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
@@ -65,17 +74,13 @@ void GamePlayScene::Update()
 		}
 	}
 
-	if (input_->PushKey(DIK_N))
-	{
-		PostProcess::GetInstance()->SetIsGaussianFilterActive(false);
-	}
-
 	if (input_->PushKey(DIK_SPACE))
 	{
 		sceneManager_->ChangeScene("GameClearScene");
 		return;
 	}
 
+	//camera、debugCameraの処理
 	debugCamera_.Update();
 
 	if (input_->PushKey(DIK_K))
@@ -98,6 +103,7 @@ void GamePlayScene::Update()
 		camera_.UpdateMatrix();
 	}
 
+	//imGui
 	ImGui::Begin("PlayScene");
 	ImGui::Text("Abutton or SpaceKey : ClearScene");
 	ImGui::End();
@@ -113,10 +119,9 @@ void GamePlayScene::Draw()
 
 	Model::PreDraw();
 
-	game3dObjectManager_->Draw(camera_);
-
 	//playerの描画
 	//player_->Draw(camera_);
+	game3dObjectManager_->Draw(camera_);
 
 	//skydomeの描画
 	skydome_->Draw(modelManager_->FindModel("skydome.obj"), camera_);
@@ -125,13 +130,13 @@ void GamePlayScene::Draw()
 
 	ParticleModel::PreDraw();
 
-	//player_->DrawParticle(camera_);
+	player_->DrawParticle(camera_);
 
 	ParticleModel::PostDraw();
 
 	Model::BonePreDraw();
 
-	//player_->BoneDraw(camera_);
+	player_->BoneDraw(camera_);
 
 	//testObject_->BoneDraw(worldTransformTestObject_, camera_, 0);
 
