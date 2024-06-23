@@ -2,50 +2,6 @@
     "name": "scene",
     "objects": [
         {
-            "type": "MESH",
-            "name": "Player",
-            "transform": {
-                "translation": [
-                    -20.0,
-                    12.07409954071045,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    0.0291617251932621,
-                    0.0291617251932621,
-                    0.0291617251932621
-                ]
-            },
-            "file_name": "newEnemy"
-        },
-        {
-            "type": "MESH",
-            "name": "Enemy",
-            "transform": {
-                "translation": [
-                    20.0,
-                    12.07409954071045,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    0.028999999165534973,
-                    0.028999999165534973,
-                    0.028999999165534973
-                ]
-            },
-            "file_name": "newEnemy"
-        },
-        {
             "type": "LIGHT",
             "name": "Light",
             "transform": {
@@ -71,7 +27,7 @@
             "name": "Camera",
             "transform": {
                 "translation": [
-                    -0.09344032406806946,
+                    7.358891487121582,
                     -6.925790786743164,
                     4.958309173583984
                 ],
@@ -86,6 +42,50 @@
                     1.0
                 ]
             }
+        },
+        {
+            "type": "MESH",
+            "name": "Player",
+            "transform": {
+                "translation": [
+                    -6.0,
+                    12.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    0.014000000432133675,
+                    0.014000000432133675,
+                    0.014000000432133675
+                ]
+            },
+            "file_name": "newEnemy"
+        },
+        {
+            "type": "MESH",
+            "name": "Enemy",
+            "transform": {
+                "translation": [
+                    6.0,
+                    12.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    0.014000000432133675,
+                    0.014000000432133675,
+                    0.014000000432133675
+                ]
+            },
+            "file_name": "newEnemy"
         }
     ]
 }
