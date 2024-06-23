@@ -64,15 +64,6 @@ void GamePlayScene::Update()
 	skydome_->Update();
 
 	//シーン切り替え
-	if (input_->GetJoystickState())
-	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
-		{
-			sceneManager_->ChangeScene("GameClearScene");
-			return;
-		}
-	}
-
 	if (input_->PushKey(DIK_SPACE))
 	{
 		sceneManager_->ChangeScene("GameClearScene");
