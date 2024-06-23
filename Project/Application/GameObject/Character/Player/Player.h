@@ -80,9 +80,9 @@ public:
 
 	void BoneDraw(const Camera& camera);
 
-	void DrawParticle(const Camera& camera);
-
 	void DrawSprite();
+
+	void DrawParticle(const Camera& camera);
 
 	void OnCollision(Collider* collider, float damage)override;
 
@@ -235,7 +235,7 @@ private:
 
 	//必殺技のゲージ
 	float maxFinisherGauge_ = 50.0f;
-	float finisherGauge_ = 50.0f;
+	float finisherGauge_ = 0.0f;
 
 	//ダウン演出の時間
 	int downAnimationTimer_[6] = { 60,60,60,60,60,60 };

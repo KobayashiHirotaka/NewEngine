@@ -147,6 +147,8 @@ void GamePlayScene::Draw()
 	Model::BonePostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
+
+	player_->DrawSprite();
 	
 	Sprite::PostDraw();
 

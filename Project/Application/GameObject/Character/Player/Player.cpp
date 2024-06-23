@@ -2,7 +2,9 @@
 
 Player::~Player()
 {
-	
+	delete hpBar_.sprite_;
+	delete guardGaugeBar_.sprite_;
+	delete finisherGaugeBar_.sprite_;
 }
 
 void Player::Initialize()
@@ -21,7 +23,57 @@ void Player::Initialize()
 	//worldTransformの初期化
 	worldTransform_.Initialize();
 
-	//particleModelの初期化
+	//リソースの初期化(sprite,se)
+	//各ゲージの初期化
+	hpBar_ = {
+		true,
+		TextureManager::LoadTexture("resource/images/HP.png"),
+		{60.0f, barSpace},
+		0.0f,
+		{-barSize  ,7.0f},
+		nullptr,
+	};
+
+	hpBar_.sprite_ = Sprite::Create(hpBar_.textureHandle_, hpBar_.position_);
+
+	guardGaugeBar_ = {
+		true,
+		TextureManager::LoadTexture("resource/images/guardGauge.png"),
+		{540.0f, guardGaugeBarSpace},
+		0.0f,
+		{guardGaugeBarSize  ,7.0f},
+		nullptr,
+	};
+
+	guardGaugeBar_.sprite_ = Sprite::Create(guardGaugeBar_.textureHandle_, guardGaugeBar_.position_);
+
+	finisherGaugeBar_ = {
+		true,
+		TextureManager::LoadTexture("resource/images/guardGauge.png"),
+		{60.0f, finisherGaugeBarSpace},
+		0.0f,
+		{-finisherGaugeBarSize  ,20.0f},
+		nullptr,
+	};
+
+	finisherGaugeBar_.sprite_ = Sprite::Create(finisherGaugeBar_.textureHandle_, finisherGaugeBar_.position_);
+
+	//seの初期化
+	attackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Attack.mp3");
+	weaponAttackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/WeaponAttack.mp3");
+	damageSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Damage.mp3");
+	guardSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Guard.mp3");
+
+	////カーソルの初期化
+	//playerCursol_.reset(Model::CreateFromOBJ("resource/playerCursol", "playerCursol.obj"));
+
+	//worldTransformCursol_.Initialize();
+	//worldTransformCursol_.translation.x = 0.9f;
+	//worldTransformCursol_.translation.y = worldTransform_.translation.y + 2.0f;
+
+	//worldTransformCursol_.parent_ = &worldTransform_;
+
+	//パーティクルの初期化
 	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
 	particleSystem_ = std::make_unique<ParticleSystem>();
 	particleSystem_->Initialize();
@@ -29,10 +81,34 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	//テスト用の処理
+	if (input_->PressKey(DIK_A))
+	{
+		guardGauge_ -= 1.0f;
+	}
+
+	if (input_->PressKey(DIK_D))
+	{
+		finisherGauge_ += 1.0f;
+	}
+	//ここまでテスト用の処理
+
+	isShake_ = false;
+
 	//0は停止、1は攻撃(振り下ろし),2は歩き
 	model_->ApplyAnimation(animationIndex);
 
 	model_->Update();
+
+	//各ゲージの更新処理
+	HPBarUpdate();
+
+	if (guardGauge_ <= 50.0f)
+	{
+		GuardGaugeBarUpdate();
+	}
+
+	FinisherGaugeBarUpdate();
 
 	//PlayerのBehavior
 	if (behaviorRequest_)
@@ -103,16 +179,34 @@ void Player::Update()
 
 	//worldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
+	//worldTransformCursol_.UpdateMatrixEuler();
 }
 
 void Player::Draw(const Camera& camera)
 {
 	model_->Draw(worldTransform_, camera, animationIndex);
+
+	/*if (!isDown_)
+	{
+		playerCursol_->Draw(worldTransformCursol_, camera, 0);
+	}*/
 }
 
 void Player::BoneDraw(const Camera& camera)
 {
 	model_->BoneDraw(worldTransform_, camera, animationIndex);
+}
+
+void Player::DrawSprite()
+{
+	if (HP_ >= 0)
+	{
+		hpBar_.sprite_->Draw();
+	}
+
+	guardGaugeBar_.sprite_->Draw();
+
+	finisherGaugeBar_.sprite_->Draw();
 }
 
 void Player::DrawParticle(const Camera& camera)
@@ -469,6 +563,94 @@ void Player::OnCollision(Collider* collider, float damage)
 			HitStop(100);
 		}
 	}*/
+}
+
+void Player::HPBarUpdate()
+{
+	hpBar_.size_ = { (HP_ / maxHP_) * barSize,7.0f };
+
+	hpBar_.sprite_->SetSize(hpBar_.size_);
+
+	if (HP_ > 50)
+	{
+		hpBar_.sprite_->SetColor({ 0.0f, 1.0f, 0.0f, 1.0f });
+	}
+
+	if (HP_ <= 50 && HP_ > 25)
+	{
+		hpBar_.sprite_->SetColor({ 1.0f, 0.8f, 0.0f, 1.0f });
+	}
+	else if (HP_ <= 25)
+	{
+		hpBar_.sprite_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
+	}
+}
+
+void Player::GuardGaugeBarUpdate()
+{
+	if (guardGauge_ < 0 && guardGauge_ > -50.0f)
+	{
+		guardGauge_ += 0.03f;
+	}
+
+	guardGaugeBar_.size_ = { (guardGauge_ / maxGuardGauge_) * guardGaugeBarSize,7.0f };
+
+	guardGaugeBar_.sprite_->SetSize(guardGaugeBar_.size_);
+
+	guardGaugeBar_.sprite_->SetColor({ 0.0f, 0.5f, 1.0f, 1.0f });
+
+	if (guardGauge_ <= -50.0f)
+	{
+		guardGauge_ = -50.0f;
+		behaviorRequest_ = Behavior::kStan;
+	}
+}
+
+void Player::FinisherGaugeBarUpdate()
+{
+
+	/*if (enemy_->GetIsDown() == false && enemy_->GetIsHitPunch())
+	{
+		finisherGauge_ += 3.0f;
+	}
+
+	if (enemy_->GetIsDown() == false && enemy_->GetIsHitSwingDown())
+	{
+		finisherGauge_ += 8.0f;
+	}
+
+	if (enemy_->GetIsDown() == false && enemy_->GetIsHitPoke())
+	{
+		finisherGauge_ += 6.0f;
+	}
+
+	if (enemy_->GetIsDown() == false && enemy_->GetIsHitMowDown())
+	{
+		finisherGauge_ += 8.0f;
+	}
+
+	if (enemy_->GetIsDown() == false && enemy_->GetIsHitThrow())
+	{
+		finisherGauge_ += 5.0f;
+	}*/
+
+	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize,20.0f };
+
+	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
+
+	if (finisherGauge_ < maxFinisherGauge_)
+	{
+		finisherGaugeBar_.sprite_->SetColor({ 0.0f, 0.5f, 1.0f, 1.0f });
+	}
+	else
+	{
+		finisherGaugeBar_.sprite_->SetColor({ 1.0f, 0.5f, 0.0f, 1.0f });
+	}
+
+	if (finisherGauge_ >= maxFinisherGauge_)
+	{
+		finisherGauge_ = 50.0f;
+	}
 }
 
 Vector3 Player::GetWorldPosition()
