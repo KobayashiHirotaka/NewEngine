@@ -48,7 +48,7 @@
             "name": "Player",
             "transform": {
                 "translation": [
-                    -6.0,
+                    -10.0,
                     12.0,
                     0.0
                 ],
@@ -70,7 +70,7 @@
             "name": "Enemy",
             "transform": {
                 "translation": [
-                    6.0,
+                    10.0,
                     12.0,
                     0.0
                 ],
