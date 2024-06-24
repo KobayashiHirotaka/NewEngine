@@ -4,14 +4,76 @@
 #include "Engine/3D/Model/IGame3dObject.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
+#include "Engine/Utility/Collision/Collider.h"
+#include "Engine/Utility/Collision/CollisionConfig.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
+#include "Engine/2D/Sprite/UI.h"
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"
+#include <random>
+#include <numbers>
 
-class Enemy : public IGame3dObject
+class Enemy : public IGame3dObject, public Collider
 {
 public:
+	enum class Behavior
+	{
+		kRoot,
+		kAttack,
+		kJump,
+		kThrow,
+		kStan
+	};
+
+	enum class Direction
+	{
+		Left,
+		Right
+	};
+
+	struct WorkAttack
+	{
+		Vector3 translation;
+
+		Vector3 rotation;
+
+		uint32_t attackParameter = 0;
+
+		int count = 0;
+		int pokeCount = 0;
+
+		int stiffnessTimer = 60;
+
+		bool comboNext = false;
+
+		//攻撃しているか
+		bool isAttack = false;
+
+		//パンチ
+		bool isPunch = false;
+		bool isCPunch = false;
+
+		//振り下ろす
+		bool isSwingDown = false;
+
+		//突く
+		bool isPoke = false;
+		bool isPokeRight = false;
+		bool isPokeLeft = false;
+
+		//薙ぎ払う
+		bool isMowDown = false;
+
+		//finisher
+		bool isFinisher = false;
+
+		//ジャンプ攻撃
+		bool isJumpAttack = false;
+	};
+
+	~Enemy();
+
 	void Initialize()override;
 
 	void Update()override;
@@ -20,21 +82,304 @@ public:
 
 	void BoneDraw(const Camera& camera);
 
+	void DrawSprite();
+
 	void DrawParticle(const Camera& camera);
+
+	void OnCollision(Collider* collider, float damage)override;
+
+#pragma region Getter
+
+	//EnemyWeapon* GetEnemyWeapon() { return enemyWeapon_.get(); };
 
 	uint32_t GetAnimationIndex() { return animationIndex; };
 
+	WorldTransform& GetWorldTransform()override { return worldTransform_; }
+
+	Vector3 GetWorldPosition() override;
+
+	Vector3 GetRotation() { return worldTransform_.rotation; };
+
+	//bool GetIsPlayerHit() { return isPlayerHit_; };
+
+	float GetHP() { return HP_; };
+
+	bool GetIsAttack() { return workAttack_.isAttack; };
+
+	bool GetIsPunch() { return workAttack_.isPunch; };
+
+	bool GetIsCPunch() { return workAttack_.isCPunch; };
+
+	bool GetIsSwingDown() { return workAttack_.isSwingDown; };
+
+	bool GetIsPoke() { return workAttack_.isPoke; };
+
+	bool GetIsMowDown() { return workAttack_.isMowDown; };
+
+	bool GetIsFinisher() { return workAttack_.isFinisher; };
+
+	bool GetIsThrow() { return isThrow_; };
+
+	int GetAttackAnimationFrame() { return attackAnimationFrame; };
+
+	int GetThrowTimer() { return throwTimer_; };
+
+	bool GetIsDown() { return isDown_; };
+
+	int GetFinisherEffectTimer() { return finisherEffectTimer; };
+
+	bool GetIsFinisherEffect() { return isFinisherEffect; };
+
+	int GetFinisherCount() { return finisherCount_; };
+
+	int GetIsCancelCount() { return cancelCount_; };
+
+	bool GetIsShake() { return isShake_; };
+
+#pragma endregion
+
+#pragma region Setter
+
+	void SetHP(float HP) { HP_ = HP; };
+
+	//武器のSetter
+	void SetTransform(Vector3 transform) { worldTransform_.translation = transform; };
+	void SetRotation(Vector3 rotation) { worldTransform_.rotation = rotation; };
+
+	//void SetPlayer(Player* player) { player_ = player; };
+
+#pragma endregion
+
 private:
+	void HitStop(int milliseconds);
+
+	void Reset();
+
+	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex,
+		std::unique_ptr<Model>& modelFighterBody);
+
+	void UpdateComboNumberSprite();
+
+	void DownAnimation();
+
+	int Random(int min_value, int max_value);
+
+#pragma region UIの更新
+
+	void HPBarUpdate();
+
+	void GuardGaugeBarUpdate();
+
+	void FinisherGaugeBarUpdate();
+
+#pragma endregion
+
+#pragma region 敵の行動
+
+	void BehaviorRootInitialize();
+
+	void BehaviorRootUpdate();
+
+	void BehaviorAttackInitialize();
+
+	void BehaviorAttackUpdate();
+
+	void BehaviorJumpInitialize();
+
+	void BehaviorJumpUpdate();
+
+	void BehaviorThrowInitialize();
+
+	void BehaviorThrowUpdate();
+
+	void BehaviorStanInitialize();
+
+	void BehaviorStanUpdate();
+
+#pragma endregion
+
+private:
+#pragma region インスタンス
+
 	//modelManager
 	ModelManager* modelManager_ = nullptr;
 
 	//input
 	Input* input_ = nullptr;
 
-	//particle
+	//audio
+	Audio* audio_ = nullptr;
+
+#pragma endregion
+
+#pragma region 敵の基本パラメータ
+
+	//behavior
+	Behavior behavior_ = Behavior::kRoot;
+	std::optional<Behavior> behaviorRequest_ = std::nullopt;
+
+	//現在のフレームでの位置
+	Vector3 currentPosition_;
+
+	//前のフレームでの位置
+	Vector3 previousPosition_;
+
+	//向いている方向
+	Direction playerDirection = Direction::Left;
+
+	//再生するanimationの番号
+	uint32_t animationIndex = 0;
+
+	//行動のパターン
+	int patternCount_ = 1;
+	int moveTimer_ = 60;
+
+	//hp
+	float maxHP_ = 10.0f;
+	float HP_ = maxHP_;
+
+	//ガードゲージ
+	float maxGuardGauge_ = 50.0f;
+	float guardGauge_ = 0.0f;
+
+	//必殺技のゲージ
+	float maxFinisherGauge_ = 50.0f;
+	float finisherGauge_ = 0.0f;
+
+	//ダウン演出の時間
+	int downAnimationTimer_[6] = { 60,60,60,60,60,60 };
+
+	//リセットの時間
+	int resetTimer_ = 60;
+
+	//スタンの時間
+	int stanTimer_ = 200;
+
+	//必殺技
+	int finisherEffectTimer = 90;
+	int finisherCount_ = 0;
+
+	//キャンセル
+	int cancelCount_ = 0;
+	int cancelTimer_ = 60;
+
+	//コンボを食らっているとき
+	int comboTimer_ = 60;
+	int comboCount_ = 0;
+
+#pragma endregion
+
+#pragma region 敵の移動パラメータ
+
+	//移動
+	Vector3 velocity_ = {};
+	float speed_ = 0.3f;
+
+	//足の速さ(向いている方向に移動する場合)
+	float characterFrontSpeed_ = 0.2f;
+
+	//足の速さ(向いている方向とは逆に移動する場合)
+	float characterBackSpeed_ = 0.1f;
+
+#pragma endregion
+
+#pragma region 敵の攻撃パラメータ
+
+	WorkAttack workAttack_;
+
+	int attackTimer = 30;
+
+	int pokeTimer_ = 30;
+
+	int jumpAttackTimer_ = 15;
+
+	int throwTimer_ = 100;
+
+	int attackAnimationFrame;
+
+#pragma endregion
+
+#pragma region 敵のフラグ
+
+	//当たっているかどうか
+	bool isHit_ = false;
+
+	//ダウンしているかどうか
+	bool isDown_ = false;
+
+	//攻撃しているかどうか
+	bool isAttack_[5];
+
+	//ガードしているかどうか
+	bool isGuard_ = false;
+
+	//プレイヤーと当たっているかどうか
+	bool isPlayerHit_ = false;
+
+	//各攻撃があたっているかどうか
+	bool isHitPunch_ = false;
+	bool isHitCPunch_ = false;
+	bool isHitSwingDown_ = false;
+	bool isHitPoke_ = false;
+	bool isHitMowDown_ = false;
+	bool isHitThrow_ = false;
+	bool isThrow_ = false;
+
+	//シェイクしているかどうか
+	bool isShake_ = false;
+
+	//リセットしているかどうか
+	bool isReset_ = false;
+
+
+	bool isFinisherEffect = false;
+
+#pragma endregion
+
+#pragma region リソース
+
+	//スプライト(hp)
+	UI hpBar_;
+	const float barSpace = 16.0f;
+	float barSize = 480.0f;
+
+	//スプライト(ガードゲージ)
+	UI guardGaugeBar_;
+	const float guardGaugeBarSpace = 48.0f;
+	float guardGaugeBarSize = 240.0f;
+
+	//スプライト(必殺技ゲージ)
+	UI finisherGaugeBar_;
+	const float finisherGaugeBarSpace = 578.0f;
+	float finisherGaugeBarSize = 240.0f;
+
+	//スプライト(コンボ表示)
+	std::unique_ptr<Sprite>hitSprite_ = nullptr;
+	uint32_t hitTextureHandle_;
+
+	std::unique_ptr<Sprite>comboNumSprite_ = nullptr;
+	uint32_t comboNumTextureHandle_;
+
+	//サウンド
+	uint32_t attackSoundHandle_ = 0u;
+	uint32_t weaponAttackSoundHandle_ = 0u;
+	uint32_t damageSoundHandle_ = 0u;
+	uint32_t guardSoundHandle_ = 0u;
+
+#pragma endregion
+
+#pragma region その他
+
+	//プレイヤー
+	//Player* player_ = nullptr;
+
+	//武器
+	//std::unique_ptr<EnemyWeapon> enemyWeapon_ = nullptr;
+
+	//パーティクル
 	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
 	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
 
-	uint32_t animationIndex = 0;
+#pragma endregion
 };
 

@@ -140,6 +140,8 @@ void GamePlayScene::Draw()
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
 	player_->DrawSprite();
+
+	enemy_->DrawSprite();
 	
 	Sprite::PostDraw();
 
