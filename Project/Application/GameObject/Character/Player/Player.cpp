@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Application/GameObject/Character/Enemy/Enemy.h"
 
 Player::~Player()
 {
@@ -312,30 +313,21 @@ void Player::BehaviorRootUpdate()
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
 		//振り向きの処理
-		if (worldTransform_.translation.x > 15.0f)
-		{
-			playerDirection = Direction::Left;
-			worldTransform_.rotation.y = 1.7f;
-		}
-		else if (worldTransform_.translation.x <= 15.0f)
-		{
-			playerDirection = Direction::Right;
-			worldTransform_.rotation.y = 4.6f;
-		}
-
-		/*Vector3 playerWorldPosition = GetWorldPosition();
+		Vector3 playerWorldPosition = GetWorldPosition();
 
 		Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
 
 		if (enemyWorldPosition.x > playerWorldPosition.x)
 		{
-			worldTransform_.rotation.y = 1.7f;
+			playerDirection = Direction::Right;
+			worldTransform_.rotation.y = 4.6f;
 		}
 
 		if (enemyWorldPosition.x < playerWorldPosition.x)
 		{
-			worldTransform_.rotation.y = 4.6f;
-		}*/
+			playerDirection = Direction::Left;
+			worldTransform_.rotation.y = 1.7f;
+		}
 
 		//移動処理
 		//前方向に移動(左を向いているとき)

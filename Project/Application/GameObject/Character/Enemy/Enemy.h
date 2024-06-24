@@ -14,6 +14,8 @@
 #include <random>
 #include <numbers>
 
+class Player;
+
 class Enemy : public IGame3dObject, public Collider
 {
 public:
@@ -146,7 +148,7 @@ public:
 	void SetTransform(Vector3 transform) { worldTransform_.translation = transform; };
 	void SetRotation(Vector3 rotation) { worldTransform_.rotation = rotation; };
 
-	//void SetPlayer(Player* player) { player_ = player; };
+	void SetPlayer(Player* player) { player_ = player; };
 
 #pragma endregion
 
@@ -371,7 +373,7 @@ private:
 #pragma region その他
 
 	//プレイヤー
-	//Player* player_ = nullptr;
+	Player* player_ = nullptr;
 
 	//武器
 	//std::unique_ptr<EnemyWeapon> enemyWeapon_ = nullptr;

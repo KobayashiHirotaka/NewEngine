@@ -47,6 +47,9 @@ void GamePlayScene::Initialize()
 	//enemyの生成、初期化
 	enemy_ = game3dObjectManager_->GetGameObject<Enemy>("Enemy");
 
+	player_->SetEnemy(enemy_);
+	enemy_->SetPlayer(player_);
+
 	//skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();

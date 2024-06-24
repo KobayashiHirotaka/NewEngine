@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Application/GameObject/Character/Player/Player.h"
 
 Enemy::~Enemy()
 {
@@ -328,7 +329,24 @@ void Enemy::BehaviorRootUpdate()
 
 	patternCount_ = 1;
 
-	//コントローラーの移動処理
+	//振り向きの処理
+	Vector3 playerWorldPosition = player_->GetWorldPosition();
+
+	Vector3 enemyWorldPosition = GetWorldPosition();
+
+	if (enemyWorldPosition.x > playerWorldPosition.x)
+	{
+		playerDirection = Direction::Left;
+		worldTransform_.rotation.y = 1.7f;
+	}
+
+	if (enemyWorldPosition.x < playerWorldPosition.x)
+	{
+		playerDirection = Direction::Right;
+		worldTransform_.rotation.y = 4.6f;
+	}
+	
+	//移動処理
 	if (patternCount_ == 1 && isDown_ == false)
 	{
 		moveTimer_--;
@@ -338,19 +356,6 @@ void Enemy::BehaviorRootUpdate()
 		float kCharacterSpeed = 0.1f;
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
-		//振り向きの処理
-		if (worldTransform_.translation.x > 0.0f)
-		{
-			playerDirection = Direction::Left;
-			worldTransform_.rotation.y = 1.7f;
-		}
-		else if (worldTransform_.translation.x <= 0.0f)
-		{
-			playerDirection = Direction::Right;
-			worldTransform_.rotation.y = 4.6f;
-		}
-
-		//移動処理
 		if (moveTimer_ > 30 && playerDirection == Direction::Left && !isHit_)
 		{
 			kCharacterSpeed = 0.1f;
@@ -407,20 +412,6 @@ void Enemy::BehaviorRootUpdate()
 				patternCount_ = Random(3, 3);
 			}
 		}
-
-		/*Vector3 playerWorldPosition = player_->GetWorldPosition();
-
-		Vector3 enemyWorldPosition = GetWorldPosition();
-
-		if (enemyWorldPosition.x > playerWorldPosition.x)
-		{
-			worldTransform_.rotation.y = 4.6f;
-		}
-
-		if (enemyWorldPosition.x < playerWorldPosition.x)
-		{
-			worldTransform_.rotation.y = 1.7f;
-		}*/
 	}
 
 	//ジャンプ

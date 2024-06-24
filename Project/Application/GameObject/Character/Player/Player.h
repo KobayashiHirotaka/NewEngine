@@ -12,6 +12,8 @@
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"
 
+class Enemy;
+
 class Player : public IGame3dObject, public Collider
 {
 public:
@@ -144,7 +146,7 @@ public:
 	void SetTransform(Vector3 transform) { worldTransform_.translation = transform; };
 	void SetRotation(Vector3 rotation) { worldTransform_.rotation = rotation; };
 
-	//void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
+	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
 
 #pragma endregion
 
@@ -351,7 +353,7 @@ private:
 #pragma region その他
 
 	//敵
-	//Enemy* enemy_ = nullptr;
+	Enemy* enemy_ = nullptr;
 
 	//武器
 	//std::unique_ptr<PlayerWeapon> playerWeapon_ = nullptr;
