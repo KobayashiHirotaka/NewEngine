@@ -90,6 +90,8 @@ public:
 
 	void OnCollision(Collider* collider, float damage)override;
 
+	void Reset();
+
 #pragma region Getter
 
 	//EnemyWeapon* GetEnemyWeapon() { return enemyWeapon_.get(); };
@@ -154,8 +156,6 @@ public:
 
 private:
 	void HitStop(int milliseconds);
-
-	void Reset();
 
 	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex,
 		std::unique_ptr<Model>& modelFighterBody);
