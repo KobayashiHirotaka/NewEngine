@@ -364,29 +364,29 @@ void Enemy::BehaviorRootUpdate()
 			isGuard_ = false;
 		}
 
-		if (moveTimer_ > 30 && playerDirection == Direction::Right && !isHit_)
+		/*if (moveTimer_ > 30 && playerDirection == Direction::Right && !isHit_)
 		{
 			kCharacterSpeed = 0.1f;
 			velocity_.x = 0.3f;
 			isMove_ = true;
 			isGuard_ = false;
-		}
+		}*/
 
-		if (moveTimer_ <= 30 && playerDirection == Direction::Right)
+		/*if (moveTimer_ <= 30 && playerDirection == Direction::Right)
 		{
 			kCharacterSpeed = 0.05f;
 			velocity_.x = -0.3f;
 			isMove_ = true;
 			isGuard_ = true;
-		}
+		}*/
 
-		if (moveTimer_ <= 30 && playerDirection == Direction::Left)
+		/*if (moveTimer_ <= 30 && playerDirection == Direction::Left)
 		{
 			kCharacterSpeed = 0.05f;
 			velocity_.x = 0.3f;
 			isMove_ = true;
 			isGuard_ = true;
-		}
+		}*/
 
 		if (isMove_)
 		{
@@ -404,12 +404,12 @@ void Enemy::BehaviorRootUpdate()
 			if (!isHit_)
 			{
 				moveTimer_ = Random(30, 90);;
-				patternCount_ = Random(3, 3);
+				//patternCount_ = Random(3, 3);
 
 			}
 			else {
 				moveTimer_ = Random(30, 90);
-				patternCount_ = Random(3, 3);
+				//patternCount_ = Random(3, 3);
 			}
 		}
 	}
