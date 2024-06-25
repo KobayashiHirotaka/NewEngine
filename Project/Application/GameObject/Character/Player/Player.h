@@ -12,6 +12,7 @@
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"
 
+//前方宣言
 class Enemy;
 
 class Player : public IGame3dObject, public Collider

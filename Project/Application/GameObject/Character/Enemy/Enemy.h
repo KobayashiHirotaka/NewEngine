@@ -14,6 +14,7 @@
 #include <random>
 #include <numbers>
 
+//前方宣言
 class Player;
 
 class Enemy : public IGame3dObject, public Collider
