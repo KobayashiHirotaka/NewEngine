@@ -31,7 +31,7 @@ void GameTitleScene::Initialize()
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 
 	//modelの読み込み
-	modelManager_->LoadModel("resource/skydome", "skydome.obj");
+	modelManager_->LoadModel("resource/models", "remakePlayer.gltf");
 
 	//skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
@@ -146,6 +146,8 @@ void GameTitleScene::Update()
 	//imGui
 	ImGui::Begin("TitleScene");
 	ImGui::End();
+
+	skydome_->ImGui();
 };
 
 void GameTitleScene::Draw()
@@ -159,7 +161,7 @@ void GameTitleScene::Draw()
 	Model::PreDraw();
 
 	//skydomeの描画
-	skydome_->Draw(modelManager_->FindModel("skydome.obj"),camera_);
+	skydome_->Draw(modelManager_->FindModel("remakePlayer.gltf"),camera_);
 
 	Model::PostDraw();
 

@@ -4,13 +4,13 @@
 void Skydome::Initialize()
 {
 	worldTransform_.Initialize();
-	worldTransform_.scale = { 250.0f,250.0f,250.0f };
+	worldTransform_.scale = { 6.8f,6.8f,6.8f };
 }
 
 void Skydome::Update()
 {
-	worldTransform_.rotation.y += 0.001f;
-	worldTransform_.rotation.z += 0.001f;
+	//worldTransform_.rotation.y += 0.001f;
+	//worldTransform_.rotation.z += 0.001f;
 
 	worldTransform_.UpdateMatrixEuler();
 }
