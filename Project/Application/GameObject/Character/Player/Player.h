@@ -266,10 +266,10 @@ private:
 	float speed_ = 0.3f;
 
 	//足の速さ(向いている方向に移動する場合)
-	float characterFrontSpeed_ = 0.2f;
+	float characterFrontSpeed_ = 0.04f;
 
 	//足の速さ(向いている方向とは逆に移動する場合)
-	float characterBackSpeed_ = 0.1f;
+	float characterBackSpeed_ = 0.02f;
 
 #pragma endregion
 

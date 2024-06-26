@@ -228,7 +228,7 @@ private:
 	Vector3 previousPosition_;
 
 	//向いている方向
-	Direction playerDirection = Direction::Left;
+	Direction enemyDirection_ = Direction::Left;
 
 	//再生するanimationの番号
 	uint32_t animationIndex = 0;

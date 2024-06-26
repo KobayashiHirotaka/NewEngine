@@ -333,7 +333,7 @@ void Player::BehaviorRootUpdate()
 		//前方向に移動(左を向いているとき)
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && playerDirection == Direction::Left && isDown_ == false && !isHit_)
 		{
-			velocity_.x = -0.3f;
+			velocity_.x = -0.01f;
 			isFrontMove_ = true;
 			isGuard_ = false;
 		}
@@ -341,7 +341,7 @@ void Player::BehaviorRootUpdate()
 		//前方向に移動(右を向いているとき)
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && playerDirection == Direction::Right && isDown_ == false && !isHit_)
 		{
-			velocity_.x = 0.3f;
+			velocity_.x = 0.01f;
 			isFrontMove_ = true;
 			isGuard_ = false;
 		}
@@ -354,7 +354,7 @@ void Player::BehaviorRootUpdate()
 			//移動しながらガード
 			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 			{
-				velocity_.x = -0.3f;
+				velocity_.x = -0.01f;
 				isBackMove_ = true;
 			}
 
@@ -374,7 +374,7 @@ void Player::BehaviorRootUpdate()
 			//移動しながらガード
 			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 			{
-				velocity_.x = 0.3f;
+				velocity_.x = 0.01f;
 				isBackMove_ = true;
 			}
 
@@ -1142,7 +1142,7 @@ void Player::BehaviorJumpUpdate()
 
 	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
-	const float kGravityAcceleration_ = 0.03f;
+	const float kGravityAcceleration_ = 0.06f;
 
 	Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
 
@@ -1259,7 +1259,6 @@ void Player::UpdateAnimationTime(float animationTime, bool isLoop, float frameRa
 
 	modelFighterBody->SetAnimationTime(animationTime);
 	modelFighterBody->ApplyAnimation(animationIndex);
-	modelFighterBody->Update();
 }
 
 void Player::OnCollision(Collider* collider, float damage)

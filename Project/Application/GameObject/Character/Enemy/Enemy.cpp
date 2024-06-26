@@ -177,14 +177,14 @@ void Enemy::Update()
 	}
 
 	//画面端の処理
-	if (worldTransform_.translation.x >= 22.0f)
+	if (worldTransform_.translation.x >= 13.0f)
 	{
-		worldTransform_.translation.x = 22.0f;
+		worldTransform_.translation.x = 13.0f;
 	}
 
-	if (worldTransform_.translation.x <= -22.0f)
+	if (worldTransform_.translation.x <= -13.0f)
 	{
-		worldTransform_.translation.x = -22.0f;
+		worldTransform_.translation.x = -13.0f;
 	}
 
 	//ジャンプ中にプレイヤーと当たったときの処理
@@ -199,7 +199,7 @@ void Enemy::Update()
 	particleSystem_->Update();
 
 	//Weaponの更新
-	//playerWeapon_->Update();
+	//enemyWeapon_->Update();
 
 	isHit_ = false;
 
@@ -336,13 +336,13 @@ void Enemy::BehaviorRootUpdate()
 
 	if (enemyWorldPosition.x > playerWorldPosition.x)
 	{
-		playerDirection = Direction::Left;
+		enemyDirection_ = Direction::Left;
 		worldTransform_.rotation.y = 1.7f;
 	}
 
 	if (enemyWorldPosition.x < playerWorldPosition.x)
 	{
-		playerDirection = Direction::Right;
+		enemyDirection_ = Direction::Right;
 		worldTransform_.rotation.y = 4.6f;
 	}
 	
@@ -353,37 +353,33 @@ void Enemy::BehaviorRootUpdate()
 
 		const float deadZone = 0.7f;
 		bool isMove_ = false;
-		float kCharacterSpeed = 0.1f;
+		float kCharacterSpeed = 0.01f;
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
-		if (moveTimer_ > 30 && playerDirection == Direction::Left && !isHit_)
+		if (moveTimer_ > 30 && enemyDirection_ == Direction::Left && !isHit_)
 		{
-			kCharacterSpeed = 0.1f;
-			velocity_.x = -0.3f;
+			velocity_.x = -0.001f;
 			isMove_ = true;
 			isGuard_ = false;
 		}
 
-		/*if (moveTimer_ > 30 && playerDirection == Direction::Right && !isHit_)
+		/*if (moveTimer_ > 30 && enemyDirection_ == Direction::Right && !isHit_)
 		{
-			kCharacterSpeed = 0.1f;
-			velocity_.x = 0.3f;
+			velocity_.x = 0.001f;
 			isMove_ = true;
 			isGuard_ = false;
-		}*/
+		}
 
-		/*if (moveTimer_ <= 30 && playerDirection == Direction::Right)
+		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right)
 		{
-			kCharacterSpeed = 0.05f;
-			velocity_.x = -0.3f;
+			velocity_.x = -0.001f;
 			isMove_ = true;
 			isGuard_ = true;
-		}*/
+		}
 
-		/*if (moveTimer_ <= 30 && playerDirection == Direction::Left)
+		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left)
 		{
-			kCharacterSpeed = 0.05f;
-			velocity_.x = 0.3f;
+			velocity_.x = 0.001f;
 			isMove_ = true;
 			isGuard_ = true;
 		}*/
@@ -404,12 +400,12 @@ void Enemy::BehaviorRootUpdate()
 			if (!isHit_)
 			{
 				moveTimer_ = Random(30, 90);;
-				//patternCount_ = Random(3, 3);
+				patternCount_ = Random(3, 3);
 
 			}
 			else {
 				moveTimer_ = Random(30, 90);
-				//patternCount_ = Random(3, 3);
+				patternCount_ = Random(3, 3);
 			}
 		}
 	}
@@ -1082,7 +1078,7 @@ void Enemy::BehaviorJumpUpdate()
 
 	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
-	const float kGravityAcceleration_ = 0.03f;
+	const float kGravityAcceleration_ = 0.06f;
 
 	Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
 
@@ -1491,7 +1487,7 @@ void Enemy::Reset()
 	behavior_ = Behavior::kRoot;
 
 	worldTransform_.translation = { -10.0f,0.0f,12.0f };
-	playerDirection = Direction::Left;
+	enemyDirection_ = Direction::Left;
 
 	comboCount_ = 0;
 
