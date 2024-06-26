@@ -45,7 +45,7 @@ void GamePlayScene::Initialize()
 	levelLoarder_->LoadLevel("LevelData");
 
 	//modelの読み込み
-	modelManager_->LoadModel("resource/skydome", "skydome.obj");
+	//modelManager_->LoadModel("resource/skydome", "skydome.obj");
 
 	//playerの生成、初期化
 	player_ = game3dObjectManager_->GetGameObject<Player>("Player");
@@ -325,7 +325,7 @@ void GamePlayScene::Draw()
 	game3dObjectManager_->Draw(camera_);
 
 	//skydomeの描画
-	skydome_->Draw(modelManager_->FindModel("skydome.obj"), camera_);
+	skydome_->Draw(camera_);
 
 	Model::PostDraw();
 

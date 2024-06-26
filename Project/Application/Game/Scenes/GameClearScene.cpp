@@ -31,7 +31,7 @@ void GameClearScene::Initialize()
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 
 	//modelの読み込み
-	modelManager_->LoadModel("resource/skydome", "skydome.obj");
+	//modelManager_->LoadModel("resource/skydome", "skydome.obj");
 
 	//skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
@@ -98,7 +98,7 @@ void GameClearScene::Draw()
 	Model::PreDraw();
 
 	//skydomeの描画
-	skydome_->Draw(modelManager_->FindModel("skydome.obj"), camera_);
+	skydome_->Draw(camera_);
 
 	Model::PostDraw();
 
