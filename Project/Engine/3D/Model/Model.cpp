@@ -949,32 +949,11 @@ void Model::ApplyAnimation(const uint32_t animationData)
 			{
 				const NodeAnimation& rootNodeAnimation = (*it).second;
 
-				if (!rootNodeAnimation.translate.keyframes.empty())
-				{
-					joint.translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
-				}
-				else
-				{
-					joint.translate = { 0.0f,0.0f,0.0f };
-				}
+				joint.translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
 
-				if (!rootNodeAnimation.rotate.keyframes.empty())
-				{
-					joint.rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
-				}
-				else
-				{
-					joint.rotate = { 0.0f,0.0f,0.0f,1.0f };
-				}
+				joint.rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
 
-				if (!rootNodeAnimation.scale.keyframes.empty())
-				{
-					joint.scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
-				}
-				else
-				{
-					joint.scale = { 1.0f,1.0f,1.0f };
-				}
+				joint.scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
 			}
 		}
 	}
