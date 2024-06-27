@@ -83,7 +83,9 @@ void Player::Initialize()
 	playerCursol_.reset(Model::CreateFromOBJ("resource/playerCursol", "playerCursol.obj"));
 
 	worldTransformCursol_.Initialize();
-	worldTransformCursol_.translation = { worldTransform_.translation.x,worldTransform_.translation.y + 7.5f,worldTransform_.translation.z };
+	worldTransformCursol_.translation = { worldTransform_.translation.x - 0.3f,worldTransform_.translation.y + 0.4f,worldTransform_.translation.z };
+	worldTransformCursol_.rotation.y = 1.5f;
+	worldTransformCursol_.scale = { 0.3f, 0.3f, 0.3f };
 
 	worldTransformCursol_.parent_ = &worldTransform_;
 
@@ -268,6 +270,12 @@ void Player::Update()
 	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
 	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
 	ImGui::Text("isGuard %d", isGuard_);
+	ImGui::End();
+
+	ImGui::Begin("Cursol");
+	ImGui::SliderFloat3("WTFT", &worldTransformCursol_.translation.x, -100.0f, 100.0f);
+	ImGui::SliderFloat3("WTFR", &worldTransformCursol_.rotation.x, 0.0f, 16.0f);
+	ImGui::SliderFloat3("WTFS", &worldTransformCursol_.scale.x, 0.0f, 16.0f);
 	ImGui::End();
 
 	//worldTransformの更新
