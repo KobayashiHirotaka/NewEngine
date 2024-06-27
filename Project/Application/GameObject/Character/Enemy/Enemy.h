@@ -231,7 +231,7 @@ private:
 	Direction enemyDirection_ = Direction::Left;
 
 	//再生するanimationの番号
-	uint32_t animationIndex = 0;
+	uint32_t animationIndex = 2;
 
 	//行動のパターン
 	int patternCount_ = 1;

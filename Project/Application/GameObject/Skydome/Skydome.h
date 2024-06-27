@@ -22,6 +22,4 @@ private:
 	std::unique_ptr<Model> model_;
 
 	WorldTransform worldTransform_;
-
-	uint32_t animationIndex = 0;
 };

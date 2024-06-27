@@ -25,10 +25,10 @@ void GameTitleScene::Initialize()
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
 
 	//postEffectの切り替え
-	/*PostProcess::GetInstance()->SetIsBloomActive(true);
+	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
 	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);*/
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 
 	//modelの読み込み
 	//modelManager_->LoadModel("resource/models", "remakePlayer.gltf");
@@ -167,10 +167,10 @@ void GameTitleScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	/*if (!isOpen_)
+	if (!isOpen_)
 	{
 		titleSprite_->Draw();
-	}*/
+	}
 
 	Sprite::PostDraw();
 
@@ -182,7 +182,7 @@ void GameTitleScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	/*if (!isOpen_)
+	if (!isOpen_)
 	{
 		titleUISprite_->Draw();
 	}
@@ -195,7 +195,7 @@ void GameTitleScene::Draw()
 	if (isOpen_ && spriteCount_ == 2)
 	{
 		attackCommandListSprite_->Draw();
-	}*/
+	}
 
 	transitionSprite_->Draw();
 

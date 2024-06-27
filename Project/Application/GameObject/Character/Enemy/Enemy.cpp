@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "Application/GameObject/Character/Player/Player.h"
+#include "Application/Game/Scenes/GamePlayScene.h"
 
 Enemy::~Enemy()
 {
@@ -30,7 +31,7 @@ void Enemy::Initialize()
 	//enemyWeapon_->SetParent(&worldTransform_);
 
 	//当たり判定の設定
-	AABB aabb = { {-1.0f,-1.0f,-10.0f},{1.0f,1.0f,10.0f} };
+	AABB aabb = { {-0.5f,-0.5f,-0.5f},{0.5f,0.5f,0.5f} };
 	SetAABB(aabb);
 
 	SetCollisionAttribute(kCollisionAttributeEnemy);
@@ -103,7 +104,7 @@ void Enemy::Update()
 
 	isShake_ = false;
 
-	//0は停止、1は攻撃(振り下ろし),2は歩き
+	//0は後ろ歩き,1は前歩き,2は停止
 	model_->ApplyAnimation(animationIndex);
 
 	model_->Update();
@@ -156,7 +157,10 @@ void Enemy::Update()
 	{
 	case Behavior::kRoot:
 	default:
-		BehaviorRootUpdate();
+		if (GamePlayScene::roundStartTimer_ <= 0)
+		{
+			BehaviorRootUpdate();
+		}
 		break;
 
 	case Behavior::kAttack:
@@ -176,15 +180,32 @@ void Enemy::Update()
 		break;
 	}
 
-	//画面端の処理
-	if (worldTransform_.translation.x >= 13.0f)
+	//振り向きの処理
+	Vector3 playerWorldPosition = player_->GetWorldPosition();
+
+	Vector3 enemyWorldPosition = GetWorldPosition();
+
+	if (enemyWorldPosition.x > playerWorldPosition.x)
 	{
-		worldTransform_.translation.x = 13.0f;
+		enemyDirection_ = Direction::Left;
+		worldTransform_.rotation.y = 4.6f;
 	}
 
-	if (worldTransform_.translation.x <= -13.0f)
+	if (enemyWorldPosition.x < playerWorldPosition.x)
 	{
-		worldTransform_.translation.x = -13.0f;
+		enemyDirection_ = Direction::Right;
+		worldTransform_.rotation.y = 1.7f;
+	}
+
+	//画面端の処理
+	if (worldTransform_.translation.x >= 8.0f)
+	{
+		worldTransform_.translation.x = 8.0f;
+	}
+
+	if (worldTransform_.translation.x <= -8.0f)
+	{
+		worldTransform_.translation.x = -8.0f;
 	}
 
 	//ジャンプ中にプレイヤーと当たったときの処理
@@ -323,28 +344,8 @@ void Enemy::BehaviorRootInitialize()
 void Enemy::BehaviorRootUpdate()
 {
 	float animationTime = 0.0f;
-	animationIndex = 2;
-
-	UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
 
 	patternCount_ = 1;
-
-	//振り向きの処理
-	Vector3 playerWorldPosition = player_->GetWorldPosition();
-
-	Vector3 enemyWorldPosition = GetWorldPosition();
-
-	if (enemyWorldPosition.x > playerWorldPosition.x)
-	{
-		enemyDirection_ = Direction::Left;
-		worldTransform_.rotation.y = 1.7f;
-	}
-
-	if (enemyWorldPosition.x < playerWorldPosition.x)
-	{
-		enemyDirection_ = Direction::Right;
-		worldTransform_.rotation.y = 4.6f;
-	}
 	
 	//移動処理
 	if (patternCount_ == 1 && isDown_ == false)
@@ -361,13 +362,19 @@ void Enemy::BehaviorRootUpdate()
 			velocity_.x = -0.001f;
 			isMove_ = true;
 			isGuard_ = false;
+
+			animationIndex = 1;
+			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
 		}
 
-		/*if (moveTimer_ > 30 && enemyDirection_ == Direction::Right && !isHit_)
+		if (moveTimer_ > 30 && enemyDirection_ == Direction::Right && !isHit_)
 		{
 			velocity_.x = 0.001f;
 			isMove_ = true;
 			isGuard_ = false;
+
+			animationIndex = 1;
+			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
 		}
 
 		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right)
@@ -375,6 +382,9 @@ void Enemy::BehaviorRootUpdate()
 			velocity_.x = -0.001f;
 			isMove_ = true;
 			isGuard_ = true;
+
+			animationIndex = 0;
+			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
 		}
 
 		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left)
@@ -382,7 +392,10 @@ void Enemy::BehaviorRootUpdate()
 			velocity_.x = 0.001f;
 			isMove_ = true;
 			isGuard_ = true;
-		}*/
+
+			animationIndex = 0;
+			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
+		}
 
 		if (isMove_)
 		{
@@ -1064,7 +1077,7 @@ void Enemy::BehaviorJumpInitialize()
 {
 	worldTransform_.translation.y = 0.0f;
 
-	const float kJumpFirstSpeed_ = 0.6f;
+	const float kJumpFirstSpeed_ = 0.3f;
 
 	velocity_.y = kJumpFirstSpeed_;
 }
@@ -1072,13 +1085,13 @@ void Enemy::BehaviorJumpInitialize()
 void Enemy::BehaviorJumpUpdate()
 {
 	float animationTime = 0.0f;
-	animationIndex = 1;
+	animationIndex = 2;
 
 	UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
 
 	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
-	const float kGravityAcceleration_ = 0.06f;
+	const float kGravityAcceleration_ = 0.02f;
 
 	Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
 

@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
+#include "Application/Game/Scenes/GamePlayScene.h"
 
 Player::~Player()
 {
@@ -30,7 +31,7 @@ void Player::Initialize()
 	//playerWeapon_->SetParent(&worldTransform_);
 
 	//当たり判定の設定
-	AABB aabb = { {-1.0f,-1.0f,-10.0f},{1.0f,1.0f,10.0f} };
+	AABB aabb = { {-0.5f,-0.5f,-0.5f},{0.5f,0.5f,0.5f} };
 	SetAABB(aabb);
 
 	SetCollisionAttribute(kCollisionAttributePlayer);
@@ -111,7 +112,7 @@ void Player::Update()
 
 	isShake_ = false;
 
-	//0は停止、1は攻撃(振り下ろし),2は歩き
+	//0は後ろ歩き, 1は前歩き, 2は停止
 	model_->ApplyAnimation(animationIndex);
 
 	model_->Update();
@@ -164,7 +165,10 @@ void Player::Update()
 	{
 	case Behavior::kRoot:
 	default:
-		BehaviorRootUpdate();
+		if (GamePlayScene::roundStartTimer_ <= 0)
+		{
+			BehaviorRootUpdate();
+		}
 		break;
 
 	case Behavior::kAttack:
@@ -184,15 +188,32 @@ void Player::Update()
 		break;
 	}
 
-	//画面端の処理
-	if (worldTransform_.translation.x >= 22.0f)
+	//振り向きの処理
+	Vector3 playerWorldPosition = GetWorldPosition();
+
+	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
+
+	if (enemyWorldPosition.x > playerWorldPosition.x)
 	{
-		worldTransform_.translation.x = 22.0f;
+		playerDirection = Direction::Right;
+		worldTransform_.rotation.y = 1.7f;
 	}
 
-	if (worldTransform_.translation.x <= -22.0f)
+	if (enemyWorldPosition.x < playerWorldPosition.x)
 	{
-		worldTransform_.translation.x = -22.0f;
+		playerDirection = Direction::Left;
+		worldTransform_.rotation.y = 4.6f;
+	}
+
+	//画面端の処理
+	if (worldTransform_.translation.x >= 8.0f)
+	{
+		worldTransform_.translation.x = 8.0f;
+	}
+
+	if (worldTransform_.translation.x <= -8.0f)
+	{
+		worldTransform_.translation.x = -8.0f;
 	}
 
 	//ジャンプ中に敵と当たったときの処理
@@ -312,23 +333,6 @@ void Player::BehaviorRootUpdate()
 
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
-		//振り向きの処理
-		Vector3 playerWorldPosition = GetWorldPosition();
-
-		Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
-
-		if (enemyWorldPosition.x > playerWorldPosition.x)
-		{
-			playerDirection = Direction::Right;
-			worldTransform_.rotation.y = 4.6f;
-		}
-
-		if (enemyWorldPosition.x < playerWorldPosition.x)
-		{
-			playerDirection = Direction::Left;
-			worldTransform_.rotation.y = 1.7f;
-		}
-
 		//移動処理
 		//前方向に移動(左を向いているとき)
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && playerDirection == Direction::Left && isDown_ == false && !isHit_)
@@ -395,7 +399,7 @@ void Player::BehaviorRootUpdate()
 		//移動
 		if (isFrontMove_)
 		{
-			animationIndex = 2;
+			animationIndex = 1;
 
 			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
 
@@ -409,7 +413,7 @@ void Player::BehaviorRootUpdate()
 		}
 		else if (isBackMove_)
 		{
-			animationIndex = 2;
+			animationIndex = 0;
 
 			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
 
@@ -423,7 +427,7 @@ void Player::BehaviorRootUpdate()
 		}
 		else
 		{
-			animationIndex = 0;
+			animationIndex = 2;
 
 			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
 		}
@@ -1128,7 +1132,7 @@ void Player::BehaviorJumpInitialize()
 {
 	worldTransform_.translation.y = 0.0f;
 
-	const float kJumpFirstSpeed_ = 0.6f;
+	const float kJumpFirstSpeed_ = 0.3f;
 
 	velocity_.y = kJumpFirstSpeed_;
 }
@@ -1136,13 +1140,13 @@ void Player::BehaviorJumpInitialize()
 void Player::BehaviorJumpUpdate()
 {
 	float animationTime = 0.0f;
-	animationIndex = 1;
+	animationIndex = 2;
 
 	UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
 
 	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
-	const float kGravityAcceleration_ = 0.06f;
+	const float kGravityAcceleration_ = 0.02f;
 
 	Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
 

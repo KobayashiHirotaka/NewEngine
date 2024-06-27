@@ -226,7 +226,7 @@ private:
 	Direction playerDirection = Direction::Right;
 
 	//再生するanimationの番号
-	uint32_t animationIndex = 0;
+	uint32_t animationIndex = 2;
 
 	//hp
 	float maxHP_ = 10.0f;

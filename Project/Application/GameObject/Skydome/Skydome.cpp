@@ -6,32 +6,16 @@ void Skydome::Initialize()
 	//inputのinstance
 	input_ = Input::GetInstance();
 
-	model_.reset(Model::CreateFromOBJ("resource/remakePlayer", "remakePlayer.gltf"));
+	model_.reset(Model::CreateFromOBJ("resource/skydome", "skydome.obj"));
 
 	worldTransform_.Initialize();
-	//worldTransform_.scale = { 0.07f,0.07f,0.07f };
+	worldTransform_.scale = { 250.0f,250.0f,250.0f };
 }
 
 void Skydome::Update()
 {
-	//worldTransform_.rotation.y += 0.001f;
-	//worldTransform_.rotation.z += 0.001f;
-
-	model_->ApplyAnimation(0);
-
-	model_->Update();
-
-	if (input_->PressKey(DIK_0))
-	{
-		float animationTime;
-		animationTime = model_->GetAnimationTime();
-		animationTime += 1.0f / 60.0f;
-		animationTime = std::fmod(animationTime, model_->GetAnimation()[0].duration);
-
-		model_->SetAnimationTime(animationTime);
-
-		model_->ApplyAnimation(0);
-	}
+	worldTransform_.rotation.y += 0.001f;
+	worldTransform_.rotation.z += 0.001f;
 
 	worldTransform_.UpdateMatrixEuler();
 }
