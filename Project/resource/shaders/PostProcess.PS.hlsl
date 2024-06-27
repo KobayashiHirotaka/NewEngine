@@ -8,13 +8,16 @@ Texture2D<float32_t4> gHighIntensityBlurTexture : register(t4);
 Texture2D<float32_t4> gShrinkBlurTexture : register(t5);
 Texture2D<float32_t4> gHighIntensityShrinkBlurTexture : register(t6);
 SamplerState gSampler : register(s0);
+SamplerState gSamplerLinear : register(s1);
 
 ConstantBuffer<Bloom> gBloomParameter : register(b0);
 ConstantBuffer<Vignette> gVignetteParameter : register(b1);
 ConstantBuffer<GrayScale> gGrayScaleParameter : register(b2);
 ConstantBuffer<BoxFilter> gBoxFilterParameter : register(b3);
 ConstantBuffer<GaussianFilter> gGaussianFilterParameter : register(b4);
+ConstantBuffer<Outline> gOutlineParameter : register(b5);
 
+//BoxFilter,GuassianFilter
 static const float32_t2 kIndex3x3[3][3] =
 {
     { { -1.0f, -1.0f }, { 0.0f, -1.0f }, { 1.0f, -1.0f } },
@@ -29,6 +32,21 @@ static const float32_t kKernel3x3[3][3] =
     { 1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f },
 };
 
+//LuminanceOutline,DepthOutline
+static const float32_t kPrewittHorizontalKernel3x3[3][3] =
+{
+    { -1.0f / 6.0f, 0.0f / 1.0f, 1.0f / 6.0f },
+    { -1.0f / 6.0f, 0.0f / 1.0f, 1.0f / 6.0f },
+    { -1.0f / 6.0f, 0.0f / 1.0f, 1.0f / 6.0f },
+};
+
+static const float32_t kPrewittVerticalKernel3x3[3][3] =
+{
+    { -1.0f / 6.0f, -1.0f / 6.0f, -1.0f / 6.0f },
+    { 0.0f, 0.0f, 0.0f },
+    { 1.0f / 6.0f, 1.0f / 6.0f, 1.0f / 6.0f },
+};
+
 static const float32_t PI = 3.14159265f;
 
 struct PixelShaderOutput
@@ -41,6 +59,11 @@ float gauss(float x, float y, float sigma)
     float exponent = -(x * x + y * y) * rcp(2.0f * sigma * sigma);
     float denominator = 2.0f * PI * sigma * sigma;
     return exp(exponent) * rcp(denominator);
+}
+
+float32_t Luminance(float32_t3 v)
+{
+    return dot(v, float32_t3(0.2125f, 0.7154f, 0.0721f));
 }
 
 PixelShaderOutput main(VertexShaderOutput input)
@@ -104,7 +127,7 @@ PixelShaderOutput main(VertexShaderOutput input)
         }
     }
     
-     //GaussianFilter
+    //GaussianFilter
     if (gGaussianFilterParameter.enable)
     {
         float32_t weight = 0.0f;
@@ -136,6 +159,32 @@ PixelShaderOutput main(VertexShaderOutput input)
         }
         
         textureColor.rgb *= rcp(weight);
+    }
+    
+    //Outline
+    if (gOutlineParameter.enable)
+    {
+        float32_t2 difference = float32_t2(0.0f, 0.0f);
+        float32_t2 uvStepSize = float32_t2(rcp(width), rcp(height));
+        
+        for (int32_t x = 0; x < 3; ++x)
+        {
+            for (int32_t y = 0; y < 3; ++y)
+            {
+                float32_t2 texcoord = input.texcoord * kIndex3x3[x][y] * uvStepSize;
+                float32_t3 fetchColor = gTexture.Sample(gSampler, texcoord).rgb;
+                float32_t luminance = Luminance(fetchColor);
+                
+                difference.x += luminance * kPrewittHorizontalKernel3x3[x][y];
+                difference.y += luminance * kPrewittVerticalKernel3x3[x][y];
+            }
+        }
+        
+        float32_t weight = length(difference);
+        weight = saturate(weight * 6.0f);
+        
+        textureColor.rgb = (1.0f - weight) * gTexture.Sample(gSamplerLinear, input.texcoord).rgb;
+        textureColor.a = 1.0f;
     }
 
     output.color = textureColor;

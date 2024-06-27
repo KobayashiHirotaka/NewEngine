@@ -29,3 +29,8 @@ struct GaussianFilter
 {
     bool enable;
 };
+
+struct Outline
+{
+    bool enable;
+};
