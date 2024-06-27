@@ -31,7 +31,7 @@ void Enemy::Initialize()
 	//enemyWeapon_->SetParent(&worldTransform_);
 
 	//当たり判定の設定
-	AABB aabb = { {-0.5f,-0.5f,-0.5f},{0.5f,0.5f,0.5f} };
+	AABB aabb = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 	SetAABB(aabb);
 
 	SetCollisionAttribute(kCollisionAttributeEnemy);
@@ -185,13 +185,13 @@ void Enemy::Update()
 
 	Vector3 enemyWorldPosition = GetWorldPosition();
 
-	if (enemyWorldPosition.x > playerWorldPosition.x)
+	if (enemyWorldPosition.x > playerWorldPosition.x && behavior_ != Behavior::kJump)
 	{
 		enemyDirection_ = Direction::Left;
 		worldTransform_.rotation.y = 4.6f;
 	}
 
-	if (enemyWorldPosition.x < playerWorldPosition.x)
+	if (enemyWorldPosition.x < playerWorldPosition.x && behavior_ != Behavior::kJump)
 	{
 		enemyDirection_ = Direction::Right;
 		worldTransform_.rotation.y = 1.7f;
@@ -208,11 +208,11 @@ void Enemy::Update()
 		worldTransform_.translation.x = -8.0f;
 	}
 
-	//ジャンプ中にプレイヤーと当たったときの処理
-	if (behaviorRequest_ == Behavior::kJump && isHit_)
-	{
-		worldTransform_.translation.y = 0.0f;
-	}
+	////ジャンプ中にプレイヤーと当たったときの処理
+	//if (behaviorRequest_ == Behavior::kJump && isHit_)
+	//{
+	//	worldTransform_.translation.y = 0.0f;
+	//}
 
 	DownAnimation();
 
@@ -347,81 +347,81 @@ void Enemy::BehaviorRootUpdate()
 
 	patternCount_ = 1;
 	
-	//移動処理
-	if (patternCount_ == 1 && isDown_ == false)
-	{
-		moveTimer_--;
+	////移動処理
+	//if (patternCount_ == 1 && isDown_ == false)
+	//{
+	//	moveTimer_--;
 
-		const float deadZone = 0.7f;
-		bool isMove_ = false;
-		float kCharacterSpeed = 0.01f;
-		velocity_ = { 0.0f, 0.0f, 0.0f };
+	//	const float deadZone = 0.7f;
+	//	bool isMove_ = false;
+	//	float kCharacterSpeed = 0.01f;
+	//	velocity_ = { 0.0f, 0.0f, 0.0f };
 
-		if (moveTimer_ > 30 && enemyDirection_ == Direction::Left && !isHit_)
-		{
-			velocity_.x = -0.001f;
-			isMove_ = true;
-			isGuard_ = false;
+	//	if (moveTimer_ > 30 && enemyDirection_ == Direction::Left && !isHit_)
+	//	{
+	//		velocity_.x = -0.001f;
+	//		isMove_ = true;
+	//		isGuard_ = false;
 
-			animationIndex = 1;
-			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
-		}
+	//		animationIndex = 1;
+	//		UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
+	//	}
 
-		if (moveTimer_ > 30 && enemyDirection_ == Direction::Right && !isHit_)
-		{
-			velocity_.x = 0.001f;
-			isMove_ = true;
-			isGuard_ = false;
+	//	if (moveTimer_ > 30 && enemyDirection_ == Direction::Right && !isHit_)
+	//	{
+	//		velocity_.x = 0.001f;
+	//		isMove_ = true;
+	//		isGuard_ = false;
 
-			animationIndex = 1;
-			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
-		}
+	//		animationIndex = 1;
+	//		UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
+	//	}
 
-		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right)
-		{
-			velocity_.x = -0.001f;
-			isMove_ = true;
-			isGuard_ = true;
+	//	if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right)
+	//	{
+	//		velocity_.x = -0.001f;
+	//		isMove_ = true;
+	//		isGuard_ = true;
 
-			animationIndex = 0;
-			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
-		}
+	//		animationIndex = 0;
+	//		UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
+	//	}
 
-		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left)
-		{
-			velocity_.x = 0.001f;
-			isMove_ = true;
-			isGuard_ = true;
+	//	if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left)
+	//	{
+	//		velocity_.x = 0.001f;
+	//		isMove_ = true;
+	//		isGuard_ = true;
 
-			animationIndex = 0;
-			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
-		}
+	//		animationIndex = 0;
+	//		UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
+	//	}
 
-		if (isMove_)
-		{
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(kCharacterSpeed, velocity_);
+	//	if (isMove_)
+	//	{
+	//		velocity_ = Normalize(velocity_);
+	//		velocity_ = Multiply(kCharacterSpeed, velocity_);
 
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+	//		// 平行移動
+	//		worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
-			worldTransform_.UpdateMatrixEuler();
-		}
+	//		worldTransform_.UpdateMatrixEuler();
+	//	}
 
-		if (moveTimer_ < 0)
-		{
-			if (!isHit_)
-			{
-				moveTimer_ = Random(30, 90);;
-				patternCount_ = Random(3, 3);
+	//	if (moveTimer_ < 0)
+	//	{
+	//		if (!isHit_)
+	//		{
+	//			moveTimer_ = Random(30, 90);;
+	//			patternCount_ = Random(3, 3);
 
-			}
-			else {
-				moveTimer_ = Random(30, 90);
-				patternCount_ = Random(3, 3);
-			}
-		}
-	}
+	//		}
+	//		else {
+	//			moveTimer_ = Random(30, 90);
+	//			patternCount_ = Random(3, 3);
+	//		}
+	//	}
+	//}
 
 	//ジャンプ
 	if (patternCount_ == 3 && isDown_ == false)

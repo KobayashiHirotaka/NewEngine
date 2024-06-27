@@ -31,7 +31,7 @@ void Player::Initialize()
 	//playerWeapon_->SetParent(&worldTransform_);
 
 	//当たり判定の設定
-	AABB aabb = { {-0.5f,-0.5f,-0.5f},{0.5f,0.5f,0.5f} };
+	AABB aabb = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 	SetAABB(aabb);
 
 	SetCollisionAttribute(kCollisionAttributePlayer);
@@ -80,12 +80,12 @@ void Player::Initialize()
 	guardSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Guard.mp3");
 
 	//カーソルの初期化
-	//playerCursol_.reset(Model::CreateFromOBJ("resource/playerCursol", "playerCursol.obj"));
+	playerCursol_.reset(Model::CreateFromOBJ("resource/playerCursol", "playerCursol.obj"));
 
-	//worldTransformCursol_.Initialize();
-	//worldTransformCursol_.translation = { -10.2f,worldTransform_.translation.y + 7.5f,12.0f };
+	worldTransformCursol_.Initialize();
+	worldTransformCursol_.translation = { worldTransform_.translation.x,worldTransform_.translation.y + 7.5f,worldTransform_.translation.z };
 
-	//worldTransformCursol_.parent_ = &worldTransform_;
+	worldTransformCursol_.parent_ = &worldTransform_;
 
 	//パーティクルの初期化
 	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
@@ -193,13 +193,13 @@ void Player::Update()
 
 	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
 
-	if (enemyWorldPosition.x > playerWorldPosition.x)
+	if (enemyWorldPosition.x > playerWorldPosition.x && behavior_ != Behavior::kJump)
 	{
 		playerDirection = Direction::Right;
 		worldTransform_.rotation.y = 1.7f;
 	}
 
-	if (enemyWorldPosition.x < playerWorldPosition.x)
+	if (enemyWorldPosition.x < playerWorldPosition.x && behavior_ != Behavior::kJump)
 	{
 		playerDirection = Direction::Left;
 		worldTransform_.rotation.y = 4.6f;
@@ -216,11 +216,11 @@ void Player::Update()
 		worldTransform_.translation.x = -8.0f;
 	}
 
-	//ジャンプ中に敵と当たったときの処理
-	if (behaviorRequest_ == Behavior::kJump && isHit_)
-	{
-		worldTransform_.translation.y = 0.0f;
-	}
+	////ジャンプ中に敵と当たったときの処理
+	//if (behaviorRequest_ == Behavior::kJump && isHit_)
+	//{
+	//	worldTransform_.translation.y = 0.0f;
+	//}
 
 	DownAnimation();
 
@@ -272,17 +272,17 @@ void Player::Update()
 
 	//worldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
-	//worldTransformCursol_.UpdateMatrixEuler();
+	worldTransformCursol_.UpdateMatrixEuler();
 }
 
 void Player::Draw(const Camera& camera)
 {
 	model_->Draw(worldTransform_, camera, animationIndex);
 
-	/*if (!isDown_)
+	if (!isDown_)
 	{
 		playerCursol_->Draw(worldTransformCursol_, camera, 0);
-	}*/
+	}
 
 	//Weaponの描画
 	/*if (workAttack_.isAttack && workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_

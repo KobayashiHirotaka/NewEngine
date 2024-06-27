@@ -37,3 +37,11 @@ void Camera::UpdateProjectionMatrix()
 {
 	matProjection_ = MakePerspectiveFovMatrix(fov_, aspectRatio_, nearClip_, farClip_);
 }
+
+void Camera::ImGui()
+{
+	ImGui::Begin("Camera");
+	ImGui::SliderFloat3("WTFT", &translation_.x, -100.0f, 100.0f);
+	ImGui::SliderFloat3("WTFR", &rotation_.x, 0.0f, 16.0f);
+	ImGui::End();
+}

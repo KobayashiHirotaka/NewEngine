@@ -305,6 +305,8 @@ void GamePlayScene::Update()
 		camera_.UpdateMatrix();
 	}
 
+	camera_.ImGui();
+
 	//imGui
 	ImGui::Begin("PlayScene");
 	ImGui::Text("Abutton or SpaceKey : ClearScene");
