@@ -62,6 +62,7 @@ void PostProcess::Initialize()
 
 	SetupBlurConstantBuffers();
 
+	//各ポストエフェクトの初期化
 	Bloom();
 
 	Vignette();
@@ -71,6 +72,8 @@ void PostProcess::Initialize()
 	BoxFilter();
 
 	GaussianFilter();
+
+	LuminanceOutline();
 }
 
 void PostProcess::Update()
@@ -80,6 +83,7 @@ void PostProcess::Update()
 		return;
 	}
 
+	//各ポストエフェクトの更新
 	UpdateBloom();
 
 	UpdateVignette();
@@ -89,6 +93,8 @@ void PostProcess::Update()
 	UpdateBoxFilter();
 
 	UpdateGaussianFilter();
+
+	UpdateLuminanceOutline();
 }
 
 void PostProcess::PreDraw() 
@@ -673,7 +679,7 @@ void PostProcess::CreatePostProcessPSO()
 	descriptorRange[4].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
 
 	//RootParameter作成。複数設定できるので配列。今回は結果一つだけなので長さ1の配列
-	D3D12_ROOT_PARAMETER rootParameters[10] = {};
+	D3D12_ROOT_PARAMETER rootParameters[11] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	rootParameters[0].DescriptorTable.pDescriptorRanges = &descriptorRange[0];//Tableの中身の配列を指定
@@ -709,11 +715,14 @@ void PostProcess::CreatePostProcessPSO()
 	rootParameters[9].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[9].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
 	rootParameters[9].Descriptor.ShaderRegister = 4;//レジスタ番号4とバインド
+	rootParameters[10].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
+	rootParameters[10].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
+	rootParameters[10].Descriptor.ShaderRegister = 5;//レジスタ番号5とバインド
 	descriptionRootSignature.pParameters = rootParameters;//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);//配列の長さ
 
 	//Sampler作成
-	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[2] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;//バイリニアフィルタ
 	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;//0~1の範囲外をリピート
 	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -722,6 +731,15 @@ void PostProcess::CreatePostProcessPSO()
 	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;//ありったけのMipmapを使う
 	staticSamplers[0].ShaderRegister = 0;//レジスタ番号0を使う
 	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
+
+	staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;//バイリニアフィルタ
+	staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;//0~1の範囲外をリピート
+	staticSamplers[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[1].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;//比較しない
+	staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX;//ありったけのMipmapを使う
+	staticSamplers[1].ShaderRegister = 1;//レジスタ番号1を使う
+	staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	descriptionRootSignature.pStaticSamplers = staticSamplers;
 	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
 
@@ -846,6 +864,7 @@ void PostProcess::Draw()
 	commandList_->SetGraphicsRootConstantBufferView(7, grayScaleConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(8, boxFilterConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(9, gaussianFilterConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(10, luminanceOutlineConstantBuffer_->GetGPUVirtualAddress());
 
 	//形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -1272,6 +1291,27 @@ void PostProcess::UpdateGaussianFilter()
 	gaussianFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&gaussianFilterData));
 	gaussianFilterData->enable = isGaussianFilterActive_;
 	gaussianFilterConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::LuminanceOutline()
+{
+	//LuminanceOutline用のCBVの作成
+	luminanceOutlineConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(LuminanceOutlineData));
+
+	//LuminanceOutline用のリソースに書き込む
+	LuminanceOutlineData* luminanceOutlineData = nullptr;
+	luminanceOutlineConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&luminanceOutlineData));
+	luminanceOutlineData->enable = isLuminanceOutlineActive_;
+	luminanceOutlineConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::UpdateLuminanceOutline()
+{
+	//LuminanceOutline用のリソースに書き込む
+	LuminanceOutlineData* luminanceOutlineData = nullptr;
+	luminanceOutlineConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&luminanceOutlineData));
+	luminanceOutlineData->enable = isLuminanceOutlineActive_;
+	luminanceOutlineConstantBuffer_->Unmap(0, nullptr);
 }
 
 

@@ -15,7 +15,7 @@ ConstantBuffer<Vignette> gVignetteParameter : register(b1);
 ConstantBuffer<GrayScale> gGrayScaleParameter : register(b2);
 ConstantBuffer<BoxFilter> gBoxFilterParameter : register(b3);
 ConstantBuffer<GaussianFilter> gGaussianFilterParameter : register(b4);
-ConstantBuffer<Outline> gOutlineParameter : register(b5);
+ConstantBuffer<LuminanceOutline> gLuminanceOutlineParameter : register(b5);
 
 //BoxFilter,GuassianFilter
 static const float32_t2 kIndex3x3[3][3] =
@@ -161,8 +161,8 @@ PixelShaderOutput main(VertexShaderOutput input)
         textureColor.rgb *= rcp(weight);
     }
     
-    //Outline
-    if (gOutlineParameter.enable)
+    //LuminanceOutline
+    if (gLuminanceOutlineParameter.enable)
     {
         float32_t2 difference = float32_t2(0.0f, 0.0f);
         float32_t2 uvStepSize = float32_t2(rcp(width), rcp(height));
