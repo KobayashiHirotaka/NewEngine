@@ -65,12 +65,17 @@ public:
         float padding[3];
     };
 
-    struct LuminanceOutlineData
+    struct LuminanceBasedOutlineData
     {
         bool enable;
         float padding[3];
     };
 
+    struct OutlineData
+    {
+        bool enable;
+        float padding[3];
+    };
 
     static PostProcess* GetInstance();
 
@@ -91,7 +96,7 @@ public:
     void SetIsGrayScaleActive(float isActive) { isGrayScaleActive_ = isActive; };
     void SetIsBoxFilterActive(float isActive) { isBoxFilterActive_ = isActive; };
     void SetIsGaussianFilterActive(float isActive) { isGaussianFilterActive_ = isActive; };
-    void SetIsLuminanceOutlineActive(float isActive) { isLuminanceOutlineActive_ = isActive; };
+    void SetIsLuminanceBasedOutlineActive(float isActive) { isLuminanceBasedOutlineActive_ = isActive; };
 
 private:
     //ブラーの方向
@@ -156,9 +161,9 @@ private:
     void GaussianFilter();
     void UpdateGaussianFilter();
 
-    //ルミナスアウトライン
-    void LuminanceOutline();
-    void UpdateLuminanceOutline();
+    //ルミナスベースアウトライン
+    void LuminanceBasedOutline();
+    void UpdateLuminanceBasedOutline();
 
     //マルチパス用テクスチャの作成
     Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor);
@@ -231,7 +236,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> grayScaleConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> boxFilterConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> gaussianFilterConstantBuffer_ = nullptr;
-    Microsoft::WRL::ComPtr<ID3D12Resource> luminanceOutlineConstantBuffer_ = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> luminanceBasedOutlineConstantBuffer_ = nullptr;
 
     //ビネットの強度
     float vignetteIntensity_ = 0.8f;
@@ -245,5 +250,5 @@ private:
     bool isGrayScaleActive_ = false;
     bool isBoxFilterActive_ = false;
     bool isGaussianFilterActive_ = false;
-    bool isLuminanceOutlineActive_ = false;
+    bool isLuminanceBasedOutlineActive_ = false;
 };

@@ -73,7 +73,7 @@ void PostProcess::Initialize()
 
 	GaussianFilter();
 
-	LuminanceOutline();
+	LuminanceBasedOutline();
 }
 
 void PostProcess::Update()
@@ -94,7 +94,7 @@ void PostProcess::Update()
 
 	UpdateGaussianFilter();
 
-	UpdateLuminanceOutline();
+	UpdateLuminanceBasedOutline();
 }
 
 void PostProcess::PreDraw() 
@@ -864,7 +864,7 @@ void PostProcess::Draw()
 	commandList_->SetGraphicsRootConstantBufferView(7, grayScaleConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(8, boxFilterConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(9, gaussianFilterConstantBuffer_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(10, luminanceOutlineConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(10, luminanceBasedOutlineConstantBuffer_->GetGPUVirtualAddress());
 
 	//形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -1293,25 +1293,25 @@ void PostProcess::UpdateGaussianFilter()
 	gaussianFilterConstantBuffer_->Unmap(0, nullptr);
 }
 
-void PostProcess::LuminanceOutline()
+void PostProcess::LuminanceBasedOutline()
 {
 	//LuminanceOutline用のCBVの作成
-	luminanceOutlineConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(LuminanceOutlineData));
+	luminanceBasedOutlineConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(LuminanceBasedOutlineData));
 
 	//LuminanceOutline用のリソースに書き込む
-	LuminanceOutlineData* luminanceOutlineData = nullptr;
-	luminanceOutlineConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&luminanceOutlineData));
-	luminanceOutlineData->enable = isLuminanceOutlineActive_;
-	luminanceOutlineConstantBuffer_->Unmap(0, nullptr);
+	LuminanceBasedOutlineData* luminanceBasedOutlineData = nullptr;
+	luminanceBasedOutlineConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&luminanceBasedOutlineData));
+	luminanceBasedOutlineData->enable = isLuminanceBasedOutlineActive_;
+	luminanceBasedOutlineConstantBuffer_->Unmap(0, nullptr);
 }
 
-void PostProcess::UpdateLuminanceOutline()
+void PostProcess::UpdateLuminanceBasedOutline()
 {
 	//LuminanceOutline用のリソースに書き込む
-	LuminanceOutlineData* luminanceOutlineData = nullptr;
-	luminanceOutlineConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&luminanceOutlineData));
-	luminanceOutlineData->enable = isLuminanceOutlineActive_;
-	luminanceOutlineConstantBuffer_->Unmap(0, nullptr);
+	LuminanceBasedOutlineData* luminanceBasedOutlineData = nullptr;
+	luminanceBasedOutlineConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&luminanceBasedOutlineData));
+	luminanceBasedOutlineData->enable = isLuminanceBasedOutlineActive_;
+	luminanceBasedOutlineConstantBuffer_->Unmap(0, nullptr);
 }
 
 

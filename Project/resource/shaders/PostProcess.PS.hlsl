@@ -15,7 +15,7 @@ ConstantBuffer<Vignette> gVignetteParameter : register(b1);
 ConstantBuffer<GrayScale> gGrayScaleParameter : register(b2);
 ConstantBuffer<BoxFilter> gBoxFilterParameter : register(b3);
 ConstantBuffer<GaussianFilter> gGaussianFilterParameter : register(b4);
-ConstantBuffer<LuminanceOutline> gLuminanceOutlineParameter : register(b5);
+ConstantBuffer<LuminanceBasedOutline> gLuminanceBasedOutlineParameter : register(b5);
 
 //BoxFilter,GuassianFilter
 static const float32_t2 kIndex3x3[3][3] =
@@ -162,7 +162,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     }
     
     //LuminanceOutline
-    if (gLuminanceOutlineParameter.enable)
+    if (gLuminanceBasedOutlineParameter.enable)
     {
         uint32_t width, height;
         gTexture.GetDimensions(width, height);

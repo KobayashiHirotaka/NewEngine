@@ -30,7 +30,7 @@ struct GaussianFilter
     bool enable;
 };
 
-struct LuminanceOutline
+struct LuminanceBasedOutline
 {
     bool enable;
 };
