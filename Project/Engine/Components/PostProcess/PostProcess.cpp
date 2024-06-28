@@ -1183,7 +1183,6 @@ void PostProcess::PostShrinkBlur(BlurState blurState)
 
 Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor)
 {
-
 	//ヒープの設定
 	D3D12_HEAP_PROPERTIES heapProperties{};
 	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
