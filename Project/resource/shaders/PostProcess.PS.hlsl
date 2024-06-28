@@ -33,14 +33,14 @@ static const float32_t kKernel3x3[3][3] =
 };
 
 //LuminanceOutline,DepthOutline
-static const float32_t kPrewittHorizontalKernel3x3[3][3] =
+static const float32_t kPrewittHorizontalKernel[3][3] =
 {
     { -1.0f / 6.0f, 0.0f / 1.0f, 1.0f / 6.0f },
     { -1.0f / 6.0f, 0.0f / 1.0f, 1.0f / 6.0f },
     { -1.0f / 6.0f, 0.0f / 1.0f, 1.0f / 6.0f },
 };
 
-static const float32_t kPrewittVerticalKernel3x3[3][3] =
+static const float32_t kPrewittVerticalKernel[3][3] =
 {
     { -1.0f / 6.0f, -1.0f / 6.0f, -1.0f / 6.0f },
     { 0.0f, 0.0f, 0.0f },
@@ -164,6 +164,9 @@ PixelShaderOutput main(VertexShaderOutput input)
     //LuminanceOutline
     if (gLuminanceOutlineParameter.enable)
     {
+        uint32_t width, height;
+        gTexture.GetDimensions(width, height);
+        
         float32_t2 difference = float32_t2(0.0f, 0.0f);
         float32_t2 uvStepSize = float32_t2(rcp(width), rcp(height));
         
@@ -171,12 +174,12 @@ PixelShaderOutput main(VertexShaderOutput input)
         {
             for (int32_t y = 0; y < 3; ++y)
             {
-                float32_t2 texcoord = input.texcoord * kIndex3x3[x][y] * uvStepSize;
+                float32_t2 texcoord = input.texcoord + kIndex3x3[x][y] * uvStepSize;
                 float32_t3 fetchColor = gTexture.Sample(gSampler, texcoord).rgb;
                 float32_t luminance = Luminance(fetchColor);
                 
-                difference.x += luminance * kPrewittHorizontalKernel3x3[x][y];
-                difference.y += luminance * kPrewittVerticalKernel3x3[x][y];
+                difference.x += luminance * kPrewittHorizontalKernel[x][y];
+                difference.y += luminance * kPrewittVerticalKernel[x][y];
             }
         }
         
