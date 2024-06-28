@@ -8,8 +8,7 @@ Texture2D<float32_t4> gHighIntensityBlurTexture : register(t4);
 Texture2D<float32_t4> gShrinkBlurTexture : register(t5);
 Texture2D<float32_t4> gHighIntensityShrinkBlurTexture : register(t6);
 SamplerState gSampler : register(s0);
-SamplerState gSamplerLinear : register(s1);
-SamplerState gSamplerPoint : register(s2);
+SamplerState gSamplerPoint : register(s1);
 
 ConstantBuffer<Bloom> gBloomParameter : register(b0);
 ConstantBuffer<Vignette> gVignetteParameter : register(b1);
@@ -188,7 +187,7 @@ PixelShaderOutput main(VertexShaderOutput input)
         float32_t weight = length(difference);
         weight = saturate(weight * 6.0f);
         
-        textureColor.rgb = (1.0f - weight) * gTexture.Sample(gSamplerLinear, input.texcoord).rgb;
+        textureColor.rgb = (1.0f - weight) * gTexture.Sample(gSampler, input.texcoord).rgb;
         textureColor.a = 1.0f;
     }
     

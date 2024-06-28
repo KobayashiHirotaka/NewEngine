@@ -1,4 +1,5 @@
 #include "DirectXCore.h"
+#include "Engine/Base/TextureManager/TextureManager.h"
 
 uint32_t DirectXCore::descriptorSizeRTV = 0;
 uint32_t DirectXCore::descriptorSizeDSV = 0;

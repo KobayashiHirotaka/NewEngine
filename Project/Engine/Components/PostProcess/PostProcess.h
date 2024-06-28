@@ -220,6 +220,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassSRVDescriptorHeap_ = nullptr;
     uint32_t srvIndex_ = -1;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassDSVDescriptorHeap_ = nullptr;
+    uint32_t depthSRVIndex_ = -1;
 
     //深度テクスチャのリソース
     Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;

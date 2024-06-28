@@ -56,6 +56,8 @@ void PostProcess::Initialize()
 	//深度テクスチャの作成
 	depthStencilResource_ = CreateDepthStencilTextureResource(WindowsApp::GetInstance()->kClientWidth, WindowsApp::GetInstance()->kClientHeight);
 
+	projectionInverse_ = Inverse(MakePerspectiveFovMatrix(0.45f, (float)16 / 9, 1.0f, 300.0f));
+
 	CreateDSV();
 
 	CreateRenderTargets();
@@ -729,7 +731,7 @@ void PostProcess::CreatePostProcessPSO()
 	descriptionRootSignature.NumParameters = _countof(rootParameters);//配列の長さ
 
 	//Sampler作成
-	D3D12_STATIC_SAMPLER_DESC staticSamplers[3] = {};
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[2] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;//バイリニアフィルタ
 	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;//0~1の範囲外をリピート
 	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -739,7 +741,7 @@ void PostProcess::CreatePostProcessPSO()
 	staticSamplers[0].ShaderRegister = 0;//レジスタ番号0を使う
 	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 
-	staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;//バイリニアフィルタ
+	staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;//ポイントフィルタ
 	staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;//0~1の範囲外をリピート
 	staticSamplers[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -747,15 +749,6 @@ void PostProcess::CreatePostProcessPSO()
 	staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX;//ありったけのMipmapを使う
 	staticSamplers[1].ShaderRegister = 1;//レジスタ番号1を使う
 	staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
-
-	staticSamplers[2].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;//バイリニアフィルタ
-	staticSamplers[2].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;//0~1の範囲外をリピート
-	staticSamplers[2].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[2].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[2].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;//比較しない
-	staticSamplers[2].MaxLOD = D3D12_FLOAT32_MAX;//ありったけのMipmapを使う
-	staticSamplers[2].ShaderRegister = 2;//レジスタ番号2を使う
-	staticSamplers[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	descriptionRootSignature.pStaticSamplers = staticSamplers;
 	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
 
@@ -853,6 +846,15 @@ void PostProcess::CreatePostProcessPSO()
 
 void PostProcess::Draw()
 {
+	//バリアを張る
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = depthStencilResource_.Get();
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	commandList_->ResourceBarrier(1, &barrier);
+
 	//ルートシグネチャを設定
 	commandList_->SetGraphicsRootSignature(postProcessRootSignature_.Get());
 	//パイプラインステートを設定
@@ -864,7 +866,7 @@ void PostProcess::Draw()
 	commandList_->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 	//ディスクリプタテーブルを設定
 	D3D12_GPU_DESCRIPTOR_HANDLE srvHandles[5];
-	srvHandles[0] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, linearDepthResource_.srvIndex);
+	srvHandles[0] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, depthSRVIndex_);
 	srvHandles[1] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, blurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
 	srvHandles[2] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, highIntensityBlurResource_[static_cast<int>(BlurState::Vertical)].srvIndex);
 	srvHandles[3] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, shrinkBlurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
@@ -887,6 +889,10 @@ void PostProcess::Draw()
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//描画
 	commandList_->DrawInstanced(UINT(vertices_.size()), 1, 0, 0);
+
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+	commandList_->ResourceBarrier(1, &barrier);
 }
 
 
@@ -1432,10 +1438,30 @@ uint32_t PostProcess::CreateSRV(const Microsoft::WRL::ComPtr<ID3D12Resource>& re
 
 void PostProcess::CreateDSV()
 {
+	srvIndex_++;
+
+	depthSRVIndex_ = srvIndex_;
+
 	//DSVの設定
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;//Format。基本的にはResourceに合わせる
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;//2DTexture
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
+
+	D3D12_CPU_DESCRIPTOR_HANDLE srvCPUHandle =
+		GetCPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, srvIndex_);
+
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGPUHandle =
+		GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, srvIndex_);
+
+	//DXGI_FORMAT_D24_UNORM
+	depthTextureSrvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	depthTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	depthTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	depthTextureSrvDesc.Texture2D.MipLevels = 1;
+	device_->CreateShaderResourceView(depthStencilResource_.Get(), &depthTextureSrvDesc, srvCPUHandle);
+
 	//DSVHeapの先頭にDSVを作る
 	device_->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, multiPassDSVDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
 }
