@@ -100,15 +100,43 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	float animationTime[3];
+
 	//テスト用の処理
 	if (input_->PressKey(DIK_A))
 	{
-		guardGauge_ -= 1.0f;
+		animationIndex = 4;
+		animationTime[0] = 0.0f;
+		UpdateAnimationTime(animationTime[0], false, 60.0f, animationIndex, model_);
+	}
+	else if (!input_->PressKey(DIK_S) && !input_->PressKey(DIK_D))
+	{
+		animationTime[0] = 0.0f;
+		model_->SetAnimationTime(animationTime[0]);
+	}
+
+	if (input_->PressKey(DIK_S))
+	{
+		animationIndex = 5;
+		animationTime[1] = 0.0f;
+		UpdateAnimationTime(animationTime[1], false, 60.0f, animationIndex, model_);
+	}
+	else if (!input_->PressKey(DIK_A) && !input_->PressKey(DIK_D))
+	{
+		animationTime[1] = 0.0f;
+		model_->SetAnimationTime(animationTime[1]);
 	}
 
 	if (input_->PressKey(DIK_D))
 	{
-		finisherGauge_ += 1.0f;
+		animationIndex = 3;
+		animationTime[2] = 0.0f;
+		UpdateAnimationTime(animationTime[2], false, 60.0f, animationIndex, model_);
+	}
+	else if (!input_->PressKey(DIK_A) && !input_->PressKey(DIK_S))
+	{
+		animationTime[2] = 0.0f;
+		model_->SetAnimationTime(animationTime[2]);
 	}
 	//ここまでテスト用の処理
 
