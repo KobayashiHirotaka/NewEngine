@@ -39,7 +39,8 @@ void GamePlayScene::Initialize()
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
 	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);*/
-	PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
+	//PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
+	//PostProcess::GetInstance()->SetIsDepthBasedOutlineActive(true);
 
 	//Levelの読み込み
 	levelLoarder_ = LevelLoader::GetInstance();

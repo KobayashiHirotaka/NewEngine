@@ -34,3 +34,10 @@ struct LuminanceBasedOutline
 {
     bool enable;
 };
+
+struct DepthBasedOutline
+{
+    bool enable;
+    float32_t4x4 projectionInverse;
+};
+

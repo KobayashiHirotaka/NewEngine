@@ -71,10 +71,11 @@ public:
         float padding[3];
     };
 
-    struct OutlineData
+    struct DepthBasedOutlineData
     {
         bool enable;
         float padding[3];
+        Matrix4x4 projectionInverse;
     };
 
     static PostProcess* GetInstance();
@@ -97,6 +98,7 @@ public:
     void SetIsBoxFilterActive(float isActive) { isBoxFilterActive_ = isActive; };
     void SetIsGaussianFilterActive(float isActive) { isGaussianFilterActive_ = isActive; };
     void SetIsLuminanceBasedOutlineActive(float isActive) { isLuminanceBasedOutlineActive_ = isActive; };
+    void SetIsDepthBasedOutlineActive(float isActive) { isDepthBasedOutlineActive_ = isActive; };
 
 private:
     //ブラーの方向
@@ -164,6 +166,10 @@ private:
     //ルミナスベースアウトライン
     void LuminanceBasedOutline();
     void UpdateLuminanceBasedOutline();
+
+    //デプスベースアウトライン
+    void DepthBasedOutline();
+    void UpdateDepthBasedOutline();
 
     //マルチパス用テクスチャの作成
     Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor);
@@ -237,9 +243,13 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> boxFilterConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> gaussianFilterConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> luminanceBasedOutlineConstantBuffer_ = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> depthBasedOutlineConstantBuffer_ = nullptr;
 
     //ビネットの強度
     float vignetteIntensity_ = 0.8f;
+
+    //デプスベースアウトラインの逆プロジェクション行列
+    Matrix4x4 projectionInverse_{};
 
     //ポストエフェクトのフラグ
     bool isPostProcessActive_ = false;
@@ -251,4 +261,5 @@ private:
     bool isBoxFilterActive_ = false;
     bool isGaussianFilterActive_ = false;
     bool isLuminanceBasedOutlineActive_ = false;
+    bool isDepthBasedOutlineActive_ = false;
 };

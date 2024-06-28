@@ -74,6 +74,8 @@ void PostProcess::Initialize()
 	GaussianFilter();
 
 	LuminanceBasedOutline();
+
+	DepthBasedOutline();
 }
 
 void PostProcess::Update()
@@ -95,6 +97,8 @@ void PostProcess::Update()
 	UpdateGaussianFilter();
 
 	UpdateLuminanceBasedOutline();
+
+	UpdateDepthBasedOutline();
 }
 
 void PostProcess::PreDraw() 
@@ -679,7 +683,7 @@ void PostProcess::CreatePostProcessPSO()
 	descriptorRange[4].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
 
 	//RootParameter作成。複数設定できるので配列。今回は結果一つだけなので長さ1の配列
-	D3D12_ROOT_PARAMETER rootParameters[11] = {};
+	D3D12_ROOT_PARAMETER rootParameters[12] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	rootParameters[0].DescriptorTable.pDescriptorRanges = &descriptorRange[0];//Tableの中身の配列を指定
@@ -718,11 +722,14 @@ void PostProcess::CreatePostProcessPSO()
 	rootParameters[10].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[10].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
 	rootParameters[10].Descriptor.ShaderRegister = 5;//レジスタ番号5とバインド
+	rootParameters[11].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
+	rootParameters[11].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
+	rootParameters[11].Descriptor.ShaderRegister = 6;//レジスタ番号6とバインド
 	descriptionRootSignature.pParameters = rootParameters;//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);//配列の長さ
 
 	//Sampler作成
-	D3D12_STATIC_SAMPLER_DESC staticSamplers[2] = {};
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[3] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;//バイリニアフィルタ
 	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;//0~1の範囲外をリピート
 	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -740,6 +747,15 @@ void PostProcess::CreatePostProcessPSO()
 	staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX;//ありったけのMipmapを使う
 	staticSamplers[1].ShaderRegister = 1;//レジスタ番号1を使う
 	staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
+
+	staticSamplers[2].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;//バイリニアフィルタ
+	staticSamplers[2].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;//0~1の範囲外をリピート
+	staticSamplers[2].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[2].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[2].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;//比較しない
+	staticSamplers[2].MaxLOD = D3D12_FLOAT32_MAX;//ありったけのMipmapを使う
+	staticSamplers[2].ShaderRegister = 2;//レジスタ番号2を使う
+	staticSamplers[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	descriptionRootSignature.pStaticSamplers = staticSamplers;
 	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
 
@@ -865,6 +881,7 @@ void PostProcess::Draw()
 	commandList_->SetGraphicsRootConstantBufferView(8, boxFilterConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(9, gaussianFilterConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(10, luminanceBasedOutlineConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(11, depthBasedOutlineConstantBuffer_->GetGPUVirtualAddress());
 
 	//形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -1312,6 +1329,29 @@ void PostProcess::UpdateLuminanceBasedOutline()
 	luminanceBasedOutlineConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&luminanceBasedOutlineData));
 	luminanceBasedOutlineData->enable = isLuminanceBasedOutlineActive_;
 	luminanceBasedOutlineConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::DepthBasedOutline()
+{
+	//DepthOutline用のCBVの作成
+	depthBasedOutlineConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(DepthBasedOutlineData));
+
+	//DepthOutline用のリソースに書き込む
+	DepthBasedOutlineData* depthBasedOutlineData = nullptr;
+	depthBasedOutlineConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&depthBasedOutlineData));
+	depthBasedOutlineData->enable = isDepthBasedOutlineActive_;
+	depthBasedOutlineData->projectionInverse = projectionInverse_;
+	depthBasedOutlineConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::UpdateDepthBasedOutline()
+{
+	//DepthOutline用のリソースに書き込む
+	DepthBasedOutlineData* depthBasedOutlineData = nullptr;
+	depthBasedOutlineConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&depthBasedOutlineData));
+	depthBasedOutlineData->enable = isDepthBasedOutlineActive_;
+	depthBasedOutlineData->projectionInverse = projectionInverse_;
+	depthBasedOutlineConstantBuffer_->Unmap(0, nullptr);
 }
 
 

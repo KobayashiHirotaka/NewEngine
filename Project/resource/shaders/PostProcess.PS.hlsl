@@ -9,6 +9,7 @@ Texture2D<float32_t4> gShrinkBlurTexture : register(t5);
 Texture2D<float32_t4> gHighIntensityShrinkBlurTexture : register(t6);
 SamplerState gSampler : register(s0);
 SamplerState gSamplerLinear : register(s1);
+SamplerState gSamplerPoint : register(s2);
 
 ConstantBuffer<Bloom> gBloomParameter : register(b0);
 ConstantBuffer<Vignette> gVignetteParameter : register(b1);
@@ -16,6 +17,7 @@ ConstantBuffer<GrayScale> gGrayScaleParameter : register(b2);
 ConstantBuffer<BoxFilter> gBoxFilterParameter : register(b3);
 ConstantBuffer<GaussianFilter> gGaussianFilterParameter : register(b4);
 ConstantBuffer<LuminanceBasedOutline> gLuminanceBasedOutlineParameter : register(b5);
+ConstantBuffer<DepthBasedOutline> gDepthBasedOutlineParameter : register(b6);
 
 //BoxFilter,GuassianFilter
 static const float32_t2 kIndex3x3[3][3] =
@@ -161,7 +163,7 @@ PixelShaderOutput main(VertexShaderOutput input)
         textureColor.rgb *= rcp(weight);
     }
     
-    //LuminanceOutline
+    //LuminanceBasedOutline
     if (gLuminanceBasedOutlineParameter.enable)
     {
         uint32_t width, height;
@@ -187,6 +189,36 @@ PixelShaderOutput main(VertexShaderOutput input)
         weight = saturate(weight * 6.0f);
         
         textureColor.rgb = (1.0f - weight) * gTexture.Sample(gSamplerLinear, input.texcoord).rgb;
+        textureColor.a = 1.0f;
+    }
+    
+     //DepthBasedOutline
+    if (gDepthBasedOutlineParameter.enable)
+    {
+        uint32_t width, height;
+        gTexture.GetDimensions(width, height);
+        
+        float32_t2 difference = float32_t2(0.0f, 0.0f);
+        float32_t2 uvStepSize = float32_t2(rcp(width), rcp(height));
+        
+        for (int32_t x = 0; x < 3; ++x)
+        {
+            for (int32_t y = 0; y < 3; ++y)
+            {
+                float32_t2 texcoord = input.texcoord + kIndex3x3[x][y] * uvStepSize;
+                float32_t ndcDepth = gLinearDepthTexture.Sample(gSamplerPoint, texcoord);
+                float32_t4 viewSpace = mul(float32_t4(0.0f, 0.0f, ndcDepth, 1.0f), gDepthBasedOutlineParameter.projectionInverse);
+                float32_t viewZ = viewSpace.z * rcp(viewSpace.w);
+                
+                difference.x += viewZ * kPrewittHorizontalKernel[x][y];
+                difference.y += viewZ * kPrewittVerticalKernel[x][y];
+            }
+        }
+        
+        float32_t weight = length(difference);
+        weight = saturate(weight);
+        
+        textureColor.rgb = (1.0f - weight) * gTexture.Sample(gSampler, input.texcoord).rgb;
         textureColor.a = 1.0f;
     }
 
