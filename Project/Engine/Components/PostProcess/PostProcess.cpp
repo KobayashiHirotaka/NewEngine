@@ -662,30 +662,34 @@ void PostProcess::CreatePostProcessPSO()
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	//DescriptorRange作成
-	D3D12_DESCRIPTOR_RANGE descriptorRange[5]{};
+	D3D12_DESCRIPTOR_RANGE descriptorRange[6]{};
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRange[0].BaseShaderRegister = 0;
-	descriptorRange[0].NumDescriptors = 3;
+	descriptorRange[0].NumDescriptors = 1;
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
 	descriptorRange[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRange[1].BaseShaderRegister = 3;
-	descriptorRange[1].NumDescriptors = 1;
+	descriptorRange[1].BaseShaderRegister = 1;
+	descriptorRange[1].NumDescriptors = 2;
 	descriptorRange[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
 	descriptorRange[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRange[2].BaseShaderRegister = 4;
+	descriptorRange[2].BaseShaderRegister = 3;
 	descriptorRange[2].NumDescriptors = 1;
 	descriptorRange[2].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
 	descriptorRange[3].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRange[3].BaseShaderRegister = 5;
+	descriptorRange[3].BaseShaderRegister = 4;
 	descriptorRange[3].NumDescriptors = 1;
 	descriptorRange[3].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
 	descriptorRange[4].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRange[4].BaseShaderRegister = 6;
+	descriptorRange[4].BaseShaderRegister = 5;
 	descriptorRange[4].NumDescriptors = 1;
 	descriptorRange[4].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
+	descriptorRange[5].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorRange[5].BaseShaderRegister = 6;
+	descriptorRange[5].NumDescriptors = 1;
+	descriptorRange[5].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
 
 	//RootParameter作成。複数設定できるので配列。今回は結果一つだけなので長さ1の配列
-	D3D12_ROOT_PARAMETER rootParameters[12] = {};
+	D3D12_ROOT_PARAMETER rootParameters[13] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	rootParameters[0].DescriptorTable.pDescriptorRanges = &descriptorRange[0];//Tableの中身の配列を指定
@@ -706,30 +710,34 @@ void PostProcess::CreatePostProcessPSO()
 	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	rootParameters[4].DescriptorTable.pDescriptorRanges = &descriptorRange[4];//Tableの中身の配列を指定
 	rootParameters[4].DescriptorTable.NumDescriptorRanges = 1;//Tableで利用する数
-	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
-	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
-	rootParameters[5].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
+	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
+	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
+	rootParameters[5].DescriptorTable.pDescriptorRanges = &descriptorRange[5];//Tableの中身の配列を指定
+	rootParameters[5].DescriptorTable.NumDescriptorRanges = 1;//Tableで利用する数
 	rootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
-	rootParameters[6].Descriptor.ShaderRegister = 1;//レジスタ番号1とバインド
+	rootParameters[6].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
 	rootParameters[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
-	rootParameters[7].Descriptor.ShaderRegister = 2;//レジスタ番号2とバインド
+	rootParameters[7].Descriptor.ShaderRegister = 1;//レジスタ番号1とバインド
 	rootParameters[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
-	rootParameters[8].Descriptor.ShaderRegister = 3;//レジスタ番号3とバインド
+	rootParameters[8].Descriptor.ShaderRegister = 2;//レジスタ番号2とバインド
 	rootParameters[9].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[9].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
-	rootParameters[9].Descriptor.ShaderRegister = 4;//レジスタ番号4とバインド
+	rootParameters[9].Descriptor.ShaderRegister = 3;//レジスタ番号3とバインド
 	rootParameters[10].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[10].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
-	rootParameters[10].Descriptor.ShaderRegister = 5;//レジスタ番号5とバインド
+	rootParameters[10].Descriptor.ShaderRegister = 4;//レジスタ番号4とバインド
 	rootParameters[11].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[11].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
-	rootParameters[11].Descriptor.ShaderRegister = 6;//レジスタ番号6とバインド
+	rootParameters[11].Descriptor.ShaderRegister = 5;//レジスタ番号5とバインド
+	rootParameters[12].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
+	rootParameters[12].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
+	rootParameters[12].Descriptor.ShaderRegister = 6;//レジスタ番号6とバインド
 	descriptionRootSignature.pParameters = rootParameters;//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);//配列の長さ
-
+	
 	//Sampler作成
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[2] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;//バイリニアフィルタ
@@ -865,31 +873,36 @@ void PostProcess::Draw()
 	ID3D12DescriptorHeap* descriptorHeaps[] = { multiPassSRVDescriptorHeap_.Get() };
 	commandList_->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 	//ディスクリプタテーブルを設定
-	D3D12_GPU_DESCRIPTOR_HANDLE srvHandles[5];
+	D3D12_GPU_DESCRIPTOR_HANDLE srvHandles[6];
 	srvHandles[0] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, depthSRVIndex_);
-	srvHandles[1] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, blurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
-	srvHandles[2] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, highIntensityBlurResource_[static_cast<int>(BlurState::Vertical)].srvIndex);
-	srvHandles[3] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, shrinkBlurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
-	srvHandles[4] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, shrinkHighIntensityBlurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
+	srvHandles[1] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, secondPassResource_.srvIndex);;
+	srvHandles[2] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, blurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
+	srvHandles[3] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, highIntensityBlurResource_[static_cast<int>(BlurState::Vertical)].srvIndex);
+	srvHandles[4] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, shrinkBlurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
+	srvHandles[5] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, shrinkHighIntensityBlurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
 	commandList_->SetGraphicsRootDescriptorTable(0, srvHandles[0]);
 	commandList_->SetGraphicsRootDescriptorTable(1, srvHandles[1]);
 	commandList_->SetGraphicsRootDescriptorTable(2, srvHandles[2]);
 	commandList_->SetGraphicsRootDescriptorTable(3, srvHandles[3]);
 	commandList_->SetGraphicsRootDescriptorTable(4, srvHandles[4]);
+	commandList_->SetGraphicsRootDescriptorTable(5, srvHandles[5]);
 	//CBVを設定
-	commandList_->SetGraphicsRootConstantBufferView(5, bloomConstantBuffer_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(6, vignetteConstantBuffer_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(7, grayScaleConstantBuffer_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(8, boxFilterConstantBuffer_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(9, gaussianFilterConstantBuffer_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(10, luminanceBasedOutlineConstantBuffer_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(11, depthBasedOutlineConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(6, bloomConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(7, vignetteConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(8, grayScaleConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(9, boxFilterConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(10, gaussianFilterConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(11, luminanceBasedOutlineConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(12, depthBasedOutlineConstantBuffer_->GetGPUVirtualAddress());
 
 	//形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//描画
 	commandList_->DrawInstanced(UINT(vertices_.size()), 1, 0, 0);
 
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = depthStencilResource_.Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
 	commandList_->ResourceBarrier(1, &barrier);

@@ -357,8 +357,6 @@ void DirectXCore::CreateSwapChain()
 
 void DirectXCore::CreateRTV() 
 {
-
-
 	HRESULT hr = swapChain_->GetBuffer(0, IID_PPV_ARGS(&swapChainResources_[0]));
 
 	//リソースの取得ができないので起動できない
