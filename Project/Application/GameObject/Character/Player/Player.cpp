@@ -527,7 +527,7 @@ void Player::BehaviorAttackUpdate()
 
 		if (!isDown_)
 		{
-			animationTime += 1.0f / 60.0f;
+			animationTime += 1.0f / 30.0f;
 		}
 
 		model_->SetAnimationTime(animationTime);
@@ -571,7 +571,7 @@ void Player::BehaviorAttackUpdate()
 
 		if (!isDown_)
 		{
-			animationTime += 1.0f / 60.0f;
+			animationTime += 1.0f / 40.0f;
 		}
 
 		model_->SetAnimationTime(animationTime);
@@ -615,7 +615,7 @@ void Player::BehaviorAttackUpdate()
 
 		if (!isDown_)
 		{
-			animationTime += 1.0f / 60.0f;
+			animationTime += 1.0f / 40.0f;
 		}
 
 		model_->SetAnimationTime(animationTime);
