@@ -86,6 +86,28 @@
                 ]
             },
             "file_name": "remakePlayer"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    -0.5911886692047119
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    0.3649466037750244,
+                    0.3649466037750244,
+                    0.3649466037750244
+                ]
+            },
+            "file_name": "ground"
         }
     ]
 }

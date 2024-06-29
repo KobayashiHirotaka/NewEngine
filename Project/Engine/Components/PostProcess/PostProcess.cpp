@@ -1230,6 +1230,7 @@ void PostProcess::Bloom()
 	BloomData* bloomData = nullptr;
 	bloomConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&bloomData));
 	bloomData->enable = isBloomActive_;
+	bloomData->intensity = bloomIntensity_;
 	bloomConstantBuffer_->Unmap(0, nullptr);
 }
 
@@ -1239,7 +1240,12 @@ void PostProcess::UpdateBloom()
 	BloomData* bloomData = nullptr;
 	bloomConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&bloomData));
 	bloomData->enable = isBloomActive_;
+	bloomData->intensity = bloomIntensity_;
 	bloomConstantBuffer_->Unmap(0, nullptr);
+
+	ImGui::Begin("Bloom");
+	ImGui::DragFloat("intensity", &bloomIntensity_, 0.0f, 1.0f);
+	ImGui::End();
 }
 
 void PostProcess::Vignette()

@@ -7,6 +7,7 @@ struct VertexShaderOutput
 struct Bloom
 {
     bool enable;
+    float intensity;
 };
 
 struct Vignette

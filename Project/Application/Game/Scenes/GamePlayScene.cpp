@@ -40,7 +40,7 @@ void GamePlayScene::Initialize()
 	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 	//PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
-	PostProcess::GetInstance()->SetIsDepthBasedOutlineActive(true);
+	//PostProcess::GetInstance()->SetIsDepthBasedOutlineActive(true);
 
 	//Levelの読み込み
 	levelLoarder_ = LevelLoader::GetInstance();
@@ -329,7 +329,7 @@ void GamePlayScene::Draw()
 	game3dObjectManager_->Draw(camera_);
 
 	//skydomeの描画
-	//skydome_->Draw(camera_);
+	skydome_->Draw(camera_);
 
 	Model::PostDraw();
 

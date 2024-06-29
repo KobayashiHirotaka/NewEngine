@@ -82,7 +82,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     if (gBloomParameter.enable == true)
     {
         float4 color = textureColor;
-        textureColor = color + highIntensityColor + highIntensityBlurColor + highIntensityShrinkBlurColor;
+        textureColor = (color + highIntensityColor + highIntensityBlurColor + highIntensityShrinkBlurColor) * gBloomParameter.intensity;
     }
     
     //Vignette

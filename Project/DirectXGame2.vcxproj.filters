@@ -235,6 +235,12 @@
     <Filter Include="ヘッダー ファイル\Application\GameObject\Ground">
       <UniqueIdentifier>{fe622de0-f913-4e3f-b492-d3cf45fcb683}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Application\GameObject\LevelLoader">
+      <UniqueIdentifier>{49f583c7-6d6c-49aa-938d-b61de46ac123}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\GameObject\LevelLoader">
+      <UniqueIdentifier>{0ec46155-73f0-4d80-a77c-dfced208ff0f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -372,15 +378,6 @@
     <ClCompile Include="Engine\3D\Camera\DebugCamera.cpp">
       <Filter>ソース ファイル\Engine\3d\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp">
-      <Filter>ソース ファイル\Engine\3d\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp">
-      <Filter>ソース ファイル\Engine\3d\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp">
-      <Filter>ソース ファイル\Engine\3d\Model</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Utility\LevelLoader\LevelLoader.cpp">
       <Filter>ソース ファイル\Engine\Utility\LevelLoader</Filter>
     </ClCompile>
@@ -395,6 +392,15 @@
     </ClCompile>
     <ClCompile Include="Application\GameObject\Ground\Ground.cpp">
       <Filter>ソース ファイル\Application\GameObject\Ground</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp">
+      <Filter>ソース ファイル\Application\GameObject\LevelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp">
+      <Filter>ソース ファイル\Application\GameObject\LevelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp">
+      <Filter>ソース ファイル\Application\GameObject\LevelLoader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -581,15 +587,6 @@
     <ClInclude Include="Engine\Utility\Structs.h">
       <Filter>ヘッダー ファイル\Engine\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\3D\Model\Game3dObjectFactory.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\3D\Model\IGame3dObject.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Utility\LevelLoader\LevelLoader.h">
       <Filter>ヘッダー ファイル\Engine\Utility\LevelLoader</Filter>
     </ClInclude>
@@ -604,6 +601,15 @@
     </ClInclude>
     <ClInclude Include="Application\GameObject\Ground\Ground.h">
       <Filter>ヘッダー ファイル\Application\GameObject\Ground</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\Game3dObjectFactory.h">
+      <Filter>ヘッダー ファイル\Application\GameObject\LevelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h">
+      <Filter>ヘッダー ファイル\Application\GameObject\LevelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\IGame3dObject.h">
+      <Filter>ヘッダー ファイル\Application\GameObject\LevelLoader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

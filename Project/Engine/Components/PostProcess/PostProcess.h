@@ -38,7 +38,7 @@ public:
     struct BloomData
     {
         bool enable;
-        float padding[3];
+        float intensity;
     };
 
     struct VignetteData
@@ -89,16 +89,22 @@ public:
 
     //ポストプロセスのセッター
     void SetIsPostProcessActive(bool isActive) { isPostProcessActive_ = isActive; };
+
+    //ポストエフェクトのセッター
     void SetIsBlurActive(bool isActive) { isBlurActive_ = isActive; };
     void SetIsShrinkBlurActive(bool isActive) { isShrinkBlurActive_ = isActive; };
     void SetIsBloomActive(bool isActive) { isBloomActive_ = isActive; };
     void SetIsVignetteActive(bool isActive) { isVignetteActive_ = isActive; };
-    void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
     void SetIsGrayScaleActive(float isActive) { isGrayScaleActive_ = isActive; };
     void SetIsBoxFilterActive(float isActive) { isBoxFilterActive_ = isActive; };
     void SetIsGaussianFilterActive(float isActive) { isGaussianFilterActive_ = isActive; };
     void SetIsLuminanceBasedOutlineActive(float isActive) { isLuminanceBasedOutlineActive_ = isActive; };
     void SetIsDepthBasedOutlineActive(float isActive) { isDepthBasedOutlineActive_ = isActive; };
+
+
+    //ポストエフェクトのパラメーター用のセッター
+    void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
+    void SetBloomIntensity(float intensity) { bloomIntensity_ = intensity; };
 
 private:
     //ブラーの方向
@@ -245,6 +251,9 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> gaussianFilterConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> luminanceBasedOutlineConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> depthBasedOutlineConstantBuffer_ = nullptr;
+
+    //ブルームの強度
+    float bloomIntensity_ = 0.43f;
 
     //ビネットの強度
     float vignetteIntensity_ = 0.8f;
