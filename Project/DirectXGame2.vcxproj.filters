@@ -229,6 +229,12 @@
     <Filter Include="ソース ファイル\Application\GameObject\Character\Enemy">
       <UniqueIdentifier>{57ccee8f-efec-46a4-bbec-aee94933ffa3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Application\GameObject\Ground">
+      <UniqueIdentifier>{d183ec2f-07ed-4b40-9828-39c8e72186be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\GameObject\Ground">
+      <UniqueIdentifier>{fe622de0-f913-4e3f-b492-d3cf45fcb683}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -386,6 +392,9 @@
     </ClCompile>
     <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp">
       <Filter>ソース ファイル\Application\GameObject\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Ground\Ground.cpp">
+      <Filter>ソース ファイル\Application\GameObject\Ground</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -592,6 +601,9 @@
     </ClInclude>
     <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h">
       <Filter>ヘッダー ファイル\Application\GameObject\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Ground\Ground.h">
+      <Filter>ヘッダー ファイル\Application\GameObject\Ground</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
