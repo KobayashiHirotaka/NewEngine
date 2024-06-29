@@ -75,12 +75,6 @@ void Input::Update()
 	mouseDevice_->GetDeviceState(sizeof(DIMOUSESTATE), &mouse_);
 
 	preState_ = state_;
-
-	DWORD dwResult = XInputGetState(0, &state_);
-	if (dwResult == ERROR_SUCCESS)
-	{
-		ZeroMemory(&state_, sizeof(XINPUT_STATE));
-	}
 }
 
 bool Input::PushKey(uint8_t keyNumber)const
