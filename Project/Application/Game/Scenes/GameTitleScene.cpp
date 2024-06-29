@@ -25,10 +25,10 @@ void GameTitleScene::Initialize()
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
 
 	//postEffectの切り替え
-	/*PostProcess::GetInstance()->SetIsBloomActive(true);
+	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
 	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);*/
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 	//PostProcess::GetInstance()->SetIsLuminanceOutlineActive(true);
 
 	//modelの読み込み

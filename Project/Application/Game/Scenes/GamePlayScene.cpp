@@ -35,12 +35,12 @@ void GamePlayScene::Initialize()
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
 
 	//postEffectの切り替え
-	/*PostProcess::GetInstance()->SetIsBloomActive(true);
+	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
 	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);*/
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 	//PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
-	PostProcess::GetInstance()->SetIsDepthBasedOutlineActive(true);
+	//PostProcess::GetInstance()->SetIsDepthBasedOutlineActive(true);
 
 	//Levelの読み込み
 	levelLoarder_ = LevelLoader::GetInstance();
