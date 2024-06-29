@@ -100,44 +100,14 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	//float animationTime[3];
-
 	//テスト用の処理
-	/*if (input_->PressKey(DIK_A))
-	{
-		animationIndex = 4;
-		animationTime[0] = 0.0f;
-		UpdateAnimationTime(animationTime[0], false, 60.0f, animationIndex, model_);
-	}
-	else if (!input_->PressKey(DIK_S) && !input_->PressKey(DIK_D))
-	{
-		animationTime[0] = 0.0f;
-		model_->SetAnimationTime(animationTime[0]);
-	}
 
 	
-	else if (!input_->PressKey(DIK_A) && !input_->PressKey(DIK_D))
-	{
-		animationTime[1] = 0.0f;
-		model_->SetAnimationTime(animationTime[1]);
-	}
-
-	if (input_->PressKey(DIK_D))
-	{
-		animationIndex = 3;
-		animationTime[2] = 0.0f;
-		UpdateAnimationTime(animationTime[2], false, 60.0f, animationIndex, model_);
-	}
-	else if (!input_->PressKey(DIK_A) && !input_->PressKey(DIK_S))
-	{
-		animationTime[2] = 0.0f;
-		model_->SetAnimationTime(animationTime[2]);
-	}*/
 	//ここまでテスト用の処理
 
 	isShake_ = false;
 
-	//0は後ろ歩き, 1は前歩き, 2は停止
+	//0は後ろ歩き, 1は前歩き, 2は停止,3はTC強P,4はTC中P,5は弱P
 	model_->ApplyAnimation(animationIndex);
 
 	model_->Update();
@@ -293,6 +263,7 @@ void Player::Update()
 	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
 	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
 	ImGui::Text("isGuard %d", isGuard_);
+	ImGui::Text("attackAnimationFrame %d", attackAnimationFrame);
 	ImGui::End();
 
 	ImGui::Begin("Cursol");
@@ -535,7 +506,7 @@ void Player::BehaviorAttackInitialize()
 
 void Player::BehaviorAttackUpdate()
 {
-	////通常攻撃
+	//通常攻撃
 	if (workAttack_.isLightPunch)
 	{
 		isGuard_ = false;
@@ -555,13 +526,101 @@ void Player::BehaviorAttackUpdate()
 		if (isDown_ || animationTime >= animationDuration)
 		{
 			behaviorRequest_ = Behavior::kRoot;
-			workAttack_.stiffnessTimer = 60;
 			workAttack_.isAttack = false;
 			workAttack_.isLightPunch = false;
 			animationTime = 0.0f;
+			attackAnimationFrame = 0;
 			model_->SetAnimationTime(animationTime);
 		}
+
+		if (input_->GetJoystickState())
+		{
+			if (!isDown_ && attackAnimationFrame > 20 && animationTime < animationDuration
+				&& input_->IsPressButton(XINPUT_GAMEPAD_Y))
+			{
+				workAttack_.isLightPunch = false;
+				workAttack_.isTCMiddlePunch = true;
+				animationTime = 0.0f;
+				attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime);
+			}
+		}
 		
+		attackAnimationFrame++;
+	}
+
+	//ターゲットコンボ用の攻撃(2発目)
+	if (workAttack_.isTCMiddlePunch)
+	{
+		animationIndex = 4;
+		isGuard_ = false;
+		float animationTime = 0.0f;
+		float animationDuration;
+		animationTime = model_->GetAnimationTime();
+		animationDuration = model_->GetAnimation()[animationIndex].duration;
+
+		if (!isDown_)
+		{
+			animationTime += 1.0f / 60.0f;
+		}
+
+		model_->SetAnimationTime(animationTime);
+		model_->ApplyAnimation(animationIndex);
+
+		if (isDown_ || animationTime >= animationDuration)
+		{
+			behaviorRequest_ = Behavior::kRoot;
+			workAttack_.isAttack = false;
+			workAttack_.isTCMiddlePunch = false;
+			animationTime = 0.0f;
+			attackAnimationFrame = 0;
+			model_->SetAnimationTime(animationTime);
+		}
+
+		if (input_->GetJoystickState())
+		{
+			if (!isDown_ && attackAnimationFrame > 20 && animationTime < animationDuration
+				&& input_->IsPressButton(XINPUT_GAMEPAD_B))
+			{
+				workAttack_.isTCMiddlePunch = false;
+				workAttack_.isTCHighPunch = true;
+				animationTime = 0.0f;
+				attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime);
+			}
+		}
+
+		attackAnimationFrame++;
+	}
+
+	//ターゲットコンボ用の攻撃(3発目)
+	if (workAttack_.isTCHighPunch)
+	{
+		animationIndex = 3;
+		isGuard_ = false;
+		float animationTime = 0.0f;
+		float animationDuration;
+		animationTime = model_->GetAnimationTime();
+		animationDuration = model_->GetAnimation()[animationIndex].duration;
+
+		if (!isDown_)
+		{
+			animationTime += 1.0f / 60.0f;
+		}
+
+		model_->SetAnimationTime(animationTime);
+		model_->ApplyAnimation(animationIndex);
+
+		if (isDown_ || animationTime >= animationDuration)
+		{
+			behaviorRequest_ = Behavior::kRoot;
+			workAttack_.isAttack = false;
+			workAttack_.isTCHighPunch = false;
+			animationTime = 0.0f;
+			attackAnimationFrame = 0;
+			model_->SetAnimationTime(animationTime);
+		}
+
 		attackAnimationFrame++;
 	}
 

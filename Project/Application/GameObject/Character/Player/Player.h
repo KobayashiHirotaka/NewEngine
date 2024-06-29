@@ -54,6 +54,12 @@ public:
 		//弱パンチ
 		bool isLightPunch = false;
 
+		//中パンチ(ターゲットコンボ用)
+		bool isTCMiddlePunch = false;
+
+		//強パンチ(ターゲットコンボ用)
+		bool isTCHighPunch = false;
+
 		//キャンセルパンチ
 		bool isCPunch = false;
 
