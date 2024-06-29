@@ -481,161 +481,161 @@ float GamePlayScene::Random(float min_value, float max_value)
 
 void GamePlayScene::HandleGameOutcome()
 {
-	//Playerが勝ったとき
-	if (enemy_->GetHP() <= 0 && round_ == 1)
-	{
-		migrationTimer--;
-		isPlayerWin_ = true;
+	////Playerが勝ったとき
+	//if (enemy_->GetHP() <= 0 && round_ == 1)
+	//{
+	//	migrationTimer--;
+	//	isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
-		{
-			round_ = 2;
-			PlayerWinCount_ = 1;
+	//	if (migrationTimer < 0)
+	//	{
+	//		round_ = 2;
+	//		PlayerWinCount_ = 1;
 
-			player_->Reset();
-			enemy_->Reset();
+	//		player_->Reset();
+	//		enemy_->Reset();
 
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
+	//		currentSeconds_ = 99;
+	//		UpdateNumberSprite();
 
-			migrationTimer = 200;
+	//		migrationTimer = 200;
 
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
+	//		frameTime = 1.0f / 60.0f;
+	//		elapsedTime = 0.0f;
 
-			roundStartTimer_ = 100.0f;
+	//		roundStartTimer_ = 100.0f;
 
-			isPlayerWin_ = false;
-			isDrow_ = false;
-		}
-	}
-	else if (enemy_->GetHP() <= 0 && round_ == 2 && PlayerWinCount_ == 1)
-	{
-		migrationTimer--;
-		isPlayerWin_ = true;
+	//		isPlayerWin_ = false;
+	//		isDrow_ = false;
+	//	}
+	//}
+	//else if (enemy_->GetHP() <= 0 && round_ == 2 && PlayerWinCount_ == 1)
+	//{
+	//	migrationTimer--;
+	//	isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
-		{
-			PlayerWinCount_ = 2;
-		}
-	}
-	else if (enemy_->GetHP() <= 0 && round_ == 2 && PlayerWinCount_ == 0)
-	{
-		migrationTimer--;
-		isPlayerWin_ = true;
+	//	if (migrationTimer < 0)
+	//	{
+	//		PlayerWinCount_ = 2;
+	//	}
+	//}
+	//else if (enemy_->GetHP() <= 0 && round_ == 2 && PlayerWinCount_ == 0)
+	//{
+	//	migrationTimer--;
+	//	isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
-		{
-			round_ = 3;
-			PlayerWinCount_ = 1;
+	//	if (migrationTimer < 0)
+	//	{
+	//		round_ = 3;
+	//		PlayerWinCount_ = 1;
 
-			player_->Reset();
-			enemy_->Reset();
+	//		player_->Reset();
+	//		enemy_->Reset();
 
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
+	//		currentSeconds_ = 99;
+	//		UpdateNumberSprite();
 
-			migrationTimer = 200;
+	//		migrationTimer = 200;
 
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
+	//		frameTime = 1.0f / 60.0f;
+	//		elapsedTime = 0.0f;
 
-			roundStartTimer_ = 100.0f;
+	//		roundStartTimer_ = 100.0f;
 
-			isPlayerWin_ = false;
-			isDrow_ = false;
-		}
-	}
-	else if (enemy_->GetHP() <= 0 && round_ == 3 && PlayerWinCount_ == 1)
-	{
-		migrationTimer--;
-		isPlayerWin_ = true;
+	//		isPlayerWin_ = false;
+	//		isDrow_ = false;
+	//	}
+	//}
+	//else if (enemy_->GetHP() <= 0 && round_ == 3 && PlayerWinCount_ == 1)
+	//{
+	//	migrationTimer--;
+	//	isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
-		{
-			PlayerWinCount_ = 2;
-		}
-	}
+	//	if (migrationTimer < 0)
+	//	{
+	//		PlayerWinCount_ = 2;
+	//	}
+	//}
 
-	if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 1)
-	{
-		migrationTimer--;
-		isPlayerWin_ = true;
+	//if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 1)
+	//{
+	//	migrationTimer--;
+	//	isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
-		{
-			round_ = 2;
-			PlayerWinCount_ = 1;
+	//	if (migrationTimer < 0)
+	//	{
+	//		round_ = 2;
+	//		PlayerWinCount_ = 1;
 
-			player_->Reset();
-			enemy_->Reset();
+	//		player_->Reset();
+	//		enemy_->Reset();
 
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
+	//		currentSeconds_ = 99;
+	//		UpdateNumberSprite();
 
-			migrationTimer = 200;
+	//		migrationTimer = 200;
 
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
+	//		frameTime = 1.0f / 60.0f;
+	//		elapsedTime = 0.0f;
 
-			roundStartTimer_ = 100.0f;
+	//		roundStartTimer_ = 100.0f;
 
-			isPlayerWin_ = false;
-			isDrow_ = false;
-		}
-	}
-	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 2 && PlayerWinCount_ == 1)
-	{
-		migrationTimer--;
-		isPlayerWin_ = true;
+	//		isPlayerWin_ = false;
+	//		isDrow_ = false;
+	//	}
+	//}
+	//else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 2 && PlayerWinCount_ == 1)
+	//{
+	//	migrationTimer--;
+	//	isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
-		{
-			PlayerWinCount_ = 2;
-		}
-	}
-	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 2 && PlayerWinCount_ == 0)
-	{
-		migrationTimer--;
-		isPlayerWin_ = true;
+	//	if (migrationTimer < 0)
+	//	{
+	//		PlayerWinCount_ = 2;
+	//	}
+	//}
+	//else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 2 && PlayerWinCount_ == 0)
+	//{
+	//	migrationTimer--;
+	//	isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
-		{
-			round_ = 3;
-			PlayerWinCount_ = 1;
+	//	if (migrationTimer < 0)
+	//	{
+	//		round_ = 3;
+	//		PlayerWinCount_ = 1;
 
-			player_->Reset();
-			enemy_->Reset();
+	//		player_->Reset();
+	//		enemy_->Reset();
 
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
+	//		currentSeconds_ = 99;
+	//		UpdateNumberSprite();
 
-			migrationTimer = 200;
+	//		migrationTimer = 200;
 
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
+	//		frameTime = 1.0f / 60.0f;
+	//		elapsedTime = 0.0f;
 
-			roundStartTimer_ = 100.0f;
+	//		roundStartTimer_ = 100.0f;
 
-			isPlayerWin_ = false;
-			isDrow_ = false;
-		}
-	}
-	else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 3 && PlayerWinCount_ == 1)
-	{
-		migrationTimer--;
-		isPlayerWin_ = true;
+	//		isPlayerWin_ = false;
+	//		isDrow_ = false;
+	//	}
+	//}
+	//else if (currentSeconds_ <= 0 && enemy_->GetHP() < player_->GetHP() && round_ == 3 && PlayerWinCount_ == 1)
+	//{
+	//	migrationTimer--;
+	//	isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
-		{
-			PlayerWinCount_ = 2;
-		}
-	}
+	//	if (migrationTimer < 0)
+	//	{
+	//		PlayerWinCount_ = 2;
+	//	}
+	//}
 
-	if (PlayerWinCount_ == 2)
-	{
-		isTransitionStart_ = true;
-	}
+	//if (PlayerWinCount_ == 2)
+	//{
+	//	isTransitionStart_ = true;
+	//}
 
 
 	if (!isTransitionEnd_)
@@ -651,7 +651,7 @@ void GamePlayScene::HandleGameOutcome()
 		}
 	}
 
-	if (isTransitionStart_)
+	/*if (isTransitionStart_)
 	{
 		transitionTimer_ += 1.0f / kTransitionTime;
 		transitionColor_.w = Lerp(transitionColor_.w, 1.0f, transitionTimer_);
@@ -673,7 +673,7 @@ void GamePlayScene::HandleGameOutcome()
 		}
 	}
 
-	//Enemyが勝ったとき
+	Enemyが勝ったとき
 	if (player_->GetHP() <= 0 && round_ == 1)
 	{
 		migrationTimer--;
@@ -887,6 +887,6 @@ void GamePlayScene::HandleGameOutcome()
 			isPlayerWin_ = false;
 			isDrow_ = false;
 		}
-	}
+	}*/
 
 }

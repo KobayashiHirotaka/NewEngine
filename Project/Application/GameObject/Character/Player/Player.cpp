@@ -43,7 +43,7 @@ void Player::Initialize()
 	hpBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/HP.png"),
-		{60.0f, barSpace},
+		{537.0f, barSpace},
 		0.0f,
 		{-barSize  ,7.0f},
 		nullptr,
@@ -54,9 +54,9 @@ void Player::Initialize()
 	guardGaugeBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/guardGauge.png"),
-		{540.0f, guardGaugeBarSpace},
+		{537.0f, guardGaugeBarSpace},
 		0.0f,
-		{guardGaugeBarSize  ,7.0f},
+		{-guardGaugeBarSize  ,7.0f},
 		nullptr,
 	};
 
@@ -65,7 +65,7 @@ void Player::Initialize()
 	finisherGaugeBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/guardGauge.png"),
-		{60.0f, finisherGaugeBarSpace},
+		{299.0f, finisherGaugeBarSpace},
 		0.0f,
 		{-finisherGaugeBarSize  ,20.0f},
 		nullptr,
@@ -101,7 +101,20 @@ void Player::Initialize()
 void Player::Update()
 {
 	//テスト用の処理
+	if (input_->PressKey(DIK_S))
+	{
+		HP_ += 1.0f;
+	}
 
+	if (input_->PressKey(DIK_A))
+	{
+		guardGauge_ -= 1.0f;
+	}
+
+	if (input_->PressKey(DIK_D))
+	{
+		finisherGauge_ -= 1.0f;
+	}
 	
 	//ここまでテスト用の処理
 
@@ -230,10 +243,7 @@ void Player::Update()
 	//各ゲージの更新処理
 	HPBarUpdate();
 
-	if (guardGauge_ <= 50.0f)
-	{
-		GuardGaugeBarUpdate();
-	}
+	GuardGaugeBarUpdate();
 
 	FinisherGaugeBarUpdate();
 
@@ -302,7 +312,7 @@ void Player::BoneDraw(const Camera& camera)
 
 void Player::DrawSprite()
 {
-	if (HP_ >= 0)
+	if (HP_ <= 0)
 	{
 		hpBar_.sprite_->Draw();
 	}
@@ -536,7 +546,7 @@ void Player::BehaviorAttackUpdate()
 		if (input_->GetJoystickState())
 		{
 			if (!isDown_ && attackAnimationFrame > 20 && animationTime < animationDuration
-				&& input_->IsPressButton(XINPUT_GAMEPAD_Y))
+				&& input_->IsPressButton(XINPUT_GAMEPAD_Y) && isHit_)
 			{
 				workAttack_.isLightPunch = false;
 				workAttack_.isTCMiddlePunch = true;
@@ -580,7 +590,7 @@ void Player::BehaviorAttackUpdate()
 		if (input_->GetJoystickState())
 		{
 			if (!isDown_ && attackAnimationFrame > 20 && animationTime < animationDuration
-				&& input_->IsPressButton(XINPUT_GAMEPAD_B))
+				&& input_->IsPressButton(XINPUT_GAMEPAD_B) && isHit_)
 			{
 				workAttack_.isTCMiddlePunch = false;
 				workAttack_.isTCHighPunch = true;
@@ -751,42 +761,7 @@ void Player::BehaviorThrowInitialize()
 
 void Player::BehaviorThrowUpdate()
 {
-	////投げ
-	//if (isThrow_)
-	//{
-	//	isGuard_ = false;
-	//	if (attackAnimationFrame < 30)
-	//	{
-
-	//	}
-	//	else if (enemy_->GetIsPlayerHit() == true)
-	//	{
-	//		throwTimer_--;
-
-
-	//		if (throwTimer_ <= 0)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			throwTimer_ = 100;
-
-	//			isThrow_ = false;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		workAttack_.stiffnessTimer--;
-
-	//		if (workAttack_.stiffnessTimer <= 0)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-
-	//			throwTimer_ = 100;
-	//			workAttack_.stiffnessTimer = 60;
-	//			isThrow_ = false;
-	//		}
-	//	}
-	//	attackAnimationFrame++;
-	//}
+	
 }
 
 void Player::BehaviorStanInitialize()
@@ -796,34 +771,7 @@ void Player::BehaviorStanInitialize()
 
 void Player::BehaviorStanUpdate()
 {
-	/*if (stanTimer_ == 200)
-	{
-		isShake_ = true;
-	}
-
-	if (stanTimer_ <= 170)
-	{
-		isGuard_ = false;
-	}
-
-	guardGauge_ = maxGuardGauge_;
-
-	stanTimer_--;
-
-	worldTransform_.rotation.y += 0.1f;
-
-	if (stanTimer_ < 0 || isHitMowDown_ || isHitPoke_ || isHitPunch_ ||
-		isHitSwingDown_ || isThrow_)
-	{
-		stanTimer_ = 200;
-		guardGauge_ = 0.0f;
-		behaviorRequest_ = Behavior::kRoot;
-
-		worldTransformHead_.rotation.y = 0.0f;
-
-		worldTransform_.rotation.x = 0.0f;
-		worldTransform_.rotation.y = 0.0f;
-	}*/
+	
 }
 
 void Player::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex, std::unique_ptr<Model>& modelFighterBody)
@@ -846,7 +794,7 @@ void Player::UpdateAnimationTime(float animationTime, bool isLoop, float frameRa
 
 void Player::OnCollision(Collider* collider, float damage)
 {
-	//敵の近接攻撃との当たり判定
+	//敵との当たり判定
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemy)
 	{
 		isHit_ = true;
@@ -967,16 +915,16 @@ void Player::HPBarUpdate()
 
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 
-	if (HP_ > 50)
+	if (HP_ < -50)
 	{
 		hpBar_.sprite_->SetColor({ 0.0f, 1.0f, 0.0f, 1.0f });
 	}
 
-	if (HP_ <= 50 && HP_ > 25)
+	if (HP_ >= -50 && HP_ < -25)
 	{
 		hpBar_.sprite_->SetColor({ 1.0f, 0.8f, 0.0f, 1.0f });
 	}
-	else if (HP_ <= 25)
+	else if (HP_ >= 25)
 	{
 		hpBar_.sprite_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 	}
@@ -1034,7 +982,7 @@ void Player::FinisherGaugeBarUpdate()
 
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
 
-	if (finisherGauge_ < maxFinisherGauge_)
+	if (finisherGauge_ > -50.0f)
 	{
 		finisherGaugeBar_.sprite_->SetColor({ 0.0f, 0.5f, 1.0f, 1.0f });
 	}
@@ -1043,9 +991,9 @@ void Player::FinisherGaugeBarUpdate()
 		finisherGaugeBar_.sprite_->SetColor({ 1.0f, 0.5f, 0.0f, 1.0f });
 	}
 
-	if (finisherGauge_ >= maxFinisherGauge_)
+	if (finisherGauge_ <= -50.0f)
 	{
-		finisherGauge_ = 50.0f;
+		finisherGauge_ = -50.0f;
 	}
 }
 

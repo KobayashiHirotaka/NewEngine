@@ -238,7 +238,7 @@ private:
 	int moveTimer_ = 60;
 
 	//hp
-	float maxHP_ = 10.0f;
+	float maxHP_ = 100.0f;
 	float HP_ = maxHP_;
 
 	//ガードゲージ
@@ -348,7 +348,7 @@ private:
 
 	//スプライト(ガードゲージ)
 	UI guardGaugeBar_;
-	const float guardGaugeBarSpace = 48.0f;
+	const float guardGaugeBarSpace = 48.5f;
 	float guardGaugeBarSize = 240.0f;
 
 	//スプライト(必殺技ゲージ)

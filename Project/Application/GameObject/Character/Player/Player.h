@@ -237,8 +237,8 @@ private:
 	uint32_t animationIndex = 2;
 
 	//hp
-	float maxHP_ = 10.0f;
-	float HP_ = maxHP_;
+	float maxHP_ = 100.0f;
+	float HP_ = -100.0f;
 
 	//ガードゲージ
 	float maxGuardGauge_ = 50.0f;
@@ -343,7 +343,7 @@ private:
 
 	//スプライト(ガードゲージ)
 	UI guardGaugeBar_;
-	const float guardGaugeBarSpace = 48.0f;
+	const float guardGaugeBarSpace = 48.5f;
 	float guardGaugeBarSize = 240.0f;
 
 	//スプライト(必殺技ゲージ)
