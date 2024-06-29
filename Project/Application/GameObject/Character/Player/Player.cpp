@@ -100,10 +100,10 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	float animationTime[3];
+	//float animationTime[3];
 
 	//テスト用の処理
-	if (input_->PressKey(DIK_A))
+	/*if (input_->PressKey(DIK_A))
 	{
 		animationIndex = 4;
 		animationTime[0] = 0.0f;
@@ -115,12 +115,7 @@ void Player::Update()
 		model_->SetAnimationTime(animationTime[0]);
 	}
 
-	if (input_->PressKey(DIK_S))
-	{
-		animationIndex = 5;
-		animationTime[1] = 0.0f;
-		UpdateAnimationTime(animationTime[1], false, 60.0f, animationIndex, model_);
-	}
+	
 	else if (!input_->PressKey(DIK_A) && !input_->PressKey(DIK_D))
 	{
 		animationTime[1] = 0.0f;
@@ -137,7 +132,7 @@ void Player::Update()
 	{
 		animationTime[2] = 0.0f;
 		model_->SetAnimationTime(animationTime[2]);
-	}
+	}*/
 	//ここまでテスト用の処理
 
 	isShake_ = false;
@@ -488,18 +483,17 @@ void Player::BehaviorRootUpdate()
 		//}
 
 		//攻撃
-		////通常攻撃
-		//if (input_->GetJoystickState())
-		//{
-		//	if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && isDown_ == false)
-		//	{
-		//		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-		//		behaviorRequest_ = Behavior::kAttack;
-		//		workAttack_.isPunch = true;
-		//	}
-		//}
+		//通常攻撃
+		if (input_->GetJoystickState())
+		{
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && isDown_ == false)
+			{
+				behaviorRequest_ = Behavior::kAttack;
+				animationTime = 0.0f;
+				model_->SetAnimationTime(animationTime);
+				workAttack_.isLightPunch = true;
+			}
+		}
 
 		//振り下ろし攻撃
 		//if (input_->GetJoystickState())
@@ -515,79 +509,16 @@ void Player::BehaviorRootUpdate()
 		//		workAttack_.isSwingDown = true;
 		//	}
 		//}
-
-		////突き攻撃
-		//if (input_->GetJoystickState())
-		//{
-		//	if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
-		//	{
-		//		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-		//		behaviorRequest_ = Behavior::kAttack;
-		//		workAttack_.isPoke = true;
-		//		workAttack_.isPokeRight = true;
-		//	}
-
-		//	if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f && isDown_ == false)
-		//	{
-		//		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-		//		behaviorRequest_ = Behavior::kAttack;
-		//		workAttack_.isPoke = true;
-		//		workAttack_.isPokeLeft = true;
-		//	}
-		//}
-
-		////薙ぎ払う攻撃
-		//if (input_->GetJoystickState())
-		//{
-		//	if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
-		//		input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
-		//	{
-		//		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-		//		behaviorRequest_ = Behavior::kAttack;
-		//		animationTime = 0.0f;
-		//		modelFighterBody_->SetAnimationTime(animationTime);
-		//		workAttack_.isMowDown = true;
-		//	}
-		//}
-
-		////finisher
-		//if (input_->GetJoystickState())
-		//{
-		//	if (finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 4.6f ||
-		//		finisherGauge_ >= maxFinisherGauge_ && input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-		//		&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.rotation.y == 1.7f && isDown_ == false)
-		//	{
-		//		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-		//		behaviorRequest_ = Behavior::kAttack;
-		//		workAttack_.isFinisher = true;
-		//	}
-		//}
 	}
 }
 
 void Player::BehaviorAttackInitialize()
 {
-	////通常攻撃
-	//if (workAttack_.isPunch)
-	//{
-
-	//}
-
-	//if (workAttack_.isCPunch)
-	//{
-
-	//}
+	//通常攻撃
+	if (workAttack_.isLightPunch)
+	{
+		animationIndex = 5;
+	}
 
 	////振り下ろし攻撃
 	//if (workAttack_.isSwingDown)
@@ -599,175 +530,40 @@ void Player::BehaviorAttackInitialize()
 	//	playerWeapon_->SetRotation(workAttack_.rotation);
 	//}
 
-	////突き攻撃
-	//if (workAttack_.isPoke)
-	//{
-	//	workAttack_.translation = { 0.0f,0.5f,0.0f };
-	//	workAttack_.rotation = { 1.5f,0.0f,0.0f };
-	//	workAttack_.stiffnessTimer = 60;
-	//	pokeTimer_ = 30;
-
-	//	playerWeapon_->SetTranslation(workAttack_.translation);
-	//	playerWeapon_->SetRotation(workAttack_.rotation);
-	//}
-
-	////薙ぎ払う攻撃
-	//if (workAttack_.isMowDown)
-	//{
-	//	workAttack_.translation = { 0.5f,2.5f,0.0f };
-	//	workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
-
-	//	playerWeapon_->SetTranslation(workAttack_.translation);
-	//	playerWeapon_->SetRotation(workAttack_.rotation);
-	//}
-
-	////Finisher
-	//if (workAttack_.isFinisher)
-	//{
-	//	workAttack_.translation = { 0.0f,0.5f,0.0f };
-	//	workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
-
-	//	playerWeapon_->SetTranslation(workAttack_.translation);
-	//	playerWeapon_->SetRotation(workAttack_.rotation);
-	//}
-
-	//attackAnimationFrame = 0;
+	attackAnimationFrame = 0;
 }
 
 void Player::BehaviorAttackUpdate()
 {
 	////通常攻撃
-	//if (workAttack_.isPunch)
-	//{
-	//	isGuard_ = false;
-	//	if (attackAnimationFrame < 3.0f)
-	//	{
-	//		worldTransformBody_.rotation.y += 0.1f;
-	//	}
-	//	else if (worldTransformBody_.rotation.y > -1.0f)
-	//	{
-	//		worldTransformBody_.rotation.y -= 0.1f;
-	//	}
-	//	else
-	//	{
-	//		workAttack_.stiffnessTimer--;
+	if (workAttack_.isLightPunch)
+	{
+		isGuard_ = false;
+		float animationTime = 0.0f;
+		float animationDuration;
+		animationTime = model_->GetAnimationTime();
+		animationDuration = model_->GetAnimation()[5].duration;
 
-	//		if (workAttack_.stiffnessTimer < 0)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			workAttack_.stiffnessTimer = 60;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.isPunch = false;
+		if (!isDown_)
+		{
+			animationTime += 1.0f / 60.0f;
+		}
 
-	//			/*audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-	//			behaviorRequest_ = Behavior::kAttack;
-	//			workAttack_.stiffnessTimer = 20;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			worldTransformL_arm_.rotation.y = 0.0f;
-	//			worldTransformR_arm_.rotation.y = 0.0f;
-	//			workAttack_.isPunch = false;
-	//			workAttack_.isMowDown = true;*/
-	//		}
-	//	}
-
-	//	if (isDown_)
-	//	{
-	//		behaviorRequest_ = Behavior::kRoot;
-	//		workAttack_.stiffnessTimer = 60;
-	//		worldTransformHead_.rotation.y = 0.0f;
-	//		worldTransformBody_.rotation.y = 0.0f;
-	//		workAttack_.isPunch = false;
-	//	}
-
-	//	if (input_->GetJoystickState())
-	//	{
-	//		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && workAttack_.stiffnessTimer > 30)
-	//		{
-	//			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-	//			behaviorRequest_ = Behavior::kAttack;
-	//			attackAnimationFrame = 0;
-	//			workAttack_.stiffnessTimer = 60;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-
-	//			workAttack_.isPunch = false;
-	//			workAttack_.isCPunch = true;
-	//		}
-	//	}
-
-	//	attackAnimationFrame++;
-	//}
-
-	//if (workAttack_.isCPunch)
-	//{
-	//	isGuard_ = false;
-
-	//	if (attackAnimationFrame < 3.0f)
-	//	{
-	//		worldTransformBody_.rotation.y -= 0.1f;
-	//	}
-	//	else if (worldTransformBody_.rotation.y < 1.0f)
-	//	{
-	//		worldTransformBody_.rotation.y += 0.1f;
-	//	}
-	//	else
-	//	{
-	//		workAttack_.stiffnessTimer--;
-
-	//		if (workAttack_.stiffnessTimer < 0)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			workAttack_.stiffnessTimer = 60;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.isCPunch = false;
-
-	//			/*audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-	//			behaviorRequest_ = Behavior::kAttack;
-	//			workAttack_.stiffnessTimer = 20;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			worldTransformL_arm_.rotation.y = 0.0f;
-	//			worldTransformR_arm_.rotation.y = 0.0f;
-	//			workAttack_.isPunch = false;
-	//			workAttack_.isMowDown = true;*/
-	//		}
-	//	}
-
-	//	if (isDown_)
-	//	{
-	//		behaviorRequest_ = Behavior::kRoot;
-	//		workAttack_.stiffnessTimer = 60;
-	//		worldTransformHead_.rotation.y = 0.0f;
-	//		worldTransformBody_.rotation.y = 0.0f;
-	//		workAttack_.isCPunch = false;
-	//	}
-
-	//	if (input_->GetJoystickState())
-	//	{
-	//		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && workAttack_.stiffnessTimer > 30)
-	//		{
-	//			audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-	//			behaviorRequest_ = Behavior::kAttack;
-	//			attackAnimationFrame = 0;
-	//			workAttack_.stiffnessTimer = 60;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.translation = { 0.0f,0.5f,0.0f };
-	//			workAttack_.rotation = { 1.0f,0.0f,3.14f / 2.0f };
-
-	//			playerWeapon_->SetTranslation(workAttack_.translation);
-	//			playerWeapon_->SetRotation(workAttack_.rotation);
-
-	//			workAttack_.isCPunch = false;
-	//			workAttack_.isMowDown = true;
-	//		}
-	//	}
-
-	//	attackAnimationFrame++;
-	//}
+		model_->SetAnimationTime(animationTime);
+		model_->ApplyAnimation(5);
+	
+		if (isDown_ || animationTime >= animationDuration)
+		{
+			behaviorRequest_ = Behavior::kRoot;
+			workAttack_.stiffnessTimer = 60;
+			workAttack_.isAttack = false;
+			workAttack_.isLightPunch = false;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+		}
+		
+		attackAnimationFrame++;
+	}
 
 	////振り下ろし攻撃
 	//if (workAttack_.isSwingDown)
@@ -848,318 +644,6 @@ void Player::BehaviorAttackUpdate()
 	//		}
 	//	}
 
-	//	attackAnimationFrame++;
-	//}
-
-	////突き攻撃
-	//if (workAttack_.isPoke)
-	//{
-	//	isGuard_ = false;
-	//	pokeTimer_--;
-
-	//	if (attackAnimationFrame < 10)
-	//	{
-	//		if (workAttack_.isPokeRight)
-	//		{
-	//			workAttack_.rotation.z += 0.05f;
-	//		}
-
-	//		if (workAttack_.isPokeLeft)
-	//		{
-	//			workAttack_.rotation.z -= 0.05f;
-	//		}
-
-	//		playerWeapon_->SetTranslation(workAttack_.translation);
-	//		playerWeapon_->SetRotation(workAttack_.rotation);
-
-	//	}
-	//	else if (pokeTimer_ > 0)
-	//	{
-	//		if (workAttack_.isPokeRight)
-	//		{
-	//			workAttack_.rotation.z += 0.3f;
-	//			worldTransform_.translation.x += 0.3f;
-	//		}
-
-	//		if (workAttack_.isPokeLeft)
-	//		{
-	//			workAttack_.rotation.z -= 0.3f;
-	//			worldTransform_.translation.x -= 0.3f;
-	//		}
-
-	//		playerWeapon_->SetTranslation(workAttack_.translation);
-	//		playerWeapon_->SetRotation(workAttack_.rotation);
-	//		playerWeapon_->SetIsAttack(true);
-	//		workAttack_.isAttack = true;
-
-	//		if (isDown_)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.stiffnessTimer = 60;
-	//			workAttack_.isAttack = false;
-	//			playerWeapon_->SetIsAttack(false);
-	//			workAttack_.isPoke = false;
-	//			workAttack_.isPokeRight = false;
-	//			workAttack_.isPokeLeft = false;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		workAttack_.stiffnessTimer--;
-	//		workAttack_.isAttack = false;
-	//		playerWeapon_->SetIsAttack(false);
-
-	//		if (isDown_)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.stiffnessTimer = 60;
-	//			workAttack_.isAttack = false;
-	//			playerWeapon_->SetIsAttack(false);
-	//			workAttack_.isPoke = false;
-	//			workAttack_.isPokeRight = false;
-	//			workAttack_.isPokeLeft = false;
-	//		}
-
-	//		if (workAttack_.stiffnessTimer <= 0)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.stiffnessTimer = 60;
-	//			pokeTimer_ = 30;
-	//			workAttack_.isPoke = false;
-	//			workAttack_.isPokeRight = false;
-	//			workAttack_.isPokeLeft = false;
-	//		}
-	//	}
-	//	attackAnimationFrame++;
-	//}
-
-	////薙ぎ払う攻撃
-	//if (workAttack_.isMowDown)
-	//{
-	//	isGuard_ = false;
-	//	float animationTime, animationDuration;
-	//	animationTime = modelFighterBody_->GetAnimationTime();
-
-	//	if (!isDown_)
-	//	{
-	//		animationTime += 1.0f / 60.0f;
-	//		/*animationTime = std::fmod(animationTime, modelFighterBody_->GetAnimation()[0].duration);*/
-	//	}
-
-	//	animationDuration = modelFighterBody_->GetAnimation()[1].duration;
-
-	//	modelFighterBody_->SetAnimationTime(animationTime);
-
-	//	modelFighterBody_->ApplyAnimation(1);
-
-	//	modelFighterBody_->Update();
-
-	//	if (attackAnimationFrame < 10)
-	//	{
-	//		worldTransformBody_.rotation.y -= 0.1f;
-
-	//		workAttack_.rotation.x -= 0.05f;
-
-	//		playerWeapon_->SetTranslation(workAttack_.translation);
-	//		playerWeapon_->SetRotation(workAttack_.rotation);
-
-	//	}
-	//	else if (workAttack_.rotation.x <= 3.8f)
-	//	{
-	//		worldTransformBody_.rotation.y += 0.1f;
-
-	//		workAttack_.rotation.x += 0.1f;
-
-	//		playerWeapon_->SetTranslation(workAttack_.translation);
-	//		playerWeapon_->SetRotation(workAttack_.rotation);
-	//		playerWeapon_->SetIsAttack(true);
-	//		workAttack_.isAttack = true;
-
-	//		if (isDown_)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.stiffnessTimer = 60;
-	//			workAttack_.isAttack = false;
-	//			playerWeapon_->SetIsAttack(false);
-	//			workAttack_.isMowDown = false;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		workAttack_.stiffnessTimer--;
-	//		workAttack_.isAttack = false;
-	//		playerWeapon_->SetIsAttack(false);
-
-	//		if (isDown_)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.stiffnessTimer = 60;
-	//			workAttack_.isAttack = false;
-	//			playerWeapon_->SetIsAttack(false);
-	//			workAttack_.isMowDown = false;
-	//		}
-
-
-	//		if (animationTime >= animationDuration)
-	//		{
-	//			// アニメーションが終了した場合の処理
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			workAttack_.stiffnessTimer = 60;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.isMowDown = false;
-	//			animationTime = 0.0f;
-	//			modelFighterBody_->SetAnimationTime(animationTime);
-	//		}
-
-	//		/*if (workAttack_.stiffnessTimer <= 0)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.stiffnessTimer = 60;
-	//			workAttack_.isAttack = false;
-	//			workAttack_.isMowDown = false;
-	//		}*/
-	//	}
-	//	attackAnimationFrame++;
-	//}
-
-	////Finisher
-	//if (workAttack_.isFinisher)
-	//{
-	//	isGuard_ = false;
-
-	//	if (finisherEffectTimer > 0)
-	//	{
-	//		finisherEffectTimer--;
-	//		isFinisherEffect = true;
-	//		worldTransform_.translation.z = 3.0f;
-	//	}
-	//	else if (attackAnimationFrame < 134)
-	//	{
-	//		isFinisherEffect = false;
-	//		finisherCount_ = 1;
-	//		worldTransform_.translation.z = 6.5f;
-
-	//		worldTransformHead_.translation = { 0.0f,0.0f,0.0f };
-	//		worldTransformHead_.rotation = { 0.0f,0.0f,0.0f };
-
-	//		float rotationSpeed = 0.1f;
-	//		rotationSpeed += 0.1f;
-	//		worldTransformBody_.rotation.y += rotationSpeed;
-
-	//		workAttack_.rotation.x += rotationSpeed;
-
-	//		playerWeapon_->SetTranslation(workAttack_.translation);
-	//		playerWeapon_->SetRotation(workAttack_.rotation);
-	//		playerWeapon_->SetIsAttack(true);
-	//		workAttack_.isAttack = true;
-
-	//		if (isDown_)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.stiffnessTimer = 60;
-	//			finisherEffectTimer = 90;
-	//			workAttack_.isAttack = false;
-	//			playerWeapon_->SetIsAttack(false);
-	//			workAttack_.isFinisher = false;
-	//			isFinisherEffect = false;
-	//			finisherCount_ = 0;
-	//			finisherGauge_ = 0.0f;
-	//		}
-
-	//	}
-	//	else if (attackAnimationFrame >= 134 && attackAnimationFrame < 144)
-	//	{
-	//		worldTransformHead_.rotation.y = 0.0f;
-	//		worldTransformBody_.rotation.y = 0.0f;
-
-	//		workAttack_.translation = { 0.0f,2.5f,0.0f };
-	//		workAttack_.rotation = { 0.0f,0.0f,0.0f };
-
-	//		playerWeapon_->SetTranslation(workAttack_.translation);
-	//		playerWeapon_->SetRotation(workAttack_.rotation);
-
-	//		workAttack_.rotation.x -= 0.05f;
-
-	//		playerWeapon_->SetTranslation(workAttack_.translation);
-	//		playerWeapon_->SetRotation(workAttack_.rotation);
-	//	}
-	//	else if (workAttack_.rotation.x < 2.0f)
-	//	{
-	//		finisherCount_ = 2;
-
-	//		workAttack_.translation.z += 0.05f;
-	//		workAttack_.translation.y -= 0.05f;
-	//		workAttack_.rotation.x += 0.1f;
-
-	//		playerWeapon_->SetTranslation(workAttack_.translation);
-	//		playerWeapon_->SetRotation(workAttack_.rotation);
-	//		playerWeapon_->SetIsAttack(true);
-	//		workAttack_.isAttack = true;
-
-	//		if (isDown_)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.stiffnessTimer = 60;
-	//			finisherEffectTimer = 90;
-	//			workAttack_.isAttack = false;
-	//			playerWeapon_->SetIsAttack(false);
-	//			workAttack_.isFinisher = false;
-	//			isFinisherEffect = false;
-	//			finisherCount_ = 0;
-	//			finisherGauge_ = 0.0f;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		workAttack_.stiffnessTimer--;
-	//		workAttack_.isAttack = false;
-	//		playerWeapon_->SetIsAttack(false);
-
-	//		if (isDown_)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.stiffnessTimer = 60;
-	//			finisherEffectTimer = 90;
-	//			workAttack_.isAttack = false;
-	//			playerWeapon_->SetIsAttack(false);
-	//			workAttack_.isFinisher = false;
-	//			isFinisherEffect = false;
-	//			finisherCount_ = 0;
-	//			finisherGauge_ = 0.0f;
-	//		}
-
-	//		if (workAttack_.stiffnessTimer <= 0)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.stiffnessTimer = 60;
-	//			finisherEffectTimer = 90;
-	//			workAttack_.isAttack = false;
-	//			workAttack_.isFinisher = false;
-	//			isFinisherEffect = false;
-	//			finisherCount_ = 0;
-	//			finisherGauge_ = 0.0f;
-	//		}
-	//	}
 	//	attackAnimationFrame++;
 	//}
 }
@@ -1532,7 +1016,7 @@ void Player::Reset()
 	isHit_ = false;
 
 	workAttack_.isAttack = false;
-	workAttack_.isPunch = false;
+	workAttack_.isLightPunch = false;
 	workAttack_.isCPunch = false;
 	workAttack_.isSwingDown = false;
 	workAttack_.isPoke = false;
@@ -1741,245 +1225,6 @@ void Player::DownAnimation()
 	//		isDown_ = false;
 	//		worldTransformBody_.rotation.x = 0.0f;
 	//		worldTransformBody_.rotation.y = 0.0f;
-	//	}
-	//}
-
-	////突き攻撃
-	//if (isHitPoke_ && enemy_->GetRotation().y == 1.7f)
-	//{
-	//	isDown_ = true;
-	//	downAnimationTimer_[1]--;
-
-	//	if (downAnimationTimer_[1] > 50)
-	//	{
-	//		ParticleEmitter* newParticleEmitter = EmitterBuilder()
-	//			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-	//			.SetTranslation(worldTransform_.translation)
-	//			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-	//			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-	//			.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
-	//			.SetAzimuth(0.0f, 360.0f)
-	//			.SetElevation(0.0f, 0.0f)
-	//			.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
-	//			.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-	//			.SetLifeTime(0.1f, 0.5f)
-	//			.SetCount(100)
-	//			.SetFrequency(4.0f)
-	//			.SetDeleteTime(1.0f)
-	//			.Build();
-	//		particleSystem_->AddParticleEmitter(newParticleEmitter);
-	//	}
-
-	//	if (downAnimationTimer_[1] > 0)
-	//	{
-	//		worldTransform_.translation.x += 0.3f;
-	//		worldTransformBody_.rotation.x -= 0.03f;
-	//	}
-
-	//	if (downAnimationTimer_[1] <= 0 && HP_ > 0)
-	//	{
-	//		behaviorRequest_ = Behavior::kRoot;
-	//		downAnimationTimer_[1] = 60;
-	//		isHitPoke_ = false;
-	//		workAttack_.isSwingDown = false;
-	//		workAttack_.isPoke = false;
-	//		workAttack_.isMowDown = false;
-	//		isDown_ = false;
-	//		worldTransformBody_.rotation.x = 0.0f;
-	//		worldTransformBody_.rotation.y = 0.0f;
-	//	}
-	//}
-
-	//if (isHitPoke_ && enemy_->GetRotation().y == 4.6f)
-	//{
-	//	isDown_ = true;
-	//	downAnimationTimer_[1]--;
-
-	//	if (downAnimationTimer_[1] > 50)
-	//	{
-	//		ParticleEmitter* newParticleEmitter = EmitterBuilder()
-	//			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-	//			.SetTranslation(worldTransform_.translation)
-	//			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-	//			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-	//			.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
-	//			.SetAzimuth(0.0f, 360.0f)
-	//			.SetElevation(0.0f, 0.0f)
-	//			.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
-	//			.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-	//			.SetLifeTime(0.1f, 0.5f)
-	//			.SetCount(100)
-	//			.SetFrequency(4.0f)
-	//			.SetDeleteTime(1.0f)
-	//			.Build();
-	//		particleSystem_->AddParticleEmitter(newParticleEmitter);
-	//	}
-
-	//	if (downAnimationTimer_[1] > 0)
-	//	{
-	//		worldTransform_.translation.x -= 0.3f;
-	//		worldTransformBody_.rotation.x -= 0.03f;
-	//	}
-
-	//	if (downAnimationTimer_[1] <= 0 && HP_ > 0)
-	//	{
-	//		behaviorRequest_ = Behavior::kRoot;
-	//		downAnimationTimer_[1] = 60;
-	//		isHitPoke_ = false;
-	//		workAttack_.isSwingDown = false;
-	//		workAttack_.isPoke = false;
-	//		workAttack_.isMowDown = false;
-	//		isDown_ = false;
-	//		worldTransformBody_.rotation.x = 0.0f;
-	//		worldTransformBody_.rotation.y = 0.0f;
-	//	}
-	//}
-
-	////薙ぎ払い攻撃
-	//if (isHitMowDown_ && enemy_->GetRotation().y >= 1.7f && enemy_->GetRotation().y < 4.6f)
-	//{
-	//	isDown_ = true;
-	//	downAnimationTimer_[2]--;
-
-	//	if (downAnimationTimer_[2] > 50)
-	//	{
-	//		ParticleEmitter* newParticleEmitter = EmitterBuilder()
-	//			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-	//			.SetTranslation(worldTransform_.translation)
-	//			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-	//			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-	//			.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
-	//			.SetAzimuth(0.0f, 360.0f)
-	//			.SetElevation(0.0f, 0.0f)
-	//			.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
-	//			.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-	//			.SetLifeTime(0.1f, 0.5f)
-	//			.SetCount(100)
-	//			.SetFrequency(4.0f)
-	//			.SetDeleteTime(1.0f)
-	//			.Build();
-	//		particleSystem_->AddParticleEmitter(newParticleEmitter);
-	//	}
-
-	//	if (downAnimationTimer_[2] > 0)
-	//	{
-	//		worldTransform_.translation.x += 0.1f;
-	//		worldTransformBody_.rotation.x -= 0.03f;
-	//	}
-
-	//	if (downAnimationTimer_[2] <= 0 && HP_ > 0)
-	//	{
-	//		behaviorRequest_ = Behavior::kRoot;
-	//		downAnimationTimer_[2] = 60;
-	//		isHitMowDown_ = false;
-	//		workAttack_.isSwingDown = false;
-	//		workAttack_.isPoke = false;
-	//		workAttack_.isMowDown = false;
-	//		isDown_ = false;
-	//		worldTransformBody_.rotation.x = 0.0f;
-	//		worldTransformBody_.rotation.y = 0.0f;
-	//	}
-	//}
-
-	//if (isHitMowDown_ && enemy_->GetRotation().y >= 4.6f)
-	//{
-	//	isDown_ = true;
-	//	downAnimationTimer_[2]--;
-
-	//	if (downAnimationTimer_[2] > 50)
-	//	{
-	//		ParticleEmitter* newParticleEmitter = EmitterBuilder()
-	//			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-	//			.SetTranslation(worldTransform_.translation)
-	//			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-	//			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-	//			.SetScale({ 0.6f, 0.6f,0.6f }, { 1.0f ,1.0f ,1.0f })
-	//			.SetAzimuth(0.0f, 360.0f)
-	//			.SetElevation(0.0f, 0.0f)
-	//			.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
-	//			.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-	//			.SetLifeTime(0.1f, 0.5f)
-	//			.SetCount(100)
-	//			.SetFrequency(4.0f)
-	//			.SetDeleteTime(1.0f)
-	//			.Build();
-	//		particleSystem_->AddParticleEmitter(newParticleEmitter);
-	//	}
-
-	//	if (downAnimationTimer_[2] > 0)
-	//	{
-	//		worldTransform_.translation.x -= 0.1f;
-	//		worldTransformBody_.rotation.x -= 0.03f;
-	//	}
-
-	//	if (downAnimationTimer_[2] <= 0 && HP_ > 0)
-	//	{
-	//		behaviorRequest_ = Behavior::kRoot;
-	//		downAnimationTimer_[2] = 60;
-	//		isHitMowDown_ = false;
-	//		workAttack_.isSwingDown = false;
-	//		workAttack_.isPoke = false;
-	//		workAttack_.isMowDown = false;
-	//		isDown_ = false;
-	//		worldTransformBody_.rotation.x = 0.0f;
-	//		worldTransformBody_.rotation.y = 0.0f;
-	//	}
-	//}
-
-	////投げ攻撃
-	//if (isHitThrow_ && enemy_->GetRotation().y == 1.7f)
-	//{
-	//	isDown_ = true;
-	//	if (enemy_->GetAttackAnimationFrame() < 30)
-	//	{
-	//		worldTransformBody_.rotation.x += 0.01f;
-
-	//	}
-	//	else if (enemy_->GetThrowTimer() > 30)
-	//	{
-	//		worldTransformBody_.rotation.x -= 0.2f;
-	//	}
-	//	else if (enemy_->GetThrowTimer() <= 30)
-	//	{
-	//		worldTransform_.translation.x += 0.3f;
-	//		worldTransformBody_.rotation.x -= 0.2f;
-	//	}
-
-	//	if (enemy_->GetIsThrow() == false)
-	//	{
-	//		downAnimationTimer_[4] = 60;
-	//		isHitThrow_ = false;
-	//		isDown_ = false;
-	//		isEnemyHit_ = false;
-	//		worldTransformBody_.rotation.x = 0.0f;
-	//	}
-	//}
-
-	//if (isHitThrow_ && enemy_->GetRotation().y == 4.6f)
-	//{
-	//	isDown_ = true;
-	//	if (enemy_->GetAttackAnimationFrame() < 30)
-	//	{
-	//		worldTransformBody_.rotation.x -= 0.01f;
-
-	//	}
-	//	else if (enemy_->GetThrowTimer() > 20)
-	//	{
-	//		worldTransformBody_.rotation.x -= 0.2f;
-	//	}
-	//	else if (enemy_->GetThrowTimer() <= 20)
-	//	{
-	//		worldTransform_.translation.x -= 0.3f;
-	//		worldTransformBody_.rotation.x -= 0.2f;
-	//	}
-
-	//	if (enemy_->GetIsThrow() == false)
-	//	{
-	//		downAnimationTimer_[4] = 60;
-	//		isHitThrow_ = false;
-	//		isDown_ = false;
-	//		isEnemyHit_ = false;
-	//		worldTransformBody_.rotation.x = 0.0f;
 	//	}
 	//}
 

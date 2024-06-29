@@ -29,7 +29,7 @@ void GameTitleScene::Initialize()
 	PostProcess::GetInstance()->SetIsVignetteActive(true);
 	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
-	PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
+	//PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
 
 	//modelの読み込み
 	//modelManager_->LoadModel("resource/models", "remakePlayer.gltf");

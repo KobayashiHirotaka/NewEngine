@@ -51,8 +51,10 @@ public:
 		//攻撃しているか
 		bool isAttack = false;
 
-		//パンチ
-		bool isPunch = false;
+		//弱パンチ
+		bool isLightPunch = false;
+
+		//キャンセルパンチ
 		bool isCPunch = false;
 
 		//振り下ろす
@@ -109,7 +111,7 @@ public:
 
 	bool GetIsAttack() { return workAttack_.isAttack; };
 
-	bool GetIsPunch() { return workAttack_.isPunch; };
+	bool GetIsPunch() { return workAttack_.isLightPunch; };
 
 	bool GetIsCPunch() { return workAttack_.isCPunch; };
 
