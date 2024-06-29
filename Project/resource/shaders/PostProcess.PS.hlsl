@@ -77,7 +77,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     float32_t4 highIntensityBlurColor = gHighIntensityBlurTexture.Sample(gSampler, input.texcoord);
     float32_t4 shrinkBlurColor = gShrinkBlurTexture.Sample(gSampler, input.texcoord);
     float32_t4 highIntensityShrinkBlurColor = gHighIntensityShrinkBlurTexture.Sample(gSampler, input.texcoord);
-   
+    
 	//Bloom
     if (gBloomParameter.enable == true)
     {
@@ -162,7 +162,8 @@ PixelShaderOutput main(VertexShaderOutput input)
         textureColor.rgb *= rcp(weight);
     }
     
-    //LuminanceBasedOutline
+    
+     //LuminanceBasedOutline
     if (gLuminanceBasedOutlineParameter.enable)
     {
         uint32_t width, height;
@@ -187,8 +188,11 @@ PixelShaderOutput main(VertexShaderOutput input)
         float32_t weight = length(difference);
         weight = saturate(weight * 6.0f);
         
-        textureColor.rgb = (1.0f - weight) * gTexture.Sample(gSampler, input.texcoord).rgb;
-        textureColor.a = 1.0f;
+        if (weight >= 0.5f)
+        {
+            textureColor.rgb = (1.0f - weight) * gTexture.Sample(gSampler, input.texcoord).rgb;
+            textureColor.a = 1.0f;
+        }
     }
     
      //DepthBasedOutline
