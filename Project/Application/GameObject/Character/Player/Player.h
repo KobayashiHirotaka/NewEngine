@@ -117,9 +117,9 @@ public:
 
 	bool GetIsAttack() { return workAttack_.isAttack; };
 
-	bool GetIsPunch() { return workAttack_.isLightPunch; };
-
-	bool GetIsCPunch() { return workAttack_.isCPunch; };
+	bool GetIsLightPunch() { return workAttack_.isLightPunch; };
+	bool GetIsTCMiddlePunch() { return workAttack_.isTCMiddlePunch; };
+	bool GetIsTCHighPunch() { return workAttack_.isTCHighPunch; };
 
 	bool GetIsSwingDown() { return workAttack_.isSwingDown; };
 
@@ -234,7 +234,7 @@ private:
 	Direction playerDirection = Direction::Right;
 
 	//再生するanimationの番号
-	uint32_t animationIndex = 2;
+	uint32_t animationIndex = 3;
 
 	//hp
 	float maxHP_ = 100.0f;
@@ -264,6 +264,9 @@ private:
 	//キャンセル
 	int cancelCount_ = 0;
 	int cancelTimer_ = 60;
+
+	//当たり判定
+	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 
 #pragma endregion
 

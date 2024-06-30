@@ -31,8 +31,7 @@ void Player::Initialize()
 	//playerWeapon_->SetParent(&worldTransform_);
 
 	//当たり判定の設定
-	AABB aabb = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-	SetAABB(aabb);
+	SetAABB(aabb_);
 
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	SetCollisionMask(kCollisionMaskPlayer);
@@ -120,7 +119,7 @@ void Player::Update()
 
 	isShake_ = false;
 
-	//0は後ろ歩き, 1は前歩き, 2は停止,3はTC強P,4はTC中P,5は弱P
+	//0は後ろ歩き, 1は前歩き, 2はライトリアクション,3は停止,4はノックダウン,5はTC強P,6は弱P,7はTC中P
 	model_->ApplyAnimation(animationIndex);
 
 	model_->Update();
@@ -201,27 +200,29 @@ void Player::Update()
 
 	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
 
-	if (enemyWorldPosition.x > playerWorldPosition.x && behavior_ != Behavior::kJump)
+	if (enemyWorldPosition.x > playerWorldPosition.x && behavior_ != Behavior::kJump
+		&& !isDown_)
 	{
 		playerDirection = Direction::Right;
 		worldTransform_.rotation.y = 1.7f;
 	}
 
-	if (enemyWorldPosition.x < playerWorldPosition.x && behavior_ != Behavior::kJump)
+	if (enemyWorldPosition.x < playerWorldPosition.x && behavior_ != Behavior::kJump
+		&& !isDown_)
 	{
 		playerDirection = Direction::Left;
 		worldTransform_.rotation.y = 4.6f;
 	}
 
 	//画面端の処理
-	if (worldTransform_.translation.x >= 8.0f)
+	if (worldTransform_.translation.x >= 4.0f)
 	{
-		worldTransform_.translation.x = 8.0f;
+		worldTransform_.translation.x = 4.0f;
 	}
 
-	if (worldTransform_.translation.x <= -8.0f)
+	if (worldTransform_.translation.x <= -4.0f)
 	{
-		worldTransform_.translation.x = -8.0f;
+		worldTransform_.translation.x = -4.0f;
 	}
 
 	////ジャンプ中に敵と当たったときの処理
@@ -329,7 +330,7 @@ void Player::DrawParticle(const Camera& camera)
 
 void Player::BehaviorRootInitialize()
 {
-
+	animationIndex = 3;
 }
 
 void Player::BehaviorRootUpdate()
@@ -439,7 +440,7 @@ void Player::BehaviorRootUpdate()
 		}
 		else
 		{
-			animationIndex = 2;
+			animationIndex = 3;
 
 			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
 		}
@@ -496,10 +497,10 @@ void Player::BehaviorRootUpdate()
 void Player::BehaviorAttackInitialize()
 {
 	//通常攻撃
-	if (workAttack_.isLightPunch)
+	/*if (workAttack_.isLightPunch)
 	{
-		animationIndex = 5;
-	}
+		animationIndex = 7;
+	}*/
 
 	////振り下ろし攻撃
 	//if (workAttack_.isSwingDown)
@@ -519,11 +520,12 @@ void Player::BehaviorAttackUpdate()
 	//通常攻撃
 	if (workAttack_.isLightPunch)
 	{
+		animationIndex = 5;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[5].duration;
+		animationDuration = model_->GetAnimation()[animationIndex].duration;
 
 		if (!isDown_)
 		{
@@ -531,7 +533,18 @@ void Player::BehaviorAttackUpdate()
 		}
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(5);
+		model_->ApplyAnimation(animationIndex);
+
+		if (playerDirection == Direction::Right)
+		{
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.0f,0.3f} };
+			SetAABB(aabb_);
+		}
+		else if (playerDirection == Direction::Left)
+		{
+			aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);
+		}
 	
 		if (isDown_ || animationTime >= animationDuration)
 		{
@@ -541,6 +554,8 @@ void Player::BehaviorAttackUpdate()
 			animationTime = 0.0f;
 			attackAnimationFrame = 0;
 			model_->SetAnimationTime(animationTime);
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);
 		}
 
 		if (input_->GetJoystickState())
@@ -553,6 +568,8 @@ void Player::BehaviorAttackUpdate()
 				animationTime = 0.0f;
 				attackAnimationFrame = 0;
 				model_->SetAnimationTime(animationTime);
+				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				SetAABB(aabb_);
 			}
 		}
 		
@@ -562,7 +579,7 @@ void Player::BehaviorAttackUpdate()
 	//ターゲットコンボ用の攻撃(2発目)
 	if (workAttack_.isTCMiddlePunch)
 	{
-		animationIndex = 4;
+		animationIndex = 6;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
@@ -577,6 +594,17 @@ void Player::BehaviorAttackUpdate()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
+		if (playerDirection == Direction::Right)
+		{
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.0f,0.3f} };
+			SetAABB(aabb_);
+		}
+		else if (playerDirection == Direction::Left)
+		{
+			aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);
+		}
+
 		if (isDown_ || animationTime >= animationDuration)
 		{
 			behaviorRequest_ = Behavior::kRoot;
@@ -585,6 +613,8 @@ void Player::BehaviorAttackUpdate()
 			animationTime = 0.0f;
 			attackAnimationFrame = 0;
 			model_->SetAnimationTime(animationTime);
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);
 		}
 
 		if (input_->GetJoystickState())
@@ -597,6 +627,8 @@ void Player::BehaviorAttackUpdate()
 				animationTime = 0.0f;
 				attackAnimationFrame = 0;
 				model_->SetAnimationTime(animationTime);
+				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				SetAABB(aabb_);
 			}
 		}
 
@@ -606,7 +638,7 @@ void Player::BehaviorAttackUpdate()
 	//ターゲットコンボ用の攻撃(3発目)
 	if (workAttack_.isTCHighPunch)
 	{
-		animationIndex = 3;
+		animationIndex = 5;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
@@ -621,6 +653,17 @@ void Player::BehaviorAttackUpdate()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
+		if (playerDirection == Direction::Right)
+		{
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.0f,0.3f} };
+			SetAABB(aabb_);
+		}
+		else if (playerDirection == Direction::Left)
+		{
+			aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);
+		}
+
 		if (isDown_ || animationTime >= animationDuration)
 		{
 			behaviorRequest_ = Behavior::kRoot;
@@ -629,6 +672,8 @@ void Player::BehaviorAttackUpdate()
 			animationTime = 0.0f;
 			attackAnimationFrame = 0;
 			model_->SetAnimationTime(animationTime);
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);
 		}
 
 		attackAnimationFrame++;

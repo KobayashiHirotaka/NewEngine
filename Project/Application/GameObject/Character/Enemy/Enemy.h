@@ -175,6 +175,8 @@ private:
 
 	void FinisherGaugeBarUpdate();
 
+	void ComboNumberSpriteUpdate();
+
 #pragma endregion
 
 #pragma region 敵の行動
@@ -231,7 +233,7 @@ private:
 	Direction enemyDirection_ = Direction::Left;
 
 	//再生するanimationの番号
-	uint32_t animationIndex = 2;
+	uint32_t animationIndex = 3;
 
 	//行動のパターン
 	int patternCount_ = 1;
@@ -250,7 +252,7 @@ private:
 	float finisherGauge_ = 0.0f;
 
 	//ダウン演出の時間
-	int downAnimationTimer_[6] = { 60,60,60,60,60,60 };
+	int downAnimationTimer_ = 60;
 
 	//リセットの時間
 	int resetTimer_ = 60;
@@ -269,6 +271,9 @@ private:
 	//コンボを食らっているとき
 	int comboTimer_ = 60;
 	int comboCount_ = 0;
+
+	//当たり判定
+	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 
 #pragma endregion
 
@@ -320,8 +325,9 @@ private:
 	bool isPlayerHit_ = false;
 
 	//各攻撃があたっているかどうか
-	bool isHitPunch_ = false;
-	bool isHitCPunch_ = false;
+	bool isHitLightPunch_ = false;
+	bool isHitTCMiddlePunch_ = false;
+	bool isHitTCHighPunch_ = false;
 	bool isHitSwingDown_ = false;
 	bool isHitPoke_ = false;
 	bool isHitMowDown_ = false;
