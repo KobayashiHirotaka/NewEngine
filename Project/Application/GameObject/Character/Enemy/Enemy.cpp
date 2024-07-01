@@ -26,9 +26,9 @@ void Enemy::Initialize()
 	worldTransform_.Initialize();
 
 	//Weaponの生成
-	//enemyWeapon_ = std::make_unique<EnemyWeapon>();
-	//enemyWeapon_->Initialize();
-	//enemyWeapon_->SetParent(&worldTransform_);
+	enemyWeapon_ = std::make_unique<EnemyWeapon>();
+	enemyWeapon_->Initialize();
+	enemyWeapon_->SetParent(&worldTransform_);
 
 	//当たり判定の設定
 	SetAABB(aabb_);
@@ -226,6 +226,9 @@ void Enemy::Update()
 	//	worldTransform_.translation.y = 0.0f;
 	//}
 
+	//Weaponの更新
+	enemyWeapon_->Update();
+
 	DownAnimation();
 
 	//パーティクルの更新
@@ -317,12 +320,12 @@ void Enemy::Draw(const Camera& camera)
 	model_->Draw(worldTransform_, camera, animationIndex);
 
 	//Weaponの描画
-	/*if (workAttack_.isAttack && workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_
+	if (workAttack_.isAttack && workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_
 		&& !isHitPoke_ && !isHitMowDown_ && !isDown_ && behaviorRequest_ != Behavior::kRoot
 		&& workAttack_.isAttack)
 	{
 		enemyWeapon_->Draw(camera);
-	}*/
+	}
 }
 
 void Enemy::BoneDraw(const Camera& camera)
@@ -486,6 +489,14 @@ void Enemy::BehaviorAttackInitialize()
 
 	//}
 
+	//振り下ろし攻撃
+	if (workAttack_.isSwingDown)
+	{
+		workAttack_.translation = { 0.0f,2.5f,0.0f };
+		workAttack_.rotation = { 0.0f,0.0f,0.0f };
+		workAttack_.stiffnessTimer = 60;
+	}
+
 	////振り下ろし攻撃
 	//if (workAttack_.isSwingDown)
 	//{
@@ -521,83 +532,61 @@ void Enemy::BehaviorAttackUpdate()
 
 		model_->Update();
 
-		if (isDown_)
+		if (attackAnimationFrame < 10)
 		{
-			behaviorRequest_ = Behavior::kRoot;
-			workAttack_.stiffnessTimer = 60;
-			workAttack_.isSwingDown = false;
-			animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
-		}
+			workAttack_.rotation.x -= 0.05f;
 
-		if (animationTime >= animationDuration)
+			enemyWeapon_->SetTranslation(workAttack_.translation);
+			enemyWeapon_->SetRotation(workAttack_.rotation);
+
+		}
+		else if (workAttack_.rotation.x < 2.0f)
 		{
-			// アニメーションが終了した場合の処理
-			behaviorRequest_ = Behavior::kRoot;
-			workAttack_.stiffnessTimer = 60;
-			workAttack_.isSwingDown = false;
-			animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
+			workAttack_.translation.z += 0.05f;
+			workAttack_.translation.y -= 0.05f;
+			workAttack_.rotation.x += 0.1f;
+
+			enemyWeapon_->SetTranslation(workAttack_.translation);
+			enemyWeapon_->SetRotation(workAttack_.rotation);
+			enemyWeapon_->SetIsAttack(true);
+			workAttack_.isAttack = true;
+
+			if (isDown_)
+			{
+				behaviorRequest_ = Behavior::kRoot;
+				workAttack_.stiffnessTimer = 60;
+				workAttack_.isSwingDown = false;
+				enemyWeapon_->SetIsAttack(false);
+				animationTime = 0.0f;
+				model_->SetAnimationTime(animationTime);
+			}
 		}
+		else
+		{
+			workAttack_.stiffnessTimer--;
+			workAttack_.isAttack = false;
+			enemyWeapon_->SetIsAttack(false);
 
-		//if (attackAnimationFrame < 10)
-		//{
-		//	workAttack_.rotation.x -= 0.05f;
+			if (isDown_)
+			{
+				behaviorRequest_ = Behavior::kRoot;
+				workAttack_.stiffnessTimer = 60;
+				workAttack_.isSwingDown = false;
+				enemyWeapon_->SetIsAttack(false);
+				animationTime = 0.0f;
+				model_->SetAnimationTime(animationTime);
+			}
 
-		//	playerWeapon_->SetTranslation(workAttack_.translation);
-		//	playerWeapon_->SetRotation(workAttack_.rotation);
-
-		//}
-		//else if (workAttack_.rotation.x < 2.0f)
-		//{
-		//	workAttack_.translation.z += 0.05f;
-		//	workAttack_.translation.y -= 0.05f;
-		//	workAttack_.rotation.x += 0.1f;
-
-		//	playerWeapon_->SetTranslation(workAttack_.translation);
-		//	playerWeapon_->SetRotation(workAttack_.rotation);
-		//	playerWeapon_->SetIsAttack(true);
-		//	workAttack_.isAttack = true;
-
-		//	if (isDown_)
-		//	{
-		//		behaviorRequest_ = Behavior::kRoot;
-		//		worldTransformHead_.rotation.y = 0.0f;
-		//		worldTransformBody_.rotation.y = 0.0f;
-		//		workAttack_.stiffnessTimer = 60;
-		//		workAttack_.isAttack = false;
-		//		playerWeapon_->SetIsAttack(false);
-		//		workAttack_.isSwingDown = false;
-		//	}
-		//}
-		//else
-		//{
-		//	workAttack_.stiffnessTimer--;
-		//	workAttack_.isAttack = false;
-		//	playerWeapon_->SetIsAttack(false);
-
-		//	if (isDown_)
-		//	{
-		//		behaviorRequest_ = Behavior::kRoot;
-		//		worldTransformHead_.rotation.y = 0.0f;
-		//		worldTransformBody_.rotation.y = 0.0f;
-		//		workAttack_.stiffnessTimer = 60;
-		//		workAttack_.isAttack = false;
-		//		playerWeapon_->SetIsAttack(false);
-		//		workAttack_.isSwingDown = false;
-		//	}
-
-
-		//	if (animationTime >= animationDuration)
-		//	{
-		//		// アニメーションが終了した場合の処理
-		//		behaviorRequest_ = Behavior::kRoot;
-		//		workAttack_.stiffnessTimer = 60;
-		//		workAttack_.isSwingDown = false;
-		//		animationTime = 0.0f;
-		//		modelFighterBody_->SetAnimationTime(animationTime);
-		//	}
-		//}
+			if (animationTime >= animationDuration)
+			{
+				// アニメーションが終了した場合の処理
+				behaviorRequest_ = Behavior::kRoot;
+				workAttack_.stiffnessTimer = 60;
+				workAttack_.isSwingDown = false;
+				animationTime = 0.0f;
+				model_->SetAnimationTime(animationTime);
+			}
+		}
 
 		attackAnimationFrame++;
 	}

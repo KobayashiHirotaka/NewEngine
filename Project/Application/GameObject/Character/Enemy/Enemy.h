@@ -14,6 +14,8 @@
 #include <random>
 #include <numbers>
 
+#include "Application/GameObject/Character/Enemy/EnemyWeapon.h"
+
 //前方宣言
 class Player;
 
@@ -90,6 +92,8 @@ public:
 	void DrawParticle(const Camera& camera);
 
 	void OnCollision(Collider* collider, float damage)override;
+
+	EnemyWeapon* GetEnemyWeapon() { return enemyWeapon_.get(); };
 
 	void Reset();
 
@@ -383,7 +387,7 @@ private:
 	Player* player_ = nullptr;
 
 	//武器
-	//std::unique_ptr<EnemyWeapon> enemyWeapon_ = nullptr;
+	std::unique_ptr<EnemyWeapon> enemyWeapon_ = nullptr;
 
 	//パーティクル
 	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
