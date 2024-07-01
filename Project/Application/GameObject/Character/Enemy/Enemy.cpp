@@ -364,81 +364,81 @@ void Enemy::BehaviorRootUpdate()
 
 	patternCount_ = 1;
 	
-	////移動処理
-	//if (patternCount_ == 1 && isDown_ == false)
-	//{
-	//	moveTimer_--;
+	//移動処理
+	if (patternCount_ == 1 && isDown_ == false)
+	{
+		moveTimer_--;
 
-	//	const float deadZone = 0.7f;
-	//	bool isMove_ = false;
-	//	float kCharacterSpeed = 0.01f;
-	//	velocity_ = { 0.0f, 0.0f, 0.0f };
+		const float deadZone = 0.7f;
+		bool isMove_ = false;
+		float kCharacterSpeed = 0.01f;
+		velocity_ = { 0.0f, 0.0f, 0.0f };
 
-	//	if (moveTimer_ > 30 && enemyDirection_ == Direction::Left && !isHit_)
-	//	{
-	//		velocity_.x = -0.001f;
-	//		isMove_ = true;
-	//		isGuard_ = false;
+		if (moveTimer_ > 30 && enemyDirection_ == Direction::Left && !isHit_)
+		{
+			velocity_.x = -0.001f;
+			isMove_ = true;
+			isGuard_ = false;
 
-	//		animationIndex = 1;
-	//		UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
-	//	}
+			animationIndex = 1;
+			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
+		}
 
-	//	if (moveTimer_ > 30 && enemyDirection_ == Direction::Right && !isHit_)
-	//	{
-	//		velocity_.x = 0.001f;
-	//		isMove_ = true;
-	//		isGuard_ = false;
+		if (moveTimer_ > 30 && enemyDirection_ == Direction::Right && !isHit_)
+		{
+			velocity_.x = 0.001f;
+			isMove_ = true;
+			isGuard_ = false;
 
-	//		animationIndex = 1;
-	//		UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
-	//	}
+			animationIndex = 1;
+			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
+		}
 
-	//	if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right)
-	//	{
-	//		velocity_.x = -0.001f;
-	//		isMove_ = true;
-	//		isGuard_ = true;
+		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right)
+		{
+			velocity_.x = -0.001f;
+			isMove_ = true;
+			isGuard_ = true;
 
-	//		animationIndex = 0;
-	//		UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
-	//	}
+			animationIndex = 0;
+			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
+		}
 
-	//	if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left)
-	//	{
-	//		velocity_.x = 0.001f;
-	//		isMove_ = true;
-	//		isGuard_ = true;
+		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left)
+		{
+			velocity_.x = 0.001f;
+			isMove_ = true;
+			isGuard_ = true;
 
-	//		animationIndex = 0;
-	//		UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
-	//	}
+			animationIndex = 0;
+			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
+		}
 
-	//	if (isMove_)
-	//	{
-	//		velocity_ = Normalize(velocity_);
-	//		velocity_ = Multiply(kCharacterSpeed, velocity_);
+		if (isMove_)
+		{
+			velocity_ = Normalize(velocity_);
+			velocity_ = Multiply(kCharacterSpeed, velocity_);
 
-	//		// 平行移動
-	//		worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+			// 平行移動
+			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
-	//		worldTransform_.UpdateMatrixEuler();
-	//	}
+			worldTransform_.UpdateMatrixEuler();
+		}
 
-	//	if (moveTimer_ < 0)
-	//	{
-	//		if (!isHit_)
-	//		{
-	//			moveTimer_ = Random(30, 90);;
-	//			patternCount_ = Random(3, 3);
+		if (moveTimer_ < 0)
+		{
+			if (!isHit_)
+			{
+				moveTimer_ = Random(30, 90);;
+				patternCount_ = Random(4, 4);
 
-	//		}
-	//		else {
-	//			moveTimer_ = Random(30, 90);
-	//			patternCount_ = Random(3, 3);
-	//		}
-	//	}
-	//}
+			}
+			else {
+				moveTimer_ = Random(30, 90);
+				patternCount_ = Random(4, 4);
+			}
+		}
+	}
 
 	//ジャンプ
 	if (patternCount_ == 3 && isDown_ == false)
@@ -462,15 +462,15 @@ void Enemy::BehaviorRootUpdate()
 	//	workAttack_.isPunch = true;
 	//}
 
-	////振り下ろし攻撃
-	//if (patternCount_ == 5 && isDown_ == false)
-	//{
-	//	audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
-	//	behaviorRequest_ = Behavior::kAttack;
-	//	workAttack_.isSwingDown = true;
-	//	animationTime = 0.0f;
-	//	modelFighterBody_->SetAnimationTime(animationTime);
-	//}
+	//振り下ろし攻撃
+	if (patternCount_ == 4 && isDown_ == false)
+	{
+		audio_->SoundPlayMP3(attackSoundHandle_, false, 1.0f);
+		behaviorRequest_ = Behavior::kAttack;
+		workAttack_.isSwingDown = true;
+		animationTime = 0.0f;
+		model_->SetAnimationTime(animationTime);
+	}
 }
 
 void Enemy::BehaviorAttackInitialize()
@@ -501,87 +501,106 @@ void Enemy::BehaviorAttackInitialize()
 
 void Enemy::BehaviorAttackUpdate()
 {
-	////振り下ろし攻撃
-	//if (workAttack_.isSwingDown)
-	//{
-	//	isGuard_ = false;
-	//	float animationTime, animationDuration;
-	//	animationTime = modelFighterBody_->GetAnimationTime();
+	//振り下ろし攻撃
+	if (workAttack_.isSwingDown)
+	{
+		isGuard_ = false;
+		animationIndex = 5;
+		float animationTime, animationDuration;
+		animationTime = model_->GetAnimationTime();
 
-	//	if (!isDown_)
-	//	{
-	//		animationTime += 1.0f / 50.0f;
-	//	}
+		if (!isDown_)
+		{
+			animationTime += 1.0f / 50.0f;
+		}
+		animationDuration = model_->GetAnimation()[animationIndex].duration;
 
-	//	animationDuration = modelFighterBody_->GetAnimation()[3].duration;
+		model_->SetAnimationTime(animationTime);
 
-	//	modelFighterBody_->SetAnimationTime(animationTime);
+		model_->ApplyAnimation(animationIndex);
 
-	//	modelFighterBody_->ApplyAnimation(3);
+		model_->Update();
 
-	//	modelFighterBody_->Update();
+		if (isDown_)
+		{
+			behaviorRequest_ = Behavior::kRoot;
+			workAttack_.stiffnessTimer = 60;
+			workAttack_.isSwingDown = false;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+		}
 
-	//	if (attackAnimationFrame < 10)
-	//	{
-	//		workAttack_.rotation.x -= 0.05f;
+		if (animationTime >= animationDuration)
+		{
+			// アニメーションが終了した場合の処理
+			behaviorRequest_ = Behavior::kRoot;
+			workAttack_.stiffnessTimer = 60;
+			workAttack_.isSwingDown = false;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+		}
 
-	//		playerWeapon_->SetTranslation(workAttack_.translation);
-	//		playerWeapon_->SetRotation(workAttack_.rotation);
+		//if (attackAnimationFrame < 10)
+		//{
+		//	workAttack_.rotation.x -= 0.05f;
 
-	//	}
-	//	else if (workAttack_.rotation.x < 2.0f)
-	//	{
-	//		workAttack_.translation.z += 0.05f;
-	//		workAttack_.translation.y -= 0.05f;
-	//		workAttack_.rotation.x += 0.1f;
+		//	playerWeapon_->SetTranslation(workAttack_.translation);
+		//	playerWeapon_->SetRotation(workAttack_.rotation);
 
-	//		playerWeapon_->SetTranslation(workAttack_.translation);
-	//		playerWeapon_->SetRotation(workAttack_.rotation);
-	//		playerWeapon_->SetIsAttack(true);
-	//		workAttack_.isAttack = true;
+		//}
+		//else if (workAttack_.rotation.x < 2.0f)
+		//{
+		//	workAttack_.translation.z += 0.05f;
+		//	workAttack_.translation.y -= 0.05f;
+		//	workAttack_.rotation.x += 0.1f;
 
-	//		if (isDown_)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.stiffnessTimer = 60;
-	//			workAttack_.isAttack = false;
-	//			playerWeapon_->SetIsAttack(false);
-	//			workAttack_.isSwingDown = false;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		workAttack_.stiffnessTimer--;
-	//		workAttack_.isAttack = false;
-	//		playerWeapon_->SetIsAttack(false);
+		//	playerWeapon_->SetTranslation(workAttack_.translation);
+		//	playerWeapon_->SetRotation(workAttack_.rotation);
+		//	playerWeapon_->SetIsAttack(true);
+		//	workAttack_.isAttack = true;
 
-	//		if (isDown_)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			worldTransformHead_.rotation.y = 0.0f;
-	//			worldTransformBody_.rotation.y = 0.0f;
-	//			workAttack_.stiffnessTimer = 60;
-	//			workAttack_.isAttack = false;
-	//			playerWeapon_->SetIsAttack(false);
-	//			workAttack_.isSwingDown = false;
-	//		}
+		//	if (isDown_)
+		//	{
+		//		behaviorRequest_ = Behavior::kRoot;
+		//		worldTransformHead_.rotation.y = 0.0f;
+		//		worldTransformBody_.rotation.y = 0.0f;
+		//		workAttack_.stiffnessTimer = 60;
+		//		workAttack_.isAttack = false;
+		//		playerWeapon_->SetIsAttack(false);
+		//		workAttack_.isSwingDown = false;
+		//	}
+		//}
+		//else
+		//{
+		//	workAttack_.stiffnessTimer--;
+		//	workAttack_.isAttack = false;
+		//	playerWeapon_->SetIsAttack(false);
+
+		//	if (isDown_)
+		//	{
+		//		behaviorRequest_ = Behavior::kRoot;
+		//		worldTransformHead_.rotation.y = 0.0f;
+		//		worldTransformBody_.rotation.y = 0.0f;
+		//		workAttack_.stiffnessTimer = 60;
+		//		workAttack_.isAttack = false;
+		//		playerWeapon_->SetIsAttack(false);
+		//		workAttack_.isSwingDown = false;
+		//	}
 
 
-	//		if (animationTime >= animationDuration)
-	//		{
-	//			// アニメーションが終了した場合の処理
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			workAttack_.stiffnessTimer = 60;
-	//			workAttack_.isSwingDown = false;
-	//			animationTime = 0.0f;
-	//			modelFighterBody_->SetAnimationTime(animationTime);
-	//		}
-	//	}
+		//	if (animationTime >= animationDuration)
+		//	{
+		//		// アニメーションが終了した場合の処理
+		//		behaviorRequest_ = Behavior::kRoot;
+		//		workAttack_.stiffnessTimer = 60;
+		//		workAttack_.isSwingDown = false;
+		//		animationTime = 0.0f;
+		//		modelFighterBody_->SetAnimationTime(animationTime);
+		//	}
+		//}
 
-	//	attackAnimationFrame++;
-	//}
+		attackAnimationFrame++;
+	}
 }
 
 void Enemy::BehaviorJumpInitialize()
