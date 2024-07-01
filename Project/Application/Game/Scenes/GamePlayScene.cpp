@@ -102,6 +102,14 @@ void GamePlayScene::Initialize()
 	frameUITextureHandle_ = TextureManager::LoadTexture("resource/images/frameUI.png");
 	frameUISprite_.reset(Sprite::Create(frameUITextureHandle_, { 0.0f, 0.0f }));
 
+	// テクスチャは仮の初期値を設定
+	tensTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
+	onesTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
+
+	// スプライトの生成
+	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, { 580.0f, 0.0f }));
+	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, { 620.0f, 0.0f }));
+
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
 	transitionSprite_->SetColor(transitionColor_);
 	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
@@ -466,8 +474,8 @@ void GamePlayScene::UpdateNumberSprite()
 	tensTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(tensDigit) + ".png");
 	onesTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(onesDigit) + ".png");
 
-	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, { 580.0f, 0.0f }));
-	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, { 620.0f, 0.0f }));
+	numberTensSprite_->SetTexture(tensTextureHandle_);
+	numberOnesSprite_->SetTexture(onesTextureHandle_);
 }
 
 float GamePlayScene::Random(float min_value, float max_value)

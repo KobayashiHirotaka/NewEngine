@@ -73,6 +73,10 @@ public:
 	const Vector4& GetColor() const { return color_; };
 	void SetColor(const Vector4& color) { color_ = color; };
 
+	//TextureHandle
+	const uint32_t& GetTexture() const { return textureHandle_; };
+	void SetTexture(const uint32_t& textureHandle) { textureHandle_ = textureHandle; };
+
 	//拡張機能
 	//AnchorPoint
 	const Vector2& GetAnchorPoint() const { return anchorPoint_; };

@@ -75,6 +75,9 @@ void Enemy::Initialize()
 	hitTextureHandle_ = TextureManager::LoadTexture("resource/images/Hit.png");
 	hitSprite_.reset(Sprite::Create(hitTextureHandle_, { 40.0f, 180.0f }));
 
+	comboNumTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
+	comboNumSprite_.reset(Sprite::Create(comboNumTextureHandle_, { 10.0f, 290.0f }));
+
 	//seの初期化
 	attackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Attack.mp3");
 	weaponAttackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/WeaponAttack.mp3");
@@ -1511,7 +1514,7 @@ void Enemy::UpdateComboNumberSprite()
 
 	comboNumTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(comboNum) + ".png");
 
-	comboNumSprite_.reset(Sprite::Create(comboNumTextureHandle_, { 10.0f, 290.0f }));
+	comboNumSprite_->SetTexture(comboNumTextureHandle_);
 }
 
 Vector3 Enemy::GetWorldPosition()
