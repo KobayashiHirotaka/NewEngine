@@ -44,7 +44,7 @@ void Player::Initialize()
 		TextureManager::LoadTexture("resource/images/HP.png"),
 		{537.0f, barSpace},
 		0.0f,
-		{-barSize  ,7.0f},
+		{-barSize  ,7.2f},
 		nullptr,
 	};
 

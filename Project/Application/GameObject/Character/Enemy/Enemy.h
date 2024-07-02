@@ -353,7 +353,7 @@ private:
 
 	//スプライト(hp)
 	UI hpBar_;
-	const float barSpace = 16.0f;
+	const float barSpace = 15.6f;
 	float barSize = 480.0f;
 
 	//スプライト(ガードゲージ)
@@ -363,7 +363,7 @@ private:
 
 	//スプライト(必殺技ゲージ)
 	UI finisherGaugeBar_;
-	const float finisherGaugeBarSpace = 578.0f;
+	const float finisherGaugeBarSpace = 627.0f;
 	float finisherGaugeBarSize = 240.0f;
 
 	//スプライト(コンボ表示)

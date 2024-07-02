@@ -253,7 +253,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> depthBasedOutlineConstantBuffer_ = nullptr;
 
     //ブルームの強度
-    float bloomIntensity_ = 0.43f;
+    float bloomIntensity_ = 0.17f;
 
     //ビネットの強度
     float vignetteIntensity_ = 0.8f;

@@ -36,7 +36,7 @@ void GamePlayScene::Initialize()
 
 	//postEffectの切り替え
 	PostProcess::GetInstance()->SetIsBloomActive(true);
-	PostProcess::GetInstance()->SetIsVignetteActive(true);
+	//PostProcess::GetInstance()->SetIsVignetteActive(true);
 	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 	//PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);

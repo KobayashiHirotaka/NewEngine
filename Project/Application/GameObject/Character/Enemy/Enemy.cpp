@@ -44,7 +44,7 @@ void Enemy::Initialize()
 		TextureManager::LoadTexture("resource/images/HP.png"),
 		{720.0f, barSpace},
 		0.0f,
-		{-barSize  ,7.0f},
+		{-barSize  ,7.2f},
 		nullptr,
 	};
 
@@ -367,81 +367,81 @@ void Enemy::BehaviorRootUpdate()
 
 	patternCount_ = 1;
 	
-	//移動処理
-	if (patternCount_ == 1 && isDown_ == false)
-	{
-		moveTimer_--;
+	////移動処理
+	//if (patternCount_ == 1 && isDown_ == false)
+	//{
+	//	moveTimer_--;
 
-		const float deadZone = 0.7f;
-		bool isMove_ = false;
-		float kCharacterSpeed = 0.01f;
-		velocity_ = { 0.0f, 0.0f, 0.0f };
+	//	const float deadZone = 0.7f;
+	//	bool isMove_ = false;
+	//	float kCharacterSpeed = 0.01f;
+	//	velocity_ = { 0.0f, 0.0f, 0.0f };
 
-		if (moveTimer_ > 30 && enemyDirection_ == Direction::Left && !isHit_)
-		{
-			velocity_.x = -0.001f;
-			isMove_ = true;
-			isGuard_ = false;
+	//	if (moveTimer_ > 30 && enemyDirection_ == Direction::Left && !isHit_)
+	//	{
+	//		velocity_.x = -0.001f;
+	//		isMove_ = true;
+	//		isGuard_ = false;
 
-			animationIndex = 1;
-			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
-		}
+	//		animationIndex = 1;
+	//		UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
+	//	}
 
-		if (moveTimer_ > 30 && enemyDirection_ == Direction::Right && !isHit_)
-		{
-			velocity_.x = 0.001f;
-			isMove_ = true;
-			isGuard_ = false;
+	//	if (moveTimer_ > 30 && enemyDirection_ == Direction::Right && !isHit_)
+	//	{
+	//		velocity_.x = 0.001f;
+	//		isMove_ = true;
+	//		isGuard_ = false;
 
-			animationIndex = 1;
-			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
-		}
+	//		animationIndex = 1;
+	//		UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
+	//	}
 
-		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right)
-		{
-			velocity_.x = -0.001f;
-			isMove_ = true;
-			isGuard_ = true;
+	//	if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right)
+	//	{
+	//		velocity_.x = -0.001f;
+	//		isMove_ = true;
+	//		isGuard_ = true;
 
-			animationIndex = 0;
-			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
-		}
+	//		animationIndex = 0;
+	//		UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
+	//	}
 
-		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left)
-		{
-			velocity_.x = 0.001f;
-			isMove_ = true;
-			isGuard_ = true;
+	//	if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left)
+	//	{
+	//		velocity_.x = 0.001f;
+	//		isMove_ = true;
+	//		isGuard_ = true;
 
-			animationIndex = 0;
-			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
-		}
+	//		animationIndex = 0;
+	//		UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
+	//	}
 
-		if (isMove_)
-		{
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(kCharacterSpeed, velocity_);
+	//	if (isMove_)
+	//	{
+	//		velocity_ = Normalize(velocity_);
+	//		velocity_ = Multiply(kCharacterSpeed, velocity_);
 
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+	//		// 平行移動
+	//		worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
-			worldTransform_.UpdateMatrixEuler();
-		}
+	//		worldTransform_.UpdateMatrixEuler();
+	//	}
 
-		if (moveTimer_ < 0)
-		{
-			if (!isHit_)
-			{
-				moveTimer_ = Random(30, 90);;
-				patternCount_ = Random(4, 4);
+	//	if (moveTimer_ < 0)
+	//	{
+	//		if (!isHit_)
+	//		{
+	//			moveTimer_ = Random(30, 90);;
+	//			patternCount_ = Random(4, 4);
 
-			}
-			else {
-				moveTimer_ = Random(30, 90);
-				patternCount_ = Random(4, 4);
-			}
-		}
-	}
+	//		}
+	//		else {
+	//			moveTimer_ = Random(30, 90);
+	//			patternCount_ = Random(4, 4);
+	//		}
+	//	}
+	//}
 
 	//ジャンプ
 	if (patternCount_ == 3 && isDown_ == false)
