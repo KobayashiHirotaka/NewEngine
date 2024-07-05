@@ -3,12 +3,12 @@
 #include "Engine/Base/TextureManager/TextureManager.h"
 #include "EmitterBuilder.h"
 
-class ParticleSystem 
+class ParticleSystem
 {
 public:
 	const uint32_t kMaxInstance = 10000;
 
-	struct ParticleForGPU 
+	struct ParticleForGPU
 	{
 		Matrix4x4 world;
 		Vector4 color;

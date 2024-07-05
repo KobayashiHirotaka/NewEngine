@@ -7,33 +7,33 @@
 
 #pragma comment(lib,"dxcompiler.lib")
 
-class Sprite 
+class Sprite
 {
 public:
-	enum BlendMode 
+	enum BlendMode
 	{
 		kBlendModeNone,
-	
+
 		kBlendModeNormal,
-	
+
 		kBlendModeAdd,
-	
+
 		kBlendModeSubtract,
-		
+
 		kBlendModeMultiply,
-	
+
 		kBlendModeScreen,
-		
+
 		kCountOfBlendMode,
 	};
 
-	struct VertexData 
+	struct VertexData
 	{
 		Vector4 position{};
 		Vector2 texcoord{};
 	};
 
-	struct MaterialData 
+	struct MaterialData
 	{
 		Vector4 color{};
 		Matrix4x4 uvTransform{};
@@ -72,6 +72,10 @@ public:
 	//Color
 	const Vector4& GetColor() const { return color_; };
 	void SetColor(const Vector4& color) { color_ = color; };
+
+	//TextureHandle
+	const uint32_t& GetTexture() const { return textureHandle_; };
+	void SetTexture(const uint32_t& textureHandle) { textureHandle_ = textureHandle; };
 
 	//拡張機能
 	//AnchorPoint
@@ -122,9 +126,9 @@ private:
 	static TextureManager* textureManager_;
 
 	static ID3D12Device* device_;
-	
+
 	static ID3D12GraphicsCommandList* commandList_;
-	
+
 	static Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_;
 	static Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_;
 	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_;
@@ -132,35 +136,35 @@ private:
 	static Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
 
 	static std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, kCountOfBlendMode> graphicsPipelineState_;
-	
+
 	static Matrix4x4 matProjection_;
-	
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
-	
+
 	Vector2 position_ = { 0.0f,0.0f };
-	
+
 	float rotation_ = 0.0f;
-	
+
 	Vector2 size_ = { 1.0f,1.0f };
-	
+
 	Vector2 texBase_ = { 0.0f,0.0f };
-	
+
 	Vector2 texSize_ = { 1.0f,1.0f };
-	
+
 	uint32_t textureHandle_{};
-	
+
 	D3D12_RESOURCE_DESC resourceDesc_{};
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;
-	
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource_ = nullptr;
 
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 
 	Vector2 uvTranslation_ = { 0.0f,0.0f };
-	
+
 	float uvRotation_ = 0.0f;
 
 	Vector2 uvScale_ = { 1.0f,1.0f };

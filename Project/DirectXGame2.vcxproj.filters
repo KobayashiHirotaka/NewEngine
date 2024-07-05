@@ -581,6 +581,21 @@
     <ClInclude Include="Application\GameObject\TestObject\TestObject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\3D\Camera\DebugCamera.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Light\PointLight.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Light\SpotLight.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Light\Types.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\ModelManager.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\Object3d.PS.hlsl">

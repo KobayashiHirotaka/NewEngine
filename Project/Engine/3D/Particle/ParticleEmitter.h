@@ -60,12 +60,12 @@ private:
 
 private:
 	std::list<std::unique_ptr<BaseParticle>> particles_;
-	
+
 	std::string emitterName_ = " ";
 
 	//Emitterの設定項目
 	ParticleType particleType_ = ParticleType::kBase;
-	
+
 	Vector3 translation_ = { 0.0f,0.0f,0.0f };
 
 	Vector3Range rotation_ = { {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
@@ -73,7 +73,7 @@ private:
 	Vector3Range scale_ = { {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} };
 
 	Vector3Range velocity_ = { {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} };
-	
+
 	Vector3Range area_ = { {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 
 	Vector4Range color_ = { {1.0f,1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f,1.0f} };
@@ -81,7 +81,7 @@ private:
 	FloatRange azimuth_ = { 0.0f,360.0f };
 
 	FloatRange elevation_ = { 0.0f,180.0f };
-	
+
 	FloatRange lifeTime_ = { 0.5f,1.0f };
 
 	uint32_t particleCount_ = 1;
@@ -89,7 +89,7 @@ private:
 	float frequency_ = 0.1f;
 
 	float frequencyTime_ = frequency_;
-	
+
 	float deleteTime_ = 10.0f;
 
 	float deleteTimer_ = 0.0f;

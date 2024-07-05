@@ -27,6 +27,8 @@ public:
 
 	void TransferMatrix();
 
+	void ImGui();
+
 	//定数バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff_;
 
@@ -34,7 +36,7 @@ public:
 	Vector3 rotation_ = { 0.0f,0.0f,0.0f };
 
 	//ローカル座標
-	Vector3 translation_ = { 0.0f,2.0f,-35.0f };
+	Vector3 translation_ = { 0.0f,1.0f,-13.0f };
 
 	//視野角
 	float fov_ = 0.45f;

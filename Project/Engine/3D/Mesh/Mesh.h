@@ -21,9 +21,9 @@ private:
 	DirectXCore* dxCore_ = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexBuffer_ = nullptr;
-	
+
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
-	
+
 	std::vector<VertexData> vertices_{};
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexBuffer_ = nullptr;

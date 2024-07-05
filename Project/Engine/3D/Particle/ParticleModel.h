@@ -11,7 +11,7 @@
 #include <sstream>
 #pragma comment(lib,"dxcompiler.lib")
 
-class ParticleModel 
+class ParticleModel
 {
 public:
 	struct VertexData
@@ -26,7 +26,7 @@ public:
 		std::string textureFilePath;
 	};
 
-	struct ModelData 
+	struct ModelData
 	{
 		std::vector<VertexData> vertices;
 		MaterialData material;
@@ -39,7 +39,7 @@ public:
 		Matrix4x4 uvTransform{};
 	};
 
-	struct ParticleForGPU 
+	struct ParticleForGPU
 	{
 		Matrix4x4 world;
 		Vector4 color;
@@ -90,19 +90,19 @@ private:
 	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_;
 
 	static Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
-	
+
 	static Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_;
 
 	static std::list<ModelData> modelDatas_;
-	
+
 	std::vector<VertexData> vertices_{};
-	
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
-	
+
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
-	
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;
-	
+
 	uint32_t textureHandle_ = 0;
 };
 

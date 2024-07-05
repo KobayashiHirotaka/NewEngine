@@ -3,11 +3,12 @@
 #include "Engine/Utility/Math/MyMath.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/Light/Types.h"
+#include <numbers>
 
-class Light
+class SpotLight
 {
 public:
-	struct ConstBuffDataLight
+	struct ConstBuffDataSpotLight
 	{
 		int32_t enableLighting;
 
@@ -21,7 +22,17 @@ public:
 
 		Vector3 direction;
 
+		float distance;
+
+		Vector3 position;
+
 		float intensity;
+
+		float decay;
+
+		float cosAngle;
+
+		float cosFalloffStart;
 	};
 
 	void Initialize();
@@ -52,16 +63,32 @@ public:
 	Vector3& GetDirection() { return direction_; };
 	void SetDirection(const Vector3& direction) { direction_ = direction; };
 
+	//Distance
+	const float& GetDistance() const { return distance_; };
+	void SetDistance(const float& distance) { distance_ = distance; };
+
+	//Position
+	Vector3& GetPosition() { return position_; };
+	void SetPosition(const Vector3& position) { position_ = position; };
+
 	//Intensity
 	const float& GetIntensity() const { return intensity_; };
 	void SetIntensity(const float& intensity) { intensity_ = intensity; };
+
+	//cosAngle
+	const float& GetCosAngle() const { return cosAngle_; };
+	void SetCosAngle(const float& cosAngle) { cosAngle_ = cosAngle; };
+
+	//cosFalloffStart
+	const float& GetCosFalloffStart() const { return cosFalloffStart_; };
+	void SetCosFalloffStart(const float& cosFalloffStart) { cosFalloffStart_ = cosFalloffStart; };
 
 private:
 	DirectXCore* dxCore_ = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> lightingResource_ = nullptr;
 
-	int32_t enableLighting_ = true;
+	int32_t enableLighting_ = false;
 
 	LightingType lightingType_ = LightingType::HalfLambert;
 
@@ -69,7 +96,19 @@ private:
 
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 
-	Vector3 direction_ = { -1.0f,-5.5f,0.67f };
+	Vector3 direction_ = Normalize({ -1.0f,-1.0f,0.0f });
 
-	float intensity_ = 1.0f;
+	float distance_ = 7.0f;
+
+	Vector3 position_ = { 2.0f,1.25f,0.0f };
+
+	float intensity_ = 4.0f;
+
+	float decay_ = 2.0f;
+
+	float cosAngle_ = std::cos(std::numbers::pi_v<float> / 3.0f);
+
+	float cosFalloffStart_ = 1.0f;
 };
+
+

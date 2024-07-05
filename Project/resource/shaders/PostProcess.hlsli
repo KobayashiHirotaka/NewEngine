@@ -7,6 +7,7 @@ struct VertexShaderOutput
 struct Bloom
 {
     bool enable;
+    float intensity;
 };
 
 struct Vignette
@@ -28,5 +29,16 @@ struct BoxFilter
 struct GaussianFilter
 {
     bool enable;
+};
+
+struct LuminanceBasedOutline
+{
+    bool enable;
+};
+
+struct DepthBasedOutline
+{
+    bool enable;
+    float32_t4x4 projectionInverse;
 };
 

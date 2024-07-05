@@ -22,7 +22,7 @@ protected:
 	Vector3 translation_;
 
 	Vector3 rotation_;
-	
+
 	Vector3 scale_;
 
 	Vector3 velocity_;
@@ -34,6 +34,6 @@ protected:
 	float currentTime_ = 0.0f;
 
 	bool isDead_ = false;
-	
+
 	float alpha_ = 0.0f;
 };

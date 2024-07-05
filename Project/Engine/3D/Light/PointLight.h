@@ -4,10 +4,10 @@
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/Light/Types.h"
 
-class Light
+class PointLight
 {
 public:
-	struct ConstBuffDataLight
+	struct ConstBuffDataPointLight
 	{
 		int32_t enableLighting;
 
@@ -22,6 +22,12 @@ public:
 		Vector3 direction;
 
 		float intensity;
+
+		float radius;
+
+		float decay;
+
+		/*float padding[2];*/
 	};
 
 	void Initialize();
@@ -61,7 +67,7 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> lightingResource_ = nullptr;
 
-	int32_t enableLighting_ = true;
+	int32_t enableLighting_ = false;
 
 	LightingType lightingType_ = LightingType::HalfLambert;
 
@@ -69,7 +75,10 @@ private:
 
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 
-	Vector3 direction_ = { -1.0f,-5.5f,0.67f };
+	Vector3 direction_ = { 0.0f,2.0f,0.0f };
 
 	float intensity_ = 1.0f;
+
+	float radius_ = 4.0f;
+	float decay_ = 1.0f;
 };

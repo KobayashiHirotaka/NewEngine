@@ -7,6 +7,8 @@
 #include "Engine/3D/Mesh/Mesh.h"
 #include "Engine/3D/Model/Material.h"
 #include "Engine/3D/Light/Light.h"
+#include "Engine/3D/Light/PointLight.h"
+#include "Engine/3D/Light/SpotLight.h"
 #include <cassert>
 #include <dxcapi.h>
 #include <fstream>
@@ -30,7 +32,9 @@ enum class RootParameterIndex
 	ViewProjection,
 	Texture,
 	Light,
-	Skinning
+	PointLight,
+	SpotLight,
+	Skinning,
 };
 
 struct VertexInfluence
@@ -57,7 +61,7 @@ struct SkinCluster
 	D3D12_GPU_DESCRIPTOR_HANDLE paletteSrvHandle;
 };
 
-class Model 
+class Model
 {
 public:
 	static void StaticInitialize();
@@ -85,6 +89,10 @@ public:
 	Material* GetMaterial() { return material_.get(); };
 
 	Light* GetLight() { return light_.get(); };
+
+	PointLight* GetPointLight() { return pointLight_.get(); };
+
+	SpotLight* GetSpotLight() { return spotLight_.get(); };
 
 	float GetAnimationTime() { return animationTime_; };
 
@@ -118,7 +126,7 @@ private:
 
 	int32_t CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints);
 
-	SkinCluster CreateSkinCluster(const Skeleton& skeleton,const ModelData& modelData);
+	SkinCluster CreateSkinCluster(const Skeleton& skeleton, const ModelData& modelData);
 
 	void CreateBoneVertexBuffer();
 
@@ -140,7 +148,7 @@ private:
 	static Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_;
 	static Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_;
 	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_;
-	
+
 	static Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
 
 	static Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_;
@@ -148,11 +156,15 @@ private:
 	static std::list<ModelData> modelDatas_;
 
 	std::unique_ptr<Mesh> mesh_ = nullptr;
-	
+
 	std::unique_ptr<Material> material_ = nullptr;
 
 	std::unique_ptr<Light>light_;
-	
+
+	std::unique_ptr<PointLight>pointLight_;
+
+	std::unique_ptr<SpotLight>spotLight_;
+
 	uint32_t textureHandle_;
 
 	VertexData* vertexData_;

@@ -46,13 +46,13 @@ Skinned Skinning(VertexShaderInput input)
     skinned.position += mul(input.position, gMatrixPalette[input.index.y].skeletonSpaceMatrix) * input.weight.y;
     skinned.position += mul(input.position, gMatrixPalette[input.index.z].skeletonSpaceMatrix) * input.weight.z;
     skinned.position += mul(input.position, gMatrixPalette[input.index.w].skeletonSpaceMatrix) * input.weight.w;
-    skinned.position.w = 1.0f; 
+    skinned.position.w = 1.0f;
     
     skinned.normal = mul(input.normal, (float32_t3x3) gMatrixPalette[input.index.x].skeletonSpaceInverseTransposeMatrix) * input.weight.x;
     skinned.normal += mul(input.normal, (float32_t3x3) gMatrixPalette[input.index.y].skeletonSpaceInverseTransposeMatrix) * input.weight.y;
     skinned.normal += mul(input.normal, (float32_t3x3) gMatrixPalette[input.index.z].skeletonSpaceInverseTransposeMatrix) * input.weight.z;
     skinned.normal += mul(input.normal, (float32_t3x3) gMatrixPalette[input.index.w].skeletonSpaceInverseTransposeMatrix) * input.weight.w;
-    skinned.normal = normalize(skinned.normal); 
+    skinned.normal = normalize(skinned.normal);
     
     return skinned;
 }
@@ -60,7 +60,7 @@ Skinned Skinning(VertexShaderInput input)
 VertexShaderOutput main(VertexShaderInput input)
 {
     VertexShaderOutput output;
-    Skinned skinned = Skinning(input); 
+    Skinned skinned = Skinning(input);
     
     if (input.weight.x == 0.0f && input.weight.y == 0.0f && input.weight.z == 0.0f && input.weight.w == 0.0f)
     {
@@ -68,6 +68,7 @@ VertexShaderOutput main(VertexShaderInput input)
         output.texcoord = input.texcoord;
         output.normal = normalize(mul(input.normal, (float32_t3x3) gWorldTransform.worldInverseTranspose));
         output.worldPosition = mul(input.position, gWorldTransform.world).xyz;
+        output.toEye = normalize(gCamera.worldPosition - mul(input.position, gWorldTransform.world).xyz);
     }
     else
     {
@@ -75,6 +76,7 @@ VertexShaderOutput main(VertexShaderInput input)
         output.texcoord = input.texcoord;
         output.normal = normalize(mul(skinned.normal, (float32_t3x3) gWorldTransform.worldInverseTranspose));
         output.worldPosition = mul(skinned.position, gWorldTransform.world).xyz;
+        output.toEye = normalize(gCamera.worldPosition - mul(input.position, gWorldTransform.world).xyz);
     }
     
     float z = (output.position.z - 0.1f) / (100.0f - 0.1f);
