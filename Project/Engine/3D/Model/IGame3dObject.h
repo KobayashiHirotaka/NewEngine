@@ -14,29 +14,28 @@ public:
 
 	virtual void Draw(const Camera& camera);
 
-	const Model* GetModel() const { return model_; };
+	//model
+	const Model* GetModel() const { return model_.get(); }
+	void SetModel(std::unique_ptr<Model> model) { model_ = std::move(model); }
 
-	void SetModel(Model* model) { model_ = model; };
-
-	void SetPosition(const Vector3& position) { worldTransform_.translation = position; };
-
-	void SetRotation(const Vector3& rotation) { worldTransform_.rotation = rotation; };
-
-	void SetScale(const Vector3& scale) { worldTransform_.scale = scale; };
-
+	//gameObjectManagerのsetter
 	void SetGameObjectManager(Game3dObjectManager* game3dObjectManager) { game3dObjectManager_ = game3dObjectManager; };
 
-	const std::string GetTag() { return tag_; };
+	//transformのsetter
+	void SetPosition(const Vector3& position) { worldTransform_.translation = position; };
+	void SetRotation(const Vector3& rotation) { worldTransform_.rotation = rotation; };
+	void SetScale(const Vector3& scale) { worldTransform_.scale = scale; };
 
+	//tag
+	const std::string GetTag() { return tag_; };
 	void SetTag(const std::string tag) { tag_ = tag; };
 
-private:
+protected:
 	Game3dObjectManager* game3dObjectManager_ = nullptr;
 
 	WorldTransform worldTransform_{};
 
-	Model* model_ = nullptr;
+	std::unique_ptr<Model> model_ = nullptr;
 
 	std::string tag_;
 };
-

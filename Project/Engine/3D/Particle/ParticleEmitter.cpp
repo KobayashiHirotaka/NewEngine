@@ -2,7 +2,7 @@
 
 void ParticleEmitter::Initialize()
 {
-    
+
 }
 
 void ParticleEmitter::Update()

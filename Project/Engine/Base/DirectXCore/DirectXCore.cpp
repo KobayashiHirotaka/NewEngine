@@ -1,15 +1,29 @@
 #include "DirectXCore.h"
+#include "Engine/Base/TextureManager/TextureManager.h"
 
 uint32_t DirectXCore::descriptorSizeRTV = 0;
 uint32_t DirectXCore::descriptorSizeDSV = 0;
+DirectXCore* DirectXCore::instance_ = nullptr;
 
 DirectXCore* DirectXCore::GetInstance()
 {
-	static DirectXCore instance;
-	return &instance;
+	if (instance_ == nullptr)
+	{
+		instance_ = new DirectXCore();
+	}
+	return instance_;
 }
 
-void DirectXCore::Initialize() 
+void DirectXCore::DeleteInstance()
+{
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
+}
+
+void DirectXCore::Initialize()
 {
 	InitializeFixFPS();
 
@@ -134,7 +148,7 @@ void DirectXCore::PostDraw()
 	assert(SUCCEEDED(hr));
 }
 
-void DirectXCore::SetBackBuffer() 
+void DirectXCore::SetBackBuffer()
 {
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
 
@@ -152,13 +166,13 @@ void DirectXCore::SetBackBuffer()
 	CreateScissorRect();
 }
 
-void DirectXCore::ClearDepthBuffer() 
+void DirectXCore::ClearDepthBuffer()
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
 
-Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> DirectXCore::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible) 
+Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> DirectXCore::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible)
 {
 	//ディスクリプタヒープの作成
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap = nullptr;
@@ -210,7 +224,7 @@ void DirectXCore::CreateDXGIDevice()
 
 #ifdef _DEBUG
 	Microsoft::WRL::ComPtr<ID3D12Debug1> debugController = nullptr;
-	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) 
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
 	{
 		//デバッグレイヤーを有効にする
 		debugController->EnableDebugLayer();
@@ -225,12 +239,12 @@ void DirectXCore::CreateDXGIDevice()
 	assert(SUCCEEDED(hr));
 
 	//アダプターを生成
-	for (UINT i = 0; dxgiFactory_->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&useAdapter_)) !=DXGI_ERROR_NOT_FOUND; ++i)
+	for (UINT i = 0; dxgiFactory_->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&useAdapter_)) != DXGI_ERROR_NOT_FOUND; ++i)
 	{
 		DXGI_ADAPTER_DESC3 adapterDesc{};
 		hr = useAdapter_->GetDesc3(&adapterDesc);
 		assert(SUCCEEDED(hr));
-		
+
 		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE))
 		{
 			//採用したアダプタの情報をログに出力
@@ -255,7 +269,7 @@ void DirectXCore::CreateDXGIDevice()
 	{
 		//採用したアダプターでデバイス作成
 		hr = D3D12CreateDevice(useAdapter_.Get(), featureLevels[i], IID_PPV_ARGS(&device_));
-		if (SUCCEEDED(hr)) 
+		if (SUCCEEDED(hr))
 		{
 			//生成できたのでログ出力を行ってループを抜ける
 			Log(std::format("FeatureLevel : {}\n", featureLevelStrings[i]));
@@ -270,7 +284,7 @@ void DirectXCore::CreateDXGIDevice()
 #ifdef _DEBUG
 	Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue = nullptr;
 
-	if (SUCCEEDED(device_->QueryInterface(IID_PPV_ARGS(&infoQueue)))) 
+	if (SUCCEEDED(device_->QueryInterface(IID_PPV_ARGS(&infoQueue))))
 	{
 		//やばいエラー時に止まる
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
@@ -341,10 +355,8 @@ void DirectXCore::CreateSwapChain()
 	assert(SUCCEEDED(hr));
 }
 
-void DirectXCore::CreateRTV() 
+void DirectXCore::CreateRTV()
 {
-
-
 	HRESULT hr = swapChain_->GetBuffer(0, IID_PPV_ARGS(&swapChainResources_[0]));
 
 	//リソースの取得ができないので起動できない
@@ -464,7 +476,7 @@ void DirectXCore::InitializeFixFPS()
 	reference_ = std::chrono::steady_clock::now();
 }
 
-void DirectXCore::UpdateFixFPS() 
+void DirectXCore::UpdateFixFPS()
 {
 	//1/60秒ぴったりの時間
 	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
@@ -479,7 +491,7 @@ void DirectXCore::UpdateFixFPS()
 	std::chrono::microseconds elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
 
 	//1/60(よりわずかに短い時間)経っていない場合
-	if (elapsed < kMinCheckTime) 
+	if (elapsed < kMinCheckTime)
 	{
 		//1/60秒経過するまで微小なスリープを繰り返す
 		while (std::chrono::steady_clock::now() - reference_ < kMinTime)

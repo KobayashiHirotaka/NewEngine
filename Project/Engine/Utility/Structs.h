@@ -33,7 +33,7 @@ struct Matrix4x4
 	float m[4][4];
 };
 
-struct Quaternion 
+struct Quaternion
 {
 	float x, y, z, w;
 };
@@ -68,7 +68,7 @@ struct JointWeightData
 //Keyframe構造体
 template <typename tValue>
 
-struct Keyframe 
+struct Keyframe
 {
 	float time;//キーフレームの時間(単位：秒)
 	tValue value;//キーフレームの値
@@ -80,7 +80,7 @@ using KeyframeQuaternion = Keyframe<Quaternion>;
 
 //KeyframeをNodeごとにまとめる
 template <typename tValue>
-struct AnimationCurve 
+struct AnimationCurve
 {
 	std::vector<Keyframe<tValue>> keyframes;
 };
@@ -92,7 +92,7 @@ struct NodeAnimation
 	AnimationCurve<Vector3> scale;
 };
 
-struct Animation 
+struct Animation
 {
 	float duration;//アニメーションの全体の長さ(単位：秒)
 

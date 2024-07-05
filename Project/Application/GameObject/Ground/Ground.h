@@ -4,22 +4,16 @@
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/3D/Model/IGame3dObject.h"
 
-class Skydome
+class Ground : public IGame3dObject
 {
 public:
-	void Initialize();
+	void Initialize()override;
 
-	void Update();
+	void Update()override;
 
-	void Draw(const Camera camera);
+	void Draw(const Camera& camera)override;
 
 	void ImGui();
 
 private:
-	//input
-	Input* input_ = nullptr;
-
-	std::unique_ptr<Model> model_;
-
-	WorldTransform worldTransform_;
 };

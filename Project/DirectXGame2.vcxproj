@@ -12,26 +12,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp" />
-    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyWeapon.cpp" />
-    <ClCompile Include="Application\GameObject\Character\ICharacter.cpp" />
     <ClCompile Include="Application\GameObject\Character\Player\Player.cpp" />
-    <ClCompile Include="Application\GameObject\Character\Player\PlayerWeapon.cpp" />
+    <ClCompile Include="Application\GameObject\Ground\Ground.cpp" />
     <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp" />
-    <ClCompile Include="Application\GameObject\TestObject\TestObject.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameLoseScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
-    <ClCompile Include="Application\Game\Scenes\GameStartScene.cpp" />
+    <ClCompile Include="Application\Game\Scenes\GameTitleScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameWinScene.cpp" />
-    <ClCompile Include="Application\Game\Scenes\Manager\SceneManager.cpp" />
+    <ClCompile Include="Application\Game\Scenes\Manager\GameManager.cpp" />
+    <ClCompile Include="Application\Game\Scenes\SceneFactory.cpp" />
     <ClCompile Include="Engine\2D\Sprite\Sprite.cpp" />
     <ClCompile Include="Engine\3D\Camera\Camera.cpp" />
+    <ClCompile Include="Engine\3D\Camera\DebugCamera.cpp" />
     <ClCompile Include="Engine\3D\Light\Light.cpp" />
+    <ClCompile Include="Engine\3D\Light\PointLight.cpp" />
+    <ClCompile Include="Engine\3D\Light\SpotLight.cpp" />
     <ClCompile Include="Engine\3D\Mesh\Mesh.cpp" />
     <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp" />
     <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp" />
     <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp" />
     <ClCompile Include="Engine\3D\Model\Material.cpp" />
     <ClCompile Include="Engine\3D\Model\Model.cpp" />
+    <ClCompile Include="Engine\3D\Model\ModelManager.cpp" />
     <ClCompile Include="Engine\3D\Particle\BaseParticle.cpp" />
     <ClCompile Include="Engine\3D\Particle\EmitterBuilder.cpp" />
     <ClCompile Include="Engine\3D\Particle\Particle.cpp" />
@@ -68,8 +70,8 @@
     <ClCompile Include="Engine\externals\imgui\imgui_widgets.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MinSpace</Optimization>
     </ClCompile>
-    <ClCompile Include="Engine\Framework\Game.cpp" />
-    <ClCompile Include="Engine\Framework\GameManager.cpp" />
+    <ClCompile Include="Engine\Framework\EngineCore.cpp" />
+    <ClCompile Include="Engine\Framework\SceneManager.cpp" />
     <ClCompile Include="Engine\Utility\Collision\CollisionManager.cpp" />
     <ClCompile Include="Engine\Utility\ConvertString\ConvertString.cpp" />
     <ClCompile Include="Engine\Utility\CSV\LoadCSV.cpp" />
@@ -115,18 +117,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h" />
-    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyWeapon.h" />
-    <ClInclude Include="Application\GameObject\Character\ICharacter.h" />
     <ClInclude Include="Application\GameObject\Character\Player\Player.h" />
-    <ClInclude Include="Application\GameObject\Character\Player\PlayerWeapon.h" />
+    <ClInclude Include="Application\GameObject\Ground\Ground.h" />
     <ClInclude Include="Application\GameObject\Skydome\Skydome.h" />
-    <ClInclude Include="Application\GameObject\TestObject\TestObject.h" />
     <ClInclude Include="Application\Game\Scenes\GameLoseScene.h" />
     <ClInclude Include="Application\Game\Scenes\GamePlayScene.h" />
-    <ClInclude Include="Application\Game\Scenes\GameStartScene.h" />
+    <ClInclude Include="Application\Game\Scenes\GameTitleScene.h" />
     <ClInclude Include="Application\Game\Scenes\GameWinScene.h" />
     <ClInclude Include="Application\Game\Scenes\IScene.h" />
-    <ClInclude Include="Application\Game\Scenes\Manager\SceneManager.h" />
+    <ClInclude Include="Application\Game\Scenes\Manager\GameManager.h" />
+    <ClInclude Include="Application\Game\Scenes\SceneFactory.h" />
     <ClInclude Include="Engine\2D\Sprite\Sprite.h" />
     <ClInclude Include="Engine\2D\Sprite\UI.h" />
     <ClInclude Include="Engine\3D\Camera\Camera.h" />
@@ -166,8 +166,9 @@
     <ClInclude Include="Engine\externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="Engine\externals\imgui\imstb_textedit.h" />
     <ClInclude Include="Engine\externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="Engine\Framework\Game.h" />
-    <ClInclude Include="Engine\Framework\GameManager.h" />
+    <ClInclude Include="Engine\Framework\AbstractSceneFactory.h" />
+    <ClInclude Include="Engine\Framework\EngineCore.h" />
+    <ClInclude Include="Engine\Framework\SceneManager.h" />
     <ClInclude Include="Engine\Utility\Collision\Collider.h" />
     <ClInclude Include="Engine\Utility\Collision\CollisionConfig.h" />
     <ClInclude Include="Engine\Utility\Collision\CollisionManager.h" />
@@ -177,7 +178,6 @@
     <ClInclude Include="Engine\Utility\LevelLoader\LevelLoader.h" />
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
     <ClInclude Include="Engine\Utility\Structs.h" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\BoneVisualization.PS.hlsl">

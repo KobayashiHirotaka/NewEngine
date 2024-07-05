@@ -1,6 +1,5 @@
 #include "GameWinScene.h"
-#include "Application/Game/Scenes/Manager/SceneManager.h"
-#include "GameStartScene.h"
+#include "Engine/Framework/SceneManager.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>
 
@@ -8,24 +7,40 @@ GameWinScene::GameWinScene() {};
 
 GameWinScene::~GameWinScene() {};
 
-void GameWinScene::Initialize(SceneManager* sceneManager)
+void GameWinScene::Initialize()
 {
+	//textureManagerのinstance
 	textureManager_ = TextureManager::GetInstance();
 
+	//modelManagerのinstance
+	modelManager_ = ModelManager::GetInstance();
+
+	//inputのinstance
 	input_ = Input::GetInstance();
 
+	//audioのinstance
 	audio_ = Audio::GetInstance();
 
+	//postProcessのinstance
+	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+
+	//postEffectの切り替え
+	PostProcess::GetInstance()->SetIsBloomActive(true);
+	PostProcess::GetInstance()->SetIsVignetteActive(true);
+	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
+
+	//modelの読み込み
+	//modelManager_->LoadModel("resource/skydome", "skydome.obj");
+
+	//skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
-	PostProcess::GetInstance()->SetIsPostProcessActive(true);
-	PostProcess::GetInstance()->SetIsBloomActive(true);
-	//PostProcess::GetInstance()->SetIsVignetteActive(true);
+	//debugCameraの初期化
+	debugCamera_.Initialize();
 
-	camera_.UpdateMatrix();
-
-	winSceneTextureHandle_ = TextureManager::LoadTexture("resource/WinScene.png");
+	winSceneTextureHandle_ = TextureManager::LoadTexture("resource/images/WinScene.png");
 	winSceneSprite_.reset(Sprite::Create(winSceneTextureHandle_, { 0.0f,0.0f }));
 
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
@@ -35,10 +50,12 @@ void GameWinScene::Initialize(SceneManager* sceneManager)
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 };
 
-void GameWinScene::Update(SceneManager* sceneManager)
+void GameWinScene::Update()
 {
+	//skydomeの更新
 	skydome_->Update();
 
+	//シーン切り替え
 	if (input_->GetJoystickState())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
@@ -51,6 +68,13 @@ void GameWinScene::Update(SceneManager* sceneManager)
 		}
 	}
 
+	if (input_->PushKey(DIK_SPACE))
+	{
+		sceneManager_->ChangeScene("GameTitleScene");
+		return;
+	}
+
+	//トランジション
 	if (!isTransitionEnd_)
 	{
 		transitionTimer_ += 1.0f / kTransitionTime;
@@ -72,22 +96,53 @@ void GameWinScene::Update(SceneManager* sceneManager)
 
 		if (transitionColor_.w >= 1.0f)
 		{
-			sceneManager->ChangeScene(new GameStartScene);
+			sceneManager_->ChangeScene("GameTitleScene");
 		}
 	}
 
-	camera_.UpdateMatrix();
+	//camera、debugCameraの処理
+	debugCamera_.Update();
+
+	if (input_->PushKey(DIK_K))
+	{
+		isDebugCamera_ = true;
+	}
+	else if (input_->PushKey(DIK_L))
+	{
+		isDebugCamera_ = false;
+	}
+
+	if (isDebugCamera_)
+	{
+		camera_.matView_ = debugCamera_.GetCamera().matView_;
+		camera_.matProjection_ = debugCamera_.GetCamera().matProjection_;
+		camera_.TransferMatrix();
+	}
+	else
+	{
+		camera_.UpdateMatrix();
+	}
+
+	//imGui
+	ImGui::Begin("WinScene");
+	ImGui::Text("Abutton or SpaceKey : TitleScene");
+	ImGui::End();
 };
 
-void GameWinScene::Draw(SceneManager* sceneManager)
+void GameWinScene::Draw()
 {
 	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
 
+	//skydomeの描画
 	skydome_->Draw(camera_);
 
 	Model::PostDraw();
+
+	ParticleModel::PreDraw();
+
+	ParticleModel::PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
@@ -103,3 +158,8 @@ void GameWinScene::Draw(SceneManager* sceneManager)
 
 	Sprite::PostDraw();
 };
+
+void GameWinScene::Finalize()
+{
+
+}

@@ -11,7 +11,7 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> ParticleModel::rootSignature_ = null
 Microsoft::WRL::ComPtr<ID3D12PipelineState> ParticleModel::graphicsPipelineState_ = nullptr;
 std::list<ParticleModel::ModelData> ParticleModel::modelDatas_{};
 
-void ParticleModel::StaticInitialize() 
+void ParticleModel::StaticInitialize()
 {
 	dxCore_ = DirectXCore::GetInstance();
 
@@ -283,7 +283,7 @@ void ParticleModel::CreatePSO()
 	//blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;//加算
 	//blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;//ソースのアルファ値
 	//blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;//1.0f-ソースのアルファ値
-	
+
 	//加算合成
 	blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;//加算
 	blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;//ソースの値を100%使う
@@ -378,7 +378,7 @@ void ParticleModel::CreateMaterialResource()
 	materialResource_ = dxCore_->CreateBufferResource(sizeof(ConstBuffDataMaterial));
 
 	ConstBuffDataMaterial* materialData = nullptr;
-	
+
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 
 	materialData->color = Vector4{ 1.0f,1.0f,1.0f,1.0f };
@@ -425,7 +425,7 @@ ParticleModel::ModelData ParticleModel::LoadObjFile(const std::string& directory
 			normal.z *= -1.0f;
 			normals.push_back(normal);
 		}
-		else if (identifier == "f") 
+		else if (identifier == "f")
 		{
 			VertexData triangle[3];
 			for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex)
@@ -441,14 +441,14 @@ ParticleModel::ModelData ParticleModel::LoadObjFile(const std::string& directory
 					std::getline(v, index, '/');
 					elementIndices[element] = std::stoi(index);
 				}
-				
+
 				Vector4 position = positions[elementIndices[0] - 1];
 				Vector2 texcoord = texcoords[elementIndices[1] - 1];
 				Vector3 normal = normals[elementIndices[2] - 1];
 				triangle[faceVertex] = { position,texcoord,normal };
 			}
 
-			
+
 			modelData.vertices.push_back(triangle[2]);
 			modelData.vertices.push_back(triangle[1]);
 			modelData.vertices.push_back(triangle[0]);
@@ -471,7 +471,7 @@ ParticleModel::MaterialData ParticleModel::LoadMaterialTemplateFile(const std::s
 	std::ifstream file(directoryPath + "/" + filename);
 	assert(file.is_open());
 
-	while (std::getline(file, line)) 
+	while (std::getline(file, line))
 	{
 		std::string identifier;
 		std::istringstream s(line);

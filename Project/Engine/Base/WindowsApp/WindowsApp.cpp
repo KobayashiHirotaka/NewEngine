@@ -1,15 +1,29 @@
 #include "WindowsApp.h"
 #pragma comment(lib,"winmm.lib")
 
+WindowsApp* WindowsApp::instance_ = nullptr;
+
 WindowsApp* WindowsApp::GetInstance()
 {
-	static WindowsApp instance;
-	return &instance;
+	if (instance_ == nullptr)
+	{
+		instance_ = new WindowsApp();
+	}
+	return instance_;
+}
+
+void WindowsApp::DeleteInstance()
+{
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
 }
 
 LRESULT CALLBACK WindowsApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) 
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam))
 	{
 		return true;
 	}
@@ -72,7 +86,7 @@ void WindowsApp::CreateGameWindow(const wchar_t* title, int32_t clientWidth, int
 	ShowWindow(hwnd_, SW_SHOW);
 }
 
-void WindowsApp::CloseGameWindow() 
+void WindowsApp::CloseGameWindow()
 {
 	//ゲームウィンドウを閉じる
 	CloseWindow(hwnd_);
@@ -86,7 +100,7 @@ bool WindowsApp::ProcessMessage()
 	MSG msg{};
 
 	//Windowにメッセージが来てたら最優先で処理させる
-	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) 
+	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);

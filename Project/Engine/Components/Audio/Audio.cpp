@@ -205,7 +205,7 @@ void Audio::SoundPlayWave(uint32_t audioHandle, bool roopFlag, float volume)
 	buffer.AudioBytes = soundDatasWav_[audioHandle].bufferSize;
 	buffer.Flags = XAUDIO2_END_OF_STREAM;
 
-	if (roopFlag) 
+	if (roopFlag)
 	{
 		buffer.LoopCount = XAUDIO2_LOOP_INFINITE;
 	}
@@ -234,7 +234,7 @@ void Audio::SoundPlayMP3(uint32_t audioHandle, bool roopFlag, float volume)
 	buffer.AudioBytes = UINT(soundDatas_[audioHandle].bufferSize);
 	buffer.Flags = XAUDIO2_END_OF_STREAM;
 
-	if (roopFlag) 
+	if (roopFlag)
 	{
 		buffer.LoopCount = XAUDIO2_LOOP_INFINITE;
 	}
@@ -259,13 +259,13 @@ void Audio::SoundUnloadMP3(SoundDataMP3* soundData)
 	soundData->wfex = {};
 }
 
-void Audio::StopAudio(uint32_t audioHandle) 
+void Audio::StopAudio(uint32_t audioHandle)
 {
 	HRESULT hr;
 
 	for (const Voice* voice : sourceVoices_)
 	{
-		if (voice->handle == audioHandle) 
+		if (voice->handle == audioHandle)
 		{
 			hr = voice->sourceVoice->Stop();
 		}
@@ -285,7 +285,7 @@ void Audio::Release()
 
 	xAudio2_.Reset();
 
-	for (int i = 0; i < soundDatasWav_.size(); i++) 
+	for (int i = 0; i < soundDatasWav_.size(); i++)
 	{
 		SoundUnloadWave(&soundDatasWav_[i]);
 	}

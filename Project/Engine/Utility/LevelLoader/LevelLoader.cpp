@@ -4,11 +4,24 @@ const std::string LevelLoader::kDirectoryPath = "resource/Level/";
 
 const std::string LevelLoader::kExtension = ".json";
 
+LevelLoader* LevelLoader::instance_ = nullptr;
+
 LevelLoader* LevelLoader::GetInstance()
 {
-	static LevelLoader instance;
+	if (instance_ == nullptr)
+	{
+		instance_ = new LevelLoader();
+	}
+	return instance_;
+}
 
-	return &instance;
+void LevelLoader::DeleteInstance()
+{
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
 }
 
 void LevelLoader::LoadLevel(const std::string fileName)
@@ -48,17 +61,18 @@ void LevelLoader::LoadLevel(const std::string fileName)
 	//"objects"の全objectを走査
 	for (json& object : deserialized["objects"])
 	{
-		LoadObjectFromJson(levelData,object);
+		LoadObjectFromJson(levelData, object);
 	}
 
-	Create(levelData);
+	CreateObjectsFromLevelData(levelData);
 
+	//levelDataの保存
 	levelDatas_[fileName] = std::unique_ptr<LevelData>(levelData);
 }
 
 void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 {
-	
+
 	assert(object.contains("type"));
 
 	//種別を取得
@@ -132,7 +146,7 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 	}
 }
 
-void LevelLoader::Create(const LevelData* levelData)
+void LevelLoader::CreateObjectsFromLevelData(const LevelData* levelData)
 {
 	std::string directoryPath = "resource/models/";
 	std::string fileName;
@@ -150,13 +164,14 @@ void LevelLoader::Create(const LevelData* levelData)
 		}
 
 		//ファイル名から登録済みモデルを検索
-		Model* model = Model::CreateFromOBJ(directoryPath, fileName);
+		std::unique_ptr<Model> model;
+		model.reset(Model::CreateFromOBJ(directoryPath, fileName));
 
 		//モデルを指定してobjectを生成
 		IGame3dObject* newObject = Game3dObjectManager::CreateGameObject(objectData.objectName);
 
 		//モデルをセット
-		newObject->SetModel(model);
+		newObject->SetModel(std::move(model));
 
 		//座標
 		newObject->SetPosition(objectData.translation);

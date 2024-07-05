@@ -11,7 +11,7 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> Sprite::rootSignature_ = nullptr;
 std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, Sprite::kCountOfBlendMode> Sprite::graphicsPipelineState_{};
 Matrix4x4 Sprite::matProjection_{};
 
-void Sprite::StaticInitialize() 
+void Sprite::StaticInitialize()
 {
 	dxCore_ = DirectXCore::GetInstance();
 
@@ -101,7 +101,7 @@ void Sprite::Release()
 	}
 }
 
-Sprite* Sprite::Create(uint32_t textureHandle, Vector2 position) 
+Sprite* Sprite::Create(uint32_t textureHandle, Vector2 position)
 {
 	//スプライトを作成
 	Sprite* sprite = new Sprite();
@@ -116,7 +116,7 @@ void Sprite::PreDraw(BlendMode blendMode)
 	commandList_->SetPipelineState(graphicsPipelineState_[blendMode].Get());
 }
 
-void Sprite::PostDraw() 
+void Sprite::PostDraw()
 {
 
 }
@@ -130,7 +130,7 @@ void Sprite::ImGui(const char* Title)
 	ImGui::End();
 }
 
-void Sprite::InitializeDXC() 
+void Sprite::InitializeDXC()
 {
 	//dxccompilerを初期化
 	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
@@ -451,7 +451,7 @@ void Sprite::CreateVertexBuffer()
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 }
 
-void Sprite::CreateMaterialResource() 
+void Sprite::CreateMaterialResource()
 {
 	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
 	materialResource_ = dxCore_->CreateBufferResource(sizeof(MaterialData));
@@ -535,7 +535,7 @@ void Sprite::UpdateMaterial()
 	materialData->uvTransform = uvTransformMatrix;
 }
 
-void Sprite::UpdateMatrix() 
+void Sprite::UpdateMatrix()
 {
 	//ワールド行列の作成
 	Matrix4x4 worldMatrix = MakeAffineMatrix(Vector3(size_.x, size_.y, 1.0f), Vector3(0.0f, 0.0f, rotation_), Vector3(position_.x, position_.y, 0.0f));

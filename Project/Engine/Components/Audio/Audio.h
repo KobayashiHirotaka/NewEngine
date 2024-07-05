@@ -70,7 +70,7 @@ struct Voice
 };
 
 
-class Audio 
+class Audio
 {
 public:
 	static const int kMaxSoundData = 256;

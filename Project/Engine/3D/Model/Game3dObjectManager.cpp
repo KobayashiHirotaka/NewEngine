@@ -1,17 +1,31 @@
 #include "Game3dObjectManager.h"
 
+Game3dObjectManager* Game3dObjectManager::instance_ = nullptr;
+
 Game3dObjectManager* Game3dObjectManager::GetInstance()
 {
-	static Game3dObjectManager instance;
-	return &instance;
+	if (instance_ == nullptr)
+	{
+		instance_ = new Game3dObjectManager();
+	}
+	return instance_;
 }
 
-void Game3dObjectManager::Initialize() 
+void Game3dObjectManager::DeleteInstance()
+{
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
+}
+
+void Game3dObjectManager::Initialize()
 {
 	gameObjects_.clear();
 }
 
-void Game3dObjectManager::Update() 
+void Game3dObjectManager::Update()
 {
 	for (std::unique_ptr<IGame3dObject>& gameObject : gameObjects_)
 	{
@@ -55,7 +69,6 @@ Camera* Game3dObjectManager::CreateCameraObjectInternal(const std::string& objec
 	cameraObjects_.push_back(std::unique_ptr<Camera>(cameraObject));
 	return cameraObject;
 }
-
 
 
 

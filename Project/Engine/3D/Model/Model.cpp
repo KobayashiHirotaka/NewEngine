@@ -28,7 +28,6 @@ void Model::StaticInitialize()
 	CreatePSO();
 
 	CreateBonePSO();
-
 }
 
 void Model::Update()
@@ -58,15 +57,13 @@ void Model::Update()
 
 void Model::Draw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData)
 {
-	//ModelData modelData;
-
 	if (isKeyframeAnimation_)
 	{
 		//animationTime_ += 1.0f / 60.0f;//時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
 		//animationTime_ = std::fmod(animationTime_, animation_.duration);//最後までいったら最初からリピート再生。リピートしなくても別にいい
 		NodeAnimation& rootNodeAnimation = animation_[animationData].nodeAnimations[modelData_.rootNode.name];
 
-		Vector3 translate{ 0.0f,0.0f,0.0f};
+		Vector3 translate{ 0.0f,0.0f,0.0f };
 		Quaternion rotate{ 0.0f,0.0f,0.0f,1.0f };
 		Vector3 scale = { 1.0f,1.0f,1.0f };
 
@@ -102,6 +99,12 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera, const uin
 	//DirectionalLightの更新
 	light_->Update();
 
+	//PointLightの更新
+	pointLight_->Update();
+
+	//SpotLightの更新
+	spotLight_->Update();
+
 	//頂点データを設定
 	mesh_->SetGraphicsCommand(skinCluster_.influenceBufferView);
 
@@ -123,6 +126,12 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera, const uin
 	//Lightを設定
 	light_->SetGraphicsCommand(UINT(RootParameterIndex::Light));
 
+	//PointLightを設定
+	pointLight_->SetGraphicsCommand(UINT(RootParameterIndex::PointLight));
+
+	//SpotLightを設定
+	spotLight_->SetGraphicsCommand(UINT(RootParameterIndex::SpotLight));
+
 	textureManager_->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Skinning), skinningTextureHandle_);
 
 	//描画
@@ -131,10 +140,13 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera, const uin
 
 void Model::BoneDraw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData)
 {
+	/*worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
+	worldTransform.TransferMatrix();*/
+
 	UpdateBoneVertices(skeleton_, skeleton_.root, boneVertices_);
 
 	dxCore_->GetCommandList()->IASetVertexBuffers(0, 1, &boneVertexBufferView_);
-	
+
 	dxCore_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	//WorldTransform用のCBufferの場所を設定
@@ -142,12 +154,12 @@ void Model::BoneDraw(WorldTransform& worldTransform, const Camera& camera, const
 
 	//ViewProjection用のCBufferの場所を設定
 	commandList_->SetGraphicsRootConstantBufferView(UINT(1), camera.constBuff_->GetGPUVirtualAddress());
-	
+
 	//描画
 	dxCore_->GetCommandList()->DrawInstanced(UINT(boneVertices_.size()), 1, 0, 0);
 }
 
-void Model::Release() 
+void Model::Release()
 {
 	dxcUtils_.Reset();
 	dxcCompiler_.Reset();
@@ -168,8 +180,6 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 
 	//モデルデータを読み込む
 	ModelData modelData;
-
-	//animation_ = animation;
 
 	for (ModelData existingModelData : modelDatas_)
 	{
@@ -196,7 +206,7 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 
 	model->skeleton_ = model->CreateSkelton(modelData.rootNode);
 
-	model->skinCluster_ = model->CreateSkinCluster(model->skeleton_,modelData);
+	model->skinCluster_ = model->CreateSkinCluster(model->skeleton_, modelData);
 
 	if (!modelData.skinClusterData.empty())
 	{
@@ -219,6 +229,14 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 	model->light_ = std::make_unique<Light>();
 	model->light_->Initialize();
 
+	//PointLightの作成
+	model->pointLight_ = std::make_unique<PointLight>();
+	model->pointLight_->Initialize();
+
+	//SpotLightの作成
+	model->spotLight_ = std::make_unique<SpotLight>();
+	model->spotLight_->Initialize();
+
 	return model;
 }
 
@@ -228,7 +246,7 @@ void Model::PreDraw()
 	commandList_->SetPipelineState(graphicsPipelineState_.Get());
 }
 
-void Model::PostDraw() 
+void Model::PostDraw()
 {
 
 }
@@ -339,7 +357,7 @@ void Model::CreatePSO()
 	skinningDescriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
 
 	//RootParameter作成。複数設定できるので配列。今回は結果一つだけなので長さ1の配列
-	D3D12_ROOT_PARAMETER rootParameters[6] = {};
+	D3D12_ROOT_PARAMETER rootParameters[8] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVで使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	rootParameters[0].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
@@ -356,10 +374,17 @@ void Model::CreatePSO()
 	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	rootParameters[4].Descriptor.ShaderRegister = 1;//レジスタ番号１を使う
-	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
-	rootParameters[5].DescriptorTable.pDescriptorRanges = skinningDescriptorRange;//Tableの中身の配列を指定
-	rootParameters[5].DescriptorTable.NumDescriptorRanges = _countof(skinningDescriptorRange);//Tableで利用する数
-	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
+	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
+	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
+	rootParameters[5].Descriptor.ShaderRegister = 2;//レジスタ番号2を使う
+	rootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
+	rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
+	rootParameters[6].Descriptor.ShaderRegister = 3;//レジスタ番号3を使う
+	rootParameters[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
+	rootParameters[7].DescriptorTable.pDescriptorRanges = skinningDescriptorRange;//Tableの中身の配列を指定
+	rootParameters[7].DescriptorTable.NumDescriptorRanges = _countof(skinningDescriptorRange);//Tableで利用する数
+	rootParameters[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
+
 	descriptionRootSignature.pParameters = rootParameters;//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);//配列の長さ
 
@@ -422,7 +447,6 @@ void Model::CreatePSO()
 	inputElementDescs[4].Format = DXGI_FORMAT_R32G32B32A32_SINT;
 	inputElementDescs[4].InputSlot = 1;
 	inputElementDescs[4].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
@@ -518,7 +542,7 @@ void Model::CreateBonePSO()
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; //CBVを使う
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; //VertexShaderで使う
 	rootParameters[1].Descriptor.ShaderRegister = 1; //レジスタ番号1を使う
-	
+
 	descriptionRootSignature.pParameters = rootParameters;//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);//配列の長さ
 
@@ -687,12 +711,12 @@ ModelData Model::LoadModelFile(const std::string& directoryPath, const std::stri
 			aiVector3D scale, translate;
 			aiQuaternion rotate;
 			bindPoseMatrixAssimp.Decompose(scale, rotate, translate);
-			
+
 			Matrix4x4 bindPoseMatrix = MakeAffineMatrix({ scale.x,scale.y,scale.z },
-				{ rotate.x,-rotate.y,-rotate.z,rotate.w },{ -translate.x,translate.y,translate.z });
-			
+				{ rotate.x,-rotate.y,-rotate.z,rotate.w }, { -translate.x,translate.y,translate.z });
+
 			jointWeightData.inverseBindPoseMatrix = Inverse(bindPoseMatrix);
-			
+
 			for (uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex)
 			{
 				jointWeightData.vertexWeights.push_back({ bone->mWeights[weightIndex].mWeight,bone->mWeights[weightIndex].mVertexId });
@@ -715,8 +739,7 @@ ModelData Model::LoadModelFile(const std::string& directoryPath, const std::stri
 	return modelData;
 }
 
-
-MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) 
+MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
 {
 	MaterialData materialData;
 	std::string line;
@@ -729,7 +752,7 @@ MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, c
 		std::istringstream s(line);
 		s >> identifier;
 
-		if (identifier == "map_Kd") 
+		if (identifier == "map_Kd")
 		{
 			std::string textureFilename;
 			s >> textureFilename;
@@ -749,7 +772,7 @@ std::vector<Animation> Model::LoadAnimationFile(const std::string& directoryPath
 
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
 
-	if(scene->mNumAnimations != 0)
+	if (scene->mNumAnimations != 0)
 	{
 		isKeyframeAnimation_ = true;
 
@@ -881,7 +904,7 @@ Quaternion Model::CalculateValue(const std::vector<KeyframeQuaternion>& keyframe
 Skeleton Model::CreateSkelton(const Node& rootNode)
 {
 	Skeleton skeleton;
-	skeleton.root = CreateJoint(rootNode,{},skeleton.joints);
+	skeleton.root = CreateJoint(rootNode, {}, skeleton.joints);
 
 	for (const Joint& joint : skeleton.joints)
 	{
@@ -916,7 +939,7 @@ int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& paren
 void Model::ApplyAnimation(const uint32_t animationData)
 {
 	//animationTime_ += 1.0f / 60.0f;
-    //animationTime_ = std::fmod(animationTime_, animation_.duration);
+	//animationTime_ = std::fmod(animationTime_, animation_.duration);
 
 	if (animation_.size() != 0)
 	{
@@ -926,47 +949,38 @@ void Model::ApplyAnimation(const uint32_t animationData)
 			{
 				const NodeAnimation& rootNodeAnimation = (*it).second;
 
+				//Translation
 				if (!rootNodeAnimation.translate.keyframes.empty())
 				{
 					joint.translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
 				}
-				else
-				{
-					joint.translate = { 0.0f,0.0f,0.0f };
-				}
 
+				//Rotation
 				if (!rootNodeAnimation.rotate.keyframes.empty())
 				{
 					joint.rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
 				}
-				else
-				{
-					joint.rotate = { 0.0f,0.0f,0.0f,1.0f };
-				}
 
+				//Scale
 				if (!rootNodeAnimation.scale.keyframes.empty())
 				{
 					joint.scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
-				}
-				else
-				{
-					joint.scale = { 1.0f,1.0f,1.0f };
 				}
 			}
 		}
 	}
 
-	
+
 }
 
-SkinCluster Model::CreateSkinCluster(const Skeleton& skeleton,const ModelData& modelData)
+SkinCluster Model::CreateSkinCluster(const Skeleton& skeleton, const ModelData& modelData)
 {
 	//palette用のResourceを確保
 	SkinCluster skinCluster;
 	skinCluster.paletteResource = dxCore_->CreateBufferResource(sizeof(WellForGPU) * skeleton.joints.size());
 	WellForGPU* mappedPalette = nullptr;
 	skinCluster.paletteResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedPalette));
-	skinCluster.mappedPalette = { mappedPalette, skeleton.joints.size()};
+	skinCluster.mappedPalette = { mappedPalette, skeleton.joints.size() };
 	skinningTextureHandle_ = textureManager_->CreateInstancingSRV(skinCluster.paletteResource, UINT(skeleton.joints.size()), sizeof(WellForGPU));
 
 	//palette用のsrvを作成
@@ -1043,7 +1057,7 @@ void Model::CreateBoneVertexBuffer()
 }
 
 
-void Model::CreateBoneVertices(const Skeleton& skeleton, int32_t index,std::vector<Vector4>& vertices)
+void Model::CreateBoneVertices(const Skeleton& skeleton, int32_t index, std::vector<Vector4>& vertices)
 {
 	const Joint& parentJoint = skeleton.joints[index];
 

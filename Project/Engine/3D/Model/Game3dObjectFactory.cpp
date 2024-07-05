@@ -7,15 +7,20 @@ IGame3dObject* Game3dObjectFactory::CreateGameObject(const std::string& objectNa
 		Player* player = new Player();
 		return player;
 	}
-	else if (objectName == "PlayerWeapon")
-	{
-		PlayerWeapon* playerWeapon = new PlayerWeapon();
-		return playerWeapon;
-	}
 	else if (objectName == "Enemy")
 	{
 		Enemy* enemy = new Enemy();
 		return enemy;
+	}
+	else if (objectName == "Ground")
+	{
+		Ground* ground = new Ground();
+		return ground;
+	}
+	/*else if (objectName == "PlayerWeapon")
+	{
+		PlayerWeapon* playerWeapon = new PlayerWeapon();
+		return playerWeapon;
 	}
 	else if (objectName == "EnemyWeapon")
 	{
@@ -26,6 +31,6 @@ IGame3dObject* Game3dObjectFactory::CreateGameObject(const std::string& objectNa
 	{
 		TestObject* testObject = new TestObject();
 		return testObject;
-	}
+	}*/
 	return nullptr;
 }

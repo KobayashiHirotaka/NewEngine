@@ -38,7 +38,7 @@ public:
     struct BloomData
     {
         bool enable;
-        float padding[3];
+        float intensity;
     };
 
     struct VignetteData
@@ -65,7 +65,22 @@ public:
         float padding[3];
     };
 
+    struct LuminanceBasedOutlineData
+    {
+        bool enable;
+        float padding[3];
+    };
+
+    struct DepthBasedOutlineData
+    {
+        bool enable;
+        float padding[3];
+        Matrix4x4 projectionInverse;
+    };
+
     static PostProcess* GetInstance();
+
+    static void DeleteInstance();
 
     void Initialize();
     void Update();
@@ -74,14 +89,22 @@ public:
 
     //ポストプロセスのセッター
     void SetIsPostProcessActive(bool isActive) { isPostProcessActive_ = isActive; };
+
+    //ポストエフェクトのセッター
     void SetIsBlurActive(bool isActive) { isBlurActive_ = isActive; };
     void SetIsShrinkBlurActive(bool isActive) { isShrinkBlurActive_ = isActive; };
     void SetIsBloomActive(bool isActive) { isBloomActive_ = isActive; };
     void SetIsVignetteActive(bool isActive) { isVignetteActive_ = isActive; };
-    void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
     void SetIsGrayScaleActive(float isActive) { isGrayScaleActive_ = isActive; };
     void SetIsBoxFilterActive(float isActive) { isBoxFilterActive_ = isActive; };
     void SetIsGaussianFilterActive(float isActive) { isGaussianFilterActive_ = isActive; };
+    void SetIsLuminanceBasedOutlineActive(float isActive) { isLuminanceBasedOutlineActive_ = isActive; };
+    void SetIsDepthBasedOutlineActive(float isActive) { isDepthBasedOutlineActive_ = isActive; };
+
+
+    //ポストエフェクトのパラメーター用のセッター
+    void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
+    void SetBloomIntensity(float intensity) { bloomIntensity_ = intensity; };
 
 private:
     //ブラーの方向
@@ -90,6 +113,11 @@ private:
         Horizontal,
         Vertical,
     };
+
+    PostProcess() = default;
+    ~PostProcess() = default;
+    PostProcess(const PostProcess&) = delete;
+    const PostProcess& operator=(const PostProcess&) = delete;
 
     void InitializeDXC();
     Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
@@ -117,7 +145,7 @@ private:
     void Blur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex);
     void PostBlur(BlurState blurState);
 
-     void PreShrinkBlur(BlurState blurState);
+    void PreShrinkBlur(BlurState blurState);
     void ShrinkBlur(BlurState blurState, uint32_t srvIndex, uint32_t highIntensitySrvIndex);
     void PostShrinkBlur(BlurState blurState);
 
@@ -141,6 +169,14 @@ private:
     void GaussianFilter();
     void UpdateGaussianFilter();
 
+    //ルミナスベースアウトライン
+    void LuminanceBasedOutline();
+    void UpdateLuminanceBasedOutline();
+
+    //デプスベースアウトライン
+    void DepthBasedOutline();
+    void UpdateDepthBasedOutline();
+
     //マルチパス用テクスチャの作成
     Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor);
     //深度テクスチャの作成
@@ -158,6 +194,8 @@ private:
     D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
 
 private:
+    static PostProcess* instance_;
+
     DirectXCore* dxCore_ = nullptr;
     ID3D12GraphicsCommandList* commandList_;
     ID3D12Device* device_;
@@ -187,6 +225,7 @@ private:
     uint32_t rtvIndex_ = -1;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassSRVDescriptorHeap_ = nullptr;
     uint32_t srvIndex_ = -1;
+    uint32_t depthSRVIndex_ = -1;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassDSVDescriptorHeap_ = nullptr;
 
     //深度テクスチャのリソース
@@ -210,9 +249,17 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> grayScaleConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> boxFilterConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> gaussianFilterConstantBuffer_ = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> luminanceBasedOutlineConstantBuffer_ = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> depthBasedOutlineConstantBuffer_ = nullptr;
+
+    //ブルームの強度
+    float bloomIntensity_ = 0.17f;
 
     //ビネットの強度
     float vignetteIntensity_ = 0.8f;
+
+    //デプスベースアウトラインの逆プロジェクション行列
+    Matrix4x4 projectionInverse_{};
 
     //ポストエフェクトのフラグ
     bool isPostProcessActive_ = false;
@@ -223,4 +270,6 @@ private:
     bool isGrayScaleActive_ = false;
     bool isBoxFilterActive_ = false;
     bool isGaussianFilterActive_ = false;
+    bool isLuminanceBasedOutlineActive_ = false;
+    bool isDepthBasedOutlineActive_ = false;
 };

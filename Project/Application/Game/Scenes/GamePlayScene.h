@@ -1,20 +1,22 @@
 #pragma once
 #include "IScene.h"
+#include "Engine/3D/Model/Model.h"
+#include "Engine/3D/Model/ModelManager.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
+#include "Engine/3D/Camera/DebugCamera.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
-#include "Engine/Utility/LevelLoader/LevelLoader.h"
-#include "Engine/3D/Model/Game3dObjectManager.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/Utility/Collision/CollisionManager.h"
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/2D/Sprite/Sprite.h"
+#include "Engine/Utility/LevelLoader/LevelLoader.h"
+#include <memory>
 
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Skydome/Skydome.h"
-#include <memory>
 
 class GamePlayScene : public IScene
 {
@@ -29,48 +31,46 @@ public:
 
 	~GamePlayScene();
 
-	void Initialize(SceneManager* sceneManager)override;
+	void Initialize()override;
 
-	void Update(SceneManager* sceneManager)override;
+	void Update()override;
 
-	void Draw(SceneManager* sceneManager)override;
+	void Draw()override;
+
+	void Finalize()override;
 
 	void UpdateNumberSprite();
 
 	float Random(float min_value, float max_value);
 
+	void HandleGameOutcome();
+
 private:
-	WorldTransform worldTransform_;
-
-	Camera camera_;
-
+	//textureManager
 	TextureManager* textureManager_ = nullptr;
 
-	std::unique_ptr<CollisionManager> collisionManager_;
+	//modelManager
+	ModelManager* modelManager_ = nullptr;
 
-	Input* input_ = nullptr;
-
-	Audio* audio_ = nullptr;
-
+	//levelLoader
 	LevelLoader* levelLoarder_ = nullptr;
 
+	//gameObjectManager
 	Game3dObjectManager* game3dObjectManager_;
 
-	/*Player* player_;
+	//input
+	Input* input_ = nullptr;
 
-	Enemy* enemy_;*/
+	//audio
+	Audio* audio_ = nullptr;
 
-	std::unique_ptr<Player>player_;
+	//collisionManager
+	std::unique_ptr<CollisionManager> collisionManager_;
 
-	std::unique_ptr<Enemy>enemy_;
-
-	std::unique_ptr<Skydome>skydome_;
-
-	int round_ = 1;
-	int PlayerWinCount_ = 0;
-	int EnemyWinCount_ = 0;
-
-	std::unique_ptr<Model>ground_;
+	//camera
+	Camera camera_;
+	DebugCamera debugCamera_;
+	bool isDebugCamera_ = false;
 
 	std::unique_ptr<Sprite>numberTensSprite_ = nullptr;
 	std::unique_ptr<Sprite>numberOnesSprite_ = nullptr;
@@ -133,13 +133,18 @@ private:
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
 
-	std::unique_ptr<Model>stageObject_[4];
-
-	WorldTransform worldTransformStageObject_[4];
-
-	//std::unique_ptr<Model>testObject_;
-
-	WorldTransform worldTransformTestObject_;
-
 	bool isBoneDraw_ = true;
+
+	int round_ = 1;
+	int PlayerWinCount_ = 0;
+	int EnemyWinCount_ = 0;
+
+	//player
+	Player* player_;
+
+	//enemy
+	Enemy* enemy_;
+
+	//skydome
+	std::unique_ptr<Skydome> skydome_;
 };

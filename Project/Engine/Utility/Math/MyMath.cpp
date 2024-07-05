@@ -15,15 +15,15 @@ float Lerp(const float& v1, const float& v2, float t)
 	return result;
 }
 
-float LerpShortAngle(const float& a, const float& b, float t) 
+float LerpShortAngle(const float& a, const float& b, float t)
 {
 	float diff = b - a;
-	
+
 	float PI = 3.14159265359f;
 	float PI2 = 2.0f * 3.14159265359f;
 	float theta = std::fmod(diff, PI2);
 
-	if (theta >= PI) 
+	if (theta >= PI)
 	{
 		theta -= PI2;
 	}
@@ -144,7 +144,7 @@ Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2)
 	return result;
 }
 
-Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) 
+Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2)
 {
 	Matrix4x4 result{};
 	result.m[0][0] = m1.m[0][0] * m2.m[0][0] + m1.m[0][1] * m2.m[1][0] + m1.m[0][2] * m2.m[2][0] + m1.m[0][3] * m2.m[3][0];
@@ -170,7 +170,7 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2)
 	return result;
 }
 
-Matrix4x4 Inverse(const Matrix4x4& m) 
+Matrix4x4 Inverse(const Matrix4x4& m)
 {
 	Matrix4x4 result{};
 	float determinant = m.m[0][0] * m.m[1][1] * m.m[2][2] * m.m[3][3] +
@@ -230,7 +230,7 @@ Matrix4x4 Inverse(const Matrix4x4& m)
 	return result;
 }
 
-Matrix4x4 MakeIdentity4x4() 
+Matrix4x4 MakeIdentity4x4()
 {
 	Matrix4x4 result{};
 	result.m[0][0] = 1.0f;
@@ -308,7 +308,7 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale)
 	return result;
 }
 
-Matrix4x4 MakeRotateXMatrix(float radian) 
+Matrix4x4 MakeRotateXMatrix(float radian)
 {
 	Matrix4x4 result{};
 	result.m[0][0] = 1;
@@ -360,7 +360,7 @@ Matrix4x4 MakeRotateYMatrix(float radian)
 	return result;
 }
 
-Matrix4x4 MakeRotateZMatrix(float radian) 
+Matrix4x4 MakeRotateZMatrix(float radian)
 {
 	Matrix4x4 result{};
 	result.m[0][0] = std::cos(radian);
@@ -449,7 +449,7 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Quaternion& quaternion, c
 	return result;
 }
 
-Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip) 
+Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip)
 {
 	Matrix4x4 result{};
 	result.m[0][0] = (1.0f / std::tan(fovY / 2)) / aspectRatio;
@@ -475,7 +475,7 @@ Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip
 	return result;
 }
 
-Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip) 
+Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip)
 {
 	assert(left != right);
 	assert(top != bottom);
@@ -503,12 +503,12 @@ Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float botto
 	return result;
 }
 
-Matrix4x4 Transpose(const Matrix4x4& m) 
+Matrix4x4 Transpose(const Matrix4x4& m)
 {
 	Matrix4x4 result;
 	for (int i = 0; i < 4; ++i)
 	{
-		for (int j = 0; j < 4; ++j) 
+		for (int j = 0; j < 4; ++j)
 		{
 			result.m[j][i] = m.m[i][j];
 		}

@@ -1,13 +1,17 @@
-#pragma once
 #include "IScene.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
+#include "Engine/3D/Model/Model.h"
+#include "Engine/3D/Model/ModelManager.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
+#include "Engine/3D/Camera/DebugCamera.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
 #include "Engine/2D/Sprite/Sprite.h"
-#include "Application/GameObject/Skydome/Skydome.h"
+#include "Engine/3D/Particle/ParticleModel.h"
 #include <memory>
+
+#include "Application/GameObject/Skydome/Skydome.h"
 
 class GameWinScene : public IScene
 {
@@ -18,25 +22,34 @@ public:
 
 	~GameWinScene();
 
-	void Initialize(SceneManager* sceneManager)override;
+	void Initialize()override;
 
-	void Update(SceneManager* sceneManager)override;
+	void Update()override;
 
-	void Draw(SceneManager* sceneManager)override;
+	void Draw()override;
+
+	void Finalize()override;
 
 private:
-	WorldTransform worldTransform_;
-
-	Camera camera_;
-
+	//textureManager
 	TextureManager* textureManager_ = nullptr;
 
+	//modelManager
+	ModelManager* modelManager_ = nullptr;
+
+	//input
 	Input* input_ = nullptr;
 
+	//audio
 	Audio* audio_ = nullptr;
 
-	std::unique_ptr<Skydome>skydome_;
-	std::unique_ptr<Model>skydomeModel_;
+	//camera
+	Camera camera_;
+	DebugCamera debugCamera_;
+	bool isDebugCamera_ = false;
+
+	//skydome
+	std::unique_ptr<Skydome> skydome_;
 
 	std::unique_ptr<Sprite>winSceneSprite_ = nullptr;
 	uint32_t winSceneTextureHandle_ = 0;
@@ -52,4 +65,6 @@ private:
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
 };
+
+
 

@@ -217,6 +217,30 @@
     <Filter Include="ヘッダー ファイル\Engine\3d\Particle">
       <UniqueIdentifier>{587b5227-a9a1-4b2e-a0d2-8452d727b0ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Engine\Framework">
+      <UniqueIdentifier>{05facd82-bbd8-4e3e-b934-c6b96c5f85ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\Framework">
+      <UniqueIdentifier>{baad6b48-47e3-4e24-8a3c-f85998ba3fde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\Utility\LevelLoader">
+      <UniqueIdentifier>{787ffefc-6b42-4a55-8486-090bd89dff74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\Ground">
+      <UniqueIdentifier>{a81b58d3-80a7-4bd2-a002-a88bb37e56f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\Level">
+      <UniqueIdentifier>{4fbfd329-6382-4f55-afe6-e9d1f9bfeca1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\Ground">
+      <UniqueIdentifier>{39b3ecee-70a7-473f-ac5d-12e76bd51832}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\Level">
+      <UniqueIdentifier>{34368e5e-26d3-400e-889a-d5ee2a1c1efa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Engine\Utility\LevelLoader">
+      <UniqueIdentifier>{d1eb8866-2c58-4c94-99f6-9d11b7a77f1a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -288,12 +312,6 @@
     <ClCompile Include="Engine\Utility\GlobalVariables.cpp">
       <Filter>ソース ファイル\Engine\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp">
-      <Filter>ソース ファイル\Engine\3d\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp">
-      <Filter>ソース ファイル\Engine\3d\Model</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Components\PostProcess\PostProcess.cpp">
       <Filter>ソース ファイル\Engine\Components\PostProcess</Filter>
     </ClCompile>
@@ -327,14 +345,29 @@
     <ClCompile Include="Engine\2D\Sprite\Sprite.cpp">
       <Filter>ソース ファイル\Engine\2d\Sprite</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Framework\Game.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Framework\GameManager.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Application\GameObject\Character\Player\Player.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\Scenes\Manager\SceneManager.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes\Manager</Filter>
+    <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Skydome</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Framework\EngineCore.cpp">
+      <Filter>ソース ファイル\Engine\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Framework\SceneManager.cpp">
+      <Filter>ソース ファイル\Engine\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\SceneFactory.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GameTitleScene.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GameWinScene.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Application\Game\Scenes\GameLoseScene.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes</Filter>
@@ -342,38 +375,35 @@
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\Scenes\GameStartScene.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    <ClCompile Include="Application\Game\Scenes\Manager\GameManager.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\Scenes\GameWinScene.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyWeapon.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\Player\Player.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\Player\PlayerWeapon.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\ICharacter.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Skydome</Filter>
+    <ClCompile Include="Application\GameObject\Ground\Ground.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Ground</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\ModelManager.cpp">
       <Filter>ソース ファイル\Engine\3d\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Utility\LevelLoader\LevelLoader.cpp">
-      <Filter>ソース ファイル\Engine\Utility</Filter>
+    <ClCompile Include="Engine\3D\Light\SpotLight.cpp">
+      <Filter>ソース ファイル\Engine\3d\Light</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\TestObject\TestObject.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Engine\3D\Light\PointLight.cpp">
+      <Filter>ソース ファイル\Engine\3d\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Camera\DebugCamera.cpp">
+      <Filter>ソース ファイル\Engine\3d\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Utility\LevelLoader\LevelLoader.cpp">
+      <Filter>ソース ファイル\Engine\Utility\LevelLoader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -479,12 +509,6 @@
     <ClInclude Include="Engine\Utility\GlobalVariables.h">
       <Filter>ヘッダー ファイル\Engine\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\3D\Model\IGame3dObject.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Components\PostProcess\PostProcess.h">
       <Filter>ヘッダー ファイル\Engine\Components\PostProcess</Filter>
     </ClInclude>
@@ -524,62 +548,17 @@
     <ClInclude Include="Engine\2D\Sprite\UI.h">
       <Filter>ヘッダー ファイル\Engine\2d\Sprite</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Framework\Game.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Framework\GameManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Utility\Structs.h">
       <Filter>ヘッダー ファイル\Engine\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GameLoseScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GamePlayScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GameStartScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GameWinScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\IScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\Manager\SceneManager.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes\Manager</Filter>
-    </ClInclude>
     <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyWeapon.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Application\GameObject\Character\Player\Player.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\Player\PlayerWeapon.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\ICharacter.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
-    </ClInclude>
     <ClInclude Include="Application\GameObject\Skydome\Skydome.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Skydome</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Utility\LevelLoader\LevelLoader.h">
-      <Filter>ヘッダー ファイル\Engine\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\3D\Model\Game3dObjectFactory.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\GameObject\TestObject\TestObject.h">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Camera\DebugCamera.h">
       <Filter>ヘッダー ファイル\Engine\3d\Camera</Filter>
@@ -595,6 +574,51 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\Model\ModelManager.h">
       <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Framework\AbstractSceneFactory.h">
+      <Filter>ヘッダー ファイル\Engine\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Framework\EngineCore.h">
+      <Filter>ヘッダー ファイル\Engine\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Framework\SceneManager.h">
+      <Filter>ヘッダー ファイル\Engine\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Utility\LevelLoader\LevelLoader.h">
+      <Filter>ヘッダー ファイル\Engine\Utility\LevelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GameTitleScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\SceneFactory.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GameWinScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\IScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GameLoseScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GamePlayScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\Manager\GameManager.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\Game3dObjectFactory.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\IGame3dObject.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Ground\Ground.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Ground</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,7 +13,7 @@ void Mesh::Initialize(const std::vector<VertexData>& vertices, const std::vector
 	CreateIndexBuffer();
 }
 
-void Mesh::Draw() 
+void Mesh::Draw()
 {
 	//dxCore_->GetCommandList()->DrawInstanced(UINT(vertices_.size()), 1, 0, 0);
 	dxCore_->GetCommandList()->DrawIndexedInstanced(UINT(indices_.size()), 1, 0, 0, 0);

@@ -15,20 +15,22 @@ public:
 
 	static uint32_t descriptorSizeSRV;
 
-	struct Texture 
+	struct Texture
 	{
 		Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
 		Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = nullptr;
-	
+
 		D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU;
 		D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
-	
+
 		std::string name{};
 
 		uint32_t textureHandle = 0;
 	};
 
 	static TextureManager* GetInstance();
+
+	static void DeleteInstance();
 
 	void Initialize();
 
@@ -42,6 +44,9 @@ public:
 
 	const D3D12_RESOURCE_DESC GetResourceDesc(uint32_t textureHandle);
 
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
+	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
+
 private:
 	TextureManager() = default;
 	~TextureManager() = default;
@@ -54,18 +59,17 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
 	Microsoft::WRL::ComPtr<ID3D12Resource> UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
 
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
-
 private:
+	static TextureManager* instance_;
+
 	DirectXCore* dxCore_ = nullptr;
 
 	ID3D12Device* device_ = nullptr;
 
 	ID3D12GraphicsCommandList* commandList_ = nullptr;
-	
+
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
-	
+
 	std::array<Texture, kMaxDescriptors> textures_{};
 
 	uint32_t textureHandle_ = -1;

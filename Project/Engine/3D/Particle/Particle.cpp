@@ -9,13 +9,13 @@ void Particle::Initialize(const Vector3& translation, const Vector3& rotation, c
 	scale_ = { scale.x,scale.x,scale.x };
 
 	velocity_ = velocity;
-	
+
 	color_ = color;
-	
+
 	lifeTime_ = lifeTime;
 }
 
-void Particle::Update() 
+void Particle::Update()
 {
 	float scale = scale_.x;
 	scale -= 0.01f;

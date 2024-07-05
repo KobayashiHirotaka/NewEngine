@@ -14,22 +14,31 @@ class Input
 public:
 	static Input* GetInstance();
 
-	//Input();
-	//~Input();
+	static void DeleteInstance();
 
 	void Initialize(WindowsApp* win);
 
 	void Update();
 
-	//押した時
+	//Key
 	bool PushKey(uint8_t keyNumber)const;
 
-	//押している間
 	bool PressKey(uint8_t keyNumber)const;
 
-	//離した時
 	bool IsReleseKey(uint8_t keyNumber)const;
 
+	//Mouse
+	bool IsPressMouse(int32_t mouseNum);
+
+	bool IsReleaseMouse(int32_t mouseNum);
+
+	bool IsPressMouseEnter(int32_t mouseNum);
+
+	bool IsPressMouseExit(int32_t mouseNum);
+
+	int32_t GetWheel();
+
+	//Joystick
 	bool GetJoystickState();
 
 	bool IsPressButton(WORD button);
@@ -51,13 +60,17 @@ private:
 	const Input& operator = (const Input&) = delete;
 
 private:
-	static Input* input_;
+	static Input* instance_;
 
 	Microsoft::WRL::ComPtr<IDirectInput8>directInput_ = nullptr;
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> keyboard_ = nullptr;
+	Microsoft::WRL::ComPtr<IDirectInputDevice8> mouseDevice_ = nullptr;
 
 	std::array<BYTE, 256> keys_;
 	std::array<BYTE, 256> preKeys_;
+
+	DIMOUSESTATE mouse_;
+	DIMOUSESTATE mousePre_;
 
 	XINPUT_STATE state_{};
 	XINPUT_STATE preState_{};

@@ -44,9 +44,11 @@ public:
 
     static LevelLoader* GetInstance();
 
-	void LoadLevel(const std::string fileName);
+    static void DeleteInstance();
 
-    void Create(const LevelData* levelData);    
+    void LoadLevel(const std::string fileName);
+
+    void CreateObjectsFromLevelData(const LevelData* levelData);
 
     void LoadObjectFromJson(LevelData* levelData, json& parent);
 
@@ -57,6 +59,7 @@ private:
     LevelLoader& operator=(const LevelLoader& obj) = default;
 
 private:
+    static LevelLoader* instance_;
+
     std::map<std::string, std::unique_ptr<LevelData>>levelDatas_;
 };
-

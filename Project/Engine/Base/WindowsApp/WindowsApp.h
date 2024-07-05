@@ -5,10 +5,12 @@
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
-class WindowsApp 
+class WindowsApp
 {
 public:
 	static WindowsApp* GetInstance();
+
+	static void DeleteInstance();
 
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
@@ -32,6 +34,8 @@ private:
 	const WindowsApp& operator=(const WindowsApp&) = delete;
 
 private:
+	static WindowsApp* instance_;
+
 	WNDCLASS wc_{};
 	RECT wrc_{};
 	HWND hwnd_ = nullptr;

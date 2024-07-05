@@ -1,6 +1,6 @@
 #include "BaseParticle.h"
 
-void BaseParticle::Initialize(const Vector3& translation, const Vector3& rotation, const Vector3& scale, const Vector3& velocity, const Vector4& color, float lifeTime) 
+void BaseParticle::Initialize(const Vector3& translation, const Vector3& rotation, const Vector3& scale, const Vector3& velocity, const Vector4& color, float lifeTime)
 {
 	translation_ = translation;
 
@@ -11,7 +11,7 @@ void BaseParticle::Initialize(const Vector3& translation, const Vector3& rotatio
 	velocity_ = velocity;
 
 	color_ = color;
-	
+
 	lifeTime_ = lifeTime;
 
 	alpha_ = color_.w;
@@ -20,11 +20,11 @@ void BaseParticle::Initialize(const Vector3& translation, const Vector3& rotatio
 void BaseParticle::Update()
 {
 	translation_ = Add(translation_, velocity_);
-	
+
 	const float kDeltaTime = 1.0f / 60.0f;
 	currentTime_ += kDeltaTime;
 	color_.w = alpha_ - (currentTime_ / lifeTime_);
-	
+
 	if (lifeTime_ < currentTime_)
 	{
 		isDead_ = true;

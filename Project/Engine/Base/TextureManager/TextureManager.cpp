@@ -1,11 +1,24 @@
 #include "TextureManager.h"
 
 uint32_t TextureManager::descriptorSizeSRV = 0;
+TextureManager* TextureManager::instance_ = nullptr;
 
-TextureManager* TextureManager::GetInstance() 
+TextureManager* TextureManager::GetInstance()
 {
-	static TextureManager instance;
-	return &instance;
+	if (instance_ == nullptr)
+	{
+		instance_ = new TextureManager();
+	}
+	return instance_;
+}
+
+void TextureManager::DeleteInstance()
+{
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
 }
 
 void TextureManager::Initialize()
@@ -20,7 +33,7 @@ void TextureManager::Initialize()
 
 	srvDescriptorHeap_ = dxCore_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxDescriptors, true);
 
-	LoadInternal("resource/white.png");
+	LoadInternal("resource/images/white.png");
 }
 
 uint32_t TextureManager::LoadTexture(const std::string& filePath)
@@ -36,7 +49,7 @@ void TextureManager::SetGraphicsDescriptorHeap()
 	commandList_->SetDescriptorHeaps(1, descriptorHeaps);
 }
 
-void TextureManager::SetGraphicsRootDescriptorTable(UINT rootParameterIndex, uint32_t textureHandle) 
+void TextureManager::SetGraphicsRootDescriptorTable(UINT rootParameterIndex, uint32_t textureHandle)
 {
 	commandList_->SetGraphicsRootDescriptorTable(rootParameterIndex, textures_[textureHandle].textureSrvHandleGPU);
 }
@@ -61,11 +74,11 @@ uint32_t TextureManager::CreateInstancingSRV(const Microsoft::WRL::ComPtr<ID3D12
 	return textureHandle_;
 }
 
-uint32_t TextureManager::LoadInternal(const std::string& filePath) 
+uint32_t TextureManager::LoadInternal(const std::string& filePath)
 {
 	for (int i = 0; i < kMaxDescriptors; i++)
 	{
-		if (textures_[i].name == filePath) 
+		if (textures_[i].name == filePath)
 		{
 			return textures_[i].textureHandle;
 		}
@@ -88,8 +101,19 @@ uint32_t TextureManager::LoadInternal(const std::string& filePath)
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = metadata.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
+
+	if (metadata.IsCubemap())
+	{
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+		srvDesc.TextureCube.MostDetailedMip = 0;
+		srvDesc.TextureCube.MipLevels = UINT_MAX;
+		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+	}
+	else
+	{
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
+		srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
+	}
 
 	//SRVを作成するDescriptorHeapの場所を決める
 	textures_[textureHandle_].textureSrvHandleCPU = GetCPUDescriptorHandle(srvDescriptorHeap_.Get(), descriptorSizeSRV, textureHandle_);
@@ -109,7 +133,15 @@ DirectX::ScratchImage TextureManager::OpenImage(const std::string& filePath)
 	//テクスチャファイルを読んでプログラムで扱えるようにする
 	DirectX::ScratchImage image{};
 	std::wstring filePathW = ConvertString(filePath);
-	HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	HRESULT hr;
+	if (filePathW.ends_with(L".dds"))
+	{
+		hr = DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
+	}
+	else
+	{
+		hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	}
 	assert(SUCCEEDED(hr));
 
 	//ミップマップの作成
@@ -184,7 +216,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE TextureManager::GetCPUDescriptorHandle(ID3D12Descrip
 	return handleCPU;
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index) 
+D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index)
 {
 	D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap->GetGPUDescriptorHandleForHeapStart();
 	handleGPU.ptr += static_cast<D3D12_GPU_DESCRIPTOR_HANDLE>((descriptorSize * index)).ptr;

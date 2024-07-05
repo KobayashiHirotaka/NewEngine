@@ -1,3 +1,4 @@
+#pragma once
 #include "Engine/Base/WindowsApp/WindowsApp.h"
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
@@ -7,26 +8,34 @@
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include "Engine/3D/Model/Model.h"
 #include "Engine/3D/Particle/ParticleModel.h"
+#include "Engine/3D/Model/ModelManager.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/Particle/Random.h"
+#include "Engine/Utility/GlobalVariables.h"
 #include "Engine/3D/Model/Game3dObjectFactory.h"
 #include "Engine/3D/Model/Game3dObjectManager.h"
-#include "Application/Game/Scenes/IScene.h"
-#include <memory>
+#include "Engine/Utility/LevelLoader/LevelLoader.h"
+#include "Engine/Framework/SceneManager.h"
 
-class SceneManager 
+class EngineCore
 {
 public:
-	SceneManager();
+	virtual ~EngineCore() = default;
 
-	~SceneManager();
+	virtual void Initialize();
 
-	void ChangeScene(IScene* newScene);
+	virtual void Finalize();
+
+	virtual void Update();
+
+	virtual void Draw() = 0;
+
+	virtual bool IsEndRequst();
 
 	void Run();
 
-private:
+protected:
 	static D3DResourceLeakChecker leakCheck;
 
 	WindowsApp* win_ = nullptr;
@@ -45,5 +54,14 @@ private:
 
 	std::unique_ptr<Game3dObjectFactory> game3dObjectFactory_ = nullptr;
 
-	IScene* currentScene_;
+	Game3dObjectManager* game3dObjectManager_ = nullptr;
+
+	LevelLoader* levelLoader_ = nullptr;
+
+	SceneManager* sceneManager_ = nullptr;
+
+	bool endRequst_ = false;
+
+	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
 };
+

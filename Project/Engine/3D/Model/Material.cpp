@@ -1,6 +1,6 @@
 #include "Material.h"
 
-void Material::Initialize() 
+void Material::Initialize()
 {
 	dxCore_ = DirectXCore::GetInstance();
 
@@ -10,10 +10,11 @@ void Material::Initialize()
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	materialData->color = color_;
 	materialData->uvTransform = MakeIdentity4x4();
+	materialData->shininess = shininess_;
 	materialResource_->Unmap(0, nullptr);
 }
 
-void Material::Update() 
+void Material::Update()
 {
 	Matrix4x4 uvTransformMatrix = MakeScaleMatrix(Vector3{ scale_.x,scale_.y,1.0f });
 	uvTransformMatrix = Multiply(uvTransformMatrix, MakeRotateZMatrix(rotation_));
@@ -23,6 +24,7 @@ void Material::Update()
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	materialData->color = color_;
 	materialData->uvTransform = uvTransformMatrix;
+	materialData->shininess = shininess_;
 	materialResource_->Unmap(0, nullptr);
 }
 

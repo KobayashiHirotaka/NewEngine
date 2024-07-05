@@ -1,5 +1,5 @@
 #include "LoadCSV.h"
-std::stringstream LoadCSV(const std::string& filename) 
+std::stringstream LoadCSV(const std::string& filename)
 {
 	std::ifstream file;
 	file.open(filename);
