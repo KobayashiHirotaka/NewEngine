@@ -27,6 +27,7 @@ void GameLoseScene::Initialize()
 	//postEffectの切り替え
 	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
+	PostProcess::GetInstance()->SetIsVignetteActive(false);
 
 	//modelの読み込み
 	//modelManager_->LoadModel("resource/skydome", "skydome.obj");

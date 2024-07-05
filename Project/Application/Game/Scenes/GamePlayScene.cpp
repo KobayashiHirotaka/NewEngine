@@ -903,7 +903,6 @@ void GamePlayScene::HandleGameOutcome()
 			if (PlayerWinCount_ == 2)
 			{
 				PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-				PostProcess::GetInstance()->SetIsVignetteActive(false);
 				sceneManager_->ChangeScene("GameWinScene");
 				return;
 			}
@@ -911,7 +910,6 @@ void GamePlayScene::HandleGameOutcome()
 			if (EnemyWinCount_ == 2)
 			{
 				PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-				PostProcess::GetInstance()->SetIsVignetteActive(false);
 				sceneManager_->ChangeScene("GameLoseScene");
 				return;
 			}
