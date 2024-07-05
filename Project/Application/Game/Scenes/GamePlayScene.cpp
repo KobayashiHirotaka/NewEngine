@@ -36,8 +36,6 @@ void GamePlayScene::Initialize()
 
 	//postEffectの切り替え
 	PostProcess::GetInstance()->SetIsBloomActive(true);
-	//PostProcess::GetInstance()->SetIsVignetteActive(true);
-	PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 	PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
 	//PostProcess::GetInstance()->SetIsDepthBasedOutlineActive(true);
@@ -148,15 +146,6 @@ void GamePlayScene::Update()
 
 	if (roundStartTimer_ <= 0 && !isOpen_)
 	{
-		/*if (player_->GetIsFinisherEffect() == false)
-		{
-			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-		}
-		else
-		{
-			PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-		}*/
-
 		//時間経過を加算
 		elapsedTime += frameTime;
 
@@ -196,15 +185,6 @@ void GamePlayScene::Update()
 	//		camera_.translation_.y = 2.0f;
 	//	}
 	//}
-
-	//playerの必殺技時ポストエフェクトを適応
-	if (player_->GetIsFinisherEffect())
-	{
-		PostProcess::GetInstance()->SetVignetteIntensity(1.5f);
-	}
-	else {
-		PostProcess::GetInstance()->SetVignetteIntensity(0.8f);
-	}
 
 	//playerの必殺技時のカメラ処理
 	/*if (player_->GetFinisherEffectTimer() < 90 && player_->GetFinisherEffectTimer() > 0)
@@ -272,6 +252,15 @@ void GamePlayScene::Update()
 
 	//勝ち負けの処理
 	HandleGameOutcome();
+
+	if (player_->GetHP() >= -25.0f)
+	{
+		PostProcess::GetInstance()->SetIsVignetteActive(true);
+	}
+	else
+	{
+		PostProcess::GetInstance()->SetIsVignetteActive(false);
+	}
 
 	//当たり判定
 	collisionManager_->ClearColliders();
@@ -664,11 +653,13 @@ void GamePlayScene::HandleGameOutcome()
 	//Enemyが勝ったとき
 	if (player_->GetHP() >= 0 && round_ == 1)
 	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = false;
 
 		if (migrationTimer < 0)
 		{
+			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
 			round_ = 2;
 			EnemyWinCount_ = 1;
 
@@ -691,6 +682,7 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (player_->GetHP() >= 0 && round_ == 2 && EnemyWinCount_ == 1)
 	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = false;
 
@@ -701,11 +693,13 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (player_->GetHP() >= 0 && round_ == 2 && EnemyWinCount_ == 0)
 	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = false;
 
 		if (migrationTimer < 0)
 		{
+			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
 			round_ = 3;
 			EnemyWinCount_ = 1;
 
@@ -728,6 +722,7 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (player_->GetHP() >= 0 && round_ == 3 && EnemyWinCount_ == 1)
 	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = false;
 
@@ -739,11 +734,13 @@ void GamePlayScene::HandleGameOutcome()
 
 	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 1)
 	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = false;
 
 		if (migrationTimer < 0)
 		{
+			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
 			round_ = 2;
 			EnemyWinCount_ = 1;
 
@@ -766,6 +763,7 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 2 && EnemyWinCount_ == 1)
 	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = false;
 
@@ -776,11 +774,13 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 2 && EnemyWinCount_ == 0)
 	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = false;
 
 		if (migrationTimer < 0)
 		{
+			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
 			round_ = 3;
 			EnemyWinCount_ = 1;
 
@@ -803,6 +803,7 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 3 && EnemyWinCount_ == 1)
 	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = false;
 
@@ -814,6 +815,7 @@ void GamePlayScene::HandleGameOutcome()
 
 	if (EnemyWinCount_ == 2)
 	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		if (isTransitionStart_ == false && isTransitionEnd_ == true)
 		{
 			isTransitionStart_ = true;
@@ -900,12 +902,16 @@ void GamePlayScene::HandleGameOutcome()
 		{
 			if (PlayerWinCount_ == 2)
 			{
+				PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+				PostProcess::GetInstance()->SetIsVignetteActive(false);
 				sceneManager_->ChangeScene("GameWinScene");
 				return;
 			}
 
 			if (EnemyWinCount_ == 2)
 			{
+				PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+				PostProcess::GetInstance()->SetIsVignetteActive(false);
 				sceneManager_->ChangeScene("GameLoseScene");
 				return;
 			}
