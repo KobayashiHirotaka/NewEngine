@@ -1339,7 +1339,7 @@ void Player::GuardGaugeBarUpdate()
 	if (guardGauge_ <= -50.0f)
 	{
 		guardGauge_ = -50.0f;
-		behaviorRequest_ = Behavior::kStan;
+		//behaviorRequest_ = Behavior::kStan;
 	}
 }
 
