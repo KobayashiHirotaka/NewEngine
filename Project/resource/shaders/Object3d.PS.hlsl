@@ -12,9 +12,9 @@ struct DirectionLight
     int32_t enableLighting;
     int32_t lightingType;
     int32_t modelType;
-    float32_t4 color;
-    float32_t3 direction;
-    float intensity;
+    float32_t4 color; 
+    float32_t3 direction; 
+    float intensity; 
 };
 
 struct PointLight
