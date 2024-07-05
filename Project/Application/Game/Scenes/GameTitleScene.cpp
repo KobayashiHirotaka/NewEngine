@@ -46,7 +46,7 @@ void GameTitleScene::Initialize()
 	titleSprite_.reset(Sprite::Create(titleTextureHandle_, { titleSpritePosition_.x, titleSpritePosition_.y }));
 
 	//title(操作用)のsprite
-	titleUITextureHandle_ = TextureManager::LoadTexture("resource/images/titleUI.png");
+	titleUITextureHandle_ = TextureManager::LoadTexture("resource/images/titleUISub.png");
 	titleUISprite_.reset(Sprite::Create(titleUITextureHandle_, { 0.0f,0.0f }));
 
 	//基本操作説明用のsprite
