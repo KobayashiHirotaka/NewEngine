@@ -434,7 +434,7 @@ void Player::BehaviorRootUpdate()
 
 		//移動処理
 		//前方向に移動(左を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && playerDirection == Direction::Left && isDown_ == false && !isHit_)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && playerDirection == Direction::Left && !isDown_ && !isHit_)
 		{
 			velocity_.x = -0.01f;
 			isFrontMove_ = true;
@@ -442,7 +442,7 @@ void Player::BehaviorRootUpdate()
 		}
 
 		//前方向に移動(右を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && playerDirection == Direction::Right && isDown_ == false && !isHit_)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && playerDirection == Direction::Right && !isDown_ && !isHit_)
 		{
 			velocity_.x = 0.01f;
 			isFrontMove_ = true;
@@ -450,7 +450,7 @@ void Player::BehaviorRootUpdate()
 		}
 
 		//後ろ方向に移動(右を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && playerDirection == Direction::Right && isDown_ == false)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && playerDirection == Direction::Right && !isDown_)
 		{
 			isGuard_ = true;
 
@@ -470,7 +470,7 @@ void Player::BehaviorRootUpdate()
 		}
 
 		//後ろ方向に移動(左を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && playerDirection == Direction::Left && isDown_ == false)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && playerDirection == Direction::Left && !isDown_)
 		{
 			isGuard_ = true;
 
@@ -534,7 +534,7 @@ void Player::BehaviorRootUpdate()
 		//ジャンプ
 		if (input_->GetJoystickState())
 		{
-			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isDown_ == false)
+			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !isDown_)
 			{
 				behaviorRequest_ = Behavior::kJump;
 			}
@@ -554,7 +554,7 @@ void Player::BehaviorRootUpdate()
 		if (input_->GetJoystickState())
 		{
 			//弱攻撃
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && isDown_ == false)
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !isDown_)
 			{
 				behaviorRequest_ = Behavior::kAttack;
 				animationTime = 0.0f;
@@ -566,7 +566,7 @@ void Player::BehaviorRootUpdate()
 		if (input_->GetJoystickState())
 		{
 			//中攻撃
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && isDown_ == false)
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !isDown_)
 			{
 				behaviorRequest_ = Behavior::kAttack;
 				animationTime = 0.0f;
@@ -578,7 +578,7 @@ void Player::BehaviorRootUpdate()
 		if (input_->GetJoystickState())
 		{
 			//強攻撃
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && isDown_ == false)
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !isDown_)
 			{
 				behaviorRequest_ = Behavior::kAttack;
 				animationTime = 0.0f;
@@ -592,7 +592,7 @@ void Player::BehaviorRootUpdate()
 			//タックル攻撃
 			//右向きのとき
 			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-				&& playerDirection == Direction::Right && isDown_ == false)
+				&& playerDirection == Direction::Right && !isDown_)
 			{
 				behaviorRequest_ = Behavior::kAttack;
 				animationTime = 0.0f;
@@ -603,7 +603,7 @@ void Player::BehaviorRootUpdate()
 			//タックル攻撃
 			//左向きのとき
 			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-				&& playerDirection == Direction::Left && isDown_ == false)
+				&& playerDirection == Direction::Left && !isDown_)
 			{
 				behaviorRequest_ = Behavior::kAttack;
 				animationTime = 0.0f;
@@ -1148,7 +1148,7 @@ void Player::OnCollision(Collider* collider, float damage)
 	{
 		isHit_ = true;
 
-		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && isGuard_ && worldTransform_.rotation.y == 1.7f)
+		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && isGuard_ && playerDirection == Direction::Right)
 		{
 			guardAnimationTimer_--;
 
@@ -1179,7 +1179,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			}
 		}
 
-		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && isGuard_ && worldTransform_.rotation.y == 4.6f)
+		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && isGuard_ && playerDirection == Direction::Left)
 		{
 			guardAnimationTimer_--;
 
@@ -1210,7 +1210,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			}
 		}
 
-		if (enemy_->GetIsAttack() && enemy_->GetIsTackle() && isGuard_ && worldTransform_.rotation.y == 1.7f)
+		if (enemy_->GetIsAttack() && enemy_->GetIsTackle() && isGuard_ && playerDirection == Direction::Right)
 		{
 			guardAnimationTimer_--;
 
@@ -1241,7 +1241,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			}
 		}
 
-		if (enemy_->GetIsAttack() && enemy_->GetIsTackle() && isGuard_ && worldTransform_.rotation.y == 4.6f)
+		if (enemy_->GetIsAttack() && enemy_->GetIsTackle() && isGuard_ && playerDirection == Direction::Left)
 		{
 			guardAnimationTimer_--;
 
@@ -1274,7 +1274,7 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		//タックル
 		//キャンセルじゃないとき
-		if (enemy_->GetIsTackle() == true && enemy_->GetIsAttack() && isDown_ == false && isGuard_ == false)
+		if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && !isDown_ && !isGuard_)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 15.0f;
@@ -1513,7 +1513,7 @@ void Player::DownAnimation()
 		aabb_ = { {0.1f,-0.3f,-0.3f},{0.8f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (enemy_->GetIsTackle() == false && HP_ < 0.0f)
+		if (!enemy_->GetIsTackle() && HP_ < 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1582,7 +1582,7 @@ void Player::DownAnimation()
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (enemy_->GetIsTackle() == false && HP_ < 0.0f)
+		if (!enemy_->GetIsTackle() && HP_ < 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;

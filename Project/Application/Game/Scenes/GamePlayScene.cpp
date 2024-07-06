@@ -159,7 +159,7 @@ void GamePlayScene::Update()
 		}
 	}
 
-	if (player_->GetIsFinisherEffect() == false)
+	if (!player_->GetIsFinisherEffect())
 	{
 		//player,enemyの更新
 		game3dObjectManager_->Update();
