@@ -1436,15 +1436,6 @@ void Player::Reset()
 	worldTransform_.translation = { -3.0f,0.0f,0.0f };
 	playerDirection = Direction::Right;
 
-	/*worldTransformCursol_.translation.x = 0.9f;
-	worldTransformCursol_.translation.y = worldTransform_.translation.y + 2.0f;
-
-	workAttack_.translation = { 0.0f,2.5f,0.0f };
-	workAttack_.rotation = { 0.0f,0.0f,0.0f };
-
-	playerWeapon_->SetTranslation(workAttack_.translation);
-	playerWeapon_->SetRotation(workAttack_.rotation);*/
-
 	worldTransform_.UpdateMatrixEuler();
 
 	isReset_ = false;

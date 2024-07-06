@@ -473,7 +473,7 @@ void Enemy::BehaviorRootUpdate()
 
 	//攻撃
 	//突進攻撃
-	if (patternCount_ == 2 && isDown_ == false)
+	if (patternCount_ == 2 && !isDown_)
 	{
 		behaviorRequest_ = Behavior::kAttack;
 		animationTime = 0.0f;
@@ -482,7 +482,7 @@ void Enemy::BehaviorRootUpdate()
 	}
 
 	//ジャンプ
-	if (patternCount_ == 3 && isDown_ == false)
+	if (patternCount_ == 3 && !isDown_)
 	{
 		behaviorRequest_ = Behavior::kJump;
 	}
@@ -522,7 +522,7 @@ void Enemy::BehaviorAttackUpdate()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (worldTransform_.rotation.y == 1.7f)
+		if (enemyDirection_ == Direction::Right)
 		{
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
@@ -557,7 +557,7 @@ void Enemy::BehaviorAttackUpdate()
 				particleSystem_->AddParticleEmitter(newParticleEmitter);
 			}
 		}
-		else if (worldTransform_.rotation.y == 4.6f)
+		else if (enemyDirection_ == Direction::Left)
 		{
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
@@ -757,7 +757,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 	{
 		isHit_ = true;
 
-		if (player_->GetIsAttack() && !player_->GetIsTackle() && isGuard_ && worldTransform_.rotation.y == 1.7f)
+		if (player_->GetIsAttack() && !player_->GetIsTackle() && isGuard_ && enemyDirection_ == Direction::Right)
 		{
 			guardAnimationTimer_--;
 
@@ -788,7 +788,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			}
 		}
 
-		if (player_->GetIsAttack() && !player_->GetIsTackle() && isGuard_ && worldTransform_.rotation.y == 4.6f)
+		if (player_->GetIsAttack() && !player_->GetIsTackle() && isGuard_ && enemyDirection_ == Direction::Left)
 		{
 			guardAnimationTimer_--;
 
@@ -819,7 +819,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			}
 		}
 
-		if (player_->GetIsAttack() && player_->GetIsTackle() && isGuard_ && worldTransform_.rotation.y == 1.7f)
+		if (player_->GetIsAttack() && player_->GetIsTackle() && isGuard_ && enemyDirection_ == Direction::Right)
 		{
 			guardAnimationTimer_--;
 
@@ -850,7 +850,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			}
 		}
 
-		if (player_->GetIsAttack() && player_->GetIsTackle() && isGuard_ && worldTransform_.rotation.y == 4.6f)
+		if (player_->GetIsAttack() && player_->GetIsTackle() && isGuard_ && enemyDirection_ == Direction::Left)
 		{
 			guardAnimationTimer_--;
 
@@ -882,7 +882,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		}
 
 		//弱パンチ
-		if (player_->GetIsLightPunch() == true && isDown_ == false && isGuard_ == false)
+		if (player_->GetIsLightPunch() && !isDown_ && !isGuard_)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 2.0f;
@@ -893,7 +893,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		}
 
 		//中パンチ
-		if (player_->GetIsMiddlePunch() == true && isDown_ == false && isGuard_ == false)
+		if (player_->GetIsMiddlePunch() && !isDown_ && !isGuard_)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 5.0f;
@@ -904,7 +904,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		}
 
 		//強パンチ
-		if (player_->GetIsHighPunch() == true && isDown_ == false && isGuard_ == false)
+		if (player_->GetIsHighPunch() && !isDown_ && !isGuard_)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 10.0f;
@@ -915,7 +915,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		}
 
 		//TC中パンチ
-		if (player_->GetIsTCMiddlePunch() == true && isDown_ == false && isGuard_ == false)
+		if (player_->GetIsTCMiddlePunch() && !isDown_ && !isGuard_)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 2.0f;
@@ -926,7 +926,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		}
 
 		//TC強パンチ
-		if (player_->GetIsTCHighPunch() == true && isDown_ == false && isGuard_ == false)
+		if (player_->GetIsTCHighPunch() && !isDown_ && !isGuard_)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 2.0f;
@@ -938,7 +938,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 		//タックル
 		//キャンセルじゃないとき
-		if (player_->GetIsTackle() == true && player_->GetIsAttack() && isDown_ == false && isGuard_ == false)
+		if (player_->GetIsTackle() && player_->GetIsAttack() && !isDown_ && !isGuard_)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 15.0f;
@@ -949,8 +949,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		}
 
 		//キャンセルのとき
-		if (player_->GetIsTackle() == true && player_->GetIsAttack() && isDown_ && isGuard_ == false
-			&& worldTransform_.translation.y > 0.5f)
+		if (player_->GetIsTackle() && player_->GetIsAttack() && isDown_ && !isGuard_ && worldTransform_.translation.y > 0.5f)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 15.0f;
@@ -964,123 +963,6 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			HitStop(10);
 		}
 	}
-
-	/*if (collider->GetCollisionAttribute() & kCollisionAttributePlayerWeapon)
-	{
-		if (isGuard_ && worldTransform_.rotation.y == 1.7f)
-		{
-			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x -= 0.3f;
-			guardGauge_ += 1.0f;
-
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation(worldTransform_.translation)
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.6f ,0.6f ,0.6f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
-				.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(100)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(2.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
-		}
-
-		if (isGuard_ && worldTransform_.rotation.y == 4.6f)
-		{
-			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x += 0.3f;
-			guardGauge_ += 1.0f;
-
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation(worldTransform_.translation)
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.2f, 0.2f,0.2f }, { 0.6f ,0.6f ,0.6f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.06f ,0.06f ,0.06f }, { 0.1f ,0.1f ,0.1f })
-				.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(100)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(2.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
-		}
-
-		if (player_->GetIsAttack() == true && player_->GetIsSwingDown() == true && isDown_ == false
-			&& isGuard_ == false)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 20.0f;
-			HP_ -= damage;
-			isHitSwingDown_ = true;
-			isShake_ = true;
-
-			HitStop(100);
-		}
-
-		if (player_->GetIsAttack() == true && player_->GetIsPoke() == true && isDown_ == false
-			&& isGuard_ == false)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 15.0f;
-			HP_ -= damage;
-			isHitPoke_ = true;
-			isShake_ = true;
-
-			HitStop(100);
-		}
-
-		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true && isDown_ == false
-			&& isGuard_ == false)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 20.0f;
-			HP_ -= damage;
-			isHitMowDown_ = true;
-			isShake_ = true;
-
-			HitStop(100);
-		}
-
-		if (player_->GetIsAttack() == true && player_->GetIsMowDown() == true &&
-			player_->GetIsCancelCount() == 1)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 0.6f;
-			HP_ -= damage;
-			isHitMowDown_ = true;
-			isShake_ = true;
-		}
-
-		if (player_->GetIsAttack() == true && player_->GetIsFinisher() == true
-			&& isGuard_ == false && player_->GetFinisherCount() == 1)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 0.5f;
-			HP_ -= damage;
-			isHitFinisher_ = true;
-			isShake_ = true;
-		}
-
-		if (player_->GetIsAttack() == true && player_->GetIsFinisher() == true
-			&& isGuard_ == false && player_->GetFinisherCount() == 2)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 1.0f;
-			HP_ -= damage;
-			isHitFinisher_ = true;
-			isShake_ = true;
-		}
-	}*/
 }
 
 void Enemy::HPBarUpdate()
@@ -1219,15 +1101,6 @@ void Enemy::Reset()
 
 	comboCount_ = 0;
 
-	/*worldTransformCursol_.translation.x = 0.9f;
-	worldTransformCursol_.translation.y = worldTransform_.translation.y + 2.0f;
-
-	workAttack_.translation = { 0.0f,2.5f,0.0f };
-	workAttack_.rotation = { 0.0f,0.0f,0.0f };
-
-	playerWeapon_->SetTranslation(workAttack_.translation);
-	playerWeapon_->SetRotation(workAttack_.rotation);*/
-
 	worldTransform_.UpdateMatrixEuler();
 
 	isReset_ = false;
@@ -1278,7 +1151,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (player_->GetIsLightPunch() == false && HP_ > 0.0f)
+		if (!player_->GetIsLightPunch() && HP_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1326,7 +1199,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (player_->GetIsLightPunch() == false && HP_ > 0.0f)
+		if (!player_->GetIsLightPunch() && HP_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1375,7 +1248,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (player_->GetIsMiddlePunch() == false && HP_ > 0.0f)
+		if (!player_->GetIsMiddlePunch() && HP_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1423,7 +1296,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (player_->GetIsMiddlePunch() == false && HP_ > 0.0f)
+		if (!player_->GetIsMiddlePunch() && HP_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1609,7 +1482,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (player_->GetIsTCMiddlePunch() == false && HP_ > 0.0f)
+		if (!player_->GetIsTCMiddlePunch() && HP_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1657,7 +1530,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (player_->GetIsTCMiddlePunch() == false && HP_ > 0.0f)
+		if (!player_->GetIsTCMiddlePunch() && HP_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1715,7 +1588,7 @@ void Enemy::DownAnimation()
 		aabb_ = { {0.1f,-0.3f,-0.3f},{0.8f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (player_->GetIsTCHighPunch() == false && HP_ > 0.0f)
+		if (!player_->GetIsTCHighPunch() && HP_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1774,7 +1647,7 @@ void Enemy::DownAnimation()
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (player_->GetIsTCHighPunch() == false && HP_ > 0.0f)
+		if (!player_->GetIsTCHighPunch() && HP_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1843,7 +1716,7 @@ void Enemy::DownAnimation()
 		aabb_ = { {0.1f,-0.3f,-0.3f},{0.8f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (player_->GetIsTackle() == false && HP_ > 0.0f)
+		if (!player_->GetIsTackle() && HP_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1912,7 +1785,7 @@ void Enemy::DownAnimation()
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (player_->GetIsTackle() == false && HP_ > 0.0f)
+		if (!player_->GetIsTackle() && HP_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
