@@ -653,7 +653,7 @@ void Player::BehaviorAttackUpdate()
 	//弱攻撃
 	if (workAttack_.isLightPunch)
 	{
-		animationIndex = 10;
+		animationIndex = 11;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
@@ -716,7 +716,7 @@ void Player::BehaviorAttackUpdate()
 	//TC用の攻撃(2発目)
 	if (workAttack_.isTCMiddlePunch)
 	{
-		animationIndex = 9;
+		animationIndex = 10;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
@@ -796,7 +796,7 @@ void Player::BehaviorAttackUpdate()
 	//TC用の攻撃(3発目)
 	if (workAttack_.isTCHighPunch)
 	{
-		animationIndex = 8;
+		animationIndex = 9;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
@@ -842,7 +842,7 @@ void Player::BehaviorAttackUpdate()
 	//中攻撃
 	if (workAttack_.isMiddlePunch)
 	{
-		animationIndex = 6;
+		animationIndex = 7;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
@@ -980,7 +980,7 @@ void Player::BehaviorAttackUpdate()
 	//タックル攻撃
 	if (workAttack_.isTackle)
 	{
-		animationIndex = 7;
+		animationIndex = 8;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
@@ -1513,7 +1513,7 @@ void Player::DownAnimation()
 			worldTransform_.translation.y = 0.0f;
 		}
 
-		animationIndex = 5;
+		animationIndex = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
@@ -1582,7 +1582,7 @@ void Player::DownAnimation()
 			worldTransform_.translation.y = 0.0f;
 		}
 
-		animationIndex = 5;
+		animationIndex = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
