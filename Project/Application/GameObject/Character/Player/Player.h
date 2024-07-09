@@ -165,6 +165,8 @@ private:
 
 	void DownAnimation();
 
+	void PushEnemy(Vector3& enemyPosition, float pushSpeed);
+
 #pragma region UIの更新
 
 	void HPBarUpdate();

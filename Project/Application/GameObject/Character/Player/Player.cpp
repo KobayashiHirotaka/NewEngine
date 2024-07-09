@@ -432,9 +432,32 @@ void Player::BehaviorRootUpdate()
 
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
+		//敵の位置を取得する（例: enemyPosition という変数）
+		Vector3 enemyPosition = enemy_->GetWorldPosition();
+
+		if (isHit_)
+		{
+			if (playerDirection == Direction::Right && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
+			{
+				// 敵を右方向に押す
+				PushEnemy(enemyPosition, 0.04f);
+				//isEnemyPush_ = true;
+			}
+			else if (playerDirection == Direction::Left && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+			{
+				// 敵を左方向に押す
+				PushEnemy(enemyPosition, -0.04f);
+				//isEnemyPush_ = true;
+			}
+			else
+			{
+				//isEnemyPush_ = false;
+			}
+		}
+
 		//移動処理
 		//前方向に移動(左を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && playerDirection == Direction::Left && !isDown_ && !isHit_)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && playerDirection == Direction::Left && !isDown_)
 		{
 			velocity_.x = -0.01f;
 			isFrontMove_ = true;
@@ -442,7 +465,7 @@ void Player::BehaviorRootUpdate()
 		}
 
 		//前方向に移動(右を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && playerDirection == Direction::Right && !isDown_ && !isHit_)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && playerDirection == Direction::Right && !isDown_)
 		{
 			velocity_.x = 0.01f;
 			isFrontMove_ = true;
@@ -1594,4 +1617,14 @@ Vector3 Player::GetWorldPosition()
 	pos.y = worldTransform_.matWorld.m[3][1];
 	pos.z = worldTransform_.matWorld.m[3][2];
 	return pos;
+}
+
+void Player::PushEnemy(Vector3& enemyPosition, float pushSpeed)
+{
+	//敵の位置を押す速度分だけ更新
+	enemyPosition.x += pushSpeed;
+
+	//敵のワールドトランスフォームを更新
+	enemy_->GetWorldTransform().translation = enemyPosition;
+	enemy_->GetWorldTransform().UpdateMatrixEuler();
 }
