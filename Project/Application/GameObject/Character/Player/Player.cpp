@@ -555,12 +555,69 @@ void Player::BehaviorRootUpdate()
 		}
 
 		//ジャンプ
-		if (input_->GetJoystickState())
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !isDown_)
 		{
-			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !isDown_)
-			{
-				behaviorRequest_ = Behavior::kJump;
-			}
+			behaviorRequest_ = Behavior::kJump;
+		}
+
+		//攻撃
+		//弱攻撃
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !isDown_)
+		{
+			behaviorRequest_ = Behavior::kAttack;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+			workAttack_.isLightPunch = true;
+		}
+
+		//中攻撃
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !isDown_)
+		{
+			behaviorRequest_ = Behavior::kAttack;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+			workAttack_.isMiddlePunch = true;
+		}
+
+		//強攻撃
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !isDown_)
+		{
+			behaviorRequest_ = Behavior::kAttack;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+			workAttack_.isHighPunch = true;
+		}
+		
+		//タックル攻撃
+		//右向きのとき
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+			&& playerDirection == Direction::Right && !isDown_)
+		{
+			behaviorRequest_ = Behavior::kAttack;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+			workAttack_.isTackle = true;
+		}
+
+		//タックル攻撃
+		//左向きのとき
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+			&& playerDirection == Direction::Left && !isDown_)
+		{
+			behaviorRequest_ = Behavior::kAttack;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+			workAttack_.isTackle = true;
+		}
+		
+		//必殺技
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && finisherGauge_ <= -50.0f
+			&& !isDown_)
+		{
+			behaviorRequest_ = Behavior::kAttack;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+			workAttack_.isFinisher = true;
 		}
 
 		////投げ
@@ -572,68 +629,6 @@ void Player::BehaviorRootUpdate()
 		//		isThrow_ = true;
 		//	}
 		//}
-
-		//攻撃
-		if (input_->GetJoystickState())
-		{
-			//弱攻撃
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !isDown_)
-			{
-				behaviorRequest_ = Behavior::kAttack;
-				animationTime = 0.0f;
-				model_->SetAnimationTime(animationTime);
-				workAttack_.isLightPunch = true;
-			}
-		}
-
-		if (input_->GetJoystickState())
-		{
-			//中攻撃
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !isDown_)
-			{
-				behaviorRequest_ = Behavior::kAttack;
-				animationTime = 0.0f;
-				model_->SetAnimationTime(animationTime);
-				workAttack_.isMiddlePunch = true;
-			}
-		}
-
-		if (input_->GetJoystickState())
-		{
-			//強攻撃
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !isDown_)
-			{
-				behaviorRequest_ = Behavior::kAttack;
-				animationTime = 0.0f;
-				model_->SetAnimationTime(animationTime);
-				workAttack_.isHighPunch = true;
-			}
-		}
-
-		if (input_->GetJoystickState())
-		{
-			//タックル攻撃
-			//右向きのとき
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-				&& playerDirection == Direction::Right && !isDown_)
-			{
-				behaviorRequest_ = Behavior::kAttack;
-				animationTime = 0.0f;
-				model_->SetAnimationTime(animationTime);
-				workAttack_.isTackle = true;
-			}
-
-			//タックル攻撃
-			//左向きのとき
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-				&& playerDirection == Direction::Left && !isDown_)
-			{
-				behaviorRequest_ = Behavior::kAttack;
-				animationTime = 0.0f;
-				model_->SetAnimationTime(animationTime);
-				workAttack_.isTackle = true;
-			}
-		}
 	}
 }
 
@@ -1083,6 +1078,47 @@ void Player::BehaviorAttackUpdate()
 			model_->SetAnimationTime(animationTime);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
+		}
+
+		attackAnimationFrame++;
+	}
+
+	//必殺技
+	if (workAttack_.isFinisher)
+	{
+		animationIndex = 8;
+		isGuard_ = false;
+		float animationTime = 0.0f;
+		float animationDuration;
+		animationTime = model_->GetAnimationTime();
+		animationDuration = model_->GetAnimation()[animationIndex].duration;
+
+		if (!isDown_)
+		{
+			animationTime += 1.0f / 40.0f;
+		}
+
+		model_->SetAnimationTime(animationTime);
+		model_->ApplyAnimation(animationIndex);
+
+		///*aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+		//SetAABB(aabb_);*/
+
+		//if (attackAnimationFrame >= 55)
+		//{
+		//	workAttack_.isAttack = false;
+		//}
+
+		if (isDown_ || animationTime >= animationDuration)
+		{
+			behaviorRequest_ = Behavior::kRoot;
+			workAttack_.isAttack = false;
+			workAttack_.isFinisher = false;
+			animationTime = 0.0f;
+			attackAnimationFrame = 0;
+			model_->SetAnimationTime(animationTime);
+			/*aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);*/
 		}
 
 		attackAnimationFrame++;
