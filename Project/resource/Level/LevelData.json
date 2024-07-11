@@ -65,9 +65,10 @@
             },
             "file_name": "newPlayer",
             "character_data": {
-                "type": "Player",
+                "type": "",
                 "hp": -100.0,
-                "speed": 0.03999999910593033
+                "frontSpeed": "0.04",
+                "backSpeed": "0.04"
             }
         },
         {
@@ -92,9 +93,10 @@
             },
             "file_name": "remakePlayer",
             "character_data": {
-                "type": "Enemy",
+                "type": "",
                 "hp": 100.0,
-                "speed": 0.03999999910593033
+                "frontSpeed": "0.04",
+                "backSpeed": "0.04"
             }
         },
         {

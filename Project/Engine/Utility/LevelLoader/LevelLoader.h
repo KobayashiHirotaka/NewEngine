@@ -5,6 +5,7 @@
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/Utility/Structs.h"
 #include "Engine/externals/nlohmann/json.hpp"
+#include <iostream>
 #include<string>
 #include<sstream>
 #include<fstream>
@@ -33,7 +34,8 @@ public:
             //キャラクターごとのデータ
             std::string type;
             float hp;
-            float speed;
+            float frontSpeed;
+            float backSpeed;
         };
 
         struct CameraObjectData

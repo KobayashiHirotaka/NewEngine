@@ -100,8 +100,33 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 		{
 			json& characterData = object["character_data"];
 
-			objectData.hp = (float)characterData["hp"];
-			objectData.speed = (float)characterData["speed"];
+			//キーの存在を確認
+			if (characterData.contains("hp"))
+			{
+				objectData.hp = (float)characterData["hp"];
+			}
+			else
+			{
+				assert(false);
+			}
+
+			if (characterData.contains("frontSpeed")) 
+			{
+				objectData.frontSpeed = std::stof(characterData["frontSpeed"].get<std::string>());
+			}
+			else 
+			{
+				assert(false);
+			}
+
+			if (characterData.contains("backSpeed")) 
+			{
+				objectData.backSpeed = std::stof(characterData["backSpeed"].get<std::string>());
+			}
+			else 
+			{
+				assert(false);
+			}
 		}
 
 		json& transform = object["transform"];
@@ -193,7 +218,8 @@ void LevelLoader::CreateObjectsFromLevelData(const LevelData* levelData)
 		if (objectData.objectName == "Player" || objectData.objectName == "Enemy")
 		{
 			newObject->SetHP(objectData.hp);
-			newObject->SetSpeed(objectData.speed);
+			newObject->SetFrontSpeed(objectData.frontSpeed);
+			newObject->SetBackSpeed(objectData.backSpeed);
 		}
 	}
 }

@@ -28,7 +28,8 @@ public:
 
 	//characterDataのsetter
 	void SetHP(const float& hp) { HP_ = hp; };
-	void SetSpeed(const float& speed) { speed_ = speed; };
+	void SetFrontSpeed(const float& frontSpeed) { frontSpeed_ = frontSpeed; };
+	void SetBackSpeed(const float& backSpeed) { backSpeed_ = backSpeed; };
 
 	//tag
 	const std::string GetTag() { return tag_; };
@@ -44,5 +45,6 @@ protected:
 	std::string tag_;
 
 	float HP_;
-	float speed_;
+	float frontSpeed_;
+	float backSpeed_;
 };
