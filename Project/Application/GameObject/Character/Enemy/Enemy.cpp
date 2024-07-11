@@ -152,13 +152,9 @@ void Enemy::Update()
 	{
 		animationIndex = 9;
 	}
-	if (input_->PressKey(DIK_W))
-	{
-		animationIndex = 10;
-	}
 	if (input_->PressKey(DIK_Q))
 	{
-		animationIndex = 11;
+		animationIndex = 10;
 	}
 
 	//ここまでテスト用の処理
@@ -433,81 +429,79 @@ void Enemy::BehaviorRootUpdate()
 		bool isBackMove_ = false;
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
-		UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
+		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left && !isHit_)
+		{
+			velocity_.x = -0.01f;
+			isFrontMove_ = false;
+			isBackMove_ = true;
+			isGuard_ = false;
+		}
 
-		//if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left && !isHit_)
-		//{
-		//	velocity_.x = -0.01f;
-		//	isFrontMove_ = false;
-		//	isBackMove_ = true;
-		//	isGuard_ = false;
-		//}
+		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right && !isHit_)
+		{
+			velocity_.x = 0.01f;
+			isFrontMove_ = true;
+			isBackMove_ = false;
+			isGuard_ = false;
+		}
 
-		//if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right && !isHit_)
-		//{
-		//	velocity_.x = 0.01f;
-		//	isFrontMove_ = true;
-		//	isBackMove_ = false;
-		//	isGuard_ = false;
-		//}
+		if (moveTimer_ > 30 && enemyDirection_ == Direction::Right)
+		{
+			velocity_.x = -0.01f;
+			isFrontMove_ = false;
+			isBackMove_ = true;
+			isGuard_ = true;
+		}
 
-		//if (moveTimer_ > 30 && enemyDirection_ == Direction::Right)
-		//{
-		//	velocity_.x = -0.01f;
-		//	isFrontMove_ = false;
-		//	isBackMove_ = true;
-		//	isGuard_ = true;
-		//}
+		if (moveTimer_ > 30 && enemyDirection_ == Direction::Left)
+		{
+			velocity_.x = 0.01f;
+			isFrontMove_ = true;
+			isBackMove_ = false;
+			isGuard_ = true;
+		}
 
-		//if (moveTimer_ > 30 && enemyDirection_ == Direction::Left)
-		//{
-		//	velocity_.x = 0.01f;
-		//	isFrontMove_ = true;
-		//	isBackMove_ = false;
-		//	isGuard_ = true;
-		//}
+		//移動
+		if (isFrontMove_)
+		{
+			animationIndex = 0;
 
-		////移動
-		//if (isFrontMove_)
-		//{
-		//	animationIndex = 0;
+			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
 
-		//	UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
+			velocity_ = Normalize(velocity_);
+			velocity_ = Multiply(frontSpeed_, velocity_);
 
-		//	velocity_ = Normalize(velocity_);
-		//	velocity_ = Multiply(frontSpeed_, velocity_);
+			// 平行移動
+			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
-		//	// 平行移動
-		//	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+			worldTransform_.UpdateMatrixEuler();
+		}
+		else if (isBackMove_)
+		{
+			animationIndex = 1;
 
-		//	worldTransform_.UpdateMatrixEuler();
-		//}
-		//else if (isBackMove_)
-		//{
-		//	animationIndex = 1;
+			UpdateAnimationTime(animationTime, true, 40.0f, animationIndex, model_);
 
-		//	UpdateAnimationTime(animationTime, true, 40.0f, animationIndex, model_);
+			velocity_ = Normalize(velocity_);
+			velocity_ = Multiply(backSpeed_, velocity_);
 
-		//	velocity_ = Normalize(velocity_);
-		//	velocity_ = Multiply(backSpeed_, velocity_);
+			// 平行移動
+			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
-		//	// 平行移動
-		//	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+			worldTransform_.UpdateMatrixEuler();
+		}
+		else
+		{
+			animationIndex = 4;
 
-		//	worldTransform_.UpdateMatrixEuler();
-		//}
-		//else
-		//{
-		//	animationIndex = 4;
+			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
+		}
 
-		//	UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
-		//}
-
-		//if (moveTimer_ <= 0)
-		//{
-		//	moveTimer_ = Random(30, 90);
-		//	patternCount_ = 2;
-		//}
+		if (moveTimer_ <= 0)
+		{
+			moveTimer_ = Random(30, 90);
+			patternCount_ = 2;
+		}
 	}
 
 	//攻撃

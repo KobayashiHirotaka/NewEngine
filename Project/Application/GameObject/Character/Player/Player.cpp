@@ -178,6 +178,14 @@ void Player::Update()
 	{
 		animationIndex = 10;
 	}
+	if (input_->PressKey(DIK_W))
+	{
+		animationIndex = 11;
+	}
+	if (input_->PressKey(DIK_E))
+	{
+		animationIndex = 12;
+	}
 	//ここまでテスト用の処理
 
 	isShake_ = false;
@@ -562,16 +570,6 @@ void Player::BehaviorRootUpdate()
 			model_->SetAnimationTime(animationTime);
 			workAttack_.isTackle = true;
 		}
-		
-		//必殺技
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && finisherGauge_ <= -50.0f
-			&& !isDown_)
-		{
-			behaviorRequest_ = Behavior::kAttack;
-			animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
-			workAttack_.isFinisher = true;
-		}
 	}
 }
 
@@ -585,7 +583,7 @@ void Player::BehaviorAttackUpdate()
 	//弱攻撃
 	if (workAttack_.isLightPunch)
 	{
-		animationIndex = 11;
+		animationIndex = 12;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
@@ -648,7 +646,7 @@ void Player::BehaviorAttackUpdate()
 	//TC用の攻撃(2発目)
 	if (workAttack_.isTCMiddlePunch)
 	{
-		animationIndex = 10;
+		animationIndex = 11;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
@@ -728,7 +726,7 @@ void Player::BehaviorAttackUpdate()
 	//TC用の攻撃(3発目)
 	if (workAttack_.isTCHighPunch)
 	{
-		animationIndex = 9;
+		animationIndex = 10;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
@@ -1019,47 +1017,6 @@ void Player::BehaviorAttackUpdate()
 
 		attackAnimationFrame++;
 	}
-
-	//必殺技
-	if (workAttack_.isFinisher)
-	{
-		animationIndex = 8;
-		isGuard_ = false;
-		float animationTime = 0.0f;
-		float animationDuration;
-		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
-
-		if (!isDown_)
-		{
-			animationTime += 1.0f / 40.0f;
-		}
-
-		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
-
-		///*aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-		//SetAABB(aabb_);*/
-
-		//if (attackAnimationFrame >= 55)
-		//{
-		//	workAttack_.isAttack = false;
-		//}
-
-		if (isDown_ || animationTime >= animationDuration)
-		{
-			behaviorRequest_ = Behavior::kRoot;
-			workAttack_.isAttack = false;
-			workAttack_.isFinisher = false;
-			animationTime = 0.0f;
-			attackAnimationFrame = 0;
-			model_->SetAnimationTime(animationTime);
-			/*aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-			SetAABB(aabb_);*/
-		}
-
-		attackAnimationFrame++;
-	}
 }
 
 void Player::BehaviorJumpInitialize()
@@ -1108,12 +1065,39 @@ void Player::BehaviorThrowUpdate()
 
 void Player::BehaviorStanInitialize()
 {
-
+	animationIndex = 9;
 }
 
 void Player::BehaviorStanUpdate()
 {
+	animationIndex = 9;
+	isGuard_ = false;
+	float animationTime = 0.0f;
+	float animationDuration;
+	animationTime = model_->GetAnimationTime();
+	animationDuration = model_->GetAnimation()[animationIndex].duration;
 
+	aabb_ = { {0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+	SetAABB(aabb_);
+
+	if (!isDown_)
+	{
+		animationTime += 1.0f / 60.0f;
+	}
+
+	model_->SetAnimationTime(animationTime);
+	model_->ApplyAnimation(animationIndex);
+
+	if (animationTime >= animationDuration || isDown_)
+	{
+		behaviorRequest_ = Behavior::kRoot;
+		animationTime = 0.0f;
+		attackAnimationFrame = 0;
+		guardGauge_ = 0.0f;
+		model_->SetAnimationTime(animationTime);
+		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+		SetAABB(aabb_);
+	}
 }
 
 void Player::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex, std::unique_ptr<Model>& modelFighterBody)
@@ -1316,7 +1300,7 @@ void Player::GuardGaugeBarUpdate()
 	if (guardGauge_ <= -50.0f)
 	{
 		guardGauge_ = -50.0f;
-		//behaviorRequest_ = Behavior::kStan;
+		behaviorRequest_ = Behavior::kStan;
 	}
 }
 
