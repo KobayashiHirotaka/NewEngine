@@ -111,6 +111,56 @@ void Enemy::Update()
 		isGuard_ = true;
 	}
 
+	//アニメーションテスト用
+	if (input_->PressKey(DIK_0))
+	{
+		animationIndex = 0;
+	}
+	if (input_->PressKey(DIK_1))
+	{
+		animationIndex = 1;
+	}
+	if (input_->PressKey(DIK_2))
+	{
+		animationIndex = 2;
+	}
+	if (input_->PressKey(DIK_3))
+	{
+		animationIndex = 3;
+	}
+	if (input_->PressKey(DIK_4))
+	{
+		animationIndex = 4;
+	}
+	if (input_->PressKey(DIK_5))
+	{
+		animationIndex = 5;
+	}
+	if (input_->PressKey(DIK_6))
+	{
+		animationIndex = 6;
+	}
+	if (input_->PressKey(DIK_7))
+	{
+		animationIndex = 7;
+	}
+	if (input_->PressKey(DIK_8))
+	{
+		animationIndex = 8;
+	}
+	if (input_->PressKey(DIK_9))
+	{
+		animationIndex = 9;
+	}
+	if (input_->PressKey(DIK_W))
+	{
+		animationIndex = 10;
+	}
+	if (input_->PressKey(DIK_Q))
+	{
+		animationIndex = 11;
+	}
+
 	//ここまでテスト用の処理
 
 	isShake_ = false;
@@ -365,7 +415,7 @@ void Enemy::DrawParticle(const Camera& camera)
 
 void Enemy::BehaviorRootInitialize()
 {
-
+	animationIndex = 4;
 }
 
 void Enemy::BehaviorRootUpdate()
@@ -383,79 +433,81 @@ void Enemy::BehaviorRootUpdate()
 		bool isBackMove_ = false;
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
-		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left && !isHit_)
-		{
-			velocity_.x = -0.01f;
-			isFrontMove_ = false;
-			isBackMove_ = true;
-			isGuard_ = false;
-		}
+		UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
 
-		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right && !isHit_)
-		{
-			velocity_.x = 0.01f;
-			isFrontMove_ = true;
-			isBackMove_ = false;
-			isGuard_ = false;
-		}
+		//if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left && !isHit_)
+		//{
+		//	velocity_.x = -0.01f;
+		//	isFrontMove_ = false;
+		//	isBackMove_ = true;
+		//	isGuard_ = false;
+		//}
 
-		if (moveTimer_ > 30 && enemyDirection_ == Direction::Right)
-		{
-			velocity_.x = -0.01f;
-			isFrontMove_ = false;
-			isBackMove_ = true;
-			isGuard_ = true;
-		}
+		//if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right && !isHit_)
+		//{
+		//	velocity_.x = 0.01f;
+		//	isFrontMove_ = true;
+		//	isBackMove_ = false;
+		//	isGuard_ = false;
+		//}
 
-		if (moveTimer_ > 30 && enemyDirection_ == Direction::Left)
-		{
-			velocity_.x = 0.01f;
-			isFrontMove_ = true;
-			isBackMove_ = false;
-			isGuard_ = true;
-		}
+		//if (moveTimer_ > 30 && enemyDirection_ == Direction::Right)
+		//{
+		//	velocity_.x = -0.01f;
+		//	isFrontMove_ = false;
+		//	isBackMove_ = true;
+		//	isGuard_ = true;
+		//}
 
-		//移動
-		if (isFrontMove_)
-		{
-			animationIndex = 0;
+		//if (moveTimer_ > 30 && enemyDirection_ == Direction::Left)
+		//{
+		//	velocity_.x = 0.01f;
+		//	isFrontMove_ = true;
+		//	isBackMove_ = false;
+		//	isGuard_ = true;
+		//}
 
-			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
+		////移動
+		//if (isFrontMove_)
+		//{
+		//	animationIndex = 0;
 
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(frontSpeed_, velocity_);
+		//	UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
 
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+		//	velocity_ = Normalize(velocity_);
+		//	velocity_ = Multiply(frontSpeed_, velocity_);
 
-			worldTransform_.UpdateMatrixEuler();
-		}
-		else if (isBackMove_)
-		{
-			animationIndex = 1;
+		//	// 平行移動
+		//	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
-			UpdateAnimationTime(animationTime, true, 40.0f, animationIndex, model_);
+		//	worldTransform_.UpdateMatrixEuler();
+		//}
+		//else if (isBackMove_)
+		//{
+		//	animationIndex = 1;
 
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(backSpeed_, velocity_);
+		//	UpdateAnimationTime(animationTime, true, 40.0f, animationIndex, model_);
 
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+		//	velocity_ = Normalize(velocity_);
+		//	velocity_ = Multiply(backSpeed_, velocity_);
 
-			worldTransform_.UpdateMatrixEuler();
-		}
-		else
-		{
-			animationIndex = 4;
+		//	// 平行移動
+		//	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
-			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
-		}
+		//	worldTransform_.UpdateMatrixEuler();
+		//}
+		//else
+		//{
+		//	animationIndex = 4;
 
-		if (moveTimer_ <= 0)
-		{
-			moveTimer_ = Random(30, 90);
-			patternCount_ = 2;
-		}
+		//	UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
+		//}
+
+		//if (moveTimer_ <= 0)
+		//{
+		//	moveTimer_ = Random(30, 90);
+		//	patternCount_ = 2;
+		//}
 	}
 
 	//攻撃
@@ -641,12 +693,39 @@ void Enemy::BehaviorThrowUpdate()
 
 void Enemy::BehaviorStanInitialize()
 {
-
+	animationIndex = 8;
 }
 
 void Enemy::BehaviorStanUpdate()
 {
-	
+	animationIndex = 8;
+	isGuard_ = false;
+	float animationTime = 0.0f;
+	float animationDuration;
+	animationTime = model_->GetAnimationTime();
+	animationDuration = model_->GetAnimation()[animationIndex].duration;
+
+	aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+	SetAABB(aabb_);
+
+	if (!isDown_)
+	{
+		animationTime += 1.0f / 60.0f;
+	}
+
+	model_->SetAnimationTime(animationTime);
+	model_->ApplyAnimation(animationIndex);
+
+	if (animationTime >= animationDuration || isDown_)
+	{
+		behaviorRequest_ = Behavior::kRoot;
+		animationTime = 0.0f;
+		attackAnimationFrame = 0;
+		guardGauge_ = 0.0f;
+		model_->SetAnimationTime(animationTime);
+		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+		SetAABB(aabb_);
+	}
 }
 
 void Enemy::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex, std::unique_ptr<Model>& modelFighterBody)
@@ -920,7 +999,7 @@ void Enemy::GuardGaugeBarUpdate()
 	if (guardGauge_ >= 50.0f)
 	{
 		guardGauge_ = 50.0f;
-		//behaviorRequest_ = Behavior::kStan;
+		behaviorRequest_ = Behavior::kStan;
 	}
 }
 

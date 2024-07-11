@@ -271,12 +271,12 @@ void Player::Update()
 		worldTransform_.rotation.y = 4.6f;
 	}
 
-	if (workAttack_.isAttack && worldTransform_.translation.x >= 3.5f && playerDirection == Direction::Right)
+	if (!workAttack_.isAttack && worldTransform_.translation.x >= 3.5f && playerDirection == Direction::Right)
 	{
 		worldTransform_.translation.x = 3.5f;
 	}
 
-	if (workAttack_.isAttack && worldTransform_.translation.x <= -3.5f && playerDirection == Direction::Left)
+	if (!workAttack_.isAttack && worldTransform_.translation.x <= -3.5f && playerDirection == Direction::Left)
 	{
 		worldTransform_.translation.x = -3.5f;
 	}
