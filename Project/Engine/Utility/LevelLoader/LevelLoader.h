@@ -30,6 +30,8 @@ public:
             Vector3 rotation;
             Vector3 scale;
 
+            //キャラクターごとのデータ
+            std::string type;
             float hp;
             float speed;
         };

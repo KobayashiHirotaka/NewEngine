@@ -96,7 +96,7 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 			objectData.fileName = object["file_name"];
 		}
 
-		if (objectData.objectName == "Player")
+		if (objectData.objectName == "Player" || objectData.objectName == "Enemy")
 		{
 			json& characterData = object["character_data"];
 
@@ -190,7 +190,7 @@ void LevelLoader::CreateObjectsFromLevelData(const LevelData* levelData)
 		//スケーリング
 		newObject->SetScale(objectData.scale);
 
-		if (objectData.objectName == "Player")
+		if (objectData.objectName == "Player" || objectData.objectName == "Enemy")
 		{
 			newObject->SetHP(objectData.hp);
 			newObject->SetSpeed(objectData.speed);
