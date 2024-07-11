@@ -25,11 +25,6 @@ void Enemy::Initialize()
 	//worldTransformの初期化
 	worldTransform_.Initialize();
 
-	////Weaponの生成
-	//enemyWeapon_ = std::make_unique<EnemyWeapon>();
-	//enemyWeapon_->Initialize();
-	//enemyWeapon_->SetParent(&worldTransform_);
-
 	//当たり判定の設定
 	SetAABB(aabb_);
 
@@ -115,10 +110,6 @@ void Enemy::Update()
 	{
 		isGuard_ = true;
 	}
-	/*if (input_->PushKey(DIK_L) && isGuard_)
-	{
-		isGuard_ = false;
-	}*/
 
 	//ここまでテスト用の処理
 
@@ -234,22 +225,16 @@ void Enemy::Update()
 		worldTransform_.translation.x = -4.0f;
 	}
 
-	////ジャンプ中にプレイヤーと当たったときの処理
-	//if (behaviorRequest_ == Behavior::kJump && isHit_)
-	//{
-	//	worldTransform_.translation.y = 0.0f;
-	//}
-
-	//Weaponの更新
-	//enemyWeapon_->Update();
+	//ジャンプ中にプレイヤーと当たったときの処理
+	if (behaviorRequest_ == Behavior::kJump && isHit_)
+	{
+		worldTransform_.translation.y = 0.0f;
+	}
 
 	DownAnimation();
 
 	//パーティクルの更新
 	particleSystem_->Update();
-
-	//Weaponの更新
-	//enemyWeapon_->Update();
 
 	isHit_ = false;
 
@@ -311,13 +296,6 @@ void Enemy::Update()
 		comboTimer_--;
 	}
 
-	/*if (isHitHighPunch_)
-	{
-		comboCount_ = 3;
-		comboTimer_ = 60;
-		comboTimer_--;
-	}*/
-
 	if (comboTimer_ < 60)
 	{
 		comboTimer_--;
@@ -355,14 +333,6 @@ void Enemy::Update()
 void Enemy::Draw(const Camera& camera)
 {
 	model_->Draw(worldTransform_, camera, animationIndex);
-
-	////Weaponの描画
-	//if (workAttack_.isAttack && workAttack_.isSwingDown || workAttack_.isMowDown || workAttack_.isPoke && !isHitSwingDown_
-	//	&& !isHitPoke_ && !isHitMowDown_ && !isDown_ && behaviorRequest_ != Behavior::kRoot
-	//	&& workAttack_.isAttack)
-	//{
-	//	enemyWeapon_->Draw(camera);
-	//}
 }
 
 void Enemy::BoneDraw(const Camera& camera)
@@ -503,13 +473,6 @@ void Enemy::BehaviorRootUpdate()
 	{
 		behaviorRequest_ = Behavior::kJump;
 	}
-
-	////投げ
-	//if (patternCount_ == 4 && isDown_ == false)
-	//{
-	//	behaviorRequest_ = Behavior::kThrow;
-	//	isThrow_ = true;
-	//}
 }
 
 void Enemy::BehaviorAttackInitialize()
@@ -673,42 +636,7 @@ void Enemy::BehaviorThrowInitialize()
 
 void Enemy::BehaviorThrowUpdate()
 {
-	////投げ
-	//if (isThrow_)
-	//{
-	//	isGuard_ = false;
-	//	if (attackAnimationFrame < 30)
-	//	{
 
-	//	}
-	//	else if (enemy_->GetIsPlayerHit() == true)
-	//	{
-	//		throwTimer_--;
-
-
-	//		if (throwTimer_ <= 0)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-	//			throwTimer_ = 100;
-
-	//			isThrow_ = false;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		workAttack_.stiffnessTimer--;
-
-	//		if (workAttack_.stiffnessTimer <= 0)
-	//		{
-	//			behaviorRequest_ = Behavior::kRoot;
-
-	//			throwTimer_ = 100;
-	//			workAttack_.stiffnessTimer = 60;
-	//			isThrow_ = false;
-	//		}
-	//	}
-	//	attackAnimationFrame++;
-	//}
 }
 
 void Enemy::BehaviorStanInitialize()
@@ -718,34 +646,7 @@ void Enemy::BehaviorStanInitialize()
 
 void Enemy::BehaviorStanUpdate()
 {
-	/*if (stanTimer_ == 200)
-	{
-		isShake_ = true;
-	}
-
-	if (stanTimer_ <= 170)
-	{
-		isGuard_ = false;
-	}
-
-	guardGauge_ = maxGuardGauge_;
-
-	stanTimer_--;
-
-	worldTransform_.rotation.y += 0.1f;
-
-	if (stanTimer_ < 0 || isHitMowDown_ || isHitPoke_ || isHitPunch_ ||
-		isHitSwingDown_ || isThrow_)
-	{
-		stanTimer_ = 200;
-		guardGauge_ = 0.0f;
-		behaviorRequest_ = Behavior::kRoot;
-
-		worldTransformHead_.rotation.y = 0.0f;
-
-		worldTransform_.rotation.x = 0.0f;
-		worldTransform_.rotation.y = 0.0f;
-	}*/
+	
 }
 
 void Enemy::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex, std::unique_ptr<Model>& modelFighterBody)
@@ -1025,32 +926,6 @@ void Enemy::GuardGaugeBarUpdate()
 
 void Enemy::FinisherGaugeBarUpdate()
 {
-
-	/*if (enemy_->GetIsDown() == false && enemy_->GetIsHitPunch())
-	{
-		finisherGauge_ += 3.0f;
-	}
-
-	if (enemy_->GetIsDown() == false && enemy_->GetIsHitSwingDown())
-	{
-		finisherGauge_ += 8.0f;
-	}
-
-	if (enemy_->GetIsDown() == false && enemy_->GetIsHitPoke())
-	{
-		finisherGauge_ += 6.0f;
-	}
-
-	if (enemy_->GetIsDown() == false && enemy_->GetIsHitMowDown())
-	{
-		finisherGauge_ += 8.0f;
-	}
-
-	if (enemy_->GetIsDown() == false && enemy_->GetIsHitThrow())
-	{
-		finisherGauge_ += 5.0f;
-	}*/
-
 	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize,20.0f };
 
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);

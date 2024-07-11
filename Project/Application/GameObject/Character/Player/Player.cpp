@@ -25,11 +25,6 @@ void Player::Initialize()
 	//worldTransformの初期化
 	worldTransform_.Initialize();
 
-	//Weaponの生成
-	//playerWeapon_ = std::make_unique<PlayerWeapon>();
-	//playerWeapon_->Initialize();
-	//playerWeapon_->SetParent(&worldTransform_);
-
 	//当たり判定の設定
 	SetAABB(aabb_);
 
@@ -138,25 +133,6 @@ void Player::Update()
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
 
-	//良さげなパーティクル(何かに使えるかも)
-	/*ParticleEmitter* newParticleEmitter = EmitterBuilder()
-		.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-		.SetTranslation({ worldTransform_.translation.x - 0.1f,
-				worldTransform_.translation.y + 0.6f,  worldTransform_.translation.z })
-		.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-		.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-		.SetScale({ 0.1f, 0.1f, 0.1f }, { 0.4f ,0.4f ,0.4f })
-		.SetAzimuth(8.0f, 352.0f)
-		.SetElevation(0.0f, 0.0f)
-		.SetVelocity({ 0.08f ,0.08f ,0.08f }, { 0.1f ,0.1f ,0.1f })
-		.SetColor({ 1.0f ,0.0f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-		.SetLifeTime(0.1f, 0.6f)
-		.SetCount(100)
-		.SetFrequency(4.0f)
-		.SetDeleteTime(2.0f)
-		.Build();
-	particleSystem_->AddParticleEmitter(newParticleEmitter);*/
-
 	//アニメーションテスト用
 	if (input_->PressKey(DIK_0))
 	{
@@ -202,8 +178,6 @@ void Player::Update()
 	{
 		animationIndex = 10;
 	}
-
-
 	//ここまでテスト用の処理
 
 	isShake_ = false;
@@ -297,18 +271,6 @@ void Player::Update()
 		worldTransform_.rotation.y = 4.6f;
 	}
 
-	/*if (enemy_->GetWorldPosition().x == worldTransform_.translation.x && !workAttack_.isAttack && !isDown_)
-	{
-		if (playerDirection == Direction::Left)
-		{
-			worldTransform_.translation.x = enemy_->GetWorldPosition().x + 0.5f;
-		}
-		else if (playerDirection == Direction::Right)
-		{
-			worldTransform_.translation.x = enemy_->GetWorldPosition().x - 0.5f;
-		}
-	}*/
-
 	if (workAttack_.isAttack && worldTransform_.translation.x >= 3.5f && playerDirection == Direction::Right)
 	{
 		worldTransform_.translation.x = 3.5f;
@@ -330,19 +292,16 @@ void Player::Update()
 		worldTransform_.translation.x = -4.0f;
 	}
 
-	////ジャンプ中に敵と当たったときの処理
-	//if (behaviorRequest_ == Behavior::kJump && isHit_)
-	//{
-	//	worldTransform_.translation.y = 0.0f;
-	//}
+	//ジャンプ中に敵と当たったときの処理
+	if (behaviorRequest_ == Behavior::kJump && isHit_)
+	{
+		worldTransform_.translation.y = 0.0f;
+	}
 
 	DownAnimation();
 
 	//パーティクルの更新
 	particleSystem_->Update();
-
-	//Weaponの更新
-	//playerWeapon_->Update();
 
 	isHit_ = false;
 
@@ -441,17 +400,11 @@ void Player::BehaviorRootUpdate()
 			{
 				// 敵を右方向に押す
 				PushEnemy(enemyPosition, 0.04f);
-				//isEnemyPush_ = true;
 			}
 			else if (playerDirection == Direction::Left && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
 			{
 				// 敵を左方向に押す
 				PushEnemy(enemyPosition, -0.04f);
-				//isEnemyPush_ = true;
-			}
-			else
-			{
-				//isEnemyPush_ = false;
 			}
 		}
 
@@ -619,27 +572,11 @@ void Player::BehaviorRootUpdate()
 			model_->SetAnimationTime(animationTime);
 			workAttack_.isFinisher = true;
 		}
-
-		////投げ
-		//if (input_->GetJoystickState())
-		//{
-		//	if (input_->IsPressButton(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_Y) && isDown_ == false)
-		//	{
-		//		behaviorRequest_ = Behavior::kThrow;
-		//		isThrow_ = true;
-		//	}
-		//}
 	}
 }
 
 void Player::BehaviorAttackInitialize()
 {
-	//通常攻撃
-	/*if (workAttack_.isLightPunch)
-	{
-		animationIndex = 7;
-	}*/
-
 	attackAnimationFrame = 0;
 }
 
@@ -1161,10 +1098,7 @@ void Player::BehaviorJumpUpdate()
 
 void Player::BehaviorThrowInitialize()
 {
-	/*if (isThrow_)
-	{
-		attackAnimationFrame = 0;
-	}*/
+	
 }
 
 void Player::BehaviorThrowUpdate()
@@ -1342,22 +1276,6 @@ void Player::OnCollision(Collider* collider, float damage)
 
 			HitStop(30);
 		}
-
-		////キャンセルのとき
-		//if (enemy_->GetIsTackle() == true && enemy_->GetIsAttack() && isDown_ && isGuard_ == false
-		//	&& worldTransform_.translation.y > 0.5f)
-		//{
-		//	audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-		//	damage = 15.0f;
-		//	HP_ -= damage;
-		//	downAnimationTimer_ = 60;
-		//	float animationTime = 0.0f;
-		//	model_->SetAnimationTime(animationTime);
-		//	isHitHighPunch_ = false;
-		//	isHitTackle_ = true;
-
-		//	HitStop(10);
-		//}
 	}
 }
 
@@ -1404,32 +1322,6 @@ void Player::GuardGaugeBarUpdate()
 
 void Player::FinisherGaugeBarUpdate()
 {
-
-	/*if (enemy_->GetIsDown() == false && enemy_->GetIsHitPunch())
-	{
-		finisherGauge_ += 3.0f;
-	}
-
-	if (enemy_->GetIsDown() == false && enemy_->GetIsHitSwingDown())
-	{
-		finisherGauge_ += 8.0f;
-	}
-
-	if (enemy_->GetIsDown() == false && enemy_->GetIsHitPoke())
-	{
-		finisherGauge_ += 6.0f;
-	}
-
-	if (enemy_->GetIsDown() == false && enemy_->GetIsHitMowDown())
-	{
-		finisherGauge_ += 8.0f;
-	}
-
-	if (enemy_->GetIsDown() == false && enemy_->GetIsHitThrow())
-	{
-		finisherGauge_ += 5.0f;
-	}*/
-
 	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize,20.0f };
 
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);

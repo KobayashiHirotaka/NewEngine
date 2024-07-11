@@ -41,9 +41,6 @@ public:
 
 		uint32_t attackParameter = 0;
 
-		int count = 0;
-		int pokeCount = 0;
-
 		int stiffnessTimer = 60;
 
 		bool comboNext = false;
@@ -283,8 +280,6 @@ private:
 
 	int attackTimer = 30;
 
-	int pokeTimer_ = 30;
-
 	int jumpAttackTimer_ = 15;
 
 	int throwTimer_ = 100;
@@ -330,7 +325,6 @@ private:
 	//リセットしているかどうか
 	bool isReset_ = false;
 
-
 	bool isFinisherEffect = false;
 
 #pragma endregion
@@ -364,9 +358,6 @@ private:
 
 	//敵
 	Enemy* enemy_ = nullptr;
-
-	//武器
-	//std::unique_ptr<PlayerWeapon> playerWeapon_ = nullptr;
 
 	//カーソル
 	std::unique_ptr<Model> playerCursol_;
