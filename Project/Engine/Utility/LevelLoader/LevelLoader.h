@@ -25,9 +25,13 @@ public:
         {
             std::string objectName;
             std::string fileName;
+
             Vector3 translation;
             Vector3 rotation;
             Vector3 scale;
+
+            float hp;
+            float speed;
         };
 
         struct CameraObjectData

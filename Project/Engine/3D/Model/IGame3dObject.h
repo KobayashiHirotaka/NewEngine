@@ -26,6 +26,10 @@ public:
 	void SetRotation(const Vector3& rotation) { worldTransform_.rotation = rotation; };
 	void SetScale(const Vector3& scale) { worldTransform_.scale = scale; };
 
+	//characterDataのsetter
+	void SetHP(const float& hp) { HP_ = hp; };
+	void SetSpeed(const float& speed) { speed_ = speed; };
+
 	//tag
 	const std::string GetTag() { return tag_; };
 	void SetTag(const std::string tag) { tag_ = tag; };
@@ -38,4 +42,7 @@ protected:
 	std::unique_ptr<Model> model_ = nullptr;
 
 	std::string tag_;
+
+	float HP_;
+	float speed_;
 };

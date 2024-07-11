@@ -96,6 +96,14 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 			objectData.fileName = object["file_name"];
 		}
 
+		if (objectData.objectName == "Player")
+		{
+			json& characterData = object["character_data"];
+
+			objectData.hp = (float)characterData["hp"];
+			objectData.speed = (float)characterData["speed"];
+		}
+
 		json& transform = object["transform"];
 
 		//平行移動
@@ -179,7 +187,13 @@ void LevelLoader::CreateObjectsFromLevelData(const LevelData* levelData)
 		//回転角
 		newObject->SetRotation(objectData.rotation);
 
-		//座標
+		//スケーリング
 		newObject->SetScale(objectData.scale);
+
+		if (objectData.objectName == "Player")
+		{
+			newObject->SetHP(objectData.hp);
+			newObject->SetSpeed(objectData.speed);
+		}
 	}
 }

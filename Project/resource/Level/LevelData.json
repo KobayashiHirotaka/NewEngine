@@ -63,7 +63,11 @@
                     1.0
                 ]
             },
-            "file_name": "newPlayer"
+            "file_name": "newPlayer",
+            "character_data": {
+                "hp": -76.68000030517578,
+                "speed": 0.03999999910593033
+            }
         },
         {
             "type": "MESH",

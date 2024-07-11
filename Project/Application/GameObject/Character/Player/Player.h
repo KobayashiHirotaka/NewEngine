@@ -235,7 +235,6 @@ private:
 
 	//hp
 	float maxHP_ = 100.0f;
-	float HP_ = -100.0f;
 
 	//ガードゲージ
 	float maxGuardGauge_ = 50.0f;
