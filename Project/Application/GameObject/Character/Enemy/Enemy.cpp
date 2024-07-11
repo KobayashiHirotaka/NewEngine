@@ -91,24 +91,9 @@ void Enemy::Initialize()
 void Enemy::Update()
 {
 	//テスト用の処理
-	if (input_->PressKey(DIK_S))
-	{
-		HP_ -= 1.0f;
-	}
-
-	if (input_->PressKey(DIK_A))
-	{
-		guardGauge_ += 1.0f;
-	}
-
 	if (input_->PressKey(DIK_D))
 	{
-		finisherGauge_ += 1.0f;
-	}
-
-	if (input_->PushKey(DIK_L) && !isGuard_)
-	{
-		isGuard_ = true;
+		guardGauge_ += 1.0f;
 	}
 
 	//アニメーションテスト用
@@ -693,14 +678,21 @@ void Enemy::BehaviorStanInitialize()
 void Enemy::BehaviorStanUpdate()
 {
 	animationIndex = 8;
-	isGuard_ = false;
 	float animationTime = 0.0f;
 	float animationDuration;
 	animationTime = model_->GetAnimationTime();
 	animationDuration = model_->GetAnimation()[animationIndex].duration;
 
-	aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-	SetAABB(aabb_);
+	if (enemyDirection_ == Direction::Left)
+	{
+		aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+		SetAABB(aabb_);
+	}
+	else if(enemyDirection_ == Direction::Right)
+	{
+		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+		SetAABB(aabb_);
+	}
 
 	if (!isDown_)
 	{
@@ -993,6 +985,8 @@ void Enemy::GuardGaugeBarUpdate()
 	if (guardGauge_ >= 50.0f)
 	{
 		guardGauge_ = 50.0f;
+		isGuard_ = false;
+		workAttack_.isAttack = false;
 		behaviorRequest_ = Behavior::kStan;
 	}
 }

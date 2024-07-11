@@ -96,19 +96,9 @@ void Player::Update()
 {
 	//テスト用の処理
 	//ゲージテスト用
-	if (input_->PressKey(DIK_S))
-	{
-		HP_ += 1.0f;
-	}
-
 	if (input_->PressKey(DIK_A))
 	{
 		guardGauge_ -= 1.0f;
-	}
-
-	if (input_->PressKey(DIK_D))
-	{
-		finisherGauge_ -= 1.0f;
 	}
 
 	//パーティクルテスト用
@@ -1071,14 +1061,21 @@ void Player::BehaviorStanInitialize()
 void Player::BehaviorStanUpdate()
 {
 	animationIndex = 9;
-	isGuard_ = false;
 	float animationTime = 0.0f;
 	float animationDuration;
 	animationTime = model_->GetAnimationTime();
 	animationDuration = model_->GetAnimation()[animationIndex].duration;
 
-	aabb_ = { {0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-	SetAABB(aabb_);
+	if (playerDirection == Direction::Left)
+	{
+		aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+		SetAABB(aabb_);
+	}
+	else if (playerDirection == Direction::Right)
+	{
+		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+		SetAABB(aabb_);
+	}
 
 	if (!isDown_)
 	{
@@ -1300,6 +1297,8 @@ void Player::GuardGaugeBarUpdate()
 	if (guardGauge_ <= -50.0f)
 	{
 		guardGauge_ = -50.0f;
+		isGuard_ = false;
+		workAttack_.isAttack = false;
 		behaviorRequest_ = Behavior::kStan;
 	}
 }
