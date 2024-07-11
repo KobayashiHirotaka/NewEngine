@@ -105,27 +105,15 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 			{
 				objectData.hp = (float)characterData["hp"];
 			}
-			else
-			{
-				assert(false);
-			}
-
+	
 			if (characterData.contains("frontSpeed")) 
 			{
 				objectData.frontSpeed = std::stof(characterData["frontSpeed"].get<std::string>());
-			}
-			else 
-			{
-				assert(false);
 			}
 
 			if (characterData.contains("backSpeed")) 
 			{
 				objectData.backSpeed = std::stof(characterData["backSpeed"].get<std::string>());
-			}
-			else 
-			{
-				assert(false);
 			}
 		}
 

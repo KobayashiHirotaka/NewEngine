@@ -290,12 +290,6 @@ private:
 	Vector3 velocity_ = {};
 	float speed_ = 0.3f;
 
-	//足の速さ(向いている方向に移動する場合)
-	float characterFrontSpeed_ = 0.2f;
-
-	//足の速さ(向いている方向とは逆に移動する場合)
-	float characterBackSpeed_ = 0.1f;
-
 #pragma endregion
 
 #pragma region 敵の攻撃パラメータ

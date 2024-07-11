@@ -409,59 +409,76 @@ void Enemy::BehaviorRootUpdate()
 	{
 		moveTimer_--;
 
-		bool isMove_ = false;
-		float kCharacterSpeed = 0.01f;
+		bool isFrontMove_ = false;
+		bool isBackMove_ = false;
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
 		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left && !isHit_)
 		{
-			velocity_.x = -0.005f;
-			isMove_ = true;
+			velocity_.x = -0.01f;
+			isFrontMove_ = false;
+			isBackMove_ = true;
 			isGuard_ = false;
-
-			animationIndex = 1;
-			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
 		}
 
 		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right && !isHit_)
 		{
-			velocity_.x = 0.005f;
-			isMove_ = true;
+			velocity_.x = 0.01f;
+			isFrontMove_ = true;
+			isBackMove_ = false;
 			isGuard_ = false;
-
-			animationIndex = 1;
-			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
 		}
 
 		if (moveTimer_ > 30 && enemyDirection_ == Direction::Right)
 		{
-			velocity_.x = -0.001f;
-			isMove_ = true;
+			velocity_.x = -0.01f;
+			isFrontMove_ = false;
+			isBackMove_ = true;
 			isGuard_ = true;
-
-			animationIndex = 0;
-			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
 		}
 
 		if (moveTimer_ > 30 && enemyDirection_ == Direction::Left)
 		{
-			velocity_.x = 0.001f;
-			isMove_ = true;
+			velocity_.x = 0.01f;
+			isFrontMove_ = true;
+			isBackMove_ = false;
 			isGuard_ = true;
-
-			animationIndex = 0;
-			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
 		}
 
-		if (isMove_)
+		//移動
+		if (isFrontMove_)
 		{
+			animationIndex = 0;
+
+			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
+
 			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(kCharacterSpeed, velocity_);
+			velocity_ = Multiply(frontSpeed_, velocity_);
 
 			// 平行移動
 			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
 			worldTransform_.UpdateMatrixEuler();
+		}
+		else if (isBackMove_)
+		{
+			animationIndex = 1;
+
+			UpdateAnimationTime(animationTime, true, 40.0f, animationIndex, model_);
+
+			velocity_ = Normalize(velocity_);
+			velocity_ = Multiply(backSpeed_, velocity_);
+
+			// 平行移動
+			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+			worldTransform_.UpdateMatrixEuler();
+		}
+		else
+		{
+			animationIndex = 4;
+
+			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
 		}
 
 		if (moveTimer_ <= 0)

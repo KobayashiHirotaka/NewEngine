@@ -526,7 +526,7 @@ void Player::BehaviorRootUpdate()
 			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
 
 			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(characterFrontSpeed_, velocity_);
+			velocity_ = Multiply(frontSpeed_, velocity_);
 
 			// 平行移動
 			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
@@ -540,7 +540,7 @@ void Player::BehaviorRootUpdate()
 			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
 
 			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(characterBackSpeed_, velocity_);
+			velocity_ = Multiply(backSpeed_, velocity_);
 
 			// 平行移動
 			worldTransform_.translation = Add(worldTransform_.translation, velocity_);

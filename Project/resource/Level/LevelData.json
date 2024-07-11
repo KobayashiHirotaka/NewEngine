@@ -95,8 +95,8 @@
             "character_data": {
                 "type": "",
                 "hp": 100.0,
-                "frontSpeed": "0.04",
-                "backSpeed": "0.04"
+                "frontSpeed": "0.02",
+                "backSpeed": "0.01"
             }
         },
         {
