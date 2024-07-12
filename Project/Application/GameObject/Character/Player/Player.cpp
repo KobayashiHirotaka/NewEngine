@@ -616,7 +616,7 @@ void Player::BehaviorAttackUpdate()
 		//キャンセルの処理(中TC)
 		if (input_->GetJoystickState())
 		{
-			if (!isDown_ && attackAnimationFrame > 20 && animationTime < animationDuration
+			if (!isDown_ && attackAnimationFrame > 10 && animationTime < animationDuration
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) 
 				&& isHit_)
 			{
