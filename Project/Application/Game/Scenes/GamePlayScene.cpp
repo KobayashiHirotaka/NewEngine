@@ -168,23 +168,23 @@ void GamePlayScene::Update()
 	//skydomeの更新
 	skydome_->Update();
 
-	////シェイク
-	//if (player_->GetIsShake() || enemy_->GetIsShake() && !isPlayerWin_ && roundStartTimer_ <= 0)
-	//{
-	//	isShake_ = true;
-	//	shakeTimer_ = kShakeTime;
-	//}
+	//シェイク
+	if (player_->GetIsShake() || enemy_->GetIsShake() && !isPlayerWin_ && roundStartTimer_ <= 0)
+	{
+		isShake_ = true;
+		shakeTimer_ = kShakeTime;
+	}
 
-	//if (isShake_)
-	//{
-	//	camera_.translation_.y = Random(shakePower_.x, shakePower_.y);
+	if (isShake_)
+	{
+		camera_.translation_.y = Random(shakePower_.x, shakePower_.y);
 
-	//	if (--shakeTimer_ < 0)
-	//	{
-	//		isShake_ = false;
-	//		camera_.translation_.y = 2.0f;
-	//	}
-	//}
+		if (--shakeTimer_ < 0)
+		{
+			isShake_ = false;
+			camera_.translation_.y = 1.0f;
+		}
+	}
 
 	//勝ち負けの処理
 	HandleGameOutcome();

@@ -236,7 +236,7 @@ private:
 	int resetTimer_ = 60;
 
 	//スタンの時間
-	int stanTimer_ = 200;
+	int stanTimer_ = 60;
 
 	//必殺技
 	int finisherEffectTimer = 90;

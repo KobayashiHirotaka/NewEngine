@@ -1060,6 +1060,12 @@ void Player::BehaviorStanInitialize()
 
 void Player::BehaviorStanUpdate()
 {
+	stanTimer_--;
+	if (stanTimer_ > 55)
+	{
+		isShake_ = true;
+	}
+
 	animationIndex = 9;
 	float animationTime = 0.0f;
 	float animationDuration;
@@ -1091,6 +1097,7 @@ void Player::BehaviorStanUpdate()
 		animationTime = 0.0f;
 		attackAnimationFrame = 0;
 		guardGauge_ = 0.0f;
+		stanTimer_ = 60;
 		model_->SetAnimationTime(animationTime);
 		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 		SetAABB(aabb_);
@@ -1390,6 +1397,8 @@ void Player::DownAnimation()
 
 		if (downAnimationTimer_ > 55)
 		{
+			isShake_ = true;
+
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
 				.SetTranslation({ worldTransform_.translation.x - 0.1f,
@@ -1458,6 +1467,8 @@ void Player::DownAnimation()
 
 		if (downAnimationTimer_ > 55)
 		{
+			isShake_ = true;
+
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
 				.SetTranslation({ worldTransform_.translation.x + 0.1f,
