@@ -12,5 +12,5 @@ void IGame3dObject::Update()
 
 void IGame3dObject::Draw(const Camera& camera)
 {
-
+	
 }

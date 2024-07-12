@@ -37,7 +37,10 @@ void Game3dObjectManager::Draw(const Camera& camera)
 {
 	for (std::unique_ptr<IGame3dObject>& gameObject : gameObjects_)
 	{
-		gameObject->Draw(camera);
+		if (gameObject->GetIsVisible())
+		{
+			gameObject->Draw(camera);
+		}
 	}
 }
 

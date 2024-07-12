@@ -5,6 +5,7 @@
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/Utility/Structs.h"
 #include "Engine/externals/nlohmann/json.hpp"
+#include <iostream>
 #include<string>
 #include<sstream>
 #include<fstream>
@@ -25,9 +26,32 @@ public:
         {
             std::string objectName;
             std::string fileName;
+
             Vector3 translation;
             Vector3 rotation;
             Vector3 scale;
+
+            bool isVisible;
+
+            struct CharacterData
+            {
+                //キャラクターごとのデータ
+                std::string type;
+
+                float hp;
+                float maxHp;
+
+                float frontSpeed;
+                float backSpeed;
+
+                float maxGuardGauge;
+                float guardGauge;
+
+                float maxFinisherGauge;
+                float finisherGauge;
+            };
+
+            CharacterData characterData;
         };
 
         struct CameraObjectData

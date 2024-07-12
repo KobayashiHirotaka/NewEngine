@@ -45,9 +45,6 @@ public:
 
 		uint32_t attackParameter = 0;
 
-		int count = 0;
-		int pokeCount = 0;
-
 		int stiffnessTimer = 60;
 
 		bool comboNext = false;
@@ -114,8 +111,6 @@ public:
 
 	//bool GetIsPlayerHit() { return isPlayerHit_; };
 
-	float GetHP() { return HP_; };
-
 	bool GetIsAttack() { return workAttack_.isAttack; };
 
 	bool GetIsLightPunch() { return workAttack_.isLightPunch; };
@@ -149,8 +144,6 @@ public:
 #pragma endregion
 
 #pragma region Setter
-
-	void SetHP(float HP) { HP_ = HP; };
 
 	void SetIsReset(bool isReset) { isReset_ = isReset; };
 
@@ -244,18 +237,6 @@ private:
 	int patternCount_ = 1;
 	int moveTimer_ = 60;
 
-	//hp
-	float maxHP_ = 100.0f;
-	float HP_ = maxHP_;
-
-	//ガードゲージ
-	float maxGuardGauge_ = 50.0f;
-	float guardGauge_ = 0.0f;
-
-	//必殺技のゲージ
-	float maxFinisherGauge_ = 50.0f;
-	float finisherGauge_ = 0.0f;
-
 	//ダウン演出の時間
 	int downAnimationTimer_ = 60;
 
@@ -289,13 +270,6 @@ private:
 
 	//移動
 	Vector3 velocity_ = {};
-	float speed_ = 0.3f;
-
-	//足の速さ(向いている方向に移動する場合)
-	float characterFrontSpeed_ = 0.2f;
-
-	//足の速さ(向いている方向とは逆に移動する場合)
-	float characterBackSpeed_ = 0.1f;
 
 #pragma endregion
 
@@ -304,8 +278,6 @@ private:
 	WorkAttack workAttack_;
 
 	int attackTimer = 30;
-
-	int pokeTimer_ = 30;
 
 	int jumpAttackTimer_ = 15;
 
@@ -352,7 +324,6 @@ private:
 	//リセットしているかどうか
 	bool isReset_ = false;
 
-
 	bool isFinisherEffect = false;
 
 #pragma endregion
@@ -393,9 +364,6 @@ private:
 
 	//プレイヤー
 	Player* player_ = nullptr;
-
-	//武器
-	//std::unique_ptr<EnemyWeapon> enemyWeapon_ = nullptr;
 
 	//パーティクル
 	std::unique_ptr<ParticleModel> particleModel_ = nullptr;

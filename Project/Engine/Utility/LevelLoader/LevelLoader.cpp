@@ -96,6 +96,60 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 			objectData.fileName = object["file_name"];
 		}
 
+		if (object.contains("visible"))
+		{
+			objectData.isVisible = object["visible"].get<bool>();
+		}
+		else
+		{
+			objectData.isVisible = true;
+		}
+
+		if (objectData.objectName == "Player" || objectData.objectName == "Enemy")
+		{
+			json& characterData = object["character_data"];
+
+			if (characterData.contains("hp"))
+			{
+				objectData.characterData.hp = (float)characterData["hp"];
+			}
+
+			if (characterData.contains("maxHp"))
+			{
+				objectData.characterData.maxHp = (float)characterData["maxHp"];
+			}
+	
+			if (characterData.contains("frontSpeed")) 
+			{
+				objectData.characterData.frontSpeed = std::stof(characterData["frontSpeed"].get<std::string>());
+			}
+
+			if (characterData.contains("backSpeed")) 
+			{
+				objectData.characterData.backSpeed = std::stof(characterData["backSpeed"].get<std::string>());
+			}
+
+			if (characterData.contains("guardGauge"))
+			{
+				objectData.characterData.guardGauge = std::stof(characterData["guardGauge"].get<std::string>());
+			}
+
+			if (characterData.contains("maxGuardGauge"))
+			{
+				objectData.characterData.maxGuardGauge = std::stof(characterData["maxGuardGauge"].get<std::string>());
+			}
+
+			if (characterData.contains("finisherGauge"))
+			{
+				objectData.characterData.finisherGauge = std::stof(characterData["finisherGauge"].get<std::string>());
+			}
+
+			if (characterData.contains("maxFinisherGauge"))
+			{
+				objectData.characterData.maxFinisherGauge = std::stof(characterData["maxFinisherGauge"].get<std::string>());
+			}
+		}
+
 		json& transform = object["transform"];
 
 		//平行移動
@@ -179,7 +233,21 @@ void LevelLoader::CreateObjectsFromLevelData(const LevelData* levelData)
 		//回転角
 		newObject->SetRotation(objectData.rotation);
 
-		//座標
+		//スケーリング
 		newObject->SetScale(objectData.scale);
+
+		newObject->SetIsVisible(objectData.isVisible);
+
+		if (objectData.objectName == "Player" || objectData.objectName == "Enemy")
+		{
+			newObject->SetHp(objectData.characterData.hp);
+			newObject->SetMaxHp(objectData.characterData.maxHp);
+			newObject->SetFrontSpeed(objectData.characterData.frontSpeed);
+			newObject->SetBackSpeed(objectData.characterData.backSpeed);
+			newObject->SetGuardGauge(objectData.characterData.guardGauge);
+			newObject->SetMaxGuardGauge(objectData.characterData.maxGuardGauge);
+			newObject->SetFinisherGauge(objectData.characterData.finisherGauge);
+			newObject->SetMaxFinisherGauge(objectData.characterData.maxFinisherGauge);
+		}
 	}
 }

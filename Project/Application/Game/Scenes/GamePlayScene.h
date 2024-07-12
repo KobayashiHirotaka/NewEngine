@@ -123,7 +123,7 @@ private:
 	bool isShake_ = false;
 	const int kShakeTime = 10;
 	int shakeTimer_ = 0;
-	Vector2 shakePower_ = { 1.8f,2.2f };
+	Vector2 shakePower_ = { 0.9f,1.1f };
 
 	//トランジション
 	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
