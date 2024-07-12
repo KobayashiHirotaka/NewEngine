@@ -31,6 +31,8 @@ public:
             Vector3 rotation;
             Vector3 scale;
 
+            bool isVisible;
+
             struct CharacterData
             {
                 //キャラクターごとのデータ

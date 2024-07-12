@@ -16,12 +16,16 @@ public:
 
 	float GetHP() { return hp_; };
 
+	bool GetIsVisible() { return isVisible_; };
+
 	//モデル
 	const Model* GetModel() const { return model_.get(); }
 	void SetModel(std::unique_ptr<Model> model) { model_ = std::move(model); }
 
 	//ゲームオブジェクトマネージャーのsetter
 	void SetGameObjectManager(Game3dObjectManager* game3dObjectManager) { game3dObjectManager_ = game3dObjectManager; };
+
+	void SetIsVisible(const bool& isVisible) { isVisible_ = isVisible; };
 
 	//トランスフォーム用のsetter
 	void SetPosition(const Vector3& position) { worldTransform_.translation = position; };
@@ -53,6 +57,8 @@ protected:
 	std::unique_ptr<Model> model_ = nullptr;
 
 	std::string tag_;
+
+	bool isVisible_;
 
 	//キャラクターのパラメータ
 	//hp

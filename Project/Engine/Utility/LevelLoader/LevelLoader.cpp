@@ -96,6 +96,15 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 			objectData.fileName = object["file_name"];
 		}
 
+		if (object.contains("visible"))
+		{
+			objectData.isVisible = object["visible"].get<bool>();
+		}
+		else
+		{
+			objectData.isVisible = true;
+		}
+
 		if (objectData.objectName == "Player" || objectData.objectName == "Enemy")
 		{
 			json& characterData = object["character_data"];
@@ -226,6 +235,8 @@ void LevelLoader::CreateObjectsFromLevelData(const LevelData* levelData)
 
 		//スケーリング
 		newObject->SetScale(objectData.scale);
+
+		newObject->SetIsVisible(objectData.isVisible);
 
 		if (objectData.objectName == "Player" || objectData.objectName == "Enemy")
 		{
