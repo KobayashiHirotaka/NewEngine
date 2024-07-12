@@ -935,7 +935,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsTackle() && player_->GetIsAttack() && isDown_ && !isGuard_ && worldTransform_.translation.y > 0.5f)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 15.0f;
+			damage = 4.0f;
 			hp_ -= damage;
 			downAnimationTimer_ = 60;
 			float animationTime = 0.0f;

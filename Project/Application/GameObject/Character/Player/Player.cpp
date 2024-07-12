@@ -617,7 +617,8 @@ void Player::BehaviorAttackUpdate()
 		if (input_->GetJoystickState())
 		{
 			if (!isDown_ && attackAnimationFrame > 20 && animationTime < animationDuration
-				&& input_->IsPressButton(XINPUT_GAMEPAD_Y) && isHit_)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) 
+				&& isHit_)
 			{
 				workAttack_.isAttack = false;
 				workAttack_.isLightPunch = false;
@@ -680,7 +681,8 @@ void Player::BehaviorAttackUpdate()
 		if (input_->GetJoystickState())
 		{
 			if (!isDown_ && attackAnimationFrame > 20 && animationTime < animationDuration
-				&& input_->IsPressButton(XINPUT_GAMEPAD_B) && isHit_)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
+				&& isHit_)
 			{
 				workAttack_.isAttack = false;
 				workAttack_.isTCMiddlePunch = false;
@@ -693,22 +695,22 @@ void Player::BehaviorAttackUpdate()
 			}
 		}
 
-		//キャンセルの処理(強TC)
-		if (input_->GetJoystickState())
-		{
-			if (!isDown_ && attackAnimationFrame > 20 && animationTime < animationDuration
-				&& input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && isHit_)
-			{
-				workAttack_.isAttack = false;
-				workAttack_.isTCMiddlePunch = false;
-				workAttack_.isTCHighPunch = true;
-				animationTime = 0.0f;
-				attackAnimationFrame = 0;
-				model_->SetAnimationTime(animationTime);
-				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-				SetAABB(aabb_);
-			}
-		}
+		////キャンセルの処理(強TC)
+		//if (input_->GetJoystickState())
+		//{
+		//	if (!isDown_ && attackAnimationFrame > 20 && animationTime < animationDuration
+		//		&& input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && isHit_)
+		//	{
+		//		workAttack_.isAttack = false;
+		//		workAttack_.isTCMiddlePunch = false;
+		//		workAttack_.isTCHighPunch = true;
+		//		animationTime = 0.0f;
+		//		attackAnimationFrame = 0;
+		//		model_->SetAnimationTime(animationTime);
+		//		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+		//		SetAABB(aabb_);
+		//	}
+		//}
 
 		attackAnimationFrame++;
 	}
@@ -864,7 +866,7 @@ void Player::BehaviorAttackUpdate()
 			//タックル攻撃
 			//右向きのとき
 			if (!isDown_ && attackAnimationFrame > 10 && animationTime < animationDuration
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
 				&& playerDirection == Direction::Right)
 			{
 				workAttack_.isAttack = false;
@@ -880,7 +882,7 @@ void Player::BehaviorAttackUpdate()
 			//タックル攻撃
 			//左向きのとき
 			if (!isDown_ && attackAnimationFrame > 10 && animationTime < animationDuration
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
 				&& playerDirection == Direction::Left)
 			{
 				workAttack_.isAttack = false;
