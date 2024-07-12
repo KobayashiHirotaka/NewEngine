@@ -356,7 +356,7 @@ void Player::BoneDraw(const Camera& camera)
 
 void Player::DrawSprite()
 {
-	if (HP_ <= 0)
+	if (hp_ <= 0)
 	{
 		hpBar_.sprite_->Draw();
 	}
@@ -1252,7 +1252,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 15.0f;
-			HP_ += damage;
+			hp_ += damage;
 			isHitTackle_ = true;
 
 			HitStop(30);
@@ -1262,20 +1262,20 @@ void Player::OnCollision(Collider* collider, float damage)
 
 void Player::HPBarUpdate()
 {
-	hpBar_.size_ = { (HP_ / maxHP_) * barSize,7.0f };
+	hpBar_.size_ = { (hp_ / maxHp_) * barSize,7.0f };
 
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 
-	if (HP_ < -50)
+	if (hp_ < -50)
 	{
 		hpBar_.sprite_->SetColor({ 0.0f, 1.0f, 0.0f, 1.0f });
 	}
 
-	if (HP_ >= -50 && HP_ < -25)
+	if (hp_ >= -50 && hp_ < -25)
 	{
 		hpBar_.sprite_->SetColor({ 1.0f, 0.8f, 0.0f, 1.0f });
 	}
-	else if (HP_ >= -25)
+	else if (hp_ >= -25)
 	{
 		hpBar_.sprite_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 	}
@@ -1326,7 +1326,7 @@ void Player::FinisherGaugeBarUpdate()
 
 void Player::Reset()
 {
-	HP_ = -100.0f;
+	hp_ = -100.0f;
 
 	guardGauge_ = 0.0f;
 
@@ -1438,7 +1438,7 @@ void Player::DownAnimation()
 		aabb_ = { {0.1f,-0.3f,-0.3f},{0.8f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (!enemy_->GetIsTackle() && HP_ < 0.0f)
+		if (!enemy_->GetIsTackle() && hp_ < 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1507,7 +1507,7 @@ void Player::DownAnimation()
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (!enemy_->GetIsTackle() && HP_ < 0.0f)
+		if (!enemy_->GetIsTackle() && hp_ < 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;

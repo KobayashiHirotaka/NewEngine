@@ -31,11 +31,25 @@ public:
             Vector3 rotation;
             Vector3 scale;
 
-            //キャラクターごとのデータ
-            std::string type;
-            float hp;
-            float frontSpeed;
-            float backSpeed;
+            struct CharacterData
+            {
+                //キャラクターごとのデータ
+                std::string type;
+
+                float hp;
+                float maxHp;
+
+                float frontSpeed;
+                float backSpeed;
+
+                float maxGuardGauge;
+                float guardGauge;
+
+                float maxFinisherGauge;
+                float finisherGauge;
+            };
+
+            CharacterData characterData;
         };
 
         struct CameraObjectData

@@ -17,20 +17,6 @@ IGame3dObject* Game3dObjectFactory::CreateGameObject(const std::string& objectNa
 		Ground* ground = new Ground();
 		return ground;
 	}
-	/*else if (objectName == "PlayerWeapon")
-	{
-		PlayerWeapon* playerWeapon = new PlayerWeapon();
-		return playerWeapon;
-	}
-	else if (objectName == "EnemyWeapon")
-	{
-		EnemyWeapon* enemyWeapon = new EnemyWeapon();
-		return enemyWeapon;
-	}
-	else if (objectName == "TestObject")
-	{
-		TestObject* testObject = new TestObject();
-		return testObject;
-	}*/
+	
 	return nullptr;
 }

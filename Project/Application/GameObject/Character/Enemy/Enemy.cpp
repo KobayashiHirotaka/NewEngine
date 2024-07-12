@@ -373,7 +373,7 @@ void Enemy::BoneDraw(const Camera& camera)
 
 void Enemy::DrawSprite()
 {
-	if (HP_ >= 0)
+	if (hp_ >= 0)
 	{
 		hpBar_.sprite_->Draw();
 	}
@@ -869,7 +869,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 2.0f;
-			HP_ -= damage;
+			hp_ -= damage;
 			isHitLightPunch_ = true;
 
 			HitStop(10);
@@ -880,7 +880,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 5.0f;
-			HP_ -= damage;
+			hp_ -= damage;
 			isHitMiddlePunch_ = true;
 
 			HitStop(10);
@@ -891,7 +891,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 10.0f;
-			HP_ -= damage;
+			hp_ -= damage;
 			isHitHighPunch_ = true;
 
 			HitStop(10);
@@ -902,7 +902,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 2.0f;
-			HP_ -= damage;
+			hp_ -= damage;
 			isHitTCMiddlePunch_ = true;
 
 			HitStop(10);
@@ -913,7 +913,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 2.0f;
-			HP_ -= damage;
+			hp_ -= damage;
 			isHitTCHighPunch_ = true;
 
 			HitStop(10);
@@ -925,7 +925,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 15.0f;
-			HP_ -= damage;
+			hp_ -= damage;
 			isHitTackle_ = true;
 
 			HitStop(30);
@@ -936,7 +936,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 15.0f;
-			HP_ -= damage;
+			hp_ -= damage;
 			downAnimationTimer_ = 60;
 			float animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -950,20 +950,20 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 void Enemy::HPBarUpdate()
 {
-	hpBar_.size_ = { (HP_ / maxHP_) * barSize,7.0f };
+	hpBar_.size_ = { (hp_ / maxHp_) * barSize,7.0f };
 
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 
-	if (HP_ > 50)
+	if (hp_ > 50)
 	{
 		hpBar_.sprite_->SetColor({ 0.0f, 1.0f, 0.0f, 1.0f });
 	}
 
-	if (HP_ <= 50 && HP_ > 25)
+	if (hp_ <= 50 && hp_ > 25)
 	{
 		hpBar_.sprite_->SetColor({ 1.0f, 0.8f, 0.0f, 1.0f });
 	}
-	else if (HP_ <= 25)
+	else if (hp_ <= 25)
 	{
 		hpBar_.sprite_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 	}
@@ -1014,7 +1014,7 @@ void Enemy::FinisherGaugeBarUpdate()
 
 void Enemy::Reset()
 {
-	HP_ = maxHP_;
+	hp_ = maxHp_;
 
 	guardGauge_ = 0.0f;
 
@@ -1110,7 +1110,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (!player_->GetIsLightPunch() && HP_ > 0.0f)
+		if (!player_->GetIsLightPunch() && hp_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1158,7 +1158,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (!player_->GetIsLightPunch() && HP_ > 0.0f)
+		if (!player_->GetIsLightPunch() && hp_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1207,7 +1207,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (!player_->GetIsMiddlePunch() && HP_ > 0.0f)
+		if (!player_->GetIsMiddlePunch() && hp_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1255,7 +1255,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (!player_->GetIsMiddlePunch() && HP_ > 0.0f)
+		if (!player_->GetIsMiddlePunch() && hp_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1324,7 +1324,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (downAnimationTimer_ <= -30 && worldTransform_.translation.y <= 0.0f && HP_ > 0.0f)
+		if (downAnimationTimer_ <= -30 && worldTransform_.translation.y <= 0.0f && hp_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1392,7 +1392,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (downAnimationTimer_ <= -30 && worldTransform_.translation.y <= 0.0f && HP_ > 0.0f)
+		if (downAnimationTimer_ <= -30 && worldTransform_.translation.y <= 0.0f && hp_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1441,7 +1441,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (!player_->GetIsTCMiddlePunch() && HP_ > 0.0f)
+		if (!player_->GetIsTCMiddlePunch() && hp_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1489,7 +1489,7 @@ void Enemy::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex);
 
-		if (!player_->GetIsTCMiddlePunch() && HP_ > 0.0f)
+		if (!player_->GetIsTCMiddlePunch() && hp_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1547,7 +1547,7 @@ void Enemy::DownAnimation()
 		aabb_ = { {0.1f,-0.3f,-0.3f},{0.8f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (!player_->GetIsTCHighPunch() && HP_ > 0.0f)
+		if (!player_->GetIsTCHighPunch() && hp_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1606,7 +1606,7 @@ void Enemy::DownAnimation()
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (!player_->GetIsTCHighPunch() && HP_ > 0.0f)
+		if (!player_->GetIsTCHighPunch() && hp_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1675,7 +1675,7 @@ void Enemy::DownAnimation()
 		aabb_ = { {0.1f,-0.3f,-0.3f},{0.8f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (!player_->GetIsTackle() && HP_ > 0.0f)
+		if (!player_->GetIsTackle() && hp_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;
@@ -1744,7 +1744,7 @@ void Enemy::DownAnimation()
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (!player_->GetIsTackle() && HP_ > 0.0f)
+		if (!player_->GetIsTackle() && hp_ > 0.0f)
 		{
 			animationIndex = 4;
 			downAnimationTimer_ = 60;

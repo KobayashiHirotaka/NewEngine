@@ -111,8 +111,6 @@ public:
 
 	//bool GetIsPlayerHit() { return isPlayerHit_; };
 
-	float GetHP() { return HP_; };
-
 	bool GetIsAttack() { return workAttack_.isAttack; };
 
 	bool GetIsLightPunch() { return workAttack_.isLightPunch; };
@@ -146,8 +144,6 @@ public:
 #pragma endregion
 
 #pragma region Setter
-
-	void SetHP(float HP) { HP_ = HP; };
 
 	void SetIsReset(bool isReset) { isReset_ = isReset; };
 
@@ -241,17 +237,6 @@ private:
 	int patternCount_ = 1;
 	int moveTimer_ = 60;
 
-	//hp
-	float maxHP_ = 100.0f;
-
-	//ガードゲージ
-	float maxGuardGauge_ = 50.0f;
-	float guardGauge_ = 0.0f;
-
-	//必殺技のゲージ
-	float maxFinisherGauge_ = 50.0f;
-	float finisherGauge_ = 0.0f;
-
 	//ダウン演出の時間
 	int downAnimationTimer_ = 60;
 
@@ -285,7 +270,6 @@ private:
 
 	//移動
 	Vector3 velocity_ = {};
-	float speed_ = 0.3f;
 
 #pragma endregion
 
