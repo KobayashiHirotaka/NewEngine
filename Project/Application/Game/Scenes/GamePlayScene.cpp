@@ -186,70 +186,6 @@ void GamePlayScene::Update()
 	//	}
 	//}
 
-	//playerの必殺技時のカメラ処理
-	/*if (player_->GetFinisherEffectTimer() < 90 && player_->GetFinisherEffectTimer() > 0)
-	{
-		if (player_->GetWorldTransform().rotation.y == 1.7f)
-		{
-			Vector3 finisherPosition = { player_->GetWorldPosition().x + 18.0f,
-			player_->GetWorldPosition().y + 2.0f, player_->GetWorldPosition().z - 15.0f };
-
-			Vector3 finisherRotationPosition = { 0.0f,-1.0f, 0.0f };
-
-			camera_.translation_ = Lerp(camera_.translation_, finisherPosition, 0.1f);
-			camera_.rotation_ = Lerp(camera_.rotation_, finisherRotationPosition, 0.1f);
-		}
-
-		if (player_->GetWorldTransform().rotation.y == 4.6f)
-		{
-			Vector3 finisherPosition = { player_->GetWorldPosition().x - 18.0f,
-			player_->GetWorldPosition().y + 2.0f, player_->GetWorldPosition().z - 15.0f };
-
-			Vector3 finisherRotationPosition = { 0.0f,1.0f, 0.0f };
-
-			camera_.translation_ = Lerp(camera_.translation_, finisherPosition, 0.05f);
-			camera_.rotation_ = Lerp(camera_.rotation_, finisherRotationPosition, 0.05f);
-		}
-	}
-	else
-	{
-		Vector3 finisherPosition = { 0.0f,2.0f,-35.0f };
-		camera_.translation_ = Lerp(camera_.translation_, finisherPosition, 0.05f);
-
-		Vector3 finisherRotationPosition = { 0.0f,0.0f, 0.0f };
-		camera_.rotation_ = Lerp(camera_.rotation_, finisherRotationPosition, 0.05f);
-	}*/
-
-	//スプライトの表示用の処理
-	/*if (input_->GetJoystickState())
-	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !isOpen_ && roundStartTimer_ < 0)
-		{
-			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
-			isOpen_ = true;
-			spriteCount_ = 1;
-		}
-
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isOpen_)
-		{
-			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
-			isOpen_ = false;
-			spriteCount_ = 0;
-		}
-
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) && isOpen_ && spriteCount_ == 1)
-		{
-			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
-			spriteCount_ = 2;
-		}
-
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) && isOpen_ && spriteCount_ == 2)
-		{
-			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
-			spriteCount_ = 1;
-		}
-	}*/
-
 	//勝ち負けの処理
 	HandleGameOutcome();
 
@@ -265,16 +201,6 @@ void GamePlayScene::Update()
 	//当たり判定
 	collisionManager_->ClearColliders();
 	collisionManager_->AddCollider(player_);
-
-	/*if (player_->GetPlayerWeapon()->GetIsAttack())
-	{
-		collisionManager_->AddCollider(player_->GetPlayerWeapon());
-	}
-
-	if (enemy_->GetEnemyWeapon()->GetIsAttack())
-	{
-		collisionManager_->AddCollider(enemy_->GetEnemyWeapon());
-	}*/
 
 	collisionManager_->AddCollider(enemy_);
 
