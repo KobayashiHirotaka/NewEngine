@@ -42,3 +42,7 @@ struct DepthBasedOutline
     float32_t4x4 projectionInverse;
 };
 
+struct HSVFilter
+{
+    bool enable;
+};

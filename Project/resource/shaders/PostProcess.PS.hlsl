@@ -17,6 +17,7 @@ ConstantBuffer<BoxFilter> gBoxFilterParameter : register(b3);
 ConstantBuffer<GaussianFilter> gGaussianFilterParameter : register(b4);
 ConstantBuffer<LuminanceBasedOutline> gLuminanceBasedOutlineParameter : register(b5);
 ConstantBuffer<DepthBasedOutline> gDepthBasedOutlineParameter : register(b6);
+ConstantBuffer<HSVFilter> gHSVFilterParameter : register(b7);
 
 //BoxFilter,GuassianFilter
 static const float32_t2 kIndex3x3[3][3] =
@@ -65,6 +66,16 @@ float gauss(float x, float y, float sigma)
 float32_t Luminance(float32_t3 v)
 {
     return dot(v, float32_t3(0.2125f, 0.7154f, 0.0721f));
+}
+
+float32_t3 RGBToHSV(float32_t3 rgb)
+{
+    
+}
+
+float32_t3 HSVToRGB(float32_t3 hsv)
+{
+    
 }
 
 PixelShaderOutput main(VertexShaderOutput input)
@@ -226,6 +237,16 @@ PixelShaderOutput main(VertexShaderOutput input)
             textureColor.rgb = (1.0f - weight) * gTexture.Sample(gSampler, input.texcoord).rgb;
             textureColor.a = 1.0f;
         }
+    }
+    
+    //HSVFilter
+    if (gHSVFilterParameter.enable)
+    {
+        float hsv = RGBToHSV(textureColor.rgb);
+        
+        float32_t3 rgb = HSVToRGB(hsv);
+     
+        textureColor.rgb = rgb;
     }
 
     output.color = textureColor;
