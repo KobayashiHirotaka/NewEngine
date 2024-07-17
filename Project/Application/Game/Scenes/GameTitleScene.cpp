@@ -27,8 +27,8 @@ void GameTitleScene::Initialize()
 	//postEffectの切り替え
 	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
-	PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
-	//PostProcess::GetInstance()->SetIsDepthBasedOutlineActive(true);
+	//PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
+	PostProcess::GetInstance()->SetIsDepthBasedOutlineActive(true);
 
 	//modelの読み込み
 	//modelManager_->LoadModel("resource/models", "remakePlayer.gltf");

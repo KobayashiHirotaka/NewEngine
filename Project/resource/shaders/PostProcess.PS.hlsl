@@ -68,16 +68,6 @@ float32_t Luminance(float32_t3 v)
     return dot(v, float32_t3(0.2125f, 0.7154f, 0.0721f));
 }
 
-float32_t3 RGBToHSV(float32_t3 rgb)
-{
-    
-}
-
-float32_t3 HSVToRGB(float32_t3 hsv)
-{
-    
-}
-
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
@@ -242,11 +232,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     //HSVFilter
     if (gHSVFilterParameter.enable)
     {
-        float hsv = RGBToHSV(textureColor.rgb);
-        
-        float32_t3 rgb = HSVToRGB(hsv);
-     
-        textureColor.rgb = rgb;
+       
     }
 
     output.color = textureColor;

@@ -78,6 +78,12 @@ public:
         Matrix4x4 projectionInverse;
     };
 
+    struct HSVFilterData
+    {
+        bool enable;
+        float padding[3];
+    };
+
     static PostProcess* GetInstance();
 
     static void DeleteInstance();
@@ -100,6 +106,7 @@ public:
     void SetIsGaussianFilterActive(float isActive) { isGaussianFilterActive_ = isActive; };
     void SetIsLuminanceBasedOutlineActive(float isActive) { isLuminanceBasedOutlineActive_ = isActive; };
     void SetIsDepthBasedOutlineActive(float isActive) { isDepthBasedOutlineActive_ = isActive; };
+    void SetIsHSVFilterActive(float isActive) { isHSVFilterActive_ = isActive; };
 
 
     //ポストエフェクトのパラメーター用のセッター
@@ -177,6 +184,10 @@ private:
     void DepthBasedOutline();
     void UpdateDepthBasedOutline();
 
+    //HSVフィルター
+    void HSVFilter();
+    void UpdateHSVFilter();
+
     //マルチパス用テクスチャの作成
     Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor);
     //深度テクスチャの作成
@@ -251,6 +262,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> gaussianFilterConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> luminanceBasedOutlineConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> depthBasedOutlineConstantBuffer_ = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> hsvFilterConstantBuffer_ = nullptr;
 
     //ブルームの強度
     float bloomIntensity_ = 0.17f;
@@ -272,4 +284,5 @@ private:
     bool isGaussianFilterActive_ = false;
     bool isLuminanceBasedOutlineActive_ = false;
     bool isDepthBasedOutlineActive_ = false;
+    bool isHSVFilterActive_ = false;
 };

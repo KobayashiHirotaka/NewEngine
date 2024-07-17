@@ -78,6 +78,8 @@ void PostProcess::Initialize()
 	LuminanceBasedOutline();
 
 	DepthBasedOutline();
+
+	HSVFilter();
 }
 
 void PostProcess::Update()
@@ -101,6 +103,8 @@ void PostProcess::Update()
 	UpdateLuminanceBasedOutline();
 
 	UpdateDepthBasedOutline();
+
+	UpdateHSVFilter();
 }
 
 void PostProcess::PreDraw()
@@ -894,6 +898,7 @@ void PostProcess::Draw()
 	commandList_->SetGraphicsRootConstantBufferView(10, gaussianFilterConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(11, luminanceBasedOutlineConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(12, depthBasedOutlineConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(13, hsvFilterConstantBuffer_->GetGPUVirtualAddress());
 
 	//形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -1378,6 +1383,26 @@ void PostProcess::UpdateDepthBasedOutline()
 	depthBasedOutlineConstantBuffer_->Unmap(0, nullptr);
 }
 
+void PostProcess::HSVFilter()
+{
+	//DepthOutline用のCBVの作成
+	hsvFilterConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(HSVFilterData));
+
+	//DepthOutline用のリソースに書き込む
+	HSVFilterData* hsvFilterData = nullptr;
+	hsvFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&hsvFilterData));
+	hsvFilterData->enable = isHSVFilterActive_;
+	hsvFilterConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::UpdateHSVFilter()
+{
+	//DepthOutline用のリソースに書き込む
+	HSVFilterData* hsvFilterData = nullptr;
+	hsvFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&hsvFilterData));
+	hsvFilterData->enable = isHSVFilterActive_;
+	hsvFilterConstantBuffer_->Unmap(0, nullptr);
+}
 
 Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateDepthStencilTextureResource(int32_t width, int32_t height)
 {
@@ -1465,6 +1490,9 @@ void PostProcess::CreateDSV()
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;//Format。基本的にはResourceに合わせる
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;//2DTexture
 
+	//DSVHeapの先頭にDSVを作る
+	device_->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, multiPassDSVDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
+
 	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
 
 	D3D12_CPU_DESCRIPTOR_HANDLE srvCPUHandle =
@@ -1479,9 +1507,6 @@ void PostProcess::CreateDSV()
 	depthTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	depthTextureSrvDesc.Texture2D.MipLevels = 1;
 	device_->CreateShaderResourceView(depthStencilResource_.Get(), &depthTextureSrvDesc, srvCPUHandle);
-
-	//DSVHeapの先頭にDSVを作る
-	device_->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, multiPassDSVDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
 }
 
 
