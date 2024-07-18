@@ -37,9 +37,9 @@ void Enemy::Initialize()
 	hpBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/HP.png"),
-		{720.0f, barSpace},
+		{720.0f, barSpace_},
 		0.0f,
-		{-barSize  ,7.2f},
+		{-barSize_  ,7.2f},
 		nullptr,
 	};
 
@@ -48,9 +48,9 @@ void Enemy::Initialize()
 	guardGaugeBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/guardGauge.png"),
-		{720.0f, guardGaugeBarSpace},
+		{720.0f, guardGaugeBarSpace_},
 		0.0f,
-		{-guardGaugeBarSize  ,7.0f},
+		{-guardGaugeBarSize_  ,7.0f},
 		nullptr,
 	};
 
@@ -59,9 +59,9 @@ void Enemy::Initialize()
 	finisherGaugeBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/guardGauge.png"),
-		{978.0f, finisherGaugeBarSpace},
+		{978.0f, finisherGaugeBarSpace_},
 		0.0f,
-		{-finisherGaugeBarSize  ,20.0f},
+		{-finisherGaugeBarSize_  ,20.0f},
 		nullptr,
 	};
 
@@ -99,47 +99,47 @@ void Enemy::Update()
 	//アニメーションテスト用
 	if (input_->PressKey(DIK_0))
 	{
-		animationIndex = 0;
+		animationIndex_ = 0;
 	}
 	if (input_->PressKey(DIK_1))
 	{
-		animationIndex = 1;
+		animationIndex_ = 1;
 	}
 	if (input_->PressKey(DIK_2))
 	{
-		animationIndex = 2;
+		animationIndex_ = 2;
 	}
 	if (input_->PressKey(DIK_3))
 	{
-		animationIndex = 3;
+		animationIndex_ = 3;
 	}
 	if (input_->PressKey(DIK_4))
 	{
-		animationIndex = 4;
+		animationIndex_ = 4;
 	}
 	if (input_->PressKey(DIK_5))
 	{
-		animationIndex = 5;
+		animationIndex_ = 5;
 	}
 	if (input_->PressKey(DIK_6))
 	{
-		animationIndex = 6;
+		animationIndex_ = 6;
 	}
 	if (input_->PressKey(DIK_7))
 	{
-		animationIndex = 7;
+		animationIndex_ = 7;
 	}
 	if (input_->PressKey(DIK_8))
 	{
-		animationIndex = 8;
+		animationIndex_ = 8;
 	}
 	if (input_->PressKey(DIK_9))
 	{
-		animationIndex = 9;
+		animationIndex_ = 9;
 	}
 	if (input_->PressKey(DIK_Q))
 	{
-		animationIndex = 10;
+		animationIndex_ = 10;
 	}
 
 	//ここまでテスト用の処理
@@ -147,7 +147,7 @@ void Enemy::Update()
 	isShake_ = false;
 
 	//0は後ろ歩き,1は前歩き,2は停止
-	model_->ApplyAnimation(animationIndex);
+	model_->ApplyAnimation(animationIndex_);
 
 	model_->Update();
 
@@ -363,12 +363,12 @@ void Enemy::Update()
 
 void Enemy::Draw(const Camera& camera)
 {
-	model_->Draw(worldTransform_, camera, animationIndex);
+	model_->Draw(worldTransform_, camera, animationIndex_);
 }
 
 void Enemy::BoneDraw(const Camera& camera)
 {
-	model_->BoneDraw(worldTransform_, camera, animationIndex);
+	model_->BoneDraw(worldTransform_, camera, animationIndex_);
 }
 
 void Enemy::DrawSprite()
@@ -396,7 +396,7 @@ void Enemy::DrawParticle(const Camera& camera)
 
 void Enemy::BehaviorRootInitialize()
 {
-	animationIndex = 4;
+	animationIndex_ = 4;
 }
 
 void Enemy::BehaviorRootUpdate()
@@ -449,9 +449,9 @@ void Enemy::BehaviorRootUpdate()
 		//移動
 		if (isFrontMove_)
 		{
-			animationIndex = 0;
+			animationIndex_ = 0;
 
-			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
+			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex_, model_);
 
 			velocity_ = Normalize(velocity_);
 			velocity_ = Multiply(frontSpeed_, velocity_);
@@ -463,9 +463,9 @@ void Enemy::BehaviorRootUpdate()
 		}
 		else if (isBackMove_)
 		{
-			animationIndex = 1;
+			animationIndex_ = 1;
 
-			UpdateAnimationTime(animationTime, true, 40.0f, animationIndex, model_);
+			UpdateAnimationTime(animationTime, true, 40.0f, animationIndex_, model_);
 
 			velocity_ = Normalize(velocity_);
 			velocity_ = Multiply(backSpeed_, velocity_);
@@ -477,9 +477,9 @@ void Enemy::BehaviorRootUpdate()
 		}
 		else
 		{
-			animationIndex = 4;
+			animationIndex_ = 4;
 
-			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
+			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
 		}
 
 		if (moveTimer_ <= 0)
@@ -508,7 +508,7 @@ void Enemy::BehaviorRootUpdate()
 
 void Enemy::BehaviorAttackInitialize()
 {
-	attackAnimationFrame = 0;
+	attackAnimationFrame_ = 0;
 }
 
 void Enemy::BehaviorAttackUpdate()
@@ -516,12 +516,12 @@ void Enemy::BehaviorAttackUpdate()
 	//タックル攻撃
 	if (workAttack_.isTackle)
 	{
-		animationIndex = 7;
+		animationIndex_ = 7;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		float particlePositionX = 0.0f;
 
@@ -531,20 +531,20 @@ void Enemy::BehaviorAttackUpdate()
 		}
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (enemyDirection_ == Direction::Right)
 		{
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 
-			if (attackAnimationFrame >= 25 && attackAnimationFrame < 40)
+			if (attackAnimationFrame_ >= 25 && attackAnimationFrame_ < 40)
 			{
 				workAttack_.isAttack = true;
 				worldTransform_.translation.x += 0.15f;
 			}
 
-			if (attackAnimationFrame >= 25 && attackAnimationFrame < 60)
+			if (attackAnimationFrame_ >= 25 && attackAnimationFrame_ < 60)
 			{
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
@@ -573,13 +573,13 @@ void Enemy::BehaviorAttackUpdate()
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 
-			if (attackAnimationFrame >= 25 && attackAnimationFrame < 40)
+			if (attackAnimationFrame_ >= 25 && attackAnimationFrame_ < 40)
 			{
 				workAttack_.isAttack = true;
 				worldTransform_.translation.x -= 0.15f;
 			}
 
-			if (attackAnimationFrame >= 25 && attackAnimationFrame < 60)
+			if (attackAnimationFrame_ >= 25 && attackAnimationFrame_ < 60)
 			{
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
@@ -604,7 +604,7 @@ void Enemy::BehaviorAttackUpdate()
 			}
 		}
 
-		if (attackAnimationFrame >= 55)
+		if (attackAnimationFrame_ >= 55)
 		{
 			workAttack_.isAttack = false;
 		}
@@ -616,13 +616,13 @@ void Enemy::BehaviorAttackUpdate()
 			workAttack_.isAttack = false;
 			workAttack_.isTackle = false;
 			animationTime = 0.0f;
-			attackAnimationFrame = 0;
+			attackAnimationFrame_ = 0;
 			model_->SetAnimationTime(animationTime);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
 
-		attackAnimationFrame++;
+		attackAnimationFrame_++;
 	}
 }
 
@@ -638,9 +638,9 @@ void Enemy::BehaviorJumpInitialize()
 void Enemy::BehaviorJumpUpdate()
 {
 	float animationTime = 0.0f;
-	animationIndex = 4;
+	animationIndex_ = 4;
 
-	UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
+	UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
 
 	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
@@ -662,7 +662,7 @@ void Enemy::BehaviorJumpUpdate()
 
 void Enemy::BehaviorThrowInitialize()
 {
-	attackAnimationFrame = 0;
+	attackAnimationFrame_ = 0;
 }
 
 void Enemy::BehaviorThrowUpdate()
@@ -672,16 +672,16 @@ void Enemy::BehaviorThrowUpdate()
 
 void Enemy::BehaviorStanInitialize()
 {
-	animationIndex = 8;
+	animationIndex_ = 8;
 }
 
 void Enemy::BehaviorStanUpdate()
 {
-	animationIndex = 8;
+	animationIndex_ = 8;
 	float animationTime = 0.0f;
 	float animationDuration;
 	animationTime = model_->GetAnimationTime();
-	animationDuration = model_->GetAnimation()[animationIndex].duration;
+	animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 	if (enemyDirection_ == Direction::Left)
 	{
@@ -700,13 +700,13 @@ void Enemy::BehaviorStanUpdate()
 	}
 
 	model_->SetAnimationTime(animationTime);
-	model_->ApplyAnimation(animationIndex);
+	model_->ApplyAnimation(animationIndex_);
 
 	if (animationTime >= animationDuration || isDown_)
 	{
 		behaviorRequest_ = Behavior::kRoot;
 		animationTime = 0.0f;
-		attackAnimationFrame = 0;
+		attackAnimationFrame_ = 0;
 		guardGauge_ = 0.0f;
 		model_->SetAnimationTime(animationTime);
 		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
@@ -950,7 +950,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 void Enemy::HPBarUpdate()
 {
-	hpBar_.size_ = { (hp_ / maxHp_) * barSize,7.0f };
+	hpBar_.size_ = { (hp_ / maxHp_) * barSize_,7.0f };
 
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 
@@ -976,7 +976,7 @@ void Enemy::GuardGaugeBarUpdate()
 		guardGauge_ -= 0.03f;
 	}
 
-	guardGaugeBar_.size_ = { (guardGauge_ / maxGuardGauge_) * guardGaugeBarSize,7.0f };
+	guardGaugeBar_.size_ = { (guardGauge_ / maxGuardGauge_) * guardGaugeBarSize_,7.0f };
 
 	guardGaugeBar_.sprite_->SetSize(guardGaugeBar_.size_);
 
@@ -993,7 +993,7 @@ void Enemy::GuardGaugeBarUpdate()
 
 void Enemy::FinisherGaugeBarUpdate()
 {
-	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize,20.0f };
+	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,20.0f };
 
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
 
@@ -1045,13 +1045,13 @@ void Enemy::Reset()
 
 	isThrow_ = false;
 
-	finisherEffectTimer = 90;
-	isFinisherEffect = false;
+	finisherEffectTimer_ = 90;
+	isFinisherEffect_ = false;
 	finisherCount_ = 0;
 
-	animationIndex = 4;
+	animationIndex_ = 4;
 
-	attackAnimationFrame = 0;
+	attackAnimationFrame_ = 0;
 
 	behavior_ = Behavior::kRoot;
 
@@ -1099,20 +1099,20 @@ void Enemy::DownAnimation()
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
-		animationIndex = 3;
+		animationIndex_ = 3;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (!player_->GetIsLightPunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
+			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1147,20 +1147,20 @@ void Enemy::DownAnimation()
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
-		animationIndex = 3;
+		animationIndex_ = 3;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (!player_->GetIsLightPunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
+			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1196,20 +1196,20 @@ void Enemy::DownAnimation()
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
-		animationIndex = 3;
+		animationIndex_ = 3;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (!player_->GetIsMiddlePunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
+			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1244,20 +1244,20 @@ void Enemy::DownAnimation()
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
-		animationIndex = 3;
+		animationIndex_ = 3;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (!player_->GetIsMiddlePunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
+			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1313,20 +1313,20 @@ void Enemy::DownAnimation()
 			}
 		}
 
-		animationIndex = 5;
+		animationIndex_ = 5;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (downAnimationTimer_ <= -30 && worldTransform_.translation.y <= 0.0f && hp_ > 0.0f)
 		{
-			animationIndex = 4;
+			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1381,20 +1381,20 @@ void Enemy::DownAnimation()
 			}
 		}
 
-		animationIndex = 5;
+		animationIndex_ = 5;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (downAnimationTimer_ <= -30 && worldTransform_.translation.y <= 0.0f && hp_ > 0.0f)
 		{
-			animationIndex = 4;
+			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1430,20 +1430,20 @@ void Enemy::DownAnimation()
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
-		animationIndex = 3;
+		animationIndex_ = 3;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (!player_->GetIsTCMiddlePunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
+			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1478,20 +1478,20 @@ void Enemy::DownAnimation()
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
-		animationIndex = 3;
+		animationIndex_ = 3;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (!player_->GetIsTCMiddlePunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
+			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1533,23 +1533,23 @@ void Enemy::DownAnimation()
 
 		}
 
-		animationIndex = 5;
+		animationIndex_ = 5;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		aabb_ = { {0.1f,-0.3f,-0.3f},{0.8f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
 		if (!player_->GetIsTCHighPunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
+			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1592,23 +1592,23 @@ void Enemy::DownAnimation()
 
 		}
 
-		animationIndex = 5;
+		animationIndex_ = 5;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
 		if (!player_->GetIsTCHighPunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
+			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1661,23 +1661,23 @@ void Enemy::DownAnimation()
 			worldTransform_.translation.y = 0.0f;
 		}
 
-		animationIndex = 5;
+		animationIndex_ = 5;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		aabb_ = { {0.1f,-0.3f,-0.3f},{0.8f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
 		if (!player_->GetIsTackle() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
+			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1730,23 +1730,23 @@ void Enemy::DownAnimation()
 			worldTransform_.translation.y = 0.0f;
 		}
 
-		animationIndex = 5;
+		animationIndex_ = 5;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
 		if (!player_->GetIsTackle() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
+			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
