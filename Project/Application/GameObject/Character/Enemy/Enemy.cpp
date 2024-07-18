@@ -124,7 +124,7 @@ void Enemy::Update()
 
 	}
 
-	if (workAttack_.isShot)
+	/*if (workAttack_.isShot)
 	{
 		shotTimer_--;
 
@@ -133,7 +133,7 @@ void Enemy::Update()
 			workAttack_.isShot = false;
 			shotTimer_ = 200;
 		}
-	}
+	}*/
 
 	UpdateBullets();
 
@@ -396,7 +396,7 @@ void Enemy::Update()
 	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
 	ImGui::Text("isGuard %d", isGuard_);
 	ImGui::Text("isHit %d", isHit_);
-	ImGui::Text("shotTimer %d", shotTimer_);
+	//ImGui::Text("shotTimer %d", shotTimer_);
 	ImGui::End();
 
 	//worldTransformの更新
@@ -540,7 +540,7 @@ void Enemy::BehaviorRootUpdate()
 		if (moveTimer_ <= 0)
 		{
 			moveTimer_ = Random(30, 90);
-			patternCount_ = 2;
+			patternCount_ = Random(2,3);
 		}
 	}
 
@@ -554,11 +554,20 @@ void Enemy::BehaviorRootUpdate()
 		workAttack_.isTackle = true;
 	}
 
-	//ジャンプ
+	//弾攻撃
 	if (patternCount_ == 3 && !isDown_)
 	{
-		behaviorRequest_ = Behavior::kJump;
+		behaviorRequest_ = Behavior::kAttack;
+		animationTime = 0.0f;
+		model_->SetAnimationTime(animationTime);
+		workAttack_.isShot = true;
 	}
+
+	////ジャンプ
+	//if (patternCount_ == 3 && !isDown_)
+	//{
+	//	behaviorRequest_ = Behavior::kJump;
+	//}
 }
 
 void Enemy::BehaviorAttackInitialize()
@@ -675,6 +684,50 @@ void Enemy::BehaviorAttackUpdate()
 			model_->SetAnimationTime(animationTime);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
+		}
+
+		attackAnimationFrame_++;
+	}
+
+	//弾攻撃
+	if (workAttack_.isShot)
+	{
+		animationIndex_ = 7;
+		isGuard_ = false;
+		float animationTime = 0.0f;
+		float animationDuration;
+		animationTime = model_->GetAnimationTime();
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
+
+		if (!isDown_)
+		{
+			animationTime += 1.0f / 40.0f;
+		}
+
+		model_->SetAnimationTime(animationTime);
+		model_->ApplyAnimation(animationIndex_);
+
+		if (!hasShot_) {  // まだ弾を発射していない場合
+			Vector3 bulletStartPosition = { GetWorldPosition().x, GetWorldPosition().y + 0.5f, GetWorldPosition().z };  // 弾の発射位置を敵の位置に設定
+			Vector3 bulletVelocity = enemyDirection_ == Direction::Right ? Vector3{ 0.1f, 0.0f, 0.0f } : Vector3{ -0.1f, 0.0f, 0.0f };  // 弾の速度を設定
+
+			ShootBullet(bulletStartPosition, bulletVelocity);
+
+			hasShot_ = true;  // 弾を発射したことを記録
+		}
+
+		if (isDown_ || animationTime >= animationDuration)
+		{
+			patternCount_ = 1;
+			behaviorRequest_ = Behavior::kRoot;
+			workAttack_.isAttack = false;
+			workAttack_.isShot = false;
+			animationTime = 0.0f;
+			attackAnimationFrame_ = 0;
+			model_->SetAnimationTime(animationTime);
+			hasShot_ = false;  // フラグをリセットして次の発射に備える
+			/*aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);*/
 		}
 
 		attackAnimationFrame_++;
@@ -1859,7 +1912,8 @@ void Enemy::UpdateBullets()
 			delete* it;
 			it = bullets_.erase(it);
 		}
-		else {
+		else
+		{
 			++it;
 		}
 	}

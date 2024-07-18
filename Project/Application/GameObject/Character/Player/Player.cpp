@@ -1543,7 +1543,7 @@ void Player::DownAnimation()
 	}
 
 	//弾攻撃
-	if (isHitBullet_ && playerDirection_ == Direction::Left)
+	if (isHitBullet_)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;
@@ -1552,15 +1552,14 @@ void Player::DownAnimation()
 		{
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x - 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
+				.SetTranslation({ worldTransform_.translation.x + (playerDirection_ == Direction::Left ? -0.1f : 0.1f), worldTransform_.translation.y + 0.5f, worldTransform_.translation.z })
+				.SetArea({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f })
+				.SetRotation({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f })
+				.SetScale({ 0.1f, 0.1f, 0.1f }, { 0.2f, 0.2f, 0.2f })
 				.SetAzimuth(0.0f, 360.0f)
 				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+				.SetVelocity({ 0.03f, 0.03f, 0.03f }, { 0.06f, 0.06f, 0.06f })
+				.SetColor({ 1.0f, 0.5f, 0.0f, 1.0f }, { 1.0f, 0.5f, 0.0f, 1.0f })
 				.SetLifeTime(0.1f, 1.0f)
 				.SetCount(50)
 				.SetFrequency(4.0f)
@@ -1580,55 +1579,7 @@ void Player::DownAnimation()
 		model_->SetAnimationTime(animationTime);
 		model_->ApplyAnimation(animationIndex_);
 
-		if (!enemy_->GetIsShot() && hp_ > 0.0f)
-		{
-			animationIndex_ = 4;
-			downAnimationTimer_ = 60;
-			animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
-			isHitBullet_ = false;
-			isDown_ = false;
-		}
-	}
-
-	if (isHitBullet_ && playerDirection_ == Direction::Right)
-	{
-		isDown_ = true;
-		downAnimationTimer_--;
-
-		if (downAnimationTimer_ > 55)
-		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x + 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
-		}
-
-		animationIndex_ = 3;
-		float animationTime = 0.0f;
-		float animationDuration;
-		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex_].duration;
-
-		animationTime += 1.0f / 30.0f;
-
-		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex_);
-
-		if (!enemy_->GetIsShot() && hp_ > 0.0f)
+		if (animationTime >= animationDuration && hp_ < 0.0f)
 		{
 			animationIndex_ = 4;
 			downAnimationTimer_ = 60;

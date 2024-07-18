@@ -385,7 +385,9 @@ private:
 	std::unique_ptr<Model> bulletModel_;
 	std::vector<EnemyBullet*> bullets_;
 
-	int shotTimer_ = 200;
+	int shotCooldownTimer_ = 0;
+
+	bool hasShot_ = false;
 #pragma endregion
 };
 
