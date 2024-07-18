@@ -14,7 +14,7 @@
 #include <random>
 #include <numbers>
 
-//#include "Application/GameObject/Character/Enemy/EnemyWeapon.h"
+#include "Direction.h"
 
 //前方宣言
 class Player;
@@ -29,12 +29,6 @@ public:
 		kJump,
 		kThrow,
 		kStan
-	};
-
-	enum class Direction
-	{
-		Left,
-		Right
 	};
 
 	struct WorkAttack

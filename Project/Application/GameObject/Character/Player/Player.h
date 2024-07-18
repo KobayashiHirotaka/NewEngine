@@ -12,6 +12,8 @@
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"
 
+#include "Direction.h"
+
 //前方宣言
 class Enemy;
 
@@ -25,12 +27,6 @@ public:
 		kJump,
 		kThrow,
 		kStan
-	};
-
-	enum class Direction
-	{
-		Left,
-		Right
 	};
 
 	struct WorkAttack

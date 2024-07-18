@@ -1073,7 +1073,7 @@ void Enemy::HitStop(int milliseconds)
 void Enemy::DownAnimation()
 {
 	//弱攻撃
-	if (isHitLightPunch_ && player_->GetRotation().y == 1.7f)
+	if (isHitLightPunch_ && enemyDirection_ == Direction::Right)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;
@@ -1121,7 +1121,7 @@ void Enemy::DownAnimation()
 		}
 	}
 
-	if (isHitLightPunch_ && player_->GetRotation().y == 4.6f)
+	if (isHitLightPunch_ && enemyDirection_ == Direction::Left)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;

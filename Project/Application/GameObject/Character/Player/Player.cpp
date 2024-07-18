@@ -616,7 +616,7 @@ void Player::BehaviorAttackUpdate()
 		//キャンセルの処理(中TC)
 		if (input_->GetJoystickState())
 		{
-			if (!isDown_ && attackAnimationFrame_ > 10 && animationTime < animationDuration
+			if (!isDown_ && attackAnimationFrame_ > 15 && attackAnimationFrame_ < 30 && animationTime < animationDuration
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) 
 				&& isHit_)
 			{
@@ -680,7 +680,7 @@ void Player::BehaviorAttackUpdate()
 		//キャンセルの処理(強TC)
 		if (input_->GetJoystickState())
 		{
-			if (!isDown_ && attackAnimationFrame_ > 20 && animationTime < animationDuration
+			if (!isDown_ && attackAnimationFrame_ > 15 && attackAnimationFrame_ < 30 && animationTime < animationDuration
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
 				&& isHit_)
 			{
@@ -865,7 +865,7 @@ void Player::BehaviorAttackUpdate()
 		{
 			//タックル攻撃
 			//右向きのとき
-			if (!isDown_ && attackAnimationFrame_ > 10 && animationTime < animationDuration
+			if (!isDown_ && attackAnimationFrame_ > 15 && attackAnimationFrame_ < 30 && animationTime < animationDuration
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
 				&& playerDirection_ == Direction::Right)
 			{
