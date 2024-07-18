@@ -95,7 +95,7 @@ public:
 
 	//PlayerWeapon* GetPlayerWeapon() { return playerWeapon_.get(); };
 
-	uint32_t GetAnimationIndex() { return animationIndex; };
+	uint32_t GetAnimationIndex() { return animationIndex_; };
 
 	WorldTransform& GetWorldTransform()override { return worldTransform_; }
 
@@ -119,21 +119,23 @@ public:
 
 	bool GetIsThrow() { return isThrow_; };
 
-	int GetAttackAnimationFrame() { return attackAnimationFrame; };
+	int GetAttackAnimationFrame() { return attackAnimationFrame_; };
 
 	int GetThrowTimer() { return throwTimer_; };
 
 	bool GetIsDown() { return isDown_; };
 
-	int GetFinisherEffectTimer() { return finisherEffectTimer; };
+	int GetFinisherEffectTimer() { return finisherEffectTimer_; };
 
-	bool GetIsFinisherEffect() { return isFinisherEffect; };
+	bool GetIsFinisherEffect() { return isFinisherEffect_; };
 
 	int GetFinisherCount() { return finisherCount_; };
 
 	int GetIsCancelCount() { return cancelCount_; };
 
 	bool GetIsShake() { return isShake_; };
+
+	Direction GetDirection() { return playerDirection_; };
 
 #pragma endregion
 
@@ -221,10 +223,10 @@ private:
 	Vector3 previousPosition_;
 
 	//向いている方向
-	Direction playerDirection = Direction::Right;
+	Direction playerDirection_ = Direction::Right;
 
 	//再生するanimationの番号
-	uint32_t animationIndex = 4;
+	uint32_t animationIndex_ = 4;
 
 	//ダウン演出の時間
 	int downAnimationTimer_ = 60;
@@ -239,7 +241,7 @@ private:
 	int stanTimer_ = 60;
 
 	//必殺技
-	int finisherEffectTimer = 90;
+	int finisherEffectTimer_ = 90;
 	int finisherCount_ = 0;
 
 	//キャンセル
@@ -262,13 +264,13 @@ private:
 
 	WorkAttack workAttack_;
 
-	int attackTimer = 30;
+	int attackTimer_ = 30;
 
 	int jumpAttackTimer_ = 15;
 
 	int throwTimer_ = 100;
 
-	int attackAnimationFrame;
+	int attackAnimationFrame_;
 
 #pragma endregion
 
@@ -309,7 +311,7 @@ private:
 	//リセットしているかどうか
 	bool isReset_ = false;
 
-	bool isFinisherEffect = false;
+	bool isFinisherEffect_ = false;
 
 #pragma endregion
 
@@ -317,18 +319,18 @@ private:
 
 	//スプライト(hp)
 	UI hpBar_;
-	const float barSpace = 15.6f;
-	float barSize = 480.0f;
+	const float barSpace_ = 15.6f;
+	float barSize_ = 480.0f;
 
 	//スプライト(ガードゲージ)
 	UI guardGaugeBar_;
-	const float guardGaugeBarSpace = 48.5f;
-	float guardGaugeBarSize = 240.0f;
+	const float guardGaugeBarSpace_ = 48.5f;
+	float guardGaugeBarSize_ = 240.0f;
 
 	//スプライト(必殺技ゲージ)
 	UI finisherGaugeBar_;
-	const float finisherGaugeBarSpace = 627.0f;
-	float finisherGaugeBarSize = 240.0f;
+	const float finisherGaugeBarSpace_ = 627.0f;
+	float finisherGaugeBarSize_ = 240.0f;
 
 	//サウンド
 	uint32_t attackSoundHandle_ = 0u;

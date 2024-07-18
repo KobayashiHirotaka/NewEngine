@@ -133,6 +133,12 @@ PixelShaderOutput main(VertexShaderOutput input)
         textureColor.rgb *= rcp(weight);
     }
     
+     //HSVFilter
+    if (gHSVFilterParameter.enable)
+    {
+       
+    }
+    
     
 	//Bloom
     if (gBloomParameter.enable == true)
@@ -227,12 +233,6 @@ PixelShaderOutput main(VertexShaderOutput input)
             textureColor.rgb = (1.0f - weight) * gTexture.Sample(gSampler, input.texcoord).rgb;
             textureColor.a = 1.0f;
         }
-    }
-    
-    //HSVFilter
-    if (gHSVFilterParameter.enable)
-    {
-       
     }
 
     output.color = textureColor;

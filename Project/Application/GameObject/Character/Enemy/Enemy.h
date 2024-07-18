@@ -141,6 +141,8 @@ public:
 
 	bool GetIsShake() { return isShake_; };
 
+	Direction GetDirection() { return enemyDirection_; };
+
 #pragma endregion
 
 #pragma region Setter

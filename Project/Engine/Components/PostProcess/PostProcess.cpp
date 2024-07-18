@@ -1385,10 +1385,10 @@ void PostProcess::UpdateDepthBasedOutline()
 
 void PostProcess::HSVFilter()
 {
-	//DepthOutline用のCBVの作成
+	//HSVFilter用のCBVの作成
 	hsvFilterConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(HSVFilterData));
 
-	//DepthOutline用のリソースに書き込む
+	//HSVFilter用のリソースに書き込む
 	HSVFilterData* hsvFilterData = nullptr;
 	hsvFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&hsvFilterData));
 	hsvFilterData->enable = isHSVFilterActive_;
@@ -1397,7 +1397,7 @@ void PostProcess::HSVFilter()
 
 void PostProcess::UpdateHSVFilter()
 {
-	//DepthOutline用のリソースに書き込む
+	//HSVFilter用のリソースに書き込む
 	HSVFilterData* hsvFilterData = nullptr;
 	hsvFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&hsvFilterData));
 	hsvFilterData->enable = isHSVFilterActive_;
