@@ -1170,7 +1170,7 @@ void Enemy::DownAnimation()
 	}
 
 	//中攻撃
-	if (isHitMiddlePunch_ && player_->GetRotation().y == 1.7f)
+	if (isHitMiddlePunch_ && enemyDirection_ == Direction::Left)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;
@@ -1218,7 +1218,7 @@ void Enemy::DownAnimation()
 		}
 	}
 
-	if (isHitMiddlePunch_ && player_->GetRotation().y == 4.6f)
+	if (isHitMiddlePunch_ && enemyDirection_ == Direction::Right)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;
@@ -1267,7 +1267,7 @@ void Enemy::DownAnimation()
 	}
 
 	//強攻撃
-	if (isHitHighPunch_ && player_->GetRotation().y == 1.7f)
+	if (isHitHighPunch_ && enemyDirection_ == Direction::Left)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;
@@ -1335,7 +1335,7 @@ void Enemy::DownAnimation()
 		}
 	}
 
-	if (isHitHighPunch_ && player_->GetRotation().y == 4.6f)
+	if (isHitHighPunch_ && enemyDirection_ == Direction::Right)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;
@@ -1404,7 +1404,7 @@ void Enemy::DownAnimation()
 	}
 
 	//TC中攻撃
-	if (isHitTCMiddlePunch_ && player_->GetRotation().y == 1.7f)
+	if (isHitTCMiddlePunch_ && enemyDirection_ == Direction::Left)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;
@@ -1452,7 +1452,7 @@ void Enemy::DownAnimation()
 		}
 	}
 
-	if (isHitTCMiddlePunch_ && player_->GetRotation().y == 4.6f)
+	if (isHitTCMiddlePunch_ && enemyDirection_ == Direction::Right)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;
@@ -1501,7 +1501,7 @@ void Enemy::DownAnimation()
 	}
 
 	//TC強攻撃
-	if (isHitTCHighPunch_ && player_->GetRotation().y == 1.7f)
+	if (isHitTCHighPunch_ && enemyDirection_ == Direction::Left)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;
@@ -1560,7 +1560,7 @@ void Enemy::DownAnimation()
 		}
 	}
 
-	if (isHitTCHighPunch_ && player_->GetRotation().y == 4.6f)
+	if (isHitTCHighPunch_ && enemyDirection_ == Direction::Right)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;
@@ -1620,7 +1620,7 @@ void Enemy::DownAnimation()
 	}
 
 	//タックル攻撃
-	if (isHitTackle_ && player_->GetRotation().y == 1.7f)
+	if (isHitTackle_ && enemyDirection_ == Direction::Left)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;
@@ -1688,7 +1688,7 @@ void Enemy::DownAnimation()
 		}
 	}
 
-	if (isHitTackle_ && player_->GetRotation().y == 4.6f)
+	if (isHitTackle_ && enemyDirection_ == Direction::Right)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;

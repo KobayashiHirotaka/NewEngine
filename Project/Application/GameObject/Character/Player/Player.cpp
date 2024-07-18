@@ -977,7 +977,7 @@ void Player::BehaviorAttackUpdate()
 					.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 					.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 					.SetScale({ 0.1f, 0.1f, 0.1f }, { 0.4f ,0.4f ,0.4f })
-					.SetAzimuth(0.0f, 0.8f)
+					.SetAzimuth(0.0f, 8.0f)
 					.SetElevation(0.0f, 0.0f)
 					.SetVelocity({ 0.08f ,0.08f ,0.08f }, { 0.1f ,0.1f ,0.1f })
 					.SetColor({ 1.0f ,0.0f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
@@ -1392,7 +1392,7 @@ void Player::HitStop(int milliseconds)
 void Player::DownAnimation()
 {
 	//タックル攻撃
-	if (isHitTackle_ && enemy_->GetRotation().y == 1.7f)
+	if (isHitTackle_ && playerDirection_ == Direction::Left)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;
@@ -1462,7 +1462,7 @@ void Player::DownAnimation()
 		}
 	}
 
-	if (isHitTackle_ && enemy_->GetRotation().y == 4.6f)
+	if (isHitTackle_ && playerDirection_ == Direction::Right)
 	{
 		isDown_ = true;
 		downAnimationTimer_--;
