@@ -262,6 +262,8 @@ void GamePlayScene::Draw()
 
 	Model::PreDraw();
 
+	enemy_->DrawBullet(camera_);
+
 	//player,enemyの描画
 	game3dObjectManager_->Draw(camera_);
 

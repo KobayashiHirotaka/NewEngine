@@ -15,6 +15,7 @@
 #include <numbers>
 
 #include "Direction.h"
+#include "EnemyBullet.h"
 
 //前方宣言
 class Player;
@@ -83,6 +84,8 @@ public:
 
 	void DrawSprite();
 
+	void DrawBullet(const Camera& camera);
+
 	void DrawParticle(const Camera& camera);
 
 	void OnCollision(Collider* collider, float damage)override;
@@ -90,6 +93,12 @@ public:
 	//EnemyWeapon* GetEnemyWeapon() { return enemyWeapon_.get(); };
 
 	void Reset();
+
+	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
+
+	void UpdateBullets();
+	
+	void DrawBullets(const Camera& camera);
 
 #pragma region Getter
 
@@ -364,6 +373,10 @@ private:
 	//パーティクル
 	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
 	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
+
+	//敵の弾テスト用
+	std::unique_ptr<Model> bulletModel_;
+	std::vector<EnemyBullet*> bullets_;
 
 #pragma endregion
 };

@@ -7,6 +7,12 @@ Enemy::~Enemy()
 	delete hpBar_.sprite_;
 	delete guardGaugeBar_.sprite_;
 	delete finisherGaugeBar_.sprite_;
+
+	for (auto& bullet : bullets_) 
+	{
+		delete bullet;
+	}
+	bullets_.clear();
 }
 
 void Enemy::Initialize()
@@ -27,6 +33,8 @@ void Enemy::Initialize()
 
 	//当たり判定の設定
 	SetAABB(aabb_);
+
+	bulletModel_.reset(Model::CreateFromOBJ("resource/bullet", "bullet.obj"));
 
 	SetCollisionAttribute(kCollisionAttributeEnemy);
 	SetCollisionMask(kCollisionMaskEnemy);
@@ -95,6 +103,16 @@ void Enemy::Update()
 	{
 		guardGauge_ += 1.0f;
 	}
+
+	if (input_->PushKey(DIK_B))
+	{  
+		Vector3 bulletStartPosition = { GetWorldPosition().x,  GetWorldPosition().y + 0.5f,  GetWorldPosition().z};// 弾の発射位置を敵の位置に設定
+		Vector3 bulletVelocity = { -0.1f, 0.0f, 0.0f };  // 弾の速度を設定
+
+		ShootBullet(bulletStartPosition, bulletVelocity);
+	}
+
+	UpdateBullets();
 
 	//アニメーションテスト用
 	if (input_->PressKey(DIK_0))
@@ -389,9 +407,22 @@ void Enemy::DrawSprite()
 	}
 }
 
+void Enemy::DrawBullet(const Camera& camera)
+{
+	for (auto& bullet : bullets_)
+	{
+		bullet->Draw(camera);
+	}
+}
+
 void Enemy::DrawParticle(const Camera& camera)
 {
 	particleModel_->Draw(particleSystem_.get(), camera);
+
+	for (auto& bullet : bullets_)
+	{
+		bullet->ParticleDraw(camera);
+	}
 }
 
 void Enemy::BehaviorRootInitialize()
@@ -1783,4 +1814,38 @@ int Enemy::Random(int min_value, int max_value)
 	std::uniform_int_distribution<int> dis(min_value, max_value);
 
 	return dis(gen);
+}
+
+void Enemy::ShootBullet(const Vector3& startPosition, const Vector3& velocity)
+{
+	// 弾を生成してリストに追加する
+	EnemyBullet* newBullet = new EnemyBullet();
+	newBullet->Initialize(bulletModel_.get(), startPosition, velocity);
+	bullets_.push_back(newBullet);
+}
+
+void Enemy::UpdateBullets() 
+{
+	// 弾の更新と衝突判定などを行う
+	for (auto it = bullets_.begin(); it != bullets_.end();)
+	{
+		(*it)->Update();
+		if ((*it)->IsDead())
+		{
+			delete* it;
+			it = bullets_.erase(it);
+		}
+		else {
+			++it;
+		}
+	}
+}
+
+void Enemy::DrawBullets(const Camera& camera) 
+{
+	// 弾の描画
+	for (auto& bullet : bullets_) 
+	{
+		bullet->Draw(camera);
+	}
 }
