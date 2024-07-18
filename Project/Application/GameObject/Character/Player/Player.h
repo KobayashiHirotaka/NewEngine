@@ -298,6 +298,9 @@ private:
 	//技
 	bool isHitTackle_ = false;
 
+	//弾
+	bool isHitBullet_ = false;
+
 	bool isHitThrow_ = false;
 	bool isThrow_ = false;
 

@@ -106,12 +106,33 @@ void Enemy::Update()
 
 	if (input_->PushKey(DIK_B))
 	{  
-		Vector3 bulletStartPosition = { GetWorldPosition().x,  GetWorldPosition().y + 1.0f,  GetWorldPosition().z};// 弾の発射位置を敵の位置に設定
-		Vector3 bulletVelocity = { -0.1f, -0.02f, 0.0f };  // 弾の速度を設定
+		workAttack_.isShot = true;
+		if (enemyDirection_ == Direction::Left)
+		{
+			Vector3 bulletStartPosition = { GetWorldPosition().x,  GetWorldPosition().y + 0.5f,  GetWorldPosition().z };// 弾の発射位置を敵の位置に設定
+			Vector3 bulletVelocity = { -0.1f, 0.0f, 0.0f };  // 弾の速度を設定
 
-		ShootBullet(bulletStartPosition, bulletVelocity);
+			ShootBullet(bulletStartPosition, bulletVelocity);
+		}
+		else if(enemyDirection_ == Direction::Right)
+		{
+			Vector3 bulletStartPosition = { GetWorldPosition().x,  GetWorldPosition().y + 0.5f,  GetWorldPosition().z };// 弾の発射位置を敵の位置に設定
+			Vector3 bulletVelocity = { 0.1f, 0.0f, 0.0f };  // 弾の速度を設定
 
-		isShot_ = true;
+			ShootBullet(bulletStartPosition, bulletVelocity);
+		}
+
+	}
+
+	if (workAttack_.isShot)
+	{
+		shotTimer_--;
+
+		if(shotTimer_ < 0)
+		{
+			workAttack_.isShot = false;
+			shotTimer_ = 200;
+		}
 	}
 
 	UpdateBullets();
@@ -375,6 +396,7 @@ void Enemy::Update()
 	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
 	ImGui::Text("isGuard %d", isGuard_);
 	ImGui::Text("isHit %d", isHit_);
+	ImGui::Text("shotTimer %d", shotTimer_);
 	ImGui::End();
 
 	//worldTransformの更新
@@ -1832,7 +1854,7 @@ void Enemy::UpdateBullets()
 	for (auto it = bullets_.begin(); it != bullets_.end();)
 	{
 		(*it)->Update();
-		if ((*it)->IsDead())
+		if ((*it)->GetIsDead())
 		{
 			delete* it;
 			it = bullets_.erase(it);

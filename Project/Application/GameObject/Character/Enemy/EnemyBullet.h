@@ -19,7 +19,9 @@ public:
 
 	void ParticleDraw(const Camera& camera);
 
-	bool IsDead() const { return isDead_; }
+	bool GetIsDead() const { return isDead_; }
+
+	void SetIsDead(bool isDead) { isDead_ = isDead; }
 
 	void OnCollision(Collider* collider, float damage)override;
 
@@ -45,7 +47,7 @@ private:
 	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
 
 	//当たり判定
-	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+	AABB aabb_ = { {-0.2f,-0.2f,-0.2f},{0.2f,0.2f,0.2f} };
 
 	bool isHit_ = false;
 };

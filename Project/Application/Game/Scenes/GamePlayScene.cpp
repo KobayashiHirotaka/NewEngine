@@ -205,6 +205,11 @@ void GamePlayScene::Update()
 
 	collisionManager_->AddCollider(enemy_);
 
+	for (const auto& bullet : enemy_->GetBullets())
+	{
+		collisionManager_->AddCollider(bullet);
+	}
+
 	collisionManager_->CheckAllCollision();
 
 	//シーン切り替え
@@ -262,10 +267,11 @@ void GamePlayScene::Draw()
 
 	Model::PreDraw();
 
-	enemy_->DrawBullet(camera_);
-
 	//player,enemyの描画
 	game3dObjectManager_->Draw(camera_);
+
+	//enemyの弾の描画
+	enemy_->DrawBullet(camera_);
 
 	//skydomeの描画
 	skydome_->Draw(camera_);

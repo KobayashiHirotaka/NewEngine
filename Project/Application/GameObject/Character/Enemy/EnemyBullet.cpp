@@ -17,8 +17,8 @@ void EnemyBullet::Initialize(Model* model, const Vector3& positon, const Vector3
 	//当たり判定の設定
 	SetAABB(aabb_);
 
-	SetCollisionAttribute(kCollisionAttributeEnemy);
-	SetCollisionMask(kCollisionMaskEnemy);
+	SetCollisionAttribute(kCollisionAttributeEnemyBullet);
+	SetCollisionMask(kCollisionMaskEnemyBullet);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
 
 	//パーティクルの初期化
@@ -38,7 +38,7 @@ void EnemyBullet::Update()
 
 	//パーティクルの更新
 	particleSystem_->Update();
-	
+
 	ParticleEmitter* newParticleEmitter = EmitterBuilder()
 		.SetParticleType(ParticleEmitter::ParticleType::kNormal)
 		.SetTranslation({ worldTransform_.translation })
@@ -81,7 +81,10 @@ void EnemyBullet::ParticleDraw(const Camera& camera)
 
 void EnemyBullet::OnCollision(Collider* collider, float damage)
 {
-	
+	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
+	{
+		isDead_ = true;
+	}
 }
 
 Vector3 EnemyBullet::GetWorldPosition()

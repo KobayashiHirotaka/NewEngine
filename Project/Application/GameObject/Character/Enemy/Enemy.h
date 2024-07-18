@@ -65,6 +65,9 @@ public:
 		//タックル攻撃
 		bool isTackle = false;
 
+		//弾攻撃
+		bool isShot = false;
+
 		//finisher
 		bool isFinisher = false;
 
@@ -124,6 +127,8 @@ public:
 
 	bool GetIsTackle() { return workAttack_.isTackle; };
 
+	bool GetIsShot() { return workAttack_.isShot; };
+
 	bool GetIsFinisher() { return workAttack_.isFinisher; };
 
 	bool GetIsThrow() { return isThrow_; };
@@ -144,9 +149,9 @@ public:
 
 	bool GetIsShake() { return isShake_; };
 
-	bool GetIsShot() { return isShot_; };
-
 	Direction GetDirection() { return enemyDirection_; };
+
+	const std::vector<EnemyBullet*>& GetBullets() const{ return bullets_; };
 
 #pragma endregion
 
@@ -380,8 +385,7 @@ private:
 	std::unique_ptr<Model> bulletModel_;
 	std::vector<EnemyBullet*> bullets_;
 
-	bool isShot_ = false;
-
+	int shotTimer_ = 200;
 #pragma endregion
 };
 
