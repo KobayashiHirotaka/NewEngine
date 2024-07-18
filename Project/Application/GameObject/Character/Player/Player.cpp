@@ -1131,6 +1131,12 @@ void Player::OnCollision(Collider* collider, float damage)
 	{
 		isHit_ = true;
 
+		if (enemy_->GetIsShot())
+		{
+			damage = 15.0f;
+			hp_ += damage;
+		}
+
 		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && isGuard_ && playerDirection_ == Direction::Right)
 		{
 			guardAnimationTimer_--;
@@ -1423,7 +1429,6 @@ void Player::DownAnimation()
 		if (downAnimationTimer_ > 35 && worldTransform_.translation.x < 4.0f)
 		{
 			worldTransform_.translation.x += 0.08f;
-
 		}
 
 		if (worldTransform_.translation.y > 0.0f)

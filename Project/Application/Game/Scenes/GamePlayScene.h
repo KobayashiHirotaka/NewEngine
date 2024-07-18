@@ -16,6 +16,7 @@
 
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
+#include "Application/GameObject/Character/Enemy/EnemyBullet.h"
 #include "Application/GameObject/Skydome/Skydome.h"
 
 class GamePlayScene : public IScene

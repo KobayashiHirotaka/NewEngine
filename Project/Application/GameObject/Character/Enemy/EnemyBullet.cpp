@@ -4,7 +4,6 @@
 
 void EnemyBullet::Initialize(Model* model, const Vector3& positon, const Vector3& velocity) 
 {
-
 	assert(model);
 
 	model_ = model;
@@ -14,6 +13,13 @@ void EnemyBullet::Initialize(Model* model, const Vector3& positon, const Vector3
 	worldTransform_.translation = positon;
 
 	velocity_ = velocity;
+
+	//当たり判定の設定
+	SetAABB(aabb_);
+
+	SetCollisionAttribute(kCollisionAttributeEnemy);
+	SetCollisionMask(kCollisionMaskEnemy);
+	SetCollisionPrimitive(kCollisionPrimitiveAABB);
 
 	//パーティクルの初期化
 	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
@@ -38,10 +44,10 @@ void EnemyBullet::Update()
 		.SetTranslation({ worldTransform_.translation })
 		.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 		.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-		.SetScale({ 0.1f, 0.1f, 0.1f }, { 0.4f ,0.4f ,0.4f })
+		.SetScale({ 0.4f, 0.4f, 0.4f }, { 0.5f ,0.5f ,0.5f })
 		.SetAzimuth(0.0f, 0.8f)
-		.SetElevation(0.0f, 8.0f)
-		.SetVelocity({ 0.08f ,0.08f ,0.08f }, { 0.1f ,0.1f ,0.1f })
+		.SetElevation(-9.0f, 9.0f)
+		.SetVelocity({ 0.0f ,0.0f ,0.0f }, { 0.01f ,0.01f ,0.01f })
 		.SetColor({ 0.0f ,0.0f ,1.0f ,1.0f }, { 0.0f ,0.5f ,1.0f ,1.0f })
 		.SetLifeTime(0.1f, 0.6f)
 		.SetCount(10)
@@ -54,6 +60,7 @@ void EnemyBullet::Update()
 
 	ImGui::Begin("EBullet");
 	ImGui::Text("isDead = %d", isDead_);
+	ImGui::Text("isHit = %d", isHit_);
 	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
 	ImGui::End();
 }
@@ -72,9 +79,9 @@ void EnemyBullet::ParticleDraw(const Camera& camera)
 }
 
 
-void EnemyBullet::OnCollision()
+void EnemyBullet::OnCollision(Collider* collider, float damage)
 {
-	isDead_ = true;
+	
 }
 
 Vector3 EnemyBullet::GetWorldPosition()

@@ -144,6 +144,8 @@ public:
 
 	bool GetIsShake() { return isShake_; };
 
+	bool GetIsShot() { return isShot_; };
+
 	Direction GetDirection() { return enemyDirection_; };
 
 #pragma endregion
@@ -377,6 +379,8 @@ private:
 	//敵の弾テスト用
 	std::unique_ptr<Model> bulletModel_;
 	std::vector<EnemyBullet*> bullets_;
+
+	bool isShot_ = false;
 
 #pragma endregion
 };

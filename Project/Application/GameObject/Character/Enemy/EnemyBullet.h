@@ -5,8 +5,10 @@
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"
+#include "Engine/Utility/Collision/Collider.h"
+#include "Engine/Utility/Collision/CollisionConfig.h"
 
-class EnemyBullet
+class EnemyBullet : public Collider
 {
 public:
 	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
@@ -19,9 +21,11 @@ public:
 
 	bool IsDead() const { return isDead_; }
 
-	void OnCollision();
+	void OnCollision(Collider* collider, float damage)override;
 
-	Vector3 GetWorldPosition();
+	WorldTransform& GetWorldTransform()override { return worldTransform_; }
+
+	Vector3 GetWorldPosition() override;
 
 private:
 	WorldTransform worldTransform_;
@@ -30,7 +34,7 @@ private:
 
 	Vector3 velocity_;
 
-	static const int32_t kLifeTime = 60 * 5;
+	static const int32_t kLifeTime = 100;
 
 	int32_t deathTimer_ = kLifeTime;
 
@@ -40,4 +44,8 @@ private:
 	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
 	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
 
+	//当たり判定
+	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+
+	bool isHit_ = false;
 };
