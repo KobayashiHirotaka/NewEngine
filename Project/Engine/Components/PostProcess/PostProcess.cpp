@@ -1395,6 +1395,9 @@ void PostProcess::HSVFilter()
 	HSVFilterData* hsvFilterData = nullptr;
 	hsvFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&hsvFilterData));
 	hsvFilterData->enable = isHSVFilterActive_;
+	hsvFilterData->hue = hue_;
+	hsvFilterData->saturation = saturation_;
+	hsvFilterData->value = value_;
 	hsvFilterConstantBuffer_->Unmap(0, nullptr);
 }
 
@@ -1404,7 +1407,16 @@ void PostProcess::UpdateHSVFilter()
 	HSVFilterData* hsvFilterData = nullptr;
 	hsvFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&hsvFilterData));
 	hsvFilterData->enable = isHSVFilterActive_;
+	hsvFilterData->hue = hue_;
+	hsvFilterData->saturation = saturation_;
+	hsvFilterData->value = value_;
 	hsvFilterConstantBuffer_->Unmap(0, nullptr);
+
+	ImGui::Begin("HSVFilter");
+	ImGui::SliderFloat("hue", &hue_, -1.0f, 1.0f);
+	ImGui::SliderFloat("saturation", &saturation_, -1.0f, 1.0f);
+	ImGui::SliderFloat("value", &value_, -1.0f, 1.0f);
+	ImGui::End();
 }
 
 Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateDepthStencilTextureResource(int32_t width, int32_t height)

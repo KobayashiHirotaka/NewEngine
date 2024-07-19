@@ -9,7 +9,6 @@ void EnemyBullet::Initialize(Model* model, const Vector3& positon, const Vector3
 	model_ = model;
 
 	worldTransform_.Initialize();
-
 	worldTransform_.translation = positon;
 
 	velocity_ = velocity;
@@ -25,6 +24,8 @@ void EnemyBullet::Initialize(Model* model, const Vector3& positon, const Vector3
 	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
 	particleSystem_ = std::make_unique<ParticleSystem>();
 	particleSystem_->Initialize();
+
+	worldTransform_.UpdateMatrixEuler();
 }
 
 void EnemyBullet::Update() 
@@ -75,7 +76,10 @@ void EnemyBullet::Draw(const Camera& camera)
 
 void EnemyBullet::ParticleDraw(const Camera& camera)
 {
-	particleModel_->Draw(particleSystem_.get(), camera);
+	if (isDead_ == false)
+	{
+		particleModel_->Draw(particleSystem_.get(), camera);
+	}
 }
 
 

@@ -82,6 +82,9 @@ public:
     {
         bool enable;
         float padding[3];
+        float hue;
+        float saturation;
+        float value;
     };
 
     static PostProcess* GetInstance();
@@ -110,8 +113,16 @@ public:
 
 
     //ポストエフェクトのパラメーター用のセッター
-    void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
+    //ブルーム
     void SetBloomIntensity(float intensity) { bloomIntensity_ = intensity; };
+
+    //ビネット
+    void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
+
+    //HSVフィルター
+    void SetHSVFilterHue(float hue) { hue_ = hue; };
+    void SetHSVFilterSaturation(float saturation) { saturation_ = saturation; };
+    void SetHSVFilterValue(float value) { value_ = value; };
 
 private:
     //ブラーの方向
@@ -272,6 +283,11 @@ private:
 
     //デプスベースアウトラインの逆プロジェクション行列
     Matrix4x4 projectionInverse_{};
+
+    //HSVフィルター用のパラメータ
+    float hue_;
+    float saturation_;
+    float value_;
 
     //ポストエフェクトのフラグ
     bool isPostProcessActive_ = false;

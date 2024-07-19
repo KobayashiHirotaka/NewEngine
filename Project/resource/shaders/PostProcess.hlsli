@@ -45,4 +45,7 @@ struct DepthBasedOutline
 struct HSVFilter
 {
     bool enable;
+    float32_t hue;
+    float32_t saturation;
+    float32_t value;
 };

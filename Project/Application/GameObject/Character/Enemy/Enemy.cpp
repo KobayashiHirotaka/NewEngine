@@ -534,19 +534,19 @@ void Enemy::BehaviorRootUpdate()
 		if (moveTimer_ <= 0)
 		{
 			moveTimer_ = Random(30, 90);
-			patternCount_ = Random(3,3);
+			patternCount_ = Random(2,3);
 		}
 	}
 
 	//攻撃
-	////突進攻撃
-	//if (patternCount_ == 2 && !isDown_)
-	//{
-	//	behaviorRequest_ = Behavior::kAttack;
-	//	animationTime = 0.0f;
-	//	model_->SetAnimationTime(animationTime);
-	//	workAttack_.isTackle = true;
-	//}
+	//突進攻撃
+	if (patternCount_ == 2 && !isDown_)
+	{
+		behaviorRequest_ = Behavior::kAttack;
+		animationTime = 0.0f;
+		model_->SetAnimationTime(animationTime);
+		workAttack_.isTackle = true;
+	}
 
 	//弾攻撃
 	if (patternCount_ == 3 && !isDown_)

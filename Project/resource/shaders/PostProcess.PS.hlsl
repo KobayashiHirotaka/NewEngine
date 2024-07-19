@@ -49,6 +49,125 @@ static const float32_t kPrewittVerticalKernel[3][3] =
     { 1.0f / 6.0f, 1.0f / 6.0f, 1.0f / 6.0f },
 };
 
+//HSVFilter
+float32_t3 RGBToHSV(float32_t3 rgb)
+{
+    float r = rgb.x;
+    float g = rgb.y;
+    float b = rgb.z;
+
+    float max = r > g ? r : g;
+    max = max > b ? max : b;
+    
+    float min = r < g ? r : g;
+    min = min < b ? min : b;
+    
+    float h = max - min;
+    
+    if (h > 0.0f)
+    {
+        if (max == r)
+        {
+            h = (g - b) / h;
+            if (h < 0.0f)
+            {
+                h += 6.0f;
+            }
+        }
+        else if (max == g)
+        {
+            h = 2.0f + (b - r) / h;
+        }
+        else
+        {
+            h = 4.0f + (r - g) / h;
+        }
+    }
+    
+    h /= 6.0f;
+    
+    float s = (max - min);
+    
+    if (max != 0.0f)
+    {
+        s /= max;
+    }
+       
+    float v = max;
+    
+    float32_t3 hsv = float32_t3(h, s, v);
+    
+    return hsv;
+};
+
+float32_t3 HSVToRGB(float32_t3 hsv)
+{
+    float r = hsv.z;
+    float g = hsv.z;
+    float b = hsv.z;
+    
+    if (hsv.y > 0.0f)
+    {
+        hsv.x *= 6.0f;
+        
+        int i = (int) hsv.x;
+        
+        float f = hsv.x - (float) i;
+        
+        switch (i)
+        {
+            default:
+            case 0:
+                g *= 1 - hsv.y * (1 - f);
+                b *= 1 - hsv.y;
+                break;
+            
+            case 1:
+                r *= 1 - hsv.y * f;
+                b *= 1 - hsv.y;
+                break;
+            
+            case 2:
+                r *= 1 - hsv.y;
+                b *= 1 - hsv.y * (1 - f);
+                break;
+            
+            case 3:
+                r *= 1 - hsv.y;
+                g *= 1 - hsv.y * f;
+                break;
+            
+            case 4:
+                r *= 1 - hsv.y * (1 - f);
+                g *= 1 - hsv.y;
+                break;
+            
+            case 5:
+                g *= 1 - hsv.y;
+                b *= 1 - hsv.y * f;
+                break;
+        }
+    }
+
+    float32_t3 rgb = float32_t3(r, g, b);
+    
+    return rgb;
+};
+
+float32_t WrapValue(float32_t value, float32_t minRange, float32_t maxRange)
+{
+    float32_t range = maxRange - minRange;
+    
+    float32_t modValue = fmod(value - minRange, range);
+    
+    if(modValue < 0)
+    {
+        modValue += range;
+    }
+    
+    return minRange + modValue;
+}
+
 static const float32_t PI = 3.14159265f;
 
 struct PixelShaderOutput
@@ -136,35 +255,20 @@ PixelShaderOutput main(VertexShaderOutput input)
      //HSVFilter
     if (gHSVFilterParameter.enable)
     {
-        float32_t weight = 0.0f;
-        float32_t kernel3x3[3][3];
+        float32_t3 hsv = RGBToHSV(textureColor.rgb);
         
-        for (int x = 0; x < 3; ++x)
-        {
-            for (int y = 0; y < 3; ++y)
-            {
-                kernel3x3[x][y] = gauss(kIndex3x3[x][y].x, kIndex3x3[x][y].y, 1.0f);
-                weight += kernel3x3[x][y];
-            }
-        }
+        hsv.x += gHSVFilterParameter.hue;
+        hsv.y += gHSVFilterParameter.saturation;
+        hsv.z += gHSVFilterParameter.value;
         
-        uint32_t width, height;
-        gTexture.GetDimensions(width, height);
-        float32_t2 uvStepSize = float32_t2(rcp(width), rcp(height));
+        hsv.x = WrapValue(hsv.x, 0.0f, 1.0f);
+        hsv.y = saturate(hsv.y);
+        hsv.z = saturate(hsv.z);
         
-        for (int32_t i = 0; i < 3; ++i)
-        {
-            for (int32_t j = 0; j < 3; ++j)
-            {
-                float32_t2 texcoord = input.texcoord + kIndex3x3[i][j] * uvStepSize;
-                float32_t3 fetchColor = gTexture.Sample(gSampler, texcoord).rgb;
-                
-                textureColor.rgb += fetchColor * kernel3x3[i][j];
-            }
-
-        }
+        float32_t3 rgb = HSVToRGB(hsv);
         
-        textureColor.rgb *= rcp(weight);
+        textureColor.rgb = rgb;
+        textureColor.a = textureColor.a;
     }
     
     
