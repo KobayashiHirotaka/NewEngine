@@ -1134,6 +1134,67 @@ void Player::OnCollision(Collider* collider, float damage)
 			hp_ += damage;
 			isHitBullet_ = true;
 		}
+
+		if (enemy_->GetIsShot() && isGuard_ && playerDirection_ == Direction::Right)
+		{
+			guardAnimationTimer_--;
+
+			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
+			worldTransform_.translation.x -= 0.1f;
+			guardGauge_ -= 6.0f;
+
+			if (guardAnimationTimer_ > 55)
+			{
+
+				ParticleEmitter* newParticleEmitter = EmitterBuilder()
+					.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+					.SetTranslation({ worldTransform_.translation.x + 0.1f,
+					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
+					.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+					.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+					.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
+					.SetAzimuth(0.0f, 360.0f)
+					.SetElevation(0.0f, 0.0f)
+					.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
+					.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
+					.SetLifeTime(0.1f, 1.0f)
+					.SetCount(100)
+					.SetFrequency(4.0f)
+					.SetDeleteTime(2.0f)
+					.Build();
+				particleSystem_->AddParticleEmitter(newParticleEmitter);
+			}
+		}
+		else if (enemy_->GetIsShot() && isGuard_ && playerDirection_ == Direction::Left)
+		{
+			guardAnimationTimer_--;
+
+			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
+			worldTransform_.translation.x += 0.1f;
+			guardGauge_ -= 6.0f;
+
+			if (guardAnimationTimer_ > 55)
+			{
+
+				ParticleEmitter* newParticleEmitter = EmitterBuilder()
+					.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+					.SetTranslation({ worldTransform_.translation.x - 0.1f,
+					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
+					.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+					.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+					.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
+					.SetAzimuth(0.0f, 360.0f)
+					.SetElevation(0.0f, 0.0f)
+					.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
+					.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
+					.SetLifeTime(0.1f, 1.0f)
+					.SetCount(100)
+					.SetFrequency(4.0f)
+					.SetDeleteTime(2.0f)
+					.Build();
+				particleSystem_->AddParticleEmitter(newParticleEmitter);
+			}
+		}
 	}
 
 	//敵との当たり判定
