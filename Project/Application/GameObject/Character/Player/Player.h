@@ -300,6 +300,7 @@ private:
 
 	//弾
 	bool isHitBullet_ = false;
+	bool isHitAirBullet_ = false;
 
 	bool isHitThrow_ = false;
 	bool isThrow_ = false;
@@ -351,6 +352,7 @@ private:
 	//パーティクル
 	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
 	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
+	bool isParticle_ = false;
 
 #pragma endregion
 };

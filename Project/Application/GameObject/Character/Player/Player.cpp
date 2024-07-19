@@ -1128,14 +1128,27 @@ void Player::OnCollision(Collider* collider, float damage)
 {
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemyBullet)
 	{
-		if (enemy_->GetIsShot() && !isDown_ && !isGuard_)
+		if (!isDown_ && !isGuard_ && worldTransform_.translation.y <= 0.0f)
 		{
+			float animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+
 			damage = 5.0f;
 			hp_ += damage;
 			isHitBullet_ = true;
 		}
 
-		if (enemy_->GetIsShot() && isGuard_ && playerDirection_ == Direction::Right)
+		if (!isDown_ && !isGuard_ && worldTransform_.translation.y > 0.0f)
+		{
+			float animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+
+			damage = 5.0f;
+			hp_ += damage;
+			isHitAirBullet_ = true;
+		}
+
+		if (isGuard_ && playerDirection_ == Direction::Right)
 		{
 			guardAnimationTimer_--;
 
@@ -1165,7 +1178,7 @@ void Player::OnCollision(Collider* collider, float damage)
 				particleSystem_->AddParticleEmitter(newParticleEmitter);
 			}
 		}
-		else if (enemy_->GetIsShot() && isGuard_ && playerDirection_ == Direction::Left)
+		else if (isGuard_ && playerDirection_ == Direction::Left)
 		{
 			guardAnimationTimer_--;
 
@@ -1648,6 +1661,73 @@ void Player::DownAnimation()
 			model_->SetAnimationTime(animationTime);
 			isHitBullet_ = false;
 			isDown_ = false;
+		}
+	}
+	else if (isHitAirBullet_)
+	{
+		isDown_ = true;
+		downAnimationTimer_--;
+
+		if (!isParticle_) {
+			ParticleEmitter* newParticleEmitter = EmitterBuilder()
+				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+				.SetTranslation({ worldTransform_.translation.x + (playerDirection_ == Direction::Left ? -0.1f : 0.1f), worldTransform_.translation.y + 0.5f, worldTransform_.translation.z })
+				.SetArea({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f })
+				.SetRotation({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f })
+				.SetScale({ 0.1f, 0.1f, 0.1f }, { 0.2f, 0.2f, 0.2f })
+				.SetAzimuth(0.0f, 360.0f)
+				.SetElevation(0.0f, 0.0f)
+				.SetVelocity({ 0.03f, 0.03f, 0.03f }, { 0.06f, 0.06f, 0.06f })
+				.SetColor({ 1.0f, 0.5f, 0.0f, 1.0f }, { 1.0f, 0.5f, 0.0f, 1.0f })
+				.SetLifeTime(0.1f, 1.0f)
+				.SetCount(50)
+				.SetFrequency(4.0f)
+				.SetDeleteTime(1.0f)
+				.Build();
+			particleSystem_->AddParticleEmitter(newParticleEmitter);
+
+			isParticle_ = true;
+		}
+
+		if (downAnimationTimer_ > 35 && worldTransform_.translation.x > -4.0f)
+		{
+			worldTransform_.translation.x -= playerDirection_ == Direction::Left ? -0.08f : 0.08f;
+		}
+
+		if (worldTransform_.translation.y > 0.0f)
+		{
+			worldTransform_.translation.y -= 0.03f;
+		}
+		else if (worldTransform_.translation.y <= 0.0f)
+		{
+			worldTransform_.translation.y = 0.0f;
+		}
+
+		animationIndex_ = 6;
+		float animationTime = 0.0f;
+		float animationDuration;
+		animationTime = model_->GetAnimationTime();
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
+
+		animationTime += 1.0f / 30.0f;
+
+		model_->SetAnimationTime(animationTime);
+		model_->ApplyAnimation(animationIndex_);
+
+		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
+		SetAABB(aabb_);
+
+		if (animationTime >= animationDuration && hp_ < 0.0f)
+		{
+			animationIndex_ = 4;
+			downAnimationTimer_ = 60;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);
+			isHitAirBullet_ = false;
+			isDown_ = false;
+			isParticle_ = false;
 		}
 	}
 }

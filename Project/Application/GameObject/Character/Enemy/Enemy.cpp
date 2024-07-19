@@ -107,21 +107,11 @@ void Enemy::Update()
 	if (input_->PushKey(DIK_B))
 	{  
 		workAttack_.isShot = true;
-		if (enemyDirection_ == Direction::Left)
-		{
-			Vector3 bulletStartPosition = { GetWorldPosition().x,  GetWorldPosition().y + 0.5f,  GetWorldPosition().z };// 弾の発射位置を敵の位置に設定
-			Vector3 bulletVelocity = { -0.1f, 0.0f, 0.0f };  // 弾の速度を設定
+		
+		Vector3 bulletStartPosition = { worldTransform_.translation.x, worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z };// 弾の発射位置を敵の位置に設定
+		Vector3 bulletVelocity = { -0.1f, 0.0f, 0.0f };  // 弾の速度を設定
 
-			ShootBullet(bulletStartPosition, bulletVelocity);
-		}
-		else if(enemyDirection_ == Direction::Right)
-		{
-			Vector3 bulletStartPosition = { GetWorldPosition().x,  GetWorldPosition().y + 0.5f,  GetWorldPosition().z };// 弾の発射位置を敵の位置に設定
-			Vector3 bulletVelocity = { 0.1f, 0.0f, 0.0f };  // 弾の速度を設定
-
-			ShootBullet(bulletStartPosition, bulletVelocity);
-		}
-
+		ShootBullet(bulletStartPosition, bulletVelocity);
 	}
 
 	/*if (workAttack_.isShot)
@@ -181,6 +171,10 @@ void Enemy::Update()
 	if (input_->PressKey(DIK_Q))
 	{
 		animationIndex_ = 10;
+	}
+	if (input_->PressKey(DIK_W))
+	{
+		animationIndex_ = 11;
 	}
 
 	//ここまでテスト用の処理
@@ -518,7 +512,7 @@ void Enemy::BehaviorRootUpdate()
 		}
 		else if (isBackMove_)
 		{
-			animationIndex_ = 1;
+			animationIndex_ = 2;
 
 			UpdateAnimationTime(animationTime, true, 40.0f, animationIndex_, model_);
 
@@ -540,19 +534,19 @@ void Enemy::BehaviorRootUpdate()
 		if (moveTimer_ <= 0)
 		{
 			moveTimer_ = Random(30, 90);
-			patternCount_ = Random(2,3);
+			patternCount_ = Random(3,3);
 		}
 	}
 
 	//攻撃
-	//突進攻撃
-	if (patternCount_ == 2 && !isDown_)
-	{
-		behaviorRequest_ = Behavior::kAttack;
-		animationTime = 0.0f;
-		model_->SetAnimationTime(animationTime);
-		workAttack_.isTackle = true;
-	}
+	////突進攻撃
+	//if (patternCount_ == 2 && !isDown_)
+	//{
+	//	behaviorRequest_ = Behavior::kAttack;
+	//	animationTime = 0.0f;
+	//	model_->SetAnimationTime(animationTime);
+	//	workAttack_.isTackle = true;
+	//}
 
 	//弾攻撃
 	if (patternCount_ == 3 && !isDown_)
@@ -580,7 +574,7 @@ void Enemy::BehaviorAttackUpdate()
 	//タックル攻撃
 	if (workAttack_.isTackle)
 	{
-		animationIndex_ = 7;
+		animationIndex_ = 8;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
@@ -692,7 +686,7 @@ void Enemy::BehaviorAttackUpdate()
 	//弾攻撃
 	if (workAttack_.isShot)
 	{
-		animationIndex_ = 7;
+		animationIndex_ = 1;
 		isGuard_ = false;
 		float animationTime = 0.0f;
 		float animationDuration;
@@ -708,10 +702,20 @@ void Enemy::BehaviorAttackUpdate()
 		model_->ApplyAnimation(animationIndex_);
 
 		if (!hasShot_) {  // まだ弾を発射していない場合
-			Vector3 bulletStartPosition = { GetWorldPosition().x, GetWorldPosition().y + 0.5f, GetWorldPosition().z };  // 弾の発射位置を敵の位置に設定
-			Vector3 bulletVelocity = enemyDirection_ == Direction::Right ? Vector3{ 0.1f, 0.0f, 0.0f } : Vector3{ -0.1f, 0.0f, 0.0f };  // 弾の速度を設定
+			if (enemyDirection_ == Direction::Right)
+			{
+				Vector3 bulletStartPosition = { worldTransform_.translation.x + 0.2f, worldTransform_.translation.y + 0.5f, worldTransform_.translation.z };  // 弾の発射位置を敵の位置に設定
+				Vector3 bulletVelocity = Vector3{ 0.1f, 0.0f, 0.0f };  // 弾の速度を設定
 
-			ShootBullet(bulletStartPosition, bulletVelocity);
+				ShootBullet(bulletStartPosition, bulletVelocity);
+			}
+			else if (enemyDirection_ == Direction::Left)
+			{
+				Vector3 bulletStartPosition = { worldTransform_.translation.x - 0.2f, worldTransform_.translation.y + 0.5f, worldTransform_.translation.z };  // 弾の発射位置を敵の位置に設定
+				Vector3 bulletVelocity = Vector3{ -0.1f, 0.0f, 0.0f };  // 弾の速度を設定
+
+				ShootBullet(bulletStartPosition, bulletVelocity);
+			}
 
 			hasShot_ = true;  // 弾を発射したことを記録
 		}
@@ -1207,7 +1211,7 @@ void Enemy::DownAnimation()
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
-		animationIndex_ = 3;
+		animationIndex_ = 4;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
@@ -1220,7 +1224,7 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsLightPunch() && hp_ > 0.0f)
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1255,7 +1259,7 @@ void Enemy::DownAnimation()
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
-		animationIndex_ = 3;
+		animationIndex_ = 4;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
@@ -1268,7 +1272,7 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsLightPunch() && hp_ > 0.0f)
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1304,7 +1308,7 @@ void Enemy::DownAnimation()
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
-		animationIndex_ = 3;
+		animationIndex_ = 4;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
@@ -1317,7 +1321,7 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsMiddlePunch() && hp_ > 0.0f)
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1352,7 +1356,7 @@ void Enemy::DownAnimation()
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
-		animationIndex_ = 3;
+		animationIndex_ = 4;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
@@ -1365,7 +1369,7 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsMiddlePunch() && hp_ > 0.0f)
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1421,7 +1425,7 @@ void Enemy::DownAnimation()
 			}
 		}
 
-		animationIndex_ = 5;
+		animationIndex_ = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
@@ -1434,7 +1438,7 @@ void Enemy::DownAnimation()
 
 		if (downAnimationTimer_ <= -30 && worldTransform_.translation.y <= 0.0f && hp_ > 0.0f)
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1489,7 +1493,7 @@ void Enemy::DownAnimation()
 			}
 		}
 
-		animationIndex_ = 5;
+		animationIndex_ = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
@@ -1502,7 +1506,7 @@ void Enemy::DownAnimation()
 
 		if (downAnimationTimer_ <= -30 && worldTransform_.translation.y <= 0.0f && hp_ > 0.0f)
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1538,7 +1542,7 @@ void Enemy::DownAnimation()
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
-		animationIndex_ = 3;
+		animationIndex_ = 4;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
@@ -1551,7 +1555,7 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsTCMiddlePunch() && hp_ > 0.0f)
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1586,7 +1590,7 @@ void Enemy::DownAnimation()
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 		}
 
-		animationIndex_ = 3;
+		animationIndex_ = 4;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
@@ -1599,7 +1603,7 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsTCMiddlePunch() && hp_ > 0.0f)
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1641,7 +1645,7 @@ void Enemy::DownAnimation()
 
 		}
 
-		animationIndex_ = 5;
+		animationIndex_ = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
@@ -1657,7 +1661,7 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsTCHighPunch() && hp_ > 0.0f)
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1700,7 +1704,7 @@ void Enemy::DownAnimation()
 
 		}
 
-		animationIndex_ = 5;
+		animationIndex_ = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
@@ -1716,7 +1720,7 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsTCHighPunch() && hp_ > 0.0f)
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1769,7 +1773,7 @@ void Enemy::DownAnimation()
 			worldTransform_.translation.y = 0.0f;
 		}
 
-		animationIndex_ = 5;
+		animationIndex_ = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
@@ -1785,7 +1789,7 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsTackle() && hp_ > 0.0f)
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1838,7 +1842,7 @@ void Enemy::DownAnimation()
 			worldTransform_.translation.y = 0.0f;
 		}
 
-		animationIndex_ = 5;
+		animationIndex_ = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
@@ -1854,7 +1858,7 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsTackle() && hp_ > 0.0f)
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 			downAnimationTimer_ = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
