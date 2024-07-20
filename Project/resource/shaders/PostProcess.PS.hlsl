@@ -267,7 +267,7 @@ PixelShaderOutput main(VertexShaderOutput input)
         
         float32_t3 rgb = HSVToRGB(hsv);
         
-        textureColor.rgb += rgb;
+        textureColor.rgb = rgb;
     }
     
     

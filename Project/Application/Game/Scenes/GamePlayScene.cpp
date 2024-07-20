@@ -36,8 +36,8 @@ void GamePlayScene::Initialize()
 
 	//postEffectの切り替え
 	PostProcess::GetInstance()->SetIsBloomActive(true);
-	//PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
-	//PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
+	PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
 	//PostProcess::GetInstance()->SetIsDepthBasedOutlineActive(false);
 	PostProcess::GetInstance()->SetIsHSVFilterActive(true);
 
@@ -274,7 +274,7 @@ void GamePlayScene::Draw()
 	enemy_->DrawBullet(camera_);
 
 	//skydomeの描画
-	//skydome_->Draw(camera_);
+	skydome_->Draw(camera_);
 
 	Model::PostDraw();
 
