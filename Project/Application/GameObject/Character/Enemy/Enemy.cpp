@@ -445,7 +445,7 @@ void Enemy::DrawParticle(const Camera& camera)
 
 void Enemy::BehaviorRootInitialize()
 {
-	animationIndex_ = 4;
+	animationIndex_ = 5;
 
 	patternCount_ = Random(1, 2);
 }
@@ -463,7 +463,7 @@ void Enemy::BehaviorRootUpdate()
 		bool isBackMove_ = false;
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
-		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left && !isHit_)
+		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left)
 		{
 			velocity_.x = 0.01f;
 			isFrontMove_ = false;
@@ -471,7 +471,7 @@ void Enemy::BehaviorRootUpdate()
 			isGuard_ = false;
 		}
 
-		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right && !isHit_)
+		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right)
 		{
 			velocity_.x = 0.01f;
 			isFrontMove_ = true;
@@ -526,7 +526,7 @@ void Enemy::BehaviorRootUpdate()
 		}
 		else
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 
 			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
 		}
@@ -611,7 +611,7 @@ void Enemy::BehaviorRootUpdate()
 		}
 		else
 		{
-			animationIndex_ = 4;
+			animationIndex_ = 5;
 
 			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
 		}
