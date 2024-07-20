@@ -390,7 +390,7 @@ void Enemy::Update()
 	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
 	ImGui::Text("isGuard %d", isGuard_);
 	ImGui::Text("isHit %d", isHit_);
-	//ImGui::Text("shotTimer %d", shotTimer_);
+	ImGui::Text("patternCount %d", patternCount_);
 	ImGui::End();
 
 	//worldTransformの更新
@@ -446,15 +446,15 @@ void Enemy::DrawParticle(const Camera& camera)
 void Enemy::BehaviorRootInitialize()
 {
 	animationIndex_ = 4;
+
+	patternCount_ = Random(1, 2);
 }
 
 void Enemy::BehaviorRootUpdate()
 {
 	float animationTime = 0.0f;
 
-	patternCount_ = 1;
-
-	//移動処理
+	//移動処理(後ろ歩きスタート)
 	if (patternCount_ == 1 && isDown_ == false && comboCount_ == 0)
 	{
 		moveTimer_--;
@@ -465,7 +465,7 @@ void Enemy::BehaviorRootUpdate()
 
 		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left && !isHit_)
 		{
-			velocity_.x = -0.01f;
+			velocity_.x = 0.01f;
 			isFrontMove_ = false;
 			isBackMove_ = true;
 			isGuard_ = false;
@@ -489,7 +489,7 @@ void Enemy::BehaviorRootUpdate()
 
 		if (moveTimer_ > 30 && enemyDirection_ == Direction::Left)
 		{
-			velocity_.x = 0.01f;
+			velocity_.x = -0.01f;
 			isFrontMove_ = true;
 			isBackMove_ = false;
 			isGuard_ = true;
@@ -533,14 +533,99 @@ void Enemy::BehaviorRootUpdate()
 
 		if (moveTimer_ <= 0)
 		{
-			moveTimer_ = Random(30, 90);
-			patternCount_ = Random(2,3);
+			moveTimer_ = Random(30, 60);
+			patternCount_ = Random(3,4);
+		}
+	}
+
+	//移動処理(前歩きスタート)
+	if (patternCount_ == 2 && isDown_ == false && comboCount_ == 0)
+	{
+		moveTimer_--;
+
+		bool isFrontMove_ = false;
+		bool isBackMove_ = false;
+		velocity_ = { 0.0f, 0.0f, 0.0f };
+
+		if (moveTimer_ < 30 && enemyDirection_ == Direction::Left && !isHit_)
+		{
+			velocity_.x = 0.01f;
+			isFrontMove_ = false;
+			isBackMove_ = true;
+			isGuard_ = false;
+		}
+
+		if (moveTimer_ < 30 && enemyDirection_ == Direction::Right && !isHit_)
+		{
+			velocity_.x = 0.01f;
+			isFrontMove_ = true;
+			isBackMove_ = false;
+			isGuard_ = false;
+		}
+
+		if (moveTimer_ >= 30 && enemyDirection_ == Direction::Right)
+		{
+			velocity_.x = -0.01f;
+			isFrontMove_ = false;
+			isBackMove_ = true;
+			isGuard_ = true;
+		}
+
+		if (moveTimer_ >= 30 && enemyDirection_ == Direction::Left)
+		{
+			velocity_.x = -0.01f;
+			isFrontMove_ = true;
+			isBackMove_ = false;
+			isGuard_ = true;
+		}
+
+
+		//移動
+		if (isFrontMove_)
+		{
+			animationIndex_ = 0;
+
+			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex_, model_);
+
+			velocity_ = Normalize(velocity_);
+			velocity_ = Multiply(frontSpeed_, velocity_);
+
+			// 平行移動
+			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+			worldTransform_.UpdateMatrixEuler();
+		}
+		else if (isBackMove_)
+		{
+			animationIndex_ = 2;
+
+			UpdateAnimationTime(animationTime, true, 40.0f, animationIndex_, model_);
+
+			velocity_ = Normalize(velocity_);
+			velocity_ = Multiply(backSpeed_, velocity_);
+
+			// 平行移動
+			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+			worldTransform_.UpdateMatrixEuler();
+		}
+		else
+		{
+			animationIndex_ = 4;
+
+			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
+		}
+
+		if (moveTimer_ <= 0)
+		{
+			moveTimer_ = Random(30, 60);
+			patternCount_ = Random(3, 4);
 		}
 	}
 
 	//攻撃
 	//突進攻撃
-	if (patternCount_ == 2 && !isDown_)
+	if (patternCount_ == 3 && !isDown_)
 	{
 		behaviorRequest_ = Behavior::kAttack;
 		animationTime = 0.0f;
@@ -549,7 +634,7 @@ void Enemy::BehaviorRootUpdate()
 	}
 
 	//弾攻撃
-	if (patternCount_ == 3 && !isDown_)
+	if (patternCount_ == 4 && !isDown_)
 	{
 		behaviorRequest_ = Behavior::kAttack;
 		animationTime = 0.0f;
@@ -669,7 +754,7 @@ void Enemy::BehaviorAttackUpdate()
 
 		if (isDown_ || animationTime >= animationDuration)
 		{
-			patternCount_ = 1;
+			patternCount_ = Random(1, 2);
 			behaviorRequest_ = Behavior::kRoot;
 			workAttack_.isAttack = false;
 			workAttack_.isTackle = false;
@@ -722,7 +807,7 @@ void Enemy::BehaviorAttackUpdate()
 
 		if (isDown_ || animationTime >= animationDuration)
 		{
-			patternCount_ = 1;
+			patternCount_ = Random(1, 2);
 			behaviorRequest_ = Behavior::kRoot;
 			workAttack_.isAttack = false;
 			workAttack_.isShot = false;
