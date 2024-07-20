@@ -81,7 +81,7 @@ public:
     struct HSVFilterData
     {
         bool enable;
-        float padding[3];
+        uint8_t padding[3];
         float hue;
         float saturation;
         float value;

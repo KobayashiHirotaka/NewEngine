@@ -1252,7 +1252,7 @@ void PostProcess::UpdateBloom()
 	bloomConstantBuffer_->Unmap(0, nullptr);
 
 	ImGui::Begin("Bloom");
-	ImGui::DragFloat("intensity", &bloomIntensity_, 0.0f, 1.0f);
+	ImGui::SliderFloat("intensity", &bloomIntensity_, 0.0f, 1.0f);
 	ImGui::End();
 }
 
