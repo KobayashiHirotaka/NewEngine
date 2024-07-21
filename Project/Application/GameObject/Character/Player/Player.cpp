@@ -326,6 +326,7 @@ void Player::Update()
 	ImGui::Text("isGuard %d", isGuard_);
 	ImGui::Text("attackAnimationFrame %d", attackAnimationFrame_);
 	ImGui::Text("isAttack %d", workAttack_.isAttack);
+	ImGui::DragFloat("animationTime", &animationTime_,0.0001f);
 	ImGui::End();
 
 	ImGui::Begin("Cursol");
@@ -384,8 +385,6 @@ void Player::BehaviorRootUpdate()
 		const float deadZone = 0.7f;
 		bool isFrontMove_ = false;
 		bool isBackMove_ = false;
-
-		float animationTime = 0.0f;
 
 		velocity_ = { 0.0f, 0.0f, 0.0f };
 
@@ -474,7 +473,7 @@ void Player::BehaviorRootUpdate()
 		{
 			animationIndex_ = 1;
 
-			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex_, model_);
+			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
 
 			velocity_ = Normalize(velocity_);
 			velocity_ = Multiply(frontSpeed_, velocity_);
@@ -488,7 +487,7 @@ void Player::BehaviorRootUpdate()
 		{
 			animationIndex_ = 0;
 
-			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex_, model_);
+			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
 
 			velocity_ = Normalize(velocity_);
 			velocity_ = Multiply(backSpeed_, velocity_);
@@ -502,7 +501,7 @@ void Player::BehaviorRootUpdate()
 		{
 			animationIndex_ = 4;
 
-			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
+			UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
 		}
 
 		//ジャンプ
@@ -516,8 +515,8 @@ void Player::BehaviorRootUpdate()
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !isDown_)
 		{
 			behaviorRequest_ = Behavior::kAttack;
-			animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
 			workAttack_.isLightPunch = true;
 		}
 
@@ -525,8 +524,8 @@ void Player::BehaviorRootUpdate()
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !isDown_)
 		{
 			behaviorRequest_ = Behavior::kAttack;
-			animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
 			workAttack_.isMiddlePunch = true;
 		}
 
@@ -534,8 +533,8 @@ void Player::BehaviorRootUpdate()
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !isDown_)
 		{
 			behaviorRequest_ = Behavior::kAttack;
-			animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
 			workAttack_.isHighPunch = true;
 		}
 		
@@ -545,8 +544,8 @@ void Player::BehaviorRootUpdate()
 			&& playerDirection_ == Direction::Right && !isDown_)
 		{
 			behaviorRequest_ = Behavior::kAttack;
-			animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
 			workAttack_.isTackle = true;
 		}
 
@@ -556,8 +555,8 @@ void Player::BehaviorRootUpdate()
 			&& playerDirection_ == Direction::Left && !isDown_)
 		{
 			behaviorRequest_ = Behavior::kAttack;
-			animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
 			workAttack_.isTackle = true;
 		}
 	}
@@ -575,17 +574,16 @@ void Player::BehaviorAttackUpdate()
 	{
 		animationIndex_ = 12;
 		isGuard_ = false;
-		float animationTime = 0.0f;
 		float animationDuration;
-		animationTime = model_->GetAnimationTime();
+		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		if (!isDown_)
 		{
-			animationTime += 1.0f / 40.0f;
+			animationTime_ += 1.0f / 40.0f;
 		}
 
-		model_->SetAnimationTime(animationTime);
+		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
 		workAttack_.isAttack = true;
@@ -601,14 +599,14 @@ void Player::BehaviorAttackUpdate()
 			SetAABB(aabb_);
 		}
 
-		if (isDown_ || animationTime >= animationDuration)
+		if (isDown_ || animationTime_ >= animationDuration)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			workAttack_.isAttack = false;
 			workAttack_.isLightPunch = false;
-			animationTime = 0.0f;
+			animationTime_ = 0.0f;
 			attackAnimationFrame_ = 0;
-			model_->SetAnimationTime(animationTime);
+			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
@@ -616,16 +614,16 @@ void Player::BehaviorAttackUpdate()
 		//キャンセルの処理(中TC)
 		if (input_->GetJoystickState())
 		{
-			if (!isDown_ && attackAnimationFrame_ > 15 && attackAnimationFrame_ < 30 && animationTime < animationDuration
+			if (!isDown_ && attackAnimationFrame_ > 15 && attackAnimationFrame_ < 30 && animationTime_ < animationDuration
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) 
 				&& isHit_)
 			{
 				workAttack_.isAttack = false;
 				workAttack_.isLightPunch = false;
 				workAttack_.isTCMiddlePunch = true;
-				animationTime = 0.0f;
+				animationTime_ = 0.0f;
 				attackAnimationFrame_ = 0;
-				model_->SetAnimationTime(animationTime);
+				model_->SetAnimationTime(animationTime_);
 				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 				SetAABB(aabb_);
 			}
@@ -639,17 +637,16 @@ void Player::BehaviorAttackUpdate()
 	{
 		animationIndex_ = 11;
 		isGuard_ = false;
-		float animationTime = 0.0f;
 		float animationDuration;
-		animationTime = model_->GetAnimationTime();
+		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		if (!isDown_)
 		{
-			animationTime += 1.0f / 40.0f;
+			animationTime_ += 1.0f / 40.0f;
 		}
 
-		model_->SetAnimationTime(animationTime);
+		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
 		workAttack_.isAttack = true;
@@ -665,14 +662,14 @@ void Player::BehaviorAttackUpdate()
 			SetAABB(aabb_);
 		}
 
-		if (isDown_ || animationTime >= animationDuration)
+		if (isDown_ || animationTime_ >= animationDuration)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			workAttack_.isAttack = false;
 			workAttack_.isTCMiddlePunch = false;
-			animationTime = 0.0f;
+			animationTime_ = 0.0f;
 			attackAnimationFrame_ = 0;
-			model_->SetAnimationTime(animationTime);
+			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
@@ -680,16 +677,16 @@ void Player::BehaviorAttackUpdate()
 		//キャンセルの処理(強TC)
 		if (input_->GetJoystickState())
 		{
-			if (!isDown_ && attackAnimationFrame_ > 15 && attackAnimationFrame_ < 30 && animationTime < animationDuration
+			if (!isDown_ && attackAnimationFrame_ > 15 && attackAnimationFrame_ < 30 && animationTime_ < animationDuration
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
 				&& isHit_)
 			{
 				workAttack_.isAttack = false;
 				workAttack_.isTCMiddlePunch = false;
 				workAttack_.isHighPunch = true;
-				animationTime = 0.0f;
+				animationTime_ = 0.0f;
 				attackAnimationFrame_ = 0;
-				model_->SetAnimationTime(animationTime);
+				model_->SetAnimationTime(animationTime_);
 				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 				SetAABB(aabb_);
 			}
@@ -720,17 +717,16 @@ void Player::BehaviorAttackUpdate()
 	{
 		animationIndex_ = 10;
 		isGuard_ = false;
-		float animationTime = 0.0f;
 		float animationDuration;
-		animationTime = model_->GetAnimationTime();
+		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		if (!isDown_)
 		{
-			animationTime += 1.0f / 40.0f;
+			animationTime_ += 1.0f / 40.0f;
 		}
 
-		model_->SetAnimationTime(animationTime);
+		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
 		workAttack_.isAttack = true;
@@ -746,14 +742,14 @@ void Player::BehaviorAttackUpdate()
 			SetAABB(aabb_);
 		}
 
-		if (isDown_ || animationTime >= animationDuration)
+		if (isDown_ || animationTime_ >= animationDuration)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			workAttack_.isAttack = false;
 			workAttack_.isTCHighPunch = false;
-			animationTime = 0.0f;
+			animationTime_ = 0.0f;
 			attackAnimationFrame_ = 0;
-			model_->SetAnimationTime(animationTime);
+			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
@@ -766,17 +762,16 @@ void Player::BehaviorAttackUpdate()
 	{
 		animationIndex_ = 7;
 		isGuard_ = false;
-		float animationTime = 0.0f;
 		float animationDuration;
-		animationTime = model_->GetAnimationTime();
+		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		if (!isDown_)
 		{
-			animationTime += 1.0f / 40.0f;
+			animationTime_ += 1.0f / 40.0f;
 		}
 
-		model_->SetAnimationTime(animationTime);
+		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
 		workAttack_.isAttack = true;
@@ -792,14 +787,14 @@ void Player::BehaviorAttackUpdate()
 			SetAABB(aabb_);
 		}
 
-		if (isDown_ || animationTime >= animationDuration)
+		if (isDown_ || animationTime_ >= animationDuration)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			workAttack_.isAttack = false;
 			workAttack_.isMiddlePunch = false;
-			animationTime = 0.0f;
+			animationTime_ = 0.0f;
 			attackAnimationFrame_ = 0;
-			model_->SetAnimationTime(animationTime);
+			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
@@ -812,17 +807,16 @@ void Player::BehaviorAttackUpdate()
 	{
 		animationIndex_ = 2;
 		isGuard_ = false;
-		float animationTime = 0.0f;
 		float animationDuration;
-		animationTime = model_->GetAnimationTime();
+		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		if (!isDown_)
 		{
-			animationTime += 1.0f / 40.0f;
+			animationTime_ += 1.0f / 40.0f;
 		}
 
-		model_->SetAnimationTime(animationTime);
+		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
 		workAttack_.isAttack = true;
@@ -848,14 +842,14 @@ void Player::BehaviorAttackUpdate()
 			}
 		}
 
-		if (isDown_ || animationTime >= animationDuration)
+		if (isDown_ || animationTime_ >= animationDuration)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			workAttack_.isAttack = false;
 			workAttack_.isHighPunch = false;
-			animationTime = 0.0f;
+			animationTime_ = 0.0f;
 			attackAnimationFrame_ = 0;
-			model_->SetAnimationTime(animationTime);
+			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
@@ -865,32 +859,32 @@ void Player::BehaviorAttackUpdate()
 		{
 			//タックル攻撃
 			//右向きのとき
-			if (!isDown_ && attackAnimationFrame_ > 15 && attackAnimationFrame_ < 30 && animationTime < animationDuration
+			if (!isDown_ && attackAnimationFrame_ > 15 && attackAnimationFrame_ < 30 && animationTime_ < animationDuration
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
 				&& playerDirection_ == Direction::Right)
 			{
 				workAttack_.isAttack = false;
 				workAttack_.isHighPunch = false;
 				workAttack_.isTackle = true;
-				animationTime = 0.0f;
+				animationTime_ = 0.0f;
 				attackAnimationFrame_ = 0;
-				model_->SetAnimationTime(animationTime);
+				model_->SetAnimationTime(animationTime_);
 				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 				SetAABB(aabb_);
 			}
 
 			//タックル攻撃
 			//左向きのとき
-			if (!isDown_ && attackAnimationFrame_ > 10 && animationTime < animationDuration
+			if (!isDown_ && attackAnimationFrame_ > 10 && animationTime_ < animationDuration
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
 				&& playerDirection_ == Direction::Left)
 			{
 				workAttack_.isAttack = false;
 				workAttack_.isHighPunch = false;
 				workAttack_.isTackle = true;
-				animationTime = 0.0f;
+				animationTime_ = 0.0f;
 				attackAnimationFrame_ = 0;
-				model_->SetAnimationTime(animationTime);
+				model_->SetAnimationTime(animationTime_);
 				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 				SetAABB(aabb_);
 			}
@@ -904,19 +898,18 @@ void Player::BehaviorAttackUpdate()
 	{
 		animationIndex_ = 8;
 		isGuard_ = false;
-		float animationTime = 0.0f;
 		float animationDuration;
-		animationTime = model_->GetAnimationTime();
+		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		float particlePositionX = 0.0f;
 
 		if (!isDown_)
 		{
-			animationTime += 1.0f / 40.0f;
+			animationTime_ += 1.0f / 40.0f;
 		}
 
-		model_->SetAnimationTime(animationTime);
+		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
 		if (playerDirection_ == Direction::Right)
@@ -995,14 +988,14 @@ void Player::BehaviorAttackUpdate()
 			workAttack_.isAttack = false;
 		}
 
-		if (isDown_ || animationTime >= animationDuration)
+		if (isDown_ || animationTime_ >= animationDuration)
 		{
 			behaviorRequest_ = Behavior::kRoot;
 			workAttack_.isAttack = false;
 			workAttack_.isTackle = false;
-			animationTime = 0.0f;
+			animationTime_ = 0.0f;
 			attackAnimationFrame_ = 0;
-			model_->SetAnimationTime(animationTime);
+			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
@@ -1022,10 +1015,9 @@ void Player::BehaviorJumpInitialize()
 
 void Player::BehaviorJumpUpdate()
 {
-	float animationTime = 0.0f;
 	animationIndex_ = 4;
 
-	UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
+	UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
 
 	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
@@ -1040,8 +1032,8 @@ void Player::BehaviorJumpUpdate()
 		behaviorRequest_ = Behavior::kRoot;
 		//workAttack_.isJumpAttack = false;
 		worldTransform_.translation.y = 0.0f;
-		animationTime = 0.0f;
-		model_->SetAnimationTime(animationTime);
+		animationTime_ = 0.0f;
+		model_->SetAnimationTime(animationTime_);
 	}
 }
 
@@ -1069,9 +1061,8 @@ void Player::BehaviorStanUpdate()
 	}
 
 	animationIndex_ = 9;
-	float animationTime = 0.0f;
 	float animationDuration;
-	animationTime = model_->GetAnimationTime();
+	animationTime_ = model_->GetAnimationTime();
 	animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 	if (playerDirection_ == Direction::Left)
@@ -1087,20 +1078,20 @@ void Player::BehaviorStanUpdate()
 
 	if (!isDown_)
 	{
-		animationTime += 1.0f / 60.0f;
+		animationTime_ += 1.0f / 60.0f;
 	}
 
-	model_->SetAnimationTime(animationTime);
+	model_->SetAnimationTime(animationTime_);
 	model_->ApplyAnimation(animationIndex_);
 
-	if (animationTime >= animationDuration || isDown_)
+	if (animationTime_ >= animationDuration || isDown_)
 	{
 		behaviorRequest_ = Behavior::kRoot;
-		animationTime = 0.0f;
+		animationTime_ = 0.0f;
 		attackAnimationFrame_ = 0;
 		guardGauge_ = 0.0f;
 		stanTimer_ = 60;
-		model_->SetAnimationTime(animationTime);
+		model_->SetAnimationTime(animationTime_);
 		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 		SetAABB(aabb_);
 	}
@@ -1130,8 +1121,7 @@ void Player::OnCollision(Collider* collider, float damage)
 	{
 		if (!isDown_ && !isGuard_ && worldTransform_.translation.y <= 0.0f)
 		{
-			float animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
+			model_->SetAnimationTime(animationTime_);
 
 			damage = 5.0f;
 			hp_ += damage;
@@ -1140,8 +1130,7 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (!isDown_ && !isGuard_ && worldTransform_.translation.y > 0.0f)
 		{
-			float animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
+			model_->SetAnimationTime(animationTime_);
 
 			damage = 5.0f;
 			hp_ += damage;
@@ -1457,6 +1446,7 @@ void Player::Reset()
 	animationIndex_ = 4;
 
 	attackAnimationFrame_ = 0;
+	animationTime_ = 0;
 
 	behavior_ = Behavior::kRoot;
 
@@ -1519,14 +1509,13 @@ void Player::DownAnimation()
 		}
 
 		animationIndex_ = 6;
-		float animationTime = 0.0f;
 		float animationDuration;
-		animationTime = model_->GetAnimationTime();
+		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
-		animationTime += 1.0f / 30.0f;
+		animationTime_ += 1.0f / 30.0f;
 
-		model_->SetAnimationTime(animationTime);
+		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
 		aabb_ = { {0.1f,-0.3f,-0.3f},{0.8f,0.0f,0.3f} };
@@ -1536,8 +1525,8 @@ void Player::DownAnimation()
 		{
 			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
-			animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 			isHitTackle_ = false;
@@ -1590,14 +1579,13 @@ void Player::DownAnimation()
 		}
 
 		animationIndex_ = 6;
-		float animationTime = 0.0f;
 		float animationDuration;
-		animationTime = model_->GetAnimationTime();
+		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
-		animationTime += 1.0f / 30.0f;
+		animationTime_ += 1.0f / 30.0f;
 
-		model_->SetAnimationTime(animationTime);
+		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
@@ -1607,8 +1595,8 @@ void Player::DownAnimation()
 		{
 			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
-			animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 			isHitTackle_ = false;
@@ -1643,22 +1631,21 @@ void Player::DownAnimation()
 		}
 
 		animationIndex_ = 3;
-		float animationTime = 0.0f;
 		float animationDuration;
-		animationTime = model_->GetAnimationTime();
+		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
-		animationTime += 1.0f / 30.0f;
+		animationTime_ += 1.0f / 30.0f;
 
-		model_->SetAnimationTime(animationTime);
+		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
-		if (animationTime >= animationDuration && hp_ < 0.0f)
+		if (animationTime_ >= animationDuration && hp_ < 0.0f)
 		{
 			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
-			animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
 			isHitBullet_ = false;
 			isDown_ = false;
 		}
@@ -1704,25 +1691,24 @@ void Player::DownAnimation()
 		}
 
 		animationIndex_ = 6;
-		float animationTime = 0.0f;
 		float animationDuration;
-		animationTime = model_->GetAnimationTime();
+		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
-		animationTime += 1.0f / 30.0f;
+		animationTime_ += 1.0f / 30.0f;
 
-		model_->SetAnimationTime(animationTime);
+		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (animationTime >= animationDuration && hp_ < 0.0f)
+		if (animationTime_ >= animationDuration && hp_ < 0.0f)
 		{
 			animationIndex_ = 4;
 			downAnimationTimer_ = 60;
-			animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 			isHitAirBullet_ = false;

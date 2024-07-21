@@ -223,6 +223,7 @@ private:
 
 	//再生するanimationの番号
 	uint32_t animationIndex_ = 4;
+	float animationTime_ = 0.0f;
 
 	//ダウン演出の時間
 	int downAnimationTimer_ = 60;

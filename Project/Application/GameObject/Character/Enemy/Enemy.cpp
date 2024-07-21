@@ -391,6 +391,7 @@ void Enemy::Update()
 	ImGui::Text("isGuard %d", isGuard_);
 	ImGui::Text("isHit %d", isHit_);
 	ImGui::Text("patternCount %d", patternCount_);
+	ImGui::Checkbox("isDebug_", &isDebug_);
 	ImGui::End();
 
 	//worldTransformの更新
@@ -454,194 +455,198 @@ void Enemy::BehaviorRootUpdate()
 {
 	float animationTime = 0.0f;
 
-	//移動処理(後ろ歩きスタート)
-	if (patternCount_ == 1 && isDown_ == false && comboCount_ == 0)
+	if (!isDebug_)
 	{
-		moveTimer_--;
-
-		bool isFrontMove_ = false;
-		bool isBackMove_ = false;
-		velocity_ = { 0.0f, 0.0f, 0.0f };
-
-		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left)
+		//移動処理(後ろ歩きスタート)
+		if (patternCount_ == 1 && isDown_ == false && comboCount_ == 0)
 		{
-			velocity_.x = 0.01f;
-			isFrontMove_ = false;
-			isBackMove_ = true;
-			isGuard_ = false;
+			moveTimer_--;
+
+			bool isFrontMove_ = false;
+			bool isBackMove_ = false;
+			velocity_ = { 0.0f, 0.0f, 0.0f };
+
+			if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left)
+			{
+				velocity_.x = 0.01f;
+				isFrontMove_ = false;
+				isBackMove_ = true;
+				isGuard_ = false;
+			}
+
+			if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right)
+			{
+				velocity_.x = 0.01f;
+				isFrontMove_ = true;
+				isBackMove_ = false;
+				isGuard_ = false;
+			}
+
+			if (moveTimer_ > 30 && enemyDirection_ == Direction::Right)
+			{
+				velocity_.x = -0.01f;
+				isFrontMove_ = false;
+				isBackMove_ = true;
+				isGuard_ = true;
+			}
+
+			if (moveTimer_ > 30 && enemyDirection_ == Direction::Left)
+			{
+				velocity_.x = -0.01f;
+				isFrontMove_ = true;
+				isBackMove_ = false;
+				isGuard_ = true;
+			}
+
+			//移動
+			if (isFrontMove_)
+			{
+				animationIndex_ = 0;
+
+				UpdateAnimationTime(animationTime, true, 30.0f, animationIndex_, model_);
+
+				velocity_ = Normalize(velocity_);
+				velocity_ = Multiply(frontSpeed_, velocity_);
+
+				// 平行移動
+				worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+				worldTransform_.UpdateMatrixEuler();
+			}
+			else if (isBackMove_)
+			{
+				animationIndex_ = 2;
+
+				UpdateAnimationTime(animationTime, true, 40.0f, animationIndex_, model_);
+
+				velocity_ = Normalize(velocity_);
+				velocity_ = Multiply(backSpeed_, velocity_);
+
+				// 平行移動
+				worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+				worldTransform_.UpdateMatrixEuler();
+			}
+			else
+			{
+				animationIndex_ = 5;
+
+				UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
+			}
+
+			if (moveTimer_ <= 0)
+			{
+				moveTimer_ = Random(30, 60);
+				patternCount_ = Random(3, 4);
+			}
 		}
 
-		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right)
+		//移動処理(前歩きスタート)
+		if (patternCount_ == 2 && isDown_ == false && comboCount_ == 0)
 		{
-			velocity_.x = 0.01f;
-			isFrontMove_ = true;
-			isBackMove_ = false;
-			isGuard_ = false;
+			moveTimer_--;
+
+			bool isFrontMove_ = false;
+			bool isBackMove_ = false;
+			velocity_ = { 0.0f, 0.0f, 0.0f };
+
+			if (moveTimer_ < 30 && enemyDirection_ == Direction::Left && !isHit_)
+			{
+				velocity_.x = 0.01f;
+				isFrontMove_ = false;
+				isBackMove_ = true;
+				isGuard_ = false;
+			}
+
+			if (moveTimer_ < 30 && enemyDirection_ == Direction::Right && !isHit_)
+			{
+				velocity_.x = 0.01f;
+				isFrontMove_ = true;
+				isBackMove_ = false;
+				isGuard_ = false;
+			}
+
+			if (moveTimer_ >= 30 && enemyDirection_ == Direction::Right)
+			{
+				velocity_.x = -0.01f;
+				isFrontMove_ = false;
+				isBackMove_ = true;
+				isGuard_ = true;
+			}
+
+			if (moveTimer_ >= 30 && enemyDirection_ == Direction::Left)
+			{
+				velocity_.x = -0.01f;
+				isFrontMove_ = true;
+				isBackMove_ = false;
+				isGuard_ = true;
+			}
+
+
+			//移動
+			if (isFrontMove_)
+			{
+				animationIndex_ = 0;
+
+				UpdateAnimationTime(animationTime, true, 30.0f, animationIndex_, model_);
+
+				velocity_ = Normalize(velocity_);
+				velocity_ = Multiply(frontSpeed_, velocity_);
+
+				// 平行移動
+				worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+				worldTransform_.UpdateMatrixEuler();
+			}
+			else if (isBackMove_)
+			{
+				animationIndex_ = 2;
+
+				UpdateAnimationTime(animationTime, true, 40.0f, animationIndex_, model_);
+
+				velocity_ = Normalize(velocity_);
+				velocity_ = Multiply(backSpeed_, velocity_);
+
+				// 平行移動
+				worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+
+				worldTransform_.UpdateMatrixEuler();
+			}
+			else
+			{
+				animationIndex_ = 5;
+
+				UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
+			}
+
+			if (moveTimer_ <= 0)
+			{
+				moveTimer_ = Random(30, 60);
+				patternCount_ = Random(3, 4);
+			}
 		}
 
-		if (moveTimer_ > 30 && enemyDirection_ == Direction::Right)
+		//攻撃
+		//突進攻撃
+		if (patternCount_ == 3 && !isDown_)
 		{
-			velocity_.x = -0.01f;
-			isFrontMove_ = false;
-			isBackMove_ = true;
-			isGuard_ = true;
+			behaviorRequest_ = Behavior::kAttack;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+			workAttack_.isTackle = true;
 		}
 
-		if (moveTimer_ > 30 && enemyDirection_ == Direction::Left)
+		//弾攻撃
+		if (patternCount_ == 4 && !isDown_)
 		{
-			velocity_.x = -0.01f;
-			isFrontMove_ = true;
-			isBackMove_ = false;
-			isGuard_ = true;
+			behaviorRequest_ = Behavior::kAttack;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+			workAttack_.isShot = true;
 		}
 
-		//移動
-		if (isFrontMove_)
-		{
-			animationIndex_ = 0;
-
-			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex_, model_);
-
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(frontSpeed_, velocity_);
-
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
-
-			worldTransform_.UpdateMatrixEuler();
-		}
-		else if (isBackMove_)
-		{
-			animationIndex_ = 2;
-
-			UpdateAnimationTime(animationTime, true, 40.0f, animationIndex_, model_);
-
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(backSpeed_, velocity_);
-
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
-
-			worldTransform_.UpdateMatrixEuler();
-		}
-		else
-		{
-			animationIndex_ = 5;
-
-			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
-		}
-
-		if (moveTimer_ <= 0)
-		{
-			moveTimer_ = Random(30, 60);
-			patternCount_ = Random(3,4);
-		}
 	}
-
-	//移動処理(前歩きスタート)
-	if (patternCount_ == 2 && isDown_ == false && comboCount_ == 0)
-	{
-		moveTimer_--;
-
-		bool isFrontMove_ = false;
-		bool isBackMove_ = false;
-		velocity_ = { 0.0f, 0.0f, 0.0f };
-
-		if (moveTimer_ < 30 && enemyDirection_ == Direction::Left && !isHit_)
-		{
-			velocity_.x = 0.01f;
-			isFrontMove_ = false;
-			isBackMove_ = true;
-			isGuard_ = false;
-		}
-
-		if (moveTimer_ < 30 && enemyDirection_ == Direction::Right && !isHit_)
-		{
-			velocity_.x = 0.01f;
-			isFrontMove_ = true;
-			isBackMove_ = false;
-			isGuard_ = false;
-		}
-
-		if (moveTimer_ >= 30 && enemyDirection_ == Direction::Right)
-		{
-			velocity_.x = -0.01f;
-			isFrontMove_ = false;
-			isBackMove_ = true;
-			isGuard_ = true;
-		}
-
-		if (moveTimer_ >= 30 && enemyDirection_ == Direction::Left)
-		{
-			velocity_.x = -0.01f;
-			isFrontMove_ = true;
-			isBackMove_ = false;
-			isGuard_ = true;
-		}
-
-
-		//移動
-		if (isFrontMove_)
-		{
-			animationIndex_ = 0;
-
-			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex_, model_);
-
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(frontSpeed_, velocity_);
-
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
-
-			worldTransform_.UpdateMatrixEuler();
-		}
-		else if (isBackMove_)
-		{
-			animationIndex_ = 2;
-
-			UpdateAnimationTime(animationTime, true, 40.0f, animationIndex_, model_);
-
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(backSpeed_, velocity_);
-
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
-
-			worldTransform_.UpdateMatrixEuler();
-		}
-		else
-		{
-			animationIndex_ = 5;
-
-			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
-		}
-
-		if (moveTimer_ <= 0)
-		{
-			moveTimer_ = Random(30, 60);
-			patternCount_ = Random(3, 4);
-		}
-	}
-
-	//攻撃
-	//突進攻撃
-	if (patternCount_ == 3 && !isDown_)
-	{
-		behaviorRequest_ = Behavior::kAttack;
-		animationTime = 0.0f;
-		model_->SetAnimationTime(animationTime);
-		workAttack_.isTackle = true;
-	}
-
-	//弾攻撃
-	if (patternCount_ == 4 && !isDown_)
-	{
-		behaviorRequest_ = Behavior::kAttack;
-		animationTime = 0.0f;
-		model_->SetAnimationTime(animationTime);
-		workAttack_.isShot = true;
-	}
-
+	
 	////ジャンプ
 	//if (patternCount_ == 3 && !isDown_)
 	//{

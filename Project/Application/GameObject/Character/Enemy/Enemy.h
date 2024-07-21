@@ -388,6 +388,10 @@ private:
 	int shotCooldownTimer_ = 0;
 
 	bool hasShot_ = false;
+
+	//デバッグ用
+	bool isDebug_ = false;
+
 #pragma endregion
 };
 
