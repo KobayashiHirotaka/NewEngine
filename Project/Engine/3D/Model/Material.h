@@ -41,11 +41,11 @@ private:
 
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 
-	Vector2 translation_{ 0.0f,0.0f };
+	Vector2 translation_ = { 0.0f,0.0f };
 
 	float rotation_ = 0.0f;
 
-	Vector2 scale_{ 1.0f,1.0f };
+	Vector2 scale_ = { 1.0f,1.0f };
 
 	float shininess_ = 40.8f;
 };

@@ -81,7 +81,7 @@ void Player::Initialize()
 	worldTransformCursol_.rotation.y = 1.5f;
 	worldTransformCursol_.scale = { 0.3f, 0.3f, 0.3f };
 
-	worldTransformCursol_.parent_ = &worldTransform_;
+	worldTransformCursol_.parent = &worldTransform_;
 
 	//パーティクルの初期化
 	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));

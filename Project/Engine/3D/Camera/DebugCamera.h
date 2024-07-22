@@ -19,6 +19,7 @@ public:
 	const Camera& GetCamera() { return camera_; };
 
 	void SetTarget(WorldTransform* target) { target_ = target; };
+
 private:
 	WorldTransform worldTransform_;
 

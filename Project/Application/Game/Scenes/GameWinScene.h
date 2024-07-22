@@ -4,6 +4,7 @@
 class GameWinScene : public IScene
 {
 public:
+	//Transition用の時間
 	static const int kTransitionTime = 60;
 
 	GameWinScene();
@@ -21,33 +22,30 @@ public:
 	void ImGui()override;
 
 private:
-	//textureManager
 	TextureManager* textureManager_ = nullptr;
 
-	//modelManager
 	ModelManager* modelManager_ = nullptr;
 
-	//input
 	Input* input_ = nullptr;
 
-	//audio
 	Audio* audio_ = nullptr;
 
-	//camera
+	//Camera
 	Camera camera_;
 	DebugCamera debugCamera_;
 	bool isDebugCamera_ = false;
 
-	//skydome
+	//Skydome
 	std::unique_ptr<Skydome> skydome_;
 
+	//Win表示のSprite
 	std::unique_ptr<Sprite>winSceneSprite_ = nullptr;
 	uint32_t winSceneTextureHandle_ = 0;
 
-	//サウンド
+	//Sounds
 	uint32_t selectSoundHandle_ = 0u;
 
-	//トランジション
+	//Transition
 	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
 	uint32_t transitionTextureHandle_ = 0;
 	Vector4 transitionColor_ = { 0.0f,0.0f,0.0f,1.0f };

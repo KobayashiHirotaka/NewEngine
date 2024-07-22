@@ -66,8 +66,6 @@ class Model
 public:
 	static void StaticInitialize();
 
-	//void Initialize();
-
 	void Update();
 
 	void Draw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData);

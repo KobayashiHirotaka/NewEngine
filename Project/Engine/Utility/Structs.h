@@ -6,7 +6,7 @@
 #include <map>
 #include <optional>
 
-//structs
+//Structs
 struct Vector2
 {
 	float x;
