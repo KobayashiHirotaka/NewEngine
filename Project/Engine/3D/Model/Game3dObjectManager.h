@@ -18,27 +18,26 @@ public:
 
 	void Draw(const Camera& camera);
 
-	//objectの生成
+	//Objectの生成
 	static IGame3dObject* CreateGameObject(const std::string& objectName);
 	IGame3dObject* CreateGameObjectInternal(const std::string& objectName);
 
-	//cameraの生成
+	//Cameraの生成
 	static Camera* CreateCameraObject(const std::string& objectName);
 	Camera* CreateCameraObjectInternal(const std::string& objectName);
 
-	//gameObjectFactoryのsetter
-	void SetGameObjectFactory(Game3dObjectFactory* gameObjectFactory) { gameObjectFactory_ = gameObjectFactory; };
-
-	//typeごとのobjectの生成
+	//TypeごとObjectの生成
 	template <typename Type>
 	Type* CreateGameObjectFromType();
 
 	template <typename Type>
 	Type* CreateGameObjectInternalFromType();
 
-	//typeごとのobjectのgetter
+	//Getter,Setter
 	template <typename Type>
 	Type* GetGameObject(const std::string& tag);
+
+	void SetGameObjectFactory(Game3dObjectFactory* gameObjectFactory) { gameObjectFactory_ = gameObjectFactory; };
 
 private:
 	Game3dObjectManager() = default;
@@ -59,6 +58,7 @@ private:
 template <typename Type>
 Type* Game3dObjectManager::CreateGameObjectFromType()
 {
+	//GameObjectを作成
 	Type* gameObject = Game3dObjectManager::GetInstance()->CreateGameObjectInternalFromType<Type>();
 	return gameObject;
 }

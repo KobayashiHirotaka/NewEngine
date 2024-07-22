@@ -406,7 +406,7 @@
       <Filter>ソース ファイル\Engine\Utility\LevelLoader</Filter>
     </ClCompile>
     <ClCompile Include="Application\GameObject\Character\Enemy\EnemyBullet.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -623,11 +623,8 @@
     <ClInclude Include="Application\GameObject\Ground\Ground.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Ground</Filter>
     </ClInclude>
-    <ClInclude Include="Direction.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
-    </ClInclude>
     <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBullet.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

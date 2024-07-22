@@ -380,20 +380,6 @@ void Enemy::Update()
 
 	ComboNumberSpriteUpdate();
 
-	//imGui
-	model_->GetLight()->ImGui("DirectionalLight");
-	model_->GetPointLight()->ImGui("PointLight");
-	model_->GetSpotLight()->ImGui("SpotLight");
-
-	ImGui::Begin("Enemy");
-	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
-	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
-	ImGui::Text("isGuard %d", isGuard_);
-	ImGui::Text("isHit %d", isHit_);
-	ImGui::Text("patternCount %d", patternCount_);
-	ImGui::Checkbox("isDebug_", &isDebug_);
-	ImGui::End();
-
 	//worldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 }
@@ -442,6 +428,28 @@ void Enemy::DrawParticle(const Camera& camera)
 	{
 		bullet->ParticleDraw(camera);
 	}
+}
+
+void Enemy::ImGui(const char* Title)
+{
+	ImGui::Begin(Title);
+	ImGui::DragFloat3("WTFT", &worldTransform_.translation.x, -14.0f, 14.0f);
+	ImGui::DragFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 150.0f);
+	ImGui::DragFloat3("WTFS", &worldTransform_.scale.x, 0.0f, 300.0f);
+
+	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
+	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
+
+	ImGui::Text("isGuard %d", isGuard_);
+	ImGui::Text("isHit %d", isHit_);
+	ImGui::Text("patternCount %d", patternCount_);
+
+	ImGui::Checkbox("isDebug_", &isDebug_);
+
+	model_->GetLight()->ImGui("DirectionalLight");
+	model_->GetPointLight()->ImGui("PointLight");
+	model_->GetSpotLight()->ImGui("SpotLight");
+	ImGui::End();
 }
 
 void Enemy::BehaviorRootInitialize()

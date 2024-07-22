@@ -12,8 +12,6 @@
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"
 
-#include "Direction.h"
-
 //前方宣言
 class Enemy;
 
@@ -76,6 +74,8 @@ public:
 	void Update()override;
 
 	void Draw(const Camera& camera)override;
+
+	void ImGui(const char* Title)override;
 
 	void BoneDraw(const Camera& camera);
 

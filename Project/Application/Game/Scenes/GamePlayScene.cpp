@@ -247,14 +247,6 @@ void GamePlayScene::Update()
 	{
 		camera_.UpdateMatrix();
 	}
-
-	camera_.ImGui();
-
-	//imGui
-	ImGui::Begin("PlayScene");
-	ImGui::Text("MKey : WinScene");
-	ImGui::Text("NKey : WinScene");
-	ImGui::End();
 };
 
 void GamePlayScene::Draw()
@@ -404,6 +396,19 @@ void GamePlayScene::Draw()
 void GamePlayScene::Finalize()
 {
 	
+}
+
+void GamePlayScene::ImGui()
+{
+	ImGui::Begin("PlayScene");
+	ImGui::Text("MKey : WinScene");
+	ImGui::Text("NKey : WinScene");
+	ImGui::End();
+
+	player_->ImGui("Player");
+	enemy_->ImGui("Enemy");
+
+	camera_.ImGui();
 }
 
 void GamePlayScene::UpdateNumberSprite()

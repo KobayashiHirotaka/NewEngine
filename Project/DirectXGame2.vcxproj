@@ -129,7 +129,6 @@
     <ClInclude Include="Application\Game\Scenes\IScene.h" />
     <ClInclude Include="Application\Game\Scenes\Manager\GameManager.h" />
     <ClInclude Include="Application\Game\Scenes\SceneFactory.h" />
-    <ClInclude Include="Direction.h" />
     <ClInclude Include="Engine\2D\Sprite\Sprite.h" />
     <ClInclude Include="Engine\2D\Sprite\UI.h" />
     <ClInclude Include="Engine\3D\Camera\Camera.h" />

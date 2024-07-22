@@ -315,26 +315,6 @@ void Player::Update()
 		guardAnimationTimer_ = 60;
 	}
 
-	//imGui
-	model_->GetLight()->ImGui("DirectionalLight");
-	model_->GetPointLight()->ImGui("PointLight");
-	model_->GetSpotLight()->ImGui("SpotLight");
-
-	ImGui::Begin("Player");
-	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
-	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
-	ImGui::Text("isGuard %d", isGuard_);
-	ImGui::Text("attackAnimationFrame %d", attackAnimationFrame_);
-	ImGui::Text("isAttack %d", workAttack_.isAttack);
-	ImGui::DragFloat("animationTime", &animationTime_,0.0001f);
-	ImGui::End();
-
-	ImGui::Begin("Cursol");
-	ImGui::SliderFloat3("WTFT", &worldTransformCursol_.translation.x, -100.0f, 100.0f);
-	ImGui::SliderFloat3("WTFR", &worldTransformCursol_.rotation.x, 0.0f, 16.0f);
-	ImGui::SliderFloat3("WTFS", &worldTransformCursol_.scale.x, 0.0f, 16.0f);
-	ImGui::End();
-
 	//worldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 	worldTransformCursol_.UpdateMatrixEuler();
@@ -370,6 +350,32 @@ void Player::DrawSprite()
 void Player::DrawParticle(const Camera& camera)
 {
 	particleModel_->Draw(particleSystem_.get(), camera);
+}
+
+void Player::ImGui(const char* Title)
+{
+	ImGui::Begin(Title);
+	ImGui::DragFloat3("WTFT", &worldTransform_.translation.x, -14.0f, 14.0f);
+	ImGui::DragFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 150.0f);
+	ImGui::DragFloat3("WTFS", &worldTransform_.scale.x, 0.0f, 300.0f);
+
+	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
+	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
+
+	ImGui::Text("isGuard %d", isGuard_);
+	ImGui::Text("attackAnimationFrame %d", attackAnimationFrame_);
+	ImGui::Text("isAttack %d", workAttack_.isAttack);
+	ImGui::DragFloat("animationTime", &animationTime_, 0.0001f);
+
+	model_->GetLight()->ImGui("DirectionalLight");
+	model_->GetPointLight()->ImGui("PointLight");
+	model_->GetSpotLight()->ImGui("SpotLight");
+
+	ImGui::SliderFloat3("WTFT", &worldTransformCursol_.translation.x, -100.0f, 100.0f);
+	ImGui::SliderFloat3("WTFR", &worldTransformCursol_.rotation.x, 0.0f, 16.0f);
+	ImGui::SliderFloat3("WTFS", &worldTransformCursol_.scale.x, 0.0f, 16.0f);
+	ImGui::End();
+
 }
 
 void Player::BehaviorRootInitialize()

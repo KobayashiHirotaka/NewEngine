@@ -26,8 +26,6 @@ public:
 		float radius;
 
 		float decay;
-
-		/*float padding[2];*/
 	};
 
 	void Initialize();

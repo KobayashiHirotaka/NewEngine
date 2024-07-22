@@ -14,7 +14,6 @@
 #include <random>
 #include <numbers>
 
-#include "Direction.h"
 #include "EnemyBullet.h"
 
 //前方宣言
@@ -82,6 +81,8 @@ public:
 	void Update()override;
 
 	void Draw(const Camera& camera)override;
+
+	void ImGui(const char* Title)override;
 
 	void BoneDraw(const Camera& camera);
 
