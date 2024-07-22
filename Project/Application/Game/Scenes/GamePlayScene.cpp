@@ -187,6 +187,16 @@ void GamePlayScene::Update()
 		}
 	}
 
+	if (player_->GetIsPostEffect())
+	{
+		float saturation = Random(-1.0f, 1.0f);
+		PostProcess::GetInstance()->SetHSVFilterSaturation(saturation);
+	}
+	else
+	{
+		PostProcess::GetInstance()->SetHSVFilterSaturation(0.0f);
+	}
+
 	//勝ち負けの処理
 	HandleGameOutcome();
 

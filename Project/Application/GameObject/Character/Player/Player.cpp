@@ -1480,6 +1480,7 @@ void Player::DownAnimation()
 		if (downAnimationTimer_ > 55)
 		{
 			isShake_ = true;
+			isPostEffect_ = true;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1498,6 +1499,10 @@ void Player::DownAnimation()
 				.SetDeleteTime(1.0f)
 				.Build();
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+		else
+		{
+			isPostEffect_ = false;
 		}
 
 		if (downAnimationTimer_ > 35 && worldTransform_.translation.x < 4.0f)
@@ -1548,6 +1553,7 @@ void Player::DownAnimation()
 		if (downAnimationTimer_ > 55)
 		{
 			isShake_ = true;
+			isPostEffect_ = true;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1566,6 +1572,10 @@ void Player::DownAnimation()
 				.SetDeleteTime(1.0f)
 				.Build();
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+		else
+		{
+			isPostEffect_ = false;
 		}
 
 		if (downAnimationTimer_ > 35 && worldTransform_.translation.x > -4.0f)
@@ -1618,6 +1628,9 @@ void Player::DownAnimation()
 
 		if (downAnimationTimer_ > 55)
 		{
+			isShake_ = true;
+			isPostEffect_ = true;
+
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
 				.SetTranslation({ worldTransform_.translation.x + (playerDirection_ == Direction::Left ? -0.1f : 0.1f), worldTransform_.translation.y + 0.5f, worldTransform_.translation.z })
@@ -1634,6 +1647,10 @@ void Player::DownAnimation()
 				.SetDeleteTime(1.0f)
 				.Build();
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
+		}
+		else
+		{
+			isPostEffect_ = false;
 		}
 
 		animationIndex_ = 3;
@@ -1661,7 +1678,11 @@ void Player::DownAnimation()
 		isDown_ = true;
 		downAnimationTimer_--;
 
-		if (!isParticle_) {
+		if (!isParticle_) 
+		{
+			isShake_ = true;
+			isPostEffect_ = true;
+
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
 				.SetTranslation({ worldTransform_.translation.x + (playerDirection_ == Direction::Left ? -0.1f : 0.1f), worldTransform_.translation.y + 0.5f, worldTransform_.translation.z })
@@ -1680,6 +1701,10 @@ void Player::DownAnimation()
 			particleSystem_->AddParticleEmitter(newParticleEmitter);
 
 			isParticle_ = true;
+		}
+		else
+		{
+			isPostEffect_ = false;
 		}
 
 		if (downAnimationTimer_ > 35 && worldTransform_.translation.x > -4.0f)

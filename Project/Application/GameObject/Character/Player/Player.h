@@ -131,6 +131,8 @@ public:
 
 	bool GetIsShake() { return isShake_; };
 
+	bool GetIsPostEffect() { return isPostEffect_; };
+
 	Direction GetDirection() { return playerDirection_; };
 
 #pragma endregion
@@ -151,12 +153,16 @@ private:
 
 	void HitStop(int milliseconds);
 
+	void PushEnemy(Vector3& enemyPosition, float pushSpeed);
+
+#pragma region Animation
+
 	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex,
 		std::unique_ptr<Model>& modelFighterBody);
 
 	void DownAnimation();
 
-	void PushEnemy(Vector3& enemyPosition, float pushSpeed);
+#pragma endregion
 
 #pragma region UIの更新
 
@@ -312,7 +318,11 @@ private:
 	//リセットしているかどうか
 	bool isReset_ = false;
 
+	//必殺技を発動しているかどうか
 	bool isFinisherEffect_ = false;
+
+	//ポストエフェクトをかけるかどうか
+	bool isPostEffect_ = false;
 
 #pragma endregion
 
