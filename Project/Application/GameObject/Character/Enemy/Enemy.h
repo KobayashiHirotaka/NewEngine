@@ -28,37 +28,50 @@ public:
 
 	void Reset()override;
 
+	//行動関数
+	void BehaviorRootInitialize()override;
+
+	void BehaviorRootUpdate()override;
+
+	void BehaviorAttackInitialize()override;
+
+	void BehaviorAttackUpdate()override;
+
+	void BehaviorJumpInitialize()override;
+
+	void BehaviorJumpUpdate()override;
+
+	void BehaviorStanInitialize()override;
+
+	void BehaviorStanUpdate()override;
+
+	//UIの更新関数
+	void HPBarUpdate()override;
+
+	void GuardGaugeBarUpdate()override;
+
+	void FinisherGaugeBarUpdate()override;
+
+	void ComboNumberSpriteUpdate()override;
+
+	//弾関係の関数
 	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
 
 	void UpdateBullets();
 
 	void DrawBullet(const Camera& camera);
 
-#pragma region Getter
-
+	//Getter
 	uint32_t GetAnimationIndex() { return animationIndex_; };
 
 	WorldTransform& GetWorldTransform()override { return worldTransform_; }
 
 	Vector3 GetWorldPosition() override;
 
-	Vector3 GetRotation() { return worldTransform_.rotation; };
-
 	const std::vector<EnemyBullet*>& GetBullets() const{ return bullets_; };
 
-#pragma endregion
-
-#pragma region Setter
-
-	void SetIsReset(bool isReset) { isReset_ = isReset; };
-
-	//武器のSetter
-	void SetTransform(Vector3 transform) { worldTransform_.translation = transform; };
-	void SetRotation(Vector3 rotation) { worldTransform_.rotation = rotation; };
-
+	//Setter
 	void SetPlayer(Player* player) { player_ = player; };
-
-#pragma endregion
 
 private:
 	void HitStop(int milliseconds);
@@ -70,121 +83,30 @@ private:
 
 	int Random(int min_value, int max_value);
 
-#pragma region UIの更新
-
-	void HPBarUpdate();
-
-	void GuardGaugeBarUpdate();
-
-	void FinisherGaugeBarUpdate();
-
-	void ComboNumberSpriteUpdate();
-
-#pragma endregion
-
-#pragma region 敵の行動
-
-	void BehaviorRootInitialize();
-
-	void BehaviorRootUpdate();
-
-	void BehaviorAttackInitialize();
-
-	void BehaviorAttackUpdate();
-
-	void BehaviorJumpInitialize();
-
-	void BehaviorJumpUpdate();
-
-	void BehaviorThrowInitialize();
-
-	void BehaviorThrowUpdate();
-
-	void BehaviorStanInitialize();
-
-	void BehaviorStanUpdate();
-
-#pragma endregion
-
 private:
-#pragma region インスタンス
-
-	//input
 	Input* input_ = nullptr;
 
-	//audio
 	Audio* audio_ = nullptr;
-
-#pragma endregion
-
-#pragma region 敵の基本パラメータ
-
-	//behavior
-	Behavior behavior_ = Behavior::kRoot;
-	std::optional<Behavior> behaviorRequest_ = std::nullopt;
-
-	//現在のフレームでの位置
-	Vector3 currentPosition_;
-
-	//前のフレームでの位置
-	Vector3 previousPosition_;
-
-	//向いている方向
-	Direction enemyDirection_ = Direction::Left;
-
-	//再生するanimationの番号
-	uint32_t animationIndex_ = 4;
 
 	//行動のパターン
 	int patternCount_ = 1;
 	int moveTimer_ = 60;
 
-	//ダウン演出の時間
-	int downAnimationTimer_ = 60;
-
-	//ガード演出の時間
-	int guardAnimationTimer_ = 60;
-
-	//リセットの時間
-	int resetTimer_ = 60;
-
-	//スタンの時間
-	int stanTimer_ = 200;
-
-	//必殺技
-	int finisherEffectTimer_ = 90;
-	int finisherCount_ = 0;
-
-	//キャンセル
-	int cancelCount_ = 0;
-	int cancelTimer_ = 60;
-
-	//コンボを食らっているとき
-	int comboTimer_ = 60;
-	int comboCount_ = 0;
-
 	//当たり判定
 	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 
-#pragma endregion
+	//プレイヤー
+	Player* player_ = nullptr;
 
-#pragma region 敵の移動パラメータ
+	//敵の弾テスト用
+	std::unique_ptr<Model> bulletModel_;
+	std::vector<EnemyBullet*> bullets_;
 
-	//移動
-	Vector3 velocity_ = {};
+	int shotCooldownTimer_ = 0;
 
-#pragma endregion
+	bool hasShot_ = false;
 
-#pragma region 敵の攻撃パラメータ
-
-	int attackTimer_ = 30;
-
-	int attackAnimationFrame_;
-
-#pragma endregion
-
-#pragma region リソース
-
+	//リソース
 	//スプライト(hp)
 	UI hpBar_;
 	const float barSpace_ = 15.6f;
@@ -212,26 +134,5 @@ private:
 	uint32_t weaponAttackSoundHandle_ = 0u;
 	uint32_t damageSoundHandle_ = 0u;
 	uint32_t guardSoundHandle_ = 0u;
-
-#pragma endregion
-
-#pragma region その他
-
-	//プレイヤー
-	Player* player_ = nullptr;
-
-	//敵の弾テスト用
-	std::unique_ptr<Model> bulletModel_;
-	std::vector<EnemyBullet*> bullets_;
-
-
-	int shotCooldownTimer_ = 0;
-
-	bool hasShot_ = false;
-
-	//デバッグ用
-	bool isDebug_ = false;
-
-#pragma endregion
 };
 

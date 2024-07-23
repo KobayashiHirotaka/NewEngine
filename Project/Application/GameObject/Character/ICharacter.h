@@ -30,42 +30,6 @@ public:
 		kStan
 	};
 
-	struct MoveData
-	{
-		//移動
-		Vector3 velocity = {};
-	};
-
-	struct AttackData
-	{
-		//攻撃フレーム
-		int attackAnimationFrame = 0;
-
-		//攻撃しているか
-		bool isAttack = false;
-
-		//弱攻撃
-		bool isLightPunch = false;
-
-		//中攻撃
-		bool isMiddlePunch = false;
-
-		//強攻撃
-		bool isHighPunch = false;
-
-		//中攻撃(ターゲットコンボ用)
-		bool isTCMiddlePunch = false;
-
-		//強攻撃(ターゲットコンボ用)
-		bool isTCHighPunch = false;
-
-		//タックル攻撃
-		bool isTackle = false;
-
-		//弾攻撃
-		bool isShot = false;
-	};
-
 	struct CharacterState
 	{
 		//現在の行動
@@ -111,6 +75,57 @@ public:
 		bool isHSVFilter = false;
 	};
 
+	struct MoveData
+	{
+		//移動
+		Vector3 velocity = {};
+	};
+
+	struct AttackData
+	{
+		//攻撃フレーム
+		int attackAnimationFrame = 0;
+
+		//攻撃しているか
+		bool isAttack = false;
+
+		//弱攻撃
+		bool isLightPunch = false;
+
+		//中攻撃
+		bool isMiddlePunch = false;
+
+		//強攻撃
+		bool isHighPunch = false;
+
+		//中攻撃(ターゲットコンボ用)
+		bool isTCMiddlePunch = false;
+
+		//強攻撃(ターゲットコンボ用)
+		bool isTCHighPunch = false;
+
+		//タックル攻撃
+		bool isTackle = false;
+
+		//弾攻撃
+		bool isShot = false;
+	};
+
+	struct TimerData
+	{
+		//ダウン演出の時間
+		int downAnimationTimer = 60;
+
+		//ガード演出の時間
+		int guardAnimationTimer = 60;
+
+		//スタンの時間
+		int stanTimer = 60;
+
+		//コンボの猶予時間
+		int comboTimer = 60;
+	};
+
 	virtual void DrawBone(const Camera& camera) = 0;
 
 	virtual void DrawSprite() = 0;
@@ -118,6 +133,32 @@ public:
 	virtual void DrawParticle(const Camera& camera) = 0;
 
 	virtual void Reset() = 0;
+
+	//キャラクターの行動関数
+	virtual void BehaviorRootInitialize() = 0;
+
+	virtual void BehaviorRootUpdate() = 0;
+
+	virtual void BehaviorAttackInitialize() = 0;
+	 
+	virtual void BehaviorAttackUpdate() = 0;
+
+	virtual void BehaviorJumpInitialize() = 0;
+
+	virtual void BehaviorJumpUpdate() = 0;
+
+	virtual void BehaviorStanInitialize() = 0;
+
+	virtual void BehaviorStanUpdate() = 0;
+
+	//UIの更新関数
+	virtual void HPBarUpdate() = 0;
+
+	virtual void GuardGaugeBarUpdate() = 0;
+
+	virtual void FinisherGaugeBarUpdate() = 0;
+
+	virtual void ComboNumberSpriteUpdate() = 0;
 
 	//移動に関するGetter
 	Direction GetDirection() { return characterState_.direction; };
@@ -148,6 +189,9 @@ public:
 
 	bool GetIsDown() { return characterState_.isDown; };
 
+	//Setter
+	void SetIsReset(bool isReset) { isReset_ = isReset; };
+
 protected:
 	CharacterState characterState_;
 
@@ -157,9 +201,21 @@ protected:
 
 	AttackData attackData_;
 
+	TimerData timerData_;
+
 	std::unique_ptr<ParticleEffectPlayer> particleEffectPlayer_;
 	bool isParticle_ = false;
 
+	//再生するanimationの番号
+	uint32_t animationIndex_ = 4;
+	float animationTime_ = 0.0f;
+
+	//コンボの数
+	int comboCount_ = 0;
+
 	//リセットしているかどうか
 	bool isReset_ = false;
+
+	//デバッグ用
+	bool isDebug_ = false;
 };

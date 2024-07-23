@@ -213,7 +213,7 @@ void Player::Update()
 
 	if (!enemy_->GetIsAttack())
 	{
-		guardAnimationTimer_ = 60;
+		timerData_.guardAnimationTimer = 60;
 	}
 
 	particleEffectPlayer_->Update();
@@ -283,7 +283,7 @@ void Player::ImGui(const char* title)
 
 void Player::BehaviorRootInitialize()
 {
-
+	animationIndex_ = 4;
 }
 
 void Player::BehaviorRootUpdate()
@@ -899,16 +899,6 @@ void Player::BehaviorJumpUpdate()
 	}
 }
 
-void Player::BehaviorThrowInitialize()
-{
-	
-}
-
-void Player::BehaviorThrowUpdate()
-{
-
-}
-
 void Player::BehaviorStanInitialize()
 {
 	animationIndex_ = 9;
@@ -916,8 +906,8 @@ void Player::BehaviorStanInitialize()
 
 void Player::BehaviorStanUpdate()
 {
-	stanTimer_--;
-	if (stanTimer_ > 55)
+	timerData_.stanTimer--;
+	if (timerData_.stanTimer > 55)
 	{
 		effectState_.isShake = true;
 	}
@@ -952,7 +942,7 @@ void Player::BehaviorStanUpdate()
 		animationTime_ = 0.0f;
 		attackData_.attackAnimationFrame = 0;
 		guardGauge_ = 0.0f;
-		stanTimer_ = 60;
+		timerData_.stanTimer = 60;
 		model_->SetAnimationTime(animationTime_);
 		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 		SetAABB(aabb_);
@@ -1001,13 +991,13 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (characterState_.isGuard && characterState_.direction == Direction::Right)
 		{
-			guardAnimationTimer_--;
+			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.1f;
 			guardGauge_ -= 6.0f;
 
-			if (guardAnimationTimer_ > 55)
+			if (timerData_.guardAnimationTimer > 55)
 			{
 
 				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + 0.1f,
@@ -1016,13 +1006,13 @@ void Player::OnCollision(Collider* collider, float damage)
 		}
 		else if (characterState_.isGuard && characterState_.direction == Direction::Left)
 		{
-			guardAnimationTimer_--;
+			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.1f;
 			guardGauge_ -= 6.0f;
 
-			if (guardAnimationTimer_ > 55)
+			if (timerData_.guardAnimationTimer > 55)
 			{
 
 				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - 0.1f,
@@ -1038,13 +1028,13 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Right)
 		{
-			guardAnimationTimer_--;
+			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.3f;
 			guardGauge_ -= 1.0f;
 
-			if (guardAnimationTimer_ > 55)
+			if (timerData_.guardAnimationTimer > 55)
 			{
 
 				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + 0.1f,
@@ -1054,13 +1044,13 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Left)
 		{
-			guardAnimationTimer_--;
+			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.3f;
 			guardGauge_ -= 1.0f;
 
-			if (guardAnimationTimer_ > 55)
+			if (timerData_.guardAnimationTimer > 55)
 			{
 
 				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - 0.1f,
@@ -1070,13 +1060,13 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (enemy_->GetIsAttack() && enemy_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Right)
 		{
-			guardAnimationTimer_--;
+			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.2f;
 			guardGauge_ -= 1.0f;
 
-			if (guardAnimationTimer_ > 55)
+			if (timerData_.guardAnimationTimer > 55)
 			{
 				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + 0.1f,
 					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
@@ -1085,13 +1075,13 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (enemy_->GetIsAttack() && enemy_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Left)
 		{
-			guardAnimationTimer_--;
+			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.2f;
 			guardGauge_ -= 1.0f;
 
-			if (guardAnimationTimer_ > 55)
+			if (timerData_.guardAnimationTimer > 55)
 			{
 				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - 0.1f,
 					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
@@ -1184,7 +1174,7 @@ void Player::Reset()
 
 	finisherGauge_ = 0.0f;
 
-	downAnimationTimer_ = 60;
+	timerData_.downAnimationTimer = 60;
 
 	characterState_.isHitLightPunch = false;
 	characterState_.isHitMiddlePunch = false;
@@ -1232,9 +1222,9 @@ void Player::DownAnimation()
 	if (characterState_.isHitTackle && characterState_.direction == Direction::Left)
 	{
 		characterState_.isDown = true;
-		downAnimationTimer_--;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
 			effectState_.isShake = true;
 			effectState_.isHSVFilter = true;
@@ -1247,7 +1237,7 @@ void Player::DownAnimation()
 			effectState_.isHSVFilter = false;
 		}
 
-		if (downAnimationTimer_ > 35 && worldTransform_.translation.x < 4.0f)
+		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x < 4.0f)
 		{
 			worldTransform_.translation.x += 0.08f;
 		}
@@ -1277,7 +1267,7 @@ void Player::DownAnimation()
 		if (!enemy_->GetIsTackle() && hp_ < 0.0f)
 		{
 			animationIndex_ = 4;
-			downAnimationTimer_ = 60;
+			timerData_.downAnimationTimer = 60;
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
@@ -1290,9 +1280,9 @@ void Player::DownAnimation()
 	if (characterState_.isHitTackle && characterState_.direction == Direction::Right)
 	{
 		characterState_.isDown = true;
-		downAnimationTimer_--;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
 			effectState_.isShake = true;
 			effectState_.isHSVFilter = true;
@@ -1305,7 +1295,7 @@ void Player::DownAnimation()
 			effectState_.isHSVFilter = false;
 		}
 
-		if (downAnimationTimer_ > 35 && worldTransform_.translation.x > -4.0f)
+		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x > -4.0f)
 		{
 			worldTransform_.translation.x -= 0.08f;
 
@@ -1337,7 +1327,7 @@ void Player::DownAnimation()
 		if (!enemy_->GetIsTackle() && hp_ < 0.0f)
 		{
 			animationIndex_ = 4;
-			downAnimationTimer_ = 60;
+			timerData_.downAnimationTimer = 60;
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
@@ -1351,9 +1341,9 @@ void Player::DownAnimation()
 	if (characterState_.isHitBullet)
 	{
 		characterState_.isDown = true;
-		downAnimationTimer_--;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
 			effectState_.isShake = true;
 			effectState_.isHSVFilter = true;
@@ -1379,7 +1369,7 @@ void Player::DownAnimation()
 		if (animationTime_ >= animationDuration && hp_ < 0.0f)
 		{
 			animationIndex_ = 4;
-			downAnimationTimer_ = 60;
+			timerData_.downAnimationTimer = 60;
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
 			characterState_.isHitBullet = false;
@@ -1389,7 +1379,7 @@ void Player::DownAnimation()
 	else if (characterState_.isHitAirBullet)
 	{
 		characterState_.isDown = true;
-		downAnimationTimer_--;
+		timerData_.downAnimationTimer--;
 
 		if (!isParticle_) 
 		{
@@ -1406,7 +1396,7 @@ void Player::DownAnimation()
 			effectState_.isHSVFilter = false;
 		}
 
-		if (downAnimationTimer_ > 35 && worldTransform_.translation.x > -4.0f)
+		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x > -4.0f)
 		{
 			worldTransform_.translation.x -= characterState_.direction == Direction::Left ? -0.08f : 0.08f;
 		}
@@ -1436,7 +1426,7 @@ void Player::DownAnimation()
 		if (animationTime_ >= animationDuration && hp_ < 0.0f)
 		{
 			animationIndex_ = 4;
-			downAnimationTimer_ = 60;
+			timerData_.downAnimationTimer = 60;
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
@@ -1465,4 +1455,9 @@ void Player::PushEnemy(Vector3& enemyPosition, float pushSpeed)
 	//敵のワールドトランスフォームを更新
 	enemy_->GetWorldTransform().translation = enemyPosition;
 	enemy_->GetWorldTransform().UpdateMatrixEuler();
+}
+
+void Player::ComboNumberSpriteUpdate()
+{
+	
 }

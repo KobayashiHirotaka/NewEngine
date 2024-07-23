@@ -27,109 +27,56 @@ public:
 
 	void Reset()override;
 
+	//行動関数
+	void BehaviorRootInitialize()override;
+
+	void BehaviorRootUpdate()override;
+
+	void BehaviorAttackInitialize()override;
+
+	void BehaviorAttackUpdate()override;
+
+	void BehaviorJumpInitialize()override;
+
+	void BehaviorJumpUpdate()override;
+
+	void BehaviorStanInitialize()override;
+
+	void BehaviorStanUpdate()override;
+
+	//UIの更新関数
+	void HPBarUpdate()override;
+
+	void GuardGaugeBarUpdate()override;
+
+	void FinisherGaugeBarUpdate()override;
+
+	void ComboNumberSpriteUpdate()override;
+
+	//Getter
 	uint32_t GetAnimationIndex() { return animationIndex_; };
 
 	WorldTransform& GetWorldTransform()override { return worldTransform_; }
 
 	Vector3 GetWorldPosition() override;
 
-	Vector3 GetRotation() { return worldTransform_.rotation; };
-
-#pragma region Setter
-
-	void SetIsReset(bool isReset) { isReset_ = isReset; };
-
-	//武器のSetter
-	void SetTransform(Vector3 transform) { worldTransform_.translation = transform; };
-	void SetRotation(Vector3 rotation) { worldTransform_.rotation = rotation; };
-
+	//Setter
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
 
-#pragma endregion
-
 private:
-
 	void HitStop(int milliseconds);
 
 	void PushEnemy(Vector3& enemyPosition, float pushSpeed);
-
-#pragma region Animation
 
 	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex,
 		std::unique_ptr<Model>& modelFighterBody);
 
 	void DownAnimation();
 
-#pragma endregion
-
-#pragma region UIの更新
-
-	void HPBarUpdate();
-
-	void GuardGaugeBarUpdate();
-
-	void FinisherGaugeBarUpdate();
-
-#pragma endregion
-
-#pragma region プレイヤーの行動
-
-	void BehaviorRootInitialize();
-
-	void BehaviorRootUpdate();
-
-	void BehaviorAttackInitialize();
-
-	void BehaviorAttackUpdate();
-
-	void BehaviorJumpInitialize();
-
-	void BehaviorJumpUpdate();
-
-	void BehaviorThrowInitialize();
-
-	void BehaviorThrowUpdate();
-
-	void BehaviorStanInitialize();
-
-	void BehaviorStanUpdate();
-
-#pragma endregion
-
 private:
-#pragma region インスタンス
-
-	//input
 	Input* input_ = nullptr;
 
-	//audio
 	Audio* audio_ = nullptr;
-
-#pragma endregion
-
-#pragma region プレイヤーの基本パラメータ
-
-
-	//再生するanimationの番号
-	uint32_t animationIndex_ = 4;
-	float animationTime_ = 0.0f;
-
-	//ダウン演出の時間
-	int downAnimationTimer_ = 60;
-
-	//ガード演出の時間
-	int guardAnimationTimer_ = 60;
-
-	//リセットの時間
-	int resetTimer_ = 60;
-
-	//スタンの時間
-	int stanTimer_ = 60;
-
-	//当たり判定
-	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-
-#pragma endregion
 
 	//敵
 	Enemy* enemy_ = nullptr;
@@ -138,6 +85,8 @@ private:
 	std::unique_ptr<Model> playerCursol_;
 	WorldTransform worldTransformCursol_;
 
+	//当たり判定
+	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 
 	//リソース
 	//スプライト(hp)
