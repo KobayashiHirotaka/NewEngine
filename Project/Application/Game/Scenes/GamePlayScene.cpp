@@ -39,6 +39,7 @@ void GamePlayScene::Initialize()
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 	PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
 	//PostProcess::GetInstance()->SetIsDepthBasedOutlineActive(false);
+	PostProcess::GetInstance()->SetIsHSVFilterActive(true);
 
 	//Levelの読み込み
 	levelLoarder_ = LevelLoader::GetInstance();
@@ -185,13 +186,14 @@ void GamePlayScene::Update()
 
 	if (player_->GetIsHSVFilter())
 	{
+		float hue = Random(-1.0f, 1.0f);
 		float saturation = Random(-1.0f, 1.0f);
-		PostProcess::GetInstance()->SetIsHSVFilterActive(true);
+		PostProcess::GetInstance()->SetHSVFilterHue(hue);
 		PostProcess::GetInstance()->SetHSVFilterSaturation(saturation);
 	}
 	else
 	{
-		PostProcess::GetInstance()->SetIsHSVFilterActive(false);
+		PostProcess::GetInstance()->SetHSVFilterHue(0.0f);
 		PostProcess::GetInstance()->SetHSVFilterSaturation(0.0f);
 	}
 
