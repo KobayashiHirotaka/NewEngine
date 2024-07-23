@@ -126,13 +126,23 @@ public:
 		int comboTimer = 60;
 	};
 
+	virtual void Initialize() = 0;
+
+	virtual void Update() = 0;
+
+	virtual void Draw(const Camera& camera) = 0;
+
 	virtual void DrawBone(const Camera& camera) = 0;
 
 	virtual void DrawSprite() = 0;
 
 	virtual void DrawParticle(const Camera& camera) = 0;
 
+	virtual void ImGui(const char* title) = 0;
+
 	virtual void Reset() = 0;
+
+	virtual void DownAnimation() = 0;
 
 	//キャラクターの行動関数
 	virtual void BehaviorRootInitialize() = 0;

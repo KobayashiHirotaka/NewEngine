@@ -1169,47 +1169,16 @@ void Player::FinisherGaugeBarUpdate()
 
 void Player::Reset()
 {
+	ICharacter::Reset();
+
 	hp_ = -100.0f;
 
-	guardGauge_ = 0.0f;
-
-	finisherGauge_ = 0.0f;
-
-	timerData_.downAnimationTimer = 60;
-
-	characterState_.isHitLightPunch = false;
-	characterState_.isHitMiddlePunch = false;
-	characterState_.isHitHighPunch = false;
-	characterState_.isHitTCMiddlePunch = false;
-	characterState_.isHitTCHighPunch = false;
-	characterState_.isHitTackle = false;
-	characterState_.isDown = false;
-
-	characterState_.isHitCharacter = false;
-
-	characterState_.isGuard = false;
-
-	attackData_.isAttack = false;
-	attackData_.isLightPunch = false;
-	attackData_.isMiddlePunch = false;
-	attackData_.isHighPunch = false;
-	attackData_.isTCMiddlePunch = false;
-	attackData_.isTCHighPunch = false;
-	attackData_.isTackle = false;
-
 	animationIndex_ = 4;
-
-	attackData_.attackAnimationFrame = 0;
-	animationTime_ = 0;
-
-	characterState_.behaviorRequest = Behavior::kRoot;
 
 	worldTransform_.translation = { -3.0f,0.0f,0.0f };
 	characterState_.direction = Direction::Right;
 
 	worldTransform_.UpdateMatrixEuler();
-
-	isReset_ = false;
 }
 
 void Player::HitStop(int milliseconds)
