@@ -208,7 +208,6 @@ protected:
 
 	//再生するanimationの番号
 	uint32_t animationIndex_ = 4;
-	float animationTime_ = 0.0f;
 
 	//コンボの数
 	int comboCount_ = 0;

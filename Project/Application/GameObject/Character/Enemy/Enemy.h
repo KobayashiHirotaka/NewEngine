@@ -106,6 +106,8 @@ private:
 
 	bool hasShot_ = false;
 
+	float animationTime_ = 0.0f;
+
 	//リソース
 	//スプライト(hp)
 	UI hpBar_;

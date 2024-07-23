@@ -892,7 +892,6 @@ void Player::BehaviorJumpUpdate()
 	if (worldTransform_.translation.y <= 0.0f)
 	{
 		characterState_.behaviorRequest = Behavior::kRoot;
-		//workAttack_.isJumpAttack = false;
 		worldTransform_.translation.y = 0.0f;
 		animationTime_ = 0.0f;
 		model_->SetAnimationTime(animationTime_);
