@@ -85,8 +85,6 @@ private:
 	std::unique_ptr<Model> playerCursol_;
 	WorldTransform worldTransformCursol_;
 
-	float animationTime_ = 0.0f;
-
 	//当たり判定
 	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 
@@ -111,7 +109,5 @@ private:
 	uint32_t weaponAttackSoundHandle_ = 0u;
 	uint32_t damageSoundHandle_ = 0u;
 	uint32_t guardSoundHandle_ = 0u;
-
-	bool isParticle_ = false;
 };
 
