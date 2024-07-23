@@ -187,7 +187,7 @@ void GamePlayScene::Update()
 		}
 	}
 
-	if (player_->GetIsPostEffect())
+	if (player_->GetIsHSVFilter())
 	{
 		float saturation = Random(-1.0f, 1.0f);
 		PostProcess::GetInstance()->SetHSVFilterSaturation(saturation);

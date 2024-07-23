@@ -131,7 +131,7 @@ public:
 
 	bool GetIsShake() { return isShake_; };
 
-	bool GetIsPostEffect() { return isPostEffect_; };
+	bool GetIsHSVFilter() { return isHSVFilter_; };
 
 	Direction GetDirection() { return playerDirection_; };
 
@@ -321,8 +321,8 @@ private:
 	//必殺技を発動しているかどうか
 	bool isFinisherEffect_ = false;
 
-	//ポストエフェクトをかけるかどうか
-	bool isPostEffect_ = false;
+	//HSVFilterをかけるかどうか
+	bool isHSVFilter_ = false;
 
 #pragma endregion
 

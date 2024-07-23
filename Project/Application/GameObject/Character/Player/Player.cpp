@@ -1480,7 +1480,7 @@ void Player::DownAnimation()
 		if (downAnimationTimer_ > 55)
 		{
 			isShake_ = true;
-			isPostEffect_ = true;
+			isHSVFilter_ = true;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1502,7 +1502,7 @@ void Player::DownAnimation()
 		}
 		else
 		{
-			isPostEffect_ = false;
+			isHSVFilter_ = false;
 		}
 
 		if (downAnimationTimer_ > 35 && worldTransform_.translation.x < 4.0f)
@@ -1553,7 +1553,7 @@ void Player::DownAnimation()
 		if (downAnimationTimer_ > 55)
 		{
 			isShake_ = true;
-			isPostEffect_ = true;
+			isHSVFilter_ = true;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1575,7 +1575,7 @@ void Player::DownAnimation()
 		}
 		else
 		{
-			isPostEffect_ = false;
+			isHSVFilter_ = false;
 		}
 
 		if (downAnimationTimer_ > 35 && worldTransform_.translation.x > -4.0f)
@@ -1629,7 +1629,7 @@ void Player::DownAnimation()
 		if (downAnimationTimer_ > 55)
 		{
 			isShake_ = true;
-			isPostEffect_ = true;
+			isHSVFilter_ = true;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1650,7 +1650,7 @@ void Player::DownAnimation()
 		}
 		else
 		{
-			isPostEffect_ = false;
+			isHSVFilter_ = false;
 		}
 
 		animationIndex_ = 3;
@@ -1681,7 +1681,7 @@ void Player::DownAnimation()
 		if (!isParticle_) 
 		{
 			isShake_ = true;
-			isPostEffect_ = true;
+			isHSVFilter_ = true;
 
 			ParticleEmitter* newParticleEmitter = EmitterBuilder()
 				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -1704,7 +1704,7 @@ void Player::DownAnimation()
 		}
 		else
 		{
-			isPostEffect_ = false;
+			isHSVFilter_ = false;
 		}
 
 		if (downAnimationTimer_ > 35 && worldTransform_.translation.x > -4.0f)
