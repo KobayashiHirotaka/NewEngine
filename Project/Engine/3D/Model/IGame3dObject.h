@@ -1,12 +1,6 @@
 #pragma once
 #include "Engine//3D/Model/Model.h"
 
-enum class Direction
-{
-	Left,
-	Right
-};
-
 class Game3dObjectManager;
 
 class IGame3dObject
@@ -60,7 +54,7 @@ protected:
 
 	std::string tag_;
 
-	//キャラクターのパラメータ
+	//レベルエディターで設定できるキャラクターのパラメータ
 	//HP
 	float maxHp_ = 0.0f;
 	float hp_ = 0.0f;

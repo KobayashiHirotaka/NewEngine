@@ -229,14 +229,8 @@
     <Filter Include="ヘッダー ファイル\Project\GameObject\Ground">
       <UniqueIdentifier>{a81b58d3-80a7-4bd2-a002-a88bb37e56f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Project\GameObject\Level">
-      <UniqueIdentifier>{4fbfd329-6382-4f55-afe6-e9d1f9bfeca1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Project\GameObject\Ground">
       <UniqueIdentifier>{39b3ecee-70a7-473f-ac5d-12e76bd51832}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Project\GameObject\Level">
-      <UniqueIdentifier>{34368e5e-26d3-400e-889a-d5ee2a1c1efa}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Engine\Utility\LevelLoader">
       <UniqueIdentifier>{d1eb8866-2c58-4c94-99f6-9d11b7a77f1a}</UniqueIdentifier>
@@ -381,15 +375,6 @@
     <ClCompile Include="Application\GameObject\Ground\Ground.cpp">
       <Filter>ソース ファイル\Project\GameObject\Ground</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Level</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\3D\Model\ModelManager.cpp">
       <Filter>ソース ファイル\Engine\3d\Model</Filter>
     </ClCompile>
@@ -407,6 +392,18 @@
     </ClCompile>
     <ClCompile Include="Application\GameObject\Character\Enemy\EnemyBullet.cpp">
       <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\ICharacter.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp">
+      <Filter>ソース ファイル\Engine\3d\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp">
+      <Filter>ソース ファイル\Engine\3d\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp">
+      <Filter>ソース ファイル\Engine\3d\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -611,20 +608,23 @@
     <ClInclude Include="Application\Game\Scenes\Manager\GameManager.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\3D\Model\Game3dObjectFactory.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\3D\Model\IGame3dObject.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Level</Filter>
-    </ClInclude>
     <ClInclude Include="Application\GameObject\Ground\Ground.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Ground</Filter>
     </ClInclude>
     <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBullet.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\ICharacter.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\IGame3dObject.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\Game3dObjectFactory.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

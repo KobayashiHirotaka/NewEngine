@@ -1,7 +1,6 @@
 #pragma once
 #include "Engine/3D/Model/Model.h"
 #include "Engine/3D/Model/ModelManager.h"
-#include "Engine/3D/Model/IGame3dObject.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Utility/Collision/Collider.h"
@@ -14,66 +13,15 @@
 #include <random>
 #include <numbers>
 
+#include "Application/GameObject/Character/ICharacter.h"
 #include "EnemyBullet.h"
 
 //前方宣言
 class Player;
 
-class Enemy : public IGame3dObject, public Collider
+class Enemy : public ICharacter, public Collider
 {
 public:
-	enum class Behavior
-	{
-		kRoot,
-		kAttack,
-		kJump,
-		kThrow,
-		kStan
-	};
-
-	struct WorkAttack
-	{
-		Vector3 translation;
-
-		Vector3 rotation;
-
-		uint32_t attackParameter = 0;
-
-		int stiffnessTimer = 60;
-
-		bool comboNext = false;
-
-		//攻撃しているか
-		bool isAttack = false;
-
-		//弱攻撃
-		bool isLightPunch = false;
-
-		//中攻撃
-		bool isMiddlePunch = false;
-
-		//強攻撃
-		bool isHighPunch = false;
-
-		//中攻撃(ターゲットコンボ用)
-		bool isTCMiddlePunch = false;
-
-		//強攻撃(ターゲットコンボ用)
-		bool isTCHighPunch = false;
-
-		//タックル攻撃
-		bool isTackle = false;
-
-		//弾攻撃
-		bool isShot = false;
-
-		//finisher
-		bool isFinisher = false;
-
-		//ジャンプ攻撃
-		bool isJumpAttack = false;
-	};
-
 	~Enemy();
 
 	void Initialize()override;
@@ -84,29 +32,23 @@ public:
 
 	void ImGui(const char* Title)override;
 
-	void BoneDraw(const Camera& camera);
+	void BoneDraw(const Camera& camera)override;
 
-	void DrawSprite();
+	void DrawSprite()override;
 
-	void DrawBullet(const Camera& camera);
-
-	void DrawParticle(const Camera& camera);
+	void DrawParticle(const Camera& camera)override;
 
 	void OnCollision(Collider* collider, float damage)override;
 
-	//EnemyWeapon* GetEnemyWeapon() { return enemyWeapon_.get(); };
-
-	void Reset();
+	void Reset()override;
 
 	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
 
 	void UpdateBullets();
-	
-	void DrawBullets(const Camera& camera);
+
+	void DrawBullet(const Camera& camera);
 
 #pragma region Getter
-
-	//EnemyWeapon* GetEnemyWeapon() { return enemyWeapon_.get(); };
 
 	uint32_t GetAnimationIndex() { return animationIndex_; };
 
@@ -115,8 +57,6 @@ public:
 	Vector3 GetWorldPosition() override;
 
 	Vector3 GetRotation() { return worldTransform_.rotation; };
-
-	//bool GetIsPlayerHit() { return isPlayerHit_; };
 
 	bool GetIsAttack() { return workAttack_.isAttack; };
 

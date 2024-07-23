@@ -2020,12 +2020,3 @@ void Enemy::UpdateBullets()
 		}
 	}
 }
-
-void Enemy::DrawBullets(const Camera& camera) 
-{
-	// 弾の描画
-	for (auto& bullet : bullets_) 
-	{
-		bullet->Draw(camera);
-	}
-}

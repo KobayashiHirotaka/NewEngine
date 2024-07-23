@@ -1,7 +1,6 @@
 #pragma once
 #include "Engine/3D/Model/Model.h"
 #include "Engine/3D/Model/ModelManager.h"
-#include "Engine/3D/Model/IGame3dObject.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Utility/Collision/Collider.h"
@@ -12,61 +11,14 @@
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"
 
+#include "Application/GameObject/Character/ICharacter.h"
+
 //前方宣言
 class Enemy;
 
-class Player : public IGame3dObject, public Collider
+class Player : public ICharacter, public Collider
 {
 public:
-	enum class Behavior
-	{
-		kRoot,
-		kAttack,
-		kJump,
-		kThrow,
-		kStan
-	};
-
-	struct WorkAttack
-	{
-		Vector3 translation;
-
-		Vector3 rotation;
-
-		uint32_t attackParameter = 0;
-
-		int stiffnessTimer = 60;
-
-		bool comboNext = false;
-
-		//攻撃しているか
-		bool isAttack = false;
-
-		//弱攻撃
-		bool isLightPunch = false;
-
-		//中攻撃
-		bool isMiddlePunch = false;
-
-		//強攻撃
-		bool isHighPunch = false;
-
-		//中攻撃(ターゲットコンボ用)
-		bool isTCMiddlePunch = false;
-
-		//強攻撃(ターゲットコンボ用)
-		bool isTCHighPunch = false;
-
-		//タックル攻撃
-		bool isTackle = false;
-
-		//finisher
-		bool isFinisher = false;
-
-		//ジャンプ攻撃
-		bool isJumpAttack = false;
-	};
-
 	~Player();
 
 	void Initialize()override;
@@ -77,19 +29,17 @@ public:
 
 	void ImGui(const char* Title)override;
 
-	void BoneDraw(const Camera& camera);
+	void BoneDraw(const Camera& camera)override;
 
-	void DrawSprite();
+	void DrawSprite()override;
 
-	void DrawParticle(const Camera& camera);
+	void DrawParticle(const Camera& camera)override;
 
 	void OnCollision(Collider* collider, float damage)override;
 
-	void Reset();
+	void Reset()override;
 
 #pragma region Getter
-
-	//PlayerWeapon* GetPlayerWeapon() { return playerWeapon_.get(); };
 
 	uint32_t GetAnimationIndex() { return animationIndex_; };
 
@@ -98,8 +48,6 @@ public:
 	Vector3 GetWorldPosition() override;
 
 	Vector3 GetRotation() { return worldTransform_.rotation; };
-
-	//bool GetIsEnemyHit() { return isEnemyHit_; };
 
 	bool GetIsAttack() { return workAttack_.isAttack; };
 
@@ -321,7 +269,7 @@ private:
 	//必殺技を発動しているかどうか
 	bool isFinisherEffect_ = false;
 
-	//HSVFilterをかけるかどうか
+	//ポストエフェクトをかけるかどうか
 	bool isHSVFilter_ = false;
 
 #pragma endregion
