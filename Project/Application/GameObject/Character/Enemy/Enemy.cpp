@@ -7,14 +7,17 @@ Enemy::~Enemy()
 	delete hpBar_.sprite_;
 	delete guardGaugeBar_.sprite_;
 	delete finisherGaugeBar_.sprite_;
+
+	for (auto& bullet : bullets_) 
+	{
+		delete bullet;
+	}
+	bullets_.clear();
 }
 
 void Enemy::Initialize()
 {
 	IGame3dObject::SetTag("Enemy");
-
-	//modelManagerのinstance
-	modelManager_ = ModelManager::GetInstance();
 
 	//inputのinstance
 	input_ = Input::GetInstance();
@@ -28,6 +31,8 @@ void Enemy::Initialize()
 	//当たり判定の設定
 	SetAABB(aabb_);
 
+	bulletModel_.reset(Model::CreateFromOBJ("resource/bullet", "bullet.obj"));
+
 	SetCollisionAttribute(kCollisionAttributeEnemy);
 	SetCollisionMask(kCollisionMaskEnemy);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
@@ -37,9 +42,9 @@ void Enemy::Initialize()
 	hpBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/HP.png"),
-		{720.0f, barSpace},
+		{720.0f, barSpace_},
 		0.0f,
-		{-barSize  ,7.2f},
+		{-barSize_  ,7.2f},
 		nullptr,
 	};
 
@@ -48,9 +53,9 @@ void Enemy::Initialize()
 	guardGaugeBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/guardGauge.png"),
-		{720.0f, guardGaugeBarSpace},
+		{720.0f, guardGaugeBarSpace_},
 		0.0f,
-		{-guardGaugeBarSize  ,7.0f},
+		{-guardGaugeBarSize_  ,7.0f},
 		nullptr,
 	};
 
@@ -59,9 +64,9 @@ void Enemy::Initialize()
 	finisherGaugeBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/guardGauge.png"),
-		{978.0f, finisherGaugeBarSpace},
+		{978.0f, finisherGaugeBarSpace_},
 		0.0f,
-		{-finisherGaugeBarSize  ,20.0f},
+		{-finisherGaugeBarSize_  ,20.0f},
 		nullptr,
 	};
 
@@ -79,10 +84,8 @@ void Enemy::Initialize()
 	damageSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Damage.mp3");
 	guardSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Guard.mp3");
 
-	//パーティクルの初期化
-	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
-	particleSystem_ = std::make_unique<ParticleSystem>();
-	particleSystem_->Initialize();
+	particleEffectPlayer_ = std::make_unique<ParticleEffectPlayer>();
+	particleEffectPlayer_->Initialize();
 
 	//worldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
@@ -90,64 +93,10 @@ void Enemy::Initialize()
 
 void Enemy::Update()
 {
-	//テスト用の処理
-	if (input_->PressKey(DIK_D))
-	{
-		guardGauge_ += 1.0f;
-	}
-
-	//アニメーションテスト用
-	if (input_->PressKey(DIK_0))
-	{
-		animationIndex = 0;
-	}
-	if (input_->PressKey(DIK_1))
-	{
-		animationIndex = 1;
-	}
-	if (input_->PressKey(DIK_2))
-	{
-		animationIndex = 2;
-	}
-	if (input_->PressKey(DIK_3))
-	{
-		animationIndex = 3;
-	}
-	if (input_->PressKey(DIK_4))
-	{
-		animationIndex = 4;
-	}
-	if (input_->PressKey(DIK_5))
-	{
-		animationIndex = 5;
-	}
-	if (input_->PressKey(DIK_6))
-	{
-		animationIndex = 6;
-	}
-	if (input_->PressKey(DIK_7))
-	{
-		animationIndex = 7;
-	}
-	if (input_->PressKey(DIK_8))
-	{
-		animationIndex = 8;
-	}
-	if (input_->PressKey(DIK_9))
-	{
-		animationIndex = 9;
-	}
-	if (input_->PressKey(DIK_Q))
-	{
-		animationIndex = 10;
-	}
-
-	//ここまでテスト用の処理
-
-	isShake_ = false;
+	effectState_.isShake = false;
 
 	//0は後ろ歩き,1は前歩き,2は停止
-	model_->ApplyAnimation(animationIndex);
+	model_->ApplyAnimation(animationIndex_);
 
 	model_->Update();
 
@@ -157,12 +106,13 @@ void Enemy::Update()
 		Reset();
 	}
 
+	//TODO:StatePatternでやる
 	//EnemyのBehavior
-	if (behaviorRequest_)
+	if (characterState_.behaviorRequest)
 	{
-		behavior_ = behaviorRequest_.value();
+		characterState_.behavior = characterState_.behaviorRequest.value();
 
-		switch (behavior_)
+		switch (characterState_.behavior)
 		{
 		case Behavior::kRoot:
 		default:
@@ -177,19 +127,15 @@ void Enemy::Update()
 			BehaviorJumpInitialize();
 			break;
 
-		case Behavior::kThrow:
-			BehaviorThrowInitialize();
-			break;
-
 		case Behavior::kStan:
 			BehaviorStanInitialize();
 			break;
 		}
 
-		behaviorRequest_ = std::nullopt;
+		characterState_.behaviorRequest = std::nullopt;
 	}
 
-	switch (behavior_)
+	switch (characterState_.behavior)
 	{
 	case Behavior::kRoot:
 	default:
@@ -207,10 +153,6 @@ void Enemy::Update()
 		BehaviorJumpUpdate();
 		break;
 
-	case Behavior::kThrow:
-		BehaviorThrowUpdate();
-		break;
-
 	case Behavior::kStan:
 		BehaviorStanUpdate();
 		break;
@@ -221,26 +163,26 @@ void Enemy::Update()
 
 	Vector3 enemyWorldPosition = GetWorldPosition();
 
-	if (enemyWorldPosition.x > playerWorldPosition.x && behavior_ != Behavior::kJump
-		&& behavior_ != Behavior::kAttack && !isDown_)
+	if (enemyWorldPosition.x > playerWorldPosition.x && characterState_.behavior != Behavior::kJump
+		&& characterState_.behavior != Behavior::kAttack && !characterState_.isDown)
 	{
-		enemyDirection_ = Direction::Left;
+		characterState_.direction = Direction::Left;
 		worldTransform_.rotation.y = 4.6f;
 	}
 
-	if (enemyWorldPosition.x < playerWorldPosition.x && behavior_ != Behavior::kJump
-		&& behavior_ != Behavior::kAttack && !isDown_)
+	if (enemyWorldPosition.x < playerWorldPosition.x && characterState_.behavior != Behavior::kJump
+		&& characterState_.behavior != Behavior::kAttack && !characterState_.isDown)
 	{
-		enemyDirection_ = Direction::Right;
+		characterState_.direction = Direction::Right;
 		worldTransform_.rotation.y = 1.7f;
 	}
 
-	if (workAttack_.isAttack && worldTransform_.translation.x >= 3.5f && enemyDirection_ == Direction::Right)
+	if (attackData_.isAttack && worldTransform_.translation.x >= 3.5f && characterState_.direction == Direction::Right)
 	{
 		worldTransform_.translation.x = 3.5f;
 	}
 
-	if (workAttack_.isAttack && worldTransform_.translation.x <= -3.5f && enemyDirection_ == Direction::Left)
+	if (attackData_.isAttack && worldTransform_.translation.x <= -3.5f && characterState_.direction == Direction::Left)
 	{
 		worldTransform_.translation.x = -3.5f;
 	}
@@ -257,19 +199,16 @@ void Enemy::Update()
 	}
 
 	//ジャンプ中にプレイヤーと当たったときの処理
-	if (behaviorRequest_ == Behavior::kJump && isHit_)
+	if (characterState_.behaviorRequest == Behavior::kJump && characterState_.isHitCharacter)
 	{
 		worldTransform_.translation.y = 0.0f;
 	}
 
 	DownAnimation();
 
-	//パーティクルの更新
-	particleSystem_->Update();
+	UpdateBullets();
 
-	isHit_ = false;
-
-	isPlayerHit_ = false;
+	characterState_.isHitCharacter = false;
 
 	//各ゲージの更新処理
 	HPBarUpdate();
@@ -279,83 +218,73 @@ void Enemy::Update()
 	FinisherGaugeBarUpdate();
 
 	//コンボを食らっているとき
-	if (isHitLightPunch_)
+	if (characterState_.isHitLightPunch)
 	{
 		comboCount_ = 1;
-		comboTimer_--;
+		timerData_.comboTimer--;
 	}
 
-	if (isHitTCMiddlePunch_)
+	if (characterState_.isHitTCMiddlePunch)
 	{
 		comboCount_ = 2;
-		comboTimer_ = 60;
-		comboTimer_--;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
 	}
 
-	if (isHitTCHighPunch_)
+	if (characterState_.isHitTCHighPunch)
 	{
 		comboCount_ = 3;
-		comboTimer_ = 60;
-		comboTimer_--;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
 	}
 
-	if (isHitHighPunch_ && comboCount_ == 0)
+	if (characterState_.isHitHighPunch && comboCount_ == 0)
 	{
 		comboCount_ = 1;
-		comboTimer_ = 60;
-		comboTimer_--;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
 	}
 
-	if (isHitHighPunch_ && comboCount_ >= 2)
+	if (characterState_.isHitHighPunch && comboCount_ >= 2)
 	{
 		comboCount_ = 3;
-		comboTimer_ = 60;
-		comboTimer_--;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
 	}
 
-	if (isHitTackle_ && comboCount_ == 3)
+	if (characterState_.isHitTackle && comboCount_ == 3)
 	{
 		comboCount_ = 4;
-		comboTimer_ = 60;
-		comboTimer_--;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
 	}
 
-	if (isHitTackle_ && comboCount_ == 1)
+	if (characterState_.isHitTackle && comboCount_ == 1)
 	{
 		comboCount_ = 2;
-		comboTimer_ = 60;
-		comboTimer_--;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
 	}
 
-	if (comboTimer_ < 60)
+	if (timerData_.comboTimer < 60)
 	{
-		comboTimer_--;
+		timerData_.comboTimer--;
 	}
 
-	if (comboTimer_ < 0)
+	if (timerData_.comboTimer < 0)
 	{
-		comboTimer_ = 60;
+		timerData_.comboTimer = 60;
 		comboCount_ = 0;
 	}
 
 	if (!player_->GetIsAttack())
 	{
-		guardAnimationTimer_ = 60;
+		timerData_.guardAnimationTimer = 60;
 	}
 
 	ComboNumberSpriteUpdate();
 
-	//imGui
-	model_->GetLight()->ImGui("DirectionalLight");
-	model_->GetPointLight()->ImGui("PointLight");
-	model_->GetSpotLight()->ImGui("SpotLight");
-
-	ImGui::Begin("Enemy");
-	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
-	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
-	ImGui::Text("isGuard %d", isGuard_);
-	ImGui::Text("isHit %d", isHit_);
-	ImGui::End();
+	particleEffectPlayer_->Update();
 
 	//worldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
@@ -363,12 +292,12 @@ void Enemy::Update()
 
 void Enemy::Draw(const Camera& camera)
 {
-	model_->Draw(worldTransform_, camera, animationIndex);
+	model_->Draw(worldTransform_, camera, animationIndex_);
 }
 
-void Enemy::BoneDraw(const Camera& camera)
+void Enemy::DrawBone(const Camera& camera)
 {
-	model_->BoneDraw(worldTransform_, camera, animationIndex);
+	model_->DrawBone(worldTransform_, camera, animationIndex_);
 }
 
 void Enemy::DrawSprite()
@@ -389,240 +318,399 @@ void Enemy::DrawSprite()
 	}
 }
 
+void Enemy::DrawBullet(const Camera& camera)
+{
+	for (auto& bullet : bullets_)
+	{
+		bullet->Draw(camera);
+	}
+}
+
 void Enemy::DrawParticle(const Camera& camera)
 {
-	particleModel_->Draw(particleSystem_.get(), camera);
+	particleEffectPlayer_->Draw(camera);
+
+	for (auto& bullet : bullets_)
+	{
+		bullet->ParticleDraw(camera);
+	}
+}
+
+void Enemy::ImGui(const char* title)
+{
+	ImGui::Begin(title);
+	ImGui::DragFloat3("WTFT", &worldTransform_.translation.x, -14.0f, 14.0f);
+	ImGui::DragFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 150.0f);
+	ImGui::DragFloat3("WTFS", &worldTransform_.scale.x, 0.0f, 300.0f);
+
+	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
+	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
+
+	ImGui::Text("isGuard %d", characterState_.isGuard);
+	ImGui::Text("isHit %d", characterState_.isHitCharacter);
+	ImGui::Text("patternCount %d", patternCount_);
+
+	ImGui::Checkbox("isDebug_", &isDebug_);
+
+	model_->GetLight()->ImGui("DirectionalLight");
+	model_->GetPointLight()->ImGui("PointLight");
+	model_->GetSpotLight()->ImGui("SpotLight");
+	ImGui::End();
 }
 
 void Enemy::BehaviorRootInitialize()
 {
-	animationIndex = 4;
+	animationIndex_ = 5;
+
+	patternCount_ = Random(1, 2);
 }
 
 void Enemy::BehaviorRootUpdate()
 {
 	float animationTime = 0.0f;
 
-	patternCount_ = 1;
-
-	//移動処理
-	if (patternCount_ == 1 && isDown_ == false && comboCount_ == 0)
+	if (!isDebug_)
 	{
-		moveTimer_--;
-
-		bool isFrontMove_ = false;
-		bool isBackMove_ = false;
-		velocity_ = { 0.0f, 0.0f, 0.0f };
-
-		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Left && !isHit_)
+		//移動処理(後ろ歩きスタート)
+		if (patternCount_ == 1 && characterState_.isDown == false && comboCount_ == 0)
 		{
-			velocity_.x = -0.01f;
-			isFrontMove_ = false;
-			isBackMove_ = true;
-			isGuard_ = false;
+			moveTimer_--;
+
+			bool isFrontMove_ = false;
+			bool isBackMove_ = false;
+			moveData_.velocity = { 0.0f, 0.0f, 0.0f };
+
+			if (moveTimer_ <= 30 && characterState_.direction == Direction::Left)
+			{
+				moveData_.velocity.x = 0.01f;
+				isFrontMove_ = false;
+				isBackMove_ = true;
+				characterState_.isGuard = false;
+			}
+
+			if (moveTimer_ <= 30 && characterState_.direction == Direction::Right)
+			{
+				moveData_.velocity.x = 0.01f;
+				isFrontMove_ = true;
+				isBackMove_ = false;
+				characterState_.isGuard = false;
+			}
+
+			if (moveTimer_ > 30 && characterState_.direction == Direction::Right)
+			{
+				moveData_.velocity.x = -0.01f;
+				isFrontMove_ = false;
+				isBackMove_ = true;
+				characterState_.isGuard = true;
+			}
+
+			if (moveTimer_ > 30 && characterState_.direction == Direction::Left)
+			{
+				moveData_.velocity.x = -0.01f;
+				isFrontMove_ = true;
+				isBackMove_ = false;
+				characterState_.isGuard = true;
+			}
+
+			//移動
+			if (isFrontMove_)
+			{
+				animationIndex_ = 0;
+
+				UpdateAnimationTime(animationTime, true, 30.0f, animationIndex_, model_);
+
+				moveData_.velocity = Normalize(moveData_.velocity);
+				moveData_.velocity = Multiply(frontSpeed_, moveData_.velocity);
+
+				// 平行移動
+				worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
+
+				worldTransform_.UpdateMatrixEuler();
+			}
+			else if (isBackMove_)
+			{
+				animationIndex_ = 2;
+
+				UpdateAnimationTime(animationTime, true, 40.0f, animationIndex_, model_);
+
+				moveData_.velocity = Normalize(moveData_.velocity);
+				moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
+
+				// 平行移動
+				worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
+
+				worldTransform_.UpdateMatrixEuler();
+			}
+			else
+			{
+				animationIndex_ = 5;
+
+				UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
+			}
+
+			if (moveTimer_ <= 0)
+			{
+				moveTimer_ = Random(30, 60);
+				patternCount_ = Random(4, 4);
+			}
 		}
 
-		if (moveTimer_ <= 30 && enemyDirection_ == Direction::Right && !isHit_)
+		//移動処理(前歩きスタート)
+		if (patternCount_ == 2 && characterState_.isDown == false && comboCount_ == 0)
 		{
-			velocity_.x = 0.01f;
-			isFrontMove_ = true;
-			isBackMove_ = false;
-			isGuard_ = false;
+			moveTimer_--;
+
+			bool isFrontMove_ = false;
+			bool isBackMove_ = false;
+			moveData_.velocity = { 0.0f, 0.0f, 0.0f };
+
+			if (moveTimer_ < 30 && characterState_.direction == Direction::Left && !characterState_.isHitCharacter)
+			{
+				moveData_.velocity.x = 0.01f;
+				isFrontMove_ = false;
+				isBackMove_ = true;
+				characterState_.isGuard = false;
+			}
+
+			if (moveTimer_ < 30 && characterState_.direction == Direction::Right && !characterState_.isHitCharacter)
+			{
+				moveData_.velocity.x = 0.01f;
+				isFrontMove_ = true;
+				isBackMove_ = false;
+				characterState_.isGuard = false;
+			}
+
+			if (moveTimer_ >= 30 && characterState_.direction == Direction::Right)
+			{
+				moveData_.velocity.x = -0.01f;
+				isFrontMove_ = false;
+				isBackMove_ = true;
+				characterState_.isGuard = true;
+			}
+
+			if (moveTimer_ >= 30 && characterState_.direction == Direction::Left)
+			{
+				moveData_.velocity.x = -0.01f;
+				isFrontMove_ = true;
+				isBackMove_ = false;
+				characterState_.isGuard = true;
+			}
+
+
+			//移動
+			if (isFrontMove_)
+			{
+				animationIndex_ = 0;
+
+				UpdateAnimationTime(animationTime, true, 30.0f, animationIndex_, model_);
+
+				moveData_.velocity = Normalize(moveData_.velocity);
+				moveData_.velocity = Multiply(frontSpeed_, moveData_.velocity);
+
+				// 平行移動
+				worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
+
+				worldTransform_.UpdateMatrixEuler();
+			}
+			else if (isBackMove_)
+			{
+				animationIndex_ = 2;
+
+				UpdateAnimationTime(animationTime, true, 40.0f, animationIndex_, model_);
+
+				moveData_.velocity = Normalize(moveData_.velocity);
+				moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
+
+				// 平行移動
+				worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
+
+				worldTransform_.UpdateMatrixEuler();
+			}
+			else
+			{
+				animationIndex_ = 5;
+
+				UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
+			}
+
+			if (moveTimer_ <= 0)
+			{
+				moveTimer_ = Random(30, 60);
+				patternCount_ = Random(4, 4);
+			}
 		}
 
-		if (moveTimer_ > 30 && enemyDirection_ == Direction::Right)
+		//攻撃
+		//突進攻撃
+		if (patternCount_ == 3 && !characterState_.isDown)
 		{
-			velocity_.x = -0.01f;
-			isFrontMove_ = false;
-			isBackMove_ = true;
-			isGuard_ = true;
+			characterState_.behaviorRequest = Behavior::kAttack;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+			attackData_.isTackle = true;
 		}
 
-		if (moveTimer_ > 30 && enemyDirection_ == Direction::Left)
+		//弾攻撃
+		if (patternCount_ == 4 && !characterState_.isDown)
 		{
-			velocity_.x = 0.01f;
-			isFrontMove_ = true;
-			isBackMove_ = false;
-			isGuard_ = true;
+			characterState_.behaviorRequest = Behavior::kAttack;
+			animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+			attackData_.isShot = true;
 		}
 
-		//移動
-		if (isFrontMove_)
-		{
-			animationIndex = 0;
-
-			UpdateAnimationTime(animationTime, true, 30.0f, animationIndex, model_);
-
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(frontSpeed_, velocity_);
-
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
-
-			worldTransform_.UpdateMatrixEuler();
-		}
-		else if (isBackMove_)
-		{
-			animationIndex = 1;
-
-			UpdateAnimationTime(animationTime, true, 40.0f, animationIndex, model_);
-
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(backSpeed_, velocity_);
-
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
-
-			worldTransform_.UpdateMatrixEuler();
-		}
-		else
-		{
-			animationIndex = 4;
-
-			UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
-		}
-
-		if (moveTimer_ <= 0)
-		{
-			moveTimer_ = Random(30, 90);
-			patternCount_ = 2;
-		}
 	}
-
-	//攻撃
-	//突進攻撃
-	if (patternCount_ == 2 && !isDown_)
-	{
-		behaviorRequest_ = Behavior::kAttack;
-		animationTime = 0.0f;
-		model_->SetAnimationTime(animationTime);
-		workAttack_.isTackle = true;
-	}
-
-	//ジャンプ
-	if (patternCount_ == 3 && !isDown_)
-	{
-		behaviorRequest_ = Behavior::kJump;
-	}
+	
+	////ジャンプ
+	//if (patternCount_ == 3 && !isDown_)
+	//{
+	//	characterState_.behaviorRequest = Behavior::kJump;
+	//}
 }
 
 void Enemy::BehaviorAttackInitialize()
 {
-	attackAnimationFrame = 0;
+	attackData_.attackAnimationFrame = 0;
 }
 
 void Enemy::BehaviorAttackUpdate()
 {
 	//タックル攻撃
-	if (workAttack_.isTackle)
+	if (attackData_.isTackle)
 	{
-		animationIndex = 7;
-		isGuard_ = false;
+		animationIndex_ = 8;
+		characterState_.isGuard = false;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		float particlePositionX = 0.0f;
 
-		if (!isDown_)
+		if (!characterState_.isDown)
 		{
 			animationTime += 1.0f / 40.0f;
 		}
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
-		if (enemyDirection_ == Direction::Right)
+		if (characterState_.direction == Direction::Right)
 		{
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 
-			if (attackAnimationFrame >= 25 && attackAnimationFrame < 40)
+			if (attackData_.attackAnimationFrame >= 25 && attackData_.attackAnimationFrame < 40)
 			{
-				workAttack_.isAttack = true;
+				attackData_.isAttack = true;
 				worldTransform_.translation.x += 0.15f;
 			}
 
-			if (attackAnimationFrame >= 25 && attackAnimationFrame < 60)
+			if (attackData_.attackAnimationFrame >= 25 && attackData_.attackAnimationFrame < 60)
 			{
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
 
-				ParticleEmitter* newParticleEmitter = EmitterBuilder()
-					.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-					.SetTranslation({ worldTransform_.translation.x + particlePositionX,
-							worldTransform_.translation.y + 0.6f,  worldTransform_.translation.z })
-					.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-					.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-					.SetScale({ 0.1f, 0.1f, 0.1f }, { 0.4f ,0.4f ,0.4f })
-					.SetAzimuth(172.0f, 180.0f)
-					.SetElevation(0.0f, 0.0f)
-					.SetVelocity({ 0.08f ,0.08f ,0.08f }, { 0.1f ,0.1f ,0.1f })
-					.SetColor({ 0.0f ,0.0f ,1.0f ,1.0f }, { 0.0f ,0.5f ,1.0f ,1.0f })
-					.SetLifeTime(0.1f, 0.6f)
-					.SetCount(100)
-					.SetFrequency(4.0f)
-					.SetDeleteTime(2.0f)
-					.Build();
-				particleSystem_->AddParticleEmitter(newParticleEmitter);
+				particleEffectPlayer_->PlayParticle("RightNackle", { worldTransform_.translation.x + particlePositionX,
+					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
 			}
 		}
-		else if (enemyDirection_ == Direction::Left)
+		else if (characterState_.direction == Direction::Left)
 		{
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 
-			if (attackAnimationFrame >= 25 && attackAnimationFrame < 40)
+			if (attackData_.attackAnimationFrame >= 25 && attackData_.attackAnimationFrame < 40)
 			{
-				workAttack_.isAttack = true;
+				attackData_.isAttack = true;
 				worldTransform_.translation.x -= 0.15f;
 			}
 
-			if (attackAnimationFrame >= 25 && attackAnimationFrame < 60)
+			if (attackData_.attackAnimationFrame >= 25 && attackData_.attackAnimationFrame < 60)
 			{
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
 
-				ParticleEmitter* newParticleEmitter = EmitterBuilder()
-					.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-					.SetTranslation({ worldTransform_.translation.x - particlePositionX,
-							worldTransform_.translation.y + 0.6f,  worldTransform_.translation.z })
-					.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-					.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-					.SetScale({ 0.1f, 0.1f, 0.1f }, { 0.4f ,0.4f ,0.4f })
-					.SetAzimuth(0.0f, 8.0f)
-					.SetElevation(0.0f, 0.0f)
-					.SetVelocity({ 0.08f ,0.08f ,0.08f }, { 0.1f ,0.1f ,0.1f })
-					.SetColor({ 0.0f ,0.0f ,1.0f ,1.0f }, { 0.0f ,0.5f ,1.0f ,1.0f })
-					.SetLifeTime(0.1f, 0.6f)
-					.SetCount(100)
-					.SetFrequency(4.0f)
-					.SetDeleteTime(2.0f)
-					.Build();
-				particleSystem_->AddParticleEmitter(newParticleEmitter);
+				particleEffectPlayer_->PlayParticle("LeftNackle", { worldTransform_.translation.x + particlePositionX,
+					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
 			}
 		}
 
-		if (attackAnimationFrame >= 55)
+		if (attackData_.attackAnimationFrame >= 55)
 		{
-			workAttack_.isAttack = false;
+			attackData_.isAttack = false;
 		}
 
-		if (isDown_ || animationTime >= animationDuration)
+		if (characterState_.isDown || animationTime >= animationDuration)
 		{
-			patternCount_ = 1;
-			behaviorRequest_ = Behavior::kRoot;
-			workAttack_.isAttack = false;
-			workAttack_.isTackle = false;
+			patternCount_ = Random(1, 2);
+			characterState_.behaviorRequest = Behavior::kRoot;
+			attackData_.isAttack = false;
+			attackData_.isTackle = false;
 			animationTime = 0.0f;
-			attackAnimationFrame = 0;
+			attackData_.attackAnimationFrame = 0;
 			model_->SetAnimationTime(animationTime);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
 
-		attackAnimationFrame++;
+		attackData_.attackAnimationFrame++;
+	}
+
+	//弾攻撃
+	if (attackData_.isShot)
+	{
+		animationIndex_ = 1;
+		characterState_.isGuard = false;
+		float animationTime = 0.0f;
+		float animationDuration;
+		animationTime = model_->GetAnimationTime();
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
+
+		if (!characterState_.isDown)
+		{
+			animationTime += 1.0f / 40.0f;
+		}
+
+		model_->SetAnimationTime(animationTime);
+		model_->ApplyAnimation(animationIndex_);
+
+		// まだ弾を発射していない場合
+		if (!hasShot_) 
+		{  
+			if (characterState_.direction == Direction::Right)
+			{
+				Vector3 bulletStartPosition = { worldTransform_.translation.x + 0.2f, worldTransform_.translation.y + 0.5f, worldTransform_.translation.z };  // 弾の発射位置を敵の位置に設定
+				Vector3 bulletVelocity = Vector3{ 0.1f, 0.0f, 0.0f };  // 弾の速度を設定
+
+				ShootBullet(bulletStartPosition, bulletVelocity);
+			}
+			else if (characterState_.direction == Direction::Left)
+			{
+				Vector3 bulletStartPosition = { worldTransform_.translation.x - 0.2f, worldTransform_.translation.y + 0.5f, worldTransform_.translation.z };  // 弾の発射位置を敵の位置に設定
+				Vector3 bulletVelocity = Vector3{ -0.1f, 0.0f, 0.0f };  // 弾の速度を設定
+
+				ShootBullet(bulletStartPosition, bulletVelocity);
+			}
+
+			hasShot_ = true;  // 弾を発射したことを記録
+		}
+
+		if (characterState_.isDown || animationTime >= animationDuration)
+		{
+			patternCount_ = Random(1, 2);
+			characterState_.behaviorRequest = Behavior::kRoot;
+			attackData_.isAttack = false;
+			attackData_.isShot = false;
+			animationTime = 0.0f;
+			attackData_.attackAnimationFrame = 0;
+			model_->SetAnimationTime(animationTime);
+			hasShot_ = false;  // フラグをリセットして次の発射に備える
+			/*aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);*/
+		}
+
+		attackData_.attackAnimationFrame++;
 	}
 }
 
@@ -632,27 +720,27 @@ void Enemy::BehaviorJumpInitialize()
 
 	const float kJumpFirstSpeed_ = 0.3f;
 
-	velocity_.y = kJumpFirstSpeed_;
+	moveData_.velocity.y = kJumpFirstSpeed_;
 }
 
 void Enemy::BehaviorJumpUpdate()
 {
 	float animationTime = 0.0f;
-	animationIndex = 4;
+	animationIndex_ = 4;
 
-	UpdateAnimationTime(animationTime, true, 60.0f, animationIndex, model_);
+	UpdateAnimationTime(animationTime, true, 60.0f, animationIndex_, model_);
 
-	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+	worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 	const float kGravityAcceleration_ = 0.02f;
 
 	Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
 
-	velocity_ = Add(velocity_, accelerationVector_);
+	moveData_.velocity = Add(moveData_.velocity, accelerationVector_);
 
 	if (worldTransform_.translation.y <= 0.0f)
 	{
-		behaviorRequest_ = Behavior::kRoot;
+		characterState_.behaviorRequest = Behavior::kRoot;
 		//workAttack_.isJumpAttack = false;
 		worldTransform_.translation.y = 0.0f;
 		animationTime = 0.0f;
@@ -660,53 +748,43 @@ void Enemy::BehaviorJumpUpdate()
 	}
 }
 
-void Enemy::BehaviorThrowInitialize()
-{
-	attackAnimationFrame = 0;
-}
-
-void Enemy::BehaviorThrowUpdate()
-{
-
-}
-
 void Enemy::BehaviorStanInitialize()
 {
-	animationIndex = 8;
+	animationIndex_ = 8;
 }
 
 void Enemy::BehaviorStanUpdate()
 {
-	animationIndex = 8;
+	animationIndex_ = 8;
 	float animationTime = 0.0f;
 	float animationDuration;
 	animationTime = model_->GetAnimationTime();
-	animationDuration = model_->GetAnimation()[animationIndex].duration;
+	animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
-	if (enemyDirection_ == Direction::Left)
+	if (characterState_.direction == Direction::Left)
 	{
 		aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 		SetAABB(aabb_);
 	}
-	else if(enemyDirection_ == Direction::Right)
+	else if(characterState_.direction == Direction::Right)
 	{
 		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
 		SetAABB(aabb_);
 	}
 
-	if (!isDown_)
+	if (!characterState_.isDown)
 	{
 		animationTime += 1.0f / 60.0f;
 	}
 
 	model_->SetAnimationTime(animationTime);
-	model_->ApplyAnimation(animationIndex);
+	model_->ApplyAnimation(animationIndex_);
 
-	if (animationTime >= animationDuration || isDown_)
+	if (animationTime >= animationDuration || characterState_.isDown)
 	{
-		behaviorRequest_ = Behavior::kRoot;
+		characterState_.behaviorRequest = Behavior::kRoot;
 		animationTime = 0.0f;
-		attackAnimationFrame = 0;
+		attackData_.attackAnimationFrame = 0;
 		guardGauge_ = 0.0f;
 		model_->SetAnimationTime(animationTime);
 		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
@@ -718,7 +796,7 @@ void Enemy::UpdateAnimationTime(float animationTime, bool isLoop, float frameRat
 {
 	animationTime = modelFighterBody->GetAnimationTime();
 
-	if (!isDown_)
+	if (!characterState_.isDown)
 	{
 		animationTime += 1.0f / frameRate;
 
@@ -738,210 +816,149 @@ void Enemy::OnCollision(Collider* collider, float damage)
 	//プレイヤーの近接攻撃との当たり判定
 	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
 	{
-		isHit_ = true;
+		characterState_.isHitCharacter = true;
 
-		if (player_->GetIsAttack() && !player_->GetIsTackle() && isGuard_ && enemyDirection_ == Direction::Right)
+		if (player_->GetIsAttack() && !player_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Right)
 		{
-			guardAnimationTimer_--;
+			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.3f;
 			guardGauge_ += 1.0f;
 
-			if (guardAnimationTimer_ > 55)
+			if (timerData_.guardAnimationTimer > 55)
 			{
 
-				ParticleEmitter* newParticleEmitter = EmitterBuilder()
-					.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-					.SetTranslation({ worldTransform_.translation.x + 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-					.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-					.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-					.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-					.SetAzimuth(0.0f, 360.0f)
-					.SetElevation(0.0f, 0.0f)
-					.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-					.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
-					.SetLifeTime(0.1f, 1.0f)
-					.SetCount(100)
-					.SetFrequency(4.0f)
-					.SetDeleteTime(2.0f)
-					.Build();
-				particleSystem_->AddParticleEmitter(newParticleEmitter);
+				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + 0.1f,
+					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 			}
 		}
 
-		if (player_->GetIsAttack() && !player_->GetIsTackle() && isGuard_ && enemyDirection_ == Direction::Left)
+		if (player_->GetIsAttack() && !player_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Left)
 		{
-			guardAnimationTimer_--;
+			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.3f;
 			guardGauge_ += 1.0f;
 
-			if (guardAnimationTimer_ > 55)
+			if (timerData_.guardAnimationTimer > 55)
 			{
 
-				ParticleEmitter* newParticleEmitter = EmitterBuilder()
-					.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-					.SetTranslation({ worldTransform_.translation.x - 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-					.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-					.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-					.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-					.SetAzimuth(0.0f, 360.0f)
-					.SetElevation(0.0f, 0.0f)
-					.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-					.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
-					.SetLifeTime(0.1f, 1.0f)
-					.SetCount(100)
-					.SetFrequency(4.0f)
-					.SetDeleteTime(2.0f)
-					.Build();
-				particleSystem_->AddParticleEmitter(newParticleEmitter);
+				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - 0.1f,
+					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 			}
 		}
 
-		if (player_->GetIsAttack() && player_->GetIsTackle() && isGuard_ && enemyDirection_ == Direction::Right)
+		if (player_->GetIsAttack() && player_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Right)
 		{
-			guardAnimationTimer_--;
+			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.2f;
 			guardGauge_ += 1.0f;
 
-			if (guardAnimationTimer_ > 55)
+			if (timerData_.guardAnimationTimer > 55)
 			{
-
-				ParticleEmitter* newParticleEmitter = EmitterBuilder()
-					.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-					.SetTranslation({ worldTransform_.translation.x + 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-					.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-					.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-					.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-					.SetAzimuth(0.0f, 360.0f)
-					.SetElevation(0.0f, 0.0f)
-					.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-					.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
-					.SetLifeTime(0.1f, 1.0f)
-					.SetCount(100)
-					.SetFrequency(4.0f)
-					.SetDeleteTime(2.0f)
-					.Build();
-				particleSystem_->AddParticleEmitter(newParticleEmitter);
+				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + 0.1f,
+									worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 			}
 		}
 
-		if (player_->GetIsAttack() && player_->GetIsTackle() && isGuard_ && enemyDirection_ == Direction::Left)
+		if (player_->GetIsAttack() && player_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Left)
 		{
-			guardAnimationTimer_--;
+			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.2f;
 			guardGauge_ += 1.0f;
 
-			if (guardAnimationTimer_ > 55)
+			if (timerData_.guardAnimationTimer > 55)
 			{
 
-				ParticleEmitter* newParticleEmitter = EmitterBuilder()
-					.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-					.SetTranslation({ worldTransform_.translation.x - 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-					.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-					.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-					.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-					.SetAzimuth(0.0f, 360.0f)
-					.SetElevation(0.0f, 0.0f)
-					.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-					.SetColor({ 1.0f ,1.0f ,1.0f ,1.0f }, { 1.0f ,1.0f ,1.0f ,1.0f })
-					.SetLifeTime(0.1f, 1.0f)
-					.SetCount(100)
-					.SetFrequency(4.0f)
-					.SetDeleteTime(2.0f)
-					.Build();
-				particleSystem_->AddParticleEmitter(newParticleEmitter);
+				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - 0.1f,
+					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 			}
 		}
 
 		//弱パンチ
-		if (player_->GetIsLightPunch() && !isDown_ && !isGuard_)
+		if (player_->GetIsLightPunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 2.0f;
 			hp_ -= damage;
-			isHitLightPunch_ = true;
+			characterState_.isHitLightPunch = true;
 
 			HitStop(10);
 		}
 
 		//中パンチ
-		if (player_->GetIsMiddlePunch() && !isDown_ && !isGuard_)
+		if (player_->GetIsMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 5.0f;
 			hp_ -= damage;
-			isHitMiddlePunch_ = true;
+			characterState_.isHitMiddlePunch = true;
 
 			HitStop(10);
 		}
 
 		//強パンチ
-		if (player_->GetIsHighPunch() && !isDown_ && !isGuard_)
+		if (player_->GetIsHighPunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 10.0f;
 			hp_ -= damage;
-			isHitHighPunch_ = true;
+			characterState_.isHitHighPunch = true;
 
 			HitStop(10);
 		}
 
 		//TC中パンチ
-		if (player_->GetIsTCMiddlePunch() && !isDown_ && !isGuard_)
+		if (player_->GetIsTCMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 2.0f;
 			hp_ -= damage;
-			isHitTCMiddlePunch_ = true;
+			characterState_.isHitTCMiddlePunch = true;
 
 			HitStop(10);
 		}
 
 		//TC強パンチ
-		if (player_->GetIsTCHighPunch() && !isDown_ && !isGuard_)
+		if (player_->GetIsTCHighPunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 2.0f;
 			hp_ -= damage;
-			isHitTCHighPunch_ = true;
+			characterState_.isHitTCHighPunch = true;
 
 			HitStop(10);
 		}
 
 		//タックル
 		//キャンセルじゃないとき
-		if (player_->GetIsTackle() && player_->GetIsAttack() && !isDown_ && !isGuard_)
+		if (player_->GetIsTackle() && player_->GetIsAttack() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 15.0f;
 			hp_ -= damage;
-			isHitTackle_ = true;
+			characterState_.isHitTackle = true;
 
 			HitStop(30);
 		}
 
 		//キャンセルのとき
-		if (player_->GetIsTackle() && player_->GetIsAttack() && isDown_ && !isGuard_ && worldTransform_.translation.y > 0.5f)
+		if (player_->GetIsTackle() && player_->GetIsAttack() && characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.5f)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 4.0f;
 			hp_ -= damage;
-			downAnimationTimer_ = 60;
+			timerData_.downAnimationTimer = 60;
 			float animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
-			isHitHighPunch_ = false;
-			isHitTackle_ = true;
+			characterState_.isHitHighPunch = false;
+			characterState_.isHitTackle = true;
 
 			HitStop(10);
 		}
@@ -950,7 +967,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 void Enemy::HPBarUpdate()
 {
-	hpBar_.size_ = { (hp_ / maxHp_) * barSize,7.0f };
+	hpBar_.size_ = { (hp_ / maxHp_) * barSize_,7.0f };
 
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 
@@ -976,7 +993,7 @@ void Enemy::GuardGaugeBarUpdate()
 		guardGauge_ -= 0.03f;
 	}
 
-	guardGaugeBar_.size_ = { (guardGauge_ / maxGuardGauge_) * guardGaugeBarSize,7.0f };
+	guardGaugeBar_.size_ = { (guardGauge_ / maxGuardGauge_) * guardGaugeBarSize_,7.0f };
 
 	guardGaugeBar_.sprite_->SetSize(guardGaugeBar_.size_);
 
@@ -985,15 +1002,15 @@ void Enemy::GuardGaugeBarUpdate()
 	if (guardGauge_ >= 50.0f)
 	{
 		guardGauge_ = 50.0f;
-		isGuard_ = false;
-		workAttack_.isAttack = false;
-		behaviorRequest_ = Behavior::kStan;
+		characterState_.isGuard = false;
+		attackData_.isAttack = false;
+		characterState_.behaviorRequest = Behavior::kStan;
 	}
 }
 
 void Enemy::FinisherGaugeBarUpdate()
 {
-	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize,20.0f };
+	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,20.0f };
 
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
 
@@ -1020,43 +1037,34 @@ void Enemy::Reset()
 
 	finisherGauge_ = 0.0f;
 
-	downAnimationTimer_ = 60;
+	timerData_.downAnimationTimer = 60;
 
-	isHitLightPunch_ = false;
-	isHitMiddlePunch_ = false;
-	isHitHighPunch_ = false;
-	isHitTCMiddlePunch_ = false;
-	isHitTCHighPunch_ = false;
-	isHitTackle_ = false;
-	isHitThrow_ = false;
-	isDown_ = false;
+	characterState_.isHitLightPunch = false;
+	characterState_.isHitMiddlePunch = false;
+	characterState_.isHitHighPunch = false;
+	characterState_.isHitTCMiddlePunch = false;
+	characterState_.isHitTCHighPunch = false;
+	characterState_.isHitTackle = false;
+	characterState_.isDown = false;
 
-	isHit_ = false;
+	characterState_.isHitCharacter = false;
 
-	workAttack_.isAttack = false;
-	workAttack_.isLightPunch = false;
-	workAttack_.isMiddlePunch = false;
-	workAttack_.isHighPunch = false;
-	workAttack_.isTCMiddlePunch = false;
-	workAttack_.isTCHighPunch = false;
-	workAttack_.isTackle = false;
-	workAttack_.isFinisher = false;
-	workAttack_.isJumpAttack = false;
+	attackData_.isAttack = false;
+	attackData_.isLightPunch = false;
+	attackData_.isMiddlePunch = false;
+	attackData_.isHighPunch = false;
+	attackData_.isTCMiddlePunch = false;
+	attackData_.isTCHighPunch = false;
+	attackData_.isTackle = false;
 
-	isThrow_ = false;
+	animationIndex_ = 4;
 
-	finisherEffectTimer = 90;
-	isFinisherEffect = false;
-	finisherCount_ = 0;
+	attackData_.attackAnimationFrame = 0;
 
-	animationIndex = 4;
-
-	attackAnimationFrame = 0;
-
-	behavior_ = Behavior::kRoot;
+	characterState_.behavior = Behavior::kRoot;
 
 	worldTransform_.translation = { 3.0f,0.0f,0.0f };
-	enemyDirection_ = Direction::Left;
+	characterState_.direction = Direction::Left;
 
 	comboCount_ = 0;
 
@@ -1073,580 +1081,415 @@ void Enemy::HitStop(int milliseconds)
 void Enemy::DownAnimation()
 {
 	//弱攻撃
-	if (isHitLightPunch_ && player_->GetRotation().y == 1.7f)
+	if (characterState_.isHitLightPunch && characterState_.direction == Direction::Right)
 	{
-		isDown_ = true;
-		downAnimationTimer_--;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x - 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x - 0.1f,
+						worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		animationIndex = 3;
+		animationIndex_ = 4;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (!player_->GetIsLightPunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
-			downAnimationTimer_ = 60;
+			animationIndex_ = 5;
+			timerData_.downAnimationTimer = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
-			isHitLightPunch_ = false;
-			isDown_ = false;
+			characterState_.isHitLightPunch = false;
+			characterState_.isDown = false;
 		}
 	}
 
-	if (isHitLightPunch_ && player_->GetRotation().y == 4.6f)
+	if (characterState_.isHitLightPunch && characterState_.direction == Direction::Left)
 	{
-		isDown_ = true;
-		downAnimationTimer_--;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x + 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + 0.1f,
+						worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		animationIndex = 3;
+		animationIndex_ = 4;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (!player_->GetIsLightPunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
-			downAnimationTimer_ = 60;
+			animationIndex_ = 5;
+			timerData_.downAnimationTimer = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
-			isHitLightPunch_ = false;
-			isDown_ = false;
+			characterState_.isHitLightPunch = false;
+			characterState_.isDown = false;
 		}
 	}
 
 	//中攻撃
-	if (isHitMiddlePunch_ && player_->GetRotation().y == 1.7f)
+	if (characterState_.isHitMiddlePunch && characterState_.direction == Direction::Left)
 	{
-		isDown_ = true;
-		downAnimationTimer_--;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x - 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x - 0.1f,
+						worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		animationIndex = 3;
+		animationIndex_ = 4;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (!player_->GetIsMiddlePunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
-			downAnimationTimer_ = 60;
+			animationIndex_ = 5;
+			timerData_.downAnimationTimer = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
-			isHitMiddlePunch_ = false;
-			isDown_ = false;
+			characterState_.isHitMiddlePunch = false;
+			characterState_.isDown = false;
 		}
 	}
 
-	if (isHitMiddlePunch_ && player_->GetRotation().y == 4.6f)
+	if (characterState_.isHitMiddlePunch && characterState_.direction == Direction::Right)
 	{
-		isDown_ = true;
-		downAnimationTimer_--;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x + 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + 0.1f,
+							worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		animationIndex = 3;
+		animationIndex_ = 4;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (!player_->GetIsMiddlePunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
-			downAnimationTimer_ = 60;
+			animationIndex_ = 5;
+			timerData_.downAnimationTimer = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
-			isHitMiddlePunch_ = false;
-			isDown_ = false;
+			characterState_.isHitMiddlePunch = false;
+			characterState_.isDown = false;
 		}
 	}
 
 	//強攻撃
-	if (isHitHighPunch_ && player_->GetRotation().y == 1.7f)
+	if (characterState_.isHitHighPunch && characterState_.direction == Direction::Left)
 	{
-		isDown_ = true;
-		downAnimationTimer_--;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x - 0.1f,
-					worldTransform_.translation.y + 0.7f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x - 0.1f,
+						worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 
 			const float kJumpFirstSpeed_ = 0.15f;
-			velocity_.x = 0.025f;
-			velocity_.y = kJumpFirstSpeed_;
+			moveData_.velocity.x = 0.025f;
+			moveData_.velocity.y = kJumpFirstSpeed_;
 		}
-		else if (downAnimationTimer_ <= 55 && downAnimationTimer_ > -30)
+		else if (timerData_.downAnimationTimer <= 55 && timerData_.downAnimationTimer > -30)
 		{
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 			const float kGravityAcceleration_ = 0.005f;
 
 			Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
 
-			velocity_ = Add(velocity_, accelerationVector_);
+			moveData_.velocity = Add(moveData_.velocity, accelerationVector_);
 
 			if (worldTransform_.translation.y <= 0.0f)
 			{
-				velocity_.x = 0.0f;
+				moveData_.velocity.x = 0.0f;
 				worldTransform_.translation.y = 0.0f;
 			}
 		}
 
-		animationIndex = 5;
+		animationIndex_ = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
-		if (downAnimationTimer_ <= -30 && worldTransform_.translation.y <= 0.0f && hp_ > 0.0f)
+		if (timerData_.downAnimationTimer <= -30 && worldTransform_.translation.y <= 0.0f && hp_ > 0.0f)
 		{
-			animationIndex = 4;
-			downAnimationTimer_ = 60;
+			animationIndex_ = 5;
+			timerData_.downAnimationTimer = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
-			isHitHighPunch_ = false;
-			isDown_ = false;
+			characterState_.isHitHighPunch = false;
+			characterState_.isDown = false;
 		}
 	}
 
-	if (isHitHighPunch_ && player_->GetRotation().y == 4.6f)
+	if (characterState_.isHitHighPunch && characterState_.direction == Direction::Right)
 	{
-		isDown_ = true;
-		downAnimationTimer_--;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x + 0.1f,
-					worldTransform_.translation.y + 0.7f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + 0.1f,
+						worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 
 			const float kJumpFirstSpeed_ = 0.15f;
-			velocity_.x = -0.025f;
-			velocity_.y = kJumpFirstSpeed_;
+			moveData_.velocity.x = -0.025f;
+			moveData_.velocity.y = kJumpFirstSpeed_;
 		}
-		else if (downAnimationTimer_ <= 55 && downAnimationTimer_ > -30)
+		else if (timerData_.downAnimationTimer <= 55 && timerData_.downAnimationTimer > -30)
 		{
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 			const float kGravityAcceleration_ = 0.005f;
 
 			Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
 
-			velocity_ = Add(velocity_, accelerationVector_);
+			moveData_.velocity = Add(moveData_.velocity, accelerationVector_);
 
 			if (worldTransform_.translation.y <= 0.0f)
 			{
-				velocity_.x = 0.0f;
+				moveData_.velocity.x = 0.0f;
 				worldTransform_.translation.y = 0.0f;
 			}
 		}
 
-		animationIndex = 5;
+		animationIndex_ = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
-		if (downAnimationTimer_ <= -30 && worldTransform_.translation.y <= 0.0f && hp_ > 0.0f)
+		if (timerData_.downAnimationTimer <= -30 && worldTransform_.translation.y <= 0.0f && hp_ > 0.0f)
 		{
-			animationIndex = 4;
-			downAnimationTimer_ = 60;
+			animationIndex_ = 5;
+			timerData_.downAnimationTimer = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
-			isHitHighPunch_ = false;
-			isDown_ = false;
+			characterState_.isHitHighPunch = false;
+			characterState_.isDown = false;
 		}
 	}
 
 	//TC中攻撃
-	if (isHitTCMiddlePunch_ && player_->GetRotation().y == 1.7f)
+	if (characterState_.isHitTCMiddlePunch && characterState_.direction == Direction::Left)
 	{
-		isDown_ = true;
-		downAnimationTimer_--;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x - 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x - 0.1f,
+						worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		animationIndex = 3;
+		animationIndex_ = 4;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (!player_->GetIsTCMiddlePunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
-			downAnimationTimer_ = 60;
+			animationIndex_ = 5;
+			timerData_.downAnimationTimer = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
-			isHitTCMiddlePunch_ = false;
-			isDown_ = false;
+			characterState_.isHitTCMiddlePunch = false;
+			characterState_.isDown = false;
 		}
 	}
 
-	if (isHitTCMiddlePunch_ && player_->GetRotation().y == 4.6f)
+	if (characterState_.isHitTCMiddlePunch && characterState_.direction == Direction::Right)
 	{
-		isDown_ = true;
-		downAnimationTimer_--;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x + 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + 0.1f,
+						worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		animationIndex = 3;
+		animationIndex_ = 4;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		if (!player_->GetIsTCMiddlePunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
-			downAnimationTimer_ = 60;
+			animationIndex_ = 5;
+			timerData_.downAnimationTimer = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
-			isHitTCMiddlePunch_ = false;
-			isDown_ = false;
+			characterState_.isHitTCMiddlePunch = false;
+			characterState_.isDown = false;
 		}
 	}
 
 	//TC強攻撃
-	if (isHitTCHighPunch_ && player_->GetRotation().y == 1.7f)
+	if (characterState_.isHitTCHighPunch && characterState_.direction == Direction::Left)
 	{
-		isDown_ = true;
-		downAnimationTimer_--;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x - 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x - 0.1f,
+						worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		if (downAnimationTimer_ > 35 && worldTransform_.translation.x < 4.0f)
+		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x < 4.0f)
 		{
 			worldTransform_.translation.x += 0.02f;
 
 		}
 
-		animationIndex = 5;
+		animationIndex_ = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		aabb_ = { {0.1f,-0.3f,-0.3f},{0.8f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
 		if (!player_->GetIsTCHighPunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
-			downAnimationTimer_ = 60;
+			animationIndex_ = 5;
+			timerData_.downAnimationTimer = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
-			isHitTCHighPunch_ = false;
-			isDown_ = false;
+			characterState_.isHitTCHighPunch = false;
+			characterState_.isDown = false;
 		}
 	}
 
-	if (isHitTCHighPunch_ && player_->GetRotation().y == 4.6f)
+	if (characterState_.isHitTCHighPunch && characterState_.direction == Direction::Right)
 	{
-		isDown_ = true;
-		downAnimationTimer_--;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x + 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + 0.1f,
+						worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		if (downAnimationTimer_ > 35 && worldTransform_.translation.x > -4.0f)
+		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x > -4.0f)
 		{
 			worldTransform_.translation.x -= 0.02f;
 
 		}
 
-		animationIndex = 5;
+		animationIndex_ = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
 		if (!player_->GetIsTCHighPunch() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
-			downAnimationTimer_ = 60;
+			animationIndex_ = 5;
+			timerData_.downAnimationTimer = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
-			isHitTCHighPunch_ = false;
-			isDown_ = false;
+			characterState_.isHitTCHighPunch = false;
+			characterState_.isDown = false;
 		}
 	}
 
 	//タックル攻撃
-	if (isHitTackle_ && player_->GetRotation().y == 1.7f)
+	if (characterState_.isHitTackle && characterState_.direction == Direction::Left)
 	{
-		isDown_ = true;
-		downAnimationTimer_--;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x - 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x - 0.1f,
+						worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		if (downAnimationTimer_ > 35 && worldTransform_.translation.x < 4.0f)
+		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x < 4.0f)
 		{
 			worldTransform_.translation.x += 0.08f;
 
@@ -1661,60 +1504,45 @@ void Enemy::DownAnimation()
 			worldTransform_.translation.y = 0.0f;
 		}
 
-		animationIndex = 5;
+		animationIndex_ = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		aabb_ = { {0.1f,-0.3f,-0.3f},{0.8f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
 		if (!player_->GetIsTackle() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
-			downAnimationTimer_ = 60;
+			animationIndex_ = 5;
+			timerData_.downAnimationTimer = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
-			isHitTackle_ = false;
-			isDown_ = false;
+			characterState_.isHitTackle = false;
+			characterState_.isDown = false;
 		}
 	}
 
-	if (isHitTackle_ && player_->GetRotation().y == 4.6f)
+	if (characterState_.isHitTackle && characterState_.direction == Direction::Right)
 	{
-		isDown_ = true;
-		downAnimationTimer_--;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
 
-		if (downAnimationTimer_ > 55)
+		if (timerData_.downAnimationTimer > 55)
 		{
-			ParticleEmitter* newParticleEmitter = EmitterBuilder()
-				.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-				.SetTranslation({ worldTransform_.translation.x + 0.1f,
-					worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z })
-				.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-				.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
-				.SetAzimuth(0.0f, 360.0f)
-				.SetElevation(0.0f, 0.0f)
-				.SetVelocity({ 0.03f ,0.03f ,0.03f }, { 0.06f ,0.06f ,0.06f })
-				.SetColor({ 1.0f ,0.5f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
-				.SetLifeTime(0.1f, 1.0f)
-				.SetCount(50)
-				.SetFrequency(4.0f)
-				.SetDeleteTime(1.0f)
-				.Build();
-			particleSystem_->AddParticleEmitter(newParticleEmitter);
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + 0.1f,
+						worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		if (downAnimationTimer_ > 35 && worldTransform_.translation.x > -4.0f)
+		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x > -4.0f)
 		{
 			worldTransform_.translation.x -= 0.08f;
 
@@ -1730,30 +1558,30 @@ void Enemy::DownAnimation()
 			worldTransform_.translation.y = 0.0f;
 		}
 
-		animationIndex = 5;
+		animationIndex_ = 6;
 		float animationTime = 0.0f;
 		float animationDuration;
 		animationTime = model_->GetAnimationTime();
-		animationDuration = model_->GetAnimation()[animationIndex].duration;
+		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		animationTime += 1.0f / 30.0f;
 
 		model_->SetAnimationTime(animationTime);
-		model_->ApplyAnimation(animationIndex);
+		model_->ApplyAnimation(animationIndex_);
 
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
 		if (!player_->GetIsTackle() && hp_ > 0.0f)
 		{
-			animationIndex = 4;
-			downAnimationTimer_ = 60;
+			animationIndex_ = 5;
+			timerData_.downAnimationTimer = 60;
 			animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
-			isHitTackle_ = false;
-			isDown_ = false;
+			characterState_.isHitTackle = false;
+			characterState_.isDown = false;
 		}
 	}
 }
@@ -1783,4 +1611,30 @@ int Enemy::Random(int min_value, int max_value)
 	std::uniform_int_distribution<int> dis(min_value, max_value);
 
 	return dis(gen);
+}
+
+void Enemy::ShootBullet(const Vector3& startPosition, const Vector3& velocity)
+{
+	// 弾を生成してリストに追加する
+	EnemyBullet* newBullet = new EnemyBullet();
+	newBullet->Initialize(bulletModel_.get(), startPosition, velocity);
+	bullets_.push_back(newBullet);
+}
+
+void Enemy::UpdateBullets() 
+{
+	// 弾の更新と衝突判定などを行う
+	for (auto it = bullets_.begin(); it != bullets_.end();)
+	{
+		(*it)->Update();
+		if ((*it)->GetIsDead())
+		{
+			delete* it;
+			it = bullets_.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }

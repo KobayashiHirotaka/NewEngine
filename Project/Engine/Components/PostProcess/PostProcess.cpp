@@ -78,6 +78,8 @@ void PostProcess::Initialize()
 	LuminanceBasedOutline();
 
 	DepthBasedOutline();
+
+	HSVFilter();
 }
 
 void PostProcess::Update()
@@ -101,6 +103,8 @@ void PostProcess::Update()
 	UpdateLuminanceBasedOutline();
 
 	UpdateDepthBasedOutline();
+
+	UpdateHSVFilter();
 }
 
 void PostProcess::PreDraw()
@@ -662,7 +666,7 @@ void PostProcess::CreatePostProcessPSO()
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	//DescriptorRange作成
-	D3D12_DESCRIPTOR_RANGE descriptorRange[6]{};
+	D3D12_DESCRIPTOR_RANGE descriptorRange[7]{};
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRange[0].BaseShaderRegister = 0;
 	descriptorRange[0].NumDescriptors = 1;
@@ -689,7 +693,7 @@ void PostProcess::CreatePostProcessPSO()
 	descriptorRange[5].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
 
 	//RootParameter作成。複数設定できるので配列。今回は結果一つだけなので長さ1の配列
-	D3D12_ROOT_PARAMETER rootParameters[13] = {};
+	D3D12_ROOT_PARAMETER rootParameters[14] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	rootParameters[0].DescriptorTable.pDescriptorRanges = &descriptorRange[0];//Tableの中身の配列を指定
@@ -735,6 +739,9 @@ void PostProcess::CreatePostProcessPSO()
 	rootParameters[12].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[12].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
 	rootParameters[12].Descriptor.ShaderRegister = 6;//レジスタ番号6とバインド
+	rootParameters[13].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
+	rootParameters[13].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderを使う
+	rootParameters[13].Descriptor.ShaderRegister = 7;//レジスタ番号7とバインド
 	descriptionRootSignature.pParameters = rootParameters;//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);//配列の長さ
 
@@ -894,6 +901,7 @@ void PostProcess::Draw()
 	commandList_->SetGraphicsRootConstantBufferView(10, gaussianFilterConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(11, luminanceBasedOutlineConstantBuffer_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(12, depthBasedOutlineConstantBuffer_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(13, hsvFilterConstantBuffer_->GetGPUVirtualAddress());
 
 	//形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -1244,7 +1252,7 @@ void PostProcess::UpdateBloom()
 	bloomConstantBuffer_->Unmap(0, nullptr);
 
 	ImGui::Begin("Bloom");
-	ImGui::DragFloat("intensity", &bloomIntensity_, 0.0f, 1.0f);
+	ImGui::SliderFloat("intensity", &bloomIntensity_, 0.0f, 1.0f);
 	ImGui::End();
 }
 
@@ -1378,6 +1386,38 @@ void PostProcess::UpdateDepthBasedOutline()
 	depthBasedOutlineConstantBuffer_->Unmap(0, nullptr);
 }
 
+void PostProcess::HSVFilter()
+{
+	//HSVFilter用のCBVの作成
+	hsvFilterConstantBuffer_ = dxCore_->CreateBufferResource(sizeof(HSVFilterData));
+
+	//HSVFilter用のリソースに書き込む
+	HSVFilterData* hsvFilterData = nullptr;
+	hsvFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&hsvFilterData));
+	hsvFilterData->enable = isHSVFilterActive_;
+	hsvFilterData->hue = hue_;
+	hsvFilterData->saturation = saturation_;
+	hsvFilterData->value = value_;
+	hsvFilterConstantBuffer_->Unmap(0, nullptr);
+}
+
+void PostProcess::UpdateHSVFilter()
+{
+	//HSVFilter用のリソースに書き込む
+	HSVFilterData* hsvFilterData = nullptr;
+	hsvFilterConstantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&hsvFilterData));
+	hsvFilterData->enable = isHSVFilterActive_;
+	hsvFilterData->hue = hue_;
+	hsvFilterData->saturation = saturation_;
+	hsvFilterData->value = value_;
+	hsvFilterConstantBuffer_->Unmap(0, nullptr);
+
+	ImGui::Begin("HSVFilter");
+	ImGui::SliderFloat("hue", &hue_, -1.0f, 1.0f);
+	ImGui::SliderFloat("saturation", &saturation_, -1.0f, 1.0f);
+	ImGui::SliderFloat("value", &value_, -1.0f, 1.0f);
+	ImGui::End();
+}
 
 Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateDepthStencilTextureResource(int32_t width, int32_t height)
 {
@@ -1465,6 +1505,9 @@ void PostProcess::CreateDSV()
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;//Format。基本的にはResourceに合わせる
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;//2DTexture
 
+	//DSVHeapの先頭にDSVを作る
+	device_->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, multiPassDSVDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
+
 	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
 
 	D3D12_CPU_DESCRIPTOR_HANDLE srvCPUHandle =
@@ -1479,9 +1522,6 @@ void PostProcess::CreateDSV()
 	depthTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	depthTextureSrvDesc.Texture2D.MipLevels = 1;
 	device_->CreateShaderResourceView(depthStencilResource_.Get(), &depthTextureSrvDesc, srvCPUHandle);
-
-	//DSVHeapの先頭にDSVを作る
-	device_->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, multiPassDSVDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
 }
 
 

@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp" />
+    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyBullet.cpp" />
+    <ClCompile Include="Application\GameObject\Character\ICharacter.cpp" />
     <ClCompile Include="Application\GameObject\Character\Player\Player.cpp" />
     <ClCompile Include="Application\GameObject\Ground\Ground.cpp" />
     <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp" />
@@ -37,6 +39,7 @@
     <ClCompile Include="Engine\3D\Particle\BaseParticle.cpp" />
     <ClCompile Include="Engine\3D\Particle\EmitterBuilder.cpp" />
     <ClCompile Include="Engine\3D\Particle\Particle.cpp" />
+    <ClCompile Include="Engine\3D\Particle\ParticleEffectPlayer.cpp" />
     <ClCompile Include="Engine\3D\Particle\ParticleEmitter.cpp" />
     <ClCompile Include="Engine\3D\Particle\ParticleModel.cpp" />
     <ClCompile Include="Engine\3D\Particle\ParticleSystem.cpp" />
@@ -117,6 +120,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h" />
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBullet.h" />
+    <ClInclude Include="Application\GameObject\Character\ICharacter.h" />
     <ClInclude Include="Application\GameObject\Character\Player\Player.h" />
     <ClInclude Include="Application\GameObject\Ground\Ground.h" />
     <ClInclude Include="Application\GameObject\Skydome\Skydome.h" />
@@ -145,6 +150,7 @@
     <ClInclude Include="Engine\3D\Particle\BaseParticle.h" />
     <ClInclude Include="Engine\3D\Particle\EmitterBuilder.h" />
     <ClInclude Include="Engine\3D\Particle\Particle.h" />
+    <ClInclude Include="Engine\3D\Particle\ParticleEffectPlayer.h" />
     <ClInclude Include="Engine\3D\Particle\ParticleEmitter.h" />
     <ClInclude Include="Engine\3D\Particle\ParticleModel.h" />
     <ClInclude Include="Engine\3D\Particle\ParticleSystem.h" />

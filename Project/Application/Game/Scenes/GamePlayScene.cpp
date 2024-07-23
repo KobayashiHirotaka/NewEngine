@@ -38,7 +38,7 @@ void GamePlayScene::Initialize()
 	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 	PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
-	//PostProcess::GetInstance()->SetIsDepthBasedOutlineActive(true);
+	//PostProcess::GetInstance()->SetIsDepthBasedOutlineActive(false);
 
 	//Levelの読み込み
 	levelLoarder_ = LevelLoader::GetInstance();
@@ -159,11 +159,8 @@ void GamePlayScene::Update()
 		}
 	}
 
-	if (!player_->GetIsFinisherEffect())
-	{
-		//player,enemyの更新
-		game3dObjectManager_->Update();
-	}
+	//player,enemyの更新
+	game3dObjectManager_->Update();
 
 	//skydomeの更新
 	skydome_->Update();
@@ -186,6 +183,18 @@ void GamePlayScene::Update()
 		}
 	}
 
+	if (player_->GetIsHSVFilter())
+	{
+		float saturation = Random(-1.0f, 1.0f);
+		PostProcess::GetInstance()->SetIsHSVFilterActive(true);
+		PostProcess::GetInstance()->SetHSVFilterSaturation(saturation);
+	}
+	else
+	{
+		PostProcess::GetInstance()->SetIsHSVFilterActive(false);
+		PostProcess::GetInstance()->SetHSVFilterSaturation(0.0f);
+	}
+
 	//勝ち負けの処理
 	HandleGameOutcome();
 
@@ -203,6 +212,11 @@ void GamePlayScene::Update()
 	collisionManager_->AddCollider(player_);
 
 	collisionManager_->AddCollider(enemy_);
+
+	for (const auto& bullet : enemy_->GetBullets())
+	{
+		collisionManager_->AddCollider(bullet);
+	}
 
 	collisionManager_->CheckAllCollision();
 
@@ -241,14 +255,6 @@ void GamePlayScene::Update()
 	{
 		camera_.UpdateMatrix();
 	}
-
-	camera_.ImGui();
-
-	//imGui
-	ImGui::Begin("PlayScene");
-	ImGui::Text("MKey : WinScene");
-	ImGui::Text("NKey : WinScene");
-	ImGui::End();
 };
 
 void GamePlayScene::Draw()
@@ -263,6 +269,9 @@ void GamePlayScene::Draw()
 
 	//player,enemyの描画
 	game3dObjectManager_->Draw(camera_);
+
+	//enemyの弾の描画
+	enemy_->DrawBullet(camera_);
 
 	//skydomeの描画
 	skydome_->Draw(camera_);
@@ -395,6 +404,19 @@ void GamePlayScene::Draw()
 void GamePlayScene::Finalize()
 {
 	
+}
+
+void GamePlayScene::ImGui()
+{
+	ImGui::Begin("PlayScene");
+	ImGui::Text("MKey : WinScene");
+	ImGui::Text("NKey : WinScene");
+	ImGui::End();
+
+	player_->ImGui("Player");
+	enemy_->ImGui("Enemy");
+
+	camera_.ImGui();
 }
 
 void GamePlayScene::UpdateNumberSprite()

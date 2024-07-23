@@ -29,9 +29,9 @@ void WorldTransform::UpdateMatrixEuler()
 	Matrix4x4 AffineMatrix = MakeAffineMatrix(scale, rotation, translation);
 	matWorld = AffineMatrix;
 
-	if (parent_)
+	if (parent)
 	{
-		matWorld = Multiply(matWorld, parent_->matWorld);
+		matWorld = Multiply(matWorld, parent->matWorld);
 	}
 
 	TransferMatrix();
@@ -42,19 +42,19 @@ void WorldTransform::UpdateMatrixQuaternion()
 	Matrix4x4 AffineMatrix = MakeAffineMatrix(scale, quaternion, translation);
 	matWorld = AffineMatrix;
 
-	if (parent_)
+	if (parent)
 	{
-		matWorld = Multiply(matWorld, parent_->matWorld);
+		matWorld = Multiply(matWorld, parent->matWorld);
 	}
 
 	TransferMatrix();
 }
 
-void WorldTransform::SetParent(const WorldTransform* parent)
+void WorldTransform::SetParent(const WorldTransform* newParent)
 {
-	parent_ = parent;
+	parent = newParent;
 
-	if (parent_)
+	if (parent)
 	{
 		translation = Subtract(translation, parent->translation);
 	}
@@ -62,10 +62,10 @@ void WorldTransform::SetParent(const WorldTransform* parent)
 
 void WorldTransform::DeleteParent()
 {
-	if (parent_)
+	if (parent)
 	{
 		translation = { Vector3(matWorld.m[3][0], matWorld.m[3][1], matWorld.m[3][2]) };
 	}
 
-	parent_ = nullptr;
+	parent = nullptr;
 }

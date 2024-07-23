@@ -56,6 +56,8 @@ void SceneManager::Update()
 	}
 
 	currentScene_->Update();
+
+	currentScene_->ImGui();
 }
 
 void SceneManager::Draw()

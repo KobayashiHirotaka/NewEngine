@@ -16,7 +16,6 @@ public:
 	void ImGui();
 
 private:
-	//input
 	Input* input_ = nullptr;
 
 	std::unique_ptr<Model> model_;

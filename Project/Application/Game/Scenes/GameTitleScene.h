@@ -1,24 +1,11 @@
 #pragma once
 #include "IScene.h"
-#include "Engine/Base/TextureManager/TextureManager.h"
-#include "Engine/3D/Model/Model.h"
-#include "Engine/3D/Model/ModelManager.h"
-#include "Engine/3D/WorldTransform/WorldTransform.h"
-#include "Engine/3D/Camera/Camera.h"
-#include "Engine/3D/Camera/DebugCamera.h"
-#include "Engine/Components/Input/Input.h"
-#include "Engine/Components/Audio/Audio.h"
-#include "Engine/3D/Particle/ParticleModel.h"
-#include "Engine/3D/Particle/ParticleSystem.h"
-#include "Engine/2D/Sprite/Sprite.h"
-#include <memory>
-
 #include "Application/GameObject/Skydome/Skydome.h"
 
 class GameTitleScene : public IScene
 {
 public:
-	//transition用の時間
+	//Transition用の時間
 	static const int kTransitionTime = 60;
 
 	GameTitleScene();
@@ -33,59 +20,56 @@ public:
 
 	void Finalize()override;
 
+	void ImGui()override;
+
 private:
 	//タイトルの文字を動かす
 	void AnimationTitle();
 
 private:
-	//textureManager
 	TextureManager* textureManager_ = nullptr;
 
-	//modelManager
 	ModelManager* modelManager_ = nullptr;
 
-	//input
 	Input* input_ = nullptr;
 
-	//audio
 	Audio* audio_ = nullptr;
 
-	//camera
+	//Camera
 	Camera camera_;
 	DebugCamera debugCamera_;
 	bool isDebugCamera_ = false;
 
-
-	//title(モノクロファイター)のsprite
+	//タイトル(モノクロファイター)のSprite
 	std::unique_ptr<Sprite>titleSprite_ = nullptr;
 	uint32_t titleTextureHandle_ = 0;
 	Vector2 titleSpritePosition_ = { 0.0f,-25.0f };
 	float titleSpriteMoveSpeed_ = 1.5f;
 	int titleSpriteMoveTimer_ = 30;
 
-	//title(操作用)のsprite
+	//タイトル(操作用)のSprite
 	std::unique_ptr<Sprite>titleUISprite_ = nullptr;
 	uint32_t titleUITextureHandle_ = 0;
 
-	//基本操作説明用のsprite
+	//基本操作説明用のSprite
 	std::unique_ptr<Sprite>generalCommandListSprite_ = nullptr;
 	uint32_t generalCommandListTextureHandle_ = 0;
 
-	//攻撃操作説明用のsprite
+	//攻撃操作説明用のSprite
 	std::unique_ptr<Sprite>attackCommandListSprite_ = nullptr;
 	uint32_t attackCommandListTextureHandle_ = 0;
 
-	//sounds
+	//Sounds
 	uint32_t titleSoundHandle_ = 0u;
 	uint32_t selectSoundHandle_ = 0u;
 
-	//何枚目のspriteが表示されているか
+	//何枚目のSpriteが表示されているか
 	int spriteCount_ = 0;
 
-	//説明が開かれているか
+	//操作説明が開かれているか
 	bool isOpen_ = false;
 
-	//transition
+	//Transition
 	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
 	uint32_t transitionTextureHandle_ = 0;
 	Vector4 transitionColor_ = { 0.0f,0.0f,0.0f,1.0f };
@@ -93,6 +77,6 @@ private:
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
 
-	//skydome
+	//Skydome
 	std::unique_ptr<Skydome> skydome_;
 };

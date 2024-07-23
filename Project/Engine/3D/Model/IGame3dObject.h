@@ -8,31 +8,28 @@ class IGame3dObject
 public:
 	virtual ~IGame3dObject() = default;
 
-	virtual void Initialize();
+	virtual void Initialize() = 0;
 
-	virtual void Update();
+	virtual void Update() = 0;
 
-	virtual void Draw(const Camera& camera);
+	virtual void Draw(const Camera& camera) = 0;
 
-	float GetHP() { return hp_; };
+	virtual void ImGui(const char* title) = 0;
 
-	bool GetIsVisible() { return isVisible_; };
-
-	//モデル
+	//Getter,Setter
 	const Model* GetModel() const { return model_.get(); }
 	void SetModel(std::unique_ptr<Model> model) { model_ = std::move(model); }
 
-	//ゲームオブジェクトマネージャーのsetter
 	void SetGameObjectManager(Game3dObjectManager* game3dObjectManager) { game3dObjectManager_ = game3dObjectManager; };
 
+	const bool GetIsVisible() const { return isVisible_; };
 	void SetIsVisible(const bool& isVisible) { isVisible_ = isVisible; };
 
-	//トランスフォーム用のsetter
 	void SetPosition(const Vector3& position) { worldTransform_.translation = position; };
 	void SetRotation(const Vector3& rotation) { worldTransform_.rotation = rotation; };
 	void SetScale(const Vector3& scale) { worldTransform_.scale = scale; };
 
-	//キャラクターのパラメータ用のsetter
+	float const GetHP() const { return hp_; };
 	void SetHp(const float& hp) { hp_ = hp; };
 	void SetMaxHp(const float& maxHp) { maxHp_ = maxHp; };
 
@@ -45,8 +42,7 @@ public:
 	void SetFinisherGauge(const float& finisherGauge) { finisherGauge_ = finisherGauge; };
 	void SetMaxFinisherGauge(const float& maxFinisherGauge) { maxFinisherGauge_ = maxFinisherGauge; };
 
-	//タグ
-	const std::string GetTag() { return tag_; };
+	const std::string GetTag() const { return tag_; };
 	void SetTag(const std::string tag) { tag_ = tag; };
 
 protected:
@@ -58,22 +54,23 @@ protected:
 
 	std::string tag_;
 
-	bool isVisible_;
-
-	//キャラクターのパラメータ
-	//hp
-	float maxHp_;
-	float hp_;
+	//レベルエディターで設定できるキャラクターのパラメータ
+	//HP
+	float maxHp_ = 0.0f;
+	float hp_ = 0.0f;
 
 	//足の速さ
-	float frontSpeed_;
-	float backSpeed_;
+	float frontSpeed_ = 0.0f;
+	float backSpeed_ = 0.0f;
 
 	//ガードゲージ
-	float maxGuardGauge_;
-	float guardGauge_;
+	float maxGuardGauge_ = 0.0f;
+	float guardGauge_ = 0.0f;
 
 	//必殺技のゲージ
-	float maxFinisherGauge_;
-	float finisherGauge_;
+	float maxFinisherGauge_ = 0.0f;
+	float finisherGauge_ = 0.0f;
+
+	//描画するかどうか
+	bool isVisible_ = false;
 };

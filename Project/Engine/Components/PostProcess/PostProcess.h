@@ -78,6 +78,15 @@ public:
         Matrix4x4 projectionInverse;
     };
 
+    struct HSVFilterData
+    {
+        bool enable;
+        uint8_t padding[3];
+        float hue;
+        float saturation;
+        float value;
+    };
+
     static PostProcess* GetInstance();
 
     static void DeleteInstance();
@@ -100,11 +109,20 @@ public:
     void SetIsGaussianFilterActive(float isActive) { isGaussianFilterActive_ = isActive; };
     void SetIsLuminanceBasedOutlineActive(float isActive) { isLuminanceBasedOutlineActive_ = isActive; };
     void SetIsDepthBasedOutlineActive(float isActive) { isDepthBasedOutlineActive_ = isActive; };
+    void SetIsHSVFilterActive(float isActive) { isHSVFilterActive_ = isActive; };
 
 
     //ポストエフェクトのパラメーター用のセッター
-    void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
+    //ブルーム
     void SetBloomIntensity(float intensity) { bloomIntensity_ = intensity; };
+
+    //ビネット
+    void SetVignetteIntensity(float intensity) { vignetteIntensity_ = intensity; };
+
+    //HSVフィルター
+    void SetHSVFilterHue(float hue) { hue_ = hue; };
+    void SetHSVFilterSaturation(float saturation) { saturation_ = saturation; };
+    void SetHSVFilterValue(float value) { value_ = value; };
 
 private:
     //ブラーの方向
@@ -176,6 +194,10 @@ private:
     //デプスベースアウトライン
     void DepthBasedOutline();
     void UpdateDepthBasedOutline();
+
+    //HSVフィルター
+    void HSVFilter();
+    void UpdateHSVFilter();
 
     //マルチパス用テクスチャの作成
     Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const float* clearColor);
@@ -251,6 +273,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> gaussianFilterConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> luminanceBasedOutlineConstantBuffer_ = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> depthBasedOutlineConstantBuffer_ = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> hsvFilterConstantBuffer_ = nullptr;
 
     //ブルームの強度
     float bloomIntensity_ = 0.17f;
@@ -260,6 +283,11 @@ private:
 
     //デプスベースアウトラインの逆プロジェクション行列
     Matrix4x4 projectionInverse_{};
+
+    //HSVフィルター用のパラメータ
+    float hue_;
+    float saturation_;
+    float value_;
 
     //ポストエフェクトのフラグ
     bool isPostProcessActive_ = false;
@@ -272,4 +300,5 @@ private:
     bool isGaussianFilterActive_ = false;
     bool isLuminanceBasedOutlineActive_ = false;
     bool isDepthBasedOutlineActive_ = false;
+    bool isHSVFilterActive_ = false;
 };

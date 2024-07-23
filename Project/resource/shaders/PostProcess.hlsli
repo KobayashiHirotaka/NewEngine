@@ -42,3 +42,10 @@ struct DepthBasedOutline
     float32_t4x4 projectionInverse;
 };
 
+struct HSVFilter
+{
+    bool enable;
+    float32_t hue;
+    float32_t saturation;
+    float32_t value;
+};

@@ -17,6 +17,7 @@ ConstantBuffer<BoxFilter> gBoxFilterParameter : register(b3);
 ConstantBuffer<GaussianFilter> gGaussianFilterParameter : register(b4);
 ConstantBuffer<LuminanceBasedOutline> gLuminanceBasedOutlineParameter : register(b5);
 ConstantBuffer<DepthBasedOutline> gDepthBasedOutlineParameter : register(b6);
+ConstantBuffer<HSVFilter> gHSVFilterParameter : register(b7);
 
 //BoxFilter,GuassianFilter
 static const float32_t2 kIndex3x3[3][3] =
@@ -47,6 +48,125 @@ static const float32_t kPrewittVerticalKernel[3][3] =
     { 0.0f, 0.0f, 0.0f },
     { 1.0f / 6.0f, 1.0f / 6.0f, 1.0f / 6.0f },
 };
+
+//HSVFilter
+float32_t3 RGBToHSV(float32_t3 rgb)
+{
+    float r = rgb.x;
+    float g = rgb.y;
+    float b = rgb.z;
+
+    float max = r > g ? r : g;
+    max = max > b ? max : b;
+    
+    float min = r < g ? r : g;
+    min = min < b ? min : b;
+    
+    float h = max - min;
+    
+    if (h > 0.0f)
+    {
+        if (max == r)
+        {
+            h = (g - b) / h;
+            if (h < 0.0f)
+            {
+                h += 6.0f;
+            }
+        }
+        else if (max == g)
+        {
+            h = 2.0f + (b - r) / h;
+        }
+        else
+        {
+            h = 4.0f + (r - g) / h;
+        }
+    }
+    
+    h /= 6.0f;
+    
+    float s = (max - min);
+    
+    if (max != 0.0f)
+    {
+        s /= max;
+    }
+       
+    float v = max;
+    
+    float32_t3 hsv = float32_t3(h, s, v);
+    
+    return hsv;
+};
+
+float32_t3 HSVToRGB(float32_t3 hsv)
+{
+    float r = hsv.z;
+    float g = hsv.z;
+    float b = hsv.z;
+    
+    if (hsv.y > 0.0f)
+    {
+        hsv.x *= 6.0f;
+        
+        int i = (int) hsv.x;
+        
+        float f = hsv.x - (float) i;
+        
+        switch (i)
+        {
+            default:
+            case 0:
+                g *= 1 - hsv.y * (1 - f);
+                b *= 1 - hsv.y;
+                break;
+            
+            case 1:
+                r *= 1 - hsv.y * f;
+                b *= 1 - hsv.y;
+                break;
+            
+            case 2:
+                r *= 1 - hsv.y;
+                b *= 1 - hsv.y * (1 - f);
+                break;
+            
+            case 3:
+                r *= 1 - hsv.y;
+                g *= 1 - hsv.y * f;
+                break;
+            
+            case 4:
+                r *= 1 - hsv.y * (1 - f);
+                g *= 1 - hsv.y;
+                break;
+            
+            case 5:
+                g *= 1 - hsv.y;
+                b *= 1 - hsv.y * f;
+                break;
+        }
+    }
+
+    float32_t3 rgb = float32_t3(r, g, b);
+    
+    return rgb;
+};
+
+float32_t WrapValue(float32_t value, float32_t minRange, float32_t maxRange)
+{
+    float32_t range = maxRange - minRange;
+    
+    float32_t modValue = fmod(value - minRange, range);
+    
+    if(modValue < 0)
+    {
+        modValue += range;
+    }
+    
+    return minRange + modValue;
+}
 
 static const float32_t PI = 3.14159265f;
 
@@ -132,9 +252,27 @@ PixelShaderOutput main(VertexShaderOutput input)
         textureColor.rgb *= rcp(weight);
     }
     
+     //HSVFilter
+    if (gHSVFilterParameter.enable)
+    {
+        float32_t3 hsv = RGBToHSV(textureColor.rgb);
+        
+        hsv.x += gHSVFilterParameter.hue;
+        hsv.y += gHSVFilterParameter.saturation;
+        hsv.z += gHSVFilterParameter.value;
+        
+        hsv.x = WrapValue(hsv.x, 0.0f, 1.0f);
+        hsv.y = saturate(hsv.y);
+        hsv.z = saturate(hsv.z);
+        
+        float32_t3 rgb = HSVToRGB(hsv);
+        
+        textureColor.rgb = rgb;
+    }
+    
     
 	//Bloom
-    if (gBloomParameter.enable == true)
+    if (gBloomParameter.enable)
     {
         float4 color = textureColor;
         textureColor = (color + highIntensityColor + highIntensityBlurColor + highIntensityShrinkBlurColor) * gBloomParameter.intensity;

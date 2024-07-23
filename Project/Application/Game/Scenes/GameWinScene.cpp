@@ -121,11 +121,6 @@ void GameWinScene::Update()
 	{
 		camera_.UpdateMatrix();
 	}
-
-	//imGui
-	ImGui::Begin("WinScene");
-	ImGui::Text("Abutton or SpaceKey : TitleScene");
-	ImGui::End();
 };
 
 void GameWinScene::Draw()
@@ -161,4 +156,11 @@ void GameWinScene::Draw()
 void GameWinScene::Finalize()
 {
 
+}
+
+void GameWinScene::ImGui()
+{
+	ImGui::Begin("WinScene");
+	ImGui::Text("Abutton or SpaceKey : TitleScene");
+	ImGui::End();
 }

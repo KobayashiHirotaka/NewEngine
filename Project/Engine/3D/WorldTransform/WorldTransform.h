@@ -48,5 +48,5 @@ public:
 	Matrix4x4 matWorld = {};
 
 	//親となるワールド変換へのポインタ
-	const WorldTransform* parent_ = nullptr;
+	const WorldTransform* parent = nullptr;
 };

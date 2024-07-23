@@ -121,11 +121,6 @@ void GameLoseScene::Update()
 	{
 		camera_.UpdateMatrix();
 	}
-
-	//imGui
-	ImGui::Begin("LoseScene");
-	ImGui::Text("Abutton or SpaceKey : TitleScene");
-	ImGui::End();
 };
 
 void GameLoseScene::Draw()
@@ -161,4 +156,11 @@ void GameLoseScene::Draw()
 void GameLoseScene::Finalize()
 {
 
+}
+
+void GameLoseScene::ImGui()
+{
+	ImGui::Begin("LoseScene");
+	ImGui::Text("Abutton or SpaceKey : TitleScene");
+	ImGui::End();
 }

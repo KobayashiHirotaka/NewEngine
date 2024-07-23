@@ -66,13 +66,11 @@ class Model
 public:
 	static void StaticInitialize();
 
-	//void Initialize();
-
 	void Update();
 
 	void Draw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData);
 
-	void BoneDraw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData);
+	void DrawBone(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData);
 
 	static void Release();
 
