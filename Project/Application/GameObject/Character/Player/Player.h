@@ -15,7 +15,7 @@ public:
 
 	void Draw(const Camera& camera)override;
 
-	void ImGui(const char* Title)override;
+	void ImGui(const char* title)override;
 
 	void DrawBone(const Camera& camera)override;
 
@@ -254,7 +254,7 @@ private:
 	//必殺技を発動しているかどうか
 	bool isFinisherEffect_ = false;
 
-	//ポストエフェクトをかけるかどうか
+	//HSVFilterをかけるかどうか
 	bool isHSVFilter_ = false;
 
 #pragma endregion

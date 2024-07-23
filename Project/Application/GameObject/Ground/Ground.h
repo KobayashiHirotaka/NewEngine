@@ -13,7 +13,7 @@ public:
 
 	void Draw(const Camera& camera)override;
 
-	void ImGui(const char* Title)override;
+	void ImGui(const char* title)override;
 
 private:
 };

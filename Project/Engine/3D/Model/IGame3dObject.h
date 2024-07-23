@@ -14,7 +14,7 @@ public:
 
 	virtual void Draw(const Camera& camera) = 0;
 
-	virtual void ImGui(const char* Title) = 0;
+	virtual void ImGui(const char* title) = 0;
 
 	//Getter,Setter
 	const Model* GetModel() const { return model_.get(); }
