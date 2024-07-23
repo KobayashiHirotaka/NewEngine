@@ -889,7 +889,7 @@ void Player::BehaviorJumpUpdate()
 
 	moveData_.velocity = Add(moveData_.velocity, accelerationVector_);
 
-	if (worldTransform_.translation.y <= 0.0f)
+	if (worldTransform_.translation.y <= 0.0f || characterState_.isDown)
 	{
 		characterState_.behaviorRequest = Behavior::kRoot;
 		worldTransform_.translation.y = 0.0f;
@@ -972,6 +972,7 @@ void Player::OnCollision(Collider* collider, float damage)
 	{
 		if (!characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y <= 0.0f)
 		{
+			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
 
 			damage = 5.0f;
@@ -981,6 +982,7 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		if (!characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.0f)
 		{
+			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
 
 			damage = 5.0f;
@@ -1342,13 +1344,15 @@ void Player::DownAnimation()
 		characterState_.isDown = true;
 		timerData_.downAnimationTimer--;
 
-		if (timerData_.downAnimationTimer > 55)
+		if (!isParticle_)
 		{
 			effectState_.isShake = true;
 			effectState_.isHSVFilter = true;
 
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + (characterState_.direction == Direction::Left ? -0.1f : 0.1f),
 				worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
+
+			isParticle_ = true;
 		}
 		else
 		{
@@ -1365,14 +1369,16 @@ void Player::DownAnimation()
 		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
-		if (animationTime_ >= animationDuration && hp_ < 0.0f)
+		if (!enemy_->GetIsShot() && hp_ < 0.0f)
 		{
+			characterState_.behaviorRequest = Behavior::kRoot;
 			animationIndex_ = 4;
 			timerData_.downAnimationTimer = 60;
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
 			characterState_.isHitBullet = false;
 			characterState_.isDown = false;
+			isParticle_ = false;
 		}
 	}
 	else if (characterState_.isHitAirBullet)
@@ -1424,6 +1430,7 @@ void Player::DownAnimation()
 
 		if (animationTime_ >= animationDuration && hp_ < 0.0f)
 		{
+			characterState_.behaviorRequest = Behavior::kRoot;
 			animationIndex_ = 4;
 			timerData_.downAnimationTimer = 60;
 			animationTime_ = 0.0f;

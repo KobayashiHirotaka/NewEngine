@@ -204,7 +204,6 @@ protected:
 	TimerData timerData_;
 
 	std::unique_ptr<ParticleEffectPlayer> particleEffectPlayer_;
-	bool isParticle_ = false;
 
 	//再生するanimationの番号
 	uint32_t animationIndex_ = 4;
