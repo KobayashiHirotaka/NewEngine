@@ -405,6 +405,9 @@
     <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp">
       <Filter>ソース ファイル\Engine\3d\Model</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\3D\Particle\ParticleEffectPlayer.cpp">
+      <Filter>ソース ファイル\Engine\3d\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -625,6 +628,9 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h">
       <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Particle\ParticleEffectPlayer.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

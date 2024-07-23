@@ -1,5 +1,7 @@
 #pragma once
 #include "Application/GameObject/Character/ICharacter.h"
+#include "Engine/3D/Particle/ParticleModel.h"
+#include "Engine/3D/Particle/ParticleSystem.h"
 #include "EnemyBullet.h"
 
 //前方宣言
@@ -142,9 +144,6 @@ private:
 
 private:
 #pragma region インスタンス
-
-	//modelManager
-	ModelManager* modelManager_ = nullptr;
 
 	//input
 	Input* input_ = nullptr;
@@ -304,13 +303,13 @@ private:
 	//プレイヤー
 	Player* player_ = nullptr;
 
-	//パーティクル
-	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
-	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
-
 	//敵の弾テスト用
 	std::unique_ptr<Model> bulletModel_;
 	std::vector<EnemyBullet*> bullets_;
+
+	//パーティクル
+	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
+	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
 
 	int shotCooldownTimer_ = 0;
 

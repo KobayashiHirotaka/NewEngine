@@ -19,9 +19,6 @@ void Enemy::Initialize()
 {
 	IGame3dObject::SetTag("Enemy");
 
-	//modelManagerのinstance
-	modelManager_ = ModelManager::GetInstance();
-
 	//inputのinstance
 	input_ = Input::GetInstance();
 
@@ -98,87 +95,6 @@ void Enemy::Initialize()
 
 void Enemy::Update()
 {
-	//テスト用の処理
-	if (input_->PressKey(DIK_D))
-	{
-		guardGauge_ += 1.0f;
-	}
-
-	if (input_->PushKey(DIK_B))
-	{  
-		workAttack_.isShot = true;
-		
-		Vector3 bulletStartPosition = { worldTransform_.translation.x, worldTransform_.translation.y + 0.5f,  worldTransform_.translation.z };// 弾の発射位置を敵の位置に設定
-		Vector3 bulletVelocity = { -0.1f, 0.0f, 0.0f };  // 弾の速度を設定
-
-		ShootBullet(bulletStartPosition, bulletVelocity);
-	}
-
-	/*if (workAttack_.isShot)
-	{
-		shotTimer_--;
-
-		if(shotTimer_ < 0)
-		{
-			workAttack_.isShot = false;
-			shotTimer_ = 200;
-		}
-	}*/
-
-	UpdateBullets();
-
-	//アニメーションテスト用
-	if (input_->PressKey(DIK_0))
-	{
-		animationIndex_ = 0;
-	}
-	if (input_->PressKey(DIK_1))
-	{
-		animationIndex_ = 1;
-	}
-	if (input_->PressKey(DIK_2))
-	{
-		animationIndex_ = 2;
-	}
-	if (input_->PressKey(DIK_3))
-	{
-		animationIndex_ = 3;
-	}
-	if (input_->PressKey(DIK_4))
-	{
-		animationIndex_ = 4;
-	}
-	if (input_->PressKey(DIK_5))
-	{
-		animationIndex_ = 5;
-	}
-	if (input_->PressKey(DIK_6))
-	{
-		animationIndex_ = 6;
-	}
-	if (input_->PressKey(DIK_7))
-	{
-		animationIndex_ = 7;
-	}
-	if (input_->PressKey(DIK_8))
-	{
-		animationIndex_ = 8;
-	}
-	if (input_->PressKey(DIK_9))
-	{
-		animationIndex_ = 9;
-	}
-	if (input_->PressKey(DIK_Q))
-	{
-		animationIndex_ = 10;
-	}
-	if (input_->PressKey(DIK_W))
-	{
-		animationIndex_ = 11;
-	}
-
-	//ここまでテスト用の処理
-
 	isShake_ = false;
 
 	//0は後ろ歩き,1は前歩き,2は停止
@@ -298,6 +214,8 @@ void Enemy::Update()
 	}
 
 	DownAnimation();
+
+	UpdateBullets();
 
 	//パーティクルの更新
 	particleSystem_->Update();

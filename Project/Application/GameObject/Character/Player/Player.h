@@ -137,9 +137,6 @@ private:
 private:
 #pragma region インスタンス
 
-	//modelManager
-	ModelManager* modelManager_ = nullptr;
-
 	//input
 	Input* input_ = nullptr;
 

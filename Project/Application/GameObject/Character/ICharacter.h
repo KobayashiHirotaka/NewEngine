@@ -8,8 +8,7 @@
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
 #include "Engine/2D/Sprite/UI.h"
-#include "Engine/3D/Particle/ParticleModel.h"
-#include "Engine/3D/Particle/ParticleSystem.h"
+#include "Engine/3D/Particle/ParticleEffectPlayer.h"
 #include "Engine/3D/Model/IGame3dObject.h"
 
 #include <random>
@@ -82,8 +81,6 @@ public:
 
 protected:
 
-	//パーティクル
-	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
-	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
+	std::unique_ptr<ParticleEffectPlayer> particleEffectPlayer_;
 	bool isParticle_ = false;
 };
