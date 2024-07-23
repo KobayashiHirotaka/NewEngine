@@ -1485,8 +1485,14 @@ void Enemy::DownAnimation()
 
 		if (timerData_.downAnimationTimer > 55)
 		{
+			effectState_.isShake = true;
+
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x - 0.1f,
 						worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+		}
+		else
+		{
+			effectState_.isShake = false;
 		}
 
 		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x < 4.0f)
@@ -1540,6 +1546,12 @@ void Enemy::DownAnimation()
 		{
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + 0.1f,
 						worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+
+			effectState_.isShake = true;
+		}
+		else
+		{
+			effectState_.isShake = false;
 		}
 
 		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x > -4.0f)
