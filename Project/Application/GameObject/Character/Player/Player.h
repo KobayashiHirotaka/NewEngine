@@ -27,8 +27,6 @@ public:
 
 	void Reset()override;
 
-#pragma region Getter
-
 	uint32_t GetAnimationIndex() { return animationIndex_; };
 
 	WorldTransform& GetWorldTransform()override { return worldTransform_; }
@@ -36,42 +34,6 @@ public:
 	Vector3 GetWorldPosition() override;
 
 	Vector3 GetRotation() { return worldTransform_.rotation; };
-
-	bool GetIsAttack() { return workAttack_.isAttack; };
-
-	bool GetIsLightPunch() { return workAttack_.isLightPunch; };
-	bool GetIsMiddlePunch() { return workAttack_.isMiddlePunch; };
-	bool GetIsHighPunch() { return workAttack_.isHighPunch; };
-	bool GetIsTCMiddlePunch() { return workAttack_.isTCMiddlePunch; };
-	bool GetIsTCHighPunch() { return workAttack_.isTCHighPunch; };
-
-	bool GetIsTackle() { return workAttack_.isTackle; };
-
-	bool GetIsFinisher() { return workAttack_.isFinisher; };
-
-	bool GetIsThrow() { return isThrow_; };
-
-	int GetAttackAnimationFrame() { return attackAnimationFrame_; };
-
-	int GetThrowTimer() { return throwTimer_; };
-
-	bool GetIsDown() { return isDown_; };
-
-	int GetFinisherEffectTimer() { return finisherEffectTimer_; };
-
-	bool GetIsFinisherEffect() { return isFinisherEffect_; };
-
-	int GetFinisherCount() { return finisherCount_; };
-
-	int GetIsCancelCount() { return cancelCount_; };
-
-	bool GetIsShake() { return isShake_; };
-
-	bool GetIsHSVFilter() { return isHSVFilter_; };
-
-	Direction GetDirection() { return playerDirection_; };
-
-#pragma endregion
 
 #pragma region Setter
 
@@ -147,18 +109,6 @@ private:
 
 #pragma region プレイヤーの基本パラメータ
 
-	//behavior
-	Behavior behavior_ = Behavior::kRoot;
-	std::optional<Behavior> behaviorRequest_ = std::nullopt;
-
-	//現在のフレームでの位置
-	Vector3 currentPosition_;
-
-	//前のフレームでの位置
-	Vector3 previousPosition_;
-
-	//向いている方向
-	Direction playerDirection_ = Direction::Right;
 
 	//再生するanimationの番号
 	uint32_t animationIndex_ = 4;
@@ -176,91 +126,20 @@ private:
 	//スタンの時間
 	int stanTimer_ = 60;
 
-	//必殺技
-	int finisherEffectTimer_ = 90;
-	int finisherCount_ = 0;
-
-	//キャンセル
-	int cancelCount_ = 0;
-	int cancelTimer_ = 60;
-
 	//当たり判定
 	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 
 #pragma endregion
 
-#pragma region プレイヤーの移動パラメータ
+	//敵
+	Enemy* enemy_ = nullptr;
 
-	//移動
-	Vector3 velocity_ = {};
+	//カーソル
+	std::unique_ptr<Model> playerCursol_;
+	WorldTransform worldTransformCursol_;
 
-#pragma endregion
 
-#pragma region プレイヤーの攻撃パラメータ
-
-	WorkAttack workAttack_;
-
-	int attackTimer_ = 30;
-
-	int jumpAttackTimer_ = 15;
-
-	int throwTimer_ = 100;
-
-	int attackAnimationFrame_;
-
-#pragma endregion
-
-#pragma region プレイヤーのフラグ
-
-	//当たっているかどうか
-	bool isHit_ = false;
-
-	//ダウンしているかどうか
-	bool isDown_ = false;
-
-	//攻撃しているかどうか
-	bool isAttack_[5];
-
-	//ガードしているかどうか
-	bool isGuard_ = false;
-
-	//敵と当たっているかどうか
-	bool isEnemyHit_ = false;
-
-	//各攻撃があたっているかどうか
-	//通常攻撃
-	bool isHitLightPunch_ = false;
-	bool isHitMiddlePunch_ = false;
-	bool isHitHighPunch_ = false;
-	bool isHitTCMiddlePunch_ = false;
-	bool isHitTCHighPunch_ = false;
-
-	//技
-	bool isHitTackle_ = false;
-
-	//弾
-	bool isHitBullet_ = false;
-	bool isHitAirBullet_ = false;
-
-	bool isHitThrow_ = false;
-	bool isThrow_ = false;
-
-	//シェイクしているかどうか
-	bool isShake_ = false;
-
-	//リセットしているかどうか
-	bool isReset_ = false;
-
-	//必殺技を発動しているかどうか
-	bool isFinisherEffect_ = false;
-
-	//HSVFilterをかけるかどうか
-	bool isHSVFilter_ = false;
-
-#pragma endregion
-
-#pragma region リソース
-
+	//リソース
 	//スプライト(hp)
 	UI hpBar_;
 	const float barSpace_ = 15.6f;
@@ -281,18 +160,5 @@ private:
 	uint32_t weaponAttackSoundHandle_ = 0u;
 	uint32_t damageSoundHandle_ = 0u;
 	uint32_t guardSoundHandle_ = 0u;
-
-#pragma endregion
-
-#pragma region その他
-
-	//敵
-	Enemy* enemy_ = nullptr;
-
-	//カーソル
-	std::unique_ptr<Model> playerCursol_;
-	WorldTransform worldTransformCursol_;
-
-#pragma endregion
 };
 

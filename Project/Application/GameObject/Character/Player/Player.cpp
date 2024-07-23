@@ -89,7 +89,7 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	isShake_ = false;
+	effectState_.isShake = false;
 
 	//0は後ろ歩き, 1は前歩き, 2はライトリアクション,3は停止,4はノックダウン,5はTC強P,6は弱P,7はTC中P
 	model_->ApplyAnimation(animationIndex_);
@@ -102,12 +102,13 @@ void Player::Update()
 		Reset();
 	}
 
+	//TODO:StatePatternでやる
 	//PlayerのBehavior
-	if (behaviorRequest_)
+	if (characterState_.behaviorRequest)
 	{
-		behavior_ = behaviorRequest_.value();
+		characterState_.behavior = characterState_.behaviorRequest.value();
 
-		switch (behavior_)
+		switch (characterState_.behavior)
 		{
 		case Behavior::kRoot:
 		default:
@@ -122,19 +123,15 @@ void Player::Update()
 			BehaviorJumpInitialize();
 			break;
 
-		case Behavior::kThrow:
-			BehaviorThrowInitialize();
-			break;
-
 		case Behavior::kStan:
 			BehaviorStanInitialize();
 			break;
 		}
 
-		behaviorRequest_ = std::nullopt;
+		characterState_.behaviorRequest = std::nullopt;
 	}
 
-	switch (behavior_)
+	switch (characterState_.behavior)
 	{
 	case Behavior::kRoot:
 	default:
@@ -152,10 +149,6 @@ void Player::Update()
 		BehaviorJumpUpdate();
 		break;
 
-	case Behavior::kThrow:
-		BehaviorThrowUpdate();
-		break;
-
 	case Behavior::kStan:
 		BehaviorStanUpdate();
 		break;
@@ -166,26 +159,26 @@ void Player::Update()
 
 	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
 
-	if (enemyWorldPosition.x > playerWorldPosition.x && behavior_ != Behavior::kJump
-		&& behavior_ != Behavior::kAttack && !isDown_)
+	if (enemyWorldPosition.x > playerWorldPosition.x && characterState_.behavior != Behavior::kJump
+		&& characterState_.behavior != Behavior::kAttack && !characterState_.isDown)
 	{
-		playerDirection_ = Direction::Right;
+		characterState_.direction = Direction::Right;
 		worldTransform_.rotation.y = 1.7f;
 	}
 
-	if (enemyWorldPosition.x < playerWorldPosition.x && behavior_ != Behavior::kJump
-		&& behavior_ != Behavior::kAttack && !isDown_)
+	if (enemyWorldPosition.x < playerWorldPosition.x && characterState_.behavior != Behavior::kJump
+		&& characterState_.behavior != Behavior::kAttack && !characterState_.isDown)
 	{
-		playerDirection_ = Direction::Left;
+		characterState_.direction = Direction::Left;
 		worldTransform_.rotation.y = 4.6f;
 	}
 
-	if (!workAttack_.isAttack && worldTransform_.translation.x >= 3.5f && playerDirection_ == Direction::Right)
+	if (!attackData_.isAttack && worldTransform_.translation.x >= 3.5f && characterState_.direction == Direction::Right)
 	{
 		worldTransform_.translation.x = 3.5f;
 	}
 
-	if (!workAttack_.isAttack && worldTransform_.translation.x <= -3.5f && playerDirection_ == Direction::Left)
+	if (!attackData_.isAttack && worldTransform_.translation.x <= -3.5f && characterState_.direction == Direction::Left)
 	{
 		worldTransform_.translation.x = -3.5f;
 	}
@@ -202,14 +195,14 @@ void Player::Update()
 	}
 
 	//ジャンプ中に敵と当たったときの処理
-	if (behaviorRequest_ == Behavior::kJump && isHit_)
+	if (characterState_.behavior == Behavior::kJump && characterState_.isHitCharacter)
 	{
 		worldTransform_.translation.y = 0.0f;
 	}
 
 	DownAnimation();
 
-	isHit_ = false;
+	characterState_.isHitCharacter = false;
 
 	//各ゲージの更新処理
 	HPBarUpdate();
@@ -234,7 +227,7 @@ void Player::Draw(const Camera& camera)
 {
 	model_->Draw(worldTransform_, camera, animationIndex_);
 
-	if (!isDown_)
+	if (!characterState_.isDown)
 	{
 		playerCursol_->Draw(worldTransformCursol_, camera, 0);
 	}
@@ -272,9 +265,9 @@ void Player::ImGui(const char* title)
 	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
 	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
 
-	ImGui::Text("isGuard %d", isGuard_);
-	ImGui::Text("attackAnimationFrame %d", attackAnimationFrame_);
-	ImGui::Text("isAttack %d", workAttack_.isAttack);
+	ImGui::Text("isGuard %d", characterState_.isGuard);
+	ImGui::Text("attackAnimationFrame %d", attackData_.attackAnimationFrame);
+	ImGui::Text("isAttack %d", attackData_.isAttack);
 	ImGui::DragFloat("animationTime", &animationTime_, 0.0001f);
 
 	model_->GetLight()->ImGui("DirectionalLight");
@@ -302,19 +295,19 @@ void Player::BehaviorRootUpdate()
 		bool isFrontMove_ = false;
 		bool isBackMove_ = false;
 
-		velocity_ = { 0.0f, 0.0f, 0.0f };
+		moveData_.velocity = { 0.0f, 0.0f, 0.0f };
 
 		//敵の位置を取得する（例: enemyPosition という変数）
 		Vector3 enemyPosition = enemy_->GetWorldPosition();
 
-		if (isHit_)
+		if (characterState_.isHitCharacter)
 		{
-			if (playerDirection_ == Direction::Right && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
+			if (characterState_.direction == Direction::Right && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
 			{
 				// 敵を右方向に押す
 				PushEnemy(enemyPosition, 0.04f);
 			}
-			else if (playerDirection_ == Direction::Left && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+			else if (characterState_.direction == Direction::Left && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
 			{
 				// 敵を左方向に押す
 				PushEnemy(enemyPosition, -0.04f);
@@ -323,57 +316,57 @@ void Player::BehaviorRootUpdate()
 
 		//移動処理
 		//前方向に移動(左を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && playerDirection_ == Direction::Left && !isDown_)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
-			velocity_.x = -0.01f;
+			moveData_.velocity.x = -0.01f;
 			isFrontMove_ = true;
-			isGuard_ = false;
+			characterState_.isGuard = false;
 		}
 
 		//前方向に移動(右を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && playerDirection_ == Direction::Right && !isDown_)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
-			velocity_.x = 0.01f;
+			moveData_.velocity.x = 0.01f;
 			isFrontMove_ = true;
-			isGuard_ = false;
+			characterState_.isGuard = false;
 		}
 
 		//後ろ方向に移動(右を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && playerDirection_ == Direction::Right && !isDown_)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
-			isGuard_ = true;
+			characterState_.isGuard = true;
 
 			//移動しながらガード
 			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 			{
-				velocity_.x = -0.01f;
+				moveData_.velocity.x = -0.01f;
 				isBackMove_ = true;
 			}
 
 			//止まってガード
-			if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+			if (characterState_.isGuard && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
 			{
-				velocity_.x = 0.0f;
+				moveData_.velocity.x = 0.0f;
 				isBackMove_ = false;
 			}
 		}
 
 		//後ろ方向に移動(左を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && playerDirection_ == Direction::Left && !isDown_)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
-			isGuard_ = true;
+			characterState_.isGuard = true;
 
 			//移動しながらガード
 			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 			{
-				velocity_.x = 0.01f;
+				moveData_.velocity.x = 0.01f;
 				isBackMove_ = true;
 			}
 
 			//止まってガード
-			if (isGuard_ && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+			if (characterState_.isDown && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
 			{
-				velocity_.x = 0.0f;
+				moveData_.velocity.x = 0.0f;
 				isBackMove_ = false;
 			}
 		}
@@ -381,7 +374,7 @@ void Player::BehaviorRootUpdate()
 		//移動していない時
 		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
 		{
-			isGuard_ = false;
+			characterState_.isGuard = false;
 		}
 
 		//移動
@@ -391,11 +384,11 @@ void Player::BehaviorRootUpdate()
 
 			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
 
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(frontSpeed_, velocity_);
+			moveData_.velocity = Normalize(moveData_.velocity);
+			moveData_.velocity = Multiply(frontSpeed_, moveData_.velocity);
 
 			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 			worldTransform_.UpdateMatrixEuler();
 		}
@@ -405,11 +398,11 @@ void Player::BehaviorRootUpdate()
 
 			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
 
-			velocity_ = Normalize(velocity_);
-			velocity_ = Multiply(backSpeed_, velocity_);
+			moveData_.velocity = Normalize(moveData_.velocity);
+			moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
 
 			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 			worldTransform_.UpdateMatrixEuler();
 		}
@@ -421,80 +414,80 @@ void Player::BehaviorRootUpdate()
 		}
 
 		//ジャンプ
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !isDown_)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown)
 		{
-			behaviorRequest_ = Behavior::kJump;
+			characterState_.behaviorRequest = Behavior::kJump;
 		}
 
 		//攻撃
 		//弱攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !isDown_)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !characterState_.isDown)
 		{
-			behaviorRequest_ = Behavior::kAttack;
+			characterState_.behaviorRequest = Behavior::kAttack;
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
-			workAttack_.isLightPunch = true;
+			attackData_.isLightPunch = true;
 		}
 
 		//中攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !isDown_)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !characterState_.isDown)
 		{
-			behaviorRequest_ = Behavior::kAttack;
+			characterState_.behaviorRequest = Behavior::kAttack;
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
-			workAttack_.isMiddlePunch = true;
+			attackData_.isMiddlePunch = true;
 		}
 
 		//強攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !isDown_)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown)
 		{
-			behaviorRequest_ = Behavior::kAttack;
+			characterState_.behaviorRequest = Behavior::kAttack;
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
-			workAttack_.isHighPunch = true;
+			attackData_.isHighPunch = true;
 		}
 		
 		//タックル攻撃
 		//右向きのとき
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& playerDirection_ == Direction::Right && !isDown_)
+			&& characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
-			behaviorRequest_ = Behavior::kAttack;
+			characterState_.behaviorRequest = Behavior::kAttack;
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
-			workAttack_.isTackle = true;
+			attackData_.isTackle = true;
 		}
 
 		//タックル攻撃
 		//左向きのとき
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& playerDirection_ == Direction::Left && !isDown_)
+			&& characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
-			behaviorRequest_ = Behavior::kAttack;
+			characterState_.behaviorRequest = Behavior::kAttack;
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
-			workAttack_.isTackle = true;
+			attackData_.isTackle = true;
 		}
 	}
 }
 
 void Player::BehaviorAttackInitialize()
 {
-	attackAnimationFrame_ = 0;
+	attackData_.attackAnimationFrame = 0;
 }
 
 void Player::BehaviorAttackUpdate()
 {
 	//弱攻撃
-	if (workAttack_.isLightPunch)
+	if (attackData_.isLightPunch)
 	{
 		animationIndex_ = 12;
-		isGuard_ = false;
+		characterState_.isGuard = false;
 		float animationDuration;
 		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
-		if (!isDown_)
+		if (!characterState_.isDown)
 		{
 			animationTime_ += 1.0f / 40.0f;
 		}
@@ -502,26 +495,26 @@ void Player::BehaviorAttackUpdate()
 		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
-		workAttack_.isAttack = true;
+		attackData_.isAttack = true;
 
-		if (playerDirection_ == Direction::Right)
+		if (characterState_.direction == Direction::Right)
 		{
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.0f,0.3f} };
 			SetAABB(aabb_);
 		}
-		else if (playerDirection_ == Direction::Left)
+		else if (characterState_.direction == Direction::Left)
 		{
 			aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
 
-		if (isDown_ || animationTime_ >= animationDuration)
+		if (characterState_.isDown || animationTime_ >= animationDuration)
 		{
-			behaviorRequest_ = Behavior::kRoot;
-			workAttack_.isAttack = false;
-			workAttack_.isLightPunch = false;
+			characterState_.behaviorRequest = Behavior::kRoot;
+			attackData_.isAttack = false;
+			attackData_.isLightPunch = false;
 			animationTime_ = 0.0f;
-			attackAnimationFrame_ = 0;
+			attackData_.attackAnimationFrame = 0;
 			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
@@ -530,34 +523,34 @@ void Player::BehaviorAttackUpdate()
 		//キャンセルの処理(中TC)
 		if (input_->GetJoystickState())
 		{
-			if (!isDown_ && attackAnimationFrame_ > 15 && attackAnimationFrame_ < 30 && animationTime_ < animationDuration
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30 && animationTime_ < animationDuration
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) 
-				&& isHit_)
+				&& characterState_.isHitCharacter)
 			{
-				workAttack_.isAttack = false;
-				workAttack_.isLightPunch = false;
-				workAttack_.isTCMiddlePunch = true;
+				attackData_.isAttack = false;
+				attackData_.isLightPunch = false;
+				attackData_.isTCMiddlePunch = true;
 				animationTime_ = 0.0f;
-				attackAnimationFrame_ = 0;
+				attackData_.attackAnimationFrame = 0;
 				model_->SetAnimationTime(animationTime_);
 				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 				SetAABB(aabb_);
 			}
 		}
 
-		attackAnimationFrame_++;
+		attackData_.attackAnimationFrame++;
 	}
 
 	//TC用の攻撃(2発目)
-	if (workAttack_.isTCMiddlePunch)
+	if (attackData_.isTCMiddlePunch)
 	{
 		animationIndex_ = 11;
-		isGuard_ = false;
+		characterState_.isGuard = false;
 		float animationDuration;
 		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
-		if (!isDown_)
+		if (!characterState_.isDown)
 		{
 			animationTime_ += 1.0f / 40.0f;
 		}
@@ -565,26 +558,26 @@ void Player::BehaviorAttackUpdate()
 		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
-		workAttack_.isAttack = true;
+		attackData_.isAttack = true;
 
-		if (playerDirection_ == Direction::Right)
+		if (characterState_.direction == Direction::Right)
 		{
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.0f,0.3f} };
 			SetAABB(aabb_);
 		}
-		else if (playerDirection_ == Direction::Left)
+		else if (characterState_.direction == Direction::Left)
 		{
 			aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
 
-		if (isDown_ || animationTime_ >= animationDuration)
+		if (characterState_.isDown || animationTime_ >= animationDuration)
 		{
-			behaviorRequest_ = Behavior::kRoot;
-			workAttack_.isAttack = false;
-			workAttack_.isTCMiddlePunch = false;
+			characterState_.behaviorRequest = Behavior::kRoot;
+			attackData_.isAttack = false;
+			attackData_.isTCMiddlePunch = false;
 			animationTime_ = 0.0f;
-			attackAnimationFrame_ = 0;
+			attackData_.attackAnimationFrame = 0;
 			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
@@ -593,34 +586,34 @@ void Player::BehaviorAttackUpdate()
 		//キャンセルの処理(強TC)
 		if (input_->GetJoystickState())
 		{
-			if (!isDown_ && attackAnimationFrame_ > 15 && attackAnimationFrame_ < 30 && animationTime_ < animationDuration
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30 && animationTime_ < animationDuration
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& isHit_)
+				&& characterState_.isHitCharacter)
 			{
-				workAttack_.isAttack = false;
-				workAttack_.isTCMiddlePunch = false;
-				workAttack_.isHighPunch = true;
+				attackData_.isAttack = false;
+				attackData_.isTCMiddlePunch = false;
+				attackData_.isHighPunch = true;
 				animationTime_ = 0.0f;
-				attackAnimationFrame_ = 0;
+				attackData_.attackAnimationFrame = 0;
 				model_->SetAnimationTime(animationTime_);
 				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 				SetAABB(aabb_);
 			}
 		}
 
-		attackAnimationFrame_++;
+		attackData_.attackAnimationFrame++;
 	}
 
 	//TC用の攻撃(3発目)
-	if (workAttack_.isTCHighPunch)
+	if (attackData_.isTCHighPunch)
 	{
 		animationIndex_ = 10;
-		isGuard_ = false;
+		characterState_.isGuard = false;
 		float animationDuration;
 		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
-		if (!isDown_)
+		if (!characterState_.isDown)
 		{
 			animationTime_ += 1.0f / 40.0f;
 		}
@@ -628,44 +621,44 @@ void Player::BehaviorAttackUpdate()
 		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
-		workAttack_.isAttack = true;
+		attackData_.isAttack = true;
 
-		if (playerDirection_ == Direction::Right)
+		if (characterState_.direction == Direction::Right)
 		{
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.0f,0.3f} };
 			SetAABB(aabb_);
 		}
-		else if (playerDirection_ == Direction::Left)
+		else if (characterState_.direction == Direction::Left)
 		{
 			aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
 
-		if (isDown_ || animationTime_ >= animationDuration)
+		if (characterState_.isDown || animationTime_ >= animationDuration)
 		{
-			behaviorRequest_ = Behavior::kRoot;
-			workAttack_.isAttack = false;
-			workAttack_.isTCHighPunch = false;
+			characterState_.behaviorRequest = Behavior::kRoot;
+			attackData_.isAttack = false;
+			attackData_.isTCHighPunch = false;
 			animationTime_ = 0.0f;
-			attackAnimationFrame_ = 0;
+			attackData_.attackAnimationFrame = 0;
 			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
 
-		attackAnimationFrame_++;
+		attackData_.attackAnimationFrame++;
 	}
 
 	//中攻撃
-	if (workAttack_.isMiddlePunch)
+	if (attackData_.isMiddlePunch)
 	{
 		animationIndex_ = 7;
-		isGuard_ = false;
+		characterState_.isGuard = false;
 		float animationDuration;
 		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
-		if (!isDown_)
+		if (!characterState_.isDown)
 		{
 			animationTime_ += 1.0f / 40.0f;
 		}
@@ -673,44 +666,44 @@ void Player::BehaviorAttackUpdate()
 		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
-		workAttack_.isAttack = true;
+		attackData_.isAttack = true;
 
-		if (playerDirection_ == Direction::Right)
+		if (characterState_.direction == Direction::Right)
 		{
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.0f,0.3f} };
 			SetAABB(aabb_);
 		}
-		else if (playerDirection_ == Direction::Left)
+		else if (characterState_.direction == Direction::Left)
 		{
 			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
 
-		if (isDown_ || animationTime_ >= animationDuration)
+		if (characterState_.isDown || animationTime_ >= animationDuration)
 		{
-			behaviorRequest_ = Behavior::kRoot;
-			workAttack_.isAttack = false;
-			workAttack_.isMiddlePunch = false;
+			characterState_.behaviorRequest = Behavior::kRoot;
+			attackData_.isAttack = false;
+			attackData_.isMiddlePunch = false;
 			animationTime_ = 0.0f;
-			attackAnimationFrame_ = 0;
+			attackData_.attackAnimationFrame = 0;
 			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
 
-		attackAnimationFrame_++;
+		attackData_.attackAnimationFrame++;
 	}
 
 	//強攻撃
-	if (workAttack_.isHighPunch)
+	if (attackData_.isHighPunch)
 	{
 		animationIndex_ = 2;
-		isGuard_ = false;
+		characterState_.isGuard = false;
 		float animationDuration;
 		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
-		if (!isDown_)
+		if (!characterState_.isDown)
 		{
 			animationTime_ += 1.0f / 40.0f;
 		}
@@ -718,36 +711,36 @@ void Player::BehaviorAttackUpdate()
 		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
-		workAttack_.isAttack = true;
+		attackData_.isAttack = true;
 
-		if (playerDirection_ == Direction::Right)
+		if (characterState_.direction == Direction::Right)
 		{
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.9f,0.3f,0.3f} };
 			SetAABB(aabb_);
 
-			if (isHit_ && attackAnimationFrame_ <= 15)
+			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
 			{
 				worldTransform_.translation.x -= 0.05f;
 			}
 		}
-		else if (playerDirection_ == Direction::Left)
+		else if (characterState_.direction == Direction::Left)
 		{
 			aabb_ = { {-0.9f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 
-			if (isHit_ && attackAnimationFrame_ <= 15)
+			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
 			{
 				worldTransform_.translation.x += 0.05f;
 			}
 		}
 
-		if (isDown_ || animationTime_ >= animationDuration)
+		if (characterState_.isDown || animationTime_ >= animationDuration)
 		{
-			behaviorRequest_ = Behavior::kRoot;
-			workAttack_.isAttack = false;
-			workAttack_.isHighPunch = false;
+			characterState_.behaviorRequest = Behavior::kRoot;
+			attackData_.isAttack = false;
+			attackData_.isHighPunch = false;
 			animationTime_ = 0.0f;
-			attackAnimationFrame_ = 0;
+			attackData_.attackAnimationFrame = 0;
 			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
@@ -758,15 +751,15 @@ void Player::BehaviorAttackUpdate()
 		{
 			//タックル攻撃
 			//右向きのとき
-			if (!isDown_ && attackAnimationFrame_ > 15 && attackAnimationFrame_ < 30 && animationTime_ < animationDuration
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30 && animationTime_ < animationDuration
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& playerDirection_ == Direction::Right)
+				&& characterState_.direction == Direction::Right)
 			{
-				workAttack_.isAttack = false;
-				workAttack_.isHighPunch = false;
-				workAttack_.isTackle = true;
+				attackData_.isAttack = false;
+				attackData_.isHighPunch = false;
+				attackData_.isTackle = true;
 				animationTime_ = 0.0f;
-				attackAnimationFrame_ = 0;
+				attackData_.attackAnimationFrame = 0;
 				model_->SetAnimationTime(animationTime_);
 				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 				SetAABB(aabb_);
@@ -774,36 +767,36 @@ void Player::BehaviorAttackUpdate()
 
 			//タックル攻撃
 			//左向きのとき
-			if (!isDown_ && attackAnimationFrame_ > 10 && animationTime_ < animationDuration
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > 10 && animationTime_ < animationDuration
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& playerDirection_ == Direction::Left)
+				&& characterState_.direction == Direction::Left)
 			{
-				workAttack_.isAttack = false;
-				workAttack_.isHighPunch = false;
-				workAttack_.isTackle = true;
+				attackData_.isAttack = false;
+				attackData_.isHighPunch = false;
+				attackData_.isTackle = true;
 				animationTime_ = 0.0f;
-				attackAnimationFrame_ = 0;
+				attackData_.attackAnimationFrame = 0;
 				model_->SetAnimationTime(animationTime_);
 				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 				SetAABB(aabb_);
 			}
 		}
 
-		attackAnimationFrame_++;
+		attackData_.attackAnimationFrame++;
 	}
 
 	//タックル攻撃
-	if (workAttack_.isTackle)
+	if (attackData_.isTackle)
 	{
 		animationIndex_ = 8;
-		isGuard_ = false;
+		characterState_.isGuard = false;
 		float animationDuration;
 		animationTime_ = model_->GetAnimationTime();
 		animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 		float particlePositionX = 0.0f;
 
-		if (!isDown_)
+		if (!characterState_.isDown)
 		{
 			animationTime_ += 1.0f / 40.0f;
 		}
@@ -811,18 +804,18 @@ void Player::BehaviorAttackUpdate()
 		model_->SetAnimationTime(animationTime_);
 		model_->ApplyAnimation(animationIndex_);
 
-		if (playerDirection_ == Direction::Right)
+		if (characterState_.direction == Direction::Right)
 		{
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
 			SetAABB(aabb_);
 
-			if (attackAnimationFrame_ >= 25 && attackAnimationFrame_ < 40)
+			if (attackData_.attackAnimationFrame >= 25 && attackData_.attackAnimationFrame < 40)
 			{
-				workAttack_.isAttack = true;
+				attackData_.isAttack = true;
 				worldTransform_.translation.x += 0.15f;
 			}
 
-			if (attackAnimationFrame_ >= 25 && attackAnimationFrame_ < 60)
+			if (attackData_.attackAnimationFrame >= 25 && attackData_.attackAnimationFrame < 60)
 			{
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
@@ -831,18 +824,18 @@ void Player::BehaviorAttackUpdate()
 					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
 			}
 		}
-		else if (playerDirection_ == Direction::Left)
+		else if (characterState_.direction == Direction::Left)
 		{
 			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 
-			if (attackAnimationFrame_ >= 25 && attackAnimationFrame_ < 40)
+			if (attackData_.attackAnimationFrame >= 25 && attackData_.attackAnimationFrame < 40)
 			{
-				workAttack_.isAttack = true;
+				attackData_.isAttack = true;
 				worldTransform_.translation.x -= 0.15f;
 			}
 
-			if (attackAnimationFrame_ >= 25 && attackAnimationFrame_ < 60)
+			if (attackData_.attackAnimationFrame >= 25 && attackData_.attackAnimationFrame < 60)
 			{
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
@@ -852,24 +845,24 @@ void Player::BehaviorAttackUpdate()
 			}
 		}
 
-		if (attackAnimationFrame_ >= 55)
+		if (attackData_.attackAnimationFrame >= 55)
 		{
-			workAttack_.isAttack = false;
+			attackData_.isAttack = false;
 		}
 
-		if (isDown_ || animationTime_ >= animationDuration)
+		if (characterState_.isDown || animationTime_ >= animationDuration)
 		{
-			behaviorRequest_ = Behavior::kRoot;
-			workAttack_.isAttack = false;
-			workAttack_.isTackle = false;
+			characterState_.behaviorRequest = Behavior::kRoot;
+			attackData_.isAttack = false;
+			attackData_.isTackle = false;
 			animationTime_ = 0.0f;
-			attackAnimationFrame_ = 0;
+			attackData_.attackAnimationFrame = 0;
 			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
 
-		attackAnimationFrame_++;
+		attackData_.attackAnimationFrame++;
 	}
 }
 
@@ -879,7 +872,7 @@ void Player::BehaviorJumpInitialize()
 
 	const float kJumpFirstSpeed_ = 0.3f;
 
-	velocity_.y = kJumpFirstSpeed_;
+	moveData_.velocity.y = kJumpFirstSpeed_;
 }
 
 void Player::BehaviorJumpUpdate()
@@ -888,17 +881,17 @@ void Player::BehaviorJumpUpdate()
 
 	UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
 
-	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
+	worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 	const float kGravityAcceleration_ = 0.02f;
 
 	Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
 
-	velocity_ = Add(velocity_, accelerationVector_);
+	moveData_.velocity = Add(moveData_.velocity, accelerationVector_);
 
 	if (worldTransform_.translation.y <= 0.0f)
 	{
-		behaviorRequest_ = Behavior::kRoot;
+		characterState_.behaviorRequest = Behavior::kRoot;
 		//workAttack_.isJumpAttack = false;
 		worldTransform_.translation.y = 0.0f;
 		animationTime_ = 0.0f;
@@ -926,7 +919,7 @@ void Player::BehaviorStanUpdate()
 	stanTimer_--;
 	if (stanTimer_ > 55)
 	{
-		isShake_ = true;
+		effectState_.isShake = true;
 	}
 
 	animationIndex_ = 9;
@@ -934,18 +927,18 @@ void Player::BehaviorStanUpdate()
 	animationTime_ = model_->GetAnimationTime();
 	animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
-	if (playerDirection_ == Direction::Left)
+	if (characterState_.direction == Direction::Left)
 	{
 		aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 		SetAABB(aabb_);
 	}
-	else if (playerDirection_ == Direction::Right)
+	else if (characterState_.direction == Direction::Right)
 	{
 		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
 		SetAABB(aabb_);
 	}
 
-	if (!isDown_)
+	if (!characterState_.isDown)
 	{
 		animationTime_ += 1.0f / 60.0f;
 	}
@@ -953,11 +946,11 @@ void Player::BehaviorStanUpdate()
 	model_->SetAnimationTime(animationTime_);
 	model_->ApplyAnimation(animationIndex_);
 
-	if (animationTime_ >= animationDuration || isDown_)
+	if (animationTime_ >= animationDuration || characterState_.isDown)
 	{
-		behaviorRequest_ = Behavior::kRoot;
+		characterState_.behaviorRequest = Behavior::kRoot;
 		animationTime_ = 0.0f;
-		attackAnimationFrame_ = 0;
+		attackData_.attackAnimationFrame = 0;
 		guardGauge_ = 0.0f;
 		stanTimer_ = 60;
 		model_->SetAnimationTime(animationTime_);
@@ -970,7 +963,7 @@ void Player::UpdateAnimationTime(float animationTime, bool isLoop, float frameRa
 {
 	animationTime = modelFighterBody->GetAnimationTime();
 
-	if (!isDown_)
+	if (!characterState_.isDown)
 	{
 		animationTime += 1.0f / frameRate;
 
@@ -988,25 +981,25 @@ void Player::OnCollision(Collider* collider, float damage)
 {
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemyBullet)
 	{
-		if (!isDown_ && !isGuard_ && worldTransform_.translation.y <= 0.0f)
+		if (!characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y <= 0.0f)
 		{
 			model_->SetAnimationTime(animationTime_);
 
 			damage = 5.0f;
 			hp_ += damage;
-			isHitBullet_ = true;
+			characterState_.isHitBullet = true;
 		}
 
-		if (!isDown_ && !isGuard_ && worldTransform_.translation.y > 0.0f)
+		if (!characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.0f)
 		{
 			model_->SetAnimationTime(animationTime_);
 
 			damage = 5.0f;
 			hp_ += damage;
-			isHitAirBullet_ = true;
+			characterState_.isHitAirBullet = true;
 		}
 
-		if (isGuard_ && playerDirection_ == Direction::Right)
+		if (characterState_.isGuard && characterState_.direction == Direction::Right)
 		{
 			guardAnimationTimer_--;
 
@@ -1021,7 +1014,7 @@ void Player::OnCollision(Collider* collider, float damage)
 					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 			}
 		}
-		else if (isGuard_ && playerDirection_ == Direction::Left)
+		else if (characterState_.isGuard && characterState_.direction == Direction::Left)
 		{
 			guardAnimationTimer_--;
 
@@ -1041,9 +1034,9 @@ void Player::OnCollision(Collider* collider, float damage)
 	//敵との当たり判定
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemy)
 	{
-		isHit_ = true;
+		characterState_.isHitCharacter = true;
 
-		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && isGuard_ && playerDirection_ == Direction::Right)
+		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Right)
 		{
 			guardAnimationTimer_--;
 
@@ -1059,7 +1052,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			}
 		}
 
-		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && isGuard_ && playerDirection_ == Direction::Left)
+		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Left)
 		{
 			guardAnimationTimer_--;
 
@@ -1075,7 +1068,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			}
 		}
 
-		if (enemy_->GetIsAttack() && enemy_->GetIsTackle() && isGuard_ && playerDirection_ == Direction::Right)
+		if (enemy_->GetIsAttack() && enemy_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Right)
 		{
 			guardAnimationTimer_--;
 
@@ -1090,7 +1083,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			}
 		}
 
-		if (enemy_->GetIsAttack() && enemy_->GetIsTackle() && isGuard_ && playerDirection_ == Direction::Left)
+		if (enemy_->GetIsAttack() && enemy_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Left)
 		{
 			guardAnimationTimer_--;
 
@@ -1107,12 +1100,12 @@ void Player::OnCollision(Collider* collider, float damage)
 
 		//タックル
 		//キャンセルじゃないとき
-		if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && !isDown_ && !isGuard_)
+		if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 15.0f;
 			hp_ += damage;
-			isHitTackle_ = true;
+			characterState_.isHitTackle = true;
 
 			HitStop(30);
 		}
@@ -1156,9 +1149,9 @@ void Player::GuardGaugeBarUpdate()
 	if (guardGauge_ <= -50.0f)
 	{
 		guardGauge_ = -50.0f;
-		isGuard_ = false;
-		workAttack_.isAttack = false;
-		behaviorRequest_ = Behavior::kStan;
+		characterState_.isGuard = false;
+		attackData_.isAttack = false;
+		characterState_.behaviorRequest = Behavior::kStan;
 	}
 }
 
@@ -1193,42 +1186,35 @@ void Player::Reset()
 
 	downAnimationTimer_ = 60;
 
-	isHitLightPunch_ = false;
-	isHitMiddlePunch_ = false;
-	isHitHighPunch_ = false;
-	isHitTCMiddlePunch_ = false;
-	isHitTCHighPunch_ = false;
-	isHitTackle_ = false;
-	isHitThrow_ = false;
-	isDown_ = false;
+	characterState_.isHitLightPunch = false;
+	characterState_.isHitMiddlePunch = false;
+	characterState_.isHitHighPunch = false;
+	characterState_.isHitTCMiddlePunch = false;
+	characterState_.isHitTCHighPunch = false;
+	characterState_.isHitTackle = false;
+	characterState_.isDown = false;
 
-	isHit_ = false;
+	characterState_.isHitCharacter = false;
 
-	workAttack_.isAttack = false;
-	workAttack_.isLightPunch = false;
-	workAttack_.isMiddlePunch = false;
-	workAttack_.isHighPunch = false;
-	workAttack_.isTCMiddlePunch = false;
-	workAttack_.isTCHighPunch = false;
-	workAttack_.isTackle = false;
-	workAttack_.isFinisher = false;
-	workAttack_.isJumpAttack = false;
+	characterState_.isGuard = false;
 
-	//isThrow_ = false;
-
-	finisherEffectTimer_ = 90;
-	isFinisherEffect_ = false;
-	finisherCount_ = 0;
+	attackData_.isAttack = false;
+	attackData_.isLightPunch = false;
+	attackData_.isMiddlePunch = false;
+	attackData_.isHighPunch = false;
+	attackData_.isTCMiddlePunch = false;
+	attackData_.isTCHighPunch = false;
+	attackData_.isTackle = false;
 
 	animationIndex_ = 4;
 
-	attackAnimationFrame_ = 0;
+	attackData_.attackAnimationFrame = 0;
 	animationTime_ = 0;
 
-	behavior_ = Behavior::kRoot;
+	characterState_.behaviorRequest = Behavior::kRoot;
 
 	worldTransform_.translation = { -3.0f,0.0f,0.0f };
-	playerDirection_ = Direction::Right;
+	characterState_.direction = Direction::Right;
 
 	worldTransform_.UpdateMatrixEuler();
 
@@ -1243,22 +1229,22 @@ void Player::HitStop(int milliseconds)
 void Player::DownAnimation()
 {
 	//タックル攻撃
-	if (isHitTackle_ && playerDirection_ == Direction::Left)
+	if (characterState_.isHitTackle && characterState_.direction == Direction::Left)
 	{
-		isDown_ = true;
+		characterState_.isDown = true;
 		downAnimationTimer_--;
 
 		if (downAnimationTimer_ > 55)
 		{
-			isShake_ = true;
-			isHSVFilter_ = true;
+			effectState_.isShake = true;
+			effectState_.isHSVFilter = true;
 
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x - 0.1f,
 					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 		else
 		{
-			isHSVFilter_ = false;
+			effectState_.isHSVFilter = false;
 		}
 
 		if (downAnimationTimer_ > 35 && worldTransform_.translation.x < 4.0f)
@@ -1296,27 +1282,27 @@ void Player::DownAnimation()
 			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
-			isHitTackle_ = false;
-			isDown_ = false;
+			characterState_.isHitTackle = false;
+			characterState_.isDown = false;
 		}
 	}
 
-	if (isHitTackle_ && playerDirection_ == Direction::Right)
+	if (characterState_.isHitTackle && characterState_.direction == Direction::Right)
 	{
-		isDown_ = true;
+		characterState_.isDown = true;
 		downAnimationTimer_--;
 
 		if (downAnimationTimer_ > 55)
 		{
-			isShake_ = true;
-			isHSVFilter_ = true;
+			effectState_.isShake = true;
+			effectState_.isHSVFilter = true;
 
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + 0.1f,
 				worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 		else
 		{
-			isHSVFilter_ = false;
+			effectState_.isHSVFilter = false;
 		}
 
 		if (downAnimationTimer_ > 35 && worldTransform_.translation.x > -4.0f)
@@ -1356,28 +1342,28 @@ void Player::DownAnimation()
 			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
-			isHitTackle_ = false;
-			isDown_ = false;
+			characterState_.isHitTackle = false;
+			characterState_.isDown = false;
 		}
 	}
 
 	//弾攻撃
-	if (isHitBullet_)
+	if (characterState_.isHitBullet)
 	{
-		isDown_ = true;
+		characterState_.isDown = true;
 		downAnimationTimer_--;
 
 		if (downAnimationTimer_ > 55)
 		{
-			isShake_ = true;
-			isHSVFilter_ = true;
+			effectState_.isShake = true;
+			effectState_.isHSVFilter = true;
 
-			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + (playerDirection_ == Direction::Left ? -0.1f : 0.1f),
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + (characterState_.direction == Direction::Left ? -0.1f : 0.1f),
 				worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
 		}
 		else
 		{
-			isHSVFilter_ = false;
+			effectState_.isHSVFilter = false;
 		}
 
 		animationIndex_ = 3;
@@ -1396,33 +1382,33 @@ void Player::DownAnimation()
 			downAnimationTimer_ = 60;
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
-			isHitBullet_ = false;
-			isDown_ = false;
+			characterState_.isHitBullet = false;
+			characterState_.isDown = false;
 		}
 	}
-	else if (isHitAirBullet_)
+	else if (characterState_.isHitAirBullet)
 	{
-		isDown_ = true;
+		characterState_.isDown = true;
 		downAnimationTimer_--;
 
 		if (!isParticle_) 
 		{
-			isShake_ = true;
-			isHSVFilter_ = true;
+			effectState_.isShake = true;
+			effectState_.isHSVFilter = true;
 
-			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + (playerDirection_ == Direction::Left ? -0.1f : 0.1f),
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + (characterState_.direction == Direction::Left ? -0.1f : 0.1f),
 				worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
 
 			isParticle_ = true;
 		}
 		else
 		{
-			isHSVFilter_ = false;
+			effectState_.isHSVFilter = false;
 		}
 
 		if (downAnimationTimer_ > 35 && worldTransform_.translation.x > -4.0f)
 		{
-			worldTransform_.translation.x -= playerDirection_ == Direction::Left ? -0.08f : 0.08f;
+			worldTransform_.translation.x -= characterState_.direction == Direction::Left ? -0.08f : 0.08f;
 		}
 
 		if (worldTransform_.translation.y > 0.0f)
@@ -1455,8 +1441,8 @@ void Player::DownAnimation()
 			model_->SetAnimationTime(animationTime_);
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
-			isHitAirBullet_ = false;
-			isDown_ = false;
+			characterState_.isHitAirBullet = false;
+			characterState_.isDown = false;
 			isParticle_ = false;
 		}
 	}

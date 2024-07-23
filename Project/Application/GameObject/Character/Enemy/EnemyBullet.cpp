@@ -20,42 +20,38 @@ void EnemyBullet::Initialize(Model* model, const Vector3& positon, const Vector3
 	SetCollisionMask(kCollisionMaskEnemyBullet);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
 
-	//パーティクルの初期化
-	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
-	particleSystem_ = std::make_unique<ParticleSystem>();
-	particleSystem_->Initialize();
+	//パーティクルエフェクトプレイヤーの生成
+	particleEffectPlayer_ = std::make_unique<ParticleEffectPlayer>();
+	particleEffectPlayer_->Initialize();
 
 	worldTransform_.UpdateMatrixEuler();
 }
 
 void EnemyBullet::Update() 
 {
+	//弾を移動させる処理
 	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
 
+	//弾を消す処理
 	if (--deathTimer_ <= 0)
 	{
 		isDead_ = true;
 	}
 
-	//パーティクルの更新
-	particleSystem_->Update();
+	//パーティクルエフェクトプレイヤーの更新
+	particleEffectPlayer_->Update();
 
-	ParticleEmitter* newParticleEmitter = EmitterBuilder()
-		.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-		.SetTranslation({ worldTransform_.translation })
-		.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-		.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
-		.SetScale({ 0.4f, 0.4f, 0.4f }, { 0.5f ,0.5f ,0.5f })
-		.SetAzimuth(0.0f, 0.8f)
-		.SetElevation(-9.0f, 9.0f)
-		.SetVelocity({ 0.0f ,0.0f ,0.0f }, { 0.01f ,0.01f ,0.01f })
-		.SetColor({ 0.0f ,0.0f ,1.0f ,1.0f }, { 0.0f ,0.5f ,1.0f ,1.0f })
-		.SetLifeTime(0.1f, 0.6f)
-		.SetCount(10)
-		.SetFrequency(4.0f)
-		.SetDeleteTime(2.0f)
-		.Build();
-	particleSystem_->AddParticleEmitter(newParticleEmitter);
+	//パーティクルの再生
+	if (velocity_.x < 0.0f)
+	{
+		particleEffectPlayer_->PlayParticle("LeftBullet", { worldTransform_.translation.x,
+					worldTransform_.translation.y,worldTransform_.translation.z });
+	}
+	else
+	{
+		particleEffectPlayer_->PlayParticle("RightBullet", { worldTransform_.translation.x,
+					worldTransform_.translation.y,worldTransform_.translation.z });
+	}
 
 	worldTransform_.UpdateMatrixEuler();
 
@@ -68,6 +64,7 @@ void EnemyBullet::Update()
 
 void EnemyBullet::Draw(const Camera& camera)
 {
+	//弾本体の描画
 	if (isDead_ == false)
 	{
 		model_->Draw(worldTransform_, camera, 0);
@@ -76,15 +73,17 @@ void EnemyBullet::Draw(const Camera& camera)
 
 void EnemyBullet::ParticleDraw(const Camera& camera)
 {
+	//弾のパーティクルの描画
 	if (isDead_ == false)
 	{
-		particleModel_->Draw(particleSystem_.get(), camera);
+		particleEffectPlayer_->Draw(camera);
 	}
 }
 
 
 void EnemyBullet::OnCollision(Collider* collider, float damage)
 {
+	//プレイヤーと弾が当たった時の処理
 	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
 	{
 		isDead_ = true;

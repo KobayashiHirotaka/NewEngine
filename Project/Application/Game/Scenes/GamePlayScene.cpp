@@ -160,11 +160,8 @@ void GamePlayScene::Update()
 		}
 	}
 
-	if (!player_->GetIsFinisherEffect())
-	{
-		//player,enemyの更新
-		game3dObjectManager_->Update();
-	}
+	//player,enemyの更新
+	game3dObjectManager_->Update();
 
 	//skydomeの更新
 	skydome_->Update();

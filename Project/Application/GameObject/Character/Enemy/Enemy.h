@@ -1,7 +1,5 @@
 #pragma once
 #include "Application/GameObject/Character/ICharacter.h"
-#include "Engine/3D/Particle/ParticleModel.h"
-#include "Engine/3D/Particle/ParticleSystem.h"
 #include "EnemyBullet.h"
 
 //前方宣言
@@ -45,40 +43,6 @@ public:
 	Vector3 GetWorldPosition() override;
 
 	Vector3 GetRotation() { return worldTransform_.rotation; };
-
-	bool GetIsAttack() { return workAttack_.isAttack; };
-
-	bool GetIsLightPunch() { return workAttack_.isLightPunch; };
-	bool GetIsMiddlePunch() { return workAttack_.isMiddlePunch; };
-	bool GetIsHighPunch() { return workAttack_.isHighPunch; };
-	bool GetIsTCMiddlePunch() { return workAttack_.isTCMiddlePunch; };
-	bool GetIsTCHighPunch() { return workAttack_.isTCHighPunch; };
-
-	bool GetIsTackle() { return workAttack_.isTackle; };
-
-	bool GetIsShot() { return workAttack_.isShot; };
-
-	bool GetIsFinisher() { return workAttack_.isFinisher; };
-
-	bool GetIsThrow() { return isThrow_; };
-
-	int GetAttackAnimationFrame() { return attackAnimationFrame_; };
-
-	int GetThrowTimer() { return throwTimer_; };
-
-	bool GetIsDown() { return isDown_; };
-
-	int GetFinisherEffectTimer() { return finisherEffectTimer_; };
-
-	bool GetIsFinisherEffect() { return isFinisherEffect_; };
-
-	int GetFinisherCount() { return finisherCount_; };
-
-	int GetIsCancelCount() { return cancelCount_; };
-
-	bool GetIsShake() { return isShake_; };
-
-	Direction GetDirection() { return enemyDirection_; };
 
 	const std::vector<EnemyBullet*>& GetBullets() const{ return bullets_; };
 
@@ -213,56 +177,9 @@ private:
 
 #pragma region 敵の攻撃パラメータ
 
-	WorkAttack workAttack_;
-
 	int attackTimer_ = 30;
 
-	int jumpAttackTimer_ = 15;
-
-	int throwTimer_ = 100;
-
 	int attackAnimationFrame_;
-
-#pragma endregion
-
-#pragma region 敵のフラグ
-
-	//当たっているかどうか
-	bool isHit_ = false;
-
-	//ダウンしているかどうか
-	bool isDown_ = false;
-
-	//攻撃しているかどうか
-	bool isAttack_[5];
-
-	//ガードしているかどうか
-	bool isGuard_ = false;
-
-	//プレイヤーと当たっているかどうか
-	bool isPlayerHit_ = false;
-
-	//各攻撃があたっているかどうか
-	//通常攻撃
-	bool isHitLightPunch_ = false;
-	bool isHitMiddlePunch_ = false;
-	bool isHitHighPunch_ = false;
-	bool isHitTCMiddlePunch_ = false;
-	bool isHitTCHighPunch_ = false;
-
-	//技
-	bool isHitTackle_ = false;
-
-	bool isHitThrow_ = false;
-	bool isThrow_ = false;
-
-	//シェイクしているかどうか
-	bool isShake_ = false;
-
-	//リセットしているかどうか
-	bool isReset_ = false;
-
-	bool isFinisherEffect_ = false;
 
 #pragma endregion
 
@@ -307,9 +224,6 @@ private:
 	std::unique_ptr<Model> bulletModel_;
 	std::vector<EnemyBullet*> bullets_;
 
-	//パーティクル
-	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
-	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
 
 	int shotCooldownTimer_ = 0;
 

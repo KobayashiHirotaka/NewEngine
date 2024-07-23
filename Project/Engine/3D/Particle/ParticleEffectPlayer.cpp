@@ -20,7 +20,7 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-			.SetTranslation({ position.x,position.y,  position.z })
+			.SetTranslation({ position.x, position.y,  position.z })
 			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 			.SetScale({ 0.1f, 0.1f, 0.1f }, { 0.4f ,0.4f ,0.4f })
@@ -39,7 +39,7 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-			.SetTranslation({ position.x,position.y,  position.z })
+			.SetTranslation({ position.x, position.y,  position.z })
 			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 			.SetScale({ 0.1f, 0.1f, 0.1f }, { 0.4f ,0.4f ,0.4f })
@@ -54,11 +54,49 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
+	else if ("RightBullet" == name)
+	{
+		ParticleEmitter* newParticleEmitter = EmitterBuilder()
+			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+			.SetTranslation({ position.x + 0.1f, position.y,  position.z })
+			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetScale({ 0.4f, 0.4f, 0.4f }, { 0.5f ,0.5f ,0.5f })
+			.SetAzimuth(0.0f, 0.8f)
+			.SetElevation(-9.0f, 9.0f)
+			.SetVelocity({ 0.0f ,0.0f ,0.0f }, { 0.01f ,0.01f ,0.01f })
+			.SetColor({ 0.0f ,0.0f ,1.0f ,1.0f }, { 0.0f ,0.5f ,1.0f ,1.0f })
+			.SetLifeTime(0.1f, 0.6f)
+			.SetCount(10)
+			.SetFrequency(4.0f)
+			.SetDeleteTime(0.03f)
+			.Build();
+		particleSystem_->AddParticleEmitter(newParticleEmitter);
+	}
+	else if ("LeftBullet" == name)
+	{
+		ParticleEmitter* newParticleEmitter = EmitterBuilder()
+			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+			.SetTranslation({ position.x - 0.1f, position.y,  position.z })
+			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetScale({ 0.4f, 0.4f, 0.4f }, { 0.5f ,0.5f ,0.5f })
+			.SetAzimuth(0.0f, 0.8f)
+			.SetElevation(-9.0f, 9.0f)
+			.SetVelocity({ 0.0f ,0.0f ,0.0f }, { 0.01f ,0.01f ,0.01f })
+			.SetColor({ 0.0f ,0.0f ,1.0f ,1.0f }, { 0.0f ,0.5f ,1.0f ,1.0f })
+			.SetLifeTime(0.1f, 0.6f)
+			.SetCount(10)
+			.SetFrequency(4.0f)
+			.SetDeleteTime(0.03f)
+			.Build();
+		particleSystem_->AddParticleEmitter(newParticleEmitter);
+	}
 	else if ("Hit" == name)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-			.SetTranslation({ position.x,position.y,  position.z })
+			.SetTranslation({ position.x, position.y,  position.z })
 			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 			.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
@@ -77,7 +115,7 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
-			.SetTranslation({ position.x,position.y,  position.z })
+			.SetTranslation({ position.x, position.y,  position.z })
 			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
 			.SetScale({ 0.1f, 0.1f,0.1f }, { 0.2f ,0.2f ,0.2f })
