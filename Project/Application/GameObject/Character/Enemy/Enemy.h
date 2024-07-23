@@ -1,18 +1,4 @@
 #pragma once
-#include "Engine/3D/Model/Model.h"
-#include "Engine/3D/Model/ModelManager.h"
-#include "Engine/3D/WorldTransform/WorldTransform.h"
-#include "Engine/3D/Camera/Camera.h"
-#include "Engine/Utility/Collision/Collider.h"
-#include "Engine/Utility/Collision/CollisionConfig.h"
-#include "Engine/Components/Input/Input.h"
-#include "Engine/Components/Audio/Audio.h"
-#include "Engine/2D/Sprite/UI.h"
-#include "Engine/3D/Particle/ParticleModel.h"
-#include "Engine/3D/Particle/ParticleSystem.h"
-#include <random>
-#include <numbers>
-
 #include "Application/GameObject/Character/ICharacter.h"
 #include "EnemyBullet.h"
 
@@ -32,7 +18,7 @@ public:
 
 	void ImGui(const char* Title)override;
 
-	void BoneDraw(const Camera& camera)override;
+	void DrawBone(const Camera& camera)override;
 
 	void DrawSprite()override;
 

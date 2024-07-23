@@ -138,7 +138,7 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera, const uin
 	mesh_->Draw();
 }
 
-void Model::BoneDraw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData)
+void Model::DrawBone(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData)
 {
 	/*worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
 	worldTransform.TransferMatrix();*/

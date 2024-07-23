@@ -1,5 +1,19 @@
 #pragma once
+#include "Engine/3D/Model/Model.h"
+#include "Engine/3D/Model/ModelManager.h"
+#include "Engine/3D/WorldTransform/WorldTransform.h"
+#include "Engine/3D/Camera/Camera.h"
+#include "Engine/Utility/Collision/Collider.h"
+#include "Engine/Utility/Collision/CollisionConfig.h"
+#include "Engine/Components/Input/Input.h"
+#include "Engine/Components/Audio/Audio.h"
+#include "Engine/2D/Sprite/UI.h"
+#include "Engine/3D/Particle/ParticleModel.h"
+#include "Engine/3D/Particle/ParticleSystem.h"
 #include "Engine/3D/Model/IGame3dObject.h"
+
+#include <random>
+#include <numbers>
 
 class ICharacter : public IGame3dObject
 {
@@ -21,10 +35,6 @@ public:
 
 	struct WorkAttack
 	{
-		Vector3 translation;
-
-		Vector3 rotation;
-
 		uint32_t attackParameter = 0;
 
 		int stiffnessTimer = 60;
@@ -62,7 +72,7 @@ public:
 		bool isJumpAttack = false;
 	};
 
-	virtual void BoneDraw(const Camera& camera) = 0;
+	virtual void DrawBone(const Camera& camera) = 0;
 
 	virtual void DrawSprite() = 0;
 
@@ -72,5 +82,8 @@ public:
 
 protected:
 
-
+	//パーティクル
+	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
+	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
+	bool isParticle_ = false;
 };

@@ -389,9 +389,9 @@ void Enemy::Draw(const Camera& camera)
 	model_->Draw(worldTransform_, camera, animationIndex_);
 }
 
-void Enemy::BoneDraw(const Camera& camera)
+void Enemy::DrawBone(const Camera& camera)
 {
-	model_->BoneDraw(worldTransform_, camera, animationIndex_);
+	model_->DrawBone(worldTransform_, camera, animationIndex_);
 }
 
 void Enemy::DrawSprite()

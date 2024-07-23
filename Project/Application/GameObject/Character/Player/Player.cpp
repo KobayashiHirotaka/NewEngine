@@ -330,9 +330,9 @@ void Player::Draw(const Camera& camera)
 	}
 }
 
-void Player::BoneDraw(const Camera& camera)
+void Player::DrawBone(const Camera& camera)
 {
-	model_->BoneDraw(worldTransform_, camera, animationIndex_);
+	model_->DrawBone(worldTransform_, camera, animationIndex_);
 }
 
 void Player::DrawSprite()
