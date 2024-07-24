@@ -9,36 +9,34 @@ GameWinScene::~GameWinScene() {};
 
 void GameWinScene::Initialize()
 {
-	//textureManagerのinstance
+	//TextureManagerのinstance
 	textureManager_ = TextureManager::GetInstance();
 
-	//modelManagerのinstance
+	//ModelManagerのinstance
 	modelManager_ = ModelManager::GetInstance();
 
-	//inputのinstance
+	//Inputのinstance
 	input_ = Input::GetInstance();
 
-	//audioのinstance
+	//Audioのinstance
 	audio_ = Audio::GetInstance();
 
-	//postProcessのinstance
+	//PostProcessのinstance
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
 
-	//postEffectの切り替え
+	//PostEffectの切り替え
 	PostProcess::GetInstance()->SetIsBloomActive(true);
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 	PostProcess::GetInstance()->SetIsVignetteActive(false);
 
-	//modelの読み込み
-	//modelManager_->LoadModel("resource/skydome", "skydome.obj");
-
-	//skydomeの生成、初期化
+	//Skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
-	//debugCameraの初期化
+	//DebugCameraの初期化
 	debugCamera_.Initialize();
 
+	//リソース
 	winSceneTextureHandle_ = TextureManager::LoadTexture("resource/images/WinScene.png");
 	winSceneSprite_.reset(Sprite::Create(winSceneTextureHandle_, { 0.0f,0.0f }));
 
@@ -51,7 +49,7 @@ void GameWinScene::Initialize()
 
 void GameWinScene::Update()
 {
-	//skydomeの更新
+	//Skydomeの更新
 	skydome_->Update();
 
 	//シーン切り替え
@@ -65,12 +63,6 @@ void GameWinScene::Update()
 				audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 			}
 		}
-	}
-
-	if (input_->PushKey(DIK_SPACE))
-	{
-		sceneManager_->ChangeScene("GameTitleScene");
-		return;
 	}
 
 	//トランジション
@@ -99,7 +91,7 @@ void GameWinScene::Update()
 		}
 	}
 
-	//camera、debugCameraの処理
+	//Camera、DebugCameraの処理
 	debugCamera_.Update();
 
 	if (input_->PushKey(DIK_K))
@@ -129,7 +121,7 @@ void GameWinScene::Draw()
 
 	Model::PreDraw();
 
-	//skydomeの描画
+	//Skydomeの描画
 	skydome_->Draw(camera_);
 
 	Model::PostDraw();
@@ -140,6 +132,7 @@ void GameWinScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
+	//Win表示
 	winSceneSprite_->Draw();
 
 	Sprite::PostDraw();

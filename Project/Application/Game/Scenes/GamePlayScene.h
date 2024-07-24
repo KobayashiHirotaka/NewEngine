@@ -108,7 +108,8 @@ private:
 	//時間
 	int currentSeconds_;
 
-	float frameTime = 1.0f / 60.0f;  // 60FPSを仮定
+	//60FPSを仮定
+	float frameTime = 1.0f / 60.0f;  
 	float elapsedTime = 0.0f;
 
 	//Sounds

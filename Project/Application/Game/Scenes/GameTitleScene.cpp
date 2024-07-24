@@ -92,7 +92,7 @@ void GameTitleScene::Update()
 		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 	}
 
-	//トランジション(FadeOut)
+	//トランジション
 	if (!isTransitionEnd_)
 	{
 		transitionTimer_ += 1.0f / kTransitionTime;
@@ -106,7 +106,6 @@ void GameTitleScene::Update()
 		}
 	}
 
-	//トランジション(FadeIn)
 	if (isTransitionStart_)
 	{
 		transitionTimer_ += 1.0f / kTransitionTime;
@@ -154,7 +153,7 @@ void GameTitleScene::Draw()
 
 	Model::PreDraw();
 
-	//skydomeの描画
+	//Skydomeの描画
 	skydome_->Draw(camera_);
 
 	Model::PostDraw();
@@ -171,6 +170,7 @@ void GameTitleScene::Draw()
 		titleUISprite_->Draw();
 	}
 
+	//操作説明
 	/*if (isOpen_ && spriteCount_ == 1)
 	{
 		generalCommandListSprite_->Draw();
@@ -214,13 +214,17 @@ void GameTitleScene::AnimationTitle()
 	//タイトルの文字を動かす
 	titleSpriteMoveTimer_--;
 
+	//開始座標
 	float startY = titleSpritePosition_.y;
+
+	//終了座標
 	float endY = startY + titleSpriteMoveSpeed_;
 
+	//移動
 	float interpolatedY = Lerp(startY, endY, 0.4f);
-
 	titleSpritePosition_.y = interpolatedY;
 
+	//切り替えし
 	if (titleSpriteMoveTimer_ < 0)
 	{
 		titleSpriteMoveSpeed_ *= -1.0f;
