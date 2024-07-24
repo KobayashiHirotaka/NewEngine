@@ -165,6 +165,9 @@ public:
 
 	virtual void BehaviorStanUpdate() = 0;
 
+	//移動
+	virtual void Move() = 0;
+
 	//攻撃
 	virtual void AttackStart(bool& isAttackType) = 0;
 

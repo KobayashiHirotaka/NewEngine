@@ -187,127 +187,11 @@ void Player::BehaviorRootInitialize()
 
 void Player::BehaviorRootUpdate()
 {
-	//コントローラーの移動処理
+	//コントローラーの取得
 	if (input_->GetJoystickState())
 	{
-		const float deadZone = 0.7f;
-		bool isFrontMove_ = false;
-		bool isBackMove_ = false;
-
-		moveData_.velocity = { 0.0f, 0.0f, 0.0f };
-
-		//敵の位置を取得する（例: enemyPosition という変数）
-		Vector3 enemyPosition = enemy_->GetWorldPosition();
-
-		if (characterState_.isHitCharacter)
-		{
-			if (characterState_.direction == Direction::Right && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
-			{
-				// 敵を右方向に押す
-				PushEnemy(enemyPosition, 0.04f);
-			}
-			else if (characterState_.direction == Direction::Left && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
-			{
-				// 敵を左方向に押す
-				PushEnemy(enemyPosition, -0.04f);
-			}
-		}
-
-		//移動処理
-		//前方向に移動(左を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && characterState_.direction == Direction::Left && !characterState_.isDown)
-		{
-			moveData_.velocity.x = -0.01f;
-			isFrontMove_ = true;
-			characterState_.isGuard = false;
-		}
-
-		//前方向に移動(右を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Right && !characterState_.isDown)
-		{
-			moveData_.velocity.x = 0.01f;
-			isFrontMove_ = true;
-			characterState_.isGuard = false;
-		}
-
-		//後ろ方向に移動(右を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && characterState_.direction == Direction::Right && !characterState_.isDown)
-		{
-			characterState_.isGuard = true;
-
-			//移動しながらガード
-			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
-			{
-				moveData_.velocity.x = -0.01f;
-				isBackMove_ = true;
-			}
-
-			//止まってガード
-			if (characterState_.isGuard && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
-			{
-				moveData_.velocity.x = 0.0f;
-				isBackMove_ = false;
-			}
-		}
-
-		//後ろ方向に移動(左を向いているとき)
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Left && !characterState_.isDown)
-		{
-			characterState_.isGuard = true;
-
-			//移動しながらガード
-			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
-			{
-				moveData_.velocity.x = 0.01f;
-				isBackMove_ = true;
-			}
-
-			//止まってガード
-			if (characterState_.isDown && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
-			{
-				moveData_.velocity.x = 0.0f;
-				isBackMove_ = false;
-			}
-		}
-
-		//移動していない時
-		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
-		{
-			characterState_.isGuard = false;
-		}
-
 		//移動
-		if (isFrontMove_)
-		{
-			animationIndex_ = 1;
-			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, animationDuration_, model_);
-
-			moveData_.velocity = Normalize(moveData_.velocity);
-			moveData_.velocity = Multiply(frontSpeed_, moveData_.velocity);
-
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
-
-			worldTransform_.UpdateMatrixEuler();
-		}
-		else if (isBackMove_)
-		{
-			animationIndex_ = 0;
-			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, animationDuration_, model_);
-
-			moveData_.velocity = Normalize(moveData_.velocity);
-			moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
-
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
-
-			worldTransform_.UpdateMatrixEuler();
-		}
-		else
-		{
-			animationIndex_ = 4;
-			UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, animationDuration_, model_);
-		}
+		Move();
 
 		//ジャンプ
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown)
@@ -933,6 +817,132 @@ void Player::UpdateAnimationTime(float animationTime, bool isLoop, float frameRa
 	float animationDuration, std::unique_ptr<Model>& modelFighterBody)
 {
 	ICharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, animationDuration, modelFighterBody);
+}
+
+void Player::Move()
+{
+	//コントローラーの取得
+	if (input_->GetJoystickState())
+	{
+		const float deadZone = 0.7f;
+		bool isFrontMove_ = false;
+		bool isBackMove_ = false;
+
+		moveData_.velocity = { 0.0f, 0.0f, 0.0f };
+
+		//敵の位置を取得する（例: enemyPosition という変数）
+		Vector3 enemyPosition = enemy_->GetWorldPosition();
+
+		if (characterState_.isHitCharacter)
+		{
+			if (characterState_.direction == Direction::Right && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
+			{
+				// 敵を右方向に押す
+				PushEnemy(enemyPosition, 0.04f);
+			}
+			else if (characterState_.direction == Direction::Left && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+			{
+				// 敵を左方向に押す
+				PushEnemy(enemyPosition, -0.04f);
+			}
+		}
+
+		//移動処理
+		//前方向に移動(左を向いているとき)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && characterState_.direction == Direction::Left && !characterState_.isDown)
+		{
+			moveData_.velocity.x = -0.01f;
+			isFrontMove_ = true;
+			characterState_.isGuard = false;
+		}
+
+		//前方向に移動(右を向いているとき)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Right && !characterState_.isDown)
+		{
+			moveData_.velocity.x = 0.01f;
+			isFrontMove_ = true;
+			characterState_.isGuard = false;
+		}
+
+		//後ろ方向に移動(右を向いているとき)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && characterState_.direction == Direction::Right && !characterState_.isDown)
+		{
+			characterState_.isGuard = true;
+
+			//移動しながらガード
+			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
+			{
+				moveData_.velocity.x = -0.01f;
+				isBackMove_ = true;
+			}
+
+			//止まってガード
+			if (characterState_.isGuard && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+			{
+				moveData_.velocity.x = 0.0f;
+				isBackMove_ = false;
+			}
+		}
+
+		//後ろ方向に移動(左を向いているとき)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Left && !characterState_.isDown)
+		{
+			characterState_.isGuard = true;
+
+			//移動しながらガード
+			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
+			{
+				moveData_.velocity.x = 0.01f;
+				isBackMove_ = true;
+			}
+
+			//止まってガード
+			if (characterState_.isDown && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+			{
+				moveData_.velocity.x = 0.0f;
+				isBackMove_ = false;
+			}
+		}
+
+		//移動していない時
+		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+		{
+			characterState_.isGuard = false;
+		}
+
+		//移動
+		if (isFrontMove_)
+		{
+			animationIndex_ = 1;
+			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, animationDuration_, model_);
+
+			moveData_.velocity = Normalize(moveData_.velocity);
+			moveData_.velocity = Multiply(frontSpeed_, moveData_.velocity);
+
+			// 平行移動
+			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
+
+			worldTransform_.UpdateMatrixEuler();
+		}
+		else if (isBackMove_)
+		{
+			animationIndex_ = 0;
+			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, animationDuration_, model_);
+
+			moveData_.velocity = Normalize(moveData_.velocity);
+			moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
+
+			// 平行移動
+			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
+
+			worldTransform_.UpdateMatrixEuler();
+		}
+		else
+		{
+			animationIndex_ = 4;
+			UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, animationDuration_, model_);
+		}
+	}
 }
 
 void Player::AttackStart(bool& isAttackType)

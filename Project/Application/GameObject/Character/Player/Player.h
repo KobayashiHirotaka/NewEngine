@@ -44,6 +44,9 @@ public:
 
 	void BehaviorStanUpdate()override;
 
+	//移動
+	void Move();
+
 	//攻撃
 	void AttackStart(bool& isAttackType)override;
 

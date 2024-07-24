@@ -229,6 +229,11 @@ void ICharacter::BehaviorAttackUpdate()
 
 }
 
+void ICharacter::Move()
+{
+
+}
+
 void ICharacter::AttackStart(bool& isAttackType)
 {
 	characterState_.behaviorRequest = Behavior::kAttack;
