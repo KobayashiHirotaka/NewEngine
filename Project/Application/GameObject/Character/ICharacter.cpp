@@ -8,7 +8,110 @@ void ICharacter::Initialize()
 
 void ICharacter::Update()
 {
+	effectState_.isShake = false;
 
+	//アニメーションの適応
+	model_->ApplyAnimation(animationIndex_);
+
+	model_->Update();
+
+	//リセットのときの処理
+	if (isReset_)
+	{
+		Reset();
+	}
+
+	//TODO:StatePatternでやる
+	//行動
+	if (characterState_.behaviorRequest)
+	{
+		characterState_.behavior = characterState_.behaviorRequest.value();
+
+		switch (characterState_.behavior)
+		{
+		case Behavior::kRoot:
+		default:
+			BehaviorRootInitialize();
+			break;
+
+		case Behavior::kAttack:
+			BehaviorAttackInitialize();
+			break;
+
+		case Behavior::kJump:
+			BehaviorJumpInitialize();
+			break;
+
+		case Behavior::kStan:
+			BehaviorStanInitialize();
+			break;
+		}
+
+		characterState_.behaviorRequest = std::nullopt;
+	}
+
+	switch (characterState_.behavior)
+	{
+	case Behavior::kRoot:
+	default:
+		if (GamePlayScene::roundStartTimer_ <= 0 && GamePlayScene::migrationTimer == 200)
+		{
+			BehaviorRootUpdate();
+		}
+		break;
+
+	case Behavior::kAttack:
+		BehaviorAttackUpdate();
+		break;
+
+	case Behavior::kJump:
+		BehaviorJumpUpdate();
+		break;
+
+	case Behavior::kStan:
+		BehaviorStanUpdate();
+		break;
+	}
+
+	//画面端の処理
+	if (worldTransform_.translation.x >= RightEdge_)
+	{
+		worldTransform_.translation.x = RightEdge_;
+	}
+
+	if (worldTransform_.translation.x <= leftEdge_)
+	{
+		worldTransform_.translation.x = leftEdge_;
+	}
+
+	//端での攻撃時の処理
+	if (attackData_.isAttack && worldTransform_.translation.x >= 3.5f && characterState_.direction == Direction::Right)
+	{
+		worldTransform_.translation.x = 3.5f;
+	}
+
+	if (attackData_.isAttack && worldTransform_.translation.x <= -3.5f && characterState_.direction == Direction::Left)
+	{
+		worldTransform_.translation.x = -3.5f;
+	}
+
+	//ジャンプ中にプレイヤーと当たったときの処理
+	if (characterState_.behaviorRequest == Behavior::kJump && characterState_.isHitCharacter)
+	{
+		worldTransform_.translation.y = 0.0f;
+	}
+	
+	//ダウン時のアニメーション
+	DownAnimation();
+
+	//各ゲージの更新処理
+	HPBarUpdate();
+
+	GuardGaugeBarUpdate();
+
+	FinisherGaugeBarUpdate();
+
+	characterState_.isHitCharacter = false;
 }
 
 void ICharacter::Draw(const Camera& camera)
@@ -79,6 +182,26 @@ void ICharacter::Reset()
 
 	//リセット
 	isReset_ = false;
+}
+
+void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex, 
+	float animationDuration, std::unique_ptr<Model>& modelFighterBody)
+{
+	animationTime = 0.0f;
+	animationDuration = 0.0f;
+
+	animationTime = modelFighterBody->GetAnimationTime();
+	animationDuration = modelFighterBody->GetAnimation()[animationIndex].duration;
+
+	animationTime += 1.0f / frameRate;
+
+	if (isLoop)
+	{
+		animationTime = std::fmod(animationTime, modelFighterBody->GetAnimation()[animationIndex].duration);
+	}
+
+	modelFighterBody->SetAnimationTime(animationTime);
+	modelFighterBody->ApplyAnimation(animationIndex);
 }
 
 void ICharacter::DownAnimation()

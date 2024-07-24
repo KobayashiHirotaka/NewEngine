@@ -69,15 +69,11 @@ private:
 	void PushEnemy(Vector3& enemyPosition, float pushSpeed);
 
 	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex,
-		std::unique_ptr<Model>& modelFighterBody);
+		float animationDuration, std::unique_ptr<Model>& modelFighterBody)override;
 
-	void DownAnimation();
+	void DownAnimation()override;
 
 private:
-	Input* input_ = nullptr;
-
-	Audio* audio_ = nullptr;
-
 	//敵
 	Enemy* enemy_ = nullptr;
 

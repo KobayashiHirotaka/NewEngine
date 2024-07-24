@@ -173,19 +173,6 @@ void GamePlayScene::Update()
 	}
 
 	//PostEffectの値変更
-	if (player_->GetIsHSVFilter())
-	{
-		float hue = Random(-1.0f, 1.0f);
-		float saturation = Random(-1.0f, 1.0f);
-		PostProcess::GetInstance()->SetHSVFilterHue(hue);
-		PostProcess::GetInstance()->SetHSVFilterSaturation(saturation);
-	}
-	else
-	{
-		PostProcess::GetInstance()->SetHSVFilterHue(0.0f);
-		PostProcess::GetInstance()->SetHSVFilterSaturation(0.0f);
-	}
-
 	if (player_->GetHP() >= -25.0f)
 	{
 		PostProcess::GetInstance()->SetIsVignetteActive(true);

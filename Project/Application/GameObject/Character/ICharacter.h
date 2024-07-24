@@ -142,6 +142,10 @@ public:
 
 	virtual void Reset() = 0;
 
+	//アニメーション
+	virtual void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex,
+		float animationDuration ,std::unique_ptr<Model>& modelFighterBody) = 0;
+
 	virtual void DownAnimation() = 0;
 
 	//キャラクターの行動関数
@@ -203,6 +207,10 @@ public:
 	void SetIsReset(bool isReset) { isReset_ = isReset; };
 
 protected:
+	Input* input_ = nullptr;
+
+	Audio* audio_ = nullptr;
+
 	CharacterState characterState_;
 
 	EffectState effectState_;
@@ -218,6 +226,7 @@ protected:
 	//再生するanimationの番号
 	uint32_t animationIndex_ = 4;
 	float animationTime_ = 0.0f;
+	float animationDuration_ = 0.0f;
 
 	bool isParticle_ = false;
 
@@ -229,4 +238,8 @@ protected:
 
 	//デバッグ用
 	bool isDebug_ = false;
+
+	//画面端
+	float leftEdge_ = -4.0f;
+	float RightEdge_ = 4.0f;
 };

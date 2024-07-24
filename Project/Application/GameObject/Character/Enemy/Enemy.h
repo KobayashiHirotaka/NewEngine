@@ -77,9 +77,9 @@ private:
 	void HitStop(int milliseconds);
 
 	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex,
-		std::unique_ptr<Model>& modelFighterBody);
+		float animationDuration, std::unique_ptr<Model>& modelFighterBody)override;
 
-	void DownAnimation();
+	void DownAnimation()override;
 
 	int Random(int min_value, int max_value);
 
