@@ -51,7 +51,10 @@ public:
 	//攻撃
 	void AttackStart(bool& isAttackType)override;
 
-	void AttackEnd()override;
+	void AttackEnd(bool& isAttackType)override;
+
+	//判定の初期化
+	void ResetCollision()override;
 
 	//UIの更新関数
 	void HPBarUpdate()override;

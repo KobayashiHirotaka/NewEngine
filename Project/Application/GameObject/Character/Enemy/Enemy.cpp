@@ -768,9 +768,15 @@ void Enemy::AttackStart(bool& isAttackType)
 	ICharacter::AttackStart(isAttackType);
 }
 
-void Enemy::AttackEnd()
+void Enemy::AttackEnd(bool& isAttackType)
 {
+	ICharacter::AttackEnd(isAttackType);
+}
 
+void Enemy::ResetCollision()
+{
+	aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+	SetAABB(aabb_);
 }
 
 void Enemy::HPBarUpdate()

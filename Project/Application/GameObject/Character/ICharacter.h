@@ -171,7 +171,10 @@ public:
 	//攻撃
 	virtual void AttackStart(bool& isAttackType) = 0;
 
-	virtual void AttackEnd() = 0;
+	virtual void AttackEnd(bool& isAttackType) = 0;
+
+	//当たり判定の初期化
+	virtual void ResetCollision() = 0;
 
 	//UIの更新関数
 	virtual void HPBarUpdate() = 0;

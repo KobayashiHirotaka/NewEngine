@@ -269,14 +269,8 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.isDown || attackData_.attackAnimationFrame > 30)
 		{
-			characterState_.behaviorRequest = Behavior::kRoot;
-			attackData_.isAttack = false;
-			attackData_.isLightPunch = false;
-			animationTime_ = 0.0f;
-			attackData_.attackAnimationFrame = 0;
-			model_->SetAnimationTime(animationTime_);
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-			SetAABB(aabb_);
+			AttackEnd(attackData_.isLightPunch);
+			ResetCollision();
 		}
 
 		//キャンセルの処理(中TC)
@@ -326,14 +320,8 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.isDown || attackData_.attackAnimationFrame > 30)
 		{
-			characterState_.behaviorRequest = Behavior::kRoot;
-			attackData_.isAttack = false;
-			attackData_.isTCMiddlePunch = false;
-			animationTime_ = 0.0f;
-			attackData_.attackAnimationFrame = 0;
-			model_->SetAnimationTime(animationTime_);
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-			SetAABB(aabb_);
+			AttackEnd(attackData_.isTCMiddlePunch);
+			ResetCollision();
 		}
 
 		//キャンセルの処理(強TC)
@@ -383,14 +371,8 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.isDown || attackData_.attackAnimationFrame > 30)
 		{
-			characterState_.behaviorRequest = Behavior::kRoot;
-			attackData_.isAttack = false;
-			attackData_.isTCHighPunch = false;
-			animationTime_ = 0.0f;
-			attackData_.attackAnimationFrame = 0;
-			model_->SetAnimationTime(animationTime_);
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-			SetAABB(aabb_);
+			AttackEnd(attackData_.isTCHighPunch);
+			ResetCollision();
 		}
 
 		attackData_.attackAnimationFrame++;
@@ -422,14 +404,8 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.isDown || attackData_.attackAnimationFrame > 40)
 		{
-			characterState_.behaviorRequest = Behavior::kRoot;
-			attackData_.isAttack = false;
-			attackData_.isMiddlePunch = false;
-			animationTime_ = 0.0f;
-			attackData_.attackAnimationFrame = 0;
-			model_->SetAnimationTime(animationTime_);
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-			SetAABB(aabb_);
+			AttackEnd(attackData_.isMiddlePunch);
+			ResetCollision();
 		}
 
 		attackData_.attackAnimationFrame++;
@@ -471,14 +447,8 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.isDown || attackData_.attackAnimationFrame > 40)
 		{
-			characterState_.behaviorRequest = Behavior::kRoot;
-			attackData_.isAttack = false;
-			attackData_.isHighPunch = false;
-			animationTime_ = 0.0f;
-			attackData_.attackAnimationFrame = 0;
-			model_->SetAnimationTime(animationTime_);
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-			SetAABB(aabb_);
+			AttackEnd(attackData_.isHighPunch);
+			ResetCollision();
 		}
 
 		//キャンセルの処理(横A)
@@ -580,14 +550,8 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.isDown || attackData_.attackAnimationFrame >= 100)
 		{
-			characterState_.behaviorRequest = Behavior::kRoot;
-			attackData_.isAttack = false;
-			attackData_.isTackle = false;
-			animationTime_ = 0.0f;
-			attackData_.attackAnimationFrame = 0;
-			model_->SetAnimationTime(animationTime_);
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-			SetAABB(aabb_);
+			AttackEnd(attackData_.isTackle);
+			ResetCollision();
 		}
 
 		attackData_.attackAnimationFrame++;
@@ -671,8 +635,7 @@ void Player::BehaviorStanUpdate()
 		guardGauge_ = 0.0f;
 		timerData_.stanTimer = 60;
 		model_->SetAnimationTime(animationTime_);
-		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-		SetAABB(aabb_);
+		
 	}
 }
 
@@ -950,9 +913,15 @@ void Player::AttackStart(bool& isAttackType)
 	ICharacter::AttackStart(isAttackType);
 }
 
-void Player::AttackEnd()
+void Player::AttackEnd(bool& isAttackType)
 {
+	ICharacter::AttackEnd(isAttackType);
+}
 
+void Player::ResetCollision()
+{
+	aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+	SetAABB(aabb_);
 }
 
 void Player::HPBarUpdate()

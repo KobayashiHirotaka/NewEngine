@@ -187,6 +187,7 @@ void ICharacter::Reset()
 void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex, 
 	float animationDuration, std::unique_ptr<Model>& modelFighterBody)
 {
+	//TODO:Engine側に移行する
 	animationTime = 0.0f;
 	animationDuration = 0.0f;
 
@@ -242,7 +243,17 @@ void ICharacter::AttackStart(bool& isAttackType)
 	isAttackType = true;
 }
 
-void ICharacter::AttackEnd()
+void ICharacter::AttackEnd(bool& isAttackType)
+{
+	characterState_.behaviorRequest = Behavior::kRoot;
+	attackData_.isAttack = false;
+	isAttackType = false;
+	animationTime_ = 0.0f;
+	attackData_.attackAnimationFrame = 0;
+	model_->SetAnimationTime(animationTime_);
+}
+
+void ICharacter::ResetCollision()
 {
 
 }
