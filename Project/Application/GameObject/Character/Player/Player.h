@@ -79,10 +79,12 @@ private:
 
 	void PushEnemy(Vector3& enemyPosition, float pushSpeed);
 
-	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex,
-		float animationDuration, std::unique_ptr<Model>& modelFighterBody)override;
+	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, 
+		int animationIndex, std::unique_ptr<Model>& modelFighterBody)override;
 
 	void DownAnimation()override;
+
+	void DownAnimationEnd(int animationIndex, bool& isHitAttackType);
 
 private:
 	//敵

@@ -90,10 +90,12 @@ public:
 private:
 	void HitStop(int milliseconds);
 
-	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex,
-		float animationDuration, std::unique_ptr<Model>& modelFighterBody)override;
+	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, 
+		int animationIndex, std::unique_ptr<Model>& modelFighterBody)override;
 
 	void DownAnimation()override;
+
+	void DownAnimationEnd(int animationIndex, bool& isHitAttackType);
 
 	int Random(int min_value, int max_value);
 
