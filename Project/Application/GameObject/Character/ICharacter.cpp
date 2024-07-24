@@ -74,9 +74,9 @@ void ICharacter::Update()
 	}
 
 	//画面端の処理
-	if (worldTransform_.translation.x >= RightEdge_)
+	if (worldTransform_.translation.x >= rightEdge_)
 	{
-		worldTransform_.translation.x = RightEdge_;
+		worldTransform_.translation.x = rightEdge_;
 	}
 
 	if (worldTransform_.translation.x <= leftEdge_)
@@ -184,15 +184,13 @@ void ICharacter::Reset()
 	isReset_ = false;
 }
 
-void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex, 
-	float animationDuration, std::unique_ptr<Model>& modelFighterBody)
+void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, 
+	int animationIndex, std::unique_ptr<Model>& modelFighterBody)
 {
 	//TODO:Engine側に移行する
 	animationTime = 0.0f;
-	animationDuration = 0.0f;
 
 	animationTime = modelFighterBody->GetAnimationTime();
-	animationDuration = modelFighterBody->GetAnimation()[animationIndex].duration;
 
 	animationTime += 1.0f / frameRate;
 
@@ -200,6 +198,16 @@ void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float fra
 	{
 		animationTime = std::fmod(animationTime, modelFighterBody->GetAnimation()[animationIndex].duration);
 	}
+	else
+	{
+		float duration = modelFighterBody->GetAnimation()[animationIndex].duration;
+
+		if (animationTime > duration)
+		{
+			animationTime = duration; 
+		}
+	}
+
 
 	modelFighterBody->SetAnimationTime(animationTime);
 	modelFighterBody->ApplyAnimation(animationIndex);
@@ -208,6 +216,17 @@ void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float fra
 void ICharacter::DownAnimation()
 {
 
+}
+
+void ICharacter::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
+{
+	characterState_.behaviorRequest = Behavior::kRoot;
+	animationIndex_ = animationIndex;
+	timerData_.downAnimationTimer = 60;
+	animationTime_ = 0.0f;
+	model_->SetAnimationTime(animationTime_);
+	isHitAttackType = false;
+	characterState_.isDown = false;
 }
 
 void ICharacter::BehaviorRootInitialize()

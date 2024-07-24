@@ -251,10 +251,8 @@ void Player::BehaviorAttackUpdate()
 	
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, animationDuration_, model_);
+			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
-
-		attackData_.isAttack = true;
 
 		if (characterState_.direction == Direction::Right)
 		{
@@ -267,7 +265,16 @@ void Player::BehaviorAttackUpdate()
 			SetAABB(aabb_);
 		}
 
-		if (characterState_.isDown || attackData_.attackAnimationFrame > 30)
+		if (attackData_.attackAnimationFrame >= 5 && attackData_.attackAnimationFrame < 10)
+		{
+			attackData_.isAttack = true;
+		}
+		else
+		{
+			attackData_.isAttack = false;
+		}
+
+		if (characterState_.isDown || attackData_.attackAnimationFrame > 25)
 		{
 			AttackEnd(attackData_.isLightPunch);
 			ResetCollision();
@@ -302,7 +309,7 @@ void Player::BehaviorAttackUpdate()
 
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, animationDuration_, model_);
+			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
 		attackData_.isAttack = true;
@@ -353,7 +360,7 @@ void Player::BehaviorAttackUpdate()
 
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, animationDuration_, model_);
+			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
 		attackData_.isAttack = true;
@@ -386,7 +393,7 @@ void Player::BehaviorAttackUpdate()
 
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, animationDuration_, model_);
+			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
 		attackData_.isAttack = true;
@@ -419,7 +426,7 @@ void Player::BehaviorAttackUpdate()
 
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, animationDuration_, model_);
+			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
 		attackData_.isAttack = true;
@@ -499,7 +506,7 @@ void Player::BehaviorAttackUpdate()
 
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, animationDuration_, model_);
+			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
 		if (characterState_.direction == Direction::Right)
@@ -571,7 +578,7 @@ void Player::BehaviorJumpUpdate()
 {
 	animationIndex_ = 4;
 
-	UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, animationDuration_, model_);
+	UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
 
 	worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
@@ -776,10 +783,10 @@ void Player::OnCollision(Collider* collider, float damage)
 	}
 }
 
-void Player::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex,
-	float animationDuration, std::unique_ptr<Model>& modelFighterBody)
+void Player::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, 
+	int animationIndex, std::unique_ptr<Model>& modelFighterBody)
 {
-	ICharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, animationDuration, modelFighterBody);
+	ICharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, modelFighterBody);
 }
 
 void Player::Move()
@@ -877,7 +884,7 @@ void Player::Move()
 		if (isFrontMove_)
 		{
 			animationIndex_ = 1;
-			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, animationDuration_, model_);
+			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
 
 			moveData_.velocity = Normalize(moveData_.velocity);
 			moveData_.velocity = Multiply(frontSpeed_, moveData_.velocity);
@@ -890,7 +897,7 @@ void Player::Move()
 		else if (isBackMove_)
 		{
 			animationIndex_ = 0;
-			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, animationDuration_, model_);
+			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
 
 			moveData_.velocity = Normalize(moveData_.velocity);
 			moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
@@ -903,7 +910,7 @@ void Player::Move()
 		else
 		{
 			animationIndex_ = 4;
-			UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, animationDuration_, model_);
+			UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
 		}
 	}
 }
@@ -1010,22 +1017,33 @@ void Player::HitStop(int milliseconds)
 void Player::DownAnimation()
 {
 	//タックル攻撃
-	if (characterState_.isHitTackle && characterState_.direction == Direction::Left)
+	if (characterState_.isHitTackle)
 	{
 		characterState_.isDown = true;
 		timerData_.downAnimationTimer--;
+
+		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
+		float moveX = (characterState_.direction == Direction::Right) ? -0.08f : 0.08f;
+
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.3f, -0.3f}, {-0.1f, 0.0f, 0.3f} } :
+			AABB{ {0.1f, -0.3f, -0.3f}, {0.8f, 0.0f, 0.3f} };
 
 		if (timerData_.downAnimationTimer > 55)
 		{
 			effectState_.isShake = true;
 
-			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x - 0.1f,
-					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
+						worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
+		}
+		else
+		{
+			effectState_.isShake = false;
 		}
 
-		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x < 4.0f)
+		if (timerData_.downAnimationTimer > 35 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
+			(characterState_.direction == Direction::Right && worldTransform_.translation.x > leftEdge_)))
 		{
-			worldTransform_.translation.x += 0.08f;
+			worldTransform_.translation.x += moveX;
 		}
 
 		if (worldTransform_.translation.y > 0.0f)
@@ -1038,69 +1056,14 @@ void Player::DownAnimation()
 		}
 
 		animationIndex_ = 6;
-		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, animationDuration_, model_);
+		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		aabb_ = { {0.1f,-0.3f,-0.3f},{0.8f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
 		if (!enemy_->GetIsTackle() && hp_ < 0.0f)
 		{
-			animationIndex_ = 4;
-			timerData_.downAnimationTimer = 60;
-			animationTime_ = 0.0f;
-			model_->SetAnimationTime(animationTime_);
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-			SetAABB(aabb_);
-			characterState_.isHitTackle = false;
-			characterState_.isDown = false;
-		}
-	}
-
-	if (characterState_.isHitTackle && characterState_.direction == Direction::Right)
-	{
-		characterState_.isDown = true;
-		timerData_.downAnimationTimer--;
-
-		if (timerData_.downAnimationTimer > 55)
-		{
-			effectState_.isShake = true;
-
-			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + 0.1f,
-				worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
-		}
-
-		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x > -4.0f)
-		{
-			worldTransform_.translation.x -= 0.08f;
-
-		}
-
-
-		if (worldTransform_.translation.y > 0.0f)
-		{
-			worldTransform_.translation.y -= 0.03f;
-		}
-		else if (worldTransform_.translation.y <= 0.0f)
-		{
-			worldTransform_.translation.y = 0.0f;
-		}
-
-		animationIndex_ = 6;
-		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, animationDuration_, model_);
-
-		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
-		SetAABB(aabb_);
-
-		if (!enemy_->GetIsTackle() && hp_ < 0.0f)
-		{
-			animationIndex_ = 4;
-			timerData_.downAnimationTimer = 60;
-			animationTime_ = 0.0f;
-			model_->SetAnimationTime(animationTime_);
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-			SetAABB(aabb_);
-			characterState_.isHitTackle = false;
-			characterState_.isDown = false;
+			DownAnimationEnd(4, characterState_.isHitTackle);
+			ResetCollision();
 		}
 	}
 
@@ -1121,17 +1084,13 @@ void Player::DownAnimation()
 		}
 
 		animationIndex_ = 3;
-		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, animationDuration_, model_);
+		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
 		if (timerData_.downAnimationTimer < 30 && hp_ < 0.0f)
 		{
-			characterState_.behaviorRequest = Behavior::kRoot;
-			animationIndex_ = 4;
-			timerData_.downAnimationTimer = 60;
-			animationTime_ = 0.0f;
-			model_->SetAnimationTime(animationTime_);
-			characterState_.isHitBullet = false;
-			characterState_.isDown = false;
+			ICharacter::DownAnimationEnd(4, characterState_.isHitBullet);
+			ResetCollision();
+
 			isParticle_ = false;
 		}
 	}
@@ -1165,25 +1124,24 @@ void Player::DownAnimation()
 		}
 
 		animationIndex_ = 6;
-		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, animationDuration_, model_);
+		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
 		if (timerData_.downAnimationTimer < 30 && hp_ < 0.0f)
 		{
-			characterState_.behaviorRequest = Behavior::kRoot;
-			animationIndex_ = 4;
-			timerData_.downAnimationTimer = 60;
-			animationTime_ = 0.0f;
-			model_->SetAnimationTime(animationTime_);
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-			SetAABB(aabb_);
-			characterState_.isHitAirBullet = false;
-			characterState_.isDown = false;
+			ICharacter::DownAnimationEnd(4, characterState_.isHitAirBullet);
+			ResetCollision();
+
 			isParticle_ = false;
 		}
 	}
+}
+
+void Player::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
+{
+	ICharacter::DownAnimationEnd(animationIndex, isHitAttackType);
 }
 
 Vector3 Player::GetWorldPosition()

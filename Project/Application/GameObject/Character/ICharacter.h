@@ -143,10 +143,12 @@ public:
 	virtual void Reset() = 0;
 
 	//アニメーション
-	virtual void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex,
-		float animationDuration ,std::unique_ptr<Model>& modelFighterBody) = 0;
+	virtual void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, 
+		int animationIndex,std::unique_ptr<Model>& modelFighterBody) = 0;
 
 	virtual void DownAnimation() = 0;
+
+	virtual void DownAnimationEnd(int animationIndex, bool& isHitAttackType) = 0;
 
 	//キャラクターの行動関数
 	virtual void BehaviorRootInitialize() = 0;
@@ -237,7 +239,6 @@ protected:
 	//再生するanimationの番号
 	uint32_t animationIndex_ = 4;
 	float animationTime_ = 0.0f;
-	float animationDuration_ = 0.0f;
 
 	bool isParticle_ = false;
 
@@ -252,5 +253,5 @@ protected:
 
 	//画面端
 	float leftEdge_ = -4.0f;
-	float RightEdge_ = 4.0f;
+	float rightEdge_ = 4.0f;
 };
