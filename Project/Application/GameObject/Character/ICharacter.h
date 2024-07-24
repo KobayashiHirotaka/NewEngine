@@ -132,15 +132,19 @@ public:
 
 	virtual void Draw(const Camera& camera) = 0;
 
-	virtual void DrawBone(const Camera& camera) = 0;
+	virtual void BoneDraw(const Camera& camera) = 0;
 
-	virtual void DrawSprite() = 0;
+	virtual void SpriteDraw() = 0;
 
-	virtual void DrawParticle(const Camera& camera) = 0;
+	virtual void ParticleDraw(const Camera& camera) = 0;
 
 	virtual void ImGui(const char* title) = 0;
 
 	virtual void Reset() = 0;
+
+	//アニメーション
+	virtual void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, int animationIndex,
+		float animationDuration ,std::unique_ptr<Model>& modelFighterBody) = 0;
 
 	virtual void DownAnimation() = 0;
 
@@ -160,6 +164,17 @@ public:
 	virtual void BehaviorStanInitialize() = 0;
 
 	virtual void BehaviorStanUpdate() = 0;
+
+	//移動
+	virtual void Move() = 0;
+
+	//攻撃
+	virtual void AttackStart(bool& isAttackType) = 0;
+
+	virtual void AttackEnd(bool& isAttackType) = 0;
+
+	//当たり判定の初期化
+	virtual void ResetCollision() = 0;
 
 	//UIの更新関数
 	virtual void HPBarUpdate() = 0;
@@ -203,6 +218,10 @@ public:
 	void SetIsReset(bool isReset) { isReset_ = isReset; };
 
 protected:
+	Input* input_ = nullptr;
+
+	Audio* audio_ = nullptr;
+
 	CharacterState characterState_;
 
 	EffectState effectState_;
@@ -218,6 +237,7 @@ protected:
 	//再生するanimationの番号
 	uint32_t animationIndex_ = 4;
 	float animationTime_ = 0.0f;
+	float animationDuration_ = 0.0f;
 
 	bool isParticle_ = false;
 
@@ -229,4 +249,8 @@ protected:
 
 	//デバッグ用
 	bool isDebug_ = false;
+
+	//画面端
+	float leftEdge_ = -4.0f;
+	float RightEdge_ = 4.0f;
 };
