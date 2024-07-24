@@ -132,12 +132,12 @@ void Player::Draw(const Camera& camera)
 	}
 }
 
-void Player::DrawBone(const Camera& camera)
+void Player::BoneDraw(const Camera& camera)
 {
-	model_->DrawBone(worldTransform_, camera, animationIndex_);
+	model_->BoneDraw(worldTransform_, camera, animationIndex_);
 }
 
-void Player::DrawSprite()
+void Player::SpriteDraw()
 {
 	if (hp_ <= 0)
 	{
@@ -149,7 +149,7 @@ void Player::DrawSprite()
 	finisherGaugeBar_.sprite_->Draw();
 }
 
-void Player::DrawParticle(const Camera& camera)
+void Player::ParticleDraw(const Camera& camera)
 {
 	particleEffectPlayer_->Draw(camera);
 }
@@ -319,28 +319,19 @@ void Player::BehaviorRootUpdate()
 		//弱攻撃
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !characterState_.isDown)
 		{
-			characterState_.behaviorRequest = Behavior::kAttack;
-			animationTime_ = 0.0f;
-			model_->SetAnimationTime(animationTime_);
-			attackData_.isLightPunch = true;
+			AttackStart(attackData_.isLightPunch);
 		}
 
 		//中攻撃
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !characterState_.isDown)
 		{
-			characterState_.behaviorRequest = Behavior::kAttack;
-			animationTime_ = 0.0f;
-			model_->SetAnimationTime(animationTime_);
-			attackData_.isMiddlePunch = true;
+			AttackStart(attackData_.isMiddlePunch);
 		}
 
 		//強攻撃
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown)
 		{
-			characterState_.behaviorRequest = Behavior::kAttack;
-			animationTime_ = 0.0f;
-			model_->SetAnimationTime(animationTime_);
-			attackData_.isHighPunch = true;
+			AttackStart(attackData_.isHighPunch);
 		}
 		
 		//タックル攻撃
@@ -348,10 +339,7 @@ void Player::BehaviorRootUpdate()
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
 			&& characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
-			characterState_.behaviorRequest = Behavior::kAttack;
-			animationTime_ = 0.0f;
-			model_->SetAnimationTime(animationTime_);
-			attackData_.isTackle = true;
+			AttackStart(attackData_.isTackle);
 		}
 
 		//タックル攻撃
@@ -359,10 +347,7 @@ void Player::BehaviorRootUpdate()
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
-			characterState_.behaviorRequest = Behavior::kAttack;
-			animationTime_ = 0.0f;
-			model_->SetAnimationTime(animationTime_);
-			attackData_.isTackle = true;
+			AttackStart(attackData_.isTackle);
 		}
 	}
 }
@@ -948,6 +933,16 @@ void Player::UpdateAnimationTime(float animationTime, bool isLoop, float frameRa
 	float animationDuration, std::unique_ptr<Model>& modelFighterBody)
 {
 	ICharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, animationDuration, modelFighterBody);
+}
+
+void Player::AttackStart(bool& isAttackType)
+{
+	ICharacter::AttackStart(isAttackType);
+}
+
+void Player::AttackEnd()
+{
+
 }
 
 void Player::HPBarUpdate()

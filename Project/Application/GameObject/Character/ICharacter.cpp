@@ -119,17 +119,17 @@ void ICharacter::Draw(const Camera& camera)
 
 }
 
-void ICharacter::DrawBone(const Camera& camera)
+void ICharacter::BoneDraw(const Camera& camera)
 {
 
 }
 
-void ICharacter::DrawSprite()
+void ICharacter::SpriteDraw()
 {
 
 }
 
-void ICharacter::DrawParticle(const Camera& camera)
+void ICharacter::ParticleDraw(const Camera& camera)
 {
 
 }
@@ -225,6 +225,19 @@ void ICharacter::BehaviorAttackInitialize()
 }
 
 void ICharacter::BehaviorAttackUpdate()
+{
+
+}
+
+void ICharacter::AttackStart(bool& isAttackType)
+{
+	characterState_.behaviorRequest = Behavior::kAttack;
+	animationTime_ = 0.0f;
+	model_->SetAnimationTime(animationTime_);
+	isAttackType = true;
+}
+
+void ICharacter::AttackEnd()
 {
 
 }

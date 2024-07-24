@@ -115,7 +115,7 @@ void Enemy::Update()
 		worldTransform_.rotation.y = 1.7f;
 	}
 
-	UpdateBullets();
+	BulletsUpdate();
 
 	//コンボを食らっているとき
 	if (characterState_.isHitLightPunch)
@@ -195,12 +195,12 @@ void Enemy::Draw(const Camera& camera)
 	model_->Draw(worldTransform_, camera, animationIndex_);
 }
 
-void Enemy::DrawBone(const Camera& camera)
+void Enemy::BoneDraw(const Camera& camera)
 {
-	model_->DrawBone(worldTransform_, camera, animationIndex_);
+	model_->BoneDraw(worldTransform_, camera, animationIndex_);
 }
 
-void Enemy::DrawSprite()
+void Enemy::SpriteDraw()
 {
 	if (hp_ >= 0)
 	{
@@ -218,7 +218,7 @@ void Enemy::DrawSprite()
 	}
 }
 
-void Enemy::DrawBullet(const Camera& camera)
+void Enemy::BulletDraw(const Camera& camera)
 {
 	for (auto& bullet : bullets_)
 	{
@@ -226,7 +226,7 @@ void Enemy::DrawBullet(const Camera& camera)
 	}
 }
 
-void Enemy::DrawParticle(const Camera& camera)
+void Enemy::ParticleDraw(const Camera& camera)
 {
 	particleEffectPlayer_->Draw(camera);
 
@@ -437,19 +437,13 @@ void Enemy::BehaviorRootUpdate()
 		//突進攻撃
 		if (patternCount_ == 3 && !characterState_.isDown)
 		{
-			characterState_.behaviorRequest = Behavior::kAttack;
-			animationTime_ = 0.0f;
-			model_->SetAnimationTime(animationTime_);
-			attackData_.isTackle = true;
+			AttackStart(attackData_.isTackle);
 		}
 
 		//弾攻撃
 		if (patternCount_ == 4 && !characterState_.isDown)
 		{
-			characterState_.behaviorRequest = Behavior::kAttack;
-			animationTime_ = 0.0f;
-			model_->SetAnimationTime(animationTime_);
-			attackData_.isShot = true;
+			AttackStart(attackData_.isShot);
 		}
 
 	}
@@ -557,14 +551,14 @@ void Enemy::BehaviorAttackUpdate()
 				Vector3 bulletStartPosition = { worldTransform_.translation.x + 0.2f, worldTransform_.translation.y + 0.5f, worldTransform_.translation.z };  // 弾の発射位置を敵の位置に設定
 				Vector3 bulletVelocity = Vector3{ 0.1f, 0.0f, 0.0f };  // 弾の速度を設定
 
-				ShootBullet(bulletStartPosition, bulletVelocity);
+				BulletShoot(bulletStartPosition, bulletVelocity);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
 				Vector3 bulletStartPosition = { worldTransform_.translation.x - 0.2f, worldTransform_.translation.y + 0.5f, worldTransform_.translation.z };  // 弾の発射位置を敵の位置に設定
 				Vector3 bulletVelocity = Vector3{ -0.1f, 0.0f, 0.0f };  // 弾の速度を設定
 
-				ShootBullet(bulletStartPosition, bulletVelocity);
+				BulletShoot(bulletStartPosition, bulletVelocity);
 			}
 
 			hasShot_ = true;  // 弾を発射したことを記録
@@ -819,6 +813,16 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			HitStop(10);
 		}
 	}
+}
+
+void Enemy::AttackStart(bool& isAttackType)
+{
+	ICharacter::AttackStart(isAttackType);
+}
+
+void Enemy::AttackEnd()
+{
+
 }
 
 void Enemy::HPBarUpdate()
@@ -1355,7 +1359,7 @@ int Enemy::Random(int min_value, int max_value)
 	return dis(gen);
 }
 
-void Enemy::ShootBullet(const Vector3& startPosition, const Vector3& velocity)
+void Enemy::BulletShoot(const Vector3& startPosition, const Vector3& velocity)
 {
 	// 弾を生成してリストに追加する
 	EnemyBullet* newBullet = new EnemyBullet();
@@ -1363,7 +1367,7 @@ void Enemy::ShootBullet(const Vector3& startPosition, const Vector3& velocity)
 	bullets_.push_back(newBullet);
 }
 
-void Enemy::UpdateBullets() 
+void Enemy::BulletsUpdate()
 {
 	// 弾の更新と衝突判定などを行う
 	for (auto it = bullets_.begin(); it != bullets_.end();)

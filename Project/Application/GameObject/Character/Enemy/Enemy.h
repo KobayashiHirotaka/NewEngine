@@ -18,11 +18,11 @@ public:
 
 	void ImGui(const char* title)override;
 
-	void DrawBone(const Camera& camera)override;
+	void BoneDraw(const Camera& camera)override;
 
-	void DrawSprite()override;
+	void SpriteDraw()override;
 
-	void DrawParticle(const Camera& camera)override;
+	void ParticleDraw(const Camera& camera)override;
 
 	void OnCollision(Collider* collider, float damage)override;
 
@@ -45,6 +45,11 @@ public:
 
 	void BehaviorStanUpdate()override;
 
+	//攻撃
+	void AttackStart(bool& isAttackType)override;
+
+	void AttackEnd()override;
+
 	//UIの更新関数
 	void HPBarUpdate()override;
 
@@ -55,11 +60,11 @@ public:
 	void ComboNumberSpriteUpdate()override;
 
 	//弾関係の関数
-	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
+	void BulletShoot(const Vector3& startPosition, const Vector3& velocity);
 
-	void UpdateBullets();
+	void BulletsUpdate();
 
-	void DrawBullet(const Camera& camera);
+	void BulletDraw(const Camera& camera);
 
 	//Getter
 	uint32_t GetAnimationIndex() { return animationIndex_; };

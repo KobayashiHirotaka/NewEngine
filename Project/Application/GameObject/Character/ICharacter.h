@@ -132,11 +132,11 @@ public:
 
 	virtual void Draw(const Camera& camera) = 0;
 
-	virtual void DrawBone(const Camera& camera) = 0;
+	virtual void BoneDraw(const Camera& camera) = 0;
 
-	virtual void DrawSprite() = 0;
+	virtual void SpriteDraw() = 0;
 
-	virtual void DrawParticle(const Camera& camera) = 0;
+	virtual void ParticleDraw(const Camera& camera) = 0;
 
 	virtual void ImGui(const char* title) = 0;
 
@@ -164,6 +164,11 @@ public:
 	virtual void BehaviorStanInitialize() = 0;
 
 	virtual void BehaviorStanUpdate() = 0;
+
+	//攻撃
+	virtual void AttackStart(bool& isAttackType) = 0;
+
+	virtual void AttackEnd() = 0;
 
 	//UIの更新関数
 	virtual void HPBarUpdate() = 0;

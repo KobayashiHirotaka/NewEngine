@@ -236,7 +236,7 @@ void GamePlayScene::Draw()
 	game3dObjectManager_->Draw(camera_);
 
 	//Enemyの弾の描画
-	enemy_->DrawBullet(camera_);
+	enemy_->BulletDraw(camera_);
 
 	//Skydomeの描画
 	skydome_->Draw(camera_);
@@ -248,10 +248,10 @@ void GamePlayScene::Draw()
 	if (GamePlayScene::roundStartTimer_ <= 0)
 	{
 		//Playerのparticle描画
-		player_->DrawParticle(camera_);
+		player_->ParticleDraw(camera_);
 
 		//Enemyのparticle描画
-		enemy_->DrawParticle(camera_);
+		enemy_->ParticleDraw(camera_);
 	}
 
 	ParticleModel::PostDraw();
@@ -312,9 +312,9 @@ void GamePlayScene::Draw()
 	{
 		frameUISprite_->Draw();
 
-		player_->DrawSprite();
+		player_->SpriteDraw();
 
-		enemy_->DrawSprite();
+		enemy_->SpriteDraw();
 
 		numberOnesSprite_->Draw();
 		numberTensSprite_->Draw();
