@@ -117,65 +117,7 @@ void Enemy::Update()
 
 	BulletsUpdate();
 
-	//コンボを食らっているとき
-	if (characterState_.isHitLightPunch)
-	{
-		comboCount_ = 1;
-		timerData_.comboTimer--;
-	}
-
-	if (characterState_.isHitTCMiddlePunch)
-	{
-		comboCount_ = 2;
-		timerData_.comboTimer = 60;
-		timerData_.comboTimer--;
-	}
-
-	if (characterState_.isHitTCHighPunch)
-	{
-		comboCount_ = 3;
-		timerData_.comboTimer = 60;
-		timerData_.comboTimer--;
-	}
-
-	if (characterState_.isHitHighPunch && comboCount_ == 0)
-	{
-		comboCount_ = 1;
-		timerData_.comboTimer = 60;
-		timerData_.comboTimer--;
-	}
-
-	if (characterState_.isHitHighPunch && comboCount_ >= 2)
-	{
-		comboCount_ = 3;
-		timerData_.comboTimer = 60;
-		timerData_.comboTimer--;
-	}
-
-	if (characterState_.isHitTackle && comboCount_ == 3)
-	{
-		comboCount_ = 4;
-		timerData_.comboTimer = 60;
-		timerData_.comboTimer--;
-	}
-
-	if (characterState_.isHitTackle && comboCount_ == 1)
-	{
-		comboCount_ = 2;
-		timerData_.comboTimer = 60;
-		timerData_.comboTimer--;
-	}
-
-	if (timerData_.comboTimer < 60)
-	{
-		timerData_.comboTimer--;
-	}
-
-	if (timerData_.comboTimer < 0)
-	{
-		timerData_.comboTimer = 60;
-		comboCount_ = 0;
-	}
+	HitCombo();
 
 	if (!player_->GetIsAttack())
 	{
@@ -1382,5 +1324,68 @@ void Enemy::BulletsUpdate()
 		{
 			++it;
 		}
+	}
+}
+
+void Enemy::HitCombo()
+{
+	//コンボを食らっているとき
+	if (characterState_.isHitLightPunch)
+	{
+		comboCount_ = 1;
+		timerData_.comboTimer--;
+	}
+
+	if (characterState_.isHitTCMiddlePunch)
+	{
+		comboCount_ = 2;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
+	}
+
+	if (characterState_.isHitTCHighPunch)
+	{
+		comboCount_ = 3;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
+	}
+
+	if (characterState_.isHitHighPunch && comboCount_ == 0)
+	{
+		comboCount_ = 1;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
+	}
+
+	if (characterState_.isHitHighPunch && comboCount_ >= 2)
+	{
+		comboCount_ = 3;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
+	}
+
+	if (characterState_.isHitTackle && comboCount_ == 3)
+	{
+		comboCount_ = 4;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
+	}
+
+	if (characterState_.isHitTackle && comboCount_ == 1)
+	{
+		comboCount_ = 2;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
+	}
+
+	if (timerData_.comboTimer < 60)
+	{
+		timerData_.comboTimer--;
+	}
+
+	if (timerData_.comboTimer < 0)
+	{
+		timerData_.comboTimer = 60;
+		comboCount_ = 0;
 	}
 }

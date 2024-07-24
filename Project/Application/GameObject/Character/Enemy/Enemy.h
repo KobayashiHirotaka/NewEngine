@@ -66,6 +66,9 @@ public:
 
 	void BulletDraw(const Camera& camera);
 
+	//コンボ
+	void HitCombo();
+
 	//Getter
 	uint32_t GetAnimationIndex() { return animationIndex_; };
 
