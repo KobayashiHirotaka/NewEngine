@@ -85,12 +85,12 @@ void ICharacter::Update()
 	}
 
 	//端での攻撃時の処理
-	if (attackData_.isAttack && worldTransform_.translation.x >= 3.5f && characterState_.direction == Direction::Right)
+	if (!attackData_.isAttack && worldTransform_.translation.x >= 3.5f && characterState_.direction == Direction::Right)
 	{
 		worldTransform_.translation.x = 3.5f;
 	}
 
-	if (attackData_.isAttack && worldTransform_.translation.x <= -3.5f && characterState_.direction == Direction::Left)
+	if (!attackData_.isAttack && worldTransform_.translation.x <= -3.5f && characterState_.direction == Direction::Left)
 	{
 		worldTransform_.translation.x = -3.5f;
 	}
