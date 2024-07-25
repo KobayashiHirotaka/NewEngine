@@ -267,7 +267,7 @@ void Enemy::BehaviorAttackUpdate()
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
 
-				particleEffectPlayer_->PlayParticle("RightNackle", { worldTransform_.translation.x + particlePositionX,
+				particleEffectPlayer_->PlayParticle("EnemyRightNackle", { worldTransform_.translation.x + particlePositionX,
 					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
 			}
 		}
@@ -287,7 +287,7 @@ void Enemy::BehaviorAttackUpdate()
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
 
-				particleEffectPlayer_->PlayParticle("LeftNackle", { worldTransform_.translation.x - particlePositionX,
+				particleEffectPlayer_->PlayParticle("EnemyLeftNackle", { worldTransform_.translation.x - particlePositionX,
 					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
 			}
 		}

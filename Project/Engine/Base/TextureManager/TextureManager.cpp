@@ -146,7 +146,16 @@ DirectX::ScratchImage TextureManager::OpenImage(const std::string& filePath)
 
 	//ミップマップの作成
 	DirectX::ScratchImage mipImages{};
-	hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+
+	if (DirectX::IsCompressed(image.GetMetadata().format))
+	{
+		mipImages = std::move(image);
+	}
+	else
+	{
+		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 4, mipImages);
+	}
+
 	assert(SUCCEEDED(hr));
 
 	//ミップマップ付きのデータを返す

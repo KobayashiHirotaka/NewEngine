@@ -57,6 +57,10 @@ void GamePlayScene::Initialize()
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
+	//BackGroundの生成、初期化
+	backGround_ = std::make_unique<BackGround>();
+	backGround_->Initialize();
+
 	//リソース
 	UICommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/UICommandList.png");
 	UICommandListSprite_.reset(Sprite::Create(UICommandListTextureHandle_, { 0.0f,0.0f }));
@@ -154,6 +158,9 @@ void GamePlayScene::Update()
 	//Skydomeの更新
 	skydome_->Update();
 
+	//BackGroundの更新
+	backGround_->Update();
+
 	//シェイク
 	if (player_->GetIsShake() || enemy_->GetIsShake() && !isPlayerWin_ && roundStartTimer_ <= 0)
 	{
@@ -240,6 +247,9 @@ void GamePlayScene::Draw()
 
 	//Skydomeの描画
 	skydome_->Draw(camera_);
+
+	//BackGroundの描画
+	backGround_->Draw(camera_);
 
 	Model::PostDraw();
 

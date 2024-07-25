@@ -16,7 +16,7 @@ void ParticleEffectPlayer::Update()
 
 void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 {
-	if ("RightNackle" == name)
+	if ("PlayerRightNackle" == name)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -35,7 +35,7 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
-	else if ("LeftNackle" == name)
+	else if ("PlayerLeftNackle" == name)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -47,6 +47,44 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.SetElevation(0.0f, 0.0f)
 			.SetVelocity({ 0.08f ,0.08f ,0.08f }, { 0.1f ,0.1f ,0.1f })
 			.SetColor({ 1.0f ,0.0f ,0.0f ,1.0f }, { 1.0f ,0.5f ,0.0f ,1.0f })
+			.SetLifeTime(0.1f, 0.6f)
+			.SetCount(100)
+			.SetFrequency(4.0f)
+			.SetDeleteTime(2.0f)
+			.Build();
+		particleSystem_->AddParticleEmitter(newParticleEmitter);
+	}
+	else if ("EnemyRightNackle" == name)
+	{
+		ParticleEmitter* newParticleEmitter = EmitterBuilder()
+			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+			.SetTranslation({ position.x, position.y,  position.z })
+			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetScale({ 0.1f, 0.1f, 0.1f }, { 0.4f ,0.4f ,0.4f })
+			.SetAzimuth(172.0f, 180.0f)
+			.SetElevation(0.0f, 0.0f)
+			.SetVelocity({ 0.08f ,0.08f ,0.08f }, { 0.1f ,0.1f ,0.1f })
+			.SetColor({ 0.0f ,0.0f ,1.0f ,1.0f }, { 0.0f ,0.5f ,1.0f ,1.0f })
+			.SetLifeTime(0.1f, 0.6f)
+			.SetCount(100)
+			.SetFrequency(4.0f)
+			.SetDeleteTime(2.0f)
+			.Build();
+		particleSystem_->AddParticleEmitter(newParticleEmitter);
+	}
+	else if ("EnemyLeftNackle" == name)
+	{
+		ParticleEmitter* newParticleEmitter = EmitterBuilder()
+			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+			.SetTranslation({ position.x, position.y,  position.z })
+			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetScale({ 0.1f, 0.1f, 0.1f }, { 0.4f ,0.4f ,0.4f })
+			.SetAzimuth(0.0f, 8.0f)
+			.SetElevation(0.0f, 0.0f)
+			.SetVelocity({ 0.08f ,0.08f ,0.08f }, { 0.1f ,0.1f ,0.1f })
+			.SetColor({ 0.0f ,0.0f ,1.0f ,1.0f }, { 0.0f ,0.5f ,1.0f ,1.0f })
 			.SetLifeTime(0.1f, 0.6f)
 			.SetCount(100)
 			.SetFrequency(4.0f)

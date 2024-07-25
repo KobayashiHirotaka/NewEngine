@@ -530,7 +530,7 @@ void Player::BehaviorAttackUpdate()
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
 
-				particleEffectPlayer_->PlayParticle("RightNackle", { worldTransform_.translation.x + particlePositionX,
+				particleEffectPlayer_->PlayParticle("PlayerRightNackle", { worldTransform_.translation.x + particlePositionX,
 					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
 			}
 		}
@@ -550,7 +550,7 @@ void Player::BehaviorAttackUpdate()
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
 
-				particleEffectPlayer_->PlayParticle("LeftNackle", { worldTransform_.translation.x - particlePositionX,
+				particleEffectPlayer_->PlayParticle("PlayerLeftNackle", { worldTransform_.translation.x - particlePositionX,
 					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
 			}
 		}
@@ -813,12 +813,12 @@ void Player::Move()
 			if (characterState_.direction == Direction::Right && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
 			{
 				// 敵を右方向に押す
-				PushEnemy(enemyPosition, 0.04f);
+				PushEnemy(enemyPosition, 0.05f);
 			}
 			else if (characterState_.direction == Direction::Left && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
 			{
 				// 敵を左方向に押す
-				PushEnemy(enemyPosition, -0.04f);
+				PushEnemy(enemyPosition, -0.05f);
 			}
 		}
 

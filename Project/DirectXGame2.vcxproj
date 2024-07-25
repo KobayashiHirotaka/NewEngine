@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Application\GameObject\BackGround\BackGround.cpp" />
     <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Application\GameObject\Character\Enemy\EnemyBullet.cpp" />
     <ClCompile Include="Application\GameObject\Character\ICharacter.cpp" />
@@ -119,6 +120,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\GameObject\BackGround\BackGround.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBullet.h" />
     <ClInclude Include="Application\GameObject\Character\ICharacter.h" />
