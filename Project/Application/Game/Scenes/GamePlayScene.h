@@ -4,6 +4,7 @@
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Character/Enemy/EnemyBullet.h"
 #include "Application/GameObject/Skydome/Skydome.h"
+#include "Application/GameObject/BackGround/BackGround.h"
 
 class GamePlayScene : public IScene
 {
@@ -152,4 +153,7 @@ private:
 
 	//Skydome
 	std::unique_ptr<Skydome> skydome_;
+
+	//Skydome
+	std::unique_ptr<BackGround> backGround_;
 };

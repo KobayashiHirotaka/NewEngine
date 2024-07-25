@@ -235,6 +235,12 @@
     <Filter Include="ソース ファイル\Engine\Utility\LevelLoader">
       <UniqueIdentifier>{d1eb8866-2c58-4c94-99f6-9d11b7a77f1a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\BackGround">
+      <UniqueIdentifier>{758c8f32-ad66-4e7f-ab8d-a1c6c9dab203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\BackGround">
+      <UniqueIdentifier>{623f1d28-90f6-4760-9dee-007ff1d857e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -407,6 +413,9 @@
     </ClCompile>
     <ClCompile Include="Engine\3D\Particle\ParticleEffectPlayer.cpp">
       <Filter>ソース ファイル\Engine\3d\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\BackGround\BackGround.cpp">
+      <Filter>ソース ファイル\Project\GameObject\BackGround</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -631,6 +640,9 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\Particle\ParticleEffectPlayer.h">
       <Filter>ヘッダー ファイル\Engine\3d\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\BackGround\BackGround.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\BackGround</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
