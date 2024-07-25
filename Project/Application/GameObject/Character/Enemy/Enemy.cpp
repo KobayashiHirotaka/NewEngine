@@ -511,7 +511,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		}
 
 		//中パンチ
-		if (player_->GetIsMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
+		if (player_->GetIsAttack() && player_->GetIsMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 5.0f;
@@ -766,6 +766,12 @@ void Enemy::ResetCollision()
 	SetAABB(aabb_);
 }
 
+void Enemy::ConfigureCollision(Vector3 min, Vector3 max)
+{
+	aabb_ = { {min.x, min.y, min.z},{max.x, max.y, max.z} };
+	SetAABB(aabb_);
+}
+
 void Enemy::HPBarUpdate()
 {
 	hpBar_.size_ = { (hp_ / maxHp_) * barSize_,7.0f };
@@ -868,6 +874,7 @@ void Enemy::DownAnimation()
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
+		//次の入力を受け取ったらこの処理にする
 		if (!player_->GetIsLightPunch() && hp_ > 0.0f)
 		{
 			patternCount_ = Random(1, 2);
@@ -935,7 +942,7 @@ void Enemy::DownAnimation()
 		animationIndex_ = 6;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		if (timerData_.downAnimationTimer <= -30 && worldTransform_.translation.y <= 0.0f && hp_ > 0.0f)
+		if (!player_->GetIsHighPunch() && worldTransform_.translation.y <= 0.0f && hp_ > 0.0f)
 		{
 			DownAnimationEnd(5, characterState_.isHitHighPunch);
 		}

@@ -114,31 +114,6 @@ void ICharacter::Update()
 	characterState_.isHitCharacter = false;
 }
 
-void ICharacter::Draw(const Camera& camera)
-{
-
-}
-
-void ICharacter::BoneDraw(const Camera& camera)
-{
-
-}
-
-void ICharacter::SpriteDraw()
-{
-
-}
-
-void ICharacter::ParticleDraw(const Camera& camera)
-{
-
-}
-
-void ICharacter::ImGui(const char* title)
-{
-
-}
-
 void ICharacter::Reset()
 {
 	//行動
@@ -213,11 +188,6 @@ void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float fra
 	modelFighterBody->ApplyAnimation(animationIndex);
 }
 
-void ICharacter::DownAnimation()
-{
-
-}
-
 void ICharacter::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
 {
 	characterState_.behaviorRequest = Behavior::kRoot;
@@ -227,31 +197,6 @@ void ICharacter::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
 	model_->SetAnimationTime(animationTime_);
 	isHitAttackType = false;
 	characterState_.isDown = false;
-}
-
-void ICharacter::BehaviorRootInitialize()
-{
-
-}
-
-void ICharacter::BehaviorRootUpdate()
-{
-	
-}
-
-void ICharacter::BehaviorAttackInitialize()
-{
-
-}
-
-void ICharacter::BehaviorAttackUpdate()
-{
-
-}
-
-void ICharacter::Move()
-{
-
 }
 
 void ICharacter::AttackStart(bool& isAttackType)
@@ -272,47 +217,3 @@ void ICharacter::AttackEnd(bool& isAttackType)
 	model_->SetAnimationTime(animationTime_);
 }
 
-void ICharacter::ResetCollision()
-{
-
-}
-
-void ICharacter::BehaviorJumpInitialize()
-{
-
-}
-
-void ICharacter::BehaviorJumpUpdate()
-{
-
-}
-
-void ICharacter::BehaviorStanInitialize()
-{
-
-}
-
-void ICharacter::BehaviorStanUpdate()
-{
-
-}
-
-void ICharacter::HPBarUpdate()
-{
-
-}
-
-void ICharacter::GuardGaugeBarUpdate()
-{
-
-}
-
-void ICharacter::FinisherGaugeBarUpdate()
-{
-
-}
-
-void ICharacter::ComboNumberSpriteUpdate()
-{
-
-}
