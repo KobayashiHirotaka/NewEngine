@@ -175,8 +175,10 @@ public:
 
 	virtual void AttackEnd(bool& isAttackType) = 0;
 
-	//当たり判定の初期化
+	//当たり判定
 	virtual void ResetCollision() = 0;
+
+	virtual void ConfigureCollision(Vector3 min, Vector3 max) = 0;
 
 	//UIの更新関数
 	virtual void HPBarUpdate() = 0;

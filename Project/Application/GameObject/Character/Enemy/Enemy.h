@@ -53,8 +53,11 @@ public:
 
 	void AttackEnd(bool& isAttackType)override;
 
-	//判定の初期化
+	//当たり判定の初期化
 	void ResetCollision()override;
+
+	//当たり判定の設定
+	void ConfigureCollision(Vector3 min, Vector3 max)override;
 
 	//UIの更新関数
 	void HPBarUpdate()override;

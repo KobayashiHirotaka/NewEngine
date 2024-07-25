@@ -283,7 +283,7 @@ void Player::BehaviorAttackUpdate()
 		//キャンセルの処理(中TC)
 		if (input_->GetJoystickState())
 		{
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
+			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 10 && attackData_.attackAnimationFrame < 20
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) 
 				&& characterState_.isHitCharacter)
 			{
@@ -293,8 +293,7 @@ void Player::BehaviorAttackUpdate()
 				animationTime_ = 0.0f;
 				attackData_.attackAnimationFrame = 0;
 				model_->SetAnimationTime(animationTime_);
-				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-				SetAABB(aabb_);
+				ResetCollision();
 			}
 		}
 
@@ -325,6 +324,15 @@ void Player::BehaviorAttackUpdate()
 			SetAABB(aabb_);
 		}
 
+		if (attackData_.attackAnimationFrame >= 5 && attackData_.attackAnimationFrame < 20)
+		{
+			attackData_.isAttack = true;
+		}
+		else
+		{
+			attackData_.isAttack = false;
+		}
+
 		if (characterState_.isDown || attackData_.attackAnimationFrame > 30)
 		{
 			AttackEnd(attackData_.isTCMiddlePunch);
@@ -344,8 +352,7 @@ void Player::BehaviorAttackUpdate()
 				animationTime_ = 0.0f;
 				attackData_.attackAnimationFrame = 0;
 				model_->SetAnimationTime(animationTime_);
-				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-				SetAABB(aabb_);
+				ResetCollision();
 			}
 		}
 
@@ -473,8 +480,7 @@ void Player::BehaviorAttackUpdate()
 				animationTime_ = 0.0f;
 				attackData_.attackAnimationFrame = 0;
 				model_->SetAnimationTime(animationTime_);
-				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-				SetAABB(aabb_);
+				ResetCollision();
 			}
 
 			//タックル攻撃
@@ -489,8 +495,7 @@ void Player::BehaviorAttackUpdate()
 				animationTime_ = 0.0f;
 				attackData_.attackAnimationFrame = 0;
 				model_->SetAnimationTime(animationTime_);
-				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-				SetAABB(aabb_);
+				ResetCollision();
 			}
 		}
 
@@ -928,6 +933,12 @@ void Player::AttackEnd(bool& isAttackType)
 void Player::ResetCollision()
 {
 	aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+	SetAABB(aabb_);
+}
+
+void Player::ConfigureCollision(Vector3 min, Vector3 max)
+{
+	aabb_ = { {min.x, min.y, min.z},{max.x, max.y, max.z} };
 	SetAABB(aabb_);
 }
 
