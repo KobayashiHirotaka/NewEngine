@@ -92,6 +92,48 @@ void Player::Update()
 {
 	ICharacter::Update();
 
+	//エディターのテスト
+	ImGui::Begin("Test Editor");
+
+	// 「Add」ボタンを表示
+	if (ImGui::Button("Add"))
+	{
+		// 新しいタブを追加 (デフォルトで空の名前)
+		tabs.push_back("");
+	}
+
+	// 各タブを縦に表示
+	for (size_t i = 0; i < tabs.size(); ++i)
+	{
+		// 各タブにユニークなIDを付ける
+		ImGui::PushID(static_cast<int>(i));
+
+		// 現在のタブ名を編集するためのバッファを作成
+		char buf[256];
+		strncpy_s(buf, sizeof(buf), tabs[i].c_str(), _TRUNCATE);
+
+		// タブの名前を編集するための入力フィールドを作成
+		if (ImGui::InputText("Tab Name", buf, sizeof(buf)))
+		{
+			// 編集後の名前を `tabs` ベクターに反映
+			tabs[i] = buf;
+		}
+
+		// 折りたたみ可能なヘッダーを作成
+		std::string headerName = tabs[i].empty() ? ("Tab " + std::to_string(i + 1)) : tabs[i];
+		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			// タブの内容を表示するセクション (ここにタブの内容を追加できます)
+			ImGui::Text("Content of %s", headerName.c_str());
+		}
+
+		ImGui::PopID(); // IDをリセット
+
+		ImGui::Separator(); // タブの区切り
+	}
+
+	ImGui::End();
+
 	//振り向きの処理
 	Vector3 playerWorldPosition = GetWorldPosition();
 	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
