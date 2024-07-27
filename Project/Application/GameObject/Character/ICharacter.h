@@ -126,6 +126,17 @@ public:
 		int comboTimer = 60;
 	};
 
+	struct AttackParameter
+	{
+		int a = 0;
+
+		int b = 0;
+
+		int c = 0;
+
+		int d = 0;
+	};
+
 	virtual void Initialize() = 0;
 
 	virtual void Update() = 0;
@@ -235,6 +246,8 @@ protected:
 	AttackData attackData_;
 
 	TimerData timerData_;
+
+	std::vector<AttackParameter> attackParameter_;
 
 	std::unique_ptr<ParticleEffectPlayer> particleEffectPlayer_;
 
