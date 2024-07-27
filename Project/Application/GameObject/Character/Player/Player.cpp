@@ -123,10 +123,10 @@ void Player::Update()
 			//タブの内容
 			if (i < attackParameter_.size()) 
 			{
-				ImGui::SliderInt("a", &attackParameter_[i].a, 0, 60);
-				ImGui::SliderInt("b", &attackParameter_[i].b, 0, 60);
-				ImGui::SliderInt("c", &attackParameter_[i].c, 0, 60);
-				ImGui::SliderInt("d", &attackParameter_[i].d, 0, 60);
+				ImGui::SliderInt("anticipationTime", &attackParameter_[i].anticipationTime, 0, 60);
+				ImGui::SliderInt("chargeTime", &attackParameter_[i].chargeTime, 0, 60);
+				ImGui::SliderInt("swingTime", &attackParameter_[i].swingTime, 0, 60);
+				ImGui::SliderInt("recoveryTime", &attackParameter_[i].recoveryTime, 0, 60);
 			}
 		}
 

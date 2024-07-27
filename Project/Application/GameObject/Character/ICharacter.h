@@ -128,13 +128,13 @@ public:
 
 	struct AttackParameter
 	{
-		int a = 0;
+		int anticipationTime;
 
-		int b = 0;
+		int chargeTime;
 
-		int c = 0;
+		int swingTime;
 
-		int d = 0;
+		int recoveryTime;
 	};
 
 	virtual void Initialize() = 0;
