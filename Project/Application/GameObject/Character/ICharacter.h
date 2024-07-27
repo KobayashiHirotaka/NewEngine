@@ -12,6 +12,7 @@
 #include "Engine/3D/Model/IGame3dObject.h"
 #include <random>
 #include <numbers>
+#include <unordered_map>
 
 class ICharacter : public IGame3dObject
 {
@@ -247,7 +248,9 @@ protected:
 
 	TimerData timerData_;
 
-	std::vector<AttackParameter> attackParameter_;
+	//タブのリストと各タブのパラメータ
+	std::map<std::string, AttackParameter> attackParameter_;
+	std::string attackType;
 
 	std::unique_ptr<ParticleEffectPlayer> particleEffectPlayer_;
 
