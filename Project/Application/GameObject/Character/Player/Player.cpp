@@ -94,51 +94,45 @@ void Player::Update()
 
 	ImGui::Begin("Test Editor");
 
-	// 「Add」ボタンを表示
+	//Addボタンを表示
 	if (ImGui::Button("Add"))
 	{
-		// 新しいタブを追加 (デフォルトで "newAttack" の名前)
+		//新しいタブを追加
 		tabs.push_back("newAttack");
-		attackParameter_.emplace_back(); // 新しいパラメータを追加
+
+		//新しいパラメータを追加
+		attackParameter_.emplace_back(); 
 	}
 
-	// 各タブを縦に表示
 	size_t tabCount = tabs.size();
 	for (size_t i = 0; i < tabCount; ++i)
 	{
-		// 各タブにユニークなIDを付ける
 		ImGui::PushID(static_cast<int>(i));
 
-		// 現在のタブ名を編集するためのバッファを作成
 		char buf[256];
 		strcpy_s(buf, sizeof(buf), tabs[i].c_str());
 
-		// 折りたたみ可能なヘッダーを作成
+		//折りたたみ可能なヘッダーを作成
 		if (ImGui::CollapsingHeader(buf, ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			// タブの名前を編集するための入力フィールドを作成
 			if (ImGui::InputText("##TabName", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue))
 			{
-				// 編集後の名前を `tabs` ベクターに反映
 				tabs[i] = buf;
 			}
 
-			// タブの内容を表示するセクション (ここにタブの内容を追加できます)
-			if (i < attackParameter_.size()) // Check to prevent out of range access
+			//タブの内容
+			if (i < attackParameter_.size()) 
 			{
 				ImGui::SliderInt("a", &attackParameter_[i].a, 0, 60);
 				ImGui::SliderInt("b", &attackParameter_[i].b, 0, 60);
 				ImGui::SliderInt("c", &attackParameter_[i].c, 0, 60);
 				ImGui::SliderInt("d", &attackParameter_[i].d, 0, 60);
 			}
-
-			// タブの内容を表示
-			ImGui::Text("Content of %s", buf);
 		}
 
-		ImGui::PopID(); // IDをリセット
+		ImGui::PopID(); 
 
-		ImGui::Separator(); // タブの区切り
+		ImGui::Separator();
 	}
 
 	ImGui::End();
