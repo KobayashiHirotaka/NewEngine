@@ -100,7 +100,7 @@ void Player::Update()
 
 	if (input_->PushKey(DIK_J))
 	{
-		attackType = "newAttack2";
+		attackType = "MiddlePunch";
 	}
 
 

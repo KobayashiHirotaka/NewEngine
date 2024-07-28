@@ -35,6 +35,8 @@ void EngineCore::Initialize()
 
 	GlobalVariables::GetInstance()->LoadFiles();
 
+	AttackEditor::GetInstance()->LoadFile("resource/AttackData/AttackData.json");
+
 	game3dObjectFactory_ = std::make_unique<Game3dObjectFactory>();
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
 	game3dObjectManager_->SetGameObjectFactory(game3dObjectFactory_.get());

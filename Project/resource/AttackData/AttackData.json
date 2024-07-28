@@ -5,10 +5,10 @@
         "recoveryTime": 30,
         "swingTime": 20
     },
-    "newAttack2": {
-        "anticipationTime": 0,
-        "chargeTime": 0,
-        "recoveryTime": 0,
-        "swingTime": 0
+    "MiddlePunch": {
+        "anticipationTime": 20,
+        "chargeTime": 39,
+        "recoveryTime": 25,
+        "swingTime": 30
     }
 }
