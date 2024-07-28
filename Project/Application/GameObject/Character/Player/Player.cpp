@@ -103,8 +103,16 @@ void Player::Update()
 		attackType = "MiddlePunch";
 	}
 
-
 	AttackEditor::GetInstance()->SetAttackParameters(attackType, anticipationTime, chargeTime, swingTime, recoveryTime);
+
+	if (attackData_.isAttack)
+	{
+		model_->GetMaterial()->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+	}
+	else
+	{
+		model_->GetMaterial()->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	}
 
 	//振り向きの処理
 	Vector3 playerWorldPosition = GetWorldPosition();
