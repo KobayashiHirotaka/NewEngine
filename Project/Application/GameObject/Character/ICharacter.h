@@ -127,17 +127,6 @@ public:
 		int comboTimer = 60;
 	};
 
-	struct AttackParameter
-	{
-		int anticipationTime;
-
-		int chargeTime;
-
-		int swingTime;
-
-		int recoveryTime;
-	};
-
 	virtual void Initialize() = 0;
 
 	virtual void Update() = 0;
@@ -247,10 +236,6 @@ protected:
 	AttackData attackData_;
 
 	TimerData timerData_;
-
-	//タブのリストと各タブのパラメータ
-	std::map<std::string, AttackParameter> attackParameter_;
-	std::string attackType;
 
 	std::unique_ptr<ParticleEffectPlayer> particleEffectPlayer_;
 

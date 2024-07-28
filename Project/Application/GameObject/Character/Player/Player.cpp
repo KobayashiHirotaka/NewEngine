@@ -92,69 +92,6 @@ void Player::Update()
 {
 	ICharacter::Update();
 
-	ImGui::Begin("Test Editor");
-
-	// 「Add」ボタンを表示
-	if (ImGui::Button("Add")) {
-		// 新しいタブを追加 (デフォルトで "newAttack" の名前)
-		std::string newTabName = "newAttack" + std::to_string(attackParameter_.size() + 1);
-		if (attackParameter_.find(newTabName) == attackParameter_.end()) {
-			attackParameter_[newTabName] = AttackParameter(); // 新しいパラメータを追加
-		}
-		else {
-			std::cerr << "Tab with name '" << newTabName << "' already exists.\n";
-		}
-	}
-
-	// タブを表示
-	for (auto it = attackParameter_.begin(); it != attackParameter_.end(); ) {
-		auto& [tabName, param] = *it;
-		ImGui::PushID(tabName.c_str());
-
-		char buf[256];
-		strcpy_s(buf, sizeof(buf), tabName.c_str());
-
-		// 折りたたみ可能なヘッダーを作成
-		if (ImGui::CollapsingHeader(buf, ImGuiTreeNodeFlags_DefaultOpen)) {
-			// タブの名前を編集するための入力フィールドを作成
-			if (ImGui::InputText("##TabName", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue)) {
-				std::string newName = buf;
-				if (newName != tabName) {
-					if (attackParameter_.find(newName) == attackParameter_.end()) { // 新しい名前が存在しない場合
-						AttackParameter tempParam = std::move(param); // データを移動
-						it = attackParameter_.erase(it); // 古い名前を削除
-						attackParameter_[newName] = std::move(tempParam); // 新しい名前で追加
-					}
-					else {
-						// 新しい名前が既に存在する場合は変更を元に戻す
-						ImGui::Text("Error: A tab with this name already exists.");
-					}
-				}
-				else {
-					++it; // 名前が変更されなかった場合、イテレーターを進める
-				}
-			}
-			else {
-				++it; // 名前が変更されなかった場合、イテレーターを進める
-			}
-
-			// タブの内容を表示するセクション
-			ImGui::SliderInt("anticipationTime", &param.anticipationTime, 0, 60);
-			ImGui::SliderInt("chargeTime", &param.chargeTime, 0, 60);
-			ImGui::SliderInt("swingTime", &param.swingTime, 0, 60);
-			ImGui::SliderInt("recoveryTime", &param.recoveryTime, 0, 60);
-		}
-		else {
-			++it; // ヘッダーが閉じられていた場合、イテレーターを進める
-		}
-
-		ImGui::PopID(); // IDをリセット
-
-		ImGui::Separator(); // タブの区切り
-	}
-
-	ImGui::End();
-
 	//振り向きの処理
 	Vector3 playerWorldPosition = GetWorldPosition();
 	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
@@ -250,80 +187,7 @@ void Player::BehaviorRootInitialize()
 
 void Player::BehaviorRootUpdate()
 {
-	if (input_->PushKey(DIK_H))
-	{
-		attackType = "LightPunch";
-	}
-
-	if (input_->PushKey(DIK_G))
-	{
-		attackType = "MiddlePunch";
-	}
-
-	if (attackType == "LightPunch")
-	{
-		ImGui::Begin(attackType.c_str()); // 動的にウィンドウ名を設定
-
-		AttackParameter* param = nullptr;
-
-		// 現在の攻撃タイプに基づくパラメータを取得
-		auto it = attackParameter_.find(attackType);
-		if (it != attackParameter_.end())
-		{
-			param = &it->second;
-		}
-
-		if (param)
-		{
-			int a = param->anticipationTime;
-			int b = param->chargeTime;
-
-			// パラメータを表示
-			ImGui::Text("anticipationTime: %d", a);
-			ImGui::Text("chargeTime: %d", b);
-			ImGui::Text("swingTime: %d", param->swingTime);
-			ImGui::Text("recoveryTime: %d", param->recoveryTime);
-		}
-		else
-		{
-			ImGui::Text("No parameters found for attack type: %s", attackType.c_str());
-		}
-
-		ImGui::End();
-	}
-
-	if (attackType == "MiddlePunch")
-	{
-		ImGui::Begin(attackType.c_str()); // 動的にウィンドウ名を設定
-
-		AttackParameter* param = nullptr;
-
-		// 現在の攻撃タイプに基づくパラメータを取得
-		auto it = attackParameter_.find(attackType);
-		if (it != attackParameter_.end())
-		{
-			param = &it->second;
-		}
-
-		if (param)
-		{
-			int a = param->anticipationTime;
-			int b = param->chargeTime;
-
-			// パラメータを表示
-			ImGui::Text("anticipationTime: %d", a);
-			ImGui::Text("chargeTime: %d", b);
-			ImGui::Text("swingTime: %d", param->swingTime);
-			ImGui::Text("recoveryTime: %d", param->recoveryTime);
-		}
-		else
-		{
-			ImGui::Text("No parameters found for attack type: %s", attackType.c_str());
-		}
-
-		ImGui::End();
-	}
-
+	
 	//コントローラーの取得
 	if (input_->GetJoystickState())
 	{
@@ -347,7 +211,6 @@ void Player::BehaviorRootUpdate()
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !characterState_.isDown)
 		{
 			AttackStart(attackData_.isMiddlePunch);
-			attackType = "MiddlePunch";
 		}
 
 		//強攻撃
@@ -535,38 +398,6 @@ void Player::BehaviorAttackUpdate()
 	{
 		animationIndex_ = 7;
 		characterState_.isGuard = false;
-
-		ImGui::Begin(attackType.c_str()); // 動的にウィンドウ名を設定
-
-		AttackParameter* param = nullptr;
-
-		// 現在の攻撃タイプに基づくパラメータを取得
-		auto it = attackParameter_.find(attackType);
-		if (it != attackParameter_.end())
-		{
-			param = &it->second;
-		}
-
-		if (param)
-		{
-			// パラメータを表示
-			ImGui::Text("anticipationTime: %d", param->anticipationTime);
-			ImGui::Text("chargeTime: %d", param->chargeTime);
-			ImGui::Text("swingTime: %d", param->swingTime);
-			ImGui::Text("recoveryTime: %d", param->recoveryTime);
-
-			// パラメータの編集
-			ImGui::SliderInt("anticipationTime", &param->anticipationTime, 0, 60);
-			ImGui::SliderInt("chargeTime", &param->chargeTime, 0, 60);
-			ImGui::SliderInt("swingTime", &param->swingTime, 0, 60);
-			ImGui::SliderInt("recoveryTime", &param->recoveryTime, 0, 60);
-		}
-		else
-		{
-			ImGui::Text("No parameters found for attack type: %s", attackType.c_str());
-		}
-
-		ImGui::End();
 
 		if (!characterState_.isDown)
 		{

@@ -17,6 +17,7 @@
 #include "Engine/3D/Model/Game3dObjectManager.h"
 #include "Engine/Utility/LevelLoader/LevelLoader.h"
 #include "Engine/Framework/SceneManager.h"
+#include "Engine/Utility/AttackEditor/AttackEditor.h"
 
 class EngineCore
 {

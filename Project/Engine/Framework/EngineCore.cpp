@@ -87,6 +87,8 @@ void EngineCore::Update()
 
 	//GlobalVariables::GetInstance()->Update();
 
+	AttackEditor::GetInstance()->Update();
+
 	postProcess_->Update();
 
 	imguiManager_->EndFlame();
