@@ -92,6 +92,7 @@ void Player::Update()
 {
 	ICharacter::Update();
 
+	//エディターテスト用の処理
 	if (input_->PushKey(DIK_H))
 	{
 		attackType = "LightPunch";
