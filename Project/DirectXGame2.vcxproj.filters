@@ -247,6 +247,12 @@
     <Filter Include="ソース ファイル\Engine\Utility\AttackEditor">
       <UniqueIdentifier>{60bd5a7a-1d93-482f-825d-57386a4b39a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Engine\3d\Skybox">
+      <UniqueIdentifier>{dbd12fb0-ff46-4a47-b54a-ddef32575b21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\3d\Skybox">
+      <UniqueIdentifier>{aafb0df5-5686-418d-9787-d10259f37352}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -425,6 +431,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Utility\AttackEditor\AttackEditor.cpp">
       <Filter>ソース ファイル\Engine\Utility\AttackEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Skybox\Skybox.cpp">
+      <Filter>ソース ファイル\Engine\3d\Skybox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -658,6 +667,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Utility\AttackEditor\AttackEditor.h">
       <Filter>ヘッダー ファイル\Engine\Utility\AttackEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Skybox\Skybox.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Skybox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

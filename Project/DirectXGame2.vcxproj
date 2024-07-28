@@ -45,6 +45,7 @@
     <ClCompile Include="Engine\3D\Particle\ParticleModel.cpp" />
     <ClCompile Include="Engine\3D\Particle\ParticleSystem.cpp" />
     <ClCompile Include="Engine\3D\Particle\Random.cpp" />
+    <ClCompile Include="Engine\3D\Skybox\Skybox.cpp" />
     <ClCompile Include="Engine\3D\WorldTransform\WorldTransform.cpp" />
     <ClCompile Include="Engine\Base\DirectXCore\DirectXCore.cpp" />
     <ClCompile Include="Engine\Base\ImGuiManager\ImGuiManager.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="Engine\3D\Particle\ParticleModel.h" />
     <ClInclude Include="Engine\3D\Particle\ParticleSystem.h" />
     <ClInclude Include="Engine\3D\Particle\Random.h" />
+    <ClInclude Include="Engine\3D\Skybox\Skybox.h" />
     <ClInclude Include="Engine\3D\WorldTransform\WorldTransform.h" />
     <ClInclude Include="Engine\Base\D3DResourceLeakChecker.h" />
     <ClInclude Include="Engine\Base\DirectXCore\DirectXCore.h" />
