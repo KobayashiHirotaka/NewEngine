@@ -1,5 +1,6 @@
 #pragma once
 #include "Application/GameObject/Character/ICharacter.h"
+#include "Engine/Utility/AttackEditor/AttackEditor.h"
 
 //前方宣言
 class Enemy;
@@ -122,5 +123,12 @@ private:
 	uint32_t damageSoundHandle_ = 0u;
 	uint32_t guardSoundHandle_ = 0u;
 	
+	//エディター用
+	std::string attackType;
+
+	int anticipationTime = 0;
+	int chargeTime = 0;
+	int swingTime = 0;
+	int recoveryTime = 0;
 };
 

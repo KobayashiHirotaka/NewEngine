@@ -144,3 +144,16 @@ void AttackEditor::LoadFile(const std::string& loadFilePath)
         };
     }
 }
+
+void AttackEditor::SetAttackParameters(const std::string& name, int& anticipationTime, int& chargeTime,
+    int& swingTime, int& recoveryTime)
+{
+    auto it = attackParameter_.find(name);
+    if (it != attackParameter_.end()) 
+    {
+        anticipationTime = it->second.anticipationTime;
+        chargeTime = it->second.chargeTime;
+        swingTime = it->second.swingTime;
+        recoveryTime = it->second.recoveryTime;
+    }
+}

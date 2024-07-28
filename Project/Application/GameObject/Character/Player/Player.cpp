@@ -92,6 +92,19 @@ void Player::Update()
 {
 	ICharacter::Update();
 
+	if (input_->PushKey(DIK_H))
+	{
+		attackType = "LightPunch";
+	}
+
+	if (input_->PushKey(DIK_J))
+	{
+		attackType = "newAttack2";
+	}
+
+
+	AttackEditor::GetInstance()->SetAttackParameters(attackType, anticipationTime, chargeTime, swingTime, recoveryTime);
+
 	//振り向きの処理
 	Vector3 playerWorldPosition = GetWorldPosition();
 	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
@@ -169,6 +182,11 @@ void Player::ImGui(const char* title)
 	ImGui::Text("isAttack %d", attackData_.isAttack);
 	ImGui::DragFloat("animationTime", &animationTime_, 0.0001f);
 
+	ImGui::Text("anticipationTime %d", anticipationTime);
+	ImGui::Text("chargeTime %d", chargeTime);
+	ImGui::Text("swingTime %d", swingTime);
+	ImGui::Text("recoveryTime %d", recoveryTime);
+
 	model_->GetLight()->ImGui("DirectionalLight");
 	model_->GetPointLight()->ImGui("PointLight");
 	model_->GetSpotLight()->ImGui("SpotLight");
@@ -187,7 +205,6 @@ void Player::BehaviorRootInitialize()
 
 void Player::BehaviorRootUpdate()
 {
-	
 	//コントローラーの取得
 	if (input_->GetJoystickState())
 	{

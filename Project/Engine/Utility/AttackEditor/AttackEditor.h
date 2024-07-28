@@ -33,6 +33,9 @@ public:
 
     void LoadFile(const std::string& loadFilePath);
 
+    void SetAttackParameters(const std::string& name, int& anticipationTime, int& chargeTime,
+        int& swingTime, int& recoveryTime);
+
 private:
     AttackEditor() = default;
     ~AttackEditor() = default;
