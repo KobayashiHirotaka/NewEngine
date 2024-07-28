@@ -453,6 +453,9 @@
     <None Include="resource\shaders\BoneVisualization.hlsli">
       <Filter>shaders</Filter>
     </None>
+    <None Include="resource\shaders\Skybox.hlsli">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\externals\imgui\imconfig.h">
@@ -707,6 +710,12 @@
       <Filter>shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\BoneVisualization.PS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Skybox.PS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Skybox.VS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
   </ItemGroup>
