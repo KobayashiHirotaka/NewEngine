@@ -59,12 +59,12 @@ void GameTitleScene::Initialize()
 	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
 
 	//BGM,SEの読み込み
-	titleSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Title.mp3");
+	titleSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/BGM.mp3");
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 
 	//BGMの再生,停止
-	//audio_->StopAudio(titleSoundHandle_);
-	//audio_->SoundPlayMP3(titleSoundHandle_, true, 1.0f);
+	audio_->StopAudio(titleSoundHandle_);
+	audio_->SoundPlayMP3(titleSoundHandle_, true, 0.2f);
 };
 
 void GameTitleScene::Update()

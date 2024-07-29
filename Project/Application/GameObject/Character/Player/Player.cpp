@@ -649,6 +649,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
 
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 8.0f;
 			hp_ += damage;
 			characterState_.isHitBullet = true;
@@ -659,7 +660,8 @@ void Player::OnCollision(Collider* collider, float damage)
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
 
-			damage = 5.0f;
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+			damage = 8.0f;
 			hp_ += damage;
 			characterState_.isHitAirBullet = true;
 		}
