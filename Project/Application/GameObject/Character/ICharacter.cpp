@@ -217,3 +217,23 @@ void ICharacter::AttackEnd(bool& isAttackType)
 	model_->SetAnimationTime(animationTime_);
 }
 
+void ICharacter::EvaluateAttackTiming()
+{
+	if (attackData_.attackAnimationFrame >= attackData_.chargeTime && attackData_.attackAnimationFrame <= attackData_.swingTime)
+	{
+		attackData_.isAttack = true;
+	}
+	else
+	{
+		attackData_.isAttack = false;
+	}
+
+	if (attackData_.attackAnimationFrame >= attackData_.swingTime && attackData_.attackAnimationFrame <= attackData_.recoveryTime)
+	{
+		attackData_.isRecovery_ = true;
+	}
+	else
+	{
+		attackData_.isRecovery_ = false;
+	}
+}

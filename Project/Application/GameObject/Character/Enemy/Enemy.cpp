@@ -292,7 +292,7 @@ void Enemy::BehaviorAttackUpdate()
 			}
 		}
 
-		if (attackData_.attackAnimationFrame >= 55)
+		if (attackData_.attackAnimationFrame >= 50)
 		{
 			attackData_.isAttack = false;
 		}
@@ -758,6 +758,11 @@ void Enemy::AttackStart(bool& isAttackType)
 void Enemy::AttackEnd(bool& isAttackType)
 {
 	ICharacter::AttackEnd(isAttackType);
+}
+
+void Enemy::EvaluateAttackTiming()
+{
+	ICharacter::EvaluateAttackTiming();
 }
 
 void Enemy::ResetCollision()

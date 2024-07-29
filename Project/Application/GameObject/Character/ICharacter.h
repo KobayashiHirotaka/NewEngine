@@ -87,8 +87,17 @@ public:
 		//攻撃フレーム
 		int attackAnimationFrame = 0;
 
+		//攻撃ごとのパラメータ
+		int anticipationTime = 0;
+		int chargeTime = 0;
+		int swingTime = 0;
+		int recoveryTime = 0;
+
 		//攻撃しているか
 		bool isAttack = false;
+
+		//硬直中か
+		bool isRecovery_ = false;
 
 		//弱攻撃
 		bool isLightPunch = false;
@@ -175,6 +184,8 @@ public:
 	virtual void AttackStart(bool& isAttackType) = 0;
 
 	virtual void AttackEnd(bool& isAttackType) = 0;
+
+	virtual void EvaluateAttackTiming() = 0;
 
 	//当たり判定
 	virtual void ResetCollision() = 0;

@@ -53,7 +53,7 @@ void AttackEditor::Update()
             ImGui::SliderInt("anticipationTime", &param.anticipationTime, 0, 60);
             ImGui::SliderInt("chargeTime", &param.chargeTime, 0, 60);
             ImGui::SliderInt("swingTime", &param.swingTime, 0, 60);
-            ImGui::SliderInt("recoveryTime", &param.recoveryTime, 0, 60);
+            ImGui::SliderInt("recoveryTime", &param.recoveryTime, 0, 100);
         }
         else 
         {

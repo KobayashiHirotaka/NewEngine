@@ -1,14 +1,38 @@
 {
+    "HighPunch": {
+        "anticipationTime": 5,
+        "chargeTime": 5,
+        "recoveryTime": 40,
+        "swingTime": 25
+    },
     "LightPunch": {
-        "anticipationTime": 20,
-        "chargeTime": 25,
-        "recoveryTime": 30,
-        "swingTime": 20
+        "anticipationTime": 4,
+        "chargeTime": 4,
+        "recoveryTime": 25,
+        "swingTime": 15
     },
     "MiddlePunch": {
-        "anticipationTime": 20,
-        "chargeTime": 39,
+        "anticipationTime": 8,
+        "chargeTime": 8,
         "recoveryTime": 25,
-        "swingTime": 30
+        "swingTime": 18
+    },
+    "TCHighPunch": {
+        "anticipationTime": 0,
+        "chargeTime": 0,
+        "recoveryTime": 0,
+        "swingTime": 0
+    },
+    "TCMiddlePunch": {
+        "anticipationTime": 20,
+        "chargeTime": 0,
+        "recoveryTime": 35,
+        "swingTime": 25
+    },
+    "Tackle": {
+        "anticipationTime": 15,
+        "chargeTime": 25,
+        "recoveryTime": 100,
+        "swingTime": 50
     }
 }

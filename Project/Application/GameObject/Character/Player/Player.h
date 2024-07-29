@@ -53,6 +53,8 @@ public:
 
 	void AttackEnd(bool& isAttackType)override;
 
+	void EvaluateAttackTiming()override;
+
 	//当たり判定の初期化
 	void ResetCollision()override;
 
@@ -125,10 +127,5 @@ private:
 	
 	//エディター用
 	std::string attackType;
-
-	int anticipationTime = 0;
-	int chargeTime = 0;
-	int swingTime = 0;
-	int recoveryTime = 0;
 };
 

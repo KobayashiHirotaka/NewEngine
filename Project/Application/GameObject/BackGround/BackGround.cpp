@@ -10,7 +10,7 @@ void BackGround::Initialize()
 
 	worldTransform_.Initialize();
 	worldTransform_.translation.y = 2.3f;
-	//worldTransform_.translation.z = 13.0f;
+	worldTransform_.translation.z = 5.0f;
 }
 
 void BackGround::Update()
@@ -26,13 +26,6 @@ void BackGround::Update()
 
 	model_->SetAnimationTime(animationTime);
 	model_->ApplyAnimation(0);
-
-	/*worldTransform_.translation.y += 0.07f;
-
-	if (worldTransform_.translation.y >= 8.0f)
-	{
-		worldTransform_.translation.y = -3.0f;
-	}*/
 
 	worldTransform_.UpdateMatrixEuler();
 }
