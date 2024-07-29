@@ -25,8 +25,26 @@ void Skybox::StaticInitialize()
 	CreatePSO();
 }
 
+void Skybox::Initialize()
+{
+	//頂点リソースの作成
+	CreateVertexResource();
+
+	//インデックスリソースの作成
+	CreateIndexResource();
+
+	//マテリアル用のリソースの作成
+	CreateMaterialResource();
+
+	//テクスチャの読み込み
+	textureHandle_ = textureManager_->LoadTexture("resource/images/rostock_laage_airport_4k.dds");
+}
+
 void Skybox::Draw(WorldTransform& worldTransform, const Camera& camera)
 {
+	//Materialの更新
+	UpdateMaterialResource();
+	
 	//DescriptorHeapを設定
 	textureManager_->SetGraphicsDescriptorHeap();
 
@@ -36,8 +54,11 @@ void Skybox::Draw(WorldTransform& worldTransform, const Camera& camera)
 	//形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	//IndexBufferを設定
+	commandList_->IASetIndexBuffer(&indexBufferView_);
+
 	//マテリアルCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::Material), materialResource_->GetGPUVirtualAddress());
 
 	//WorldTransform用のCBufferの場所を設定
 	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldTransform), worldTransform.constBuff->GetGPUVirtualAddress());
@@ -49,7 +70,7 @@ void Skybox::Draw(WorldTransform& worldTransform, const Camera& camera)
 	textureManager_->SetGraphicsRootDescriptorTable(3, textureHandle_);
 
 	//描画
-	commandList_->DrawInstanced(UINT(vertices_.size()),1, 0, 0);
+	commandList_->DrawIndexedInstanced(kMaxIndices, 1, 0, 0, 0);
 }
 
 void Skybox::Release()
@@ -61,9 +82,10 @@ void Skybox::Release()
 	graphicsPipelineState_.Reset();
 }
 
-Skybox* Skybox::Create(const std::string& directoryPath, const std::string& filename)
+Skybox* Skybox::Create()
 {
 	Skybox* skybox = new Skybox();
+	skybox->Initialize();
 
 	return skybox;
 }
@@ -168,30 +190,24 @@ void Skybox::CreatePSO()
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使う
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
 
-	D3D12_DESCRIPTOR_RANGE descriptorRangeForInstancing[1] = {};
-	descriptorRangeForInstancing[0].BaseShaderRegister = 0;//0から始まる
-	descriptorRangeForInstancing[0].NumDescriptors = 1;//数は一つ
-	descriptorRangeForInstancing[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使う
-	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
 	//RootParameter作成
 	D3D12_ROOT_PARAMETER rootParameters[4] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVで使う
-	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
 	rootParameters[0].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
-	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVで使う
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
-	rootParameters[1].DescriptorTable.pDescriptorRanges = descriptorRangeForInstancing;//Tableの中身の配列を指定
-	rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForInstancing);//Tableで利用する数
-	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
-	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
-	rootParameters[2].Descriptor.ShaderRegister = 1;//レジスタ番号1を使う
-	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
+	rootParameters[1].Descriptor.ShaderRegister = 1;//レジスタ番号1とバインド
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
+	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;//Tableの中身の配列を指定
+	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);//Tableで利用する数
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVで使う
 	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
-	rootParameters[3].DescriptorTable.pDescriptorRanges = descriptorRange;//Tableの中身の配列を指定
-	rootParameters[3].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);//Tableで利用する数
-	descriptionRootSignature.pParameters = rootParameters;//ルートパラメータ配列へのポインタ
-	descriptionRootSignature.NumParameters = _countof(rootParameters);//配列の長さ
+	rootParameters[3].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
+
+	descriptionRootSignature.pParameters = rootParameters;
+	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
 	//Sampler作成
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
@@ -222,19 +238,11 @@ void Skybox::CreatePSO()
 
 
 	//InputLayout
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[1] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
 	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	inputElementDescs[1].SemanticName = "TEXCOORD";
-	inputElementDescs[1].SemanticIndex = 0;
-	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	inputElementDescs[2].SemanticName = "NORMAL";
-	inputElementDescs[2].SemanticIndex = 0;
-	inputElementDescs[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	inputElementDescs[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
@@ -246,7 +254,7 @@ void Skybox::CreatePSO()
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
 	//共通設定
-	blendDesc.RenderTarget[0].BlendEnable = true;//ブレンドを有効にする
+	blendDesc.RenderTarget[0].BlendEnable = false;//ブレンドを有効にする
 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;//加算
 	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;//ソースの値を100%使う
 	blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;//デストの値を0%使う
@@ -264,7 +272,7 @@ void Skybox::CreatePSO()
 	//RasterizerStateの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
 	//裏面(時計回り)を表示しない
-	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 	//三角形の中を塗りつぶす
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
@@ -292,50 +300,153 @@ void Skybox::CreatePSO()
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
 	graphicsPipelineStateDesc.pRootSignature = rootSignature_.Get();//RootSignature
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;//InputLayout
-	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),
-	vertexShaderBlob->GetBufferSize() };//VertexShader
-	graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(),
-	pixelShaderBlob->GetBufferSize() };//PixelShader
+	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };//VertexShader
+	graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize() };//PixelShader
 	graphicsPipelineStateDesc.BlendState = blendDesc;//BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;//RasterizerState
 	//書き込むRTVの情報
-	graphicsPipelineStateDesc.NumRenderTargets = 2;
+	graphicsPipelineStateDesc.NumRenderTargets = 1;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-	graphicsPipelineStateDesc.RTVFormats[1] = DXGI_FORMAT_R32_FLOAT;
 	//利用するトポロジ(形状)のタイプ。三角形
-	graphicsPipelineStateDesc.PrimitiveTopologyType =
-		D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	//どのように画面に色を打ち込むかの設定(気にしなくて良い)
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 	//DepthStencilの設定
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	
 	//実際に生成
 	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_));
 	assert(SUCCEEDED(hr));
 }
 
-
-void Skybox::Initialize(const ModelData& modelData)
-{
-	//頂点リソースの作成
-	CreateVertexResource();
-	//マテリアル用のリソースの作成
-	CreateMaterialResource();
-	//テクスチャの読み込み
-	textureHandle_ = textureManager_->LoadTexture(modelData.material.textureFilePath);
-}
-
-
 void Skybox::CreateVertexResource()
 {
-	
+	//右面。描画インデックスは[0,1,2][2,1,3]で内側を向く
+	vertices_[0].position = { 1.0f,1.0f,1.0f,1.0f };
+	vertices_[1].position = { 1.0f,1.0f,-1.0f,1.0f };
+	vertices_[2].position = { 1.0f,-1.0f,1.0f,1.0f };
+	vertices_[3].position = { 1.0f,-1.0f,-1.0f,1.0f };
+
+	//左面。描画インデックスは[4,5,6][6,5,7]
+	vertices_[4].position = { -1.0f,1.0f,-1.0f,1.0f };
+	vertices_[5].position = { -1.0f,1.0f,1.0f,1.0f };
+	vertices_[6].position = { -1.0f,-1.0f,-1.0f,1.0f };
+	vertices_[7].position = { -1.0f,-1.0f,1.0f,1.0f };
+
+	//前面。描画インデックスは[8,9,10][10,9,11]
+	vertices_[8].position = { -1.0f,1.0f,1.0f,1.0f };
+	vertices_[9].position = { 1.0f,1.0f,1.0f,1.0f };
+	vertices_[10].position = { -1.0f,-1.0f,1.0f,1.0f };
+	vertices_[11].position = { 1.0f,-1.0f,1.0f,1.0f };
+
+	//後面。描画インデックスは[12,13,14][14,13,15]
+	vertices_[12].position = { 1.0f,1.0f,-1.0f,1.0f };
+	vertices_[13].position = { -1.0f,1.0f,-1.0f,1.0f };
+	vertices_[14].position = { 1.0f,-1.0f,-1.0f,1.0f };
+	vertices_[15].position = { -1.0f,-1.0f,-1.0f,1.0f };
+
+	//上面。描画インデックスは[16,17,18][18,17,19]
+	vertices_[16].position = { -1.0f,1.0f,-1.0f,1.0f };
+	vertices_[17].position = { 1.0f,1.0f,-1.0f,1.0f };
+	vertices_[18].position = { -1.0f,1.0f,1.0f,1.0f };
+	vertices_[19].position = { 1.0f,1.0f,1.0f,1.0f };
+
+	//下面。描画インデックスは[20,21,22][22,21,23]
+	vertices_[20].position = { -1.0f,-1.0f,1.0f,1.0f };
+	vertices_[21].position = { 1.0f,-1.0f,1.0f,1.0f };
+	vertices_[22].position = { -1.0f,-1.0f,-1.0f,1.0f };
+	vertices_[23].position = { 1.0f,-1.0f,-1.0f,1.0f };
+
+	vertexResource_ = dxCore_->CreateBufferResource(sizeof(Vector4) * kMaxVertices);
+
+	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
+	vertexBufferView_.SizeInBytes = UINT(sizeof(Vector4) * kMaxVertices);
+	vertexBufferView_.StrideInBytes = sizeof(Vector4);
+
+	Vector4* vertexData = nullptr;
+	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+	std::memcpy(vertexData, vertices_.data(), sizeof(Vector4) * vertices_.size());
+	vertexResource_->Unmap(0, nullptr);
 }
 
+void Skybox::CreateIndexResource()
+{
+	//右面。描画インデックスは[0,1,2][2,1,3]で内側を向く
+	indices_[0] = 0;
+	indices_[1] = 1;
+	indices_[2] = 2;
+	indices_[3] = 2;
+	indices_[4] = 1;
+	indices_[5] = 3;
+
+	//左面。描画インデックスは[4,5,6][6,5,7]
+	indices_[6] = 4;
+	indices_[7] = 5;
+	indices_[8] = 6;
+	indices_[9] = 6;
+	indices_[10] = 5;
+	indices_[11] = 7;
+
+	//前面。描画インデックスは[8,9,10][10,9,11]
+	indices_[12] = 8;
+	indices_[13] = 9;
+	indices_[14] = 10;
+	indices_[15] = 10;
+	indices_[16] = 9;
+	indices_[17] = 11;
+
+	//後面。描画インデックスは[12,13,14][14,13,15]
+	indices_[18] = 12;
+	indices_[19] = 13;
+	indices_[20] = 14;
+	indices_[21] = 14;
+	indices_[22] = 13;
+	indices_[23] = 15;
+
+	//上面。描画インデックスは[16,17,18][18,17,19]
+	indices_[24] = 16;
+	indices_[25] = 17;
+	indices_[26] = 18;
+	indices_[27] = 18;
+	indices_[28] = 17;
+	indices_[29] = 19;
+
+	//下面。描画インデックスは[20,21,22][22,21,23]
+	indices_[30] = 20;
+	indices_[31] = 21;
+	indices_[32] = 22;
+	indices_[33] = 22;
+	indices_[34] = 21;
+	indices_[35] = 23;
+
+	indexResource_ = dxCore_->CreateBufferResource(sizeof(uint32_t) * kMaxIndices);
+
+	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
+	indexBufferView_.SizeInBytes = UINT(sizeof(uint32_t) * kMaxIndices);
+	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+
+	uint32_t* indexData = nullptr;
+	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
+	std::memcpy(indexData, indices_.data(), sizeof(uint32_t) * indices_.size());
+	indexResource_->Unmap(0, nullptr);
+}
 
 void Skybox::CreateMaterialResource()
 {
-	
+	materialResource_ = dxCore_->CreateBufferResource(sizeof(Material));
+
+	Material* materialData = nullptr;
+	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
+	materialData->color = color_;
+	materialResource_->Unmap(0, nullptr);
 }
 
+void Skybox::UpdateMaterialResource()
+{
+	Material* materialData = nullptr;
+	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
+	materialData->color = color_;
+	materialResource_->Unmap(0, nullptr);
+}

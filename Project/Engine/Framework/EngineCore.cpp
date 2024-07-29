@@ -31,6 +31,8 @@ void EngineCore::Initialize()
 
 	ParticleModel::StaticInitialize();
 
+	Skybox::StaticInitialize();
+
 	Sprite::StaticInitialize();
 
 	GlobalVariables::GetInstance()->LoadFiles();
@@ -55,6 +57,8 @@ void EngineCore::Finalize()
 	ParticleModel::Release();
 
 	ModelManager::DeleteInstance();
+
+	Skybox::Release();
 
 	PostProcess::DeleteInstance();
 

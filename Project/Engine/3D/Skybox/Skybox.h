@@ -7,25 +7,26 @@
 #include "Engine/3D/Model/Material.h"
 #include <cassert>
 #include <dxcapi.h>
-#include <fstream>
-#include <list>
-#include <string>
-#include <sstream>
-#include <span>
+#include <array>
 
 #pragma comment(lib,"dxcompiler.lib")
 
 class Skybox
 {
 public:
-	struct VertexData
+	static const uint32_t kMaxVertices = 24;
+
+	static const uint32_t kMaxIndices = 36;
+
+	struct VertexPosUV
 	{
 		Vector4 position;
+		Vector2 texcoord;
 	};
 
-	struct MaterialData
+	struct Material
 	{
-		std::string textureFilePath;
+		Vector4 color;
 	};
 
 	enum class RootParameterIndex
@@ -48,7 +49,7 @@ public:
 
 	static void PostDraw();
 
-	static Skybox* Create(const std::string& directoryPath, const std::string& filename);
+	static Skybox* Create();
 
 	void Draw(WorldTransform& worldTransform, const Camera& camera);
 
@@ -59,13 +60,17 @@ private:
 		const std::wstring& filePath,
 		const wchar_t* profile);
 
-	void Initialize(const ModelData& modelData);
+	void Initialize();
 
 	static void CreatePSO();
 
 	void CreateVertexResource();
 
+	void CreateIndexResource();
+
 	void CreateMaterialResource();
+
+	void UpdateMaterialResource();
 
 private:
 	static DirectXCore* dxCore_;
@@ -84,14 +89,22 @@ private:
 
 	static Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_;
 
-	std::vector<VertexData> vertices_{};
+	std::array<VertexData, kMaxVertices> vertices_{};
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
+	std::array<uint32_t, kMaxIndices> indices_{};
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_ = nullptr;
+
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;
 
 	uint32_t textureHandle_ = 0;
+
+	Vector4 color_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 };
 

@@ -61,6 +61,13 @@ void GamePlayScene::Initialize()
 	backGround_ = std::make_unique<BackGround>();
 	backGround_->Initialize();
 
+	//Skyboxの生成、初期化
+	skybox_ = std::make_unique<Skybox>();
+	skybox_->Create();
+
+	//SkyboxのWorldTransformの初期化
+	skyboxWorldTransform_.Initialize();
+
 	//リソース
 	UICommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/UICommandList.png");
 	UICommandListSprite_.reset(Sprite::Create(UICommandListTextureHandle_, { 0.0f,0.0f }));
@@ -161,6 +168,9 @@ void GamePlayScene::Update()
 	//BackGroundの更新
 	backGround_->Update();
 
+	//SkyboxのWorldTransformの更新
+	skyboxWorldTransform_.UpdateMatrixEuler();
+
 	//シェイク
 	if (player_->GetIsShake() || enemy_->GetIsShake() && !isPlayerWin_ && roundStartTimer_ <= 0)
 	{
@@ -234,6 +244,13 @@ void GamePlayScene::Draw()
 	Model::PreDraw();
 
 	Model::PostDraw();
+
+	Skybox::PreDraw();
+
+	//Skyboxの描画
+	skybox_->Draw(skyboxWorldTransform_, camera_);
+
+	Skybox::PostDraw();
 
 	PostProcess::GetInstance()->PreDraw();
 

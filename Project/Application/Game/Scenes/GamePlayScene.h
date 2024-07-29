@@ -1,5 +1,6 @@
 #pragma once
 #include "IScene.h"
+#include "Engine/3D/Skybox/Skybox.h"
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Character/Enemy/EnemyBullet.h"
@@ -154,6 +155,10 @@ private:
 	//Skydome
 	std::unique_ptr<Skydome> skydome_;
 
-	//Skydome
+	//BackGround
 	std::unique_ptr<BackGround> backGround_;
+
+	//Skybox
+	std::unique_ptr<Skybox> skybox_;
+	WorldTransform skyboxWorldTransform_;
 };
