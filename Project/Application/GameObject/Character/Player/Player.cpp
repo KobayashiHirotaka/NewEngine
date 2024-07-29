@@ -425,7 +425,7 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.9f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
 			SetAABB(aabb_);
 
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -435,7 +435,7 @@ void Player::BehaviorAttackUpdate()
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.9f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
