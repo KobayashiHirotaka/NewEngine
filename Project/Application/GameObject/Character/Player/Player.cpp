@@ -67,7 +67,7 @@ void Player::Initialize()
 	//SEの初期化
 	attackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Attack.mp3");
 	weaponAttackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/WeaponAttack.mp3");
-	damageSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Damage.mp3");
+	damageSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/HitPunch1.mp3");
 	guardSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Guard.mp3");
 
 	//カーソルの初期化
