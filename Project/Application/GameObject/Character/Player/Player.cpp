@@ -653,6 +653,8 @@ void Player::OnCollision(Collider* collider, float damage)
 			damage = 8.0f;
 			hp_ += damage;
 			characterState_.isHitBullet = true;
+
+			HitStop(5);
 		}
 
 		if (!characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.0f)
@@ -664,6 +666,8 @@ void Player::OnCollision(Collider* collider, float damage)
 			damage = 8.0f;
 			hp_ += damage;
 			characterState_.isHitAirBullet = true;
+
+			HitStop(5);
 		}
 
 		if (characterState_.isGuard && characterState_.direction == Direction::Right)
