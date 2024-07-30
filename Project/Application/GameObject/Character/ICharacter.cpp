@@ -219,7 +219,7 @@ void ICharacter::AttackEnd(bool& isAttackType)
 
 void ICharacter::EvaluateAttackTiming()
 {
-	if (attackData_.attackAnimationFrame >= attackData_.chargeTime && attackData_.attackAnimationFrame <= attackData_.swingTime)
+	if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame <= attackData_.attackEndTime)
 	{
 		attackData_.isAttack = true;
 	}
@@ -228,7 +228,7 @@ void ICharacter::EvaluateAttackTiming()
 		attackData_.isAttack = false;
 	}
 
-	if (attackData_.attackAnimationFrame >= attackData_.swingTime && attackData_.attackAnimationFrame <= attackData_.recoveryTime)
+	if (attackData_.attackAnimationFrame >= attackData_.attackEndTime && attackData_.attackAnimationFrame <= attackData_.recoveryTime)
 	{
 		attackData_.isRecovery_ = true;
 	}

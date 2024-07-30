@@ -88,9 +88,13 @@ public:
 		int attackAnimationFrame = 0;
 
 		//攻撃ごとのパラメータ
-		int anticipationTime = 0;
-		int chargeTime = 0;
-		int swingTime = 0;
+		//攻撃判定のつき初め
+		int attackStartTime = 0;
+
+		//攻撃判定のつき終わり
+		int attackEndTime = 0;
+
+		//硬直
 		int recoveryTime = 0;
 
 		//攻撃しているか

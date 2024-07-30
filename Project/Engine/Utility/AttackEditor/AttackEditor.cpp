@@ -50,10 +50,10 @@ void AttackEditor::Update()
                 ++it;
             }
 
-            ImGui::SliderInt("anticipationTime", &param.anticipationTime, 0, 60);
-            ImGui::SliderInt("chargeTime", &param.chargeTime, 0, 60);
-            ImGui::SliderInt("swingTime", &param.swingTime, 0, 60);
+            ImGui::SliderInt("attackStartTime", &param.attackStartTime, 0, 60);
+            ImGui::SliderInt("attackEndTime", &param.attackEndTime, 0, 60);
             ImGui::SliderInt("recoveryTime", &param.recoveryTime, 0, 100);
+
         }
         else 
         {
@@ -88,9 +88,8 @@ void AttackEditor::SaveFile(const std::string& saveFilePath)
     for (const auto& [tabName, param] : attackParameter_)
     {
         root[tabName] = {
-            {"anticipationTime", param.anticipationTime},
-            {"chargeTime", param.chargeTime},
-            {"swingTime", param.swingTime},
+            {"attackStartTime", param.attackStartTime},
+            {"attackEndTime", param.attackEndTime},
             {"recoveryTime", param.recoveryTime}
         };
     }
@@ -137,23 +136,20 @@ void AttackEditor::LoadFile(const std::string& loadFilePath)
         const json& param = it.value();
 
         attackParameter_[tabName] = {
-            param["anticipationTime"].get<int>(),
-            param["chargeTime"].get<int>(),
-            param["swingTime"].get<int>(),
+            param["attackStartTime"].get<int>(),
+            param["attackEndTime"].get<int>(),
             param["recoveryTime"].get<int>()
         };
     }
 }
 
-void AttackEditor::SetAttackParameters(const std::string& name, int& anticipationTime, int& chargeTime,
-    int& swingTime, int& recoveryTime)
+void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime)
 {
     auto it = attackParameter_.find(name);
     if (it != attackParameter_.end()) 
     {
-        anticipationTime = it->second.anticipationTime;
-        chargeTime = it->second.chargeTime;
-        swingTime = it->second.swingTime;
+        attackStartTime = it->second.attackStartTime;
+        attackEndTime = it->second.attackEndTime;
         recoveryTime = it->second.recoveryTime;
     }
 }

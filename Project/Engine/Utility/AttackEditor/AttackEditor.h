@@ -13,11 +13,9 @@ using json = nlohmann::json;
 
 struct AttackParameter 
 {
-    int anticipationTime = 0;
+    int attackStartTime = 0;
 
-    int chargeTime = 0;
-
-    int swingTime = 0;
+    int attackEndTime = 0;
 
     int recoveryTime = 0;
 };
@@ -33,8 +31,7 @@ public:
 
     void LoadFile(const std::string& loadFilePath);
 
-    void SetAttackParameters(const std::string& name, int& anticipationTime, int& chargeTime,
-        int& swingTime, int& recoveryTime);
+    void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime);
 
 private:
     AttackEditor() = default;

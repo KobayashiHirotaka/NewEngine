@@ -93,8 +93,7 @@ void Player::Update()
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
-	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.anticipationTime, attackData_.chargeTime, 
-		attackData_.swingTime, attackData_.recoveryTime);
+	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime);
 
 	//デバッグ用の処理
 	if (isDebug_)
@@ -192,9 +191,8 @@ void Player::ImGui(const char* title)
 	ImGui::Text("isAttack %d", attackData_.isAttack);
 	ImGui::DragFloat("animationTime", &animationTime_, 0.0001f);
 
-	ImGui::Text("anticipationTime %d", attackData_.anticipationTime);
-	ImGui::Text("chargeTime %d", attackData_.chargeTime);
-	ImGui::Text("swingTime %d", attackData_.swingTime);
+	ImGui::Text("attackStartTime %d", attackData_.attackStartTime);
+	ImGui::Text("swingTime %d", attackData_.attackEndTime);
 	ImGui::Text("recoveryTime %d", attackData_.recoveryTime);
 
 	model_->GetLight()->ImGui("DirectionalLight");
@@ -512,12 +510,12 @@ void Player::BehaviorAttackUpdate()
 
 			EvaluateAttackTiming();
 
-			if (attackData_.attackAnimationFrame >= attackData_.chargeTime && attackData_.attackAnimationFrame < moveTime)
+			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 			{
 				worldTransform_.translation.x += 0.15f;
 			}
 
-			if (attackData_.attackAnimationFrame >= attackData_.chargeTime && attackData_.attackAnimationFrame < particleTime)
+			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
 			{
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
@@ -533,13 +531,13 @@ void Player::BehaviorAttackUpdate()
 
 			EvaluateAttackTiming();
 
-			if (attackData_.attackAnimationFrame >= attackData_.chargeTime && attackData_.attackAnimationFrame < moveTime)
+			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 			{
 				worldTransform_.translation.x -= 0.15f;
 			}
 
 
-			if (attackData_.attackAnimationFrame >= attackData_.chargeTime && attackData_.attackAnimationFrame < particleTime)
+			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
 			{
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
