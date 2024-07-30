@@ -35,10 +35,6 @@ public:
 		WorldTransform,
 		ViewProjection,
 		Texture,
-		Light,
-		PointLight,
-		SpotLight,
-		Skinning,
 	};
 
 	static void StaticInitialize();

@@ -67,7 +67,7 @@ void Skybox::Draw(WorldTransform& worldTransform, const Camera& camera)
 	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff_->GetGPUVirtualAddress());
 
 	//DescriptorTableを設定
-	textureManager_->SetGraphicsRootDescriptorTable(3, textureHandle_);
+	textureManager_->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Texture), textureHandle_);
 
 	//描画
 	commandList_->DrawIndexedInstanced(kMaxIndices, 1, 0, 0, 0);
@@ -254,7 +254,7 @@ void Skybox::CreatePSO()
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
 	//共通設定
-	blendDesc.RenderTarget[0].BlendEnable = false;//ブレンドを有効にする
+	blendDesc.RenderTarget[0].BlendEnable = true;//ブレンドを有効にする
 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;//加算
 	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;//ソースの値を100%使う
 	blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;//デストの値を0%使う
@@ -435,18 +435,15 @@ void Skybox::CreateIndexResource()
 
 void Skybox::CreateMaterialResource()
 {
-	materialResource_ = dxCore_->CreateBufferResource(sizeof(Material));
+	materialResource_ = dxCore_->CreateBufferResource(sizeof(Vector4));
 
-	Material* materialData = nullptr;
-	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-	materialData->color = color_;
-	materialResource_->Unmap(0, nullptr);
+	UpdateMaterialResource();
 }
 
 void Skybox::UpdateMaterialResource()
 {
-	Material* materialData = nullptr;
+	Vector4* materialData = nullptr;
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-	materialData->color = color_;
+	*materialData = color_;
 	materialResource_->Unmap(0, nullptr);
 }
