@@ -300,7 +300,7 @@ void GamePlayScene::Draw()
 
 	ParticleModel::PreDraw();
 
-	if (GamePlayScene::roundStartTimer_ <= 0)
+	if (GamePlayScene::roundStartTimer_ <= 0 && !isOpen_)
 	{
 		//Playerのparticle描画
 		player_->ParticleDraw(camera_);
