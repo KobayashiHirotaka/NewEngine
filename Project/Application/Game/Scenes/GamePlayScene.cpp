@@ -134,48 +134,52 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
-	//ラウンド間の時間の処理
-	roundStartTimer_--;
-
-	if (roundStartTimer_ <= 0 && !isOpen_)
+	if (!isOpen_)
 	{
-		//時間経過を加算
-		elapsedTime += frameTime;
+		//ラウンド間の時間の処理
+		roundStartTimer_--;
 
-		//タイムカウントを更新
-		if (currentSeconds_ > 0 && elapsedTime >= 1.0f) {
-			currentSeconds_--;
-			UpdateNumberSprite();
-
-			//elapsedTimeをリセット
-			elapsedTime = 0.0f;
-		}
-	}
-
-	//Game3dObjectManagerの更新
-	game3dObjectManager_->Update();
-
-	//Skydomeの更新
-	skydome_->Update();
-
-	//BackGroundの更新
-	backGround_->Update();
-
-	//シェイク
-	if (player_->GetIsShake() || enemy_->GetIsShake() && !isPlayerWin_ && roundStartTimer_ <= 0)
-	{
-		isShake_ = true;
-		shakeTimer_ = kShakeTime;
-	}
-
-	if (isShake_)
-	{
-		camera_.translation_.y = Random(shakePower_.x, shakePower_.y);
-
-		if (--shakeTimer_ < 0)
+		if (roundStartTimer_ <= 0)
 		{
-			isShake_ = false;
-			camera_.translation_.y = 1.0f;
+			//時間経過を加算
+			elapsedTime += frameTime;
+
+			//タイムカウントを更新
+			if (currentSeconds_ > 0 && elapsedTime >= 1.0f)
+			{
+				currentSeconds_--;
+				UpdateNumberSprite();
+
+				//elapsedTimeをリセット
+				elapsedTime = 0.0f;
+			}
+		}
+
+		//Game3dObjectManagerの更新
+		game3dObjectManager_->Update();
+
+		//Skydomeの更新
+		skydome_->Update();
+
+		//BackGroundの更新
+		backGround_->Update();
+
+		//シェイク
+		if (player_->GetIsShake() || enemy_->GetIsShake() && !isPlayerWin_ && roundStartTimer_ <= 0)
+		{
+			isShake_ = true;
+			shakeTimer_ = kShakeTime;
+		}
+
+		if (isShake_)
+		{
+			camera_.translation_.y = Random(shakePower_.x, shakePower_.y);
+
+			if (--shakeTimer_ < 0)
+			{
+				isShake_ = false;
+				camera_.translation_.y = 1.0f;
+			}
 		}
 	}
 
@@ -189,8 +193,46 @@ void GamePlayScene::Update()
 		PostProcess::GetInstance()->SetIsVignetteActive(false);
 	}
 
+	/*if (isOpen_)
+	{
+		PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
+	}
+	else
+	{
+		PostProcess::GetInstance()->SetIsGaussianFilterActive(false);
+	}*/
+
 	//勝ち負けの処理
 	HandleGameOutcome();
+
+	//操作説明の開閉
+	if (input_->GetJoystickState())
+	{
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_START) && !isOpen_)
+		{
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+			isOpen_ = true;
+			spriteCount_ = 1;
+		}
+		else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && isOpen_)
+		{
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+			isOpen_ = false;
+			spriteCount_ = 0;
+		}
+
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) && isOpen_ && spriteCount_ == 1)
+		{
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+			spriteCount_ = 2;
+		}
+
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) && isOpen_ && spriteCount_ == 2)
+		{
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+			spriteCount_ = 1;
+		}
+	}
 
 	//当たり判定
 	collisionManager_->ClearColliders();
@@ -248,8 +290,11 @@ void GamePlayScene::Draw()
 	//Skydomeの描画
 	skydome_->Draw(camera_);
 
-	//BackGroundの描画
-	backGround_->Draw(camera_);
+	if (!isOpen_)
+	{
+		//BackGroundの描画
+		backGround_->Draw(camera_);
+	}
 
 	Model::PostDraw();
 
@@ -351,6 +396,17 @@ void GamePlayScene::Draw()
 		}
 
 	}
+
+	if (isOpen_ && spriteCount_ == 1)
+	{
+		generalCommandListSprite_->Draw();
+	}
+
+	if (isOpen_ && spriteCount_ == 2)
+	{
+		attackCommandListSprite_->Draw();
+	}
+
 	
 	Sprite::PostDraw();
 

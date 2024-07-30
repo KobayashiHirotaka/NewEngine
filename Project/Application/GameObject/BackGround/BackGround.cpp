@@ -20,7 +20,7 @@ void BackGround::Update()
 
 	animationTime = model_->GetAnimationTime();
 
-	animationTime += 1.0f / 60;
+	animationTime += 1.0f / 60.0f;
 
 	animationTime = std::fmod(animationTime, model_->GetAnimation()[0].duration);
 
