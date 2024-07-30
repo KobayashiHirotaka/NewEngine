@@ -27,6 +27,11 @@ void BackGround::Update()
 	model_->SetAnimationTime(animationTime);
 	model_->ApplyAnimation(0);
 
+	//スケールアニメーション
+	scaleAnimationTime_ += 1.0f / 60.0f;
+	float scale = minScale_ + (maxScale_ - minScale_) * (0.5f * std::sin(scaleSpeed_ * scaleAnimationTime_) + 0.5f);
+	worldTransform_.scale = { scale, scale, scale };
+
 	worldTransform_.UpdateMatrixEuler();
 }
 

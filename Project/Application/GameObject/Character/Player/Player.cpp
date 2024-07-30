@@ -473,7 +473,7 @@ void Player::BehaviorAttackUpdate()
 
 			//タックル攻撃
 			//左向きのとき
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > 10 
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
 				&& characterState_.direction == Direction::Left)
 			{

@@ -263,7 +263,7 @@ protected:
 	bool isReset_ = false;
 
 	//デバッグ用
-	bool isDebug_ = false;
+	bool isDebug_ = true;
 
 	//画面端
 	float leftEdge_ = -4.0f;
