@@ -3,6 +3,11 @@
 
 void ICharacter::Initialize()
 {
+#ifdef _DEBUG
+
+		isDebug_ = true;
+
+#endif // DEBUG
 
 }
 

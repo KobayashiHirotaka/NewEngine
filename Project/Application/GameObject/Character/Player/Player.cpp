@@ -13,6 +13,8 @@ void Player::Initialize()
 {
 	IGame3dObject::SetTag("Player");
 
+	ICharacter::Initialize();
+
 	//Inputのinstance
 	input_ = Input::GetInstance();
 

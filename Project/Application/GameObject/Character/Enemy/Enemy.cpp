@@ -19,6 +19,8 @@ void Enemy::Initialize()
 {
 	IGame3dObject::SetTag("Enemy");
 
+	ICharacter::Initialize();
+
 	//Inputのinstance
 	input_ = Input::GetInstance();
 
