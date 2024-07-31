@@ -241,6 +241,18 @@
     <Filter Include="ソース ファイル\Project\GameObject\BackGround">
       <UniqueIdentifier>{623f1d28-90f6-4760-9dee-007ff1d857e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\Utility\AttackEditor">
+      <UniqueIdentifier>{7823baf5-abcb-4c20-9660-ca04896020cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Engine\Utility\AttackEditor">
+      <UniqueIdentifier>{60bd5a7a-1d93-482f-825d-57386a4b39a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Engine\3d\Skybox">
+      <UniqueIdentifier>{dbd12fb0-ff46-4a47-b54a-ddef32575b21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\3d\Skybox">
+      <UniqueIdentifier>{aafb0df5-5686-418d-9787-d10259f37352}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -417,6 +429,12 @@
     <ClCompile Include="Application\GameObject\BackGround\BackGround.cpp">
       <Filter>ソース ファイル\Project\GameObject\BackGround</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Utility\AttackEditor\AttackEditor.cpp">
+      <Filter>ソース ファイル\Engine\Utility\AttackEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Skybox\Skybox.cpp">
+      <Filter>ソース ファイル\Engine\3d\Skybox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -442,6 +460,9 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="resource\shaders\BoneVisualization.hlsli">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="resource\shaders\Skybox.hlsli">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
@@ -644,6 +665,12 @@
     <ClInclude Include="Application\GameObject\BackGround\BackGround.h">
       <Filter>ヘッダー ファイル\Project\GameObject\BackGround</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Utility\AttackEditor\AttackEditor.h">
+      <Filter>ヘッダー ファイル\Engine\Utility\AttackEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Skybox\Skybox.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Skybox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\Object3d.PS.hlsl">
@@ -695,6 +722,12 @@
       <Filter>shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\BoneVisualization.PS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Skybox.PS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Skybox.VS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
   </ItemGroup>

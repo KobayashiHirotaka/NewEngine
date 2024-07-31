@@ -9,6 +9,7 @@
 #include "Engine/3D/Model/Model.h"
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Model/ModelManager.h"
+#include "Engine/3D/Skybox/Skybox.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/Particle/Random.h"
@@ -17,6 +18,7 @@
 #include "Engine/3D/Model/Game3dObjectManager.h"
 #include "Engine/Utility/LevelLoader/LevelLoader.h"
 #include "Engine/Framework/SceneManager.h"
+#include "Engine/Utility/AttackEditor/AttackEditor.h"
 
 class EngineCore
 {

@@ -3,6 +3,11 @@
 
 void ICharacter::Initialize()
 {
+#ifdef _DEBUG
+
+		isDebug_ = true;
+
+#endif // DEBUG
 
 }
 
@@ -217,3 +222,23 @@ void ICharacter::AttackEnd(bool& isAttackType)
 	model_->SetAnimationTime(animationTime_);
 }
 
+void ICharacter::EvaluateAttackTiming()
+{
+	if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame <= attackData_.attackEndTime)
+	{
+		attackData_.isAttack = true;
+	}
+	else
+	{
+		attackData_.isAttack = false;
+	}
+
+	if (attackData_.attackAnimationFrame >= attackData_.attackEndTime && attackData_.attackAnimationFrame <= attackData_.recoveryTime)
+	{
+		attackData_.isRecovery_ = true;
+	}
+	else
+	{
+		attackData_.isRecovery_ = false;
+	}
+}

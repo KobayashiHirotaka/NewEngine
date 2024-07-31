@@ -276,7 +276,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> hsvFilterConstantBuffer_ = nullptr;
 
     //ブルームの強度
-    float bloomIntensity_ = 0.17f;
+    float bloomIntensity_ = 0.3f;
 
     //ビネットの強度
     float vignetteIntensity_ = 0.8f;

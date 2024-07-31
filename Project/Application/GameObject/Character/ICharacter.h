@@ -12,6 +12,7 @@
 #include "Engine/3D/Model/IGame3dObject.h"
 #include <random>
 #include <numbers>
+#include <unordered_map>
 
 class ICharacter : public IGame3dObject
 {
@@ -86,8 +87,21 @@ public:
 		//攻撃フレーム
 		int attackAnimationFrame = 0;
 
+		//攻撃ごとのパラメータ
+		//攻撃判定のつき初め
+		int attackStartTime = 0;
+
+		//攻撃判定のつき終わり
+		int attackEndTime = 0;
+
+		//硬直
+		int recoveryTime = 0;
+
 		//攻撃しているか
 		bool isAttack = false;
+
+		//硬直中か
+		bool isRecovery_ = false;
 
 		//弱攻撃
 		bool isLightPunch = false;
@@ -174,6 +188,8 @@ public:
 	virtual void AttackStart(bool& isAttackType) = 0;
 
 	virtual void AttackEnd(bool& isAttackType) = 0;
+
+	virtual void EvaluateAttackTiming() = 0;
 
 	//当たり判定
 	virtual void ResetCollision() = 0;

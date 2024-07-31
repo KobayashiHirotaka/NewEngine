@@ -81,7 +81,7 @@ void Enemy::Initialize()
 	//SEの初期化
 	attackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Attack.mp3");
 	weaponAttackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/WeaponAttack.mp3");
-	damageSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Damage.mp3");
+	damageSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/HitPunch1.mp3");
 	guardSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Guard.mp3");
 
 	//パーティクル
@@ -292,7 +292,7 @@ void Enemy::BehaviorAttackUpdate()
 			}
 		}
 
-		if (attackData_.attackAnimationFrame >= 55)
+		if (attackData_.attackAnimationFrame >= 50)
 		{
 			attackData_.isAttack = false;
 		}
@@ -758,6 +758,11 @@ void Enemy::AttackStart(bool& isAttackType)
 void Enemy::AttackEnd(bool& isAttackType)
 {
 	ICharacter::AttackEnd(isAttackType);
+}
+
+void Enemy::EvaluateAttackTiming()
+{
+	ICharacter::EvaluateAttackTiming();
 }
 
 void Enemy::ResetCollision()

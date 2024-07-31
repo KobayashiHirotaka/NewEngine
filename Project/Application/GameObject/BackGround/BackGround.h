@@ -21,4 +21,10 @@ private:
 	std::unique_ptr<Model> model_;
 
 	WorldTransform worldTransform_;
+
+	//スケールアニメーション用の変数
+	float scaleAnimationTime_ = 0.0f;
+	const float scaleSpeed_ = 2.0f; 
+	const float minScale_ = 0.7f;
+	const float maxScale_ = 1.2f;
 };

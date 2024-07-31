@@ -42,15 +42,15 @@ void GameTitleScene::Initialize()
 	titleSprite_.reset(Sprite::Create(titleTextureHandle_, { titleSpritePosition_.x, titleSpritePosition_.y }));
 
 	//タイトル(操作用)のSprite
-	titleUITextureHandle_ = TextureManager::LoadTexture("resource/images/titleUISub.png");
+	titleUITextureHandle_ = TextureManager::LoadTexture("resource/images/titleUI.png");
 	titleUISprite_.reset(Sprite::Create(titleUITextureHandle_, { 0.0f,0.0f }));
 
 	//基本操作説明用のSprite
-	generalCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/GeneralCommandList.png");
+	generalCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/PlayGeneralCommandList.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
 	//攻撃操作説明用のSprite
-	attackCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/AttackCommandList.png");
+	attackCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/PlayAttackCommandList.png");
 	attackCommandListSprite_.reset(Sprite::Create(attackCommandListTextureHandle_, { 0.0f,0.0f }));
 
 	//トランジション用のSprite
@@ -59,12 +59,12 @@ void GameTitleScene::Initialize()
 	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
 
 	//BGM,SEの読み込み
-	titleSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Title.mp3");
+	titleSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/BGM.mp3");
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 
 	//BGMの再生,停止
-	//audio_->StopAudio(titleSoundHandle_);
-	//audio_->SoundPlayMP3(titleSoundHandle_, true, 1.0f);
+	audio_->StopAudio(titleSoundHandle_);
+	audio_->SoundPlayMP3(titleSoundHandle_, true, 0.2f);
 };
 
 void GameTitleScene::Update()
@@ -116,6 +116,35 @@ void GameTitleScene::Update()
 		{
 			sceneManager_->ChangeScene("GamePlayScene");
 			return;
+		}
+	}
+
+	//操作説明の開閉
+	if (input_->GetJoystickState())
+	{
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !isOpen_)
+		{
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+			isOpen_ = true;
+			spriteCount_ = 1;
+		}
+		else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && isOpen_)
+		{
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+			isOpen_ = false;
+			spriteCount_ = 0;
+		}
+
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) && isOpen_ && spriteCount_ == 1)
+		{
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+			spriteCount_ = 2;
+		}
+
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) && isOpen_ && spriteCount_ == 2)
+		{
+			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+			spriteCount_ = 1;
 		}
 	}
 
@@ -171,7 +200,7 @@ void GameTitleScene::Draw()
 	}
 
 	//操作説明
-	/*if (isOpen_ && spriteCount_ == 1)
+	if (isOpen_ && spriteCount_ == 1)
 	{
 		generalCommandListSprite_->Draw();
 	}
@@ -179,7 +208,7 @@ void GameTitleScene::Draw()
 	if (isOpen_ && spriteCount_ == 2)
 	{
 		attackCommandListSprite_->Draw();
-	}*/
+	}
 
 	Sprite::PostDraw();
 

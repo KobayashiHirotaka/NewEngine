@@ -1,5 +1,6 @@
 #pragma once
 #include "Application/GameObject/Character/ICharacter.h"
+#include "Engine/Utility/AttackEditor/AttackEditor.h"
 
 //前方宣言
 class Enemy;
@@ -51,6 +52,8 @@ public:
 	void AttackStart(bool& isAttackType)override;
 
 	void AttackEnd(bool& isAttackType)override;
+
+	void EvaluateAttackTiming()override;
 
 	//当たり判定の初期化
 	void ResetCollision()override;
@@ -121,5 +124,8 @@ private:
 	uint32_t weaponAttackSoundHandle_ = 0u;
 	uint32_t damageSoundHandle_ = 0u;
 	uint32_t guardSoundHandle_ = 0u;
+	
+	//エディター用
+	std::string attackType;
 };
 

@@ -10,7 +10,7 @@ void BackGround::Initialize()
 
 	worldTransform_.Initialize();
 	worldTransform_.translation.y = 2.3f;
-	//worldTransform_.translation.z = 13.0f;
+	worldTransform_.translation.z = 5.0f;
 }
 
 void BackGround::Update()
@@ -20,19 +20,17 @@ void BackGround::Update()
 
 	animationTime = model_->GetAnimationTime();
 
-	animationTime += 1.0f / 60;
+	animationTime += 1.0f / 60.0f;
 
 	animationTime = std::fmod(animationTime, model_->GetAnimation()[0].duration);
 
 	model_->SetAnimationTime(animationTime);
 	model_->ApplyAnimation(0);
 
-	/*worldTransform_.translation.y += 0.07f;
-
-	if (worldTransform_.translation.y >= 8.0f)
-	{
-		worldTransform_.translation.y = -3.0f;
-	}*/
+	//スケールアニメーション
+	scaleAnimationTime_ += 1.0f / 60.0f;
+	float scale = minScale_ + (maxScale_ - minScale_) * (0.5f * std::sin(scaleSpeed_ * scaleAnimationTime_) + 0.5f);
+	worldTransform_.scale = { scale, scale, scale };
 
 	worldTransform_.UpdateMatrixEuler();
 }

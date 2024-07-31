@@ -31,9 +31,13 @@ void EngineCore::Initialize()
 
 	ParticleModel::StaticInitialize();
 
+	Skybox::StaticInitialize();
+
 	Sprite::StaticInitialize();
 
 	GlobalVariables::GetInstance()->LoadFiles();
+
+	AttackEditor::GetInstance()->LoadFile("resource/AttackData/AttackData.json");
 
 	game3dObjectFactory_ = std::make_unique<Game3dObjectFactory>();
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
@@ -53,6 +57,8 @@ void EngineCore::Finalize()
 	ParticleModel::Release();
 
 	ModelManager::DeleteInstance();
+
+	Skybox::Release();
 
 	PostProcess::DeleteInstance();
 
@@ -86,6 +92,8 @@ void EngineCore::Update()
 	input_->Update();
 
 	//GlobalVariables::GetInstance()->Update();
+
+	AttackEditor::GetInstance()->Update();
 
 	postProcess_->Update();
 
