@@ -24,10 +24,10 @@ public:
 		Vector2 texcoord;
 	};
 
-	struct Material
+	/*struct Material
 	{
 		Vector4 color;
-	};
+	};*/
 
 	enum class RootParameterIndex
 	{

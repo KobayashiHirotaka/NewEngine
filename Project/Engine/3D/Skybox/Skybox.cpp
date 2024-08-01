@@ -27,6 +27,9 @@ void Skybox::StaticInitialize()
 
 void Skybox::Initialize()
 {
+	//テクスチャの読み込み
+	textureHandle_ = textureManager_->LoadTexture("resource/images/rostock_laage_airport_4k.dds");
+
 	//頂点リソースの作成
 	CreateVertexResource();
 
@@ -35,9 +38,6 @@ void Skybox::Initialize()
 
 	//マテリアル用のリソースの作成
 	CreateMaterialResource();
-
-	//テクスチャの読み込み
-	textureHandle_ = textureManager_->LoadTexture("resource/images/rostock_laage_airport_4k.dds");
 }
 
 void Skybox::Draw(WorldTransform& worldTransform, const Camera& camera)
