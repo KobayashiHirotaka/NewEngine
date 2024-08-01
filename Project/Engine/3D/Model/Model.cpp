@@ -30,7 +30,7 @@ void Model::StaticInitialize()
 
 	CreateBonePSO();
 
-	environmentTextureHandle_ = textureManager_->LoadTexture("resource/images/rostock_laage_airport_4k.dds");
+	environmentTextureHandle_ = textureManager_->LoadTexture("resource/images/skybox.dds");
 }
 
 void Model::Update()

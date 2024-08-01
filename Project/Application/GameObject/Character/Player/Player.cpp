@@ -116,6 +116,8 @@ void Player::Update()
 		}
 	}
 
+	model_->GetMaterial()->ImGui();
+
 	//振り向きの処理
 	Vector3 playerWorldPosition = GetWorldPosition();
 	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();

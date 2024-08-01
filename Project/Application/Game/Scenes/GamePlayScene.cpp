@@ -31,15 +31,6 @@ void GamePlayScene::Initialize()
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
 	game3dObjectManager_->Initialize();
 
-	//PostProcessのinstance
-	PostProcess::GetInstance()->SetIsPostProcessActive(true);
-
-	//PostEffectの切り替え
-	PostProcess::GetInstance()->SetIsBloomActive(true);
-	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
-	PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
-	PostProcess::GetInstance()->SetIsHSVFilterActive(true);
-
 	//Levelの読み込み
 	levelLoarder_ = LevelLoader::GetInstance();
 	levelLoarder_->LoadLevel("LevelData");
@@ -140,6 +131,21 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
+	//デバッグ用のシーン切り替え
+	if (input_->PushKey(DIK_SPACE))
+	{
+		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+		sceneManager_->ChangeScene("GameWinScene");
+		return;
+	}
+
+	if (input_->PushKey(DIK_RETURN))
+	{
+		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+		sceneManager_->ChangeScene("GameLoseScene");
+		return;
+	}
+
 	if (!isOpen_)
 	{
 		//ラウンド間の時間の処理

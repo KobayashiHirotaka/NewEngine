@@ -5,6 +5,7 @@ struct Material
     float32_t4 color;
     float32_t4x4 uvTransform;
     float32_t shininess;
+    float32_t environmentCofficient;
 };
 
 struct DirectionLight
@@ -213,7 +214,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     output.color.rgb = lightingColor;
     output.color.a = gMaterial.color.a * textureColor.a;
     
-    output.color.rgb += environmentColor.rgb * 0.6f;
+    output.color.rgb += environmentColor.rgb * gMaterial.environmentCofficient;
    
     if (textureColor.a == 0)
     {

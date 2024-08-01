@@ -21,17 +21,15 @@ void GameWinScene::Initialize()
 	//Audioのinstance
 	audio_ = Audio::GetInstance();
 
-	//PostProcessのinstance
-	PostProcess::GetInstance()->SetIsPostProcessActive(true);
-
-	//PostEffectの切り替え
-	PostProcess::GetInstance()->SetIsBloomActive(true);
-	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
-	PostProcess::GetInstance()->SetIsVignetteActive(false);
-
 	//Skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
+
+	//Skyboxの生成、初期化
+	skybox_.reset(Skybox::Create());
+
+	skyboxWorldTransform_.Initialize();
+	skyboxWorldTransform_.scale = { 500.0f, 500.0f, 500.0f };
 
 	//DebugCameraの初期化
 	debugCamera_.Initialize();
@@ -64,6 +62,8 @@ void GameWinScene::Update()
 			}
 		}
 	}
+
+	skyboxWorldTransform_.UpdateMatrixEuler();
 
 	//トランジション
 	if (!isTransitionEnd_)
@@ -119,10 +119,16 @@ void GameWinScene::Draw()
 {
 	PostProcess::GetInstance()->PreDraw();
 
+	Skybox::PreDraw();
+
+	skybox_->Draw(skyboxWorldTransform_, camera_);
+
+	Skybox::PostDraw();
+
 	Model::PreDraw();
 
-	//Skydomeの描画
-	skydome_->Draw(camera_);
+	////Skydomeの描画
+	//skydome_->Draw(camera_);
 
 	Model::PostDraw();
 

@@ -10,6 +10,7 @@ public:
 		Vector4 color;
 		Matrix4x4 uvTransform;
 		float shininess;
+		float environmentCofficient;
 	};
 
 	void Initialize();
@@ -17,6 +18,8 @@ public:
 	void Update();
 
 	void SetGraphicsCommand(UINT rootParameterIndex);
+
+	void ImGui();
 
 	//Color
 	const Vector4& GetColor() const { return color_; };
@@ -34,6 +37,10 @@ public:
 	const Vector2& GetScale() const { return scale_; };
 	void SetScale(const Vector2& scale) { scale_ = scale; };
 
+	//EnvironmentCofficient
+	const float& GetEnvironmentCofficient() const { return environmentCofficient_; };
+	void SetEnvironmentCofficient(const float& environmentCofficient) { environmentCofficient_ = environmentCofficient; };
+
 private:
 	DirectXCore* dxCore_ = nullptr;
 
@@ -48,4 +55,6 @@ private:
 	Vector2 scale_ = { 1.0f,1.0f };
 
 	float shininess_ = 40.8f;
+
+	float environmentCofficient_ = 0.6f;
 };

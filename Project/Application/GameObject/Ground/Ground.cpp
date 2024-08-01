@@ -9,6 +9,10 @@ void Ground::Initialize()
 
 void Ground::Update()
 {
+	model_->GetMaterial()->SetEnvironmentCofficient(0.0f);
+
+	//model_->GetMaterial()->ImGui();
+
 	//worldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 }
