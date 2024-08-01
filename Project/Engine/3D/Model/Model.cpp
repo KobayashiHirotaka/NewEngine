@@ -12,6 +12,7 @@ Microsoft::WRL::ComPtr<ID3D12PipelineState> Model::graphicsPipelineState_ = null
 Microsoft::WRL::ComPtr<ID3D12RootSignature> Model::boneRootSignature_ = nullptr;
 Microsoft::WRL::ComPtr<ID3D12PipelineState> Model::boneGraphicsPipelineState_ = nullptr;
 std::list<ModelData> Model::modelDatas_{};
+uint32_t Model::environmentTextureHandle_;
 
 void Model::StaticInitialize()
 {
@@ -28,6 +29,8 @@ void Model::StaticInitialize()
 	CreatePSO();
 
 	CreateBonePSO();
+
+	environmentTextureHandle_ = textureManager_->LoadTexture("resource/images/rostock_laage_airport_4k.dds");
 }
 
 void Model::Update()
@@ -133,6 +136,8 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera, const uin
 	spotLight_->SetGraphicsCommand(UINT(RootParameterIndex::SpotLight));
 
 	textureManager_->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Skinning), skinningTextureHandle_);
+
+	textureManager_->SetGraphicsRootDescriptorTable(8, environmentTextureHandle_);
 
 	//描画
 	mesh_->Draw();
@@ -356,8 +361,14 @@ void Model::CreatePSO()
 	skinningDescriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使う
 	skinningDescriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
 
-	//RootParameter作成。複数設定できるので配列。今回は結果一つだけなので長さ1の配列
-	D3D12_ROOT_PARAMETER rootParameters[8] = {};
+	D3D12_DESCRIPTOR_RANGE environmentDescriptorRange[1] = {};
+	environmentDescriptorRange[0].BaseShaderRegister = 1;//1から始まる
+	environmentDescriptorRange[0].NumDescriptors = 1;//数は1つ
+	environmentDescriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使う
+	environmentDescriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
+
+	//RootParameter作成。複数設定できるので配列。
+	D3D12_ROOT_PARAMETER rootParameters[9] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVで使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	rootParameters[0].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
@@ -384,6 +395,11 @@ void Model::CreatePSO()
 	rootParameters[7].DescriptorTable.pDescriptorRanges = skinningDescriptorRange;//Tableの中身の配列を指定
 	rootParameters[7].DescriptorTable.NumDescriptorRanges = _countof(skinningDescriptorRange);//Tableで利用する数
 	rootParameters[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
+	rootParameters[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
+	rootParameters[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
+	rootParameters[8].DescriptorTable.pDescriptorRanges = environmentDescriptorRange;//Tableの中身の配列を指定
+	rootParameters[8].DescriptorTable.NumDescriptorRanges = _countof(environmentDescriptorRange);//Tableで利用する数
+
 
 	descriptionRootSignature.pParameters = rootParameters;//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);//配列の長さ
