@@ -9,7 +9,7 @@ void BackGround::Initialize()
 	model_.reset(Model::CreateFromOBJ("resource/models", "backGroundCube.gltf"));
 
 	worldTransform_.Initialize();
-	worldTransform_.translation.y = 2.3f;
+	worldTransform_.translation.y = 1.3f;
 	worldTransform_.translation.z = 5.0f;
 }
 
@@ -43,8 +43,8 @@ void BackGround::Draw(const Camera camera)
 void BackGround::ImGui()
 {
 	ImGui::Begin("BackGround");
-	ImGui::DragFloat3("WTFT", &worldTransform_.translation.x, -14.0f, 14.0f);
-	ImGui::DragFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 150.0f);
-	ImGui::DragFloat3("WTFS", &worldTransform_.scale.x, 0.0f, 300.0f);
+	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -14.0f, 14.0f);
+	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 150.0f);
+	ImGui::SliderFloat3("WTFS", &worldTransform_.scale.x, 0.0f, 300.0f);
 	ImGui::End();
 }

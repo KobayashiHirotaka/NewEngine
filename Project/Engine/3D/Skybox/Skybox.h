@@ -85,7 +85,7 @@ private:
 
 	static Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_;
 
-	std::array<VertexData, kMaxVertices> vertices_{};
+	std::array<Vector4, kMaxVertices> vertices_{};
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 

@@ -58,14 +58,14 @@ void GamePlayScene::Initialize()
 	skydome_->Initialize();
 
 	//Skyboxの生成、初期化
-	skybox_ = std::make_unique<Skybox>();
-	skybox_->Create();
+	skybox_.reset(Skybox::Create());
 
 	//BackGroundの生成、初期化
 	backGround_ = std::make_unique<BackGround>();
 	backGround_->Initialize();
 
 	skyboxWorldTransform_.Initialize();
+	skyboxWorldTransform_.scale = { 500.0f, 500.0f, 500.0f };
 
 	//リソース
 	UICommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/UICommandList.png");
@@ -285,13 +285,13 @@ void GamePlayScene::Draw()
 
 	Model::PostDraw();
 
+	PostProcess::GetInstance()->PreDraw();
+
 	Skybox::PreDraw();
 
 	skybox_->Draw(skyboxWorldTransform_, camera_);
 
 	Skybox::PostDraw();
-
-	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
 
@@ -301,8 +301,8 @@ void GamePlayScene::Draw()
 	//Enemyの弾の描画
 	enemy_->BulletDraw(camera_);
 
-	//Skydomeの描画
-	skydome_->Draw(camera_);
+	////Skydomeの描画
+	//skydome_->Draw(camera_);
 
 	if (!isOpen_)
 	{
@@ -446,6 +446,7 @@ void GamePlayScene::ImGui()
 
 	player_->ImGui("Player");
 	enemy_->ImGui("Enemy");
+	backGround_->ImGui();
 
 	camera_.ImGui();
 }
