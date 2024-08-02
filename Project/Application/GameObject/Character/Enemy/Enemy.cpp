@@ -128,6 +128,8 @@ void Enemy::Update()
 
 	particleEffectPlayer_->Update();
 
+	model_->GetLight()->SetEnableLighting(false);
+
 	//WorldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 }

@@ -447,7 +447,7 @@ void GamePlayScene::Finalize()
 void GamePlayScene::ImGui()
 {
 	ImGui::Begin("PlayScene");
-	
+
 	ImGui::End();
 
 	player_->ImGui("Player");

@@ -21,13 +21,13 @@ void GameTitleScene::Initialize()
 	//Audioのインスタンス
 	audio_ = Audio::GetInstance();
 
-	////PostProcessのインスタンス
-	//PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	//PostProcessのインスタンス
+	PostProcess::GetInstance()->SetIsPostProcessActive(true);
 
-	////PostEffectの切り替え
-	//PostProcess::GetInstance()->SetIsBloomActive(true);
-	//PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
-	//PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
+	//PostEffectの切り替え
+	PostProcess::GetInstance()->SetIsBloomActive(true);
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
+	PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
 
 	//Skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
