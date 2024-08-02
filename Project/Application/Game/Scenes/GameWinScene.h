@@ -1,4 +1,5 @@
 #include "IScene.h"
+#include "Engine/3D/Skybox/Skybox.h"
 #include "Application/GameObject/Skydome/Skydome.h"
 
 class GameWinScene : public IScene
@@ -52,6 +53,10 @@ private:
 	float transitionTimer_ = 0;
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
+
+	//Skybox
+	std::unique_ptr<Skybox> skybox_;
+	WorldTransform skyboxWorldTransform_;
 };
 
 

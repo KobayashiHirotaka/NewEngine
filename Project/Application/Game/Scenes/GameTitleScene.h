@@ -1,5 +1,6 @@
 #pragma once
 #include "IScene.h"
+#include "Engine/3D/Skybox/Skybox.h"
 #include "Application/GameObject/Skydome/Skydome.h"
 
 class GameTitleScene : public IScene
@@ -79,4 +80,8 @@ private:
 
 	//Skydome
 	std::unique_ptr<Skydome> skydome_;
+
+	//Skybox
+	std::unique_ptr<Skybox> skybox_;
+	WorldTransform skyboxWorldTransform_;
 };

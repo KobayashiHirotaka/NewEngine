@@ -27,6 +27,9 @@ void Skybox::StaticInitialize()
 
 void Skybox::Initialize()
 {
+	//テクスチャの読み込み
+	textureHandle_ = textureManager_->LoadTexture("resource/images/skybox.dds");
+
 	//頂点リソースの作成
 	CreateVertexResource();
 
@@ -35,9 +38,6 @@ void Skybox::Initialize()
 
 	//マテリアル用のリソースの作成
 	CreateMaterialResource();
-
-	//テクスチャの読み込み
-	textureHandle_ = textureManager_->LoadTexture("resource/images/rostock_laage_airport_4k.dds");
 }
 
 void Skybox::Draw(WorldTransform& worldTransform, const Camera& camera)
@@ -193,18 +193,18 @@ void Skybox::CreatePSO()
 	//RootParameter作成
 	D3D12_ROOT_PARAMETER rootParameters[4] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVで使う
-	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
 	rootParameters[0].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVで使う
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
-	rootParameters[1].Descriptor.ShaderRegister = 1;//レジスタ番号1とバインド
-	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
-	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
-	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;//Tableの中身の配列を指定
-	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);//Tableで利用する数
-	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVで使う
+	rootParameters[1].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVで使う
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
+	rootParameters[2].Descriptor.ShaderRegister = 1;//レジスタ番号1とバインド
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//DescriptorTableを使う
 	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
-	rootParameters[3].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
+	rootParameters[3].DescriptorTable.pDescriptorRanges = descriptorRange;//Tableの中身の配列を指定
+	rootParameters[3].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);//Tableで利用する数
 
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
@@ -254,7 +254,7 @@ void Skybox::CreatePSO()
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
 	//共通設定
-	blendDesc.RenderTarget[0].BlendEnable = true;//ブレンドを有効にする
+	blendDesc.RenderTarget[0].BlendEnable = false;//ブレンドを有効にする
 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;//加算
 	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;//ソースの値を100%使う
 	blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;//デストの値を0%使う
@@ -264,15 +264,15 @@ void Skybox::CreatePSO()
 	//blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;//ソースのアルファ値
 	//blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;//1.0f-ソースのアルファ値
 
-	//加算合成
-	blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;//加算
-	blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;//ソースの値を100%使う
-	blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;//デストの値を100%使う
+	////加算合成
+	//blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;//加算
+	//blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;//ソースの値を100%使う
+	//blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;//デストの値を100%使う
 
 	//RasterizerStateの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
 	//裏面(時計回り)を表示しない
-	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
+	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 	//三角形の中を塗りつぶす
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
@@ -324,40 +324,40 @@ void Skybox::CreatePSO()
 void Skybox::CreateVertexResource()
 {
 	//右面。描画インデックスは[0,1,2][2,1,3]で内側を向く
-	vertices_[0].position = { 1.0f,1.0f,1.0f,1.0f };
-	vertices_[1].position = { 1.0f,1.0f,-1.0f,1.0f };
-	vertices_[2].position = { 1.0f,-1.0f,1.0f,1.0f };
-	vertices_[3].position = { 1.0f,-1.0f,-1.0f,1.0f };
+	vertices_[0] = { 1.0f,1.0f,1.0f,1.0f };
+	vertices_[1] = { 1.0f,1.0f,-1.0f,1.0f };
+	vertices_[2] = { 1.0f,-1.0f,1.0f,1.0f };
+	vertices_[3] = { 1.0f,-1.0f,-1.0f,1.0f };
 
 	//左面。描画インデックスは[4,5,6][6,5,7]
-	vertices_[4].position = { -1.0f,1.0f,-1.0f,1.0f };
-	vertices_[5].position = { -1.0f,1.0f,1.0f,1.0f };
-	vertices_[6].position = { -1.0f,-1.0f,-1.0f,1.0f };
-	vertices_[7].position = { -1.0f,-1.0f,1.0f,1.0f };
+	vertices_[4] = { -1.0f,1.0f,-1.0f,1.0f };
+	vertices_[5] = { -1.0f,1.0f,1.0f,1.0f };
+	vertices_[6] = { -1.0f,-1.0f,-1.0f,1.0f };
+	vertices_[7] = { -1.0f,-1.0f,1.0f,1.0f };
 
 	//前面。描画インデックスは[8,9,10][10,9,11]
-	vertices_[8].position = { -1.0f,1.0f,1.0f,1.0f };
-	vertices_[9].position = { 1.0f,1.0f,1.0f,1.0f };
-	vertices_[10].position = { -1.0f,-1.0f,1.0f,1.0f };
-	vertices_[11].position = { 1.0f,-1.0f,1.0f,1.0f };
+	vertices_[8] = { -1.0f,1.0f,1.0f,1.0f };
+	vertices_[9] = { 1.0f,1.0f,1.0f,1.0f };
+	vertices_[10] = { -1.0f,-1.0f,1.0f,1.0f };
+	vertices_[11] = { 1.0f,-1.0f,1.0f,1.0f };
 
 	//後面。描画インデックスは[12,13,14][14,13,15]
-	vertices_[12].position = { 1.0f,1.0f,-1.0f,1.0f };
-	vertices_[13].position = { -1.0f,1.0f,-1.0f,1.0f };
-	vertices_[14].position = { 1.0f,-1.0f,-1.0f,1.0f };
-	vertices_[15].position = { -1.0f,-1.0f,-1.0f,1.0f };
+	vertices_[12] = { 1.0f,1.0f,-1.0f,1.0f };
+	vertices_[13] = { -1.0f,1.0f,-1.0f,1.0f };
+	vertices_[14] = { 1.0f,-1.0f,-1.0f,1.0f };
+	vertices_[15] = { -1.0f,-1.0f,-1.0f,1.0f };
 
 	//上面。描画インデックスは[16,17,18][18,17,19]
-	vertices_[16].position = { -1.0f,1.0f,-1.0f,1.0f };
-	vertices_[17].position = { 1.0f,1.0f,-1.0f,1.0f };
-	vertices_[18].position = { -1.0f,1.0f,1.0f,1.0f };
-	vertices_[19].position = { 1.0f,1.0f,1.0f,1.0f };
+	vertices_[16] = { -1.0f,1.0f,-1.0f,1.0f };
+	vertices_[17] = { 1.0f,1.0f,-1.0f,1.0f };
+	vertices_[18] = { -1.0f,1.0f,1.0f,1.0f };
+	vertices_[19] = { 1.0f,1.0f,1.0f,1.0f };
 
 	//下面。描画インデックスは[20,21,22][22,21,23]
-	vertices_[20].position = { -1.0f,-1.0f,1.0f,1.0f };
-	vertices_[21].position = { 1.0f,-1.0f,1.0f,1.0f };
-	vertices_[22].position = { -1.0f,-1.0f,-1.0f,1.0f };
-	vertices_[23].position = { 1.0f,-1.0f,-1.0f,1.0f };
+	vertices_[20] = { -1.0f,-1.0f,1.0f,1.0f };
+	vertices_[21] = { 1.0f,-1.0f,1.0f,1.0f };
+	vertices_[22] = { -1.0f,-1.0f,-1.0f,1.0f };
+	vertices_[23] = { 1.0f,-1.0f,-1.0f,1.0f };
 
 	vertexResource_ = dxCore_->CreateBufferResource(sizeof(Vector4) * kMaxVertices);
 

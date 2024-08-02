@@ -11,6 +11,7 @@ void Material::Initialize()
 	materialData->color = color_;
 	materialData->uvTransform = MakeIdentity4x4();
 	materialData->shininess = shininess_;
+	materialData->environmentCofficient = environmentCofficient_;
 	materialResource_->Unmap(0, nullptr);
 }
 
@@ -25,10 +26,18 @@ void Material::Update()
 	materialData->color = color_;
 	materialData->uvTransform = uvTransformMatrix;
 	materialData->shininess = shininess_;
+	materialData->environmentCofficient = environmentCofficient_;
 	materialResource_->Unmap(0, nullptr);
 }
 
 void Material::SetGraphicsCommand(UINT rootParameterIndex)
 {
 	dxCore_->GetCommandList()->SetGraphicsRootConstantBufferView(rootParameterIndex, materialResource_->GetGPUVirtualAddress());
+}
+
+void Material::ImGui()
+{
+	ImGui::Begin("Material");
+	ImGui::SliderFloat("EnvironmentCofficient", &environmentCofficient_, 0.0f, 1.0f);
+	ImGui::End();
 }

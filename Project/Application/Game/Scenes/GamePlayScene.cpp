@@ -31,15 +31,6 @@ void GamePlayScene::Initialize()
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
 	game3dObjectManager_->Initialize();
 
-	//PostProcessのinstance
-	PostProcess::GetInstance()->SetIsPostProcessActive(true);
-
-	//PostEffectの切り替え
-	PostProcess::GetInstance()->SetIsBloomActive(true);
-	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
-	PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
-	PostProcess::GetInstance()->SetIsHSVFilterActive(true);
-
 	//Levelの読み込み
 	levelLoarder_ = LevelLoader::GetInstance();
 	levelLoarder_->LoadLevel("LevelData");
@@ -57,9 +48,15 @@ void GamePlayScene::Initialize()
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
+	//Skyboxの生成、初期化
+	skybox_.reset(Skybox::Create());
+
 	//BackGroundの生成、初期化
 	backGround_ = std::make_unique<BackGround>();
 	backGround_->Initialize();
+
+	skyboxWorldTransform_.Initialize();
+	skyboxWorldTransform_.scale = { 500.0f, 500.0f, 500.0f };
 
 	//リソース
 	UICommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/UICommandList.png");
@@ -134,6 +131,21 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
+	//デバッグ用のシーン切り替え
+	if (input_->PushKey(DIK_SPACE))
+	{
+		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+		sceneManager_->ChangeScene("GameWinScene");
+		return;
+	}
+
+	if (input_->PushKey(DIK_RETURN))
+	{
+		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+		sceneManager_->ChangeScene("GameLoseScene");
+		return;
+	}
+
 	if (!isOpen_)
 	{
 		//ラウンド間の時間の処理
@@ -204,6 +216,8 @@ void GamePlayScene::Update()
 
 	//勝ち負けの処理
 	HandleGameOutcome();
+
+	skyboxWorldTransform_.UpdateMatrixEuler();
 
 	//操作説明の開閉
 	if (input_->GetJoystickState())
@@ -279,6 +293,12 @@ void GamePlayScene::Draw()
 
 	PostProcess::GetInstance()->PreDraw();
 
+	Skybox::PreDraw();
+
+	skybox_->Draw(skyboxWorldTransform_, camera_);
+
+	Skybox::PostDraw();
+
 	Model::PreDraw();
 
 	//Game3dObjectManagerの描画
@@ -287,8 +307,8 @@ void GamePlayScene::Draw()
 	//Enemyの弾の描画
 	enemy_->BulletDraw(camera_);
 
-	//Skydomeの描画
-	skydome_->Draw(camera_);
+	////Skydomeの描画
+	//skydome_->Draw(camera_);
 
 	if (!isOpen_)
 	{
@@ -427,11 +447,12 @@ void GamePlayScene::Finalize()
 void GamePlayScene::ImGui()
 {
 	ImGui::Begin("PlayScene");
-	
+
 	ImGui::End();
 
 	player_->ImGui("Player");
 	enemy_->ImGui("Enemy");
+	backGround_->ImGui();
 
 	camera_.ImGui();
 }

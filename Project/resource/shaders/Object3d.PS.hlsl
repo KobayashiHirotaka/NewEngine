@@ -5,6 +5,7 @@ struct Material
     float32_t4 color;
     float32_t4x4 uvTransform;
     float32_t shininess;
+    float32_t environmentCofficient;
 };
 
 struct DirectionLight
@@ -50,6 +51,7 @@ ConstantBuffer<Material> gMaterial : register(b0);
 ConstantBuffer<DirectionLight> gDirectionalLight : register(b1);
 ConstantBuffer<PointLight> gPointLight : register(b2);
 ConstantBuffer<SpotLight> gSpotLight : register(b3);
+TextureCube<float32_t4> gEnvironment : register(t1);
 
 struct PixelShaderOutput
 {
@@ -204,9 +206,15 @@ PixelShaderOutput main(VertexShaderOutput input)
         lightingColor += diffuse + specular;
         
     }
+    
+    float32_t3 reflectedVector = reflect(input.cameraToPosition, normalize(input.normal));
+    
+    float32_t4 environmentColor = gEnvironment.Sample(gSampler, reflectedVector);
      
     output.color.rgb = lightingColor;
     output.color.a = gMaterial.color.a * textureColor.a;
+    
+    output.color.rgb += environmentColor.rgb * gMaterial.environmentCofficient;
    
     if (textureColor.a == 0)
     {

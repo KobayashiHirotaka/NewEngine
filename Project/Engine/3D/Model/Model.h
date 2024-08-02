@@ -188,4 +188,6 @@ private:
 	static Microsoft::WRL::ComPtr<ID3D12RootSignature> boneRootSignature_;
 
 	static Microsoft::WRL::ComPtr<ID3D12PipelineState> boneGraphicsPipelineState_;
+
+	static uint32_t environmentTextureHandle_;
 };
