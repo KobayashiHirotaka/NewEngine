@@ -10,6 +10,8 @@ void Skydome::Initialize()
 
 	worldTransform_.Initialize();
 	worldTransform_.scale = { 250.0f,250.0f,250.0f };
+
+	model_->GetMaterial()->SetEnvironmentCofficient(0.0f);
 }
 
 void Skydome::Update()

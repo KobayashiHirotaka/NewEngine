@@ -295,7 +295,7 @@ void GamePlayScene::Draw()
 
 	Skybox::PreDraw();
 
-	skybox_->Draw(skyboxWorldTransform_, camera_);
+	//skybox_->Draw(skyboxWorldTransform_, camera_);
 
 	Skybox::PostDraw();
 
@@ -307,8 +307,8 @@ void GamePlayScene::Draw()
 	//Enemyの弾の描画
 	enemy_->BulletDraw(camera_);
 
-	////Skydomeの描画
-	//skydome_->Draw(camera_);
+	//Skydomeの描画
+	skydome_->Draw(camera_);
 
 	if (!isOpen_)
 	{
