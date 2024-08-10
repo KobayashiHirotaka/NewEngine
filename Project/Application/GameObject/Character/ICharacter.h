@@ -51,6 +51,9 @@ public:
 		//ガードしているかどうか
 		bool isGuard = false;
 
+		//地上にいるかどうか
+		bool isGround = false;
+
 		//各攻撃があたっているかどうか
 		//通常攻撃
 		bool isHitLightPunch = false;
@@ -101,7 +104,7 @@ public:
 		bool isAttack = false;
 
 		//硬直中か
-		bool isRecovery_ = false;
+		bool isRecovery = false;
 
 		//弱攻撃
 		bool isLightPunch = false;
@@ -123,6 +126,9 @@ public:
 
 		//弾攻撃
 		bool isShot = false;
+
+		//ジャンプ攻撃
+		bool isJumpAttack = false;
 	};
 
 	struct TimerData

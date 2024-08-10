@@ -4,6 +4,11 @@
         "attackStartTime": 5,
         "recoveryTime": 40
     },
+    "JumpAttack": {
+        "attackEndTime": 18,
+        "attackStartTime": 5,
+        "recoveryTime": 25
+    },
     "LightPunch": {
         "attackEndTime": 15,
         "attackStartTime": 4,

@@ -235,10 +235,10 @@ void ICharacter::EvaluateAttackTiming()
 
 	if (attackData_.attackAnimationFrame >= attackData_.attackEndTime && attackData_.attackAnimationFrame <= attackData_.recoveryTime)
 	{
-		attackData_.isRecovery_ = true;
+		attackData_.isRecovery = true;
 	}
 	else
 	{
-		attackData_.isRecovery_ = false;
+		attackData_.isRecovery = false;
 	}
 }
