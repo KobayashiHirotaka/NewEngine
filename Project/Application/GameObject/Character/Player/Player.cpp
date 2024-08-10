@@ -572,10 +572,6 @@ void Player::BehaviorJumpInitialize()
 
 void Player::BehaviorJumpUpdate()
 {
-	animationIndex_ = 7;
-
-	UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
-
 	worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 	const float kGravityAcceleration_ = 0.02f;
@@ -584,56 +580,40 @@ void Player::BehaviorJumpUpdate()
 
 	moveData_.velocity = Add(moveData_.velocity, accelerationVector_);
 
-	/*if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X))
+	if (input_->GetJoystickState())
 	{
-		attackType = "JumpAttack";
-		attackData_.isAttack = false;
-		attackData_.isJumpAttack = true;
-		animationTime_ = 0.0f;
-		attackData_.attackAnimationFrame = 0;
-		model_->SetAnimationTime(animationTime_);
-		ResetCollision();
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X))
+		{
+			attackType = "JumpAttack";
+			attackData_.isAttack = false;
+			attackData_.isJumpAttack = true;
+			animationTime_ = 0.0f;
+			attackData_.attackAnimationFrame = 0;
+			model_->SetAnimationTime(animationTime_);
+			ResetCollision();
+		}
 	}
 
 	if (attackData_.isJumpAttack)
 	{
 		animationIndex_ = 7;
-		characterState_.isGuard = false;
 
-		if (!characterState_.isDown)
-		{
-			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
-		}
+		UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
+	}
+	else
+	{
+		animationIndex_ = 4;
 
-		if (characterState_.direction == Direction::Right)
-		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-			SetAABB(aabb_);
-		}
-		else if (characterState_.direction == Direction::Left)
-		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-			SetAABB(aabb_);
-		}
-
-		EvaluateAttackTiming();
-
-		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
-		{
-			AttackEnd(attackData_.isJumpAttack);
-			ResetCollision();
-		}
-
-		attackData_.attackAnimationFrame++;
-	}*/
+		UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
+	}
 
 	if (worldTransform_.translation.y <= 0.0f || characterState_.isDown)
 	{
 		characterState_.behaviorRequest = Behavior::kRoot;
 		worldTransform_.translation.y = 0.0f;
 		animationTime_ = 0.0f;
-		/*AttackEnd(attackData_.isJumpAttack);
-		ResetCollision();*/
+		AttackEnd(attackData_.isJumpAttack);
+		ResetCollision();
 		model_->SetAnimationTime(animationTime_);
 	}
 }
