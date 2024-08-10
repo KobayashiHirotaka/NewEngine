@@ -19,6 +19,8 @@ void Enemy::Initialize()
 {
 	IGame3dObject::SetTag("Enemy");
 
+	ICharacter::Initialize();
+
 	//Inputのinstance
 	input_ = Input::GetInstance();
 
@@ -194,7 +196,7 @@ void Enemy::ImGui(const char* title)
 	ImGui::Text("isHit %d", characterState_.isHitCharacter);
 	ImGui::Text("patternCount %d", patternCount_);
 
-	ImGui::Checkbox("isDebug_", &isDebug_);
+	//ImGui::Checkbox("isDebug_", &isDebug_);
 
 	model_->GetLight()->ImGui("DirectionalLight");
 	model_->GetPointLight()->ImGui("PointLight");
