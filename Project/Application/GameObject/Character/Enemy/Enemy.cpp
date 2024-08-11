@@ -558,6 +558,17 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			HitStop(10);
 		}
 
+		//ジャンプ攻撃
+		if (player_->GetIsAttack() && player_->GetIsJumpAttack() && !characterState_.isDown && !characterState_.isGuard)
+		{
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+			damage = 3.0f;
+			hp_ -= damage;
+			characterState_.isHitJumpAttack = true;
+
+			HitStop(10);
+		}
+
 		//タックル
 		//キャンセルじゃないとき
 		if (player_->GetIsTackle() && player_->GetIsAttack() && !characterState_.isDown && !characterState_.isGuard)
@@ -1013,6 +1024,29 @@ void Enemy::DownAnimation()
 		{
 			DownAnimationEnd(5, characterState_.isHitTCHighPunch);
 			ResetCollision();
+		}
+	}
+
+	//ジャンプ攻撃
+	if (characterState_.isHitJumpAttack)
+	{
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		if (timerData_.downAnimationTimer > 55)
+		{
+			float particlePosX = (characterState_.direction == Direction::Right) ? -0.1f : 0.1f;
+
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
+				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+		}
+
+		animationIndex_ = 4;
+		UpdateAnimationTime(animationTime_, false, 20.0f, animationIndex_, model_);
+
+		if (timerData_.downAnimationTimer < 30 && hp_ > 0.0f)
+		{
+			DownAnimationEnd(5, characterState_.isHitJumpAttack);
 		}
 	}
 

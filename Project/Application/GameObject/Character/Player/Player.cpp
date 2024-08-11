@@ -193,6 +193,7 @@ void Player::ImGui(const char* title)
 	ImGui::Text("isGuard %d", characterState_.isGuard);
 	ImGui::Text("attackAnimationFrame %d", attackData_.attackAnimationFrame);
 	ImGui::Text("isAttack %d", attackData_.isAttack);
+	ImGui::Text("isRecovery %d",attackData_.isRecovery);
 	ImGui::DragFloat("animationTime", &animationTime_, 0.0001f);
 
 	ImGui::Text("attackStartTime %d", attackData_.attackStartTime);
@@ -597,24 +598,53 @@ void Player::BehaviorJumpUpdate()
 	if (attackData_.isJumpAttack)
 	{
 		animationIndex_ = 7;
+		characterState_.isGuard = false;
 
-		UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
+		if (!characterState_.isDown)
+		{
+			UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
+		}
+
+		if (characterState_.direction == Direction::Right)
+		{
+			aabb_ = { {0.0f,0.0f,0.0f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);
+		}
+		else if (characterState_.direction == Direction::Left)
+		{
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.0f,0.0f,0.0f} };
+			SetAABB(aabb_);
+		}
+
+		EvaluateAttackTiming();
+
+		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
+		{
+			AttackEnd(attackData_.isJumpAttack);
+			ResetCollision();
+		}
+
+		if (worldTransform_.translation.y <= 0.0f || characterState_.isDown)
+		{
+			worldTransform_.translation.y = 0.0f;
+			moveData_.velocity = { 0.0f,0.0f,0.0f };
+		}
+
+		attackData_.attackAnimationFrame++;
 	}
 	else
 	{
 		animationIndex_ = 4;
 
 		UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
-	}
 
-	if (worldTransform_.translation.y <= 0.0f || characterState_.isDown)
-	{
-		characterState_.behaviorRequest = Behavior::kRoot;
-		worldTransform_.translation.y = 0.0f;
-		animationTime_ = 0.0f;
-		AttackEnd(attackData_.isJumpAttack);
-		ResetCollision();
-		model_->SetAnimationTime(animationTime_);
+		if (worldTransform_.translation.y <= 0.0f || characterState_.isDown)
+		{
+			characterState_.behaviorRequest = Behavior::kRoot;
+			worldTransform_.translation.y = 0.0f;
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
+		}
 	}
 }
 

@@ -62,6 +62,9 @@ public:
 		bool isHitTCMiddlePunch = false;
 		bool isHitTCHighPunch = false;
 
+		//ジャンプ攻撃
+		bool isHitJumpAttack = false;
+
 		//技
 		bool isHitTackle = false;
 
@@ -226,6 +229,8 @@ public:
 	bool GetIsTCMiddlePunch() { return attackData_.isTCMiddlePunch; };
 
 	bool GetIsTCHighPunch() { return attackData_.isTCHighPunch; };
+
+	bool GetIsJumpAttack() { return attackData_.isJumpAttack; };
 
 	bool GetIsTackle() { return attackData_.isTackle; };
 
