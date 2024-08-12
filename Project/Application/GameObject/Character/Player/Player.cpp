@@ -583,7 +583,7 @@ void Player::BehaviorJumpUpdate()
 
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !attackData_.isJumpAttack)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !attackData_.isJumpAttack)
 		{
 			attackType = "JumpAttack";
 			attackData_.isAttack = false;
@@ -618,7 +618,7 @@ void Player::BehaviorJumpUpdate()
 
 		EvaluateAttackTiming();
 
-		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
+		if (attackData_.attackAnimationFrame > attackData_.recoveryTime)
 		{
 			AttackEnd(attackData_.isJumpAttack);
 			ResetCollision();
@@ -628,6 +628,28 @@ void Player::BehaviorJumpUpdate()
 		{
 			worldTransform_.translation.y = 0.0f;
 			moveData_.velocity = { 0.0f,0.0f,0.0f };
+			AttackEnd(attackData_.isJumpAttack);
+			ResetCollision();
+		}
+
+
+		//キャンセルの処理(弱パンチ)
+		if (input_->GetJoystickState())
+		{
+			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 10 && attackData_.attackAnimationFrame < 20
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
+				&& characterState_.isHitCharacter)
+			{
+				characterState_.behaviorRequest = Behavior::kAttack;
+				attackType = "LightPunch";
+				attackData_.isAttack = false;
+				attackData_.isJumpAttack = false;
+				attackData_.isLightPunch = true;
+				animationTime_ = 0.0f;
+				attackData_.attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime_);
+				ResetCollision();
+			}
 		}
 
 		attackData_.attackAnimationFrame++;

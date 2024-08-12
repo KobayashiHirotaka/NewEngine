@@ -1042,9 +1042,9 @@ void Enemy::DownAnimation()
 		}
 
 		animationIndex_ = 4;
-		UpdateAnimationTime(animationTime_, false, 20.0f, animationIndex_, model_);
+		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
-		if (timerData_.downAnimationTimer < 30 && hp_ > 0.0f)
+		if (!player_->GetIsJumpAttack() && hp_ > 0.0f)
 		{
 			DownAnimationEnd(5, characterState_.isHitJumpAttack);
 		}
@@ -1164,13 +1164,48 @@ void Enemy::BulletsUpdate()
 void Enemy::HitCombo()
 {
 	//コンボを食らっているとき
-	if (characterState_.isHitLightPunch)
+	if (characterState_.isHitJumpAttack && comboCount_ == 0)
 	{
 		comboCount_ = 1;
+		timerData_.comboTimer = 60;
 		timerData_.comboTimer--;
 	}
 
-	if (characterState_.isHitTCMiddlePunch)
+	if (characterState_.isHitLightPunch && comboCount_ == 1)
+	{
+		comboCount_ = 2;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
+	}
+
+	if (characterState_.isHitTCMiddlePunch && comboCount_ == 2)
+	{
+		comboCount_ = 3;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
+	}
+
+	if (characterState_.isHitHighPunch && comboCount_ == 3)
+	{
+		comboCount_ = 4;
+		timerData_.comboTimer = 120;
+		timerData_.comboTimer--;
+	}
+
+	if (characterState_.isHitTackle && comboCount_ == 4)
+	{
+		comboCount_ = 5;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
+	}
+
+	//if (characterState_.isHitLightPunch && comboCount_ == 0)
+	//{
+	//	comboCount_ = 1;
+	//	timerData_.comboTimer--;
+	//}
+
+	/*if (characterState_.isHitTCMiddlePunch && comboCount_ == 1)
 	{
 		comboCount_ = 2;
 		timerData_.comboTimer = 60;
@@ -1191,7 +1226,7 @@ void Enemy::HitCombo()
 		timerData_.comboTimer--;
 	}
 
-	if (characterState_.isHitHighPunch && comboCount_ >= 2)
+	if (characterState_.isHitHighPunch && comboCount_ == 2)
 	{
 		comboCount_ = 3;
 		timerData_.comboTimer = 60;
@@ -1210,9 +1245,9 @@ void Enemy::HitCombo()
 		comboCount_ = 2;
 		timerData_.comboTimer = 60;
 		timerData_.comboTimer--;
-	}
+	}*/
 
-	if (timerData_.comboTimer < 60)
+	if (timerData_.comboTimer <= 120)
 	{
 		timerData_.comboTimer--;
 	}
