@@ -216,6 +216,7 @@ void ICharacter::AttackEnd(bool& isAttackType)
 {
 	characterState_.behaviorRequest = Behavior::kRoot;
 	attackData_.isAttack = false;
+	attackData_.isRecovery = false;
 	isAttackType = false;
 	animationTime_ = 0.0f;
 	attackData_.attackAnimationFrame = 0;
