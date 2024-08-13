@@ -283,7 +283,7 @@ void Player::ImGui(const char* title)
 
 void Player::BehaviorRootInitialize()
 {
-	animationIndex_ = 6;
+	animationIndex_ = 5;
 }
 
 void Player::BehaviorRootUpdate()
@@ -400,6 +400,57 @@ void Player::BehaviorAttackUpdate()
 		attackData_.attackAnimationFrame++;
 	}
 
+	//中攻撃
+	if (attackData_.isMiddlePunch)
+	{
+		animationIndex_ = 8;
+		characterState_.isGuard = false;
+
+		if (!characterState_.isDown)
+		{
+			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
+		}
+
+		if (characterState_.direction == Direction::Right)
+		{
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+			SetAABB(aabb_);
+		}
+		else if (characterState_.direction == Direction::Left)
+		{
+			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);
+		}
+
+		EvaluateAttackTiming();
+
+		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
+		{
+			AttackEnd(attackData_.isMiddlePunch);
+			ResetCollision();
+		}
+
+		//キャンセルの処理(中TC)
+		if (input_->GetJoystickState())
+		{
+			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 8 && attackData_.attackAnimationFrame < 25
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
+				&& characterState_.isHitCharacter)
+			{
+				attackType = "TCMiddlePunch";
+				attackData_.isAttack = false;
+				attackData_.isMiddlePunch = false;
+				attackData_.isTCMiddlePunch = true;
+				animationTime_ = 0.0f;
+				attackData_.attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime_);
+				ResetCollision();
+			}
+		}
+
+		attackData_.attackAnimationFrame++;
+	}
+
 	//TC用の攻撃(2発目)
 	if (attackData_.isTCMiddlePunch)
 	{
@@ -448,15 +499,29 @@ void Player::BehaviorAttackUpdate()
 				model_->SetAnimationTime(animationTime_);
 				ResetCollision();
 			}
+
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
+				&& characterState_.isHitCharacter)
+			{
+				attackType = "TCHighPunch";
+				attackData_.isAttack = false;
+				attackData_.isTCMiddlePunch = false;
+				attackData_.isTCHighPunch = true;
+				animationTime_ = 0.0f;
+				attackData_.attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime_);
+				ResetCollision();
+			}
 		}
 
 		attackData_.attackAnimationFrame++;
 	}
 
-	//中攻撃
-	if (attackData_.isMiddlePunch)
+	//TC用の攻撃(3発目)
+	if (attackData_.isTCHighPunch)
 	{
-		animationIndex_ = 8;
+		animationIndex_ = 11;
 		characterState_.isGuard = false;
 
 		if (!characterState_.isDown)
@@ -464,14 +529,16 @@ void Player::BehaviorAttackUpdate()
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
+		attackData_.isAttack = true;
+
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -479,7 +546,7 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
 		{
-			AttackEnd(attackData_.isMiddlePunch);
+			AttackEnd(attackData_.isTCHighPunch);
 			ResetCollision();
 		}
 

@@ -313,7 +313,7 @@ void GamePlayScene::Draw()
 	if (!isOpen_)
 	{
 		//BackGroundの描画
-		backGround_->Draw(camera_);
+		//backGround_->Draw(camera_);
 	}
 
 	Model::PostDraw();
