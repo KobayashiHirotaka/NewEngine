@@ -18,9 +18,9 @@ public:
 private:
 	Input* input_ = nullptr;
 
-	std::unique_ptr<Model> model_;
+	std::unique_ptr<Model> model_[8];
 
-	WorldTransform worldTransform_;
+	WorldTransform worldTransform_[8];
 
 	//スケールアニメーション用の変数
 	float scaleAnimationTime_ = 0.0f;
