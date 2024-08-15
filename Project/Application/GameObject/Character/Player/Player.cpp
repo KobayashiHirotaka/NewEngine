@@ -735,7 +735,7 @@ void Player::BehaviorJumpUpdate()
 
 	if (attackData_.isJumpAttack)
 	{
-		animationIndex_ = 8;
+		animationIndex_ = 6;
 		characterState_.isGuard = false;
 
 		if (!characterState_.isDown)

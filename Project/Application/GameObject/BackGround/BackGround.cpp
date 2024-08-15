@@ -46,10 +46,26 @@ void BackGround::Initialize()
 	worldTransform_[7].Initialize();
 	worldTransform_[7].translation = { -12.0f,6.5f,70.0f };
 	worldTransform_[7].scale = { 1.3f,1.3f,1.3f };
+
+	for (int i = 0; i < 8; i++)
+	{
+		model_[i]->GetMaterial()->SetEnvironmentCofficient(0.3f);
+	}
 }
 
 void BackGround::Update()
 {
+	float animationTime = 0.0f;
+	animationTime = model_[6]->GetAnimationTime();
+
+	animationTime += 1.0f / 60.0f;
+
+	animationTime = std::fmod(animationTime, model_[6]->GetAnimation()[0].duration);
+
+	model_[6]->SetAnimationTime(animationTime);
+	model_[6]->ApplyAnimation(0);
+
+
 	for (int i = 0; i < 8; i++)
 	{
 		worldTransform_[i].UpdateMatrixEuler();
