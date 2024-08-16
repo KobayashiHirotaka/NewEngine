@@ -4,6 +4,11 @@
         "attackStartTime": 5,
         "recoveryTime": 40
     },
+    "JumpAttack": {
+        "attackEndTime": 18,
+        "attackStartTime": 5,
+        "recoveryTime": 25
+    },
     "LightPunch": {
         "attackEndTime": 15,
         "attackStartTime": 4,
@@ -15,9 +20,9 @@
         "recoveryTime": 25
     },
     "TCHighPunch": {
-        "attackEndTime": 0,
+        "attackEndTime": 25,
         "attackStartTime": 0,
-        "recoveryTime": 0
+        "recoveryTime": 40
     },
     "TCMiddlePunch": {
         "attackEndTime": 25,

@@ -51,6 +51,9 @@ public:
 		//ガードしているかどうか
 		bool isGuard = false;
 
+		//地上にいるかどうか
+		bool isGround = false;
+
 		//各攻撃があたっているかどうか
 		//通常攻撃
 		bool isHitLightPunch = false;
@@ -58,6 +61,9 @@ public:
 		bool isHitHighPunch = false;
 		bool isHitTCMiddlePunch = false;
 		bool isHitTCHighPunch = false;
+
+		//ジャンプ攻撃
+		bool isHitJumpAttack = false;
 
 		//技
 		bool isHitTackle = false;
@@ -101,7 +107,7 @@ public:
 		bool isAttack = false;
 
 		//硬直中か
-		bool isRecovery_ = false;
+		bool isRecovery = false;
 
 		//弱攻撃
 		bool isLightPunch = false;
@@ -123,6 +129,9 @@ public:
 
 		//弾攻撃
 		bool isShot = false;
+
+		//ジャンプ攻撃
+		bool isJumpAttack = false;
 	};
 
 	struct TimerData
@@ -221,6 +230,8 @@ public:
 
 	bool GetIsTCHighPunch() { return attackData_.isTCHighPunch; };
 
+	bool GetIsJumpAttack() { return attackData_.isJumpAttack; };
+
 	bool GetIsTackle() { return attackData_.isTackle; };
 
 	bool GetIsShot() { return attackData_.isShot; };
@@ -251,6 +262,8 @@ protected:
 	AttackData attackData_;
 
 	TimerData timerData_;
+
+	std::string firstAttack_;
 
 	std::unique_ptr<ParticleEffectPlayer> particleEffectPlayer_;
 

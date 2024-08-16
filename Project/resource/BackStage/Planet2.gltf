@@ -15,7 +15,18 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "\u7acb\u65b9\u4f53.001"
+            "name" : "Planet2",
+            "rotation" : [
+                0.7071068286895752,
+                0,
+                0,
+                0.7071068286895752
+            ],
+            "scale" : [
+                1.4085410833358765,
+                1.4085410833358765,
+                1.4085410833358765
+            ]
         }
     ],
     "animations" : [
@@ -43,7 +54,7 @@
                     }
                 }
             ],
-            "name" : "Action.001",
+            "name" : "Planet2Action",
             "samplers" : [
                 {
                     "input" : 4,
@@ -66,7 +77,7 @@
     "materials" : [
         {
             "doubleSided" : true,
-            "name" : "\u30de\u30c6\u30ea\u30a2\u30eb.001",
+            "name" : "Planet2",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0
@@ -78,7 +89,7 @@
     ],
     "meshes" : [
         {
-            "name" : "\u7acb\u65b9\u4f53.001",
+            "name" : "Planet_1_Icosphere.001",
             "primitives" : [
                 {
                     "attributes" : {
@@ -101,51 +112,51 @@
     "images" : [
         {
             "mimeType" : "image/png",
-            "name" : "tex",
-            "uri" : "tex.png"
+            "name" : "Planet1",
+            "uri" : "Planet1.png"
         }
     ],
     "accessors" : [
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 24,
+            "count" : 2123,
             "max" : [
-                1.5551103353500366,
-                -0.3057026267051697,
-                0.5486405491828918
+                1.9343940019607544,
+                1.954468011856079,
+                1.947350025177002
             ],
             "min" : [
-                0.714772641658783,
-                -1.328500509262085,
-                -0.5312072038650513
+                -1.8774629831314087,
+                -1.8728630542755127,
+                -2.002134084701538
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 24,
+            "count" : 2123,
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 24,
+            "count" : 2123,
             "type" : "VEC2"
         },
         {
             "bufferView" : 3,
             "componentType" : 5123,
-            "count" : 36,
+            "count" : 8016,
             "type" : "SCALAR"
         },
         {
             "bufferView" : 4,
             "componentType" : 5126,
-            "count" : 31,
+            "count" : 61,
             "max" : [
-                1.25
+                2.5
             ],
             "min" : [
                 0
@@ -155,66 +166,66 @@
         {
             "bufferView" : 5,
             "componentType" : 5126,
-            "count" : 31,
+            "count" : 61,
             "type" : "VEC3"
         },
         {
             "bufferView" : 6,
             "componentType" : 5126,
-            "count" : 31,
+            "count" : 61,
             "type" : "VEC4"
         },
         {
             "bufferView" : 7,
             "componentType" : 5126,
-            "count" : 31,
+            "count" : 61,
             "type" : "VEC3"
         }
     ],
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 288,
+            "byteLength" : 25476,
             "byteOffset" : 0,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 288,
-            "byteOffset" : 288,
+            "byteLength" : 25476,
+            "byteOffset" : 25476,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 192,
-            "byteOffset" : 576,
+            "byteLength" : 16984,
+            "byteOffset" : 50952,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 72,
-            "byteOffset" : 768,
+            "byteLength" : 16032,
+            "byteOffset" : 67936,
             "target" : 34963
         },
         {
             "buffer" : 0,
-            "byteLength" : 124,
-            "byteOffset" : 840
+            "byteLength" : 244,
+            "byteOffset" : 83968
         },
         {
             "buffer" : 0,
-            "byteLength" : 372,
-            "byteOffset" : 964
+            "byteLength" : 732,
+            "byteOffset" : 84212
         },
         {
             "buffer" : 0,
-            "byteLength" : 496,
-            "byteOffset" : 1336
+            "byteLength" : 976,
+            "byteOffset" : 84944
         },
         {
             "buffer" : 0,
-            "byteLength" : 372,
-            "byteOffset" : 1832
+            "byteLength" : 732,
+            "byteOffset" : 85920
         }
     ],
     "samplers" : [
@@ -225,8 +236,8 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 2204,
-            "uri" : "float_PL_arm.bin"
+            "byteLength" : 86652,
+            "uri" : "Planet2.bin"
         }
     ]
 }

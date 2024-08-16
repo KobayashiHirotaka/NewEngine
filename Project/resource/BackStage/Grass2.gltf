@@ -15,25 +15,28 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Cube",
-			"scale":[
-				3.4416637420654297,
-				2.2878787517547607,
-				0.7796335220336914
+			"name":"Grass2",
+			"rotation":[
+				0.7071068286895752,
+				0,
+				0,
+				0.7071068286895752
+			],
+			"translation":[
+				0.022518157958984375,
+				0,
+				0.0894705057144165
 			]
 		}
 	],
 	"materials":[
 		{
 			"doubleSided":true,
-			"name":"Material",
+			"name":"Grass2",
 			"pbrMetallicRoughness":{
-				"baseColorFactor":[
-					0.800000011920929,
-					0.800000011920929,
-					0.800000011920929,
-					1
-				],
+				"baseColorTexture":{
+					"index":0
+				},
 				"metallicFactor":0,
 				"roughnessFactor":0.5
 			}
@@ -41,7 +44,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Cube",
+			"name":"Plant_3_CUBezierCurve.032",
 			"primitives":[
 				{
 					"attributes":{
@@ -55,72 +58,91 @@
 			]
 		}
 	],
+	"textures":[
+		{
+			"sampler":0,
+			"source":0
+		}
+	],
+	"images":[
+		{
+			"mimeType":"image/png",
+			"name":"Planet1",
+			"uri":"Planet1.png"
+		}
+	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":1102,
+			"count":1751,
 			"max":[
-				5.393929481506348,
-				11.88885498046875,
-				78.91448211669922
+				1.0870170593261719,
+				0.59551602602005,
+				0.012382999993860722
 			],
 			"min":[
-				-5.393929481506348,
-				-2.2059874534606934,
-				-78.91448211669922
+				-1.032912015914917,
+				-0.8481040000915527,
+				-2.965833902359009
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":1102,
+			"count":1751,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":1102,
+			"count":1751,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":3336,
+			"count":4824,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":13224,
+			"byteLength":21012,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":8816,
-			"byteOffset":13224,
+			"byteLength":14008,
+			"byteOffset":21012,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":13224,
-			"byteOffset":22040,
+			"byteLength":21012,
+			"byteOffset":35020,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":6672,
-			"byteOffset":35264,
+			"byteLength":9648,
+			"byteOffset":56032,
 			"target":34963
+		}
+	],
+	"samplers":[
+		{
+			"magFilter":9729,
+			"minFilter":9987
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":41936,
-			"uri":"Castle.bin"
+			"byteLength":65680,
+			"uri":"Grass2.bin"
 		}
 	]
 }
