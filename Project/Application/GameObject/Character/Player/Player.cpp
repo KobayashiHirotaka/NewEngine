@@ -923,7 +923,7 @@ void Player::OnCollision(Collider* collider, float damage)
 					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 			}
 
-			animationIndex_ = 0;
+			animationIndex_ = 2;
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 		else if (characterState_.isGuard && characterState_.direction == Direction::Left)
@@ -941,7 +941,7 @@ void Player::OnCollision(Collider* collider, float damage)
 					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 			}
 
-			animationIndex_ = 0;
+			animationIndex_ = 2;
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 	}
@@ -966,7 +966,7 @@ void Player::OnCollision(Collider* collider, float damage)
 					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 			}
 
-			animationIndex_ = 0;
+			animationIndex_ = 2;
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
@@ -985,7 +985,7 @@ void Player::OnCollision(Collider* collider, float damage)
 					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 			}
 
-			animationIndex_ = 0;
+			animationIndex_ = 2;
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
@@ -1003,7 +1003,7 @@ void Player::OnCollision(Collider* collider, float damage)
 					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 			}
 
-			animationIndex_ = 0;
+			animationIndex_ = 2;
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
@@ -1021,7 +1021,7 @@ void Player::OnCollision(Collider* collider, float damage)
 					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 			}
 
-			animationIndex_ = 0;
+			animationIndex_ = 2;
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
@@ -1153,7 +1153,7 @@ void Player::Move()
 			//止まってガード
 			if (characterState_.isGuard && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
 			{
-				animationIndex_ = 0;
+				animationIndex_ = 2;
 				UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 				moveData_.velocity.x = 0.0f;
 				isBackMove_ = false;
@@ -1175,7 +1175,7 @@ void Player::Move()
 			//止まってガード
 			if (characterState_.isGuard && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
 			{
-				animationIndex_ = 0;
+				animationIndex_ = 2;
 				UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 				moveData_.velocity.x = 0.0f;
 				isBackMove_ = false;
@@ -1191,7 +1191,7 @@ void Player::Move()
 		//移動
 		if (isFrontMove_)
 		{
-			animationIndex_ = 2;
+			animationIndex_ = 1;
 			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
 
 			moveData_.velocity = Normalize(moveData_.velocity);
@@ -1204,7 +1204,7 @@ void Player::Move()
 		}
 		else if (isBackMove_)
 		{
-			animationIndex_ = 1;
+			animationIndex_ = 0;
 			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
 
 			moveData_.velocity = Normalize(moveData_.velocity);
