@@ -271,6 +271,8 @@ void Player::ImGui(const char* title)
 	ImGui::Text("swingTime %d", attackData_.attackEndTime);
 	ImGui::Text("recoveryTime %d", attackData_.recoveryTime);
 
+	ImGui::Text("downAnimationTimer %d", timerData_.downAnimationTimer);
+
 	model_->GetLight()->ImGui("DirectionalLight");
 	model_->GetPointLight()->ImGui("PointLight");
 	model_->GetSpotLight()->ImGui("SpotLight");
@@ -291,8 +293,11 @@ void Player::BehaviorRootUpdate()
 	//コントローラーの取得
 	if (input_->GetJoystickState())
 	{
-		//移動
-		Move();
+		if (!characterState_.isDown)
+		{
+			//移動
+			Move();
+		}
 
 		//ジャンプ
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown)
@@ -1004,6 +1009,39 @@ void Player::OnCollision(Collider* collider, float damage)
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
+		//弱パンチ
+		if (enemy_->GetIsAttack() && enemy_->GetIsLightPunch() && !characterState_.isDown && !characterState_.isGuard)
+		{
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+			damage = 2.0f;
+			hp_ += damage;
+			characterState_.isHitLightPunch = true;
+
+			HitStop(10);
+		}
+
+		//強パンチ
+		if (enemy_->GetIsHighPunch() && !characterState_.isDown && !characterState_.isGuard)
+		{
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+			damage = 10.0f;
+			hp_ += damage;
+			characterState_.isHitHighPunch = true;
+
+			HitStop(10);
+		}
+
+		//TC中パンチ
+		if (enemy_->GetIsTCMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
+		{
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+			damage = 2.0f;
+			hp_ += damage;
+			characterState_.isHitTCMiddlePunch = true;
+
+			HitStop(10);
+		}
+
 		//タックル
 		//キャンセルじゃないとき
 		if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && !characterState_.isDown && !characterState_.isGuard)
@@ -1014,6 +1052,21 @@ void Player::OnCollision(Collider* collider, float damage)
 			characterState_.isHitTackle = true;
 
 			HitStop(30);
+		}
+
+		//キャンセルのとき
+		if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.5f)
+		{
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+			damage = 4.0f;
+			hp_ -= damage;
+			timerData_.downAnimationTimer = 60;
+			float animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+			characterState_.isHitHighPunch = false;
+			characterState_.isHitTackle = true;
+
+			HitStop(10);
 		}
 	}
 }
@@ -1266,6 +1319,96 @@ void Player::HitStop(int milliseconds)
 
 void Player::DownAnimation()
 {
+	//弱攻撃
+	if (characterState_.isHitLightPunch)
+	{
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		if (timerData_.downAnimationTimer > 55)
+		{
+			float particlePosX = (characterState_.direction == Direction::Right) ? -0.1f : 0.1f;
+
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
+				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+		}
+
+		animationIndex_ = 4;
+		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
+
+		//次の入力を受け取ったらこの処理にする
+		if (!enemy_->GetIsLightPunch() && hp_ < 0.0f)
+		{
+			DownAnimationEnd(5, characterState_.isHitLightPunch);
+		}
+	}
+
+	//TC中攻撃
+	if (characterState_.isHitTCMiddlePunch)
+	{
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		if (timerData_.downAnimationTimer > 55)
+		{
+			float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
+
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
+				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+		}
+
+		animationIndex_ = 4;
+		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
+
+		if (!enemy_->GetIsTCMiddlePunch() && hp_ < 0.0f)
+		{
+			DownAnimationEnd(5, characterState_.isHitTCMiddlePunch);
+		}
+	}
+
+	//強攻撃
+	if (characterState_.isHitHighPunch)
+	{
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		if (timerData_.downAnimationTimer > 55)
+		{
+			float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
+
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
+				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+
+			const float kJumpFirstSpeed_ = 0.15f;
+
+			moveData_.velocity.x = (characterState_.direction == Direction::Right) ? -0.025f : 0.025f;
+			moveData_.velocity.y = kJumpFirstSpeed_;
+		}
+		else if (timerData_.downAnimationTimer > -30)
+		{
+			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
+
+			const float kGravityAcceleration_ = 0.005f;
+			Vector3 accelerationVector_ = { 0.0f, -kGravityAcceleration_, 0.0f };
+
+			moveData_.velocity = Add(moveData_.velocity, accelerationVector_);
+
+			if (worldTransform_.translation.y <= 0.0f)
+			{
+				moveData_.velocity.x = 0.0f;
+				worldTransform_.translation.y = 0.0f;
+			}
+		}
+
+		animationIndex_ = 7;
+		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
+
+		if (!enemy_->GetIsHighPunch() && worldTransform_.translation.y <= 0.0f && hp_ < 0.0f)
+		{
+			DownAnimationEnd(5, characterState_.isHitHighPunch);
+		}
+	}
+
 	//タックル攻撃
 	if (characterState_.isHitTackle)
 	{
@@ -1310,7 +1453,7 @@ void Player::DownAnimation()
 
 		SetAABB(aabb_);
 
-		if (!enemy_->GetIsTackle() && hp_ < 0.0f)
+		if (!enemy_->GetIsTackle() && worldTransform_.translation.y <= 0.0f && hp_ < 0.0f)
 		{
 			DownAnimationEnd(4, characterState_.isHitTackle);
 			ResetCollision();
