@@ -1285,7 +1285,7 @@ void Enemy::DownAnimation()
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
-		if (!player_->GetIsJumpAttack() && hp_ > 0.0f)
+		if (timerData_.downAnimationTimer < 38 && hp_ > 0.0f)
 		{
 			DownAnimationEnd(5, characterState_.isHitJumpAttack);
 		}
