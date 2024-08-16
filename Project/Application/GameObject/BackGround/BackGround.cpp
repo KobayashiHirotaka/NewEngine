@@ -40,12 +40,12 @@ void BackGround::Initialize()
 	worldTransform_[5].scale = { 1.3f,1.3f,1.3f };
 
 	worldTransform_[6].Initialize();
-	worldTransform_[6].translation = { 12.0f,9.0f,70.0f };
+	worldTransform_[6].translation = { 15.0f,11.0f,75.0f };
 	worldTransform_[6].scale = { 1.3f,1.3f,1.3f };
 
 	worldTransform_[7].Initialize();
-	worldTransform_[7].translation = { -12.0f,6.5f,70.0f };
-	worldTransform_[7].scale = { 1.3f,1.3f,1.3f };
+	worldTransform_[7].translation = { -17.0f,15.5f,90.0f };
+	worldTransform_[7].scale = { 1.5f,1.5f,1.5f };
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -55,15 +55,18 @@ void BackGround::Initialize()
 
 void BackGround::Update()
 {
-	float animationTime = 0.0f;
-	animationTime = model_[6]->GetAnimationTime();
+	for (int i = 6; i < 8; i++)
+	{
+		float animationTime = 0.0f;
+		animationTime = model_[i]->GetAnimationTime();
 
-	animationTime += 1.0f / 60.0f;
+		animationTime += 1.0f / 60.0f;
 
-	animationTime = std::fmod(animationTime, model_[6]->GetAnimation()[0].duration);
+		animationTime = std::fmod(animationTime, model_[i]->GetAnimation()[0].duration);
 
-	model_[6]->SetAnimationTime(animationTime);
-	model_[6]->ApplyAnimation(0);
+		model_[i]->SetAnimationTime(animationTime);
+		model_[i]->ApplyAnimation(0);
+	}
 
 
 	for (int i = 0; i < 8; i++)
