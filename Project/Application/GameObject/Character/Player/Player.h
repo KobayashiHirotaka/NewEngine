@@ -70,6 +70,8 @@ public:
 
 	void ComboNumberSpriteUpdate()override;
 
+	void HitCombo();
+
 	//Getter
 	uint32_t GetAnimationIndex() { return animationIndex_; };
 
@@ -118,6 +120,13 @@ private:
 	UI finisherGaugeBar_;
 	const float finisherGaugeBarSpace_ = 627.0f;
 	float finisherGaugeBarSize_ = 240.0f;
+
+	//スプライト(コンボ表示)
+	std::unique_ptr<Sprite>hitSprite_ = nullptr;
+	uint32_t hitTextureHandle_;
+
+	std::unique_ptr<Sprite>comboNumSprite_ = nullptr;
+	uint32_t comboNumTextureHandle_;
 
 	//サウンド
 	uint32_t attackSoundHandle_ = 0u;

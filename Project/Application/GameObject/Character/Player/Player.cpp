@@ -64,6 +64,12 @@ void Player::Initialize()
 		nullptr,
 	};
 
+	hitTextureHandle_ = TextureManager::LoadTexture("resource/images/Hit.png");
+	hitSprite_.reset(Sprite::Create(hitTextureHandle_, { 1090.0f, 180.0f }));
+
+	comboNumTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
+	comboNumSprite_.reset(Sprite::Create(comboNumTextureHandle_, { 1060.0f, 290.0f }));
+
 	finisherGaugeBar_.sprite_ = Sprite::Create(finisherGaugeBar_.textureHandle_, finisherGaugeBar_.position_);
 
 	//SEの初期化
@@ -207,6 +213,10 @@ void Player::Update()
 		worldTransform_.rotation.y = 4.6f;
 	}
 
+	HitCombo();
+
+	ComboNumberSpriteUpdate();
+
 	if (!enemy_->GetIsAttack())
 	{
 		timerData_.guardAnimationTimer = 60;
@@ -244,6 +254,12 @@ void Player::SpriteDraw()
 	guardGaugeBar_.sprite_->Draw();
 
 	finisherGaugeBar_.sprite_->Draw();
+
+	if (comboCount_ >= 2)
+	{
+		hitSprite_->Draw();
+		comboNumSprite_->Draw();
+	}
 }
 
 void Player::ParticleDraw(const Camera& camera)
@@ -1558,5 +1574,110 @@ void Player::PushEnemy(Vector3& enemyPosition, float pushSpeed)
 
 void Player::ComboNumberSpriteUpdate()
 {
-	
+	int comboNum = comboCount_;
+
+	comboNumTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(comboNum) + ".png");
+
+	comboNumSprite_->SetTexture(comboNumTextureHandle_);
+}
+
+void Player::HitCombo()
+{
+	//コンボを食らっているとき
+	if (characterState_.isHitJumpAttack && comboCount_ == 0)
+	{
+		firstAttack_ = "JumpAttack";
+		comboCount_ = 1;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
+	}
+
+	if (characterState_.isHitLightPunch && comboCount_ == 0)
+	{
+		firstAttack_ = "LightPunch";
+		comboCount_ = 1;
+		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
+	}
+
+	if (firstAttack_ == "JumpAttack")
+	{
+		if (characterState_.isHitLightPunch && comboCount_ == 1)
+		{
+			comboCount_ = 2;
+			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
+		}
+
+		if (characterState_.isHitTCMiddlePunch && comboCount_ == 2)
+		{
+			comboCount_ = 3;
+			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
+		}
+
+		if (characterState_.isHitTCHighPunch && comboCount_ == 3)
+		{
+			comboCount_ = 4;
+			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
+		}
+
+		if (characterState_.isHitHighPunch && comboCount_ == 3)
+		{
+			comboCount_ = 4;
+			timerData_.comboTimer = 120;
+			timerData_.comboTimer--;
+		}
+
+		if (characterState_.isHitTackle && comboCount_ == 4)
+		{
+			comboCount_ = 5;
+			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
+		}
+	}
+
+	if (firstAttack_ == "LightPunch")
+	{
+		if (characterState_.isHitTCMiddlePunch && comboCount_ == 1)
+		{
+			comboCount_ = 2;
+			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
+		}
+
+		if (characterState_.isHitTCHighPunch && comboCount_ == 2)
+		{
+			comboCount_ = 3;
+			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
+		}
+
+		if (characterState_.isHitHighPunch && comboCount_ == 2)
+		{
+			comboCount_ = 3;
+			timerData_.comboTimer = 120;
+			timerData_.comboTimer--;
+		}
+
+		if (characterState_.isHitTackle && comboCount_ == 3)
+		{
+			comboCount_ = 4;
+			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
+		}
+	}
+
+	if (timerData_.comboTimer <= 120)
+	{
+		timerData_.comboTimer--;
+	}
+
+	if (timerData_.comboTimer < 0)
+	{
+		timerData_.comboTimer = 60;
+		comboCount_ = 0;
+		firstAttack_ = "";
+	}
 }
