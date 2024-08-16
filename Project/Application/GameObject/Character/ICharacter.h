@@ -263,6 +263,8 @@ protected:
 
 	TimerData timerData_;
 
+	std::string firstAttack_;
+
 	std::unique_ptr<ParticleEffectPlayer> particleEffectPlayer_;
 
 	//再生するanimationの番号
