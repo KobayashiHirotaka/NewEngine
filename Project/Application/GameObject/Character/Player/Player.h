@@ -121,6 +121,8 @@ private:
 	const float finisherGaugeBarSpace_ = 627.0f;
 	float finisherGaugeBarSize_ = 240.0f;
 
+	bool isFinisherCharge_ = false;
+
 	//スプライト(コンボ表示)
 	std::unique_ptr<Sprite>hitSprite_ = nullptr;
 	uint32_t hitTextureHandle_;
