@@ -1,0 +1,37 @@
+{
+    "HighPunch": {
+        "attackEndTime": 0,
+        "attackStartTime": 0,
+        "recoveryTime": 0
+    },
+    "JumpAttack": {
+        "attackEndTime": 0,
+        "attackStartTime": 0,
+        "recoveryTime": 0
+    },
+    "LightPunch": {
+        "attackEndTime": 0,
+        "attackStartTime": 0,
+        "recoveryTime": 0
+    },
+    "MiddlePunch": {
+        "attackEndTime": 0,
+        "attackStartTime": 0,
+        "recoveryTime": 0
+    },
+    "TCHighPunch": {
+        "attackEndTime": 0,
+        "attackStartTime": 0,
+        "recoveryTime": 0
+    },
+    "TCMiddlePunch": {
+        "attackEndTime": 0,
+        "attackStartTime": 0,
+        "recoveryTime": 0
+    },
+    "Tackle": {
+        "attackEndTime": 0,
+        "attackStartTime": 0,
+        "recoveryTime": 0
+    }
+}
