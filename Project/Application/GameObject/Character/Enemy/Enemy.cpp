@@ -733,7 +733,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		}
 
 		//弱パンチ
-		if (player_->GetIsAttack() && player_->GetIsLightPunch() && !characterState_.isDown && !characterState_.isGuard)
+		if (player_->GetIsAttack() && player_->GetIsLightPunch() && !characterState_.isGuard && (!characterState_.isDown || firstAttack_ == "JumpAttack"))
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 2.0f;
