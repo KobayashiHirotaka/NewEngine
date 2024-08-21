@@ -7,6 +7,11 @@ AttackEditor* AttackEditor::GetInstance()
     return &instance;
 }
 
+void AttackEditor::Initialize()
+{
+    LoadFile(loadPlayerFilePath_, playerAttackParameter_);
+    LoadFile(loadEnemyFilePath_, enemyAttackParameter_);
+}
 
 void AttackEditor::Update()
 {

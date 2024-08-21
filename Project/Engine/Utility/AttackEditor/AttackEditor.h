@@ -25,6 +25,8 @@ class AttackEditor
 public:
     static AttackEditor* GetInstance();
 
+    void Initialize();
+
     void Update();
 
     void SaveFile(const std::string& saveFilePath, const std::unordered_map<std::string, AttackParameter>& attackParameters);
@@ -45,8 +47,8 @@ private:
 
     std::string tempTabName_;
 
-    std::string savePlayerFilePath_ = "resource/AttackData/AttackData.json";
-    std::string loadPlayerFilePath_ = "resource/AttackData/AttackData.json";
+    std::string savePlayerFilePath_ = "resource/AttackData/AttackPlayerData.json";
+    std::string loadPlayerFilePath_ = "resource/AttackData/AttackPlayerData.json";
 
     std::string saveEnemyFilePath_ = "resource/AttackData/AttackEnemyData.json";
     std::string loadEnemyFilePath_ = "resource/AttackData/AttackEnemyData.json";
