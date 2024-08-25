@@ -314,14 +314,14 @@ void Player::BehaviorRootUpdate()
 	//コントローラーの取得
 	if (input_->GetJoystickState())
 	{
-		if (!characterState_.isDown)
+		if (!characterState_.isDown &&comboCount_ <= 1)
 		{
 			//移動
 			Move();
 		}
 
 		//ジャンプ
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.translation.y == 0.0f && !characterState_.isDown)
 		{
 			characterState_.behaviorRequest = Behavior::kJump;
 		}
@@ -746,8 +746,6 @@ void Player::BehaviorAttackUpdate()
 
 void Player::BehaviorJumpInitialize()
 {
-	worldTransform_.translation.y = 0.0f;
-
 	const float kJumpFirstSpeed_ = 0.3f;
 
 	moveData_.velocity.y = kJumpFirstSpeed_;
@@ -978,9 +976,14 @@ void Player::OnCollision(Collider* collider, float damage)
 		{
 			timerData_.guardAnimationTimer--;
 
+			float enemyPosition = enemy_->GetWorldPosition().x;
+
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.3f;
+			enemyPosition += 0.2f;
 			guardGauge_ -= 1.0f;
+
+			enemy_->SetPositionX(enemyPosition);
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -997,9 +1000,14 @@ void Player::OnCollision(Collider* collider, float damage)
 		{
 			timerData_.guardAnimationTimer--;
 
+			float enemyPosition = enemy_->GetWorldPosition().x;
+
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.3f;
+			enemyPosition -= 0.2f;
 			guardGauge_ -= 1.0f;
+
+			enemy_->SetPositionX(enemyPosition);
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -1444,12 +1452,16 @@ void Player::DownAnimation()
 			}
 		}
 
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.1f, -0.3f}, {-0.1f, 0.1f, 0.3f} } :
+			AABB{ {0.1f, -0.1f, -0.3f}, {0.8f, 0.1f, 0.3f} };
+
 		animationIndex_ = 7;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		if (!enemy_->GetIsHighPunch() && worldTransform_.translation.y <= 0.0f && hp_ < 0.0f)
+		if (!enemy_->GetIsHighPunch() &&  worldTransform_.translation.y <= 0.0f && hp_ < 0.0f)
 		{
 			DownAnimationEnd(5, characterState_.isHitHighPunch);
+			ResetCollision();
 		}
 	}
 
@@ -1462,8 +1474,8 @@ void Player::DownAnimation()
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
 		float moveX = (characterState_.direction == Direction::Right) ? -0.08f : 0.08f;
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.3f, -0.3f}, {-0.1f, 0.0f, 0.3f} } :
-			AABB{ {0.1f, -0.3f, -0.3f}, {0.8f, 0.0f, 0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.0f, -0.3f}, {-0.1f, 0.1f, 0.3f} } :
+			AABB{ {0.1f, -0.0f, -0.3f}, {0.8f, 0.1f, 0.3f} };
 
 		if (timerData_.downAnimationTimer > 55)
 		{
@@ -1497,7 +1509,7 @@ void Player::DownAnimation()
 
 		SetAABB(aabb_);
 
-		if (!enemy_->GetIsTackle() && worldTransform_.translation.y <= 0.0f && hp_ < 0.0f)
+		if (timerData_.downAnimationTimer < 0 && hp_ < 0.0f)
 		{
 			DownAnimationEnd(4, characterState_.isHitTackle);
 			ResetCollision();

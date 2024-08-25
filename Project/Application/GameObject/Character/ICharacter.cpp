@@ -164,6 +164,8 @@ void ICharacter::Reset()
 	characterState_.isHitTackle = false;
 	characterState_.isDown = false;
 
+	ResetCollision();
+
 	//リセット
 	isReset_ = false;
 }

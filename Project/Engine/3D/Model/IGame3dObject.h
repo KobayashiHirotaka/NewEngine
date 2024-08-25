@@ -26,6 +26,7 @@ public:
 	void SetIsVisible(const bool& isVisible) { isVisible_ = isVisible; };
 
 	void SetPosition(const Vector3& position) { worldTransform_.translation = position; };
+	void SetPositionX(const float& positionX) { worldTransform_.translation.x = positionX; };
 	void SetRotation(const Vector3& rotation) { worldTransform_.rotation = rotation; };
 	void SetScale(const Vector3& scale) { worldTransform_.scale = scale; };
 
