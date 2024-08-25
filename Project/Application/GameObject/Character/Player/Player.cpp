@@ -367,7 +367,7 @@ void Player::BehaviorRootUpdate()
 		}
 
 		//必殺技
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isFinisherCharge_ && !characterState_.isDown)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && isFinisherCharge_ && !characterState_.isDown)
 		{
 			attackType = "Tackle";
 			AttackStart(attackData_.isTackle);
