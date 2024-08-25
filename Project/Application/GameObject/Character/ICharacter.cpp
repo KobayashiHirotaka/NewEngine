@@ -117,6 +117,10 @@ void ICharacter::Update()
 	FinisherGaugeBarUpdate();
 
 	characterState_.isHitCharacter = false;
+
+	ImGui::Begin("CharacterDEBUG");
+	ImGui::Checkbox("isDebug", &isDebug_);
+	ImGui::End();
 }
 
 void ICharacter::Reset()

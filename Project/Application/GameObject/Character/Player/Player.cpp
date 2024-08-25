@@ -1098,7 +1098,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 4.0f;
-			hp_ -= damage;
+			hp_ += damage;
 			timerData_.downAnimationTimer = 60;
 			float animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
