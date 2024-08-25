@@ -314,7 +314,7 @@ void Player::BehaviorRootUpdate()
 	//コントローラーの取得
 	if (input_->GetJoystickState())
 	{
-		if (!characterState_.isDown &&comboCount_ <= 1)
+		if (!characterState_.isDown && comboCount_ <= 1)
 		{
 			//移動
 			Move();
