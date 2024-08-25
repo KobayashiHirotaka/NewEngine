@@ -65,8 +65,11 @@ public:
 		//ジャンプ攻撃
 		bool isHitJumpAttack = false;
 
-		//技
+		//タックル攻撃
 		bool isHitTackle = false;
+
+		//昇竜拳
+		bool isHitUppercut = false;
 
 		//弾
 		bool isHitBullet = false;
@@ -126,6 +129,9 @@ public:
 
 		//タックル攻撃
 		bool isTackle = false;
+
+		//昇竜拳
+		bool isUppercut = false;
 
 		//弾攻撃
 		bool isShot = false;
@@ -233,6 +239,8 @@ public:
 	bool GetIsJumpAttack() { return attackData_.isJumpAttack; };
 
 	bool GetIsTackle() { return attackData_.isTackle; };
+
+	bool GetIsUppercut() { return attackData_.isUppercut; };
 
 	bool GetIsShot() { return attackData_.isShot; };
 

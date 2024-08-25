@@ -360,8 +360,8 @@ void Player::BehaviorRootUpdate()
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Right
 			|| input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && characterState_.direction == Direction::Left))
 		{
-			attackType = "Tackle";
-			AttackStart(attackData_.isTackle);
+			attackType = "Uppercut";
+			AttackStart(attackData_.isUppercut);
 		}
 
 		//必殺技
@@ -735,6 +735,73 @@ void Player::BehaviorAttackUpdate()
 		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
 		{
 			AttackEnd(attackData_.isTackle);
+			ResetCollision();
+		}
+
+		attackData_.attackAnimationFrame++;
+	}
+
+	//昇竜拳
+	if (attackData_.isUppercut)
+	{
+		animationIndex_ = 9;
+		characterState_.isGuard = false;
+		float particlePositionX = 0.0f;
+		int particleTime = 60;
+		int moveTime = 40;
+
+		if (!characterState_.isDown)
+		{
+			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
+		}
+
+		if (characterState_.direction == Direction::Right)
+		{
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+			SetAABB(aabb_);
+
+			EvaluateAttackTiming();
+
+			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
+			{
+				worldTransform_.translation.x += 0.15f;
+			}
+
+			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
+			{
+				particlePositionX = 0.1f;
+				particlePositionX += 0.3f;
+
+				particleEffectPlayer_->PlayParticle("PlayerRightNackle", { worldTransform_.translation.x + particlePositionX,
+					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
+			}
+		}
+		else if (characterState_.direction == Direction::Left)
+		{
+			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);
+
+			EvaluateAttackTiming();
+
+			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
+			{
+				worldTransform_.translation.x -= 0.15f;
+			}
+
+
+			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
+			{
+				particlePositionX = 0.1f;
+				particlePositionX += 0.3f;
+
+				particleEffectPlayer_->PlayParticle("PlayerLeftNackle", { worldTransform_.translation.x - particlePositionX,
+					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
+			}
+		}
+
+		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
+		{
+			AttackEnd(attackData_.isUppercut);
 			ResetCollision();
 		}
 

@@ -151,6 +151,7 @@ void ICharacter::Reset()
 	attackData_.isTCMiddlePunch = false;
 	attackData_.isTCHighPunch = false;
 	attackData_.isTackle = false;
+	attackData_.isUppercut = false;
 
 	//キャラクターと当たっているかどうか
 	characterState_.isHitCharacter = false;
@@ -162,6 +163,7 @@ void ICharacter::Reset()
 	characterState_.isHitTCMiddlePunch = false;
 	characterState_.isHitTCHighPunch = false;
 	characterState_.isHitTackle = false;
+	characterState_.isHitUppercut = false;
 	characterState_.isDown = false;
 
 	ResetCollision();

@@ -33,5 +33,10 @@
         "attackEndTime": 50,
         "attackStartTime": 25,
         "recoveryTime": 100
+    },
+    "Uppercut": {
+        "attackEndTime": 50,
+        "attackStartTime": 25,
+        "recoveryTime": 100
     }
 }
