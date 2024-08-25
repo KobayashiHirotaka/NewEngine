@@ -349,18 +349,16 @@ void Player::BehaviorRootUpdate()
 		}
 		
 		//タックル攻撃
-		//右向きのとき
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& characterState_.direction == Direction::Right && !characterState_.isDown)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && characterState_.direction == Direction::Right 
+			|| input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Left))
 		{
 			attackType = "Tackle";
 			AttackStart(attackData_.isTackle);
 		}
 
-		//タックル攻撃
-		//左向きのとき
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& characterState_.direction == Direction::Left && !characterState_.isDown)
+		//昇竜拳
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Right
+			|| input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && characterState_.direction == Direction::Left))
 		{
 			attackType = "Tackle";
 			AttackStart(attackData_.isTackle);
