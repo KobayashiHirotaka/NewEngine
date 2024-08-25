@@ -350,7 +350,7 @@ void Player::BehaviorRootUpdate()
 		
 		//タックル攻撃
 		//右向きのとき
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
 			attackType = "Tackle";
@@ -359,7 +359,7 @@ void Player::BehaviorRootUpdate()
 
 		//タックル攻撃
 		//左向きのとき
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
 			&& characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
 			attackType = "Tackle";
