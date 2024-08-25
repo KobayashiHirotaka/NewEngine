@@ -7,85 +7,171 @@ AttackEditor* AttackEditor::GetInstance()
     return &instance;
 }
 
+void AttackEditor::Initialize()
+{
+    LoadFile(loadPlayerFilePath_, playerAttackParameter_);
+    LoadFile(loadEnemyFilePath_, enemyAttackParameter_);
+}
 
-void AttackEditor::Update() 
+void AttackEditor::Update()
 {
     ImGui::Begin("Attack Editor");
 
-    if (ImGui::Button("Add")) 
+    if (ImGui::BeginTabBar("##tabs"))
     {
-        std::string newTabName = "newAttack" + std::to_string(attackParameter_.size() + 1);
-
-        if (attackParameter_.find(newTabName) == attackParameter_.end()) 
+        // Player タブ
+        if (ImGui::BeginTabItem("Player"))
         {
-            attackParameter_[newTabName] = AttackParameter();
-        }
-    }
-
-    for (auto it = attackParameter_.begin(); it != attackParameter_.end(); )
-    {
-        auto& [tabName, param] = *it;
-        ImGui::PushID(tabName.c_str());
-
-        char buf[256];
-        strcpy_s(buf, sizeof(buf), tabName.c_str());
-
-        if (ImGui::CollapsingHeader(buf, ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            if (ImGui::InputText("##TabName", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue)) 
+            if (ImGui::Button("Add"))
             {
-                tempTabName_ = buf;
-                if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter))) 
+                std::string newTabName = "newAttack" + std::to_string(playerAttackParameter_.size() + 1);
+
+                if (playerAttackParameter_.find(newTabName) == playerAttackParameter_.end())
                 {
-                    if (tempTabName_ != tabName && attackParameter_.find(tempTabName_) == attackParameter_.end()) 
-                    {
-                        AttackParameter tempParam = std::move(param);
-                        it = attackParameter_.erase(it);
-                        attackParameter_[tempTabName_] = std::move(tempParam);
-                    }
+                    playerAttackParameter_[newTabName] = AttackParameter();
                 }
             }
-            else 
+
+            for (auto it = playerAttackParameter_.begin(); it != playerAttackParameter_.end(); )
             {
-                ++it;
+                auto& [tabName, param] = *it;
+                ImGui::PushID(tabName.c_str());
+
+                char buf[256];
+                strcpy_s(buf, sizeof(buf), tabName.c_str());
+
+                if (ImGui::CollapsingHeader(buf, ImGuiTreeNodeFlags_DefaultOpen))
+                {
+                    if (ImGui::InputText("##TabName", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue))
+                    {
+                        tempTabName_ = buf;
+                        if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter)))
+                        {
+                            if (tempTabName_ != tabName && playerAttackParameter_.find(tempTabName_) == playerAttackParameter_.end())
+                            {
+                                AttackParameter tempParam = std::move(param);
+                                it = playerAttackParameter_.erase(it);
+                                playerAttackParameter_[tempTabName_] = std::move(tempParam);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ++it;
+                    }
+
+                    ImGui::SliderInt("attackStartTime", &param.attackStartTime, 0, 60);
+                    ImGui::SliderInt("attackEndTime", &param.attackEndTime, 0, 60);
+                    ImGui::SliderInt("recoveryTime", &param.recoveryTime, 0, 100);
+                }
+                else
+                {
+                    ++it;
+                }
+
+                ImGui::PopID();
+                ImGui::Separator();
             }
 
-            ImGui::SliderInt("attackStartTime", &param.attackStartTime, 0, 60);
-            ImGui::SliderInt("attackEndTime", &param.attackEndTime, 0, 60);
-            ImGui::SliderInt("recoveryTime", &param.recoveryTime, 0, 100);
+            if (ImGui::Button("Save"))
+            {
+                SaveFile(savePlayerFilePath_, playerAttackParameter_);
+                std::string message = savePlayerFilePath_ + " saved";
+                MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
+            }
 
+            if (ImGui::Button("Load"))
+            {
+                LoadFile(loadPlayerFilePath_, playerAttackParameter_);
+                std::string message = loadPlayerFilePath_ + " loaded";
+                MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
+            }
+
+            ImGui::EndTabItem();
         }
-        else 
+
+        // Enemy タブ
+        if (ImGui::BeginTabItem("Enemy"))
         {
-            ++it;
+            if (ImGui::Button("Add"))
+            {
+                std::string newTabName = "newAttack" + std::to_string(enemyAttackParameter_.size() + 1);
+
+                if (enemyAttackParameter_.find(newTabName) == enemyAttackParameter_.end())
+                {
+                    enemyAttackParameter_[newTabName] = AttackParameter();
+                }
+            }
+
+            for (auto it = enemyAttackParameter_.begin(); it != enemyAttackParameter_.end(); )
+            {
+                auto& [tabName, param] = *it;
+                ImGui::PushID(tabName.c_str());
+
+                char buf[256];
+                strcpy_s(buf, sizeof(buf), tabName.c_str());
+
+                if (ImGui::CollapsingHeader(buf, ImGuiTreeNodeFlags_DefaultOpen))
+                {
+                    if (ImGui::InputText("##TabName", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue))
+                    {
+                        tempTabName_ = buf;
+                        if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter)))
+                        {
+                            if (tempTabName_ != tabName && enemyAttackParameter_.find(tempTabName_) == enemyAttackParameter_.end())
+                            {
+                                AttackParameter tempParam = std::move(param);
+                                it = enemyAttackParameter_.erase(it);
+                                enemyAttackParameter_[tempTabName_] = std::move(tempParam);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ++it;
+                    }
+
+                    ImGui::SliderInt("attackStartTime", &param.attackStartTime, 0, 60);
+                    ImGui::SliderInt("attackEndTime", &param.attackEndTime, 0, 60);
+                    ImGui::SliderInt("recoveryTime", &param.recoveryTime, 0, 100);
+                }
+                else
+                {
+                    ++it;
+                }
+
+                ImGui::PopID();
+                ImGui::Separator();
+            }
+
+            if (ImGui::Button("Save"))
+            {
+                SaveFile(saveEnemyFilePath_, enemyAttackParameter_);
+                std::string message = saveEnemyFilePath_ + " saved";
+                MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
+            }
+
+            if (ImGui::Button("Load"))
+            {
+                LoadFile(loadEnemyFilePath_, enemyAttackParameter_);
+                std::string message = loadEnemyFilePath_ + " loaded";
+                MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
+            }
+
+            ImGui::EndTabItem();
         }
 
-        ImGui::PopID();
-        ImGui::Separator();
-    }
-
-    if (ImGui::Button("Save"))
-    {
-        SaveFile(saveFilePath_);
-        std::string message = saveFilePath_ + " saved";
-        MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
-    }
-
-    if (ImGui::Button("Load")) 
-    {
-        LoadFile(loadFilePath_);
-        std::string message = loadFilePath_ + " loaded";
-        MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
+        ImGui::EndTabBar();
     }
 
     ImGui::End();
 }
 
-void AttackEditor::SaveFile(const std::string& saveFilePath)
+void AttackEditor::SaveFile(const std::string& saveFilePath, const std::unordered_map<std::string, AttackParameter>& attackParameters)
 {
     json root = json::object();
 
-    for (const auto& [tabName, param] : attackParameter_)
+    for (const auto& [tabName, param] : attackParameters)
     {
         root[tabName] = {
             {"attackStartTime", param.attackStartTime},
@@ -101,7 +187,7 @@ void AttackEditor::SaveFile(const std::string& saveFilePath)
     }
 
     std::ofstream ofs(saveFilePath);
-    if (ofs.fail()) 
+    if (ofs.fail())
     {
         std::string message = "Failed to open data file for write";
         MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
@@ -113,7 +199,7 @@ void AttackEditor::SaveFile(const std::string& saveFilePath)
     ofs.close();
 }
 
-void AttackEditor::LoadFile(const std::string& loadFilePath)
+void AttackEditor::LoadFile(const std::string& loadFilePath, std::unordered_map<std::string, AttackParameter>& attackParameters)
 {
     std::ifstream ifs(loadFilePath);
     if (ifs.fail())
@@ -128,14 +214,14 @@ void AttackEditor::LoadFile(const std::string& loadFilePath)
     ifs >> root;
     ifs.close();
 
-    attackParameter_.clear();
+    attackParameters.clear();
 
-    for (auto it = root.begin(); it != root.end(); ++it) 
+    for (auto it = root.begin(); it != root.end(); ++it)
     {
         const std::string& tabName = it.key();
         const json& param = it.value();
 
-        attackParameter_[tabName] = {
+        attackParameters[tabName] = {
             param["attackStartTime"].get<int>(),
             param["attackEndTime"].get<int>(),
             param["recoveryTime"].get<int>()
@@ -143,10 +229,13 @@ void AttackEditor::LoadFile(const std::string& loadFilePath)
     }
 }
 
-void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime)
+
+void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, bool isPlayer)
 {
-    auto it = attackParameter_.find(name);
-    if (it != attackParameter_.end()) 
+    const auto& attackParameters = isPlayer ? playerAttackParameter_ : enemyAttackParameter_;
+
+    auto it = attackParameters.find(name);
+    if (it != attackParameters.end())
     {
         attackStartTime = it->second.attackStartTime;
         attackEndTime = it->second.attackEndTime;

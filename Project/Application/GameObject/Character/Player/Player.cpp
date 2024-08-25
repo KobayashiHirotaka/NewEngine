@@ -168,11 +168,16 @@ void Player::Update()
 		animationIndex_ = 13;
 	}
 
+	if (input_->PressKey(DIK_M))
+	{
+		finisherGauge_ -= 1.0f;
+	}
+
 
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
-	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime);
+	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime, true);
 
 	//デバッグ用の処理
 	if (isDebug_)
@@ -309,14 +314,14 @@ void Player::BehaviorRootUpdate()
 	//コントローラーの取得
 	if (input_->GetJoystickState())
 	{
-		if (!characterState_.isDown)
+		if (!characterState_.isDown && comboCount_ <= 1)
 		{
 			//移動
 			Move();
 		}
 
 		//ジャンプ
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown)
+		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.translation.y == 0.0f && !characterState_.isDown)
 		{
 			characterState_.behaviorRequest = Behavior::kJump;
 		}
@@ -345,7 +350,7 @@ void Player::BehaviorRootUpdate()
 		
 		//タックル攻撃
 		//右向きのとき
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
 			attackType = "Tackle";
@@ -354,12 +359,28 @@ void Player::BehaviorRootUpdate()
 
 		//タックル攻撃
 		//左向きのとき
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
 			&& characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
 			attackType = "Tackle";
 			AttackStart(attackData_.isTackle);
 		}
+
+		//必殺技
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && isFinisherCharge_ && !characterState_.isDown)
+		{
+			attackType = "Tackle";
+			AttackStart(attackData_.isTackle);
+			finisherGauge_ = 0.0f;
+		}
+	}
+
+	//必殺技(テスト用)
+	if (input_->PushKey(DIK_F) && isFinisherCharge_ && !characterState_.isDown)
+	{
+		attackType = "HighPunch";
+		AttackStart(attackData_.isHighPunch);
+		finisherGauge_ = 0.0f;
 	}
 }
 
@@ -504,31 +525,33 @@ void Player::BehaviorAttackUpdate()
 			ResetCollision();
 		}
 
-		//キャンセルの処理(強TC)
+		//キャンセルの処理
 		if (input_->GetJoystickState())
 		{
+			//弱コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& characterState_.isHitCharacter)
-			{
-				attackType = "HighPunch";
-				attackData_.isAttack = false;
-				attackData_.isTCMiddlePunch = false;
-				attackData_.isHighPunch = true;
-				animationTime_ = 0.0f;
-				attackData_.attackAnimationFrame = 0;
-				model_->SetAnimationTime(animationTime_);
-				ResetCollision();
-			}
-
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
 				&& characterState_.isHitCharacter)
 			{
 				attackType = "TCHighPunch";
 				attackData_.isAttack = false;
 				attackData_.isTCMiddlePunch = false;
 				attackData_.isTCHighPunch = true;
+				animationTime_ = 0.0f;
+				attackData_.attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime_);
+				ResetCollision();
+			}
+
+			//中コンボ
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
+				&& characterState_.isHitCharacter)
+			{
+				attackType = "HighPunch";
+				attackData_.isAttack = false;
+				attackData_.isTCMiddlePunch = false;
+				attackData_.isHighPunch = true;
 				animationTime_ = 0.0f;
 				attackData_.attackAnimationFrame = 0;
 				model_->SetAnimationTime(animationTime_);
@@ -620,7 +643,7 @@ void Player::BehaviorAttackUpdate()
 			//タックル攻撃
 			//右向きのとき
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
 				&& characterState_.direction == Direction::Right)
 			{
 				attackType = "Tackle";
@@ -636,7 +659,7 @@ void Player::BehaviorAttackUpdate()
 			//タックル攻撃
 			//左向きのとき
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
 				&& characterState_.direction == Direction::Left)
 			{
 				attackType = "Tackle";
@@ -723,8 +746,6 @@ void Player::BehaviorAttackUpdate()
 
 void Player::BehaviorJumpInitialize()
 {
-	worldTransform_.translation.y = 0.0f;
-
 	const float kJumpFirstSpeed_ = 0.3f;
 
 	moveData_.velocity.y = kJumpFirstSpeed_;
@@ -955,9 +976,14 @@ void Player::OnCollision(Collider* collider, float damage)
 		{
 			timerData_.guardAnimationTimer--;
 
+			float enemyPosition = enemy_->GetWorldPosition().x;
+
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.3f;
+			enemyPosition += 0.2f;
 			guardGauge_ -= 1.0f;
+
+			enemy_->SetPositionX(enemyPosition);
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -974,9 +1000,14 @@ void Player::OnCollision(Collider* collider, float damage)
 		{
 			timerData_.guardAnimationTimer--;
 
+			float enemyPosition = enemy_->GetWorldPosition().x;
+
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.3f;
+			enemyPosition -= 0.2f;
 			guardGauge_ -= 1.0f;
+
+			enemy_->SetPositionX(enemyPosition);
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -1075,7 +1106,7 @@ void Player::OnCollision(Collider* collider, float damage)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			damage = 4.0f;
-			hp_ -= damage;
+			hp_ += damage;
 			timerData_.downAnimationTimer = 60;
 			float animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -1311,6 +1342,11 @@ void Player::FinisherGaugeBarUpdate()
 	if (finisherGauge_ <= -50.0f)
 	{
 		finisherGauge_ = -50.0f;
+		isFinisherCharge_ = true;
+	}
+	else
+	{
+		isFinisherCharge_ = false;
 	}
 }
 
@@ -1416,12 +1452,16 @@ void Player::DownAnimation()
 			}
 		}
 
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.1f, -0.3f}, {-0.1f, 0.1f, 0.3f} } :
+			AABB{ {0.1f, -0.1f, -0.3f}, {0.8f, 0.1f, 0.3f} };
+
 		animationIndex_ = 7;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		if (!enemy_->GetIsHighPunch() && worldTransform_.translation.y <= 0.0f && hp_ < 0.0f)
+		if (!enemy_->GetIsHighPunch() &&  worldTransform_.translation.y <= 0.0f && hp_ < 0.0f)
 		{
 			DownAnimationEnd(5, characterState_.isHitHighPunch);
+			ResetCollision();
 		}
 	}
 
@@ -1434,8 +1474,8 @@ void Player::DownAnimation()
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
 		float moveX = (characterState_.direction == Direction::Right) ? -0.08f : 0.08f;
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.3f, -0.3f}, {-0.1f, 0.0f, 0.3f} } :
-			AABB{ {0.1f, -0.3f, -0.3f}, {0.8f, 0.0f, 0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.0f, -0.3f}, {-0.1f, 0.1f, 0.3f} } :
+			AABB{ {0.1f, -0.0f, -0.3f}, {0.8f, 0.1f, 0.3f} };
 
 		if (timerData_.downAnimationTimer > 55)
 		{
@@ -1469,7 +1509,7 @@ void Player::DownAnimation()
 
 		SetAABB(aabb_);
 
-		if (!enemy_->GetIsTackle() && worldTransform_.translation.y <= 0.0f && hp_ < 0.0f)
+		if (timerData_.downAnimationTimer < 0 && hp_ < 0.0f)
 		{
 			DownAnimationEnd(4, characterState_.isHitTackle);
 			ResetCollision();

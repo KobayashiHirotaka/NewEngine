@@ -127,6 +127,9 @@ private:
 
 	bool hasShot_ = false;
 
+	//エディター用
+	std::string attackType;
+
 	//リソース
 	//スプライト(hp)
 	UI hpBar_;

@@ -25,13 +25,15 @@ class AttackEditor
 public:
     static AttackEditor* GetInstance();
 
+    void Initialize();
+
     void Update();
 
-    void SaveFile(const std::string& saveFilePath);
+    void SaveFile(const std::string& saveFilePath, const std::unordered_map<std::string, AttackParameter>& attackParameters);
 
-    void LoadFile(const std::string& loadFilePath);
+    void LoadFile(const std::string& loadFilePath, std::unordered_map<std::string, AttackParameter>& attackParameters);
 
-    void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime);
+    void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, bool isPlayer);
 
 private:
     AttackEditor() = default;
@@ -40,11 +42,14 @@ private:
     AttackEditor& operator=(const AttackEditor& obj) = default;
 
 private:
-    std::map<std::string, AttackParameter> attackParameter_;
+    std::unordered_map<std::string, AttackParameter> playerAttackParameter_;
+    std::unordered_map<std::string, AttackParameter> enemyAttackParameter_;
 
     std::string tempTabName_;
 
-    std::string saveFilePath_ = "resource/AttackData/AttackData.json";
+    std::string savePlayerFilePath_ = "resource/AttackData/AttackPlayerData.json";
+    std::string loadPlayerFilePath_ = "resource/AttackData/AttackPlayerData.json";
 
-    std::string loadFilePath_ = "resource/AttackData/AttackData.json";
+    std::string saveEnemyFilePath_ = "resource/AttackData/AttackEnemyData.json";
+    std::string loadEnemyFilePath_ = "resource/AttackData/AttackEnemyData.json";
 };

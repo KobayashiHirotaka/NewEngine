@@ -117,6 +117,10 @@ void ICharacter::Update()
 	FinisherGaugeBarUpdate();
 
 	characterState_.isHitCharacter = false;
+
+	ImGui::Begin("CharacterDEBUG");
+	ImGui::Checkbox("isDebug", &isDebug_);
+	ImGui::End();
 }
 
 void ICharacter::Reset()
@@ -159,6 +163,8 @@ void ICharacter::Reset()
 	characterState_.isHitTCHighPunch = false;
 	characterState_.isHitTackle = false;
 	characterState_.isDown = false;
+
+	ResetCollision();
 
 	//リセット
 	isReset_ = false;
