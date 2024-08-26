@@ -283,8 +283,11 @@ void Enemy::BehaviorRootUpdate()
 {
 	if (!isDebug_)
 	{
-		//移動
-		Move();
+		if (!characterState_.isDown && comboCount_ == 0)
+		{
+			//移動
+			Move();
+		}
 
 		//攻撃
 		//突進攻撃
@@ -834,7 +837,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 void Enemy::Move()
 {
 	//移動処理(後ろ歩きスタート)
-	if (patternCount_ == 1 && characterState_.isDown == false && comboCount_ == 0)
+	if (patternCount_ == 1 && characterState_.isDown == false)
 	{
 		moveTimer_--;
 
@@ -921,7 +924,7 @@ void Enemy::Move()
 	}
 
 	//移動処理(前歩きスタート)
-	if (patternCount_ == 2 && characterState_.isDown == false && comboCount_ == 0)
+	if (patternCount_ == 2 && characterState_.isDown == false)
 	{
 		moveTimer_--;
 
@@ -1413,7 +1416,7 @@ void Enemy::HitCombo()
 	{
 		firstAttack_ = "JumpAttack";
 		comboCount_ = 1;
-		timerData_.comboTimer = 60;
+		timerData_.comboTimer = 40;
 		timerData_.comboTimer--;
 	}
 
@@ -1421,7 +1424,7 @@ void Enemy::HitCombo()
 	{
 		firstAttack_ = "LightPunch";
 		comboCount_ = 1;
-		timerData_.comboTimer = 60;
+		timerData_.comboTimer = 10;
 		timerData_.comboTimer--;
 	}
 
@@ -1430,7 +1433,7 @@ void Enemy::HitCombo()
 		if (characterState_.isHitLightPunch && comboCount_ == 1)
 		{
 			comboCount_ = 2;
-			timerData_.comboTimer = 60;
+			timerData_.comboTimer = 20;
 			timerData_.comboTimer--;
 		}
 
@@ -1444,7 +1447,7 @@ void Enemy::HitCombo()
 		if (characterState_.isHitTCHighPunch && comboCount_ == 3)
 		{
 			comboCount_ = 4;
-			timerData_.comboTimer = 60;
+			timerData_.comboTimer = 50;
 			timerData_.comboTimer--;
 		}
 
@@ -1475,7 +1478,7 @@ void Enemy::HitCombo()
 		if (characterState_.isHitTCHighPunch && comboCount_ == 2)
 		{
 			comboCount_ = 3;
-			timerData_.comboTimer = 60;
+			timerData_.comboTimer = 50;
 			timerData_.comboTimer--;
 		}
 
