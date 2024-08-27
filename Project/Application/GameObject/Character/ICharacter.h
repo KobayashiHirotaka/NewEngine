@@ -138,6 +138,9 @@ public:
 
 		//ジャンプ攻撃
 		bool isJumpAttack = false;
+
+		//超必殺技
+		bool isFinisher = false;
 	};
 
 	struct TimerData
@@ -153,6 +156,9 @@ public:
 
 		//コンボの猶予時間
 		int comboTimer = 60;
+
+		//超必殺技の演出時間
+		int finisherTimer = 120;
 	};
 
 	virtual void Initialize() = 0;
@@ -244,6 +250,8 @@ public:
 
 	bool GetIsShot() { return attackData_.isShot; };
 
+	bool GetIsFinisher() { return attackData_.isFinisher; };
+
 	int GetAttackAnimationFrame() { return attackData_.attackAnimationFrame; };
 
 	//エフェクトに関するGetter
@@ -252,6 +260,8 @@ public:
 	bool GetIsHSVFilter() { return effectState_.isHSVFilter; };
 
 	bool GetIsDown() { return characterState_.isDown; };
+
+	int GetFinisherTImer() { return timerData_.finisherTimer; };
 
 	//Setter
 	void SetIsReset(bool isReset) { isReset_ = isReset; };

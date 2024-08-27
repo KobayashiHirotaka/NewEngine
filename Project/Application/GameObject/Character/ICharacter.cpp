@@ -131,7 +131,13 @@ void ICharacter::Reset()
 	//アニメーション用の変数
 	attackData_.attackAnimationFrame = 0;
 	animationTime_ = 0;
+
+	//時間
 	timerData_.downAnimationTimer = 60;
+	timerData_.guardAnimationTimer = 60;
+	timerData_.stanTimer = 60;
+	timerData_.comboTimer = 60;
+	timerData_.finisherTimer = 120;
 
 	//コンボカウント
 	comboCount_ = 0;

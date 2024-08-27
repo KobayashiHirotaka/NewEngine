@@ -178,6 +178,15 @@ void Player::Update()
 		finisherGauge_ -= 1.0f;
 	}
 
+	if (input_->PressKey(DIK_N))
+	{
+		timerData_.finisherTimer -= 1;
+	}
+	else
+	{
+		timerData_.finisherTimer = 120;
+	}
+
 
 	ICharacter::Update();
 
@@ -373,19 +382,19 @@ void Player::BehaviorRootUpdate()
 		//必殺技
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && isFinisherCharge_ && !characterState_.isDown)
 		{
-			attackType = "Tackle";
-			AttackStart(attackData_.isTackle);
+			attackType = "Finisher";
+			AttackStart(attackData_.isFinisher);
 			finisherGauge_ = 0.0f;
 		}
 	}
 
-	////必殺技(テスト用)
-	//if (input_->PushKey(DIK_F) && isFinisherCharge_ && !characterState_.isDown)
-	//{
-	//	attackType = "HighPunch";
-	//	AttackStart(attackData_.isHighPunch);
-	//	finisherGauge_ = 0.0f;
-	//}
+	//必殺技(テスト用)
+	if (input_->PushKey(DIK_F) && isFinisherCharge_ && !characterState_.isDown)
+	{
+		attackType = "HighPunch";
+		AttackStart(attackData_.isHighPunch);
+		finisherGauge_ = 0.0f;
+	}
 }
 
 void Player::BehaviorAttackInitialize()

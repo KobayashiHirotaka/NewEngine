@@ -159,11 +159,14 @@ void GamePlayScene::Update()
 			//タイムカウントを更新
 			if (currentSeconds_ > 0 && elapsedTime >= 1.0f)
 			{
-				currentSeconds_--;
-				UpdateNumberSprite();
+				if (player_->GetFinisherTImer() == 120)
+				{
+					currentSeconds_--;
+					UpdateNumberSprite();
 
-				//elapsedTimeをリセット
-				elapsedTime = 0.0f;
+					//elapsedTimeをリセット
+					elapsedTime = 0.0f;
+				}
 			}
 		}
 
