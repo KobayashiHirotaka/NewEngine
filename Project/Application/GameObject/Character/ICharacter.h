@@ -130,7 +130,7 @@ public:
 		//タックル攻撃
 		bool isTackle = false;
 
-		//昇竜拳
+		//アッパー攻撃
 		bool isUppercut = false;
 
 		//弾攻撃
@@ -289,6 +289,8 @@ protected:
 
 	//デバッグ用
 	bool isDebug_ = false;
+
+	bool isFinisherCharge_ = false;
 
 	//画面端
 	float leftEdge_ = -4.0f;

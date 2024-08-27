@@ -623,12 +623,12 @@ void Enemy::BehaviorJumpUpdate()
 
 void Enemy::BehaviorStanInitialize()
 {
-	animationIndex_ = 8;
+	animationIndex_ = 9;
 }
 
 void Enemy::BehaviorStanUpdate()
 {
-	animationIndex_ = 8;
+	animationIndex_ = 9;
 	float animationTime = 0.0f;
 	float animationDuration;
 	animationTime = model_->GetAnimationTime();
@@ -740,14 +740,26 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		}
 
 		//弱パンチ
-		if (player_->GetIsAttack() && player_->GetIsLightPunch() && !characterState_.isGuard && (!characterState_.isDown || firstAttack_ == "JumpAttack"))
+		if (player_->GetIsAttack() && player_->GetIsLightPunch() && !characterState_.isGuard )
 		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 2.0f;
-			hp_ -= damage;
-			characterState_.isHitLightPunch = true;
+			if (!characterState_.isDown)
+			{
+				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				damage = 2.0f;
+				hp_ -= damage;
+				characterState_.isHitLightPunch = true;
 
-			HitStop(10);
+				HitStop(10);
+			}
+			else if(firstAttack_ == "JumpAttack")
+			{
+				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				damage = 0.2f;
+				hp_ -= damage;
+				characterState_.isHitLightPunch = true;
+
+				HitStop(10);
+			}
 		}
 
 		//中パンチ
@@ -765,7 +777,7 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsHighPunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 10.0f;
+			damage = 7.0f;
 			hp_ -= damage;
 			characterState_.isHitHighPunch = true;
 
@@ -828,6 +840,17 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			model_->SetAnimationTime(animationTime);
 			characterState_.isHitHighPunch = false;
 			characterState_.isHitTackle = true;
+
+			HitStop(10);
+		}
+
+		//アッパー攻撃
+		if (player_->GetIsUppercut() && player_->GetIsAttack() && !characterState_.isGuard &&!characterState_.isDown)
+		{
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+			damage = 10.0f;
+			hp_ -= damage;
+			characterState_.isHitUppercut = true;
 
 			HitStop(10);
 		}
@@ -1349,6 +1372,29 @@ void Enemy::DownAnimation()
 			ResetCollision();
 		}
 	}
+
+	//アッパー攻撃
+	if (characterState_.isHitUppercut)
+	{
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		if (timerData_.downAnimationTimer > 55)
+		{
+			float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
+
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
+				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+		}
+
+		animationIndex_ = 4;
+		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
+
+		if (!player_->GetIsUppercut() && hp_ > 0.0f)
+		{
+			DownAnimationEnd(5, characterState_.isHitUppercut);
+		}
+	}
 }
 
 void Enemy::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
@@ -1428,6 +1474,14 @@ void Enemy::HitCombo()
 		timerData_.comboTimer--;
 	}
 
+	if (characterState_.isHitHighPunch && comboCount_ == 0)
+	{
+		firstAttack_ = "HighPunch";
+		comboCount_ = 1;
+		timerData_.comboTimer = 120;
+		timerData_.comboTimer--;
+	}
+
 	if (firstAttack_ == "JumpAttack")
 	{
 		if (characterState_.isHitLightPunch && comboCount_ == 1)
@@ -1441,6 +1495,13 @@ void Enemy::HitCombo()
 		{
 			comboCount_ = 3;
 			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
+		}
+
+		if (characterState_.isHitUppercut && comboCount_ == 3)
+		{
+			comboCount_ = 4;
+			timerData_.comboTimer = 20;
 			timerData_.comboTimer--;
 		}
 
@@ -1482,6 +1543,13 @@ void Enemy::HitCombo()
 			timerData_.comboTimer--;
 		}
 
+		if(characterState_.isHitUppercut && comboCount_ == 2)
+		{
+			comboCount_ = 3;
+			timerData_.comboTimer = 20;
+			timerData_.comboTimer--;
+		}
+
 		if (characterState_.isHitHighPunch && comboCount_ == 2)
 		{
 			comboCount_ = 3;
@@ -1492,7 +1560,36 @@ void Enemy::HitCombo()
 		if (characterState_.isHitTackle && comboCount_ == 3)
 		{
 			comboCount_ = 4;
+			timerData_.comboTimer = 40;
+			timerData_.comboTimer--;
+		}
+	}
+
+	if (firstAttack_ == "HighPunch")
+	{
+		if (characterState_.isHitTackle && comboCount_ == 1)
+		{
+			comboCount_ = 2;
 			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
+		}
+	}
+
+	if (comboCount_ >= 3)
+	{
+		if (characterState_.isHitJumpAttack)
+		{
+			firstAttack_ = "JumpAttack";
+			comboCount_ = 1;
+			timerData_.comboTimer = 40;
+			timerData_.comboTimer--;
+		}
+
+		if (characterState_.isHitLightPunch)
+		{
+			firstAttack_ = "LightPunch";
+			comboCount_ = 1;
+			timerData_.comboTimer = 10;
 			timerData_.comboTimer--;
 		}
 	}
@@ -1502,7 +1599,7 @@ void Enemy::HitCombo()
 		timerData_.comboTimer--;
 	}
 
-	if (timerData_.comboTimer < 0)
+	if (timerData_.comboTimer < 0 || hp_ < 0.0f)
 	{
 		timerData_.comboTimer = 60;
 		comboCount_ = 0;

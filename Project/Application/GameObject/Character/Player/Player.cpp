@@ -333,7 +333,8 @@ void Player::BehaviorRootUpdate()
 
 		//攻撃
 		//弱攻撃
-		if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)) && !characterState_.isDown)
+		if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) &&
+			input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))) && !characterState_.isDown)
 		{
 			attackType = "LightPunch";
 			AttackStart(attackData_.isLightPunch);
@@ -347,7 +348,7 @@ void Player::BehaviorRootUpdate()
 		//}
 
 		//強攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !characterState_.isDown)
 		{
 			attackType = "HighPunch";
 			AttackStart(attackData_.isHighPunch);
@@ -362,7 +363,8 @@ void Player::BehaviorRootUpdate()
 		}
 
 		//アッパー攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !characterState_.isDown)
 		{
 			attackType = "Uppercut";
 			AttackStart(attackData_.isUppercut);
@@ -377,13 +379,13 @@ void Player::BehaviorRootUpdate()
 		}
 	}
 
-	//必殺技(テスト用)
-	if (input_->PushKey(DIK_F) && isFinisherCharge_ && !characterState_.isDown)
-	{
-		attackType = "HighPunch";
-		AttackStart(attackData_.isHighPunch);
-		finisherGauge_ = 0.0f;
-	}
+	////必殺技(テスト用)
+	//if (input_->PushKey(DIK_F) && isFinisherCharge_ && !characterState_.isDown)
+	//{
+	//	attackType = "HighPunch";
+	//	AttackStart(attackData_.isHighPunch);
+	//	finisherGauge_ = 0.0f;
+	//}
 }
 
 void Player::BehaviorAttackInitialize()
@@ -426,9 +428,9 @@ void Player::BehaviorAttackUpdate()
 		//キャンセルの処理(中TC)
 		if (input_->GetJoystickState())
 		{
-			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 10 && attackData_.attackAnimationFrame < 20
-				&& (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))
-					&& input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && characterState_.isHitCharacter)
+			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 10 && attackData_.attackAnimationFrame < 20 && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) 
+				|| input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B)) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && 
+				characterState_.isHitCharacter)
 			{
 				attackType = "TCMiddlePunch";
 				attackData_.isAttack = false;
@@ -559,6 +561,21 @@ void Player::BehaviorAttackUpdate()
 				model_->SetAnimationTime(animationTime_);
 				ResetCollision();
 			}
+
+			//強コンボ
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
+				&& characterState_.isHitCharacter)
+			{
+				attackType = "Uppercut";
+				attackData_.isAttack = false;
+				attackData_.isTCMiddlePunch = false;
+				attackData_.isUppercut = true;
+				animationTime_ = 0.0f;
+				attackData_.attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime_);
+				ResetCollision();
+			}
 		}
 
 		attackData_.attackAnimationFrame++;
@@ -609,7 +626,7 @@ void Player::BehaviorAttackUpdate()
 		{
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
-
+		
 		if (characterState_.direction == Direction::Right)
 		{
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
@@ -645,8 +662,9 @@ void Player::BehaviorAttackUpdate()
 			//タックル攻撃
 			//右向きのとき
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& characterState_.direction == Direction::Right)
+				&& (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) || 
+				input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)) && 
+				characterState_.direction == Direction::Right)
 			{
 				attackType = "Tackle";
 				attackData_.isAttack = false;
@@ -661,8 +679,9 @@ void Player::BehaviorAttackUpdate()
 			//タックル攻撃
 			//左向きのとき
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& characterState_.direction == Direction::Left)
+				&& (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) ||
+				input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)) &&
+				characterState_.direction == Direction::Left)
 			{
 				attackType = "Tackle";
 				attackData_.isAttack = false;
@@ -750,8 +769,8 @@ void Player::BehaviorAttackUpdate()
 	{
 		animationIndex_ = 14;
 		characterState_.isGuard = false;
-		Vector3 particlePosition = GetHandJointWorldPosition();
-		int particleTime = 60;
+		/*Vector3 particlePosition = GetRightHandJointWorldPosition();
+		int particleTime = 10;*/
 
 		if (!characterState_.isDown)
 		{
@@ -764,10 +783,25 @@ void Player::BehaviorAttackUpdate()
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
+		}
+		else if (characterState_.direction == Direction::Left)
+		{
+			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);
+
+			EvaluateAttackTiming();
+		}
+
+		/*if (characterState_.direction == Direction::Right)
+		{
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+			SetAABB(aabb_);
+
+			EvaluateAttackTiming();
 
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
 			{
-				particleEffectPlayer_->PlayParticle("RightBullet", { particlePosition });
+				particleEffectPlayer_->PlayParticle("PlayerRightNackle", { particlePosition });
 			}
 		}
 		else if (characterState_.direction == Direction::Left)
@@ -779,9 +813,9 @@ void Player::BehaviorAttackUpdate()
 
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
 			{
-				particleEffectPlayer_->PlayParticle("LeftBullet", { particlePosition });
+				particleEffectPlayer_->PlayParticle("PlayerRightNackle", { particlePosition });
 			}
-		}
+		}*/
 
 		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
 		{

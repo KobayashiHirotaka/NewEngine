@@ -37,6 +37,6 @@
     "Uppercut": {
         "attackEndTime": 25,
         "attackStartTime": 8,
-        "recoveryTime": 53
+        "recoveryTime": 34
     }
 }
