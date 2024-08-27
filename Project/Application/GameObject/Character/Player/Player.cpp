@@ -168,6 +168,11 @@ void Player::Update()
 		animationIndex_ = 13;
 	}
 
+	if (input_->PressKey(DIK_T))
+	{
+		animationIndex_ = 14;
+	}
+
 	if (input_->PressKey(DIK_M))
 	{
 		finisherGauge_ -= 1.0f;
