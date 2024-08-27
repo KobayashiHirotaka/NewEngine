@@ -79,6 +79,8 @@ public:
 
 	Vector3 GetWorldPosition() override;
 
+	Vector3 GetRightHandJointWorldPosition();
+
 	//Setter
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
 

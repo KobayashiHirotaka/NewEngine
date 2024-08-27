@@ -92,6 +92,8 @@ public:
 
 	SpotLight* GetSpotLight() { return spotLight_.get(); };
 
+	WorldTransform& GetJointWorldTransform(const std::string& jointName);
+
 	float GetAnimationTime() { return animationTime_; };
 
 	void SetAnimationTime(float animationTime) { animationTime_ = animationTime; };
@@ -188,6 +190,10 @@ private:
 	static Microsoft::WRL::ComPtr<ID3D12RootSignature> boneRootSignature_;
 
 	static Microsoft::WRL::ComPtr<ID3D12PipelineState> boneGraphicsPipelineState_;
+
+	WorldTransform defaultTransform_;
+
+	std::vector<WorldTransform> jointWorldTransform_{};
 
 	static uint32_t environmentTextureHandle_;
 };

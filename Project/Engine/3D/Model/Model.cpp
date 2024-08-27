@@ -49,6 +49,16 @@ void Model::Update()
 		}
 	}
 
+	for (size_t i = 0; i < skeleton_.joints.size(); ++i)
+	{
+		if (i >= jointWorldTransform_.size())
+		{
+			jointWorldTransform_.resize(i + 1);
+		}
+
+		jointWorldTransform_[i].matWorld = skeleton_.joints[i].skeletonSpaceMatrix;
+	}
+
 	//SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
 	for (size_t jointIndex = 0; jointIndex < skeleton_.joints.size(); ++jointIndex)
 	{
@@ -1103,4 +1113,28 @@ void Model::UpdateBoneVertices(const Skeleton& skeleton, int32_t index, std::vec
 	boneVertexBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	std::memcpy(vertexData, vertices.data(), sizeof(Vector4) * vertices.size());
 	boneVertexBuffer_->Unmap(0, nullptr);
+}
+
+WorldTransform& Model::GetJointWorldTransform(const std::string& jointName)
+{
+	jointWorldTransform_.resize(skeleton_.joints.size());
+
+	for (Joint& joint : skeleton_.joints)
+	{
+		if (joint.name == jointName)
+		{
+			//インデックスが範囲内か確認
+			if (joint.index >= 0 && joint.index < jointWorldTransform_.size())
+			{
+				return jointWorldTransform_[joint.index];
+			}
+			else
+			{
+				return defaultTransform_;
+			}
+		}
+	}
+
+	//ジョイントが見つからなかった場合デフォルトを返す
+	return defaultTransform_;
 }

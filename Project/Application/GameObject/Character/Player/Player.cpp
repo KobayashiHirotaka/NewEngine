@@ -361,9 +361,8 @@ void Player::BehaviorRootUpdate()
 			AttackStart(attackData_.isTackle);
 		}
 
-		//昇竜拳
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Right
-			|| input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && characterState_.direction == Direction::Left))
+		//アッパー攻撃
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown)
 		{
 			attackType = "Uppercut";
 			AttackStart(attackData_.isUppercut);
@@ -746,14 +745,13 @@ void Player::BehaviorAttackUpdate()
 		attackData_.attackAnimationFrame++;
 	}
 
-	//昇竜拳
+	//アッパー攻撃
 	if (attackData_.isUppercut)
 	{
-		animationIndex_ = 9;
+		animationIndex_ = 14;
 		characterState_.isGuard = false;
-		float particlePositionX = 0.0f;
+		Vector3 particlePosition = GetHandJointWorldPosition();
 		int particleTime = 60;
-		int moveTime = 40;
 
 		if (!characterState_.isDown)
 		{
@@ -767,18 +765,9 @@ void Player::BehaviorAttackUpdate()
 
 			EvaluateAttackTiming();
 
-			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
-			{
-				worldTransform_.translation.x += 0.15f;
-			}
-
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
 			{
-				particlePositionX = 0.1f;
-				particlePositionX += 0.3f;
-
-				particleEffectPlayer_->PlayParticle("PlayerRightNackle", { worldTransform_.translation.x + particlePositionX,
-					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
+				particleEffectPlayer_->PlayParticle("RightBullet", { particlePosition });
 			}
 		}
 		else if (characterState_.direction == Direction::Left)
@@ -788,19 +777,9 @@ void Player::BehaviorAttackUpdate()
 
 			EvaluateAttackTiming();
 
-			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
-			{
-				worldTransform_.translation.x -= 0.15f;
-			}
-
-
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
 			{
-				particlePositionX = 0.1f;
-				particlePositionX += 0.3f;
-
-				particleEffectPlayer_->PlayParticle("PlayerLeftNackle", { worldTransform_.translation.x - particlePositionX,
-					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
+				particleEffectPlayer_->PlayParticle("LeftBullet", { particlePosition });
 			}
 		}
 
@@ -1790,4 +1769,11 @@ void Player::HitCombo()
 		comboCount_ = 0;
 		firstAttack_ = "";
 	}
+}
+
+Vector3 Player::GetRightHandJointWorldPosition()
+{
+	WorldTransform handJointWorldTransform = model_->GetJointWorldTransform("mixamorig:RightHandIndex1");
+
+	return Vector3 { handJointWorldTransform.matWorld.m[3][0], handJointWorldTransform.matWorld.m[3][1], handJointWorldTransform.matWorld.m[3][2] };
 }
