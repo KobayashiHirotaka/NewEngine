@@ -82,7 +82,7 @@ void Player::Initialize()
 	playerCursol_.reset(Model::CreateFromOBJ("resource/playerCursol", "playerCursol.obj"));
 
 	worldTransformCursol_.Initialize();
-	worldTransformCursol_.translation = { worldTransform_.translation.x - 0.3f,worldTransform_.translation.y + 0.4f,worldTransform_.translation.z };
+	worldTransformCursol_.translation = { worldTransform_.translation.x, worldTransform_.translation.y + 0.4f, worldTransform_.translation.z };
 	worldTransformCursol_.rotation.y = 1.5f;
 	worldTransformCursol_.scale = { 0.3f, 0.3f, 0.3f };
 
@@ -170,7 +170,7 @@ void Player::Update()
 
 	if (input_->PressKey(DIK_T))
 	{
-		animationIndex_ = 14;
+		animationIndex_ = 15;
 	}
 
 	if (input_->PressKey(DIK_M))
@@ -181,6 +181,7 @@ void Player::Update()
 	if (input_->PressKey(DIK_N))
 	{
 		timerData_.finisherTimer -= 1;
+		animationIndex_ = 15;
 	}
 	else
 	{
@@ -252,7 +253,7 @@ void Player::Draw(const Camera& camera)
 {
 	model_->Draw(worldTransform_, camera, animationIndex_);
 
-	if (!characterState_.isDown)
+	if (!characterState_.isDown && timerData_.finisherTimer == 120)
 	{
 		playerCursol_->Draw(worldTransformCursol_, camera, 0);
 	}

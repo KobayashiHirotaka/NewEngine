@@ -1,6 +1,7 @@
 #include "GamePlayScene.h"
 #include "Engine/Framework/SceneManager.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
+#include "Application/GameObject/Character/ICharacter.h"
 #include <cassert>
 
 int GamePlayScene::migrationTimer = 200;
@@ -216,6 +217,21 @@ void GamePlayScene::Update()
 	{
 		PostProcess::GetInstance()->SetIsGaussianFilterActive(false);
 	}*/
+
+	//右向き用のカメラ移動
+	if (player_->GetFinisherTImer() != 120)
+	{
+		camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x + 4.0f, 
+			player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 4.5f }, 0.1f);
+
+		camera_.rotation_.y = Lerp(camera_.rotation_.y, -0.7f, 0.1f);
+	}
+	else
+	{
+		Vector3 translation_ = { 0.0f,1.0f,-13.0f };
+		camera_.translation_ = Lerp(camera_.translation_, translation_, 0.1f);
+		camera_.rotation_.y = Lerp(camera_.rotation_.y, 0.0f, 0.1f);
+	}
 
 	//勝ち負けの処理
 	HandleGameOutcome();
