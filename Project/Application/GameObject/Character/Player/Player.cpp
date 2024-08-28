@@ -913,6 +913,13 @@ void Player::BehaviorAttackUpdate()
 				ResetCollision();
 				attackData_.isFinisherFirstAttack = false;
 			}
+
+			/*if (characterState_.isHitCharacter)
+			{
+				AttackEnd(attackData_.isFinisher);
+				ResetCollision();
+				attackData_.isFinisherFirstAttack = false;
+			}*/
 		}
 
 		attackData_.attackAnimationFrame++;
