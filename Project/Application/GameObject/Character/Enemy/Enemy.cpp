@@ -1655,7 +1655,7 @@ void Enemy::HitCombo()
 
 	if (timerData_.comboTimer < 0 || hp_ < 0.0f)
 	{
-		timerData_.comboTimer = 60;
+		timerData_.comboTimer = 0;
 		comboCount_ = 0;
 		firstAttack_ = "";
 	}

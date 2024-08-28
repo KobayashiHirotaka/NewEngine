@@ -1181,64 +1181,67 @@ void Player::OnCollision(Collider* collider, float damage)
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
-		//弱パンチ
-		if (enemy_->GetIsAttack() && enemy_->GetIsLightPunch() && !characterState_.isDown && !characterState_.isGuard)
+		if (!attackData_.isFinisher)
 		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 2.0f;
-			hp_ += damage;
-			characterState_.isHitLightPunch = true;
+			//弱パンチ
+			if (enemy_->GetIsAttack() && enemy_->GetIsLightPunch() && !characterState_.isDown && !characterState_.isGuard)
+			{
+				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				damage = 2.0f;
+				hp_ += damage;
+				characterState_.isHitLightPunch = true;
 
-			HitStop(10);
-		}
+				HitStop(10);
+			}
 
-		//強パンチ
-		if (enemy_->GetIsHighPunch() && !characterState_.isDown && !characterState_.isGuard)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 10.0f;
-			hp_ += damage;
-			characterState_.isHitHighPunch = true;
+			//強パンチ
+			if (enemy_->GetIsHighPunch() && !characterState_.isDown && !characterState_.isGuard)
+			{
+				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				damage = 10.0f;
+				hp_ += damage;
+				characterState_.isHitHighPunch = true;
 
-			HitStop(10);
-		}
+				HitStop(10);
+			}
 
-		//TC中パンチ
-		if (enemy_->GetIsTCMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 2.0f;
-			hp_ += damage;
-			characterState_.isHitTCMiddlePunch = true;
+			//TC中パンチ
+			if (enemy_->GetIsTCMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
+			{
+				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				damage = 2.0f;
+				hp_ += damage;
+				characterState_.isHitTCMiddlePunch = true;
 
-			HitStop(10);
-		}
+				HitStop(10);
+			}
 
-		//タックル
-		//キャンセルじゃないとき
-		if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && !characterState_.isDown && !characterState_.isGuard)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 15.0f;
-			hp_ += damage;
-			characterState_.isHitTackle = true;
+			//タックル
+			//キャンセルじゃないとき
+			if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && !characterState_.isDown && !characterState_.isGuard)
+			{
+				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				damage = 15.0f;
+				hp_ += damage;
+				characterState_.isHitTackle = true;
 
-			HitStop(30);
-		}
+				HitStop(30);
+			}
 
-		//キャンセルのとき
-		if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.5f)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 4.0f;
-			hp_ += damage;
-			timerData_.downAnimationTimer = 60;
-			float animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
-			characterState_.isHitHighPunch = false;
-			characterState_.isHitTackle = true;
+			//キャンセルのとき
+			if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.5f)
+			{
+				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				damage = 4.0f;
+				hp_ += damage;
+				timerData_.downAnimationTimer = 60;
+				float animationTime = 0.0f;
+				model_->SetAnimationTime(animationTime);
+				characterState_.isHitHighPunch = false;
+				characterState_.isHitTackle = true;
 
-			HitStop(10);
+				HitStop(10);
+			}
 		}
 	}
 }
