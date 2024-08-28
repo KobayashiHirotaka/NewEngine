@@ -98,79 +98,19 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	if (input_->PressKey(DIK_0))
-	{
-		animationIndex_ = 0;
-	}
-
 	if (input_->PressKey(DIK_1))
 	{
-		animationIndex_ = 1;
+		animationIndex_ = 15;
 	}
 
 	if (input_->PressKey(DIK_2))
 	{
-		animationIndex_ = 2;
+		animationIndex_ = 16;
 	}
-	
+
 	if (input_->PressKey(DIK_3))
 	{
-		animationIndex_ = 3;
-	}
-
-	if (input_->PressKey(DIK_4))
-	{
-		animationIndex_ = 4;
-	}
-
-	if (input_->PressKey(DIK_5))
-	{
-		animationIndex_ = 5;
-	}
-
-	if (input_->PressKey(DIK_6))
-	{
-		animationIndex_ = 6;
-	}
-
-	if (input_->PressKey(DIK_7))
-	{
-		animationIndex_ = 7;
-	}
-
-	if (input_->PressKey(DIK_8))
-	{
-		animationIndex_ = 8;
-	}
-
-	if (input_->PressKey(DIK_9))
-	{
-		animationIndex_ = 9;
-	}
-
-	if (input_->PressKey(DIK_Q))
-	{
-		animationIndex_ = 10;
-	}
-
-	if (input_->PressKey(DIK_W))
-	{
-		animationIndex_ = 11;
-	}
-
-	if (input_->PressKey(DIK_E))
-	{
-		animationIndex_ = 12;
-	}
-
-	if (input_->PressKey(DIK_R))
-	{
-		animationIndex_ = 13;
-	}
-
-	if (input_->PressKey(DIK_T))
-	{
-		animationIndex_ = 15;
+		animationIndex_ = 17;
 	}
 
 	if (input_->PressKey(DIK_M))
