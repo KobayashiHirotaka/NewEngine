@@ -178,7 +178,7 @@ void Player::Update()
 		finisherGauge_ -= 1.0f;
 	}
 
-	if (input_->PressKey(DIK_N))
+	/*if (input_->PressKey(DIK_N))
 	{
 		timerData_.finisherTimer -= 1;
 		animationIndex_ = 15;
@@ -186,7 +186,7 @@ void Player::Update()
 	else
 	{
 		timerData_.finisherTimer = 120;
-	}
+	}*/
 
 
 	ICharacter::Update();
@@ -302,6 +302,8 @@ void Player::ImGui(const char* title)
 	ImGui::Text("isAttack %d", attackData_.isAttack);
 	ImGui::Text("isRecovery %d",attackData_.isRecovery);
 	ImGui::DragFloat("animationTime", &animationTime_, 0.0001f);
+
+	ImGui::Text("finisherTimer %d", timerData_.finisherTimer);
 
 	ImGui::Text("attackStartTime %d", attackData_.attackStartTime);
 	ImGui::Text("swingTime %d", attackData_.attackEndTime);
@@ -779,8 +781,7 @@ void Player::BehaviorAttackUpdate()
 	{
 		animationIndex_ = 14;
 		characterState_.isGuard = false;
-		/*Vector3 particlePosition = GetRightHandJointWorldPosition();
-		int particleTime = 10;*/
+		//Vector3 particlePosition = GetRightHandJointWorldPosition();
 
 		if (!characterState_.isDown)
 		{
@@ -809,7 +810,7 @@ void Player::BehaviorAttackUpdate()
 
 			EvaluateAttackTiming();
 
-			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
+			if (attackData_.attackAnimationFrame <= attackData_.attackEndTime)
 			{
 				particleEffectPlayer_->PlayParticle("PlayerRightNackle", { particlePosition });
 			}
@@ -821,7 +822,7 @@ void Player::BehaviorAttackUpdate()
 
 			EvaluateAttackTiming();
 
-			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
+			if (attackData_.attackAnimationFrame <= attackData_.attackEndTime)
 			{
 				particleEffectPlayer_->PlayParticle("PlayerRightNackle", { particlePosition });
 			}
@@ -831,6 +832,67 @@ void Player::BehaviorAttackUpdate()
 		{
 			AttackEnd(attackData_.isUppercut);
 			ResetCollision();
+		}
+
+		attackData_.attackAnimationFrame++;
+	}
+
+	//超必
+	if (attackData_.isFinisher)
+	{
+		characterState_.isGuard = false;
+		bool isFinisherEffect = false;
+
+		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
+
+		if (timerData_.finisherTimer > 40 && attackData_.attackAnimationFrame < 80 && !isFinisherFirstAttack_)
+		{
+			isFinisherEffect = true;
+			timerData_.finisherTimer--;
+		}
+		else
+		{
+			isFinisherEffect = false;
+		}
+
+		if (isFinisherEffect)
+		{
+			animationIndex_ = 15;
+		}
+		else if(!isFinisherFirstAttack_)
+		{
+			timerData_.finisherTimer = 120;
+			isFinisherFirstAttack_ = true;
+			animationTime_ = 0.0f;
+			attackData_.attackAnimationFrame = 0;
+			model_->SetAnimationTime(animationTime_);
+		}
+
+		if (isFinisherFirstAttack_ && !characterState_.isDown)
+		{
+			animationIndex_ = 16;
+
+			if (characterState_.direction == Direction::Right)
+			{
+				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+				SetAABB(aabb_);
+
+				EvaluateAttackTiming();
+			}
+			else if (characterState_.direction == Direction::Left)
+			{
+				aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				SetAABB(aabb_);
+
+				EvaluateAttackTiming();
+			}
+
+			if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
+			{
+				AttackEnd(attackData_.isFinisher);
+				ResetCollision();
+				isFinisherFirstAttack_ = false;
+			}
 		}
 
 		attackData_.attackAnimationFrame++;
@@ -1818,6 +1880,8 @@ void Player::HitCombo()
 Vector3 Player::GetRightHandJointWorldPosition()
 {
 	WorldTransform handJointWorldTransform = model_->GetJointWorldTransform("mixamorig:RightHandIndex1");
+
+	handJointWorldTransform.matWorld = Multiply(handJointWorldTransform.matWorld, worldTransform_.matWorld);
 
 	return Vector3 { handJointWorldTransform.matWorld.m[3][0], handJointWorldTransform.matWorld.m[3][1], handJointWorldTransform.matWorld.m[3][2] };
 }
