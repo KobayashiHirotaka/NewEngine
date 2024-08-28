@@ -834,6 +834,26 @@ void Player::BehaviorAttackUpdate()
 			ResetCollision();
 		}
 
+		//キャンセルの処理(横A)
+		if (input_->GetJoystickState())
+		{
+			//強コンボ
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > 10 && attackData_.attackAnimationFrame < 40
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
+				&& isFinisherCharge_)
+			{
+				attackType = "Finisher";
+				attackData_.isAttack = false;
+				attackData_.isUppercut = false;
+				attackData_.isFinisher = true;
+				animationTime_ = 0.0f;
+				attackData_.attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime_);
+				ResetCollision();
+				finisherGauge_ = 0.0f;
+			}
+		}
+
 		attackData_.attackAnimationFrame++;
 	}
 
@@ -887,7 +907,7 @@ void Player::BehaviorAttackUpdate()
 				EvaluateAttackTiming();
 			}
 
-			if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
+			if ((characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime) && !characterState_.isHitCharacter)
 			{
 				AttackEnd(attackData_.isFinisher);
 				ResetCollision();
