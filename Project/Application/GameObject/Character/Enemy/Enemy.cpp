@@ -860,6 +860,17 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 			HitStop(10);
 		}
+
+		//超必
+		if (player_->GetIsFinisherFirstAttack() && player_->GetIsAttack() && !characterState_.isGuard && !characterState_.isDown)
+		{
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+			damage = 10.0f;
+			hp_ -= damage;
+			characterState_.isHitFinisherFirstAttack = true;
+
+			HitStop(10);
+		}
 	}
 }
 
@@ -1401,6 +1412,29 @@ void Enemy::DownAnimation()
 			DownAnimationEnd(5, characterState_.isHitUppercut);
 		}
 	}
+
+	//超必殺技(1段目)
+	if (characterState_.isHitFinisherFirstAttack)
+	{
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		if (timerData_.downAnimationTimer > 55)
+		{
+			float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
+
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
+				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+		}
+
+		animationIndex_ = 4;
+		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
+
+		if (!player_->GetIsFinisherFirstAttack() && hp_ > 0.0f)
+		{
+			DownAnimationEnd(5, characterState_.isHitFinisherFirstAttack);
+		}
+	}
 }
 
 void Enemy::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
@@ -1507,7 +1541,14 @@ void Enemy::HitCombo()
 		if (characterState_.isHitUppercut && comboCount_ == 3)
 		{
 			comboCount_ = 4;
-			timerData_.comboTimer = 20;
+			timerData_.comboTimer = 120;
+			timerData_.comboTimer--;
+		}
+
+		if (characterState_.isHitFinisherFirstAttack && comboCount_ == 4)
+		{
+			comboCount_ = 5;
+			timerData_.comboTimer = 120;
 			timerData_.comboTimer--;
 		}
 
@@ -1552,7 +1593,14 @@ void Enemy::HitCombo()
 		if(characterState_.isHitUppercut && comboCount_ == 2)
 		{
 			comboCount_ = 3;
-			timerData_.comboTimer = 20;
+			timerData_.comboTimer = 120;
+			timerData_.comboTimer--;
+		}
+
+		if (characterState_.isHitFinisherFirstAttack && comboCount_ == 3)
+		{
+			comboCount_ = 4;
+			timerData_.comboTimer = 120;
 			timerData_.comboTimer--;
 		}
 

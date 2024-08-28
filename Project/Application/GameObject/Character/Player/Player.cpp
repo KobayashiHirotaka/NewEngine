@@ -907,7 +907,7 @@ void Player::BehaviorAttackUpdate()
 				EvaluateAttackTiming();
 			}
 
-			if ((characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime) && !characterState_.isHitCharacter)
+			if ((characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)/* && !characterState_.isHitCharacter*/)
 			{
 				AttackEnd(attackData_.isFinisher);
 				ResetCollision();

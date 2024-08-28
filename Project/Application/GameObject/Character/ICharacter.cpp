@@ -172,6 +172,7 @@ void ICharacter::Reset()
 	characterState_.isHitTCHighPunch = false;
 	characterState_.isHitTackle = false;
 	characterState_.isHitUppercut = false;
+	characterState_.isHitFinisherFirstAttack = false;
 	characterState_.isDown = false;
 
 	ResetCollision();

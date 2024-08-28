@@ -68,8 +68,11 @@ public:
 		//タックル攻撃
 		bool isHitTackle = false;
 
-		//昇竜拳
+		//アッパー攻撃
 		bool isHitUppercut = false;
+
+		//超必殺技
+		bool isHitFinisherFirstAttack = false;
 
 		//弾
 		bool isHitBullet = false;
@@ -252,6 +255,8 @@ public:
 	bool GetIsShot() { return attackData_.isShot; };
 
 	bool GetIsFinisher() { return attackData_.isFinisher; };
+
+	bool GetIsFinisherFirstAttack() { return attackData_.isFinisherFirstAttack; };
 
 	int GetAttackAnimationFrame() { return attackData_.attackAnimationFrame; };
 
