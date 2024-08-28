@@ -221,14 +221,27 @@ void GamePlayScene::Update()
 	//右向き用のカメラ移動
 	if (player_->GetFinisherTImer() != 120)
 	{
-		camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x + 4.0f, 
+		if (player_->GetIsDirectionRight())
+		{
+			camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x + 4.0f,
 			player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 4.5f }, 0.1f);
 
-		camera_.rotation_.y = Lerp(camera_.rotation_.y, -0.7f, 0.1f);
+			camera_.rotation_.y = Lerp(camera_.rotation_.y, -0.7f, 0.1f);
+		}
+		else
+		{
+			camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x - 4.0f,
+			player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 4.5f }, 0.1f);
+
+			camera_.rotation_.y = Lerp(camera_.rotation_.y, 0.7f, 0.1f);
+		}
 	}
 	else
 	{
 		Vector3 translation_ = { 0.0f,1.0f,-13.0f };
+
+		//camera_.translation_ = translation_;
+		//camera_.rotation_.y = 0.0f;
 		camera_.translation_ = Lerp(camera_.translation_, translation_, 0.1f);
 		camera_.rotation_.y = Lerp(camera_.rotation_.y, 0.0f, 0.1f);
 	}

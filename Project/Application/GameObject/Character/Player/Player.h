@@ -81,6 +81,8 @@ public:
 
 	Vector3 GetRightHandJointWorldPosition();
 
+	bool GetIsDirectionRight() { return isDirectionRight_; };
+
 	//Setter
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
 
@@ -106,6 +108,9 @@ private:
 
 	//当たり判定
 	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+
+	//向き
+	bool isDirectionRight_ = false;
 
 	//リソース
 	//スプライト(hp)

@@ -164,6 +164,7 @@ void Player::Update()
 	{
 		characterState_.direction = Direction::Right;
 		worldTransform_.rotation.y = 1.7f;
+		isDirectionRight_ = true;
 	}
 
 	if (enemyWorldPosition.x < playerWorldPosition.x && characterState_.behavior != Behavior::kJump
@@ -171,6 +172,7 @@ void Player::Update()
 	{
 		characterState_.direction = Direction::Left;
 		worldTransform_.rotation.y = 4.6f;
+		isDirectionRight_ = false;
 	}
 
 	HitCombo();
@@ -328,15 +330,9 @@ void Player::BehaviorRootUpdate()
 			attackType = "Finisher";
 			AttackStart(attackData_.isFinisher);
 			finisherGauge_ = 0.0f;
+			timerData_.finisherTimer = 120;
+			attackData_.isFinisherFirstAttack = false;
 		}
-	}
-
-	//必殺技(テスト用)
-	if (input_->PushKey(DIK_F) && isFinisherCharge_ && !characterState_.isDown)
-	{
-		attackType = "HighPunch";
-		AttackStart(attackData_.isHighPunch);
-		finisherGauge_ = 0.0f;
 	}
 }
 
@@ -800,8 +796,8 @@ void Player::BehaviorAttackUpdate()
 	//超必
 	if (attackData_.isFinisher)
 	{
-		characterState_.isGuard = false;
 		bool isFinisherEffect = false;
+		characterState_.isGuard = false;
 
 		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
@@ -817,7 +813,14 @@ void Player::BehaviorAttackUpdate()
 
 		if (isFinisherEffect)
 		{
-			animationIndex_ = 15;
+			if (isDirectionRight_)
+			{
+				animationIndex_ = 15;
+			}
+			else 
+			{
+				animationIndex_ = 18;
+			}
 		}
 		else if(!attackData_.isFinisherFirstAttack)
 		{
