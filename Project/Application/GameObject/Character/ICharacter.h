@@ -141,6 +141,7 @@ public:
 
 		//超必殺技
 		bool isFinisher = false;
+		bool isFinisherFirstAttack = false;
 	};
 
 	struct TimerData

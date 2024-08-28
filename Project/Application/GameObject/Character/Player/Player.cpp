@@ -845,7 +845,7 @@ void Player::BehaviorAttackUpdate()
 
 		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
-		if (timerData_.finisherTimer > 40 && attackData_.attackAnimationFrame < 80 && !isFinisherFirstAttack_)
+		if (timerData_.finisherTimer > 40 && attackData_.attackAnimationFrame < 80 && !attackData_.isFinisherFirstAttack)
 		{
 			isFinisherEffect = true;
 			timerData_.finisherTimer--;
@@ -859,16 +859,16 @@ void Player::BehaviorAttackUpdate()
 		{
 			animationIndex_ = 15;
 		}
-		else if(!isFinisherFirstAttack_)
+		else if(!attackData_.isFinisherFirstAttack)
 		{
 			timerData_.finisherTimer = 120;
-			isFinisherFirstAttack_ = true;
+			attackData_.isFinisherFirstAttack = true;
 			animationTime_ = 0.0f;
 			attackData_.attackAnimationFrame = 0;
 			model_->SetAnimationTime(animationTime_);
 		}
 
-		if (isFinisherFirstAttack_ && !characterState_.isDown)
+		if (attackData_.isFinisherFirstAttack && !characterState_.isDown)
 		{
 			animationIndex_ = 16;
 
@@ -891,7 +891,7 @@ void Player::BehaviorAttackUpdate()
 			{
 				AttackEnd(attackData_.isFinisher);
 				ResetCollision();
-				isFinisherFirstAttack_ = false;
+				attackData_.isFinisherFirstAttack = false;
 			}
 		}
 

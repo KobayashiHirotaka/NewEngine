@@ -138,7 +138,5 @@ private:
 	
 	//エディター用
 	std::string attackType;
-
-	bool isFinisherFirstAttack_ = false;
 };
 

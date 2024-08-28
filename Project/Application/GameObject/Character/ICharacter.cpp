@@ -159,6 +159,7 @@ void ICharacter::Reset()
 	attackData_.isTackle = false;
 	attackData_.isUppercut = false;
 	attackData_.isFinisher = false;
+	attackData_.isFinisherFirstAttack = false;
 
 	//キャラクターと当たっているかどうか
 	characterState_.isHitCharacter = false;
