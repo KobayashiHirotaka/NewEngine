@@ -1518,7 +1518,7 @@ void Enemy::HitCombo()
 	{
 		firstAttack_ = "HighPunch";
 		comboCount_ = 1;
-		timerData_.comboTimer = 120;
+		timerData_.comboTimer = 30;
 		timerData_.comboTimer--;
 	}
 
@@ -1534,14 +1534,14 @@ void Enemy::HitCombo()
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == 2)
 		{
 			comboCount_ = 3;
-			timerData_.comboTimer = 60;
+			timerData_.comboTimer = 30;
 			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitUppercut && comboCount_ == 3)
 		{
 			comboCount_ = 4;
-			timerData_.comboTimer = 120;
+			timerData_.comboTimer = 40;
 			timerData_.comboTimer--;
 		}
 
@@ -1562,7 +1562,7 @@ void Enemy::HitCombo()
 		if (characterState_.isHitHighPunch && comboCount_ == 3)
 		{
 			comboCount_ = 4;
-			timerData_.comboTimer = 120;
+			timerData_.comboTimer = 65;
 			timerData_.comboTimer--;
 		}
 
@@ -1579,7 +1579,7 @@ void Enemy::HitCombo()
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == 1)
 		{
 			comboCount_ = 2;
-			timerData_.comboTimer = 60;
+			timerData_.comboTimer = 30;
 			timerData_.comboTimer--;
 		}
 
@@ -1593,7 +1593,7 @@ void Enemy::HitCombo()
 		if(characterState_.isHitUppercut && comboCount_ == 2)
 		{
 			comboCount_ = 3;
-			timerData_.comboTimer = 120;
+			timerData_.comboTimer = 40;
 			timerData_.comboTimer--;
 		}
 
@@ -1607,7 +1607,7 @@ void Enemy::HitCombo()
 		if (characterState_.isHitHighPunch && comboCount_ == 2)
 		{
 			comboCount_ = 3;
-			timerData_.comboTimer = 120;
+			timerData_.comboTimer = 65;
 			timerData_.comboTimer--;
 		}
 
@@ -1624,7 +1624,7 @@ void Enemy::HitCombo()
 		if (characterState_.isHitTackle && comboCount_ == 1)
 		{
 			comboCount_ = 2;
-			timerData_.comboTimer = 60;
+			timerData_.comboTimer = 30;
 			timerData_.comboTimer--;
 		}
 	}
@@ -1648,7 +1648,7 @@ void Enemy::HitCombo()
 		}
 	}
 
-	if (timerData_.comboTimer <= 120)
+	if (timerData_.comboTimer <= 120 && !player_->GetIsFinisher())
 	{
 		timerData_.comboTimer--;
 	}
