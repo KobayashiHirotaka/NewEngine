@@ -142,11 +142,11 @@ void Player::Update()
 			//攻撃中(攻撃判定あり)にモデルの色を変える
 			model_->GetMaterial()->SetColor({ 1.0f,0.0f,0.0f,1.0f });
 		}
-		else if (attackData_.isRecovery)
-		{
-			//硬直中にモデルの色を変える
-			model_->GetMaterial()->SetColor({ 0.0f,0.0f,1.0f,1.0f });
-		}
+	    else if (attackData_.isRecovery)
+	    {
+		    //硬直中にモデルの色を変える
+		    model_->GetMaterial()->SetColor({ 0.0f,0.0f,1.0f,1.0f });
+	    }
 		else
 		{
 			model_->GetMaterial()->SetColor({ 1.0f,1.0f,1.0f,1.0f });
@@ -839,19 +839,18 @@ void Player::BehaviorAttackUpdate()
 			{
 				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
 				SetAABB(aabb_);
-
-				EvaluateAttackTiming();
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
 				aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 				SetAABB(aabb_);
-
-				EvaluateAttackTiming();
 			}
+
+			EvaluateAttackTiming();
 
 			if ((characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)/* && !characterState_.isHitCharacter*/)
 			{
+				timerData_.finisherTimer = 120;
 				AttackEnd(attackData_.isFinisher);
 				ResetCollision();
 				attackData_.isFinisherFirstAttack = false;
@@ -863,6 +862,14 @@ void Player::BehaviorAttackUpdate()
 				ResetCollision();
 				attackData_.isFinisherFirstAttack = false;
 			}*/
+		}
+
+		if (characterState_.isDown)
+		{
+			timerData_.finisherTimer = 120;
+			AttackEnd(attackData_.isFinisher);
+			ResetCollision();
+			attackData_.isFinisherFirstAttack = false;
 		}
 
 		attackData_.attackAnimationFrame++;
@@ -1037,6 +1044,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			damage = 8.0f;
 			hp_ += damage;
 			characterState_.isHitBullet = true;
+			attackData_.isFinisher = false;
 
 			HitStop(5);
 		}
@@ -1181,7 +1189,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
-		if (!attackData_.isFinisher)
+		if (!attackData_.isFinisher && attackData_.isAttack)
 		{
 			//弱パンチ
 			if (enemy_->GetIsAttack() && enemy_->GetIsLightPunch() && !characterState_.isDown && !characterState_.isGuard)

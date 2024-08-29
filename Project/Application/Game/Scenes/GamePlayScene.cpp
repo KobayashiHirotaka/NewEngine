@@ -219,7 +219,7 @@ void GamePlayScene::Update()
 	}*/
 
 	//右向き用のカメラ移動
-	if (player_->GetFinisherTImer() != 120)
+	if (player_->GetIsFinisher() && player_->GetFinisherTImer() != 120)
 	{
 		if (player_->GetIsDirectionRight())
 		{

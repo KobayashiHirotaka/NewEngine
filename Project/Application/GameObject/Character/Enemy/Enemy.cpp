@@ -1522,6 +1522,14 @@ void Enemy::HitCombo()
 		timerData_.comboTimer--;
 	}
 
+	if (characterState_.isHitFinisherFirstAttack && comboCount_ == 0)
+	{
+		firstAttack_ = "FinisherFirstAttack";
+		comboCount_ = 1;
+		timerData_.comboTimer = 120;
+		timerData_.comboTimer--;
+	}
+
 	if (firstAttack_ == "JumpAttack")
 	{
 		if (characterState_.isHitLightPunch && comboCount_ == 1)
@@ -1629,6 +1637,16 @@ void Enemy::HitCombo()
 		}
 	}
 
+	if (firstAttack_ == "FinisherFirstAttack")
+	{
+		/*if (characterState_.isHitTackle && comboCount_ == 1)
+		{
+			comboCount_ = 2;
+			timerData_.comboTimer = 30;
+			timerData_.comboTimer--;
+		}*/
+	}
+
 	if (comboCount_ >= 3)
 	{
 		if (characterState_.isHitJumpAttack)
@@ -1648,7 +1666,7 @@ void Enemy::HitCombo()
 		}
 	}
 
-	if (timerData_.comboTimer <= 120 && !player_->GetIsFinisher())
+	if (timerData_.comboTimer >= 0 && !player_->GetIsFinisher())
 	{
 		timerData_.comboTimer--;
 	}
