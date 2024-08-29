@@ -160,6 +160,7 @@ void ICharacter::Reset()
 	attackData_.isUppercut = false;
 	attackData_.isFinisher = false;
 	attackData_.isFinisherFirstAttack = false;
+	attackData_.isFinisherSecondAttack = false;
 
 	//キャラクターと当たっているかどうか
 	characterState_.isHitCharacter = false;
@@ -173,6 +174,7 @@ void ICharacter::Reset()
 	characterState_.isHitTackle = false;
 	characterState_.isHitUppercut = false;
 	characterState_.isHitFinisherFirstAttack = false;
+	characterState_.isHitFinisherSecondAttack = false;
 	characterState_.isDown = false;
 
 	ResetCollision();

@@ -73,6 +73,7 @@ public:
 
 		//超必殺技
 		bool isHitFinisherFirstAttack = false;
+		bool isHitFinisherSecondAttack = false;
 
 		//弾
 		bool isHitBullet = false;
@@ -145,6 +146,7 @@ public:
 		//超必殺技
 		bool isFinisher = false;
 		bool isFinisherFirstAttack = false;
+		bool isFinisherSecondAttack = false;
 	};
 
 	struct TimerData
@@ -258,6 +260,8 @@ public:
 
 	bool GetIsFinisherFirstAttack() { return attackData_.isFinisherFirstAttack; };
 
+	bool GetIsFinisherSecondAttack() { return attackData_.isFinisherSecondAttack; };
+
 	int GetAttackAnimationFrame() { return attackData_.attackAnimationFrame; };
 
 	//エフェクトに関するGetter
@@ -268,6 +272,8 @@ public:
 	bool GetIsDown() { return characterState_.isDown; };
 
 	int GetFinisherTImer() { return timerData_.finisherTimer; };
+
+	int GetComboCount() { return comboCount_; };
 
 	//Setter
 	void SetIsReset(bool isReset) { isReset_ = isReset; };

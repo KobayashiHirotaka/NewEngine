@@ -1,8 +1,13 @@
 {
-    "Finisher": {
+    "FinisherFirstAttack": {
         "attackEndTime": 25,
         "attackStartTime": 8,
         "recoveryTime": 65
+    },
+    "FinisherSecondAttack": {
+        "attackEndTime": 17,
+        "attackStartTime": 0,
+        "recoveryTime": 25
     },
     "HighPunch": {
         "attackEndTime": 25,

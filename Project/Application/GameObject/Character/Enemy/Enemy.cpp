@@ -266,6 +266,7 @@ void Enemy::ImGui(const char* title)
 	ImGui::Text("isGuard %d", characterState_.isGuard);
 	ImGui::Text("isHit %d", characterState_.isHitCharacter);
 	ImGui::Text("patternCount %d", patternCount_);
+	ImGui::Text("comboTimer %d", timerData_.comboTimer);
 
 	//ImGui::Checkbox("isDebug_", &isDebug_);
 
@@ -871,6 +872,16 @@ void Enemy::OnCollision(Collider* collider, float damage)
 
 			HitStop(10);
 		}
+
+		if (player_->GetIsFinisherSecondAttack() && player_->GetIsAttack() && !characterState_.isGuard && !characterState_.isDown)
+		{
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+			damage = 5.0f;
+			hp_ -= damage;
+			characterState_.isHitFinisherSecondAttack = true;
+
+			HitStop(10);
+		}
 	}
 }
 
@@ -1435,6 +1446,50 @@ void Enemy::DownAnimation()
 			DownAnimationEnd(5, characterState_.isHitFinisherFirstAttack);
 		}
 	}
+
+	if (characterState_.isHitFinisherSecondAttack)
+	{
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		if (timerData_.downAnimationTimer > 55)
+		{
+			float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
+
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
+				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+		}
+
+		if (timerData_.downAnimationTimer < 50 && timerData_.downAnimationTimer > 45)
+		{
+			float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
+
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
+				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+			hp_ -= 1.0f;
+		}
+
+		if (timerData_.downAnimationTimer < 40 && timerData_.downAnimationTimer > 35)
+		{
+			float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
+
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
+				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+			hp_ -= 1.0f;
+		}
+
+		animationIndex_ = 4;
+		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
+
+		if (!player_->GetIsFinisherSecondAttack() && hp_ > 0.0f)
+		{
+			DownAnimationEnd(5, characterState_.isHitFinisherSecondAttack);
+		}
+	}
 }
 
 void Enemy::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
@@ -1612,6 +1667,39 @@ void Enemy::HitCombo()
 			timerData_.comboTimer--;
 		}
 
+		if (characterState_.isHitFinisherSecondAttack)
+		{
+			if (comboCount_ == 4)
+			{
+				timerData_.comboTimer = 240;
+			}
+
+			if (timerData_.comboTimer > 0)
+			{
+				timerData_.comboTimer--;
+
+				if (timerData_.comboTimer > 230)
+				{
+					comboCount_ = 5;
+				}
+				else if (timerData_.comboTimer > 220)
+				{
+					comboCount_ = 6;
+				}
+				else if (timerData_.comboTimer > 210)
+				{
+					comboCount_ = 7;
+				}
+			}
+		}
+
+		if (characterState_.isHitTackle && comboCount_ == 7)
+		{
+			comboCount_ = 8;
+			timerData_.comboTimer = 40;
+			timerData_.comboTimer--;
+		}
+
 		if (characterState_.isHitHighPunch && comboCount_ == 2)
 		{
 			comboCount_ = 3;
@@ -1639,12 +1727,38 @@ void Enemy::HitCombo()
 
 	if (firstAttack_ == "FinisherFirstAttack")
 	{
-		/*if (characterState_.isHitTackle && comboCount_ == 1)
+		if (characterState_.isHitFinisherSecondAttack)
 		{
-			comboCount_ = 2;
-			timerData_.comboTimer = 30;
+			if (comboCount_ == 1)
+			{
+				timerData_.comboTimer = 240;
+			}
+
+			if (timerData_.comboTimer > 0)
+			{
+				timerData_.comboTimer--;
+
+				if (timerData_.comboTimer > 230)
+				{
+					comboCount_ = 2;
+				}
+				else if (timerData_.comboTimer > 220)
+				{
+					comboCount_ = 3;
+				}
+				else if (timerData_.comboTimer > 210)
+				{
+					comboCount_ = 4;
+				}
+			}
+		}
+
+		if (characterState_.isHitTackle && comboCount_ == 4)
+		{
+			comboCount_ = 5;
+			timerData_.comboTimer = 40;
 			timerData_.comboTimer--;
-		}*/
+		}
 	}
 
 	if (comboCount_ >= 3)
@@ -1666,7 +1780,7 @@ void Enemy::HitCombo()
 		}
 	}
 
-	if (timerData_.comboTimer >= 0 && !player_->GetIsFinisher())
+	if (timerData_.comboTimer >= 0 && !player_->GetIsFinisher() )
 	{
 		timerData_.comboTimer--;
 	}

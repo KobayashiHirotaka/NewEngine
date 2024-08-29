@@ -739,31 +739,6 @@ void Player::BehaviorAttackUpdate()
 			EvaluateAttackTiming();
 		}
 
-		/*if (characterState_.direction == Direction::Right)
-		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
-			SetAABB(aabb_);
-
-			EvaluateAttackTiming();
-
-			if (attackData_.attackAnimationFrame <= attackData_.attackEndTime)
-			{
-				particleEffectPlayer_->PlayParticle("PlayerRightNackle", { particlePosition });
-			}
-		}
-		else if (characterState_.direction == Direction::Left)
-		{
-			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
-			SetAABB(aabb_);
-
-			EvaluateAttackTiming();
-
-			if (attackData_.attackAnimationFrame <= attackData_.attackEndTime)
-			{
-				particleEffectPlayer_->PlayParticle("PlayerRightNackle", { particlePosition });
-			}
-		}*/
-
 		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
 		{
 			AttackEnd(attackData_.isUppercut);
@@ -778,7 +753,6 @@ void Player::BehaviorAttackUpdate()
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
 				&& isFinisherCharge_)
 			{
-				attackType = "Finisher";
 				attackData_.isAttack = false;
 				attackData_.isUppercut = false;
 				attackData_.isFinisher = true;
@@ -799,12 +773,11 @@ void Player::BehaviorAttackUpdate()
 		bool isFinisherEffect = false;
 		characterState_.isGuard = false;
 
-		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
-
-		if (timerData_.finisherTimer > 40 && attackData_.attackAnimationFrame < 80 && !attackData_.isFinisherFirstAttack)
+		if (timerData_.finisherTimer > 40 && attackData_.attackAnimationFrame < 80 && !attackData_.isFinisherFirstAttack && !attackData_.isFinisherSecondAttack)
 		{
 			isFinisherEffect = true;
 			timerData_.finisherTimer--;
+			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 		else
 		{
@@ -822,8 +795,9 @@ void Player::BehaviorAttackUpdate()
 				animationIndex_ = 18;
 			}
 		}
-		else if(!attackData_.isFinisherFirstAttack)
+		else if(!attackData_.isFinisherFirstAttack && !attackData_.isFinisherSecondAttack)
 		{
+			attackType = "FinisherFirstAttack";
 			timerData_.finisherTimer = 120;
 			attackData_.isFinisherFirstAttack = true;
 			animationTime_ = 0.0f;
@@ -834,6 +808,7 @@ void Player::BehaviorAttackUpdate()
 		if (attackData_.isFinisherFirstAttack && !characterState_.isDown)
 		{
 			animationIndex_ = 16;
+			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
 			if (characterState_.direction == Direction::Right)
 			{
@@ -848,19 +823,65 @@ void Player::BehaviorAttackUpdate()
 
 			EvaluateAttackTiming();
 
-			if ((characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)/* && !characterState_.isHitCharacter*/)
+			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame > 10 && attackData_.attackAnimationFrame < 30)
+			{
+				attackType = "FinisherSecondAttack";
+				timerData_.finisherTimer = 120;
+				attackData_.isAttack = false;
+				attackData_.isFinisherFirstAttack = false;
+				attackData_.isFinisherSecondAttack = true;
+				animationTime_ = 0.0f;
+				attackData_.attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime_);
+				ResetCollision();
+			}
+
+			if ((characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime) && !characterState_.isHitCharacter)
 			{
 				timerData_.finisherTimer = 120;
 				AttackEnd(attackData_.isFinisher);
 				ResetCollision();
 				attackData_.isFinisherFirstAttack = false;
 			}
+		}
 
-			/*if (characterState_.isHitCharacter)
+		if (attackData_.isFinisherSecondAttack && !characterState_.isDown)
+		{
+			animationIndex_ = 17;
+			UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
+
+			if (characterState_.direction == Direction::Right)
 			{
+				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+				SetAABB(aabb_);
+			}
+			else if (characterState_.direction == Direction::Left)
+			{
+				aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				SetAABB(aabb_);
+			}
+
+			EvaluateAttackTiming();
+
+			if (attackData_.attackAnimationFrame > attackData_.recoveryTime)
+			{
+				attackType = "Tackle";
+				attackData_.isAttack = false;
+				attackData_.isFinisher = false;
+				attackData_.isFinisherSecondAttack = false;
+				attackData_.isTackle = true;
+				animationTime_ = 0.0f;
+				attackData_.attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime_);
+				ResetCollision();
+			}
+
+		/*	if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
+			{
+				timerData_.finisherTimer = 120;
 				AttackEnd(attackData_.isFinisher);
 				ResetCollision();
-				attackData_.isFinisherFirstAttack = false;
+				attackData_.isFinisherSecondAttack = false;
 			}*/
 		}
 
@@ -870,6 +891,7 @@ void Player::BehaviorAttackUpdate()
 			AttackEnd(attackData_.isFinisher);
 			ResetCollision();
 			attackData_.isFinisherFirstAttack = false;
+			attackData_.isFinisherSecondAttack = false;
 		}
 
 		attackData_.attackAnimationFrame++;
@@ -1845,14 +1867,14 @@ void Player::HitCombo()
 		}
 	}
 
-	if (timerData_.comboTimer <= 120)
+	if (timerData_.comboTimer >= 0)
 	{
 		timerData_.comboTimer--;
 	}
 
 	if (timerData_.comboTimer < 0)
 	{
-		timerData_.comboTimer = 60;
+		timerData_.comboTimer = 0;
 		comboCount_ = 0;
 		firstAttack_ = "";
 	}
