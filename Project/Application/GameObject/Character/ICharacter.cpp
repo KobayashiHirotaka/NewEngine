@@ -144,7 +144,6 @@ void ICharacter::Reset()
 
 	//ゲージ
 	guardGauge_ = 0.0f;
-	finisherGauge_ = 0.0f;
 
 	//ガードしているかどうか
 	characterState_.isGuard = false;
