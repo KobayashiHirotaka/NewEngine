@@ -1615,6 +1615,39 @@ void Enemy::HitCombo()
 			timerData_.comboTimer--;
 		}
 
+		if (characterState_.isHitFinisherSecondAttack)
+		{
+			if (comboCount_ == 5)
+			{
+				timerData_.comboTimer = 240;
+			}
+
+			if (timerData_.comboTimer > 0)
+			{
+				timerData_.comboTimer--;
+
+				if (timerData_.comboTimer > 230)
+				{
+					comboCount_ = 6;
+				}
+				else if (timerData_.comboTimer > 220)
+				{
+					comboCount_ = 7;
+				}
+				else if (timerData_.comboTimer > 210)
+				{
+					comboCount_ = 8;
+				}
+			}
+		}
+
+		if (characterState_.isHitTackle && comboCount_ == 8)
+		{
+			comboCount_ = 9;
+			timerData_.comboTimer = 40;
+			timerData_.comboTimer--;
+		}
+
 		if (characterState_.isHitTCHighPunch && comboCount_ == 3)
 		{
 			comboCount_ = 4;
