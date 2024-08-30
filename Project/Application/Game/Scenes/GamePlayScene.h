@@ -101,6 +101,10 @@ private:
 	std::unique_ptr<Sprite>frameUISprite_ = nullptr;
 	uint32_t frameUITextureHandle_ = 0;
 
+	//半透明のSprite
+	std::unique_ptr<Sprite>commandListBackSprite_ = nullptr;
+	uint32_t commandListBackTextureHandle_ = 0;
+
 	//何枚目のSpriteが表示されているか
 	int spriteCount_ = 0;
 

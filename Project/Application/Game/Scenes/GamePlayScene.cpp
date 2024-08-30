@@ -69,6 +69,9 @@ void GamePlayScene::Initialize()
 	attackCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/PlayAttackCommandList.png");
 	attackCommandListSprite_.reset(Sprite::Create(attackCommandListTextureHandle_, { 0.0f,0.0f }));
 
+	commandListBackTextureHandle_ = TextureManager::LoadTexture("resource/images/CommandListBack.png");
+	commandListBackSprite_.reset(Sprite::Create(commandListBackTextureHandle_, { 0.0f,0.0f }));
+
 	roundTextureHandle_[0] = TextureManager::LoadTexture("resource/images/Round1.png");
 	roundTextureHandle_[1] = TextureManager::LoadTexture("resource/images/Round2.png");
 	roundTextureHandle_[2] = TextureManager::LoadTexture("resource/images/Round3.png");
@@ -181,7 +184,7 @@ void GamePlayScene::Update()
 		backGround_->Update();
 
 		//シェイク
-		if (player_->GetIsShake() || enemy_->GetIsShake() && !isPlayerWin_ && roundStartTimer_ <= 0)
+		if ((player_->GetIsShake() || enemy_->GetIsShake()) && !isPlayerWin_ && roundStartTimer_ <= 0)
 		{
 			isShake_ = true;
 			shakeTimer_ = kShakeTime;
@@ -333,17 +336,17 @@ void GamePlayScene::Draw()
 
 	Model::PreDraw();
 
-	//Game3dObjectManagerの描画
-	game3dObjectManager_->Draw(camera_);
-
-	//Enemyの弾の描画
-	enemy_->BulletDraw(camera_);
-
 	////Skydomeの描画
 	skydome_->Draw(camera_);
 
 	if (!isOpen_)
 	{
+		//Game3dObjectManagerの描画
+		game3dObjectManager_->Draw(camera_);
+
+		//Enemyの弾の描画
+		enemy_->BulletDraw(camera_);
+
 		//BackGroundの描画
 		backGround_->Draw(camera_);
 	}
@@ -448,6 +451,11 @@ void GamePlayScene::Draw()
 		}
 
 	}
+
+	/*if (isOpen_)
+	{
+		commandListBackSprite_->Draw();
+	}*/
 
 	if (isOpen_ && spriteCount_ == 1)
 	{
