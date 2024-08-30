@@ -1519,6 +1519,7 @@ void Player::Reset()
 	animationIndex_ = 5;
 
 	worldTransform_.translation = { -3.0f,0.0f,0.0f };
+	worldTransform_.rotation.y = 1.7f;
 	characterState_.direction = Direction::Right;
 
 	worldTransform_.UpdateMatrixEuler();

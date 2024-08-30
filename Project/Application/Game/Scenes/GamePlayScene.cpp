@@ -132,20 +132,20 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
-	//デバッグ用のシーン切り替え
-	if (input_->PushKey(DIK_SPACE))
-	{
-		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
-		sceneManager_->ChangeScene("GameWinScene");
-		return;
-	}
+	////デバッグ用のシーン切り替え
+	//if (input_->PushKey(DIK_SPACE))
+	//{
+	//	audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+	//	sceneManager_->ChangeScene("GameWinScene");
+	//	return;
+	//}
 
-	if (input_->PushKey(DIK_RETURN))
-	{
-		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
-		sceneManager_->ChangeScene("GameLoseScene");
-		return;
-	}
+	//if (input_->PushKey(DIK_RETURN))
+	//{
+	//	audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+	//	sceneManager_->ChangeScene("GameLoseScene");
+	//	return;
+	//}
 
 	if (!isOpen_)
 	{
