@@ -875,14 +875,6 @@ void Player::BehaviorAttackUpdate()
 				model_->SetAnimationTime(animationTime_);
 				ResetCollision();
 			}
-
-		/*	if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
-			{
-				timerData_.finisherTimer = 120;
-				AttackEnd(attackData_.isFinisher);
-				ResetCollision();
-				attackData_.isFinisherSecondAttack = false;
-			}*/
 		}
 
 		if (characterState_.isDown)
@@ -1211,7 +1203,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
-		if (!attackData_.isFinisher && attackData_.isAttack)
+		if (!attackData_.isFinisher)
 		{
 			//弱パンチ
 			if (enemy_->GetIsAttack() && enemy_->GetIsLightPunch() && !characterState_.isDown && !characterState_.isGuard)
@@ -1695,7 +1687,7 @@ void Player::DownAnimation()
 
 		if (timerData_.downAnimationTimer < 30 && hp_ < 0.0f)
 		{
-			ICharacter::DownAnimationEnd(4, characterState_.isHitBullet);
+			DownAnimationEnd(4, characterState_.isHitBullet);
 			ResetCollision();
 
 			isParticle_ = false;
@@ -1738,7 +1730,7 @@ void Player::DownAnimation()
 
 		if (timerData_.downAnimationTimer < 30 && hp_ < 0.0f)
 		{
-			ICharacter::DownAnimationEnd(4, characterState_.isHitAirBullet);
+			DownAnimationEnd(4, characterState_.isHitAirBullet);
 			ResetCollision();
 
 			isParticle_ = false;
