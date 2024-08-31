@@ -132,7 +132,7 @@
                 "backSpeed": "0.04",
                 "guardGauge": "0.00",
                 "maxGuardGauge": "50.00",
-                "finisherGauge": "-50.00",
+                "finisherGauge": "0.00",
                 "maxFinisherGauge": "50.00"
             }
         }
