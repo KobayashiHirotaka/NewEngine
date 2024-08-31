@@ -57,8 +57,8 @@ private:
 	uint32_t generalCommandListTextureHandle_ = 0;
 
 	//攻撃操作説明用のSprite
-	std::unique_ptr<Sprite>attackCommandListSprite_ = nullptr;
-	uint32_t attackCommandListTextureHandle_ = 0;
+	std::unique_ptr<Sprite>attackCommandListSprite_[2];
+	uint32_t attackCommandListTextureHandle_[2];
 
 	//Sounds
 	uint32_t titleSoundHandle_ = 0u;

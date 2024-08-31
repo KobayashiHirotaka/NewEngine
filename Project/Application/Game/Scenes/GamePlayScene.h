@@ -91,11 +91,13 @@ private:
 	std::unique_ptr<Sprite>UICommandListSprite_ = nullptr;
 	uint32_t UICommandListTextureHandle_ = 0;
 
+	//基本操作説明用のSprite
 	std::unique_ptr<Sprite>generalCommandListSprite_ = nullptr;
 	uint32_t generalCommandListTextureHandle_ = 0;
 
-	std::unique_ptr<Sprite>attackCommandListSprite_ = nullptr;
-	uint32_t attackCommandListTextureHandle_ = 0;
+	//攻撃操作説明用のSprite
+	std::unique_ptr<Sprite>attackCommandListSprite_[2];
+	uint32_t attackCommandListTextureHandle_[2];
 
 	//UI枠のSprite
 	std::unique_ptr<Sprite>frameUISprite_ = nullptr;
@@ -134,6 +136,7 @@ private:
 	float transitionTimer_ = 0;
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
+	bool isRoundTransition_ = false;
 	
 	//モデルの骨を描画するかどうか
 	bool isBoneDraw_ = true;

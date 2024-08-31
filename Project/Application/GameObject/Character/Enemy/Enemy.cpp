@@ -164,7 +164,7 @@ void Enemy::Update()
 	}
 	if (input_->PressKey(DIK_M))
 	{
-		finisherGauge_ += 1.0f;
+		hp_ -= 1.0f;
 	}
 
 	//エディタで設定したパラメータをセット
