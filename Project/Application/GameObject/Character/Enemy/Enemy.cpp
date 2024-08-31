@@ -1215,7 +1215,7 @@ void Enemy::Reset()
 	animationIndex_ = 4;
 
 	worldTransform_.translation = { 3.0f,0.0f,0.0f };
-	worldTransform_.rotation.y = 4.6f;
+	worldTransform_.rotation = { 0.0f,4.6f,0.0f };
 	characterState_.direction = Direction::Left;
 
 	worldTransform_.UpdateMatrixEuler();

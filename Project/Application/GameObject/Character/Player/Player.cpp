@@ -115,7 +115,7 @@ void Player::Update()
 
 	if (input_->PressKey(DIK_M))
 	{
-		finisherGauge_ -= 1.0f;
+		hp_ += 1.0f;
 	}
 
 	/*if (input_->PressKey(DIK_N))
@@ -1554,7 +1554,7 @@ void Player::Reset()
 	animationIndex_ = 5;
 
 	worldTransform_.translation = { -3.0f,0.0f,0.0f };
-	worldTransform_.rotation.y = 1.7f;
+	worldTransform_.rotation = { 0.0f,1.7f,0.0f };
 	characterState_.direction = Direction::Right;
 
 	worldTransform_.UpdateMatrixEuler();
