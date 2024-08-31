@@ -98,37 +98,6 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	if (input_->PressKey(DIK_1))
-	{
-		animationIndex_ = 15;
-	}
-
-	if (input_->PressKey(DIK_2))
-	{
-		animationIndex_ = 16;
-	}
-
-	if (input_->PressKey(DIK_3))
-	{
-		animationIndex_ = 17;
-	}
-
-	if (input_->PressKey(DIK_M))
-	{
-		hp_ += 1.0f;
-	}
-
-	/*if (input_->PressKey(DIK_N))
-	{
-		timerData_.finisherTimer -= 1;
-		animationIndex_ = 15;
-	}
-	else
-	{
-		timerData_.finisherTimer = 120;
-	}*/
-
-
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
@@ -150,6 +119,21 @@ void Player::Update()
 		else
 		{
 			model_->GetMaterial()->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		}
+
+		if (input_->PressKey(DIK_B))
+		{
+			finisherGauge_ -= 1.0f;
+		}
+
+		if (input_->PressKey(DIK_M))
+		{
+			hp_ += 1.0f;
+		}
+
+		if (input_->PressKey(DIK_C))
+		{
+			hp_ += 1.0f;
 		}
 	}
 
@@ -1552,6 +1536,8 @@ void Player::Reset()
 	hp_ = -100.0f;
 
 	animationIndex_ = 5;
+	animationTime_ = 0.0f;
+	model_->SetAnimationTime(animationTime_);
 
 	worldTransform_.translation = { -3.0f,0.0f,0.0f };
 	worldTransform_.rotation = { 0.0f,1.7f,0.0f };

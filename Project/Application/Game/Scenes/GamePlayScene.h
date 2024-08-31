@@ -37,6 +37,10 @@ public:
 
 	void HandleGameOutcome();
 
+	//void HandleTransition();
+
+	void RoundTransition(int round);
+
 private:
 	TextureManager* textureManager_ = nullptr;
 
@@ -136,7 +140,6 @@ private:
 	float transitionTimer_ = 0;
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
-	bool isRoundTransition_ = false;
 	
 	//モデルの骨を描画するかどうか
 	bool isBoneDraw_ = true;
@@ -168,4 +171,7 @@ private:
 	//Skybox
 	std::unique_ptr<Skybox> skybox_;
 	WorldTransform skyboxWorldTransform_;
+
+	bool isRoundTransition_ = false;
+	int roundTransitionTimer_ = 150;
 };

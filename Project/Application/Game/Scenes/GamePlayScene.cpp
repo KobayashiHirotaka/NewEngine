@@ -140,21 +140,6 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
-	////デバッグ用のシーン切り替え
-	//if (input_->PushKey(DIK_SPACE))
-	//{
-	//	audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
-	//	sceneManager_->ChangeScene("GameWinScene");
-	//	return;
-	//}
-
-	//if (input_->PushKey(DIK_RETURN))
-	//{
-	//	audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
-	//	sceneManager_->ChangeScene("GameLoseScene");
-	//	return;
-	//}
-
 	if (!isOpen_)
 	{
 		//ラウンド間の時間の処理
@@ -166,7 +151,7 @@ void GamePlayScene::Update()
 			elapsedTime += frameTime;
 
 			//タイムカウントを更新
-			if (currentSeconds_ > 0 && elapsedTime >= 1.0f)
+			if (currentSeconds_ > 0 && elapsedTime >= 1.0f && migrationTimer == 200)
 			{
 				if (player_->GetFinisherTimer() == 120)
 				{
@@ -413,7 +398,7 @@ void GamePlayScene::Draw()
 	}
 
 	//ラウンド終了時の勝敗表示
-	if (migrationTimer < 150)
+	if (migrationTimer < 150 && migrationTimer > 0)
 	{
 		if (isPlayerWin_)
 		{
@@ -506,7 +491,7 @@ void GamePlayScene::Finalize()
 void GamePlayScene::ImGui()
 {
 	ImGui::Begin("PlayScene");
-
+	ImGui::Text("roundTransitionTimer %d", roundTransitionTimer_);
 	ImGui::End();
 
 	player_->ImGui("Player");
@@ -540,34 +525,18 @@ float GamePlayScene::Random(float min_value, float max_value)
 void GamePlayScene::HandleGameOutcome()
 {
 	//Playerが勝ったとき
-	if (enemy_->GetHP() <= 0 && round_ == 1)
+	if (enemy_->GetHP() <= 0 && player_->GetHP() < 0.0f && round_ == 1 && !isRoundTransition_)
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
 
 		if (migrationTimer < 0)
 		{
-			round_ = 2;
 			PlayerWinCount_ = 1;
-
-			player_->Reset();
-			enemy_->Reset();
-
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
-
-			migrationTimer = 200;
-
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
-
-			roundStartTimer_ = 100.0f;
-
-			isPlayerWin_ = false;
-			isDrow_ = false;
+			isRoundTransition_ = true;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && round_ == 2 && PlayerWinCount_ == 1)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0.0f && round_ == 2 && PlayerWinCount_ == 1 && !isRoundTransition_)
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
@@ -577,34 +546,18 @@ void GamePlayScene::HandleGameOutcome()
 			PlayerWinCount_ = 2;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && round_ == 2 && PlayerWinCount_ == 0)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0.0f && round_ == 2 && PlayerWinCount_ == 0 && !isRoundTransition_)
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
 
 		if (migrationTimer < 0)
 		{
-			round_ = 3;
 			PlayerWinCount_ = 1;
-
-			player_->Reset();
-			enemy_->Reset();
-
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
-
-			migrationTimer = 200;
-
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
-
-			roundStartTimer_ = 100.0f;
-
-			isPlayerWin_ = false;
-			isDrow_ = false;
+			isRoundTransition_ = true;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && round_ == 3 && PlayerWinCount_ == 1)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0.0f && round_ == 3 && PlayerWinCount_ == 1 && !isRoundTransition_)
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
@@ -615,75 +568,38 @@ void GamePlayScene::HandleGameOutcome()
 		}
 	}
 
-	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 1)
+	//時間切れ
+	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 1 && !isRoundTransition_)
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
 
 		if (migrationTimer < 0)
 		{
-			round_ = 2;
 			PlayerWinCount_ = 1;
-
-			player_->Reset();
-			enemy_->Reset();
-
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
-
-			migrationTimer = 200;
-
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
-
-			roundStartTimer_ = 100.0f;
-
-			isPlayerWin_ = false;
-			isDrow_ = false;
+			isRoundTransition_ = true;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 2 && PlayerWinCount_ == 1)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 2 && PlayerWinCount_ == 1 && !isRoundTransition_)
 	{
-		migrationTimer--;
-		isPlayerWin_ = true;
-
 		if (migrationTimer < 0)
 		{
 			PlayerWinCount_ = 2;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 2 && PlayerWinCount_ == 0)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 2 && PlayerWinCount_ == 0 && !isRoundTransition_)
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
 
 		if (migrationTimer < 0)
 		{
-			round_ = 3;
 			PlayerWinCount_ = 1;
-
-			player_->Reset();
-			enemy_->Reset();
-
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
-
-			migrationTimer = 200;
-
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
-
-			roundStartTimer_ = 100.0f;
-
-			isPlayerWin_ = false;
-			isDrow_ = false;
+			isRoundTransition_ = true;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 3 && PlayerWinCount_ == 1)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 3 && PlayerWinCount_ == 1 && !isRoundTransition_)
 	{
-		migrationTimer--;
-		isPlayerWin_ = true;
-
 		if (migrationTimer < 0)
 		{
 			PlayerWinCount_ = 2;
@@ -696,7 +612,7 @@ void GamePlayScene::HandleGameOutcome()
 	}
 
 	//Enemyが勝ったとき
-	if (player_->GetHP() >= 0 && round_ == 1)
+	if (player_->GetHP() >= 0 && enemy_->GetHP() > 0.0f && round_ == 1 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
@@ -704,28 +620,11 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (migrationTimer < 0)
 		{
-			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-			round_ = 2;
 			EnemyWinCount_ = 1;
-
-			player_->Reset();
-			enemy_->Reset();
-
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
-
-			migrationTimer = 200;
-
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
-
-			roundStartTimer_ = 100.0f;
-
-			isPlayerWin_ = false;
-			isDrow_ = false;
+			isRoundTransition_ = true;
 		}
 	}
-	else if (player_->GetHP() >= 0 && round_ == 2 && EnemyWinCount_ == 1)
+	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0.0f && round_ == 2 && EnemyWinCount_ == 1 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
@@ -736,7 +635,7 @@ void GamePlayScene::HandleGameOutcome()
 			EnemyWinCount_ = 2;
 		}
 	}
-	else if (player_->GetHP() >= 0 && round_ == 2 && EnemyWinCount_ == 0)
+	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0.0f && round_ == 2 && EnemyWinCount_ == 0 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
@@ -744,28 +643,11 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (migrationTimer < 0)
 		{
-			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-			round_ = 3;
 			EnemyWinCount_ = 1;
-
-			player_->Reset();
-			enemy_->Reset();
-
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
-
-			migrationTimer = 200;
-
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
-
-			roundStartTimer_ = 100.0f;
-
-			isPlayerWin_ = false;
-			isDrow_ = false;
+			isRoundTransition_ = true;
 		}
 	}
-	else if (player_->GetHP() >= 0 && round_ == 3 && EnemyWinCount_ == 1)
+	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0.0f && round_ == 3 && EnemyWinCount_ == 1 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
@@ -777,7 +659,8 @@ void GamePlayScene::HandleGameOutcome()
 		}
 	}
 
-	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 1)
+	//時間切れ
+	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 1 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
@@ -785,28 +668,11 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (migrationTimer < 0)
 		{
-			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-			round_ = 2;
 			EnemyWinCount_ = 1;
-
-			player_->Reset();
-			enemy_->Reset();
-
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
-
-			migrationTimer = 200;
-
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
-
-			roundStartTimer_ = 100.0f;
-
-			isPlayerWin_ = false;
-			isDrow_ = false;
+			isRoundTransition_ = true;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 2 && EnemyWinCount_ == 1)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 2 && EnemyWinCount_ == 1 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
@@ -817,7 +683,7 @@ void GamePlayScene::HandleGameOutcome()
 			EnemyWinCount_ = 2;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 2 && EnemyWinCount_ == 0)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 2 && EnemyWinCount_ == 0 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
@@ -825,28 +691,11 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (migrationTimer < 0)
 		{
-			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-			round_ = 3;
 			EnemyWinCount_ = 1;
-
-			player_->Reset();
-			enemy_->Reset();
-
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
-
-			migrationTimer = 200;
-
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
-
-			roundStartTimer_ = 100.0f;
-
-			isPlayerWin_ = false;
-			isDrow_ = false;
+			isRoundTransition_ = true;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 3 && EnemyWinCount_ == 1)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 3 && EnemyWinCount_ == 1 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
@@ -861,66 +710,102 @@ void GamePlayScene::HandleGameOutcome()
 	if (EnemyWinCount_ == 2)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
+
 		if (isTransitionStart_ == false && isTransitionEnd_ == true)
 		{
 			isTransitionStart_ = true;
 		}
 	}
 
-	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && round_ == 1)
+	//時間切れ
+	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && round_ == 1 && !isRoundTransition_)
 	{
 		migrationTimer--;
 		isDrow_ = true;
 
 		if (migrationTimer < 0)
 		{
-			round_ = 3;
 			PlayerWinCount_ = 1;
 			EnemyWinCount_ = 1;
-
-			player_->Reset();
-			enemy_->Reset();
-
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
-
-			migrationTimer = 200;
-
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
-
-			roundStartTimer_ = 100.0f;
-
-			isPlayerWin_ = false;
-			isDrow_ = false;
+			isRoundTransition_ = true;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && round_ == 3)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && round_ == 3 && !isRoundTransition_)
 	{
 		migrationTimer--;
 		isDrow_ = true;
 
 		if (migrationTimer < 0)
 		{
-			round_ = 3;
 			PlayerWinCount_ = 1;
 			EnemyWinCount_ = 1;
+			isRoundTransition_ = true;
+		}
+	}
 
-			player_->Reset();
-			enemy_->Reset();
+	//相打ち
+	if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && round_ == 1 && !isRoundTransition_)
+	{
+		migrationTimer--;
+		isDrow_ = true;
 
-			currentSeconds_ = 99;
-			UpdateNumberSprite();
+		if (migrationTimer < 0)
+		{
+			PlayerWinCount_ = 1;
+			EnemyWinCount_ = 1;
+			isRoundTransition_ = true;
+		}
+	}
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && round_ == 3 && !isRoundTransition_)
+	{
+		migrationTimer--;
+		isDrow_ = true;
 
-			migrationTimer = 200;
+		if (migrationTimer < 0)
+		{
+			PlayerWinCount_ = 1;
+			EnemyWinCount_ = 1;
+			isRoundTransition_ = true;
+		}
+	}
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && PlayerWinCount_ == 1 && EnemyWinCount_ == 0 && round_ == 2 && !isRoundTransition_)
+	{
+		migrationTimer--;
+		isPlayerWin_ = true;
 
-			frameTime = 1.0f / 60.0f;
-			elapsedTime = 0.0f;
+		if (migrationTimer < 0)
+		{
+			PlayerWinCount_ = 2;
+		}
+	}
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && EnemyWinCount_ == 1 && PlayerWinCount_ == 0 && round_ == 2 && !isRoundTransition_)
+	{
+		migrationTimer--;
+		isPlayerWin_ = false;
 
-			roundStartTimer_ = 100.0f;
+		if (migrationTimer < 0)
+		{
+			EnemyWinCount_ = 2;
+		}
+	}
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && PlayerWinCount_ == 1 && EnemyWinCount_ == 0 && round_ == 3 && !isRoundTransition_)
+	{
+		migrationTimer--;
+		isPlayerWin_ = true;
 
-			isPlayerWin_ = false;
-			isDrow_ = false;
+		if (migrationTimer < 0)
+		{
+			PlayerWinCount_ = 2;
+		}
+	}
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && EnemyWinCount_ == 1 && PlayerWinCount_ == 0 && round_ == 3 && !isRoundTransition_)
+	{
+		migrationTimer--;
+		isPlayerWin_ = false;
+
+		if (migrationTimer < 0)
+		{
+			EnemyWinCount_ = 2;
 		}
 	}
 
@@ -949,6 +834,7 @@ void GamePlayScene::HandleGameOutcome()
 			if (PlayerWinCount_ == 2)
 			{
 				PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+				PostProcess::GetInstance()->SetIsVignetteActive(false);
 				sceneManager_->ChangeScene("GameWinScene");
 				return;
 			}
@@ -956,9 +842,81 @@ void GamePlayScene::HandleGameOutcome()
 			if (EnemyWinCount_ == 2)
 			{
 				PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+				PostProcess::GetInstance()->SetIsVignetteActive(false);
 				sceneManager_->ChangeScene("GameLoseScene");
 				return;
 			}
+		}
+	}
+
+	int roundCount = 1;
+
+	if (isRoundTransition_)
+	{
+		if (isDrow_)
+		{
+			roundCount = 3;
+		}
+		else if (round_ == 1)
+		{
+			roundCount = 2;
+		}
+		else if (round_ == 2)
+		{
+			roundCount = 3;
+		}
+		else if (round_ == 3)
+		{
+			roundCount = 3;
+		}
+
+		RoundTransition(roundCount);
+	}
+}
+
+void GamePlayScene::RoundTransition(int round)
+{
+	if (isRoundTransition_)
+	{
+		roundTransitionTimer_--;
+
+		if (roundTransitionTimer_ > 75)
+		{
+			transitionColor_.w = Lerp(transitionColor_.w, 1.0f, 0.1f);
+			transitionSprite_->SetColor(transitionColor_);
+		}
+		else if (roundTransitionTimer_ <= 75 && roundTransitionTimer_ > 0)
+		{
+			transitionColor_.w = Lerp(transitionColor_.w, 0.0f, 0.1f);
+			transitionSprite_->SetColor(transitionColor_);
+
+		}
+		else if (roundTransitionTimer_ <= 0)
+		{
+			isRoundTransition_ = false;
+			roundTransitionTimer_ = 150;
+		}
+
+		if (roundTransitionTimer_ == 75)
+		{
+			isPlayerWin_ = false;
+			isDrow_ = false;
+			round_ = round;
+
+			player_->Reset();
+			enemy_->Reset();
+
+			currentSeconds_ = 99;
+			UpdateNumberSprite();
+
+			migrationTimer = 200;
+
+			frameTime = 1.0f / 60.0f;
+			elapsedTime = 0.0f;
+
+			roundStartTimer_ = 100.0f;
+			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+			PostProcess::GetInstance()->SetIsVignetteActive(false);
 		}
 	}
 }

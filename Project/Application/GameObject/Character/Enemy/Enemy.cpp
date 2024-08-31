@@ -98,73 +98,18 @@ void Enemy::Update()
 {
 	ICharacter::Update();
 
-	if (input_->PressKey(DIK_0))
+	//デバッグ用の処理
+	if (isDebug_)
 	{
-		animationIndex_ = 0;
-	}
+		if (input_->PressKey(DIK_M))
+		{
+			hp_ -= 1.0f;
+		}
 
-	if (input_->PressKey(DIK_1))
-	{
-		animationIndex_ = 1;
-	}
-
-	if (input_->PressKey(DIK_2))
-	{
-		animationIndex_ = 2;
-	}
-	
-	if (input_->PressKey(DIK_3))
-	{
-		animationIndex_ = 3;
-	}
-
-	if (input_->PressKey(DIK_4))
-	{
-		animationIndex_ = 4;
-	}
-
-	if (input_->PressKey(DIK_5))
-	{
-		animationIndex_ = 5;
-	}
-
-	if (input_->PressKey(DIK_6))
-	{
-		animationIndex_ = 6;
-	}
-
-	if (input_->PressKey(DIK_7))
-	{
-		animationIndex_ = 7;
-	}
-
-	if (input_->PressKey(DIK_8))
-	{
-		animationIndex_ = 8;
-	}
-
-	if (input_->PressKey(DIK_9))
-	{
-		animationIndex_ = 9;
-	}
-
-	if (input_->PressKey(DIK_Q))
-	{
-		animationIndex_ = 10;
-	}
-
-	if (input_->PressKey(DIK_W))
-	{
-		animationIndex_ = 11;
-	}
-
-	if (input_->PressKey(DIK_E))
-	{
-		animationIndex_ = 12;
-	}
-	if (input_->PressKey(DIK_M))
-	{
-		hp_ -= 1.0f;
+		if (input_->PressKey(DIK_N))
+		{
+			hp_ -= 1.0f;
+		}
 	}
 
 	//エディタで設定したパラメータをセット
@@ -1069,7 +1014,7 @@ void Enemy::Move()
 		}
 		else
 		{
-			animationIndex_ = 5;
+			animationIndex_ = 6;
 
 			UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
 		}
@@ -1212,7 +1157,12 @@ void Enemy::Reset()
 
 	hp_ = 100.0f;
 
-	animationIndex_ = 4;
+	animationIndex_ = 5;
+	animationTime_ = 0.0f;
+	model_->SetAnimationTime(animationTime_);
+	model_->ApplyAnimation(animationIndex_);
+	model_->Update();
+	UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
 	worldTransform_.translation = { 3.0f,0.0f,0.0f };
 	worldTransform_.rotation = { 0.0f,4.6f,0.0f };
@@ -1493,7 +1443,7 @@ void Enemy::DownAnimation()
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
-		if (!player_->GetIsFinisherFirstAttack() && hp_ > 0.0f)
+		if (!player_->GetIsFinisherFirstAttack())
 		{
 			DownAnimationEnd(5, characterState_.isHitFinisherFirstAttack);
 		}
@@ -1537,7 +1487,7 @@ void Enemy::DownAnimation()
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
-		if (!player_->GetIsFinisherSecondAttack() && hp_ > 0.0f)
+		if (!player_->GetIsFinisherSecondAttack())
 		{
 			DownAnimationEnd(5, characterState_.isHitFinisherSecondAttack);
 		}
@@ -1726,28 +1676,28 @@ void Enemy::HitCombo()
 	{
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == 1)
 		{
-			comboCount_ = 2;
+			comboCount_++;
 			timerData_.comboTimer = 30;
 			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTCHighPunch && comboCount_ == 2)
 		{
-			comboCount_ = 3;
+			comboCount_++;
 			timerData_.comboTimer = 50;
 			timerData_.comboTimer--;
 		}
 
 		if(characterState_.isHitUppercut && comboCount_ == 2)
 		{
-			comboCount_ = 3;
+			comboCount_++;
 			timerData_.comboTimer = 40;
 			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitFinisherFirstAttack && comboCount_ == 3)
 		{
-			comboCount_ = 4;
+			comboCount_++;
 			timerData_.comboTimer = 120;
 			timerData_.comboTimer--;
 		}
@@ -1763,38 +1713,38 @@ void Enemy::HitCombo()
 			{
 				timerData_.comboTimer--;
 
-				if (timerData_.comboTimer > 230)
+				if (timerData_.comboTimer > 230 && comboCount_ == 4)
 				{
-					comboCount_ = 5;
+					comboCount_++;
 				}
-				else if (timerData_.comboTimer > 220)
+				else if (timerData_.comboTimer > 220 && comboCount_ == 5)
 				{
-					comboCount_ = 6;
+					comboCount_++;
 				}
-				else if (timerData_.comboTimer > 210)
+				else if (timerData_.comboTimer > 210 && comboCount_ == 6)
 				{
-					comboCount_ = 7;
+					comboCount_++;
 				}
 			}
 		}
 
 		if (characterState_.isHitTackle && comboCount_ == 7)
 		{
-			comboCount_ = 8;
+			comboCount_++;
 			timerData_.comboTimer = 40;
 			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitHighPunch && comboCount_ == 2)
 		{
-			comboCount_ = 3;
+			comboCount_++;
 			timerData_.comboTimer = 65;
 			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTackle && comboCount_ == 3)
 		{
-			comboCount_ = 4;
+			comboCount_++;
 			timerData_.comboTimer = 40;
 			timerData_.comboTimer--;
 		}
@@ -1804,7 +1754,7 @@ void Enemy::HitCombo()
 	{
 		if (characterState_.isHitTackle && comboCount_ == 1)
 		{
-			comboCount_ = 2;
+			comboCount_++;
 			timerData_.comboTimer = 30;
 			timerData_.comboTimer--;
 		}
@@ -1823,24 +1773,24 @@ void Enemy::HitCombo()
 			{
 				timerData_.comboTimer--;
 
-				if (timerData_.comboTimer > 230)
+				if (timerData_.comboTimer > 230 && comboCount_ == 1)
 				{
-					comboCount_ = 2;
+					comboCount_++;
 				}
-				else if (timerData_.comboTimer > 220)
+				else if (timerData_.comboTimer > 220 && comboCount_ == 2)
 				{
-					comboCount_ = 3;
+					comboCount_++;
 				}
-				else if (timerData_.comboTimer > 210)
+				else if (timerData_.comboTimer > 210 && comboCount_ == 3)
 				{
-					comboCount_ = 4;
+					comboCount_++;
 				}
 			}
 		}
 
 		if (characterState_.isHitTackle && comboCount_ == 4)
 		{
-			comboCount_ = 5;
+			comboCount_++;
 			timerData_.comboTimer = 40;
 			timerData_.comboTimer--;
 		}
@@ -1870,7 +1820,7 @@ void Enemy::HitCombo()
 		timerData_.comboTimer--;
 	}
 
-	if (timerData_.comboTimer < 0 || hp_ < 0.0f || player_->GetIsDown())
+	if (timerData_.comboTimer < 0 || player_->GetIsDown())
 	{
 		timerData_.comboTimer = 0;
 		comboCount_ = 0;
