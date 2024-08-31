@@ -273,7 +273,7 @@ public:
 
 	bool GetIsDown() { return characterState_.isDown; };
 
-	int GetFinisherTImer() { return timerData_.finisherTimer; };
+	int GetFinisherTimer() { return timerData_.finisherTimer; };
 
 	int GetComboCount() { return comboCount_; };
 

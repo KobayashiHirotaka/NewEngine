@@ -189,7 +189,7 @@ void Enemy::Update()
 		worldTransform_.rotation.y = 1.7f;
 	}
 
-	if (player_->GetFinisherTImer() == 120)
+	if (player_->GetFinisherTimer() == 120)
 	{
 		BulletsUpdate();
 
@@ -289,7 +289,7 @@ void Enemy::BehaviorRootInitialize()
 
 void Enemy::BehaviorRootUpdate()
 {
-	if (!isDebug_ && player_->GetFinisherTImer() == 120)
+	if (!isDebug_ && player_->GetFinisherTimer() == 120)
 	{
 		if (!characterState_.isDown && comboCount_ == 0)
 		{
@@ -328,7 +328,7 @@ void Enemy::BehaviorAttackInitialize()
 
 void Enemy::BehaviorAttackUpdate()
 {
-	if (player_->GetFinisherTImer() == 120)
+	if (player_->GetFinisherTimer() == 120)
 	{
 		//弱攻撃
 		if (attackData_.isLightPunch)

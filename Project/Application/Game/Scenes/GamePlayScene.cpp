@@ -168,7 +168,7 @@ void GamePlayScene::Update()
 			//タイムカウントを更新
 			if (currentSeconds_ > 0 && elapsedTime >= 1.0f)
 			{
-				if (player_->GetFinisherTImer() == 120)
+				if (player_->GetFinisherTimer() == 120)
 				{
 					currentSeconds_--;
 					UpdateNumberSprite();
@@ -227,7 +227,7 @@ void GamePlayScene::Update()
 	}*/
 
 	//右向き用のカメラ移動
-	if (player_->GetIsFinisher() && player_->GetFinisherTImer() != 120)
+	if (player_->GetIsFinisher() && player_->GetFinisherTimer() != 120)
 	{
 		if (player_->GetIsDirectionRight())
 		{
