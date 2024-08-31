@@ -68,6 +68,8 @@ public:
 
 	void FinisherGaugeBarUpdate()override;
 
+	void AdjustFinisherGauge(float value)override;
+
 	void ComboNumberSpriteUpdate()override;
 
 	void HitCombo();

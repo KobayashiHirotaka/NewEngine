@@ -66,7 +66,7 @@ void Enemy::Initialize()
 	finisherGaugeBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/guardGauge.png"),
-		{978.0f, finisherGaugeBarSpace_},
+		{979.0f, finisherGaugeBarSpace_},
 		0.0f,
 		{-finisherGaugeBarSize_  ,20.0f},
 		nullptr,
@@ -161,6 +161,10 @@ void Enemy::Update()
 	if (input_->PressKey(DIK_E))
 	{
 		animationIndex_ = 12;
+	}
+	if (input_->PressKey(DIK_M))
+	{
+		finisherGauge_ += 1.0f;
 	}
 
 	//エディタで設定したパラメータをセット
@@ -756,6 +760,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 				hp_ -= damage;
 				characterState_.isHitLightPunch = true;
 
+				AdjustFinisherGauge(1.0f);
+
 				HitStop(10);
 			}
 			else if(firstAttack_ == "JumpAttack")
@@ -764,6 +770,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 				damage = 0.2f;
 				hp_ -= damage;
 				characterState_.isHitLightPunch = true;
+
+				AdjustFinisherGauge(1.0f);
 
 				HitStop(10);
 			}
@@ -777,6 +785,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			hp_ -= damage;
 			characterState_.isHitMiddlePunch = true;
 
+			AdjustFinisherGauge(2.0f);
+
 			HitStop(10);
 		}
 
@@ -787,6 +797,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			damage = 7.0f;
 			hp_ -= damage;
 			characterState_.isHitHighPunch = true;
+
+			AdjustFinisherGauge(2.0f);
 
 			HitStop(10);
 		}
@@ -799,6 +811,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			hp_ -= damage;
 			characterState_.isHitTCMiddlePunch = true;
 
+			AdjustFinisherGauge(2.0f);
+
 			HitStop(10);
 		}
 
@@ -809,6 +823,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			damage = 2.0f;
 			hp_ -= damage;
 			characterState_.isHitTCHighPunch = true;
+
+			AdjustFinisherGauge(2.0f);
 
 			HitStop(10);
 		}
@@ -821,6 +837,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			hp_ -= damage;
 			characterState_.isHitJumpAttack = true;
 
+			AdjustFinisherGauge(2.0f);
+
 			HitStop(10);
 		}
 
@@ -832,6 +850,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			damage = 15.0f;
 			hp_ -= damage;
 			characterState_.isHitTackle = true;
+
+			AdjustFinisherGauge(4.0f);
 
 			HitStop(30);
 		}
@@ -848,6 +868,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			characterState_.isHitHighPunch = false;
 			characterState_.isHitTackle = true;
 
+			AdjustFinisherGauge(3.0f);
+
 			HitStop(10);
 		}
 
@@ -858,6 +880,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			damage = 10.0f;
 			hp_ -= damage;
 			characterState_.isHitUppercut = true;
+
+			AdjustFinisherGauge(4.0f);
 
 			HitStop(10);
 		}
@@ -1153,6 +1177,33 @@ void Enemy::FinisherGaugeBarUpdate()
 	{
 		finisherGauge_ = 50.0f;
 	}
+}
+
+void Enemy::AdjustFinisherGauge(float value)
+{
+	if (finisherGauge_ < 50.0f)
+	{
+		finisherGauge_ += value;
+
+		if (finisherGauge_ > 50.0f)
+		{
+			finisherGauge_ = 50.0f;
+		}
+	}
+
+	float finisherGaugePlayer = player_->GetFinisherGauge();
+
+	if (finisherGaugePlayer > -50.0f)
+	{
+		finisherGaugePlayer -= value;
+
+		if (finisherGaugePlayer < -50.0f)
+		{
+			finisherGaugePlayer = -50.0f;
+		}
+	}
+
+	player_->SetFinisherGauge(finisherGaugePlayer);
 }
 
 void Enemy::Reset()

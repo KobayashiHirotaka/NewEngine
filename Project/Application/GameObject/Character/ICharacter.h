@@ -230,6 +230,8 @@ public:
 
 	virtual void FinisherGaugeBarUpdate() = 0;
 
+	virtual void AdjustFinisherGauge(float value) = 0;
+
 	virtual void ComboNumberSpriteUpdate() = 0;
 
 	//移動に関するGetter

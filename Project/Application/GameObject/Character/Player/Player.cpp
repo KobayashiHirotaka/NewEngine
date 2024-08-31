@@ -1063,6 +1063,8 @@ void Player::OnCollision(Collider* collider, float damage)
 			characterState_.isHitBullet = true;
 			attackData_.isFinisher = false;
 
+			AdjustFinisherGauge(1.0f);
+
 			HitStop(5);
 		}
 
@@ -1075,6 +1077,8 @@ void Player::OnCollision(Collider* collider, float damage)
 			damage = 8.0f;
 			hp_ += damage;
 			characterState_.isHitAirBullet = true;
+
+			AdjustFinisherGauge(1.0f);
 
 			HitStop(5);
 		}
@@ -1216,6 +1220,8 @@ void Player::OnCollision(Collider* collider, float damage)
 				hp_ += damage;
 				characterState_.isHitLightPunch = true;
 
+				AdjustFinisherGauge(1.0f);
+
 				HitStop(10);
 			}
 
@@ -1226,6 +1232,8 @@ void Player::OnCollision(Collider* collider, float damage)
 				damage = 10.0f;
 				hp_ += damage;
 				characterState_.isHitHighPunch = true;
+
+				AdjustFinisherGauge(2.0f);
 
 				HitStop(10);
 			}
@@ -1238,6 +1246,8 @@ void Player::OnCollision(Collider* collider, float damage)
 				hp_ += damage;
 				characterState_.isHitTCMiddlePunch = true;
 
+				AdjustFinisherGauge(2.0f);
+
 				HitStop(10);
 			}
 
@@ -1249,6 +1259,8 @@ void Player::OnCollision(Collider* collider, float damage)
 				damage = 15.0f;
 				hp_ += damage;
 				characterState_.isHitTackle = true;
+
+				AdjustFinisherGauge(4.0f);
 
 				HitStop(30);
 			}
@@ -1264,6 +1276,8 @@ void Player::OnCollision(Collider* collider, float damage)
 				model_->SetAnimationTime(animationTime);
 				characterState_.isHitHighPunch = false;
 				characterState_.isHitTackle = true;
+
+				AdjustFinisherGauge(3.0f);
 
 				HitStop(10);
 			}
@@ -1501,6 +1515,33 @@ void Player::FinisherGaugeBarUpdate()
 	{
 		isFinisherCharge_ = false;
 	}
+}
+
+void Player::AdjustFinisherGauge(float value)
+{
+	if (finisherGauge_ > -50.0f)
+	{
+		finisherGauge_ -= value;
+
+		if (finisherGauge_ < -50.0f)
+		{
+			finisherGauge_ = -50.0f;
+		}
+	}
+
+	float finisherGaugeEnemy = enemy_->GetFinisherGauge();
+
+	if (finisherGaugeEnemy < 50.0f)
+	{
+		finisherGaugeEnemy += value;
+
+		if (finisherGaugeEnemy > 50.0f)
+		{
+			finisherGaugeEnemy = 50.0f;
+		}
+	}
+
+	enemy_->SetFinisherGauge(finisherGaugeEnemy);
 }
 
 void Player::Reset()
