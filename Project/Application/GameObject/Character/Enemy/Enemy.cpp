@@ -1819,7 +1819,7 @@ void Enemy::HitCombo()
 		timerData_.comboTimer--;
 	}
 
-	if (timerData_.comboTimer < 0 || hp_ < 0.0f)
+	if (timerData_.comboTimer < 0 || hp_ < 0.0f || player_->GetIsDown())
 	{
 		timerData_.comboTimer = 0;
 		comboCount_ = 0;

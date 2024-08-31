@@ -823,12 +823,22 @@ void Player::BehaviorAttackUpdate()
 
 			EvaluateAttackTiming();
 
+			if (attackData_.isAttack)
+			{
+				isFinisherInvincible_ = true;
+			}
+			else
+			{
+				isFinisherInvincible_ = false;
+			}
+
 			if (enemy_->GetIsDown() && attackData_.attackAnimationFrame > 10 && attackData_.attackAnimationFrame < 30)
 			{
 				attackType = "FinisherSecondAttack";
 				timerData_.finisherTimer = 120;
 				attackData_.isAttack = false;
 				attackData_.isFinisherFirstAttack = false;
+				isFinisherInvincible_ = false;
 				attackData_.isFinisherSecondAttack = true;
 				animationTime_ = 0.0f;
 				attackData_.attackAnimationFrame = 0;
@@ -842,6 +852,7 @@ void Player::BehaviorAttackUpdate()
 				AttackEnd(attackData_.isFinisher);
 				ResetCollision();
 				attackData_.isFinisherFirstAttack = false;
+				isFinisherInvincible_ = false;
 			}
 		}
 
@@ -894,6 +905,7 @@ void Player::BehaviorAttackUpdate()
 			ResetCollision();
 			attackData_.isFinisherFirstAttack = false;
 			attackData_.isFinisherSecondAttack = false;
+			isFinisherInvincible_ = false;
 		}
 
 		attackData_.attackAnimationFrame++;
@@ -1213,7 +1225,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
-		if (!attackData_.isFinisherFirstAttack)
+		if (!isFinisherInvincible_)
 		{
 			//弱パンチ
 			if (enemy_->GetIsAttack() && enemy_->GetIsLightPunch() && !characterState_.isDown && !characterState_.isGuard)

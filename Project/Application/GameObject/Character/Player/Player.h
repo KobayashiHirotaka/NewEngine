@@ -143,5 +143,7 @@ private:
 	
 	//エディター用
 	std::string attackType;
+
+	bool isFinisherInvincible_ = false;
 };
 

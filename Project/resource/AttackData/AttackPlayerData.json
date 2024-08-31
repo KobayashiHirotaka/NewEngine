@@ -1,7 +1,7 @@
 {
     "FinisherFirstAttack": {
         "attackEndTime": 25,
-        "attackStartTime": 8,
+        "attackStartTime": 0,
         "recoveryTime": 65
     },
     "FinisherSecondAttack": {
