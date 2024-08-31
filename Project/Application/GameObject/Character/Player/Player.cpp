@@ -607,7 +607,6 @@ void Player::BehaviorAttackUpdate()
 		if (input_->GetJoystickState())
 		{
 			//タックル攻撃
-			//右向きのとき
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
 				&& (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) || 
 				input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || 
@@ -622,23 +621,6 @@ void Player::BehaviorAttackUpdate()
 				model_->SetAnimationTime(animationTime_);
 				ResetCollision();
 			}
-
-			////タックル攻撃
-			////左向きのとき
-			//if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-			//	&& (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) ||
-			//	input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) ||
-			//		input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))))
-			//{
-			//	attackType = "Tackle";
-			//	attackData_.isAttack = false;
-			//	attackData_.isHighPunch = false;
-			//	attackData_.isTackle = true;
-			//	animationTime_ = 0.0f;
-			//	attackData_.attackAnimationFrame = 0;
-			//	model_->SetAnimationTime(animationTime_);
-			//	ResetCollision();
-			//}
 		}
 
 		attackData_.attackAnimationFrame++;
