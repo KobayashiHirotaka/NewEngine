@@ -912,7 +912,8 @@ void Player::BehaviorJumpUpdate()
 
 	if (input_->GetJoystickState())
 	{
-		if (worldTransform_.translation.y > 0.3f && input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !attackData_.isJumpAttack)
+		if (worldTransform_.translation.y > 0.3f && !attackData_.isJumpAttack && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || 
+			input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B)))
 		{
 			attackType = "JumpAttack";
 			attackData_.isAttack = false;

@@ -1642,14 +1642,14 @@ void Enemy::HitCombo()
 		if (characterState_.isHitLightPunch && comboCount_ == 1)
 		{
 			comboCount_ = 2;
-			timerData_.comboTimer = 20;
+			timerData_.comboTimer = 30;
 			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == 2)
 		{
 			comboCount_ = 3;
-			timerData_.comboTimer = 30;
+			timerData_.comboTimer = 40;
 			timerData_.comboTimer--;
 		}
 
