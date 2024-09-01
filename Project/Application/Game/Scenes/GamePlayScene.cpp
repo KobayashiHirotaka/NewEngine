@@ -120,7 +120,7 @@ void GamePlayScene::Initialize()
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 
 	//ラウンドごとの時間
-	currentSeconds_ = 99;
+	currentSeconds_ = 5;
 	UpdateNumberSprite();
 
 	migrationTimer = 200;
@@ -582,6 +582,9 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 2 && PlayerWinCount_ == 1 && !isRoundTransition_)
 	{
+		migrationTimer--;
+		isPlayerWin_ = true;
+
 		if (migrationTimer < 0)
 		{
 			PlayerWinCount_ = 2;
@@ -600,6 +603,9 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 3 && PlayerWinCount_ == 1 && !isRoundTransition_)
 	{
+		migrationTimer--;
+		isPlayerWin_ = true;
+
 		if (migrationTimer < 0)
 		{
 			PlayerWinCount_ = 2;
@@ -717,7 +723,7 @@ void GamePlayScene::HandleGameOutcome()
 		}
 	}
 
-	//時間切れ
+	//時間切れ(ドロー)
 	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && round_ == 1 && !isRoundTransition_)
 	{
 		migrationTimer--;
@@ -740,6 +746,46 @@ void GamePlayScene::HandleGameOutcome()
 			PlayerWinCount_ = 1;
 			EnemyWinCount_ = 1;
 			isRoundTransition_ = true;
+		}
+	}
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && PlayerWinCount_ == 1 && EnemyWinCount_ == 0 && round_ == 2 && !isRoundTransition_)
+	{
+		migrationTimer--;
+		isPlayerWin_ = true;
+
+		if (migrationTimer < 0)
+		{
+			PlayerWinCount_ = 2;
+		}
+	}
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && EnemyWinCount_ == 1 && PlayerWinCount_ == 0 && round_ == 2 && !isRoundTransition_)
+	{
+		migrationTimer--;
+		isPlayerWin_ = false;
+
+		if (migrationTimer < 0)
+		{
+			EnemyWinCount_ = 2;
+		}
+	}
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && PlayerWinCount_ == 1 && EnemyWinCount_ == 0 && round_ == 3 && !isRoundTransition_)
+	{
+		migrationTimer--;
+		isPlayerWin_ = true;
+
+		if (migrationTimer < 0)
+		{
+			PlayerWinCount_ = 2;
+		}
+	}
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && EnemyWinCount_ == 1 && PlayerWinCount_ == 0 && round_ == 3 && !isRoundTransition_)
+	{
+		migrationTimer--;
+		isPlayerWin_ = false;
+
+		if (migrationTimer < 0)
+		{
+			EnemyWinCount_ = 2;
 		}
 	}
 
@@ -906,7 +952,7 @@ void GamePlayScene::RoundTransition(int round)
 			player_->Reset();
 			enemy_->Reset();
 
-			currentSeconds_ = 99;
+			currentSeconds_ = 5;
 			UpdateNumberSprite();
 
 			migrationTimer = 200;
