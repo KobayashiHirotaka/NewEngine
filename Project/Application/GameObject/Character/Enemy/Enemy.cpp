@@ -98,20 +98,6 @@ void Enemy::Update()
 {
 	ICharacter::Update();
 
-	//デバッグ用の処理
-	if (isDebug_)
-	{
-		if (input_->PressKey(DIK_M))
-		{
-			hp_ -= 1.0f;
-		}
-
-		if (input_->PressKey(DIK_N))
-		{
-			hp_ -= 1.0f;
-		}
-	}
-
 	//エディタで設定したパラメータをセット
 	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime, true);
 

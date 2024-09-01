@@ -120,26 +120,6 @@ void Player::Update()
 		{
 			model_->GetMaterial()->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
-
-		/*if (input_->PressKey(DIK_B))
-		{
-			finisherGauge_ -= 1.0f;
-		}*/
-
-		if (input_->PressKey(DIK_M))
-		{
-			hp_ += 1.0f;
-		}
-
-		if (input_->PressKey(DIK_C))
-		{
-			hp_ += 1.0f;
-		}
-	}
-
-	if (input_->PressKey(DIK_B))
-	{
-		finisherGauge_ -= 1.0f;
 	}
 
 	model_->GetMaterial()->ImGui();
