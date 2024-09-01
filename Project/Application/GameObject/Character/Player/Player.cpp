@@ -121,10 +121,10 @@ void Player::Update()
 			model_->GetMaterial()->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 
-		if (input_->PressKey(DIK_B))
+		/*if (input_->PressKey(DIK_B))
 		{
 			finisherGauge_ -= 1.0f;
-		}
+		}*/
 
 		if (input_->PressKey(DIK_M))
 		{
@@ -135,6 +135,11 @@ void Player::Update()
 		{
 			hp_ += 1.0f;
 		}
+	}
+
+	if (input_->PressKey(DIK_B))
+	{
+		finisherGauge_ -= 1.0f;
 	}
 
 	model_->GetMaterial()->ImGui();
@@ -1807,47 +1812,54 @@ void Player::HitCombo()
 	if (characterState_.isHitJumpAttack && comboCount_ == 0)
 	{
 		firstAttack_ = "JumpAttack";
-		comboCount_++;
+		comboCount_ = 1;
 		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
 	}
 
 	if (characterState_.isHitLightPunch && comboCount_ == 0)
 	{
 		firstAttack_ = "LightPunch";
-		comboCount_++;
+		comboCount_ = 1;
 		timerData_.comboTimer = 60;
+		timerData_.comboTimer--;
 	}
 
 	if (firstAttack_ == "JumpAttack")
 	{
 		if (characterState_.isHitLightPunch && comboCount_ == 1)
 		{
-			comboCount_++;
+			comboCount_ = 2;
 			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == 2)
 		{
-			comboCount_++;
+			comboCount_ = 3;
 			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTCHighPunch && comboCount_ == 3)
 		{
-			comboCount_++;
+			comboCount_ = 4;
 			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitHighPunch && comboCount_ == 3)
 		{
-			comboCount_++;
+			comboCount_ = 4;
 			timerData_.comboTimer = 120;
+			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTackle && comboCount_ == 4)
 		{
-			comboCount_++;
+			comboCount_ = 5;
 			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
 		}
 	}
 
@@ -1855,26 +1867,30 @@ void Player::HitCombo()
 	{
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == 1)
 		{
-			comboCount_++;
+			comboCount_ = 2;
 			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTCHighPunch && comboCount_ == 2)
 		{
-			comboCount_++;
+			comboCount_ = 3;
 			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitHighPunch && comboCount_ == 2)
 		{
-			comboCount_++;
+			comboCount_ = 3;
 			timerData_.comboTimer = 120;
+			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTackle && comboCount_ == 3)
 		{
-			comboCount_++;
+			comboCount_ = 4;
 			timerData_.comboTimer = 60;
+			timerData_.comboTimer--;
 		}
 	}
 
