@@ -1294,12 +1294,12 @@ void Player::Move()
 		{
 			if (characterState_.direction == Direction::Right && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
 			{
-				// 敵を右方向に押す
+				//敵を右方向に押す
 				PushEnemy(enemyPosition, 0.05f);
 			}
 			else if (characterState_.direction == Direction::Left && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
 			{
-				// 敵を左方向に押す
+				//敵を左方向に押す
 				PushEnemy(enemyPosition, -0.05f);
 			}
 		}
@@ -1380,7 +1380,6 @@ void Player::Move()
 			moveData_.velocity = Normalize(moveData_.velocity);
 			moveData_.velocity = Multiply(frontSpeed_, moveData_.velocity);
 
-			// 平行移動
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 			worldTransform_.UpdateMatrixEuler();
@@ -1393,7 +1392,6 @@ void Player::Move()
 			moveData_.velocity = Normalize(moveData_.velocity);
 			moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
 
-			// 平行移動
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 			worldTransform_.UpdateMatrixEuler();
@@ -1809,54 +1807,47 @@ void Player::HitCombo()
 	if (characterState_.isHitJumpAttack && comboCount_ == 0)
 	{
 		firstAttack_ = "JumpAttack";
-		comboCount_ = 1;
+		comboCount_++;
 		timerData_.comboTimer = 60;
-		timerData_.comboTimer--;
 	}
 
 	if (characterState_.isHitLightPunch && comboCount_ == 0)
 	{
 		firstAttack_ = "LightPunch";
-		comboCount_ = 1;
+		comboCount_++;
 		timerData_.comboTimer = 60;
-		timerData_.comboTimer--;
 	}
 
 	if (firstAttack_ == "JumpAttack")
 	{
 		if (characterState_.isHitLightPunch && comboCount_ == 1)
 		{
-			comboCount_ = 2;
+			comboCount_++;
 			timerData_.comboTimer = 60;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == 2)
 		{
-			comboCount_ = 3;
+			comboCount_++;
 			timerData_.comboTimer = 60;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTCHighPunch && comboCount_ == 3)
 		{
-			comboCount_ = 4;
+			comboCount_++;
 			timerData_.comboTimer = 60;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitHighPunch && comboCount_ == 3)
 		{
-			comboCount_ = 4;
+			comboCount_++;
 			timerData_.comboTimer = 120;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTackle && comboCount_ == 4)
 		{
-			comboCount_ = 5;
+			comboCount_++;
 			timerData_.comboTimer = 60;
-			timerData_.comboTimer--;
 		}
 	}
 
@@ -1864,30 +1855,26 @@ void Player::HitCombo()
 	{
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == 1)
 		{
-			comboCount_ = 2;
+			comboCount_++;
 			timerData_.comboTimer = 60;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTCHighPunch && comboCount_ == 2)
 		{
-			comboCount_ = 3;
+			comboCount_++;
 			timerData_.comboTimer = 60;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitHighPunch && comboCount_ == 2)
 		{
-			comboCount_ = 3;
+			comboCount_++;
 			timerData_.comboTimer = 120;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTackle && comboCount_ == 3)
 		{
-			comboCount_ = 4;
+			comboCount_++;
 			timerData_.comboTimer = 60;
-			timerData_.comboTimer--;
 		}
 	}
 

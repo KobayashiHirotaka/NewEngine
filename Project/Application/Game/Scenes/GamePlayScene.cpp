@@ -120,7 +120,7 @@ void GamePlayScene::Initialize()
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 
 	//ラウンドごとの時間
-	currentSeconds_ = 5;
+	currentSeconds_ = 99;
 	UpdateNumberSprite();
 
 	migrationTimer = 200;
@@ -201,15 +201,6 @@ void GamePlayScene::Update()
 	{
 		PostProcess::GetInstance()->SetIsVignetteActive(false);
 	}
-
-	/*if (isOpen_)
-	{
-		PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
-	}
-	else
-	{
-		PostProcess::GetInstance()->SetIsGaussianFilterActive(false);
-	}*/
 
 	//右向き用のカメラ移動
 	if (player_->GetIsFinisher() && player_->GetFinisherTimer() != 120)
@@ -297,6 +288,8 @@ void GamePlayScene::Update()
 	//Camera、DebugCameraの処理
 	debugCamera_.Update();
 
+#ifdef _DEBUG
+
 	if (input_->PushKey(DIK_K))
 	{
 		isDebugCamera_ = true;
@@ -305,6 +298,8 @@ void GamePlayScene::Update()
 	{
 		isDebugCamera_ = false;
 	}
+
+#endif // DEBUG
 
 	if (isDebugCamera_)
 	{
@@ -952,7 +947,7 @@ void GamePlayScene::RoundTransition(int round)
 			player_->Reset();
 			enemy_->Reset();
 
-			currentSeconds_ = 5;
+			currentSeconds_ = 99;
 			UpdateNumberSprite();
 
 			migrationTimer = 200;

@@ -512,20 +512,20 @@ void Enemy::BehaviorAttackUpdate()
 				UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 			}
 
-			// まだ弾を発射していない場合
+			//まだ弾を発射していない場合
 			if (!hasShot_)
 			{
 				if (characterState_.direction == Direction::Right)
 				{
 					Vector3 bulletStartPosition = { worldTransform_.translation.x + 0.2f, worldTransform_.translation.y + 0.5f, worldTransform_.translation.z };  // 弾の発射位置を敵の位置に設定
-					Vector3 bulletVelocity = Vector3{ 0.1f, 0.0f, 0.0f };  // 弾の速度を設定
+					Vector3 bulletVelocity = Vector3{ 0.1f, 0.0f, 0.0f }; 
 
 					BulletShoot(bulletStartPosition, bulletVelocity);
 				}
 				else if (characterState_.direction == Direction::Left)
 				{
 					Vector3 bulletStartPosition = { worldTransform_.translation.x - 0.2f, worldTransform_.translation.y + 0.5f, worldTransform_.translation.z };  // 弾の発射位置を敵の位置に設定
-					Vector3 bulletVelocity = Vector3{ -0.1f, 0.0f, 0.0f };  // 弾の速度を設定
+					Vector3 bulletVelocity = Vector3{ -0.1f, 0.0f, 0.0f };
 
 					BulletShoot(bulletStartPosition, bulletVelocity);
 				}
@@ -906,7 +906,6 @@ void Enemy::Move()
 			moveData_.velocity = Normalize(moveData_.velocity);
 			moveData_.velocity = Multiply(frontSpeed_, moveData_.velocity);
 
-			// 平行移動
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 			worldTransform_.UpdateMatrixEuler();
@@ -919,7 +918,6 @@ void Enemy::Move()
 			moveData_.velocity = Normalize(moveData_.velocity);
 			moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
 
-			// 平行移動
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 			worldTransform_.UpdateMatrixEuler();
@@ -1558,63 +1556,55 @@ void Enemy::HitCombo()
 	if (characterState_.isHitJumpAttack && comboCount_ == 0)
 	{
 		firstAttack_ = "JumpAttack";
-		comboCount_ = 1;
+		comboCount_++;
 		timerData_.comboTimer = 40;
-		timerData_.comboTimer--;
 	}
 
 	if (characterState_.isHitLightPunch && comboCount_ == 0)
 	{
 		firstAttack_ = "LightPunch";
-		comboCount_ = 1;
+		comboCount_++;
 		timerData_.comboTimer = 10;
-		timerData_.comboTimer--;
 	}
 
 	if (characterState_.isHitHighPunch && comboCount_ == 0)
 	{
 		firstAttack_ = "HighPunch";
-		comboCount_ = 1;
+		comboCount_++;
 		timerData_.comboTimer = 30;
-		timerData_.comboTimer--;
 	}
 
 	if (characterState_.isHitFinisherFirstAttack && comboCount_ == 0)
 	{
 		firstAttack_ = "FinisherFirstAttack";
-		comboCount_ = 1;
+		comboCount_++;
 		timerData_.comboTimer = 120;
-		timerData_.comboTimer--;
 	}
 
 	if (firstAttack_ == "JumpAttack")
 	{
 		if (characterState_.isHitLightPunch && comboCount_ == 1)
 		{
-			comboCount_ = 2;
+			comboCount_++;
 			timerData_.comboTimer = 30;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == 2)
 		{
-			comboCount_ = 3;
+			comboCount_++;
 			timerData_.comboTimer = 40;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitUppercut && comboCount_ == 3)
 		{
-			comboCount_ = 4;
+			comboCount_++;
 			timerData_.comboTimer = 40;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitFinisherFirstAttack && comboCount_ == 4)
 		{
-			comboCount_ = 5;
+			comboCount_++;
 			timerData_.comboTimer = 120;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitFinisherSecondAttack)
@@ -1628,47 +1618,43 @@ void Enemy::HitCombo()
 			{
 				timerData_.comboTimer--;
 
-				if (timerData_.comboTimer > 230)
+				if (timerData_.comboTimer > 230 && comboCount_ == 5)
 				{
-					comboCount_ = 6;
+					comboCount_++;
 				}
-				else if (timerData_.comboTimer > 220)
+				else if (timerData_.comboTimer > 220 && comboCount_ == 6)
 				{
-					comboCount_ = 7;
+					comboCount_++;
 				}
-				else if (timerData_.comboTimer > 210)
+				else if (timerData_.comboTimer > 210 && comboCount_ == 7)
 				{
-					comboCount_ = 8;
+					comboCount_++;
 				}
 			}
 		}
 
 		if (characterState_.isHitTackle && comboCount_ == 8)
 		{
-			comboCount_ = 9;
+			comboCount_++;
 			timerData_.comboTimer = 40;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTCHighPunch && comboCount_ == 3)
 		{
-			comboCount_ = 4;
+			comboCount_++;
 			timerData_.comboTimer = 50;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitHighPunch && comboCount_ == 3)
 		{
-			comboCount_ = 4;
+			comboCount_++;
 			timerData_.comboTimer = 65;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTackle && comboCount_ == 4)
 		{
-			comboCount_ = 5;
+			comboCount_++;
 			timerData_.comboTimer = 60;
-			timerData_.comboTimer--;
 		}
 	}
 
@@ -1678,28 +1664,24 @@ void Enemy::HitCombo()
 		{
 			comboCount_++;
 			timerData_.comboTimer = 30;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTCHighPunch && comboCount_ == 2)
 		{
 			comboCount_++;
 			timerData_.comboTimer = 50;
-			timerData_.comboTimer--;
 		}
 
 		if(characterState_.isHitUppercut && comboCount_ == 2)
 		{
 			comboCount_++;
 			timerData_.comboTimer = 40;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitFinisherFirstAttack && comboCount_ == 3)
 		{
 			comboCount_++;
 			timerData_.comboTimer = 120;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitFinisherSecondAttack)
@@ -1732,21 +1714,18 @@ void Enemy::HitCombo()
 		{
 			comboCount_++;
 			timerData_.comboTimer = 40;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitHighPunch && comboCount_ == 2)
 		{
 			comboCount_++;
 			timerData_.comboTimer = 65;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTackle && comboCount_ == 3)
 		{
 			comboCount_++;
 			timerData_.comboTimer = 40;
-			timerData_.comboTimer--;
 		}
 	}
 
@@ -1756,7 +1735,6 @@ void Enemy::HitCombo()
 		{
 			comboCount_++;
 			timerData_.comboTimer = 30;
-			timerData_.comboTimer--;
 		}
 	}
 
@@ -1792,7 +1770,6 @@ void Enemy::HitCombo()
 		{
 			comboCount_++;
 			timerData_.comboTimer = 40;
-			timerData_.comboTimer--;
 		}
 	}
 
@@ -1801,17 +1778,15 @@ void Enemy::HitCombo()
 		if (characterState_.isHitJumpAttack)
 		{
 			firstAttack_ = "JumpAttack";
-			comboCount_ = 1;
+			comboCount_++;
 			timerData_.comboTimer = 40;
-			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitLightPunch)
 		{
 			firstAttack_ = "LightPunch";
-			comboCount_ = 1;
+			comboCount_++;
 			timerData_.comboTimer = 10;
-			timerData_.comboTimer--;
 		}
 	}
 
