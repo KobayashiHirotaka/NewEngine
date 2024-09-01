@@ -782,6 +782,15 @@ void Enemy::OnCollision(Collider* collider, float damage)
 			hp_ -= damage;
 			characterState_.isHitJumpAttack = true;
 
+			if (characterState_.direction == Direction::Right)
+			{
+				worldTransform_.translation.x -= 0.1f;
+			}
+			else if(characterState_.direction == Direction::Left)
+			{
+				worldTransform_.translation.x -= 0.1f;
+			}
+
 			AdjustFinisherGauge(2.0f);
 
 			HitStop(10);
