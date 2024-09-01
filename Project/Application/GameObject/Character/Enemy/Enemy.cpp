@@ -1590,14 +1590,14 @@ void Enemy::HitCombo()
 		if (characterState_.isHitLightPunch && comboCount_ == 1)
 		{
 			comboCount_ = 2;
-			timerData_.comboTimer = 30;
+			timerData_.comboTimer = 20;
 			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == 2)
 		{
 			comboCount_ = 3;
-			timerData_.comboTimer = 40;
+			timerData_.comboTimer = 30;
 			timerData_.comboTimer--;
 		}
 
@@ -1630,11 +1630,11 @@ void Enemy::HitCombo()
 				{
 					comboCount_ = 6;
 				}
-				else if (timerData_.comboTimer > 210)
+				else if (timerData_.comboTimer > 220)
 				{
 					comboCount_ = 7;
 				}
-				else if (timerData_.comboTimer > 190)
+				else if (timerData_.comboTimer > 210)
 				{
 					comboCount_ = 8;
 				}
@@ -1674,28 +1674,28 @@ void Enemy::HitCombo()
 	{
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == 1)
 		{
-			comboCount_++;
+			comboCount_ = 2;
 			timerData_.comboTimer = 30;
 			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTCHighPunch && comboCount_ == 2)
 		{
-			comboCount_++;
+			comboCount_ = 3;
 			timerData_.comboTimer = 50;
 			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitUppercut && comboCount_ == 2)
 		{
-			comboCount_++;
+			comboCount_ = 3;
 			timerData_.comboTimer = 40;
 			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitFinisherFirstAttack && comboCount_ == 3)
 		{
-			comboCount_++;
+			comboCount_ = 4;
 			timerData_.comboTimer = 120;
 			timerData_.comboTimer--;
 		}
@@ -1711,38 +1711,38 @@ void Enemy::HitCombo()
 			{
 				timerData_.comboTimer--;
 
-				if (timerData_.comboTimer > 230 && comboCount_ == 4)
+				if (timerData_.comboTimer > 230)
 				{
-					comboCount_++;
+					comboCount_ = 5;
 				}
-				else if (timerData_.comboTimer > 210 && comboCount_ == 5)
+				else if (timerData_.comboTimer > 220)
 				{
-					comboCount_++;
+					comboCount_ = 6;
 				}
-				else if (timerData_.comboTimer > 190 && comboCount_ == 6)
+				else if (timerData_.comboTimer > 210)
 				{
-					comboCount_++;
+					comboCount_ = 7;
 				}
 			}
 		}
 
 		if (characterState_.isHitTackle && comboCount_ == 7)
 		{
-			comboCount_++;
+			comboCount_ = 8;
 			timerData_.comboTimer = 40;
 			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitHighPunch && comboCount_ == 2)
 		{
-			comboCount_++;
+			comboCount_ = 3;
 			timerData_.comboTimer = 65;
 			timerData_.comboTimer--;
 		}
 
 		if (characterState_.isHitTackle && comboCount_ == 3)
 		{
-			comboCount_++;
+			comboCount_ = 4;
 			timerData_.comboTimer = 40;
 			timerData_.comboTimer--;
 		}
@@ -1752,7 +1752,7 @@ void Enemy::HitCombo()
 	{
 		if (characterState_.isHitTackle && comboCount_ == 1)
 		{
-			comboCount_++;
+			comboCount_ = 2;
 			timerData_.comboTimer = 30;
 			timerData_.comboTimer--;
 		}
@@ -1771,24 +1771,24 @@ void Enemy::HitCombo()
 			{
 				timerData_.comboTimer--;
 
-				if (timerData_.comboTimer > 230 && comboCount_ == 1)
+				if (timerData_.comboTimer > 230)
 				{
-					comboCount_++;
+					comboCount_ = 2;
 				}
-				else if (timerData_.comboTimer > 220 && comboCount_ == 2)
+				else if (timerData_.comboTimer > 220)
 				{
-					comboCount_++;
+					comboCount_ = 3;
 				}
-				else if (timerData_.comboTimer > 210 && comboCount_ == 3)
+				else if (timerData_.comboTimer > 210)
 				{
-					comboCount_++;
+					comboCount_ = 4;
 				}
 			}
 		}
 
 		if (characterState_.isHitTackle && comboCount_ == 4)
 		{
-			comboCount_++;
+			comboCount_ = 5;
 			timerData_.comboTimer = 40;
 			timerData_.comboTimer--;
 		}
