@@ -37,6 +37,10 @@ public:
 
 	void HandleGameOutcome();
 
+	//void HandleTransition();
+
+	void RoundTransition(int round);
+
 private:
 	TextureManager* textureManager_ = nullptr;
 
@@ -91,15 +95,21 @@ private:
 	std::unique_ptr<Sprite>UICommandListSprite_ = nullptr;
 	uint32_t UICommandListTextureHandle_ = 0;
 
+	//基本操作説明用のSprite
 	std::unique_ptr<Sprite>generalCommandListSprite_ = nullptr;
 	uint32_t generalCommandListTextureHandle_ = 0;
 
-	std::unique_ptr<Sprite>attackCommandListSprite_ = nullptr;
-	uint32_t attackCommandListTextureHandle_ = 0;
+	//攻撃操作説明用のSprite
+	std::unique_ptr<Sprite>attackCommandListSprite_[2];
+	uint32_t attackCommandListTextureHandle_[2];
 
 	//UI枠のSprite
 	std::unique_ptr<Sprite>frameUISprite_ = nullptr;
 	uint32_t frameUITextureHandle_ = 0;
+
+	//半透明のSprite
+	std::unique_ptr<Sprite>commandListBackSprite_ = nullptr;
+	uint32_t commandListBackTextureHandle_ = 0;
 
 	//何枚目のSpriteが表示されているか
 	int spriteCount_ = 0;
@@ -161,4 +171,7 @@ private:
 	//Skybox
 	std::unique_ptr<Skybox> skybox_;
 	WorldTransform skyboxWorldTransform_;
+
+	bool isRoundTransition_ = false;
+	int roundTransitionTimer_ = 150;
 };

@@ -65,8 +65,15 @@ public:
 		//ジャンプ攻撃
 		bool isHitJumpAttack = false;
 
-		//技
+		//タックル攻撃
 		bool isHitTackle = false;
+
+		//アッパー攻撃
+		bool isHitUppercut = false;
+
+		//超必殺技
+		bool isHitFinisherFirstAttack = false;
+		bool isHitFinisherSecondAttack = false;
 
 		//弾
 		bool isHitBullet = false;
@@ -127,11 +134,19 @@ public:
 		//タックル攻撃
 		bool isTackle = false;
 
+		//アッパー攻撃
+		bool isUppercut = false;
+
 		//弾攻撃
 		bool isShot = false;
 
 		//ジャンプ攻撃
 		bool isJumpAttack = false;
+
+		//超必殺技
+		bool isFinisher = false;
+		bool isFinisherFirstAttack = false;
+		bool isFinisherSecondAttack = false;
 	};
 
 	struct TimerData
@@ -147,6 +162,9 @@ public:
 
 		//コンボの猶予時間
 		int comboTimer = 60;
+
+		//超必殺技の演出時間
+		int finisherTimer = 120;
 	};
 
 	virtual void Initialize() = 0;
@@ -212,6 +230,8 @@ public:
 
 	virtual void FinisherGaugeBarUpdate() = 0;
 
+	virtual void AdjustFinisherGauge(float value) = 0;
+
 	virtual void ComboNumberSpriteUpdate() = 0;
 
 	//移動に関するGetter
@@ -234,7 +254,15 @@ public:
 
 	bool GetIsTackle() { return attackData_.isTackle; };
 
+	bool GetIsUppercut() { return attackData_.isUppercut; };
+
 	bool GetIsShot() { return attackData_.isShot; };
+
+	bool GetIsFinisher() { return attackData_.isFinisher; };
+
+	bool GetIsFinisherFirstAttack() { return attackData_.isFinisherFirstAttack; };
+
+	bool GetIsFinisherSecondAttack() { return attackData_.isFinisherSecondAttack; };
 
 	int GetAttackAnimationFrame() { return attackData_.attackAnimationFrame; };
 
@@ -244,6 +272,10 @@ public:
 	bool GetIsHSVFilter() { return effectState_.isHSVFilter; };
 
 	bool GetIsDown() { return characterState_.isDown; };
+
+	int GetFinisherTimer() { return timerData_.finisherTimer; };
+
+	int GetComboCount() { return comboCount_; };
 
 	//Setter
 	void SetIsReset(bool isReset) { isReset_ = isReset; };
@@ -281,6 +313,8 @@ protected:
 
 	//デバッグ用
 	bool isDebug_ = false;
+
+	bool isFinisherCharge_ = false;
 
 	//画面端
 	float leftEdge_ = -4.0f;

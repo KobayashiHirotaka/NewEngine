@@ -40,6 +40,7 @@ public:
 	void SetGuardGauge(const float& guardGauge) { guardGauge_ = guardGauge; };
 	void SetMaxGuardGauge(const float& maxGuardGauge) { maxGuardGauge_ = maxGuardGauge; };
 
+	const float GetFinisherGauge() const { return finisherGauge_; };
 	void SetFinisherGauge(const float& finisherGauge) { finisherGauge_ = finisherGauge; };
 	void SetMaxFinisherGauge(const float& maxFinisherGauge) { maxFinisherGauge_ = maxFinisherGauge; };
 

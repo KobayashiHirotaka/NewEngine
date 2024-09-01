@@ -47,6 +47,18 @@ void GameWinScene::Initialize()
 
 void GameWinScene::Update()
 {
+#ifdef _DEBUG
+
+	//デバッグ用のシーン切り替え
+	if (input_->PushKey(DIK_SPACE))
+	{
+		isTransitionStart_ = true;
+		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+	}
+
+#endif // DEBUG
+
+
 	//Skydomeの更新
 	skydome_->Update();
 

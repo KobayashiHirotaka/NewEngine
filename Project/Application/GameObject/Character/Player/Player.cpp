@@ -82,7 +82,7 @@ void Player::Initialize()
 	playerCursol_.reset(Model::CreateFromOBJ("resource/playerCursol", "playerCursol.obj"));
 
 	worldTransformCursol_.Initialize();
-	worldTransformCursol_.translation = { worldTransform_.translation.x - 0.3f,worldTransform_.translation.y + 0.4f,worldTransform_.translation.z };
+	worldTransformCursol_.translation = { worldTransform_.translation.x, worldTransform_.translation.y + 0.4f, worldTransform_.translation.z };
 	worldTransformCursol_.rotation.y = 1.5f;
 	worldTransformCursol_.scale = { 0.3f, 0.3f, 0.3f };
 
@@ -98,82 +98,6 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	if (input_->PressKey(DIK_0))
-	{
-		animationIndex_ = 0;
-	}
-
-	if (input_->PressKey(DIK_1))
-	{
-		animationIndex_ = 1;
-	}
-
-	if (input_->PressKey(DIK_2))
-	{
-		animationIndex_ = 2;
-	}
-	
-	if (input_->PressKey(DIK_3))
-	{
-		animationIndex_ = 3;
-	}
-
-	if (input_->PressKey(DIK_4))
-	{
-		animationIndex_ = 4;
-	}
-
-	if (input_->PressKey(DIK_5))
-	{
-		animationIndex_ = 5;
-	}
-
-	if (input_->PressKey(DIK_6))
-	{
-		animationIndex_ = 6;
-	}
-
-	if (input_->PressKey(DIK_7))
-	{
-		animationIndex_ = 7;
-	}
-
-	if (input_->PressKey(DIK_8))
-	{
-		animationIndex_ = 8;
-	}
-
-	if (input_->PressKey(DIK_9))
-	{
-		animationIndex_ = 9;
-	}
-
-	if (input_->PressKey(DIK_Q))
-	{
-		animationIndex_ = 10;
-	}
-
-	if (input_->PressKey(DIK_W))
-	{
-		animationIndex_ = 11;
-	}
-
-	if (input_->PressKey(DIK_E))
-	{
-		animationIndex_ = 12;
-	}
-
-	if (input_->PressKey(DIK_R))
-	{
-		animationIndex_ = 13;
-	}
-
-	if (input_->PressKey(DIK_M))
-	{
-		finisherGauge_ -= 1.0f;
-	}
-
-
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
@@ -187,11 +111,11 @@ void Player::Update()
 			//攻撃中(攻撃判定あり)にモデルの色を変える
 			model_->GetMaterial()->SetColor({ 1.0f,0.0f,0.0f,1.0f });
 		}
-		else if (attackData_.isRecovery)
-		{
-			//硬直中にモデルの色を変える
-			model_->GetMaterial()->SetColor({ 0.0f,0.0f,1.0f,1.0f });
-		}
+	    else if (attackData_.isRecovery)
+	    {
+		    //硬直中にモデルの色を変える
+		    model_->GetMaterial()->SetColor({ 0.0f,0.0f,1.0f,1.0f });
+	    }
 		else
 		{
 			model_->GetMaterial()->SetColor({ 1.0f,1.0f,1.0f,1.0f });
@@ -209,6 +133,7 @@ void Player::Update()
 	{
 		characterState_.direction = Direction::Right;
 		worldTransform_.rotation.y = 1.7f;
+		isDirectionRight_ = true;
 	}
 
 	if (enemyWorldPosition.x < playerWorldPosition.x && characterState_.behavior != Behavior::kJump
@@ -216,6 +141,7 @@ void Player::Update()
 	{
 		characterState_.direction = Direction::Left;
 		worldTransform_.rotation.y = 4.6f;
+		isDirectionRight_ = false;
 	}
 
 	HitCombo();
@@ -238,7 +164,7 @@ void Player::Draw(const Camera& camera)
 {
 	model_->Draw(worldTransform_, camera, animationIndex_);
 
-	if (!characterState_.isDown)
+	if (!characterState_.isDown && timerData_.finisherTimer == 120)
 	{
 		playerCursol_->Draw(worldTransformCursol_, camera, 0);
 	}
@@ -288,6 +214,8 @@ void Player::ImGui(const char* title)
 	ImGui::Text("isRecovery %d",attackData_.isRecovery);
 	ImGui::DragFloat("animationTime", &animationTime_, 0.0001f);
 
+	ImGui::Text("finisherTimer %d", timerData_.finisherTimer);
+
 	ImGui::Text("attackStartTime %d", attackData_.attackStartTime);
 	ImGui::Text("swingTime %d", attackData_.attackEndTime);
 	ImGui::Text("recoveryTime %d", attackData_.recoveryTime);
@@ -328,7 +256,8 @@ void Player::BehaviorRootUpdate()
 
 		//攻撃
 		//弱攻撃
-		if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)) && !characterState_.isDown)
+		if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) &&
+			input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))) && !characterState_.isDown)
 		{
 			attackType = "LightPunch";
 			AttackStart(attackData_.isLightPunch);
@@ -342,45 +271,36 @@ void Player::BehaviorRootUpdate()
 		//}
 
 		//強攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !characterState_.isDown)
 		{
 			attackType = "HighPunch";
 			AttackStart(attackData_.isHighPunch);
 		}
 		
 		//タックル攻撃
-		//右向きのとき
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& characterState_.direction == Direction::Right && !characterState_.isDown)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)))
 		{
 			attackType = "Tackle";
 			AttackStart(attackData_.isTackle);
 		}
 
-		//タックル攻撃
-		//左向きのとき
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)
-			&& characterState_.direction == Direction::Left && !characterState_.isDown)
+		//アッパー攻撃
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !characterState_.isDown)
 		{
-			attackType = "Tackle";
-			AttackStart(attackData_.isTackle);
+			attackType = "Uppercut";
+			AttackStart(attackData_.isUppercut);
 		}
 
 		//必殺技
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && isFinisherCharge_ && !characterState_.isDown)
 		{
-			attackType = "Tackle";
-			AttackStart(attackData_.isTackle);
+			attackType = "Finisher";
+			AttackStart(attackData_.isFinisher);
 			finisherGauge_ = 0.0f;
+			timerData_.finisherTimer = 120;
+			attackData_.isFinisherFirstAttack = false;
 		}
-	}
-
-	//必殺技(テスト用)
-	if (input_->PushKey(DIK_F) && isFinisherCharge_ && !characterState_.isDown)
-	{
-		attackType = "HighPunch";
-		AttackStart(attackData_.isHighPunch);
-		finisherGauge_ = 0.0f;
 	}
 }
 
@@ -424,9 +344,9 @@ void Player::BehaviorAttackUpdate()
 		//キャンセルの処理(中TC)
 		if (input_->GetJoystickState())
 		{
-			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 10 && attackData_.attackAnimationFrame < 20
-				&& (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))
-					&& input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && characterState_.isHitCharacter)
+			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 10 && attackData_.attackAnimationFrame < 20 && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) 
+				|| input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B)) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && 
+				characterState_.isHitCharacter)
 			{
 				attackType = "TCMiddlePunch";
 				attackData_.isAttack = false;
@@ -557,6 +477,21 @@ void Player::BehaviorAttackUpdate()
 				model_->SetAnimationTime(animationTime_);
 				ResetCollision();
 			}
+
+			//強コンボ
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
+				&& characterState_.isHitCharacter)
+			{
+				attackType = "Uppercut";
+				attackData_.isAttack = false;
+				attackData_.isTCMiddlePunch = false;
+				attackData_.isUppercut = true;
+				animationTime_ = 0.0f;
+				attackData_.attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime_);
+				ResetCollision();
+			}
 		}
 
 		attackData_.attackAnimationFrame++;
@@ -607,7 +542,7 @@ void Player::BehaviorAttackUpdate()
 		{
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
-
+		
 		if (characterState_.direction == Direction::Right)
 		{
 			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
@@ -641,26 +576,10 @@ void Player::BehaviorAttackUpdate()
 		if (input_->GetJoystickState())
 		{
 			//タックル攻撃
-			//右向きのとき
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& characterState_.direction == Direction::Right)
-			{
-				attackType = "Tackle";
-				attackData_.isAttack = false;
-				attackData_.isHighPunch = false;
-				attackData_.isTackle = true;
-				animationTime_ = 0.0f;
-				attackData_.attackAnimationFrame = 0;
-				model_->SetAnimationTime(animationTime_);
-				ResetCollision();
-			}
-
-			//タックル攻撃
-			//左向きのとき
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& characterState_.direction == Direction::Left)
+				&& (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) || 
+				input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || 
+				input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))))
 			{
 				attackType = "Tackle";
 				attackData_.isAttack = false;
@@ -742,6 +661,205 @@ void Player::BehaviorAttackUpdate()
 
 		attackData_.attackAnimationFrame++;
 	}
+
+	//アッパー攻撃
+	if (attackData_.isUppercut)
+	{
+		animationIndex_ = 14;
+		characterState_.isGuard = false;
+		//Vector3 particlePosition = GetRightHandJointWorldPosition();
+
+		if (!characterState_.isDown)
+		{
+			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
+		}
+
+		if (characterState_.direction == Direction::Right)
+		{
+			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+			SetAABB(aabb_);
+
+			EvaluateAttackTiming();
+		}
+		else if (characterState_.direction == Direction::Left)
+		{
+			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			SetAABB(aabb_);
+
+			EvaluateAttackTiming();
+		}
+
+		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
+		{
+			AttackEnd(attackData_.isUppercut);
+			ResetCollision();
+		}
+
+		//キャンセルの処理(横A)
+		if (input_->GetJoystickState())
+		{
+			//強コンボ
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > 10 && attackData_.attackAnimationFrame < 40
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
+				&& isFinisherCharge_)
+			{
+				attackData_.isAttack = false;
+				attackData_.isUppercut = false;
+				attackData_.isFinisher = true;
+				animationTime_ = 0.0f;
+				attackData_.attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime_);
+				ResetCollision();
+				finisherGauge_ = 0.0f;
+			}
+		}
+
+		attackData_.attackAnimationFrame++;
+	}
+
+	//超必
+	if (attackData_.isFinisher)
+	{
+		bool isFinisherEffect = false;
+		characterState_.isGuard = false;
+
+		if (timerData_.finisherTimer > 40 && attackData_.attackAnimationFrame < 80 && !attackData_.isFinisherFirstAttack && !attackData_.isFinisherSecondAttack)
+		{
+			isFinisherEffect = true;
+			timerData_.finisherTimer--;
+			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
+		}
+		else
+		{
+			isFinisherEffect = false;
+		}
+
+		if (isFinisherEffect)
+		{
+			if (isDirectionRight_)
+			{
+				animationIndex_ = 15;
+			}
+			else 
+			{
+				animationIndex_ = 18;
+			}
+		}
+		else if(!attackData_.isFinisherFirstAttack && !attackData_.isFinisherSecondAttack)
+		{
+			attackType = "FinisherFirstAttack";
+			timerData_.finisherTimer = 120;
+			attackData_.isFinisherFirstAttack = true;
+			animationTime_ = 0.0f;
+			attackData_.attackAnimationFrame = 0;
+			model_->SetAnimationTime(animationTime_);
+		}
+
+		if (attackData_.isFinisherFirstAttack && !characterState_.isDown)
+		{
+			animationIndex_ = 16;
+			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
+
+			if (characterState_.direction == Direction::Right)
+			{
+				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.4f,0.3f,0.3f} };
+				SetAABB(aabb_);
+			}
+			else if (characterState_.direction == Direction::Left)
+			{
+				aabb_ = { {-0.4f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				SetAABB(aabb_);
+			}
+
+			EvaluateAttackTiming();
+
+			if (attackData_.isAttack)
+			{
+				isFinisherInvincible_ = true;
+			}
+			else
+			{
+				isFinisherInvincible_ = false;
+			}
+
+			if (enemy_->GetIsDown() && attackData_.attackAnimationFrame > 10 && attackData_.attackAnimationFrame < 30)
+			{
+				attackType = "FinisherSecondAttack";
+				timerData_.finisherTimer = 120;
+				attackData_.isAttack = false;
+				attackData_.isFinisherFirstAttack = false;
+				isFinisherInvincible_ = false;
+				attackData_.isFinisherSecondAttack = true;
+				animationTime_ = 0.0f;
+				attackData_.attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime_);
+				ResetCollision();
+			}
+
+			if ((characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime) && !enemy_->GetIsDown())
+			{
+				timerData_.finisherTimer = 120;
+				AttackEnd(attackData_.isFinisher);
+				ResetCollision();
+				attackData_.isFinisherFirstAttack = false;
+				isFinisherInvincible_ = false;
+			}
+		}
+
+		if (attackData_.isFinisherSecondAttack && !characterState_.isDown)
+		{
+			animationIndex_ = 17;
+			UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
+
+			if (characterState_.direction == Direction::Right)
+			{
+				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+				SetAABB(aabb_);
+
+				if (!characterState_.isHitCharacter)
+				{
+					worldTransform_.translation.x += 0.01f;
+				}
+			}
+			else if (characterState_.direction == Direction::Left)
+			{
+				aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				SetAABB(aabb_);
+
+				if (!characterState_.isHitCharacter)
+				{
+					worldTransform_.translation.x -= 0.01f;
+				}
+			}
+
+			EvaluateAttackTiming();
+
+			if (attackData_.attackAnimationFrame > attackData_.recoveryTime)
+			{
+				attackType = "Tackle";
+				attackData_.isAttack = false;
+				attackData_.isFinisher = false;
+				attackData_.isFinisherSecondAttack = false;
+				attackData_.isTackle = true;
+				animationTime_ = 0.0f;
+				attackData_.attackAnimationFrame = 0;
+				model_->SetAnimationTime(animationTime_);
+				ResetCollision();
+			}
+		}
+
+		if (characterState_.isDown)
+		{
+			timerData_.finisherTimer = 120;
+			AttackEnd(attackData_.isFinisher);
+			ResetCollision();
+			attackData_.isFinisherFirstAttack = false;
+			attackData_.isFinisherSecondAttack = false;
+			isFinisherInvincible_ = false;
+		}
+
+		attackData_.attackAnimationFrame++;
+	}
 }
 
 void Player::BehaviorJumpInitialize()
@@ -763,7 +881,8 @@ void Player::BehaviorJumpUpdate()
 
 	if (input_->GetJoystickState())
 	{
-		if (worldTransform_.translation.y > 0.3f && input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !attackData_.isJumpAttack)
+		if (worldTransform_.translation.y > 0.3f && !attackData_.isJumpAttack && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)
+			|| input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_A)))
 		{
 			attackType = "JumpAttack";
 			attackData_.isAttack = false;
@@ -912,6 +1031,9 @@ void Player::OnCollision(Collider* collider, float damage)
 			damage = 8.0f;
 			hp_ += damage;
 			characterState_.isHitBullet = true;
+			attackData_.isFinisher = false;
+
+			AdjustFinisherGauge(1.0f);
 
 			HitStop(5);
 		}
@@ -925,6 +1047,8 @@ void Player::OnCollision(Collider* collider, float damage)
 			damage = 8.0f;
 			hp_ += damage;
 			characterState_.isHitAirBullet = true;
+
+			AdjustFinisherGauge(1.0f);
 
 			HitStop(5);
 		}
@@ -1056,64 +1180,77 @@ void Player::OnCollision(Collider* collider, float damage)
 			UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 		}
 
-		//弱パンチ
-		if (enemy_->GetIsAttack() && enemy_->GetIsLightPunch() && !characterState_.isDown && !characterState_.isGuard)
+		if (!isFinisherInvincible_)
 		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 2.0f;
-			hp_ += damage;
-			characterState_.isHitLightPunch = true;
+			//弱パンチ
+			if (enemy_->GetIsAttack() && enemy_->GetIsLightPunch() && !characterState_.isDown && !characterState_.isGuard)
+			{
+				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				damage = 2.0f;
+				hp_ += damage;
+				characterState_.isHitLightPunch = true;
 
-			HitStop(10);
-		}
+				AdjustFinisherGauge(1.0f);
 
-		//強パンチ
-		if (enemy_->GetIsHighPunch() && !characterState_.isDown && !characterState_.isGuard)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 10.0f;
-			hp_ += damage;
-			characterState_.isHitHighPunch = true;
+				HitStop(10);
+			}
 
-			HitStop(10);
-		}
+			//強パンチ
+			if (enemy_->GetIsHighPunch() && !characterState_.isDown && !characterState_.isGuard)
+			{
+				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				damage = 10.0f;
+				hp_ += damage;
+				characterState_.isHitHighPunch = true;
 
-		//TC中パンチ
-		if (enemy_->GetIsTCMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 2.0f;
-			hp_ += damage;
-			characterState_.isHitTCMiddlePunch = true;
+				AdjustFinisherGauge(2.0f);
 
-			HitStop(10);
-		}
+				HitStop(10);
+			}
 
-		//タックル
-		//キャンセルじゃないとき
-		if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && !characterState_.isDown && !characterState_.isGuard)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 15.0f;
-			hp_ += damage;
-			characterState_.isHitTackle = true;
+			//TC中パンチ
+			if (enemy_->GetIsTCMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
+			{
+				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				damage = 2.0f;
+				hp_ += damage;
+				characterState_.isHitTCMiddlePunch = true;
 
-			HitStop(30);
-		}
+				AdjustFinisherGauge(2.0f);
 
-		//キャンセルのとき
-		if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.5f)
-		{
-			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 4.0f;
-			hp_ += damage;
-			timerData_.downAnimationTimer = 60;
-			float animationTime = 0.0f;
-			model_->SetAnimationTime(animationTime);
-			characterState_.isHitHighPunch = false;
-			characterState_.isHitTackle = true;
+				HitStop(10);
+			}
 
-			HitStop(10);
+			//タックル
+			//キャンセルじゃないとき
+			if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && !characterState_.isDown && !characterState_.isGuard)
+			{
+				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				damage = 15.0f;
+				hp_ += damage;
+				characterState_.isHitTackle = true;
+
+				AdjustFinisherGauge(4.0f);
+
+				HitStop(30);
+			}
+
+			//キャンセルのとき
+			if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.5f)
+			{
+				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				damage = 4.0f;
+				hp_ += damage;
+				timerData_.downAnimationTimer = 60;
+				float animationTime = 0.0f;
+				model_->SetAnimationTime(animationTime);
+				characterState_.isHitHighPunch = false;
+				characterState_.isHitTackle = true;
+
+				AdjustFinisherGauge(3.0f);
+
+				HitStop(10);
+			}
 		}
 	}
 }
@@ -1142,12 +1279,12 @@ void Player::Move()
 		{
 			if (characterState_.direction == Direction::Right && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
 			{
-				// 敵を右方向に押す
+				//敵を右方向に押す
 				PushEnemy(enemyPosition, 0.05f);
 			}
 			else if (characterState_.direction == Direction::Left && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
 			{
-				// 敵を左方向に押す
+				//敵を左方向に押す
 				PushEnemy(enemyPosition, -0.05f);
 			}
 		}
@@ -1228,7 +1365,6 @@ void Player::Move()
 			moveData_.velocity = Normalize(moveData_.velocity);
 			moveData_.velocity = Multiply(frontSpeed_, moveData_.velocity);
 
-			// 平行移動
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 			worldTransform_.UpdateMatrixEuler();
@@ -1241,7 +1377,6 @@ void Player::Move()
 			moveData_.velocity = Normalize(moveData_.velocity);
 			moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
 
-			// 平行移動
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 			worldTransform_.UpdateMatrixEuler();
@@ -1350,6 +1485,33 @@ void Player::FinisherGaugeBarUpdate()
 	}
 }
 
+void Player::AdjustFinisherGauge(float value)
+{
+	if (finisherGauge_ > -50.0f)
+	{
+		finisherGauge_ -= value;
+
+		if (finisherGauge_ < -50.0f)
+		{
+			finisherGauge_ = -50.0f;
+		}
+	}
+
+	float finisherGaugeEnemy = enemy_->GetFinisherGauge();
+
+	if (finisherGaugeEnemy < 50.0f)
+	{
+		finisherGaugeEnemy += value;
+
+		if (finisherGaugeEnemy > 50.0f)
+		{
+			finisherGaugeEnemy = 50.0f;
+		}
+	}
+
+	enemy_->SetFinisherGauge(finisherGaugeEnemy);
+}
+
 void Player::Reset()
 {
 	ICharacter::Reset();
@@ -1357,8 +1519,11 @@ void Player::Reset()
 	hp_ = -100.0f;
 
 	animationIndex_ = 5;
+	animationTime_ = 0.0f;
+	model_->SetAnimationTime(animationTime_);
 
 	worldTransform_.translation = { -3.0f,0.0f,0.0f };
+	worldTransform_.rotation = { 0.0f,1.7f,0.0f };
 	characterState_.direction = Direction::Right;
 
 	worldTransform_.UpdateMatrixEuler();
@@ -1537,7 +1702,7 @@ void Player::DownAnimation()
 
 		if (timerData_.downAnimationTimer < 30 && hp_ < 0.0f)
 		{
-			ICharacter::DownAnimationEnd(4, characterState_.isHitBullet);
+			DownAnimationEnd(4, characterState_.isHitBullet);
 			ResetCollision();
 
 			isParticle_ = false;
@@ -1580,7 +1745,7 @@ void Player::DownAnimation()
 
 		if (timerData_.downAnimationTimer < 30 && hp_ < 0.0f)
 		{
-			ICharacter::DownAnimationEnd(4, characterState_.isHitAirBullet);
+			DownAnimationEnd(4, characterState_.isHitAirBullet);
 			ResetCollision();
 
 			isParticle_ = false;
@@ -1709,15 +1874,24 @@ void Player::HitCombo()
 		}
 	}
 
-	if (timerData_.comboTimer <= 120)
+	if (timerData_.comboTimer >= 0)
 	{
 		timerData_.comboTimer--;
 	}
 
 	if (timerData_.comboTimer < 0)
 	{
-		timerData_.comboTimer = 60;
+		timerData_.comboTimer = 0;
 		comboCount_ = 0;
 		firstAttack_ = "";
 	}
+}
+
+Vector3 Player::GetRightHandJointWorldPosition()
+{
+	WorldTransform handJointWorldTransform = model_->GetJointWorldTransform("mixamorig:RightHandIndex1");
+
+	handJointWorldTransform.matWorld = Multiply(handJointWorldTransform.matWorld, worldTransform_.matWorld);
+
+	return Vector3 { handJointWorldTransform.matWorld.m[3][0], handJointWorldTransform.matWorld.m[3][1], handJointWorldTransform.matWorld.m[3][2] };
 }

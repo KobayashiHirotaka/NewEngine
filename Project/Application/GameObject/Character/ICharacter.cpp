@@ -131,14 +131,19 @@ void ICharacter::Reset()
 	//アニメーション用の変数
 	attackData_.attackAnimationFrame = 0;
 	animationTime_ = 0;
+
+	//時間
 	timerData_.downAnimationTimer = 60;
+	timerData_.guardAnimationTimer = 60;
+	timerData_.stanTimer = 60;
+	timerData_.comboTimer = 60;
+	timerData_.finisherTimer = 120;
 
 	//コンボカウント
 	comboCount_ = 0;
 
 	//ゲージ
 	guardGauge_ = 0.0f;
-	finisherGauge_ = 0.0f;
 
 	//ガードしているかどうか
 	characterState_.isGuard = false;
@@ -151,6 +156,11 @@ void ICharacter::Reset()
 	attackData_.isTCMiddlePunch = false;
 	attackData_.isTCHighPunch = false;
 	attackData_.isTackle = false;
+	attackData_.isUppercut = false;
+	attackData_.isShot = false;
+	attackData_.isFinisher = false;
+	attackData_.isFinisherFirstAttack = false;
+	attackData_.isFinisherSecondAttack = false;
 
 	//キャラクターと当たっているかどうか
 	characterState_.isHitCharacter = false;
@@ -162,6 +172,11 @@ void ICharacter::Reset()
 	characterState_.isHitTCMiddlePunch = false;
 	characterState_.isHitTCHighPunch = false;
 	characterState_.isHitTackle = false;
+	characterState_.isHitUppercut = false;
+	characterState_.isHitFinisherFirstAttack = false;
+	characterState_.isHitFinisherSecondAttack = false;
+	characterState_.isHitBullet = false;
+	characterState_.isHitAirBullet = false;
 	characterState_.isDown = false;
 
 	ResetCollision();

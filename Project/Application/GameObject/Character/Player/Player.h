@@ -68,6 +68,8 @@ public:
 
 	void FinisherGaugeBarUpdate()override;
 
+	void AdjustFinisherGauge(float value)override;
+
 	void ComboNumberSpriteUpdate()override;
 
 	void HitCombo();
@@ -78,6 +80,10 @@ public:
 	WorldTransform& GetWorldTransform()override { return worldTransform_; }
 
 	Vector3 GetWorldPosition() override;
+
+	Vector3 GetRightHandJointWorldPosition();
+
+	bool GetIsDirectionRight() { return isDirectionRight_; };
 
 	//Setter
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
@@ -105,6 +111,9 @@ private:
 	//当たり判定
 	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
 
+	//向き
+	bool isDirectionRight_ = false;
+
 	//リソース
 	//スプライト(hp)
 	UI hpBar_;
@@ -121,8 +130,6 @@ private:
 	const float finisherGaugeBarSpace_ = 627.0f;
 	float finisherGaugeBarSize_ = 240.0f;
 
-	bool isFinisherCharge_ = false;
-
 	//スプライト(コンボ表示)
 	std::unique_ptr<Sprite>hitSprite_ = nullptr;
 	uint32_t hitTextureHandle_;
@@ -138,5 +145,7 @@ private:
 	
 	//エディター用
 	std::string attackType;
+
+	bool isFinisherInvincible_ = false;
 };
 

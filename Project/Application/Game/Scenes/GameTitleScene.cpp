@@ -56,8 +56,11 @@ void GameTitleScene::Initialize()
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
 	//攻撃操作説明用のSprite
-	attackCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/PlayAttackCommandList.png");
-	attackCommandListSprite_.reset(Sprite::Create(attackCommandListTextureHandle_, { 0.0f,0.0f }));
+	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("resource/images/NewPlayAttackCommandList.png");
+	attackCommandListSprite_[0].reset(Sprite::Create(attackCommandListTextureHandle_[0], {0.0f,0.0f}));
+
+	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("resource/images/NewPlayAttackCommandList2.png");
+	attackCommandListSprite_[1].reset(Sprite::Create(attackCommandListTextureHandle_[1], { 0.0f,0.0f }));
 
 	//トランジション用のSprite
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
@@ -75,6 +78,17 @@ void GameTitleScene::Initialize()
 
 void GameTitleScene::Update()
 {
+#ifdef _DEBUG
+
+	//デバッグ用のシーン切り替え
+	if (input_->PushKey(DIK_SPACE))
+	{
+		isTransitionStart_ = true;
+		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+	}
+
+#endif // DEBUG
+
 	//Skydomeの更新
 	skydome_->Update();
 
@@ -89,13 +103,6 @@ void GameTitleScene::Update()
 			isTransitionStart_ = true;
 			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 		}
-	}
-
-	//デバッグ用のシーン切り替え
-	if (input_->PushKey(DIK_SPACE))
-	{
-		isTransitionStart_ = true;
-		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 	}
 
 	//トランジション
@@ -141,16 +148,24 @@ void GameTitleScene::Update()
 			spriteCount_ = 0;
 		}
 
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) && isOpen_ && spriteCount_ == 1)
+		if (isOpen_)
 		{
-			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
-			spriteCount_ = 2;
-		}
-
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) && isOpen_ && spriteCount_ == 2)
-		{
-			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
-			spriteCount_ = 1;
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT))
+			{
+				if (spriteCount_ < 3) 
+				{
+					spriteCount_++;
+					audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+				}
+			}
+			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT))
+			{
+				if (spriteCount_ > 1) 
+				{
+					spriteCount_--;
+					audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+				}
+			}
 		}
 	}
 
@@ -221,7 +236,12 @@ void GameTitleScene::Draw()
 
 	if (isOpen_ && spriteCount_ == 2)
 	{
-		attackCommandListSprite_->Draw();
+		attackCommandListSprite_[0]->Draw();
+	}
+
+	if (isOpen_ && spriteCount_ == 3)
+	{
+		attackCommandListSprite_[1]->Draw();
 	}
 
 	Sprite::PostDraw();
