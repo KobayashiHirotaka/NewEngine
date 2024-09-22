@@ -145,7 +145,7 @@ void ICharacter::Reset()
 	//ゲージ
 	guardGauge_ = 0.0f;
 
-	//ガードしているかどうか
+	//キャラクターがガードしているかどうか
 	characterState_.isGuard = false;
 
 	//各攻撃をしているかどうか
@@ -161,6 +161,12 @@ void ICharacter::Reset()
 	attackData_.isFinisher = false;
 	attackData_.isFinisherFirstAttack = false;
 	attackData_.isFinisherSecondAttack = false;
+
+	//ダメージを受けているかどうか
+	attackData_.isDamaged = false;
+
+	//攻撃をガードしているかどうか
+	attackData_.isGuarding = false;
 
 	//キャラクターと当たっているかどうか
 	characterState_.isHitCharacter = false;
@@ -222,6 +228,7 @@ void ICharacter::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
 	animationTime_ = 0.0f;
 	model_->SetAnimationTime(animationTime_);
 	isHitAttackType = false;
+	attackData_.isDamaged = false;
 	characterState_.isDown = false;
 }
 

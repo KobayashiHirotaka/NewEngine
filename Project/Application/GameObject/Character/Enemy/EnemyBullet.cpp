@@ -81,7 +81,7 @@ void EnemyBullet::ParticleDraw(const Camera& camera)
 }
 
 
-void EnemyBullet::OnCollision(Collider* collider, float damage)
+void EnemyBullet::OnCollision(Collider* collider)
 {
 	//プレイヤーと弾が当たった時の処理
 	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)

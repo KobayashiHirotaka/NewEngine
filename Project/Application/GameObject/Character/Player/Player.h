@@ -24,7 +24,7 @@ public:
 
 	void ParticleDraw(const Camera& camera)override;
 
-	void OnCollision(Collider* collider, float damage)override;
+	void OnCollision(Collider* collider)override;
 
 	void Reset()override;
 
@@ -54,6 +54,8 @@ public:
 	void AttackEnd(bool& isAttackType)override;
 
 	void EvaluateAttackTiming()override;
+
+	void ApplyDamage()override;
 
 	//当たり判定の初期化
 	void ResetCollision()override;
@@ -142,9 +144,6 @@ private:
 	uint32_t weaponAttackSoundHandle_ = 0u;
 	uint32_t damageSoundHandle_ = 0u;
 	uint32_t guardSoundHandle_ = 0u;
-	
-	//エディター用
-	std::string attackType;
 
 	bool isFinisherInvincible_ = false;
 };

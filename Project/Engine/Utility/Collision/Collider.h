@@ -21,7 +21,7 @@ public:
 	AABB GetAABB() { return aabb_; };
 	void SetAABB(AABB& aabb) { aabb_ = aabb; };
 	virtual ~Collider() {}
-	virtual void OnCollision(Collider* collider, float damage) = 0;
+	virtual void OnCollision(Collider* collider) = 0;
 	virtual Vector3 GetWorldPosition() = 0;
 	virtual WorldTransform& GetWorldTransform() = 0;
 	uint32_t GetCollisionAttribute() const { return collisionAttribute_; }

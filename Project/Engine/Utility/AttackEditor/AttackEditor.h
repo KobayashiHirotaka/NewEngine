@@ -13,11 +13,21 @@ using json = nlohmann::json;
 
 struct AttackParameter 
 {
+    //当たり判定のつき始めの時間
     int attackStartTime = 0;
 
+    //当たり判定のつき終わりの時間
     int attackEndTime = 0;
 
+    //攻撃後の硬直時間
     int recoveryTime = 0;
+
+    //ダメージ
+    int damage = 0;
+
+    //攻撃の属性
+    std::string attackAttribute;
+
 };
 
 class AttackEditor

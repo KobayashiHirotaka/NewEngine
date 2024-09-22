@@ -613,7 +613,7 @@ void Enemy::UpdateAnimationTime(float animationTime, bool isLoop, float frameRat
 	ICharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, modelFighterBody);
 }
 
-void Enemy::OnCollision(Collider* collider, float damage)
+void Enemy::OnCollision(Collider* collider)
 {
 	//プレイヤーの近接攻撃との当たり判定
 	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
@@ -684,22 +684,22 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		//弱パンチ
 		if (player_->GetIsAttack() && player_->GetIsLightPunch() && !characterState_.isGuard )
 		{
-			if (!characterState_.isDown)
+			if (!characterState_.isDown && firstAttack_ != "JumpAttack")
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-				damage = 2.0f;
-				hp_ -= damage;
+				attackData_.damage = 2.0f;
+				ApplyDamage();
 				characterState_.isHitLightPunch = true;
 
 				AdjustFinisherGauge(1.0f);
 
 				HitStop(10);
 			}
-			else if(firstAttack_ == "JumpAttack")
+			else
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-				damage = 0.2f;
-				hp_ -= damage;
+				attackData_.damage = 4.0f;
+				ApplyDamage();
 				characterState_.isHitLightPunch = true;
 
 				AdjustFinisherGauge(1.0f);
@@ -712,8 +712,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsAttack() && player_->GetIsMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 5.0f;
-			hp_ -= damage;
+			attackData_.damage = 5.0f;
+			ApplyDamage();
 			characterState_.isHitMiddlePunch = true;
 
 			AdjustFinisherGauge(2.0f);
@@ -725,8 +725,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsHighPunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 7.0f;
-			hp_ -= damage;
+			attackData_.damage = 7.0f;
+			ApplyDamage();
 			characterState_.isHitHighPunch = true;
 
 			AdjustFinisherGauge(2.0f);
@@ -738,8 +738,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsTCMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 2.0f;
-			hp_ -= damage;
+			attackData_.damage = 2.0f;
+			ApplyDamage();
 			characterState_.isHitTCMiddlePunch = true;
 
 			AdjustFinisherGauge(2.0f);
@@ -751,8 +751,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsTCHighPunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 2.0f;
-			hp_ -= damage;
+			attackData_.damage = 2.0f;
+			ApplyDamage();
 			characterState_.isHitTCHighPunch = true;
 
 			AdjustFinisherGauge(2.0f);
@@ -764,8 +764,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsAttack() && player_->GetIsJumpAttack() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 3.0f;
-			hp_ -= damage;
+			attackData_.damage = 3.0f;
+			ApplyDamage();
 			characterState_.isHitJumpAttack = true;
 
 			if (characterState_.direction == Direction::Right)
@@ -787,8 +787,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsTackle() && player_->GetIsAttack() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 15.0f;
-			hp_ -= damage;
+			attackData_.damage = 15.0f;
+			ApplyDamage();
 			characterState_.isHitTackle = true;
 
 			AdjustFinisherGauge(4.0f);
@@ -800,8 +800,9 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsTackle() && player_->GetIsAttack() && characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.5f)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 4.0f;
-			hp_ -= damage;
+			attackData_.isDamaged = false;
+			attackData_.damage = 4.0f;
+			ApplyDamage();
 			timerData_.downAnimationTimer = 60;
 			float animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
@@ -817,8 +818,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsUppercut() && player_->GetIsAttack() && !characterState_.isGuard &&!characterState_.isDown)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 10.0f;
-			hp_ -= damage;
+			attackData_.damage = 10.0f;
+			ApplyDamage();
 			characterState_.isHitUppercut = true;
 
 			AdjustFinisherGauge(4.0f);
@@ -830,8 +831,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsFinisherFirstAttack() && player_->GetIsAttack() && !characterState_.isGuard && !characterState_.isDown)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 10.0f;
-			hp_ -= damage;
+			attackData_.damage = 10.0f;
+			ApplyDamage();
 			characterState_.isHitFinisherFirstAttack = true;
 
 			HitStop(10);
@@ -840,8 +841,8 @@ void Enemy::OnCollision(Collider* collider, float damage)
 		if (player_->GetIsFinisherSecondAttack() && player_->GetIsAttack() && !characterState_.isGuard && !characterState_.isDown)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 5.0f;
-			hp_ -= damage;
+			attackData_.damage = 5.0f;
+			ApplyDamage();
 			characterState_.isHitFinisherSecondAttack = true;
 
 			HitStop(10);
@@ -1167,6 +1168,15 @@ void Enemy::Reset()
 void Enemy::HitStop(int milliseconds)
 {
 	std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+}
+
+void Enemy::ApplyDamage()
+{
+	if (!attackData_.isDamaged)
+	{
+		attackData_.isDamaged = true;
+		hp_ -= attackData_.damage;
+	}
 }
 
 void Enemy::DownAnimation()

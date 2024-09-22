@@ -110,6 +110,9 @@ public:
 		//硬直
 		int recoveryTime = 0;
 
+		//ダメージ
+		float damage = 0.0f;
+
 		//攻撃しているか
 		bool isAttack = false;
 
@@ -147,6 +150,12 @@ public:
 		bool isFinisher = false;
 		bool isFinisherFirstAttack = false;
 		bool isFinisherSecondAttack = false;
+
+		//ダメージを受けているかどうか
+		bool isDamaged = false;
+
+		//ガードしているかどうか
+		bool isGuarding = false;
 	};
 
 	struct TimerData
@@ -217,6 +226,8 @@ public:
 	virtual void AttackEnd(bool& isAttackType) = 0;
 
 	virtual void EvaluateAttackTiming() = 0;
+
+	virtual void ApplyDamage() = 0;
 
 	//当たり判定
 	virtual void ResetCollision() = 0;
@@ -319,4 +330,7 @@ protected:
 	//画面端
 	float leftEdge_ = -4.0f;
 	float rightEdge_ = 4.0f;
+
+	//エディター用
+	std::string attackType;
 };
