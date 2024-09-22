@@ -794,6 +794,7 @@ void Enemy::OnCollision(Collider* collider)
 		//キャンセルのとき
 		if (player_->GetIsTackle() && player_->GetIsAttack() && characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.5f)
 		{
+			attackData_.isDamaged = false;
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			ApplyDamage();
 			timerData_.downAnimationTimer = 60;
@@ -801,7 +802,6 @@ void Enemy::OnCollision(Collider* collider)
 			model_->SetAnimationTime(animationTime);
 			characterState_.isHitHighPunch = false;
 			characterState_.isHitTackle = true;
-			attackData_.isDamaged = false;
 
 			AdjustFinisherGauge(3.0f);
 
@@ -1391,7 +1391,7 @@ void Enemy::DownAnimation()
 
 		SetAABB(aabb_);
 
-		if (!player_->GetIsTackle() && hp_ > 0)
+		if (timerData_.downAnimationTimer < 0 && hp_ > 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitTackle);
 			ResetCollision();
