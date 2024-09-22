@@ -30,6 +30,4 @@ public:
 	void SetCollisionMask(uint32_t mask) { collisionMask_ = mask; }
 	uint32_t GetCollisionPrimitive() { return collisionPrimitive_; };
 	void SetCollisionPrimitive(uint32_t collisionPrimitive) { collisionPrimitive_ = collisionPrimitive; };
-	float GetDamage() { return damage_; };
-	void SetDamage(float damage) { damage_ = damage; };
 };

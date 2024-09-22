@@ -2,51 +2,61 @@
     "FinisherFirstAttack": {
         "attackEndTime": 25,
         "attackStartTime": 0,
-        "recoveryTime": 65
+        "recoveryTime": 65,
+        "damage": 0
     },
     "FinisherSecondAttack": {
         "attackEndTime": 17,
         "attackStartTime": 0,
-        "recoveryTime": 25
+        "recoveryTime": 25,
+        "damage": 0
     },
     "HighPunch": {
         "attackEndTime": 25,
         "attackStartTime": 5,
-        "recoveryTime": 40
+        "recoveryTime": 40,
+        "damage": 0
     },
     "JumpAttack": {
         "attackEndTime": 18,
         "attackStartTime": 5,
-        "recoveryTime": 25
+        "recoveryTime": 25,
+        "damage": 0
     },
     "LightPunch": {
         "attackEndTime": 15,
         "attackStartTime": 4,
-        "recoveryTime": 25
+        "recoveryTime": 25,
+        "damage": 0
     },
     "MiddlePunch": {
         "attackEndTime": 18,
         "attackStartTime": 8,
-        "recoveryTime": 25
+        "recoveryTime": 25,
+        "damage": 0
     },
     "TCHighPunch": {
         "attackEndTime": 25,
         "attackStartTime": 0,
-        "recoveryTime": 40
+        "recoveryTime": 40,
+        "damage": 0
     },
     "TCMiddlePunch": {
         "attackEndTime": 25,
         "attackStartTime": 0,
-        "recoveryTime": 35
+        "recoveryTime": 35,
+        "damage": 0
     },
     "Tackle": {
         "attackEndTime": 50,
         "attackStartTime": 25,
-        "recoveryTime": 100
+        "recoveryTime": 100,
+        "damage": 0
     },
     "Uppercut": {
         "attackEndTime": 25,
         "attackStartTime": 8,
-        "recoveryTime": 34
+        "recoveryTime": 34,
+        "damage": 0
     }
 }

@@ -111,7 +111,7 @@ public:
 		int recoveryTime = 0;
 
 		//ダメージ
-		float damage = 0.0f;
+		int damage = 0;
 
 		//攻撃しているか
 		bool isAttack = false;
@@ -276,6 +276,8 @@ public:
 	bool GetIsFinisherSecondAttack() { return attackData_.isFinisherSecondAttack; };
 
 	int GetAttackAnimationFrame() { return attackData_.attackAnimationFrame; };
+
+	int GetDamage() { return attackData_.damage; };
 
 	//エフェクトに関するGetter
 	bool GetIsShake() { return effectState_.isShake; };

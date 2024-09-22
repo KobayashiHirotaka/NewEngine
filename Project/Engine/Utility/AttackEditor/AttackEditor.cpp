@@ -63,6 +63,7 @@ void AttackEditor::Update()
                     ImGui::SliderInt("attackStartTime", &param.attackStartTime, 0, 60);
                     ImGui::SliderInt("attackEndTime", &param.attackEndTime, 0, 60);
                     ImGui::SliderInt("recoveryTime", &param.recoveryTime, 0, 100);
+                    ImGui::SliderInt("damage", &param.damage, 0, 100);
                 }
                 else
                 {
@@ -134,6 +135,7 @@ void AttackEditor::Update()
                     ImGui::SliderInt("attackStartTime", &param.attackStartTime, 0, 60);
                     ImGui::SliderInt("attackEndTime", &param.attackEndTime, 0, 60);
                     ImGui::SliderInt("recoveryTime", &param.recoveryTime, 0, 100);
+                    ImGui::SliderInt("damage", &param.damage, 0, 100);
                 }
                 else
                 {
@@ -224,13 +226,14 @@ void AttackEditor::LoadFile(const std::string& loadFilePath, std::unordered_map<
         attackParameters[tabName] = {
             param["attackStartTime"].get<int>(),
             param["attackEndTime"].get<int>(),
-            param["recoveryTime"].get<int>()
+            param["recoveryTime"].get<int>(),
+            param["damage"].get<int>()
         };
     }
 }
 
 
-void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, bool isPlayer)
+void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& damage, bool isPlayer)
 {
     const auto& attackParameters = isPlayer ? playerAttackParameter_ : enemyAttackParameter_;
 
@@ -240,5 +243,6 @@ void AttackEditor::SetAttackParameters(const std::string& name, int& attackStart
         attackStartTime = it->second.attackStartTime;
         attackEndTime = it->second.attackEndTime;
         recoveryTime = it->second.recoveryTime;
+        damage = it->second.damage;
     }
 }

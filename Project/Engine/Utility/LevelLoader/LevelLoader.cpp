@@ -111,12 +111,12 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 
 			if (characterData.contains("hp"))
 			{
-				objectData.characterData.hp = (float)characterData["hp"];
+				objectData.characterData.hp = (int)characterData["hp"];
 			}
 
 			if (characterData.contains("maxHp"))
 			{
-				objectData.characterData.maxHp = (float)characterData["maxHp"];
+				objectData.characterData.maxHp = (int)characterData["maxHp"];
 			}
 	
 			if (characterData.contains("frontSpeed")) 

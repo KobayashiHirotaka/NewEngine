@@ -30,9 +30,9 @@ public:
 	void SetRotation(const Vector3& rotation) { worldTransform_.rotation = rotation; };
 	void SetScale(const Vector3& scale) { worldTransform_.scale = scale; };
 
-	float const GetHP() const { return hp_; };
-	void SetHp(const float& hp) { hp_ = hp; };
-	void SetMaxHp(const float& maxHp) { maxHp_ = maxHp; };
+	int const GetHP() const { return hp_; };
+	void SetHp(const int& hp) { hp_ = hp; };
+	void SetMaxHp(const int& maxHp) { maxHp_ = maxHp; };
 
 	void SetFrontSpeed(const float& frontSpeed) { frontSpeed_ = frontSpeed; };
 	void SetBackSpeed(const float& backSpeed) { backSpeed_ = backSpeed; };
@@ -58,8 +58,8 @@ protected:
 
 	//レベルエディターで設定できるキャラクターのパラメータ
 	//HP
-	float maxHp_ = 0.0f;
-	float hp_ = 0.0f;
+	int maxHp_ = 0;
+	int hp_ = 0;
 
 	//足の速さ
 	float frontSpeed_ = 0.0f;

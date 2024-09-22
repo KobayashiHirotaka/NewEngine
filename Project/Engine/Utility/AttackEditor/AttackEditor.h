@@ -43,7 +43,7 @@ public:
 
     void LoadFile(const std::string& loadFilePath, std::unordered_map<std::string, AttackParameter>& attackParameters);
 
-    void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, bool isPlayer);
+    void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& damage, bool isPlayer);
 
 private:
     AttackEditor() = default;

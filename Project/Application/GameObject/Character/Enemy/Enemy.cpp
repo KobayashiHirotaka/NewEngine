@@ -99,7 +99,8 @@ void Enemy::Update()
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
-	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime, true);
+	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime,
+		attackData_.recoveryTime, attackData_.damage, false);
 
 	//振り向きの処理
 	Vector3 playerWorldPosition = player_->GetWorldPosition();
@@ -687,7 +688,6 @@ void Enemy::OnCollision(Collider* collider)
 			if (!characterState_.isDown && firstAttack_ != "JumpAttack")
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-				attackData_.damage = 2.0f;
 				ApplyDamage();
 				characterState_.isHitLightPunch = true;
 
@@ -698,7 +698,6 @@ void Enemy::OnCollision(Collider* collider)
 			else
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-				attackData_.damage = 4.0f;
 				ApplyDamage();
 				characterState_.isHitLightPunch = true;
 
@@ -712,7 +711,6 @@ void Enemy::OnCollision(Collider* collider)
 		if (player_->GetIsAttack() && player_->GetIsMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			attackData_.damage = 5.0f;
 			ApplyDamage();
 			characterState_.isHitMiddlePunch = true;
 
@@ -725,7 +723,6 @@ void Enemy::OnCollision(Collider* collider)
 		if (player_->GetIsHighPunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			attackData_.damage = 7.0f;
 			ApplyDamage();
 			characterState_.isHitHighPunch = true;
 
@@ -738,7 +735,6 @@ void Enemy::OnCollision(Collider* collider)
 		if (player_->GetIsTCMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			attackData_.damage = 2.0f;
 			ApplyDamage();
 			characterState_.isHitTCMiddlePunch = true;
 
@@ -751,7 +747,6 @@ void Enemy::OnCollision(Collider* collider)
 		if (player_->GetIsTCHighPunch() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			attackData_.damage = 2.0f;
 			ApplyDamage();
 			characterState_.isHitTCHighPunch = true;
 
@@ -764,7 +759,6 @@ void Enemy::OnCollision(Collider* collider)
 		if (player_->GetIsAttack() && player_->GetIsJumpAttack() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			attackData_.damage = 3.0f;
 			ApplyDamage();
 			characterState_.isHitJumpAttack = true;
 
@@ -787,7 +781,6 @@ void Enemy::OnCollision(Collider* collider)
 		if (player_->GetIsTackle() && player_->GetIsAttack() && !characterState_.isDown && !characterState_.isGuard)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			attackData_.damage = 15.0f;
 			ApplyDamage();
 			characterState_.isHitTackle = true;
 
@@ -801,7 +794,6 @@ void Enemy::OnCollision(Collider* collider)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			attackData_.isDamaged = false;
-			attackData_.damage = 4.0f;
 			ApplyDamage();
 			timerData_.downAnimationTimer = 60;
 			float animationTime = 0.0f;
@@ -818,7 +810,6 @@ void Enemy::OnCollision(Collider* collider)
 		if (player_->GetIsUppercut() && player_->GetIsAttack() && !characterState_.isGuard &&!characterState_.isDown)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			attackData_.damage = 10.0f;
 			ApplyDamage();
 			characterState_.isHitUppercut = true;
 
@@ -831,7 +822,6 @@ void Enemy::OnCollision(Collider* collider)
 		if (player_->GetIsFinisherFirstAttack() && player_->GetIsAttack() && !characterState_.isGuard && !characterState_.isDown)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			attackData_.damage = 10.0f;
 			ApplyDamage();
 			characterState_.isHitFinisherFirstAttack = true;
 
@@ -841,7 +831,6 @@ void Enemy::OnCollision(Collider* collider)
 		if (player_->GetIsFinisherSecondAttack() && player_->GetIsAttack() && !characterState_.isGuard && !characterState_.isDown)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			attackData_.damage = 5.0f;
 			ApplyDamage();
 			characterState_.isHitFinisherSecondAttack = true;
 
@@ -1042,6 +1031,16 @@ void Enemy::EvaluateAttackTiming()
 	ICharacter::EvaluateAttackTiming();
 }
 
+void Enemy::ApplyDamage()
+{
+	if (!attackData_.isDamaged)
+	{
+		attackData_.isDamaged = true;
+		hp_ -= player_->GetDamage();
+	}
+}
+
+
 void Enemy::ResetCollision()
 {
 	aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
@@ -1056,7 +1055,7 @@ void Enemy::ConfigureCollision(Vector3 min, Vector3 max)
 
 void Enemy::HPBarUpdate()
 {
-	hpBar_.size_ = { (hp_ / maxHp_) * barSize_,7.0f };
+	hpBar_.size_ = { (static_cast<float>(hp_) / static_cast<float>(maxHp_)) * barSize_, 7.0f };
 
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 
@@ -1149,7 +1148,7 @@ void Enemy::Reset()
 {
 	ICharacter::Reset();
 
-	hp_ = 100.0f;
+	hp_ = 100;
 
 	animationIndex_ = 5;
 	animationTime_ = 0.0f;
@@ -1168,15 +1167,6 @@ void Enemy::Reset()
 void Enemy::HitStop(int milliseconds)
 {
 	std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
-}
-
-void Enemy::ApplyDamage()
-{
-	if (!attackData_.isDamaged)
-	{
-		attackData_.isDamaged = true;
-		hp_ -= attackData_.damage;
-	}
 }
 
 void Enemy::DownAnimation()
@@ -1199,7 +1189,7 @@ void Enemy::DownAnimation()
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
 		//次の入力を受け取ったらこの処理にする
-		if (!player_->GetIsLightPunch() && hp_ > 0.0f)
+		if (!player_->GetIsLightPunch() && hp_ > 0)
 		{
 			patternCount_ = Random(1, 2);
 			DownAnimationEnd(5, characterState_.isHitLightPunch);
@@ -1223,7 +1213,7 @@ void Enemy::DownAnimation()
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		if (!player_->GetIsMiddlePunch() && hp_ > 0.0f)
+		if (!player_->GetIsMiddlePunch() && hp_ > 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitMiddlePunch);
 		}
@@ -1266,7 +1256,7 @@ void Enemy::DownAnimation()
 		animationIndex_ = 6;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		if (!player_->GetIsHighPunch() && worldTransform_.translation.y <= 0.0f && hp_ > 0.0f)
+		if (!player_->GetIsHighPunch() && worldTransform_.translation.y <= 0.0f && hp_ > 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitHighPunch);
 		}
@@ -1289,7 +1279,7 @@ void Enemy::DownAnimation()
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		if (!player_->GetIsTCMiddlePunch() && hp_ > 0.0f)
+		if (!player_->GetIsTCMiddlePunch() && hp_ > 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitTCMiddlePunch);
 		}
@@ -1324,7 +1314,7 @@ void Enemy::DownAnimation()
 
 		SetAABB(aabb_);
 
-		if (!player_->GetIsTCHighPunch() && hp_ > 0.0f)
+		if (!player_->GetIsTCHighPunch() && hp_ > 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitTCHighPunch);
 			ResetCollision();
@@ -1348,7 +1338,7 @@ void Enemy::DownAnimation()
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
-		if (timerData_.downAnimationTimer < 38 && hp_ > 0.0f)
+		if (timerData_.downAnimationTimer < 38 && hp_ > 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitJumpAttack);
 		}
@@ -1399,7 +1389,7 @@ void Enemy::DownAnimation()
 
 		SetAABB(aabb_);
 
-		if (!player_->GetIsTackle() && hp_ > 0.0f)
+		if (!player_->GetIsTackle() && hp_ > 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitTackle);
 			ResetCollision();
@@ -1423,7 +1413,7 @@ void Enemy::DownAnimation()
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
-		if (!player_->GetIsUppercut() && hp_ > 0.0f)
+		if (!player_->GetIsUppercut() && hp_ > 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitUppercut);
 		}
@@ -1473,7 +1463,7 @@ void Enemy::DownAnimation()
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			hp_ -= 1.0f;
+			hp_ -= 1;
 		}
 
 		if (timerData_.downAnimationTimer < 40 && timerData_.downAnimationTimer > 35)
@@ -1484,7 +1474,7 @@ void Enemy::DownAnimation()
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			hp_ -= 1.0f;
+			hp_ -= 1;
 		}
 
 		animationIndex_ = 4;

@@ -101,7 +101,8 @@ void Player::Update()
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
-	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime, true);
+	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime,
+		attackData_.recoveryTime, attackData_.damage, true);
 
 	//デバッグ用の処理
 	if (isDebug_)
@@ -1028,7 +1029,6 @@ void Player::OnCollision(Collider* collider)
 			model_->SetAnimationTime(animationTime_);
 
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			attackData_.damage = 8.0f;
 			ApplyDamage();
 			characterState_.isHitBullet = true;
 			attackData_.isFinisher = false;
@@ -1044,7 +1044,6 @@ void Player::OnCollision(Collider* collider)
 			model_->SetAnimationTime(animationTime_);
 
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			attackData_.damage = 8.0f;
 			ApplyDamage();
 			characterState_.isHitAirBullet = true;
 
@@ -1186,7 +1185,6 @@ void Player::OnCollision(Collider* collider)
 			if (enemy_->GetIsAttack() && enemy_->GetIsLightPunch() && !characterState_.isDown && !characterState_.isGuard)
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-				attackData_.damage = 2.0f;
 				ApplyDamage();
 				characterState_.isHitLightPunch = true;
 
@@ -1199,7 +1197,6 @@ void Player::OnCollision(Collider* collider)
 			if (enemy_->GetIsHighPunch() && !characterState_.isDown && !characterState_.isGuard)
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-				attackData_.damage = 10.0f;
 				ApplyDamage();
 				characterState_.isHitHighPunch = true;
 
@@ -1212,7 +1209,6 @@ void Player::OnCollision(Collider* collider)
 			if (enemy_->GetIsTCMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-				attackData_.damage = 2.0f;
 				ApplyDamage();
 				characterState_.isHitTCMiddlePunch = true;
 
@@ -1226,7 +1222,6 @@ void Player::OnCollision(Collider* collider)
 			if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && !characterState_.isDown && !characterState_.isGuard)
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-				attackData_.damage = 15.0f;
 				ApplyDamage();
 				characterState_.isHitTackle = true;
 
@@ -1240,7 +1235,6 @@ void Player::OnCollision(Collider* collider)
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 				attackData_.isDamaged = false;
-				attackData_.damage = 4.0f;
 				ApplyDamage();
 				timerData_.downAnimationTimer = 60;
 				float animationTime = 0.0f;
@@ -1410,7 +1404,7 @@ void Player::ApplyDamage()
 	if (!attackData_.isDamaged)
 	{
 		attackData_.isDamaged = true;
-		hp_ += attackData_.damage;
+		hp_ += enemy_->GetDamage();
 	}
 }
 
@@ -1428,7 +1422,7 @@ void Player::ConfigureCollision(Vector3 min, Vector3 max)
 
 void Player::HPBarUpdate()
 {
-	hpBar_.size_ = { (hp_ / maxHp_) * barSize_,7.0f };
+	hpBar_.size_ = { (static_cast<float>(hp_) / static_cast<float>(maxHp_)) * barSize_, 7.0f };
 
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 
@@ -1526,7 +1520,7 @@ void Player::Reset()
 {
 	ICharacter::Reset();
 
-	hp_ = -100.0f;
+	hp_ = -100;
 
 	animationIndex_ = 5;
 	animationTime_ = 0.0f;
@@ -1564,7 +1558,7 @@ void Player::DownAnimation()
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
 		//次の入力を受け取ったらこの処理にする
-		if (!enemy_->GetIsLightPunch() && hp_ < 0.0f)
+		if (!enemy_->GetIsLightPunch() && hp_ < 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitLightPunch);
 		}
@@ -1587,7 +1581,7 @@ void Player::DownAnimation()
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		if (!enemy_->GetIsTCMiddlePunch() && hp_ < 0.0f)
+		if (!enemy_->GetIsTCMiddlePunch() && hp_ < 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitTCMiddlePunch);
 		}
@@ -1633,7 +1627,7 @@ void Player::DownAnimation()
 		animationIndex_ = 7;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		if (!enemy_->GetIsHighPunch() &&  worldTransform_.translation.y <= 0.0f && hp_ < 0.0f)
+		if (!enemy_->GetIsHighPunch() &&  worldTransform_.translation.y <= 0.0f && hp_ < 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitHighPunch);
 			ResetCollision();
@@ -1684,7 +1678,7 @@ void Player::DownAnimation()
 
 		SetAABB(aabb_);
 
-		if (timerData_.downAnimationTimer < 0 && hp_ < 0.0f)
+		if (timerData_.downAnimationTimer < 0 && hp_ < 0)
 		{
 			DownAnimationEnd(4, characterState_.isHitTackle);
 			ResetCollision();
@@ -1710,7 +1704,7 @@ void Player::DownAnimation()
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		if (timerData_.downAnimationTimer < 30 && hp_ < 0.0f)
+		if (timerData_.downAnimationTimer < 30 && hp_ < 0)
 		{
 			DownAnimationEnd(4, characterState_.isHitBullet);
 			ResetCollision();
@@ -1753,7 +1747,7 @@ void Player::DownAnimation()
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (timerData_.downAnimationTimer < 30 && hp_ < 0.0f)
+		if (timerData_.downAnimationTimer < 30 && hp_ < 0)
 		{
 			DownAnimationEnd(4, characterState_.isHitAirBullet);
 			ResetCollision();
