@@ -178,7 +178,8 @@ void AttackEditor::SaveFile(const std::string& saveFilePath, const std::unordere
         root[tabName] = {
             {"attackStartTime", param.attackStartTime},
             {"attackEndTime", param.attackEndTime},
-            {"recoveryTime", param.recoveryTime}
+            {"recoveryTime", param.recoveryTime},
+            {"damage", param.damage}
         };
     }
 

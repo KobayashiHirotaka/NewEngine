@@ -1233,8 +1233,8 @@ void Player::OnCollision(Collider* collider)
 			//キャンセルのとき
 			if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.5f)
 			{
-				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 				attackData_.isDamaged = false;
+				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 				ApplyDamage();
 				timerData_.downAnimationTimer = 60;
 				float animationTime = 0.0f;

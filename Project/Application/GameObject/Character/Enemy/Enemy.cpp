@@ -203,6 +203,7 @@ void Enemy::ImGui(const char* title)
 	ImGui::Text("isHit %d", characterState_.isHitCharacter);
 	ImGui::Text("patternCount %d", patternCount_);
 	ImGui::Text("comboTimer %d", timerData_.comboTimer);
+	ImGui::Text("hp %d", hp_);
 
 	//ImGui::Checkbox("isDebug_", &isDebug_);
 
@@ -240,6 +241,7 @@ void Enemy::BehaviorRootUpdate()
 		//弾攻撃
 		if (patternCount_ == 4 && !characterState_.isDown)
 		{
+			attackType = "Shot";
 			AttackStart(attackData_.isShot);
 		}
 
@@ -500,7 +502,7 @@ void Enemy::BehaviorAttackUpdate()
 			}
 
 			//まだ弾を発射していない場合
-			if (!hasShot_)
+			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && !hasShot_)
 			{
 				if (characterState_.direction == Direction::Right)
 				{
@@ -520,7 +522,7 @@ void Enemy::BehaviorAttackUpdate()
 				hasShot_ = true;  // 弾を発射したことを記録
 			}
 
-			if (characterState_.isDown || attackData_.attackAnimationFrame >= 40)
+			if (characterState_.isDown || attackData_.attackAnimationFrame >= attackData_.recoveryTime)
 			{
 				patternCount_ = Random(1, 2);
 				AttackEnd(attackData_.isShot);
@@ -793,13 +795,13 @@ void Enemy::OnCollision(Collider* collider)
 		if (player_->GetIsTackle() && player_->GetIsAttack() && characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.5f)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			attackData_.isDamaged = false;
 			ApplyDamage();
 			timerData_.downAnimationTimer = 60;
 			float animationTime = 0.0f;
 			model_->SetAnimationTime(animationTime);
 			characterState_.isHitHighPunch = false;
 			characterState_.isHitTackle = true;
+			attackData_.isDamaged = false;
 
 			AdjustFinisherGauge(3.0f);
 
