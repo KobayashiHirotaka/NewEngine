@@ -50,7 +50,7 @@ public:
     void LoadFile(const std::string& loadFilePath, std::unordered_map<std::string, AttackParameter>& attackParameters);
 
     void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, 
-        int& damage, float guardGaugeIncreaseAmount, float finisherGaugeIncreaseAmount, bool isPlayer);
+        int& damage, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, bool isPlayer);
 
 private:
     AttackEditor() = default;

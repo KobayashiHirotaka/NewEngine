@@ -243,7 +243,7 @@ void AttackEditor::LoadFile(const std::string& loadFilePath, std::unordered_map<
 
 
 void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime,
-    int& damage, float guardGaugeIncreaseAmount, float finisherGaugeIncreaseAmount, bool isPlayer)
+    int& damage, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, bool isPlayer)
 {
     const auto& attackParameters = isPlayer ? playerAttackParameter_ : enemyAttackParameter_;
 

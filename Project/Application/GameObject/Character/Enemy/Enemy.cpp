@@ -693,7 +693,7 @@ void Enemy::OnCollision(Collider* collider)
 				ApplyDamage();
 				characterState_.isHitLightPunch = true;
 
-				AdjustFinisherGauge(1.0f);
+				AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 				HitStop(10);
 			}
@@ -703,7 +703,7 @@ void Enemy::OnCollision(Collider* collider)
 				ApplyDamage();
 				characterState_.isHitLightPunch = true;
 
-				AdjustFinisherGauge(1.0f);
+				AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 				HitStop(10);
 			}
@@ -716,7 +716,7 @@ void Enemy::OnCollision(Collider* collider)
 			ApplyDamage();
 			characterState_.isHitMiddlePunch = true;
 
-			AdjustFinisherGauge(2.0f);
+			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 			HitStop(10);
 		}
@@ -728,7 +728,7 @@ void Enemy::OnCollision(Collider* collider)
 			ApplyDamage();
 			characterState_.isHitHighPunch = true;
 
-			AdjustFinisherGauge(2.0f);
+			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 			HitStop(10);
 		}
@@ -740,7 +740,7 @@ void Enemy::OnCollision(Collider* collider)
 			ApplyDamage();
 			characterState_.isHitTCMiddlePunch = true;
 
-			AdjustFinisherGauge(2.0f);
+			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 			HitStop(10);
 		}
@@ -752,7 +752,7 @@ void Enemy::OnCollision(Collider* collider)
 			ApplyDamage();
 			characterState_.isHitTCHighPunch = true;
 
-			AdjustFinisherGauge(2.0f);
+			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 			HitStop(10);
 		}
@@ -773,7 +773,7 @@ void Enemy::OnCollision(Collider* collider)
 				worldTransform_.translation.x -= 0.1f;
 			}
 
-			AdjustFinisherGauge(2.0f);
+			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 			HitStop(10);
 		}
@@ -788,7 +788,7 @@ void Enemy::OnCollision(Collider* collider)
 				ApplyDamage();
 				characterState_.isHitTackle = true;
 
-				AdjustFinisherGauge(4.0f);
+				AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 				HitStop(30);
 			}
@@ -806,7 +806,7 @@ void Enemy::OnCollision(Collider* collider)
 				characterState_.isHitHighPunch = false;
 				characterState_.isHitTackle = true;
 
-				AdjustFinisherGauge(3.0f);
+				AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 				HitStop(10);
 			}
@@ -819,7 +819,7 @@ void Enemy::OnCollision(Collider* collider)
 			ApplyDamage();
 			characterState_.isHitUppercut = true;
 
-			AdjustFinisherGauge(4.0f);
+			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 			HitStop(10);
 		}

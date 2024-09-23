@@ -19,7 +19,7 @@
         "attackEndTime": 25,
         "attackStartTime": 5,
         "damage": 7,
-        "finisherGaugeIncreaseAmount": 2.0,
+        "finisherGaugeIncreaseAmount": 3.0,
         "guardGaugeIncreaseAmount": 0.0,
         "recoveryTime": 40
     },
@@ -51,7 +51,7 @@
         "attackEndTime": 25,
         "attackStartTime": 0,
         "damage": 6,
-        "finisherGaugeIncreaseAmount": 2.0,
+        "finisherGaugeIncreaseAmount": 5.0,
         "guardGaugeIncreaseAmount": 0.0,
         "recoveryTime": 40
     },
