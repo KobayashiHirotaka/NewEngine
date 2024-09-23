@@ -1238,6 +1238,7 @@ void Player::OnCollision(Collider* collider)
 				{
 					//キャンセルのとき
 					attackData_.isDamaged = false;
+					attackData_.isFinisherGaugeIncreased = false;
 					audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 					ApplyDamage();
 					timerData_.downAnimationTimer = 60;

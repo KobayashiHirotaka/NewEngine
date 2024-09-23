@@ -797,6 +797,7 @@ void Enemy::OnCollision(Collider* collider)
 				//キャンセルのとき
 				isCancel = true;
 				attackData_.isDamaged = false;
+				attackData_.isFinisherGaugeIncreased = false;
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 				ApplyDamage();
 				timerData_.downAnimationTimer = 60;
