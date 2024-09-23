@@ -1503,7 +1503,7 @@ void Player::AdjustFinisherGauge(float value)
 	{
 		if (finisherGauge_ > -50.0f)
 		{
-			finisherGauge_ -= value;
+			finisherGauge_ -= value * attackData_.takeFinisherGaugeIncreaseAmount;
 		}
 
 		if (finisherGaugeEnemy < 50.0f)

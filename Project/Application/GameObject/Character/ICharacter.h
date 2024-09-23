@@ -119,6 +119,9 @@ public:
 		//必殺技ゲージ増加量
 		float finisherGaugeIncreaseAmount = 0.0f;
 
+		//攻撃を受ける側の必殺技ゲージ増加量
+		const float takeFinisherGaugeIncreaseAmount = 1.5f;
+
 		//攻撃しているか
 		bool isAttack = false;
 
