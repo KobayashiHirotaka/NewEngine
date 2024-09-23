@@ -131,6 +131,8 @@ private:
 
 	bool hasShot_ = false;
 
+	bool isCancel_ = false;
+
 	//リソース
 	//スプライト(hp)
 	UI hpBar_;
@@ -159,7 +161,5 @@ private:
 	uint32_t weaponAttackSoundHandle_ = 0u;
 	uint32_t damageSoundHandle_ = 0u;
 	uint32_t guardSoundHandle_ = 0u;
-
-	bool isCancel = false;
 };
 

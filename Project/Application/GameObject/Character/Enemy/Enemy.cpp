@@ -792,10 +792,10 @@ void Enemy::OnCollision(Collider* collider)
 
 				HitStop(30);
 			}
-			else if (characterState_.isDown && worldTransform_.translation.y > 0.5f && !isCancel)
+			else if (characterState_.isDown && worldTransform_.translation.y > 0.5f && !isCancel_)
 			{
 				//キャンセルのとき
-				isCancel = true;
+				isCancel_ = true;
 				attackData_.isDamaged = false;
 				attackData_.isFinisherGaugeIncreased = false;
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
@@ -1403,7 +1403,7 @@ void Enemy::DownAnimation()
 		if (timerData_.downAnimationTimer < 0 && hp_ > 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitTackle);
-			isCancel = false;
+			isCancel_ = false;
 			ResetCollision();
 		}
 	}
