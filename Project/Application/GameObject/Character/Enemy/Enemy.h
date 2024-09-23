@@ -68,6 +68,8 @@ public:
 
 	void GuardGaugeBarUpdate()override;
 
+	void AdjustGuardGauge()override;
+
 	void FinisherGaugeBarUpdate()override;
 
 	void AdjustFinisherGauge(float value)override;

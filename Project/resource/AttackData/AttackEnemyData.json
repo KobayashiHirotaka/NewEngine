@@ -4,7 +4,7 @@
         "attackStartTime": 5,
         "damage": 8,
         "finisherGaugeIncreaseAmount": 3.0,
-        "guardGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 2.0,
         "recoveryTime": 40
     },
     "LightPunch": {
@@ -12,7 +12,7 @@
         "attackStartTime": 5,
         "damage": 2,
         "finisherGaugeIncreaseAmount": 1.0,
-        "guardGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 4.0,
         "recoveryTime": 25
     },
     "Shot": {
@@ -20,7 +20,7 @@
         "attackStartTime": 4,
         "damage": 8,
         "finisherGaugeIncreaseAmount": 2.0,
-        "guardGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 6.0,
         "recoveryTime": 40
     },
     "TCMiddlePunch": {
@@ -28,7 +28,7 @@
         "attackStartTime": 0,
         "damage": 5,
         "finisherGaugeIncreaseAmount": 2.0,
-        "guardGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 2.0,
         "recoveryTime": 30
     },
     "Tackle": {
@@ -36,7 +36,7 @@
         "attackStartTime": 25,
         "damage": 14,
         "finisherGaugeIncreaseAmount": 4.0,
-        "guardGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 8.0,
         "recoveryTime": 100
     }
 }

@@ -163,8 +163,8 @@ public:
 		//ダメージを受けているかどうか
 		bool isDamaged = false;
 
-		//ガードしているかどうか
-		bool isGuarding = false;
+		//ガードしたかどうか
+		bool isGuarded = false;
 
 		//必殺技が増えているかどうか
 		bool isFinisherGaugeIncreased = false;
@@ -251,6 +251,8 @@ public:
 
 	virtual void GuardGaugeBarUpdate() = 0;
 
+	virtual void AdjustGuardGauge() = 0;
+
 	virtual void FinisherGaugeBarUpdate() = 0;
 
 	virtual void AdjustFinisherGauge(float value) = 0;
@@ -308,6 +310,14 @@ public:
 
 	//Setter
 	void SetIsReset(bool isReset) { isReset_ = isReset; };
+
+	void SetDamage(int damage) { attackData_.damage = damage; };
+
+	void SetGuardGaugeIncreaseAmount(float guardGaugeIncreaseAmount) { attackData_.guardGaugeIncreaseAmount = guardGaugeIncreaseAmount; };
+
+	void SetFinisherGaugeIncreaseAmount(float finisherGaugeIncreaseAmount) { attackData_.finisherGaugeIncreaseAmount = finisherGaugeIncreaseAmount; };
+
+	void SetIsGuarded(bool isGuarded) { attackData_.isGuarded = isGuarded; };
 
 protected:
 	Input* input_ = nullptr;

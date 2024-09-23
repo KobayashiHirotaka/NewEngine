@@ -166,7 +166,7 @@ void ICharacter::Reset()
 	attackData_.isDamaged = false;
 
 	//攻撃をガードしているかどうか
-	attackData_.isGuarding = false;
+	attackData_.isGuarded = false;
 
 	//必殺技ゲージが増えているかどうか
 	attackData_.isFinisherGaugeIncreased = false;

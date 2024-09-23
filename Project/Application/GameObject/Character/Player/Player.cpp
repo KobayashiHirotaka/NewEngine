@@ -1061,7 +1061,7 @@ void Player::OnCollision(Collider* collider)
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.1f;
-			guardGauge_ -= 6.0f;
+			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -1079,7 +1079,7 @@ void Player::OnCollision(Collider* collider)
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.1f;
-			guardGauge_ -= 6.0f;
+			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -1107,7 +1107,7 @@ void Player::OnCollision(Collider* collider)
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.3f;
 			enemyPosition += 0.2f;
-			guardGauge_ -= 1.0f;
+			AdjustGuardGauge();
 
 			enemy_->SetPositionX(enemyPosition);
 
@@ -1131,7 +1131,7 @@ void Player::OnCollision(Collider* collider)
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.3f;
 			enemyPosition -= 0.2f;
-			guardGauge_ -= 1.0f;
+			AdjustGuardGauge();
 
 			enemy_->SetPositionX(enemyPosition);
 
@@ -1152,7 +1152,7 @@ void Player::OnCollision(Collider* collider)
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.2f;
-			guardGauge_ -= 1.0f;
+			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -1170,7 +1170,7 @@ void Player::OnCollision(Collider* collider)
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.2f;
-			guardGauge_ -= 1.0f;
+			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -1397,6 +1397,7 @@ void Player::AttackStart(bool& isAttackType)
 
 void Player::AttackEnd(bool& isAttackType)
 {
+	enemy_->SetIsGuarded(false);
 	ICharacter::AttackEnd(isAttackType);
 }
 
@@ -1466,6 +1467,19 @@ void Player::GuardGaugeBarUpdate()
 		characterState_.isGuard = false;
 		attackData_.isAttack = false;
 		characterState_.behaviorRequest = Behavior::kStan;
+	}
+}
+
+void Player::AdjustGuardGauge()
+{
+	if (!attackData_.isGuarded)
+	{
+		if (finisherGauge_ > -50.0f)
+		{
+			guardGauge_ -= enemy_->GetGuardGaugeIncreaseAmount();
+		}
+
+		attackData_.isGuarded = true;
 	}
 }
 

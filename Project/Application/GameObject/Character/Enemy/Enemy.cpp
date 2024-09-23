@@ -629,7 +629,7 @@ void Enemy::OnCollision(Collider* collider)
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.3f;
-			guardGauge_ += 0.3f;
+			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -644,7 +644,7 @@ void Enemy::OnCollision(Collider* collider)
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.3f;
-			guardGauge_ += 1.0f;
+			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -659,7 +659,7 @@ void Enemy::OnCollision(Collider* collider)
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.2f;
-			guardGauge_ += 1.0f;
+			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -674,7 +674,7 @@ void Enemy::OnCollision(Collider* collider)
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.2f;
-			guardGauge_ += 1.0f;
+			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -1029,6 +1029,7 @@ void Enemy::AttackStart(bool& isAttackType)
 
 void Enemy::AttackEnd(bool& isAttackType)
 {
+	player_->SetIsGuarded(false);
 	ICharacter::AttackEnd(isAttackType);
 }
 
@@ -1102,6 +1103,19 @@ void Enemy::GuardGaugeBarUpdate()
 	}
 }
 
+void Enemy::AdjustGuardGauge()
+{
+	if (!attackData_.isGuarded)
+	{
+		if (finisherGauge_ < 50.0f)
+		{
+			guardGauge_ += player_->GetGuardGaugeIncreaseAmount();
+		}
+
+		attackData_.isGuarded = true;
+	}
+}
+
 void Enemy::FinisherGaugeBarUpdate()
 {
 	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,20.0f };
@@ -1171,6 +1185,8 @@ void Enemy::Reset()
 	worldTransform_.translation = { 3.0f,0.0f,0.0f };
 	worldTransform_.rotation = { 0.0f,4.6f,0.0f };
 	characterState_.direction = Direction::Left;
+
+	isCancel_ = false;
 
 	worldTransform_.UpdateMatrixEuler();
 }
