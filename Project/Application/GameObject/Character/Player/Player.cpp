@@ -57,10 +57,10 @@ void Player::Initialize()
 
 	finisherGaugeBar_ = {
 		true,
-		TextureManager::LoadTexture("resource/images/guardGauge.png"),
+		TextureManager::LoadTexture("resource/images/finisherGauge.png"),
 		{299.0f, finisherGaugeBarSpace_},
 		0.0f,
-		{-finisherGaugeBarSize_  ,20.0f},
+		{-finisherGaugeBarSize_  ,17.8f},
 		nullptr,
 	};
 
@@ -1485,7 +1485,7 @@ void Player::AdjustGuardGauge()
 
 void Player::FinisherGaugeBarUpdate()
 {
-	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,20.0f };
+	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,17.8f };
 
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
 

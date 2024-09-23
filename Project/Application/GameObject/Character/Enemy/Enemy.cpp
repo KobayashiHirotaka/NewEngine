@@ -65,10 +65,10 @@ void Enemy::Initialize()
 
 	finisherGaugeBar_ = {
 		true,
-		TextureManager::LoadTexture("resource/images/guardGauge.png"),
+		TextureManager::LoadTexture("resource/images/finisherGauge.png"),
 		{979.0f, finisherGaugeBarSpace_},
 		0.0f,
-		{-finisherGaugeBarSize_  ,20.0f},
+		{-finisherGaugeBarSize_  ,17.8f},
 		nullptr,
 	};
 
@@ -1118,7 +1118,7 @@ void Enemy::AdjustGuardGauge()
 
 void Enemy::FinisherGaugeBarUpdate()
 {
-	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,20.0f };
+	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,17.8f };
 
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
 
