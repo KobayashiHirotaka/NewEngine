@@ -162,6 +162,9 @@ public:
 
 		//ガードしているかどうか
 		bool isGuarding = false;
+
+		//必殺技が増えているかどうか
+		bool isFinisherGaugeIncreased = false;
 	};
 
 	struct TimerData

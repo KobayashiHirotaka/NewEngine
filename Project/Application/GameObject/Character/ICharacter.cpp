@@ -168,6 +168,9 @@ void ICharacter::Reset()
 	//攻撃をガードしているかどうか
 	attackData_.isGuarding = false;
 
+	//必殺技ゲージが増えているかどうか
+	attackData_.isFinisherGaugeIncreased = false;
+
 	//キャラクターと当たっているかどうか
 	characterState_.isHitCharacter = false;
 
@@ -229,6 +232,7 @@ void ICharacter::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
 	model_->SetAnimationTime(animationTime_);
 	isHitAttackType = false;
 	attackData_.isDamaged = false;
+	attackData_.isFinisherGaugeIncreased = false;
 	characterState_.isDown = false;
 }
 

@@ -223,6 +223,9 @@ void Player::ImGui(const char* title)
 
 	ImGui::Text("downAnimationTimer %d", timerData_.downAnimationTimer);
 
+	ImGui::Text("hp %d", hp_);
+	ImGui::Text("finisherGaugeIncreaseAmount %f", attackData_.finisherGaugeIncreaseAmount);
+
 	model_->GetLight()->ImGui("DirectionalLight");
 	model_->GetPointLight()->ImGui("PointLight");
 	model_->GetSpotLight()->ImGui("SpotLight");
@@ -1493,26 +1496,31 @@ void Player::FinisherGaugeBarUpdate()
 
 void Player::AdjustFinisherGauge(float value)
 {
-	if (finisherGauge_ > -50.0f)
-	{
-		finisherGauge_ -= value;
-
-		if (finisherGauge_ < -50.0f)
-		{
-			finisherGauge_ = -50.0f;
-		}
-	}
-
 	float finisherGaugeEnemy = enemy_->GetFinisherGauge();
 
-	if (finisherGaugeEnemy < 50.0f)
+	if (!attackData_.isFinisherGaugeIncreased)
 	{
-		finisherGaugeEnemy += value;
-
-		if (finisherGaugeEnemy > 50.0f)
+		if (finisherGauge_ > -50.0f)
 		{
-			finisherGaugeEnemy = 50.0f;
+			finisherGauge_ -= value;
 		}
+
+		if (finisherGaugeEnemy < 50.0f)
+		{
+			finisherGaugeEnemy += value;
+		}
+
+		attackData_.isFinisherGaugeIncreased = true;
+	}
+
+	if (finisherGauge_ < -50.0f)
+	{
+		finisherGauge_ = -50.0f;
+	}
+
+	if (finisherGaugeEnemy > 50.0f)
+	{
+		finisherGaugeEnemy = 50.0f;
 	}
 
 	enemy_->SetFinisherGauge(finisherGaugeEnemy);

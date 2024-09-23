@@ -100,7 +100,7 @@ void Enemy::Update()
 
 	//エディタで設定したパラメータをセット
 	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
-		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, true);
+		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, false);
 
 	//振り向きの処理
 	Vector3 playerWorldPosition = player_->GetWorldPosition();
@@ -792,9 +792,10 @@ void Enemy::OnCollision(Collider* collider)
 
 				HitStop(30);
 			}
-			else if (characterState_.isDown && worldTransform_.translation.y > 0.5f && !attackData_.isDamaged)
+			else if (characterState_.isDown && worldTransform_.translation.y > 0.5f && !isCancel)
 			{
 				//キャンセルのとき
+				isCancel = true;
 				attackData_.isDamaged = false;
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 				ApplyDamage();
@@ -1123,26 +1124,31 @@ void Enemy::FinisherGaugeBarUpdate()
 
 void Enemy::AdjustFinisherGauge(float value)
 {
-	if (finisherGauge_ < 50.0f)
-	{
-		finisherGauge_ += value;
-
-		if (finisherGauge_ > 50.0f)
-		{
-			finisherGauge_ = 50.0f;
-		}
-	}
-
 	float finisherGaugePlayer = player_->GetFinisherGauge();
 
-	if (finisherGaugePlayer > -50.0f)
+	if (!attackData_.isFinisherGaugeIncreased)
 	{
-		finisherGaugePlayer -= value;
-
-		if (finisherGaugePlayer < -50.0f)
+		if (finisherGauge_ < 50.0f)
 		{
-			finisherGaugePlayer = -50.0f;
+			finisherGauge_ += value;
 		}
+
+		if (finisherGaugePlayer > -50.0f)
+		{
+			finisherGaugePlayer -= value;
+		}
+
+		attackData_.isFinisherGaugeIncreased = true;
+	}
+
+	if (finisherGauge_ > 50.0f)
+	{
+		finisherGauge_ = 50.0f;
+	}
+
+	if (finisherGaugePlayer < -50.0f)
+	{
+		finisherGaugePlayer = -50.0f;
 	}
 
 	player_->SetFinisherGauge(finisherGaugePlayer);
@@ -1361,7 +1367,7 @@ void Enemy::DownAnimation()
 		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.3f, -0.3f}, {-0.1f, 0.0f, 0.3f} } :
 			AABB{ {0.1f, -0.3f, -0.3f}, {0.8f, 0.0f, 0.3f} };
 
-		if (timerData_.downAnimationTimer > 55)
+		if (timerData_.downAnimationTimer > 57)
 		{
 			effectState_.isShake = true;
 
@@ -1396,6 +1402,7 @@ void Enemy::DownAnimation()
 		if (timerData_.downAnimationTimer < 0 && hp_ > 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitTackle);
+			isCancel = false;
 			ResetCollision();
 		}
 	}
