@@ -64,6 +64,8 @@ void AttackEditor::Update()
                     ImGui::SliderInt("attackEndTime", &param.attackEndTime, 0, 60);
                     ImGui::SliderInt("recoveryTime", &param.recoveryTime, 0, 100);
                     ImGui::SliderInt("damage", &param.damage, 0, 100);
+                    ImGui::SliderFloat("guardGaugeIncreaseAmount", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
+                    ImGui::SliderFloat("finisherGaugeIncreaseAmount", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
                 }
                 else
                 {
@@ -136,6 +138,8 @@ void AttackEditor::Update()
                     ImGui::SliderInt("attackEndTime", &param.attackEndTime, 0, 60);
                     ImGui::SliderInt("recoveryTime", &param.recoveryTime, 0, 100);
                     ImGui::SliderInt("damage", &param.damage, 0, 100);
+                    ImGui::SliderFloat("guardGaugeIncreaseAmount", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
+                    ImGui::SliderFloat("finisherGaugeIncreaseAmount", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
                 }
                 else
                 {
@@ -179,7 +183,9 @@ void AttackEditor::SaveFile(const std::string& saveFilePath, const std::unordere
             {"attackStartTime", param.attackStartTime},
             {"attackEndTime", param.attackEndTime},
             {"recoveryTime", param.recoveryTime},
-            {"damage", param.damage}
+            {"damage", param.damage},
+            {"guardGaugeIncreaseAmount", param.guardGaugeIncreaseAmount},
+            {"finisherGaugeIncreaseAmount", param.finisherGaugeIncreaseAmount}
         };
     }
 
@@ -228,13 +234,16 @@ void AttackEditor::LoadFile(const std::string& loadFilePath, std::unordered_map<
             param["attackStartTime"].get<int>(),
             param["attackEndTime"].get<int>(),
             param["recoveryTime"].get<int>(),
-            param["damage"].get<int>()
+            param["damage"].get<int>(),
+            param["guardGaugeIncreaseAmount"].get<float>(),
+            param["finisherGaugeIncreaseAmount"].get<float>()
         };
     }
 }
 
 
-void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& damage, bool isPlayer)
+void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime,
+    int& damage, float guardGaugeIncreaseAmount, float finisherGaugeIncreaseAmount, bool isPlayer)
 {
     const auto& attackParameters = isPlayer ? playerAttackParameter_ : enemyAttackParameter_;
 
@@ -245,5 +254,7 @@ void AttackEditor::SetAttackParameters(const std::string& name, int& attackStart
         attackEndTime = it->second.attackEndTime;
         recoveryTime = it->second.recoveryTime;
         damage = it->second.damage;
+        guardGaugeIncreaseAmount = it->second.guardGaugeIncreaseAmount;
+        finisherGaugeIncreaseAmount = it->second.finisherGaugeIncreaseAmount;
     }
 }

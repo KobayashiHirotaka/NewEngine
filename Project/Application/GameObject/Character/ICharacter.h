@@ -113,6 +113,12 @@ public:
 		//ダメージ
 		int damage = 0;
 
+		//ガードゲージ増加量
+		float guardGaugeIncreaseAmount = 0.0f;
+
+		//必殺技ゲージ増加量
+		float finisherGaugeIncreaseAmount = 0.0f;
+
 		//攻撃しているか
 		bool isAttack = false;
 

@@ -99,8 +99,8 @@ void Enemy::Update()
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
-	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime,
-		attackData_.recoveryTime, attackData_.damage, false);
+	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
+		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, true);
 
 	//振り向きの処理
 	Vector3 playerWorldPosition = player_->GetWorldPosition();
@@ -502,12 +502,12 @@ void Enemy::BehaviorAttackUpdate()
 			}
 
 			//まだ弾を発射していない場合
-			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && !hasShot_)
+			if (!hasShot_)
 			{
 				if (characterState_.direction == Direction::Right)
 				{
 					Vector3 bulletStartPosition = { worldTransform_.translation.x + 0.2f, worldTransform_.translation.y + 0.5f, worldTransform_.translation.z };  // 弾の発射位置を敵の位置に設定
-					Vector3 bulletVelocity = Vector3{ 0.1f, 0.0f, 0.0f }; 
+					Vector3 bulletVelocity = Vector3{ 0.1f, 0.0f, 0.0f };
 
 					BulletShoot(bulletStartPosition, bulletVelocity);
 				}
@@ -522,7 +522,7 @@ void Enemy::BehaviorAttackUpdate()
 				hasShot_ = true;  // 弾を発射したことを記録
 			}
 
-			if (characterState_.isDown || attackData_.attackAnimationFrame >= attackData_.recoveryTime)
+			if (characterState_.isDown || attackData_.attackAnimationFrame >= 40)
 			{
 				patternCount_ = Random(1, 2);
 				AttackEnd(attackData_.isShot);

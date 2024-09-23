@@ -101,8 +101,8 @@ void Player::Update()
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
-	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime,
-		attackData_.recoveryTime, attackData_.damage, true);
+	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime, 
+		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, true);
 
 	//デバッグ用の処理
 	if (isDebug_)

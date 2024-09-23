@@ -25,6 +25,12 @@ struct AttackParameter
     //ダメージ
     int damage = 0;
 
+    //ガードゲージ増加量
+    float guardGaugeIncreaseAmount = 0.0f;
+
+    //必殺技ゲージ増加量
+    float finisherGaugeIncreaseAmount = 0.0f;
+
     //攻撃の属性
     std::string attackAttribute;
 
@@ -43,7 +49,8 @@ public:
 
     void LoadFile(const std::string& loadFilePath, std::unordered_map<std::string, AttackParameter>& attackParameters);
 
-    void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& damage, bool isPlayer);
+    void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, 
+        int& damage, float guardGaugeIncreaseAmount, float finisherGaugeIncreaseAmount, bool isPlayer);
 
 private:
     AttackEditor() = default;
