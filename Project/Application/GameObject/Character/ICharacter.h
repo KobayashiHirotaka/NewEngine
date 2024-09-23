@@ -285,6 +285,10 @@ public:
 
 	int GetDamage() { return attackData_.damage; };
 
+	float GetGuardGaugeIncreaseAmount() { return attackData_.guardGaugeIncreaseAmount; };
+
+	float GetFinisherGaugeIncreaseAmount() { return attackData_.finisherGaugeIncreaseAmount; };
+
 	//エフェクトに関するGetter
 	bool GetIsShake() { return effectState_.isShake; };
 
