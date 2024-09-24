@@ -306,32 +306,46 @@ PixelShaderOutput main(VertexShaderOutput input)
     {
         uint32_t width, height;
         gTexture.GetDimensions(width, height);
-        
+
         float32_t2 difference = float32_t2(0.0f, 0.0f);
         float32_t2 uvStepSize = float32_t2(rcp(width), rcp(height));
-        
+
+        float32_t3 colorDifference = float32_t3(0.0f, 0.0f, 0.0f);
+
         for (int32_t x = 0; x < 3; ++x)
         {
             for (int32_t y = 0; y < 3; ++y)
             {
                 float32_t2 texcoord = input.texcoord + kIndex3x3[x][y] * uvStepSize;
                 float32_t3 fetchColor = gTexture.Sample(gSampler, texcoord).rgb;
+
                 float32_t luminance = Luminance(fetchColor);
-                
                 difference.x += luminance * kPrewittHorizontalKernel[x][y];
                 difference.y += luminance * kPrewittVerticalKernel[x][y];
+
+                colorDifference += abs(fetchColor - gTexture.Sample(gSampler, input.texcoord).rgb);
             }
         }
-        
-        float32_t weight = length(difference);
-        weight = saturate(weight * 6.0f);
-        
-        if (weight >= 0.5f)
+
+    // Adjust luminance weight
+        float32_t luminanceWeight = length(difference);
+        luminanceWeight = saturate(luminanceWeight * 6.5f); // Slightly stronger
+
+    // Adjust color difference weight
+        float32_t colorWeight = saturate(length(colorDifference) * 1.6f); // Slightly stronger
+
+    // Combine luminance and color weights
+        float32_t finalWeight = max(luminanceWeight, colorWeight);
+        finalWeight = saturate(finalWeight * 0.55f); // Slightly stronger
+
+    // Drawing condition
+        if (finalWeight >= 0.35f) // Slightly stricter
         {
-            textureColor.rgb = (1.0f - weight) * gTexture.Sample(gSampler, input.texcoord).rgb;
+            textureColor.rgb = (1.0f - finalWeight) * gTexture.Sample(gSampler, input.texcoord).rgb;
             textureColor.a = 1.0f;
         }
     }
+
     
      //DepthBasedOutline
     if (gDepthBasedOutlineParameter.enable)

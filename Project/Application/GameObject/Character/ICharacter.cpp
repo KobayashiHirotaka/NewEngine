@@ -8,7 +8,6 @@ void ICharacter::Initialize()
 		isDebug_ = true;
 
 #endif // DEBUG
-
 }
 
 void ICharacter::Update()

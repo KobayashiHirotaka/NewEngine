@@ -56,5 +56,5 @@ private:
 
 	float shininess_ = 40.8f;
 
-	float environmentCofficient_ = 0.6f;
+	float environmentCofficient_ = 0.0f;
 };

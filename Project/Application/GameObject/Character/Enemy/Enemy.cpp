@@ -137,7 +137,28 @@ void Enemy::Update()
 
 	ComboNumberSpriteUpdate();
 
-	model_->GetLight()->SetEnableLighting(false);
+	//デバッグ用の処理
+	if (isDebug_)
+	{
+		if (attackData_.isAttack)
+		{
+			//攻撃中(攻撃判定あり)にモデルの色を変える
+			model_->GetMaterial()->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+		}
+		else if (attackData_.isRecovery)
+		{
+			//硬直中にモデルの色を変える
+			model_->GetMaterial()->SetColor({ 0.0f,0.0f,1.0f,1.0f });
+		}
+		else
+		{
+			model_->GetMaterial()->SetColor({ 0.2f,0.2f,0.2f,1.0f });
+		}
+	}
+
+	model_->GetMaterial()->SetColor({ 0.2f,0.2f,0.2f,1.0f });
+
+	model_->GetLight()->SetEnableLighting(true);
 
 	//WorldTransformの更新
 	worldTransform_.UpdateMatrixEuler();

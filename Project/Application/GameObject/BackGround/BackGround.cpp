@@ -49,7 +49,7 @@ void BackGround::Initialize()
 
 	for (int i = 0; i < 8; i++)
 	{
-		model_[i]->GetMaterial()->SetEnvironmentCofficient(0.3f);
+		model_[i]->GetMaterial()->SetEnvironmentCofficient(0.1f);
 	}
 }
 
