@@ -53,6 +53,8 @@ void EnemyBullet::Update()
 					worldTransform_.translation.y,worldTransform_.translation.z });
 	}
 
+	model_->GetLight()->SetEnableLighting(false);
+
 	worldTransform_.UpdateMatrixEuler();
 
 	ImGui::Begin("EBullet");

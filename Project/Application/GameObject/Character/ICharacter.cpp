@@ -14,6 +14,8 @@ void ICharacter::Update()
 {
 	effectState_.isShake = false;
 
+	//worldTransform_.scale = { 1.3f,1.3f,1.3f };
+
 	//アニメーションの適応
 	model_->ApplyAnimation(animationIndex_);
 
