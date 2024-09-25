@@ -1,6 +1,7 @@
 #pragma once
 #include "IScene.h"
 #include "Engine/3D/Skybox/Skybox.h"
+#include "Engine/3D/Line/Line.h"
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Character/Enemy/EnemyBullet.h"
@@ -179,6 +180,9 @@ private:
 	//Skybox
 	std::unique_ptr<Skybox> skybox_;
 	WorldTransform skyboxWorldTransform_;
+
+	//Line
+	std::unique_ptr<Line> line_;
 
 	bool isRoundTransition_ = false;
 	int roundTransitionTimer_ = 150;

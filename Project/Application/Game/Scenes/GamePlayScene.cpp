@@ -52,6 +52,9 @@ void GamePlayScene::Initialize()
 	//Skyboxの生成、初期化
 	skybox_.reset(Skybox::Create());
 
+	//Lineの生成
+	line_.reset(Line::Create({ 0.0f,0.0f,0.0f,1.0f }, { 20.0f,20.0f,20.0f,1.0f }));
+
 	//BackGroundの生成、初期化
 	backGround_ = std::make_unique<BackGround>();
 	backGround_->Initialize();
@@ -368,13 +371,19 @@ void GamePlayScene::Draw()
 
 	ParticleModel::PostDraw();
 
+	Line::PreDraw();
+
+	line_->Draw(camera_);
+
+	Line::PostDraw();
+
 	Model::BonePreDraw();
 
-	////playerのbone描画
-	//player_->BoneDraw(camera_);
+	//playerのbone描画
+	player_->BoneDraw(camera_);
 
-	////enemyのbone描画
-	//enemy_->BoneDraw(camera_);
+	//enemyのbone描画
+	enemy_->BoneDraw(camera_);
 
 	Model::BonePostDraw();
 

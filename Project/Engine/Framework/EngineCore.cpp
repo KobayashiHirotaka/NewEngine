@@ -33,6 +33,8 @@ void EngineCore::Initialize()
 
 	Skybox::StaticInitialize();
 
+	Line::StaticInitialize();
+
 	Sprite::StaticInitialize();
 
 	GlobalVariables::GetInstance()->LoadFiles();
@@ -59,6 +61,8 @@ void EngineCore::Finalize()
 	ModelManager::DeleteInstance();
 
 	Skybox::Release();
+
+	Line::Release();
 
 	PostProcess::DeleteInstance();
 
