@@ -152,11 +152,9 @@ void Enemy::Update()
 		}
 		else
 		{
-			model_->GetMaterial()->SetColor({ 0.2f,0.2f,0.2f,1.0f });
+			model_->GetMaterial()->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 	}
-
-	model_->GetMaterial()->SetColor({ 0.2f,0.2f,0.2f,1.0f });
 
 	model_->GetLight()->SetEnableLighting(true);
 
