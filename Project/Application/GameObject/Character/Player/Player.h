@@ -24,6 +24,8 @@ public:
 
 	void ParticleDraw(const Camera& camera)override;
 
+	void CollisionDraw(const Camera& camera);
+
 	void OnCollision(Collider* collider)override;
 
 	void Reset()override;
@@ -148,5 +150,7 @@ private:
 	uint32_t guardSoundHandle_ = 0u;
 
 	bool isFinisherInvincible_ = false;
+
+	std::unique_ptr<LineBox> lineBox_ = nullptr;
 };
 

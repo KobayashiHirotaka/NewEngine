@@ -25,13 +25,13 @@ void Line::StaticInitialize()
 	CreatePSO();
 }
 
-void Line::Update()
+void Line::Update(Vector4 start, Vector4 end)
 {
-	
-
+	vertices_[0] = start;
+	vertices_[1] = end;
 }
 
-void Line::Draw(const Camera& camera)
+void Line::Draw(WorldTransform& worldTransform, const Camera& camera)
 {
 	UpdateVertexBuffer();
 
@@ -39,8 +39,11 @@ void Line::Draw(const Camera& camera)
 
 	dxCore_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
+	//WorldTransform用のCBufferの場所を設定
+	commandList_->SetGraphicsRootConstantBufferView(UINT(0), worldTransform.constBuff->GetGPUVirtualAddress());
+
 	//ViewProjection用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(0), camera.constBuff_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(UINT(1), camera.constBuff_->GetGPUVirtualAddress());
 
 	//描画
 	dxCore_->GetCommandList()->DrawInstanced(UINT(vertices_.size()), 1, 0, 0);
@@ -168,10 +171,14 @@ void Line::CreatePSO()
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
 
 	//RootParameter作成。複数設定できるので配列。今回は結果一つだけなので長さ1の配列
-	D3D12_ROOT_PARAMETER rootParameters[1] = {};
+	D3D12_ROOT_PARAMETER rootParameters[2] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; //CBVで使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; //VertexShaderで使う
 	rootParameters[0].Descriptor.ShaderRegister = 0; //レジスタ番号0とバインド
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; //CBVで使う
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; //VertexShaderで使う
+	rootParameters[1].Descriptor.ShaderRegister = 1; //レジスタ番号1とバインド
+
 
 	descriptionRootSignature.pParameters = rootParameters;//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);//配列の長さ

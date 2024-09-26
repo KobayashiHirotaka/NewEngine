@@ -52,9 +52,6 @@ void GamePlayScene::Initialize()
 	//Skyboxの生成、初期化
 	skybox_.reset(Skybox::Create());
 
-	//Lineの生成
-	line_.reset(Line::Create({ 0.0f,0.0f,0.0f,1.0f }, { 20.0f,20.0f,20.0f,1.0f }));
-
 	//BackGroundの生成、初期化
 	backGround_ = std::make_unique<BackGround>();
 	backGround_->Initialize();
@@ -373,7 +370,7 @@ void GamePlayScene::Draw()
 
 	Line::PreDraw();
 
-	line_->Draw(camera_);
+	player_->CollisionDraw(camera_);
 
 	Line::PostDraw();
 

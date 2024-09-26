@@ -31,6 +31,7 @@
     <ClCompile Include="Engine\3D\Light\PointLight.cpp" />
     <ClCompile Include="Engine\3D\Light\SpotLight.cpp" />
     <ClCompile Include="Engine\3D\Line\Line.cpp" />
+    <ClCompile Include="Engine\3D\Line\LineBox.cpp" />
     <ClCompile Include="Engine\3D\Mesh\Mesh.cpp" />
     <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp" />
     <ClCompile Include="Engine\3D\Model\Game3dObjectManager.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="Engine\3D\Light\SpotLight.h" />
     <ClInclude Include="Engine\3D\Light\Types.h" />
     <ClInclude Include="Engine\3D\Line\Line.h" />
+    <ClInclude Include="Engine\3D\Line\LineBox.h" />
     <ClInclude Include="Engine\3D\Mesh\Mesh.h" />
     <ClInclude Include="Engine\3D\Model\Game3dObjectFactory.h" />
     <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h" />

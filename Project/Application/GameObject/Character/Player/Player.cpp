@@ -31,6 +31,8 @@ void Player::Initialize()
 	SetCollisionMask(kCollisionMaskPlayer);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
 
+	lineBox_.reset(LineBox::Create(aabb_));
+
 	//リソース
 	//各ゲージの初期化
 	hpBar_ = {
@@ -154,6 +156,8 @@ void Player::Update()
 		timerData_.guardAnimationTimer = 60;
 	}
 
+	lineBox_->Update(aabb_);
+
 	particleEffectPlayer_->Update();
 
 	//worldTransformの更新
@@ -197,6 +201,11 @@ void Player::SpriteDraw()
 void Player::ParticleDraw(const Camera& camera)
 {
 	particleEffectPlayer_->Draw(camera);
+}
+
+void Player::CollisionDraw(const Camera& camera)
+{
+	lineBox_->Draw(worldTransform_, camera);
 }
 
 void Player::ImGui(const char* title)

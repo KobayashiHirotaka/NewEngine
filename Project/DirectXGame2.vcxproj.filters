@@ -444,6 +444,9 @@
     <ClCompile Include="Engine\3D\Line\Line.cpp">
       <Filter>ソース ファイル\Engine\3d\Line</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\3D\Line\LineBox.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -685,6 +688,9 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\Line\Line.h">
       <Filter>ヘッダー ファイル\Engine\3d\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Line\LineBox.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

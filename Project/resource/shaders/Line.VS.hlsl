@@ -1,5 +1,11 @@
 #include "Line.hlsli"
 
+struct WorldTransform
+{
+    float32_t4x4 world;
+    float32_t4x4 worldInverseTranspose;
+};
+
 struct Camera
 {
     float32_t3 worldPosition;
@@ -7,7 +13,8 @@ struct Camera
     float32_t4x4 projection;
 };
 
-ConstantBuffer<Camera> gCamera : register(b0);
+ConstantBuffer<WorldTransform> gWorldTransform : register(b0);
+ConstantBuffer<Camera> gCamera : register(b1);
 
 struct VertexShaderInput
 {
@@ -17,7 +24,8 @@ struct VertexShaderInput
 VertexShaderOutput main(VertexShaderInput input)
 {
     VertexShaderOutput output;
-    output.position = mul(input.position, mul(gCamera.view, gCamera.projection));
+    float32_t4 position = input.position + float32_t4(gWorldTransform.world[3][0], gWorldTransform.world[3][1], gWorldTransform.world[3][2], 0.0f);
+    output.position = mul(position, mul(gCamera.view, gCamera.projection));
    
     return output;
 }

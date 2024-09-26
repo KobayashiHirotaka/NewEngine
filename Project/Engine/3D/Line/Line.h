@@ -21,9 +21,9 @@ class Line
 public:
 	static void StaticInitialize();
 
-	void Update();
+	void Update(Vector4 start, Vector4 end);
 
-	void Draw(const Camera& camera);
+	void Draw(WorldTransform& worldTransform, const Camera& camera);
 
 	static Line* Create(Vector4 start, Vector4 end);
 

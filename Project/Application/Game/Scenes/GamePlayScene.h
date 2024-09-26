@@ -181,9 +181,6 @@ private:
 	std::unique_ptr<Skybox> skybox_;
 	WorldTransform skyboxWorldTransform_;
 
-	//Line
-	std::unique_ptr<Line> line_;
-
 	bool isRoundTransition_ = false;
 	int roundTransitionTimer_ = 150;
 };
