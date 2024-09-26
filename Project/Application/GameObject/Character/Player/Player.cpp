@@ -1243,9 +1243,10 @@ void Player::OnCollision(Collider* collider)
 
 					HitStop(30);
 				}
-				else if (characterState_.isDown && worldTransform_.translation.y > 0.5f)
+				else if (characterState_.isDown && worldTransform_.translation.y > 0.5f && !isCancel_)
 				{
 					//キャンセルのとき
+					isCancel_ = true;
 					attackData_.isDamaged = false;
 					attackData_.isFinisherGaugeIncreased = false;
 					audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
@@ -1564,6 +1565,8 @@ void Player::Reset()
 	worldTransform_.rotation = { 0.0f,1.7f,0.0f };
 	characterState_.direction = Direction::Right;
 
+	isCancel_ = false;
+
 	worldTransform_.UpdateMatrixEuler();
 }
 
@@ -1715,6 +1718,7 @@ void Player::DownAnimation()
 		if (timerData_.downAnimationTimer < 0 && hp_ < 0)
 		{
 			DownAnimationEnd(4, characterState_.isHitTackle);
+			isCancel_ = false;
 			ResetCollision();
 		}
 	}

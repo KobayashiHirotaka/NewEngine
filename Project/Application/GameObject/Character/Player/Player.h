@@ -120,6 +120,8 @@ private:
 	//向き
 	bool isDirectionRight_ = false;
 
+	bool isCancel_ = false;
+
 	//リソース
 	//スプライト(hp)
 	UI hpBar_;
