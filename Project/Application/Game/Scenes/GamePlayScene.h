@@ -183,4 +183,6 @@ private:
 
 	bool isRoundTransition_ = false;
 	int roundTransitionTimer_ = 150;
+
+	bool isDebug_ = false;
 };

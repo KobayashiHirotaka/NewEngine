@@ -180,6 +180,11 @@ void Player::BoneDraw(const Camera& camera)
 	model_->BoneDraw(worldTransform_, camera, animationIndex_);
 }
 
+void Player::CollisionDraw(const Camera& camera)
+{
+	lineBox_->Draw(worldTransform_, camera);
+}
+
 void Player::SpriteDraw()
 {
 	if (hp_ <= 0)
@@ -201,11 +206,6 @@ void Player::SpriteDraw()
 void Player::ParticleDraw(const Camera& camera)
 {
 	particleEffectPlayer_->Draw(camera);
-}
-
-void Player::CollisionDraw(const Camera& camera)
-{
-	lineBox_->Draw(worldTransform_, camera);
 }
 
 void Player::ImGui(const char* title)
@@ -337,12 +337,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -388,12 +388,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -441,12 +441,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -525,12 +525,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -558,7 +558,7 @@ void Player::BehaviorAttackUpdate()
 		
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -568,7 +568,7 @@ void Player::BehaviorAttackUpdate()
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -624,7 +624,7 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
@@ -645,7 +645,7 @@ void Player::BehaviorAttackUpdate()
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
@@ -689,14 +689,14 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
@@ -775,12 +775,12 @@ void Player::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.4f,0.3f,0.3f} };
+				aabb_ = { {-0.3f,0.0f,-0.3f},{0.4f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.4f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				aabb_ = { {-0.4f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 
@@ -826,7 +826,7 @@ void Player::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+				aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (!characterState_.isHitCharacter)
@@ -836,7 +836,7 @@ void Player::BehaviorAttackUpdate()
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (!characterState_.isHitCharacter)
@@ -919,12 +919,12 @@ void Player::BehaviorJumpUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {0.0f,0.0f,0.0f},{0.5f,0.5f,0.5f} };
+			aabb_ = { {0.0f,0.0f,0.0f},{0.5f,1.0f,0.5f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,-0.5f,-0.5f},{0.0f,0.0f,0.0f} };
+			aabb_ = { {-0.5f,0.0f,-0.5f},{0.0f,1.0f,0.0f} };
 			SetAABB(aabb_);
 		}
 
@@ -1002,12 +1002,12 @@ void Player::BehaviorStanUpdate()
 
 	if (characterState_.direction == Direction::Left)
 	{
-		aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+		aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 		SetAABB(aabb_);
 	}
 	else if (characterState_.direction == Direction::Right)
 	{
-		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+		aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 		SetAABB(aabb_);
 	}
 
@@ -1426,7 +1426,7 @@ void Player::ApplyDamage()
 
 void Player::ResetCollision()
 {
-	aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+	aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 	SetAABB(aabb_);
 }
 
@@ -1655,8 +1655,8 @@ void Player::DownAnimation()
 			}
 		}
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.1f, -0.3f}, {-0.1f, 0.1f, 0.3f} } :
-			AABB{ {0.1f, -0.1f, -0.3f}, {0.8f, 0.1f, 0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
+			AABB{ {0.0f, 0.0f, -0.3f}, {0.8f, 0.2f, 0.3f} };
 
 		animationIndex_ = 7;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
@@ -1677,8 +1677,8 @@ void Player::DownAnimation()
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
 		float moveX = (characterState_.direction == Direction::Right) ? -0.08f : 0.08f;
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.0f, -0.3f}, {-0.1f, 0.1f, 0.3f} } :
-			AABB{ {0.1f, -0.0f, -0.3f}, {0.8f, 0.1f, 0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.9f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
+			AABB{ {0.0f, 0.0f, -0.3f}, {0.9f, 0.2f, 0.3f} };
 
 		if (timerData_.downAnimationTimer > 55)
 		{

@@ -39,6 +39,8 @@ void Enemy::Initialize()
 	SetCollisionMask(kCollisionMaskEnemy);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
 
+	lineBox_.reset(LineBox::Create(aabb_));
+
 	//リソース
 	//各ゲージの初期化
 	hpBar_ = {
@@ -156,6 +158,8 @@ void Enemy::Update()
 		}
 	}
 
+	lineBox_->Update(aabb_);
+
 	model_->GetLight()->SetEnableLighting(true);
 
 	//WorldTransformの更新
@@ -170,6 +174,11 @@ void Enemy::Draw(const Camera& camera)
 void Enemy::BoneDraw(const Camera& camera)
 {
 	model_->BoneDraw(worldTransform_, camera, animationIndex_);
+}
+
+void Enemy::CollisionDraw(const Camera& camera)
+{
+	lineBox_->Draw(worldTransform_, camera);
 }
 
 void Enemy::SpriteDraw()
@@ -223,8 +232,6 @@ void Enemy::ImGui(const char* title)
 	ImGui::Text("patternCount %d", patternCount_);
 	ImGui::Text("comboTimer %d", timerData_.comboTimer);
 	ImGui::Text("hp %d", hp_);
-
-	//ImGui::Checkbox("isDebug_", &isDebug_);
 
 	model_->GetLight()->ImGui("DirectionalLight");
 	model_->GetPointLight()->ImGui("PointLight");
@@ -296,12 +303,12 @@ void Enemy::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.3f,0.3f} };
+				aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 
@@ -345,12 +352,12 @@ void Enemy::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.3f,0.3f} };
+				aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 
@@ -392,7 +399,7 @@ void Enemy::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+				aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -402,7 +409,7 @@ void Enemy::BehaviorAttackUpdate()
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -451,7 +458,7 @@ void Enemy::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+				aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				EvaluateAttackTiming();
@@ -472,7 +479,7 @@ void Enemy::BehaviorAttackUpdate()
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				EvaluateAttackTiming();
@@ -600,12 +607,12 @@ void Enemy::BehaviorStanUpdate()
 
 	if (characterState_.direction == Direction::Left)
 	{
-		aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+		aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 		SetAABB(aabb_);
 	}
 	else if(characterState_.direction == Direction::Right)
 	{
-		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+		aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 		SetAABB(aabb_);
 	}
 
@@ -624,7 +631,7 @@ void Enemy::BehaviorStanUpdate()
 		attackData_.attackAnimationFrame = 0;
 		guardGauge_ = 0.0f;
 		model_->SetAnimationTime(animationTime);
-		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+		ResetCollision();
 		SetAABB(aabb_);
 	}
 }
@@ -1069,7 +1076,7 @@ void Enemy::ApplyDamage()
 
 void Enemy::ResetCollision()
 {
-	aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+	aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 	SetAABB(aabb_);
 }
 
@@ -1299,12 +1306,16 @@ void Enemy::DownAnimation()
 			}
 		}
 
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
+			AABB{ {0.0f, 0.0f, -0.3f}, {0.8f, 0.2f, 0.3f} };
+
 		animationIndex_ = 6;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
 		if (!player_->GetIsHighPunch() && worldTransform_.translation.y <= 0.0f && hp_ > 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitHighPunch);
+			ResetCollision();
 		}
 	}
 
@@ -1340,8 +1351,8 @@ void Enemy::DownAnimation()
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
 		float moveX = (characterState_.direction == Direction::Right) ? -0.02f : 0.02f;
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.3f, -0.3f}, {-0.1f, 0.0f, 0.3f} } :
-			AABB{ {0.1f, -0.3f, -0.3f}, {0.8f, 0.0f, 0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
+			AABB{ {0.0f, 0.0f, -0.3f}, {0.9f, 0.2f, 0.3f} };
 
 		if (timerData_.downAnimationTimer > 55)
 		{
@@ -1400,8 +1411,8 @@ void Enemy::DownAnimation()
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
 		float moveX = (characterState_.direction == Direction::Right) ? -0.08f : 0.08f;
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.3f, -0.3f}, {-0.1f, 0.0f, 0.3f} } :
-			AABB{ {0.1f, -0.3f, -0.3f}, {0.8f, 0.0f, 0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.9f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
+			AABB{ {0.0f, 0.0f, -0.3f}, {0.9f, 0.2f, 0.3f} };
 
 		if (timerData_.downAnimationTimer > 57)
 		{

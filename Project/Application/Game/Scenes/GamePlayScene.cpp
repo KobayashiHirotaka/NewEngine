@@ -128,6 +128,14 @@ void GamePlayScene::Initialize()
 
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 
+#ifdef _DEBUG
+
+	isDebug_ = true;
+
+#endif // DEBUG
+
+	isDebug_ = true;
+
 	//ラウンドごとの時間
 	currentSeconds_ = 99;
 	UpdateNumberSprite();
@@ -370,7 +378,12 @@ void GamePlayScene::Draw()
 
 	Line::PreDraw();
 
-	player_->CollisionDraw(camera_);
+	if (isDebug_)
+	{
+		player_->CollisionDraw(camera_);
+
+		enemy_->CollisionDraw(camera_);
+	}
 
 	Line::PostDraw();
 
@@ -505,6 +518,7 @@ void GamePlayScene::ImGui()
 {
 	ImGui::Begin("PlayScene");
 	ImGui::Text("roundTransitionTimer %d", roundTransitionTimer_);
+	ImGui::Checkbox("isDebug_", &isDebug_);
 	ImGui::End();
 
 	player_->ImGui("Player");

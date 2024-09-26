@@ -20,6 +20,8 @@ public:
 
 	void BoneDraw(const Camera& camera)override;
 
+	void CollisionDraw(const Camera& camera)override;
+
 	void SpriteDraw()override;
 
 	void ParticleDraw(const Camera& camera)override;
@@ -120,7 +122,7 @@ private:
 	int moveTimer_ = 60;
 
 	//当たり判定
-	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 
 	//プレイヤー
 	Player* player_ = nullptr;
@@ -163,5 +165,7 @@ private:
 	uint32_t weaponAttackSoundHandle_ = 0u;
 	uint32_t damageSoundHandle_ = 0u;
 	uint32_t guardSoundHandle_ = 0u;
+
+	std::unique_ptr<LineBox> lineBox_ = nullptr;
 };
 

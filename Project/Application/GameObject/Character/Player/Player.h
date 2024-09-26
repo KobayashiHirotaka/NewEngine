@@ -24,7 +24,7 @@ public:
 
 	void ParticleDraw(const Camera& camera)override;
 
-	void CollisionDraw(const Camera& camera);
+	void CollisionDraw(const Camera& camera)override;
 
 	void OnCollision(Collider* collider)override;
 
@@ -115,7 +115,7 @@ private:
 	WorldTransform worldTransformCursol_;
 
 	//当たり判定
-	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 
 	//向き
 	bool isDirectionRight_ = false;

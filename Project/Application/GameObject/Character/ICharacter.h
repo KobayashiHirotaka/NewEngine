@@ -197,6 +197,8 @@ public:
 
 	virtual void BoneDraw(const Camera& camera) = 0;
 
+	virtual void CollisionDraw(const Camera& camera) = 0;
+
 	virtual void SpriteDraw() = 0;
 
 	virtual void ParticleDraw(const Camera& camera) = 0;
