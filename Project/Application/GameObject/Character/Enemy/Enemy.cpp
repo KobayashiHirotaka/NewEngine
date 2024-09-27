@@ -264,6 +264,15 @@ void Enemy::BehaviorRootUpdate()
 	{
 		if (!characterState_.isDown && comboCount_ == 0)
 		{
+			if (patternCount_ == 1)
+			{
+				animationIndex_ = 0;
+			}
+			else if (patternCount_ == 2)
+			{
+				animationIndex_ = 2;
+			}
+
 			//移動
 			Move();
 		}
@@ -888,6 +897,14 @@ void Enemy::OnCollision(Collider* collider)
 
 void Enemy::Move()
 {
+	Vector3 playerWorldPosition = player_->GetWorldPosition();
+
+	Vector3 enemyWorldPosition = GetWorldPosition();
+
+	Vector3 difference = playerWorldPosition - enemyWorldPosition;
+
+	float distance = Length(difference);
+
 	//移動処理(後ろ歩き)
 	if (patternCount_ == 1 && characterState_.isDown == false)
 	{
@@ -897,7 +914,10 @@ void Enemy::Move()
 		bool isBackMove_ = false;
 		moveData_.velocity = { 0.0f, 0.0f, 0.0f };
 
-		if (moveTimer_ > 0 && characterState_.direction == Direction::Right)
+		animationIndex_ = 0;
+		UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
+
+		if (characterState_.direction == Direction::Right)
 		{
 			moveData_.velocity.x = -0.01f;
 			isFrontMove_ = false;
@@ -905,32 +925,16 @@ void Enemy::Move()
 			characterState_.isGuard = true;
 		}
 
-		if (moveTimer_ > 0 && characterState_.direction == Direction::Left)
+		if (characterState_.direction == Direction::Left)
 		{
 			moveData_.velocity.x = 0.01f;
 			isFrontMove_ = false;
 			isBackMove_ = true;
-			characterState_.isGuard = false;
+			characterState_.isGuard = true;
 		}
 
-		//移動
-		if (isFrontMove_)
+		if (isBackMove_)
 		{
-			animationIndex_ = 0;
-			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
-
-			moveData_.velocity = Normalize(moveData_.velocity);
-			moveData_.velocity = Multiply(frontSpeed_, moveData_.velocity);
-
-			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
-
-			worldTransform_.UpdateMatrixEuler();
-		}
-		else if (isBackMove_)
-		{
-			animationIndex_ = 2;
-			UpdateAnimationTime(animationTime_, true, 40.0f, animationIndex_, model_);
-
 			moveData_.velocity = Normalize(moveData_.velocity);
 			moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
 
@@ -938,16 +942,19 @@ void Enemy::Move()
 
 			worldTransform_.UpdateMatrixEuler();
 		}
-		else
-		{
-			animationIndex_ = 5;
-			UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
-		}
 
 		if (moveTimer_ <= 0)
 		{
-			moveTimer_ = Random(30, 60);
-			patternCount_ = Random(3, 4);
+			if (distance >= 3.0f) 
+			{
+				moveTimer_ = Random(30, 60);
+				patternCount_ = RandomAttackOrMove();
+			}
+			else
+			{
+				moveTimer_ = Random(30, 60);
+				patternCount_ = Random(2, 4);
+			}
 		}
 
 		if (characterState_.isHitCharacter)
@@ -966,7 +973,10 @@ void Enemy::Move()
 		bool isBackMove_ = false;
 		moveData_.velocity = { 0.0f, 0.0f, 0.0f };
 
-		if (moveTimer_ > 0 && characterState_.direction == Direction::Right)
+		animationIndex_ = 2;
+		UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
+
+		if (characterState_.direction == Direction::Right)
 		{
 			moveData_.velocity.x = 0.01f;
 			isFrontMove_ = true;
@@ -974,7 +984,7 @@ void Enemy::Move()
 			characterState_.isGuard = false;
 		}
 
-		if (moveTimer_ > 0 && characterState_.direction == Direction::Left)
+		if (characterState_.direction == Direction::Left)
 		{
 			moveData_.velocity.x = -0.01f;
 			isFrontMove_ = true;
@@ -986,9 +996,6 @@ void Enemy::Move()
 		//移動
 		if (isFrontMove_)
 		{
-			animationIndex_ = 0;
-			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
-
 			moveData_.velocity = Normalize(moveData_.velocity);
 			moveData_.velocity = Multiply(frontSpeed_, moveData_.velocity);
 
@@ -997,30 +1004,19 @@ void Enemy::Move()
 
 			worldTransform_.UpdateMatrixEuler();
 		}
-		else if (isBackMove_)
-		{
-			animationIndex_ = 2;
-			UpdateAnimationTime(animationTime_, true, 40.0f, animationIndex_, model_);
-
-			moveData_.velocity = Normalize(moveData_.velocity);
-			moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
-
-			// 平行移動
-			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
-
-			worldTransform_.UpdateMatrixEuler();
-		}
-		else
-		{
-			animationIndex_ = 6;
-
-			UpdateAnimationTime(animationTime_, true, 60.0f, animationIndex_, model_);
-		}
 
 		if (moveTimer_ <= 0)
 		{
-			moveTimer_ = Random(30, 60);
-			patternCount_ = Random(3, 4);
+			if (distance >= 3.0f)
+			{
+				moveTimer_ = Random(30, 60);
+				patternCount_ = RandomAttackOrMove();
+			}
+			else
+			{
+				moveTimer_ = Random(30, 60);
+				patternCount_ = Random(2,4);
+			}
 		}
 
 		if (characterState_.isHitCharacter)
@@ -1578,6 +1574,19 @@ int Enemy::RandomMove()
 	std::uniform_int_distribution<int> dis(0, static_cast<int>(actions.size()) - 1);
 
 	return actions[dis(gen)]; 
+}
+
+int Enemy::RandomAttackOrMove()
+{
+	std::vector<int> actions;
+
+	actions = { 2, 2, 4 };
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(0, static_cast<int>(actions.size()) - 1);
+
+	return actions[dis(gen)];
 }
 
 void Enemy::BulletShoot(const Vector3& startPosition, const Vector3& velocity)
