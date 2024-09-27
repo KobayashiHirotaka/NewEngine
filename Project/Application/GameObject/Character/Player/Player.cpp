@@ -62,7 +62,7 @@ void Player::Initialize()
 		TextureManager::LoadTexture("resource/images/finisherGauge.png"),
 		{299.0f, finisherGaugeBarSpace_},
 		0.0f,
-		{-finisherGaugeBarSize_  ,17.8f},
+		{-finisherGaugeBarSize_  ,19.3f},
 		nullptr,
 	};
 
@@ -73,6 +73,12 @@ void Player::Initialize()
 	comboNumSprite_.reset(Sprite::Create(comboNumTextureHandle_, { 1060.0f, 290.0f }));
 
 	finisherGaugeBar_.sprite_ = Sprite::Create(finisherGaugeBar_.textureHandle_, finisherGaugeBar_.position_);
+
+	//キャラクターアイコン
+	playerIconTextureHandle_ = TextureManager::LoadTexture("resource/images/PlayerIcon.png");
+
+	playerIconSprite_.reset(Sprite::Create(playerIconTextureHandle_, { 53.0f, 20.0f }));
+	playerIconSprite_->SetSize({ 120.0f,120.0f });
 
 	//SEの初期化
 	attackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Attack.mp3");
@@ -195,6 +201,8 @@ void Player::SpriteDraw()
 	guardGaugeBar_.sprite_->Draw();
 
 	finisherGaugeBar_.sprite_->Draw();
+
+	playerIconSprite_->Draw();
 
 	if (comboCount_ >= 2)
 	{
@@ -1495,7 +1503,7 @@ void Player::AdjustGuardGauge()
 
 void Player::FinisherGaugeBarUpdate()
 {
-	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,17.8f };
+	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,19.3f };
 
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
 

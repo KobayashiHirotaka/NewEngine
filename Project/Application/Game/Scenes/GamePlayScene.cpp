@@ -110,17 +110,8 @@ void GamePlayScene::Initialize()
 	tensTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
 	onesTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
 
-	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, { 580.0f, 0.0f }));
-	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, { 620.0f, 0.0f }));
-
-	playerIconTextureHandle_ = TextureManager::LoadTexture("resource/images/PlayerIcon.png");
-	enemyIconTextureHandle_ = TextureManager::LoadTexture("resource/images/EnemyIcon.png");
-
-	playerIconSprite_.reset(Sprite::Create(playerIconTextureHandle_, { 60.0f, 20.0f }));
-	playerIconSprite_->SetSize({ 120.0f,120.0f });
-
-	enemyIconSprite_.reset(Sprite::Create(enemyIconTextureHandle_, { 1100.0f, 20.0f }));
-	enemyIconSprite_->SetSize({ 120.0f,120.0f });
+	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, { 590.0f, 0.0f }));
+	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, { 630.0f, 0.0f }));
 
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
 	transitionSprite_->SetColor(transitionColor_);
@@ -493,10 +484,6 @@ void GamePlayScene::Draw()
 	{
 		attackCommandListSprite_[1]->Draw();
 	}
-
-	playerIconSprite_->Draw();
-
-	enemyIconSprite_->Draw();
 	
 	Sprite::PostDraw();
 

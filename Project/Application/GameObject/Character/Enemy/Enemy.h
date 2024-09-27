@@ -112,6 +112,8 @@ private:
 
 	int Random(int min_value, int max_value);
 
+	int RandomMove();
+
 private:
 	Input* input_ = nullptr;
 
@@ -152,6 +154,10 @@ private:
 	UI finisherGaugeBar_;
 	const float finisherGaugeBarSpace_ = 627.0f;
 	float finisherGaugeBarSize_ = 240.0f;
+
+	//キャラクターアイコンのスプライト
+	std::unique_ptr<Sprite>enemyIconSprite_ = nullptr;
+	uint32_t enemyIconTextureHandle_ = 0;
 
 	//スプライト(コンボ表示)
 	std::unique_ptr<Sprite>hitSprite_ = nullptr;

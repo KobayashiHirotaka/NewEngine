@@ -112,14 +112,6 @@ private:
 	std::unique_ptr<Sprite>commandListBackSprite_ = nullptr;
 	uint32_t commandListBackTextureHandle_ = 0;
 
-	//キャラクター(Player用)アイコンのSprite
-	std::unique_ptr<Sprite>playerIconSprite_ = nullptr;
-	uint32_t playerIconTextureHandle_ = 0;
-
-	//キャラクター(Enemy用)アイコンのSprite
-	std::unique_ptr<Sprite>enemyIconSprite_ = nullptr;
-	uint32_t enemyIconTextureHandle_ = 0;
-
 	//何枚目のSpriteが表示されているか
 	int spriteCount_ = 0;
 

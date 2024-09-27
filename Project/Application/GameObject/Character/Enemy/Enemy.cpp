@@ -46,7 +46,7 @@ void Enemy::Initialize()
 	hpBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/HP.png"),
-		{720.0f, barSpace_},
+		{742.0f, barSpace_},
 		0.0f,
 		{-barSize_  ,7.2f},
 		nullptr,
@@ -57,7 +57,7 @@ void Enemy::Initialize()
 	guardGaugeBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/guardGauge.png"),
-		{720.0f, guardGaugeBarSpace_},
+		{742.0f, guardGaugeBarSpace_},
 		0.0f,
 		{-guardGaugeBarSize_  ,7.0f},
 		nullptr,
@@ -70,11 +70,16 @@ void Enemy::Initialize()
 		TextureManager::LoadTexture("resource/images/finisherGauge.png"),
 		{979.0f, finisherGaugeBarSpace_},
 		0.0f,
-		{-finisherGaugeBarSize_  ,17.8f},
+		{-finisherGaugeBarSize_  ,19.3f},
 		nullptr,
 	};
 
 	finisherGaugeBar_.sprite_ = Sprite::Create(finisherGaugeBar_.textureHandle_, finisherGaugeBar_.position_);
+
+	enemyIconTextureHandle_ = TextureManager::LoadTexture("resource/images/EnemyIcon.png");
+
+	enemyIconSprite_.reset(Sprite::Create(enemyIconTextureHandle_, { 1110.0f, 20.0f }));
+	enemyIconSprite_->SetSize({ 120.0f,120.0f });
 
 	hitTextureHandle_ = TextureManager::LoadTexture("resource/images/Hit.png");
 	hitSprite_.reset(Sprite::Create(hitTextureHandle_, { 40.0f, 180.0f }));
@@ -98,6 +103,11 @@ void Enemy::Initialize()
 
 void Enemy::Update()
 {
+	if (input_->PressKey(DIK_D))
+	{
+		guardGauge_ += 0.3f;
+	}
+
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
@@ -192,6 +202,8 @@ void Enemy::SpriteDraw()
 
 	finisherGaugeBar_.sprite_->Draw();
 
+	enemyIconSprite_->Draw();
+
 	if (comboCount_ >= 2)
 	{
 		hitSprite_->Draw();
@@ -243,7 +255,7 @@ void Enemy::BehaviorRootInitialize()
 {
 	animationIndex_ = 5;
 
-	patternCount_ = Random(1, 2);
+	patternCount_ = RandomMove();
 }
 
 void Enemy::BehaviorRootUpdate()
@@ -260,6 +272,7 @@ void Enemy::BehaviorRootUpdate()
 		//突進攻撃
 		if (patternCount_ == 3 && !characterState_.isDown)
 		{
+			animationIndex_ = 8;
 			attackType = "Tackle";
 			AttackStart(attackData_.isTackle);
 		}
@@ -267,6 +280,7 @@ void Enemy::BehaviorRootUpdate()
 		//弾攻撃
 		if (patternCount_ == 4 && !characterState_.isDown)
 		{
+			animationIndex_ = 1;
 			attackType = "Shot";
 			AttackStart(attackData_.isShot);
 		}
@@ -274,6 +288,7 @@ void Enemy::BehaviorRootUpdate()
 		//弱攻撃
 		if (patternCount_ == 5 && !characterState_.isDown)
 		{
+			animationIndex_ = 12;
 			attackType = "LightPunch";
 			AttackStart(attackData_.isLightPunch);
 		}
@@ -508,7 +523,7 @@ void Enemy::BehaviorAttackUpdate()
 
 			if (characterState_.isDown || attackData_.attackAnimationFrame >= attackData_.recoveryTime)
 			{
-				patternCount_ = Random(1, 2);
+				patternCount_ = RandomMove();
 				AttackEnd(attackData_.isTackle);
 				ResetCollision();
 			}
@@ -550,7 +565,7 @@ void Enemy::BehaviorAttackUpdate()
 
 			if (characterState_.isDown || attackData_.attackAnimationFrame >= 40)
 			{
-				patternCount_ = Random(1, 2);
+				patternCount_ = RandomMove();
 				AttackEnd(attackData_.isShot);
 				hasShot_ = false;
 				ResetCollision();
@@ -873,7 +888,7 @@ void Enemy::OnCollision(Collider* collider)
 
 void Enemy::Move()
 {
-	//移動処理(後ろ歩きスタート)
+	//移動処理(後ろ歩き)
 	if (patternCount_ == 1 && characterState_.isDown == false)
 	{
 		moveTimer_--;
@@ -882,23 +897,7 @@ void Enemy::Move()
 		bool isBackMove_ = false;
 		moveData_.velocity = { 0.0f, 0.0f, 0.0f };
 
-		if (moveTimer_ <= 30 && characterState_.direction == Direction::Left)
-		{
-			moveData_.velocity.x = 0.01f;
-			isFrontMove_ = false;
-			isBackMove_ = true;
-			characterState_.isGuard = false;
-		}
-
-		if (moveTimer_ <= 30 && characterState_.direction == Direction::Right)
-		{
-			moveData_.velocity.x = 0.01f;
-			isFrontMove_ = true;
-			isBackMove_ = false;
-			characterState_.isGuard = false;
-		}
-
-		if (moveTimer_ > 30 && characterState_.direction == Direction::Right)
+		if (moveTimer_ > 0 && characterState_.direction == Direction::Right)
 		{
 			moveData_.velocity.x = -0.01f;
 			isFrontMove_ = false;
@@ -906,12 +905,12 @@ void Enemy::Move()
 			characterState_.isGuard = true;
 		}
 
-		if (moveTimer_ > 30 && characterState_.direction == Direction::Left)
+		if (moveTimer_ > 0 && characterState_.direction == Direction::Left)
 		{
-			moveData_.velocity.x = -0.01f;
-			isFrontMove_ = true;
-			isBackMove_ = false;
-			characterState_.isGuard = true;
+			moveData_.velocity.x = 0.01f;
+			isFrontMove_ = false;
+			isBackMove_ = true;
+			characterState_.isGuard = false;
 		}
 
 		//移動
@@ -958,7 +957,7 @@ void Enemy::Move()
 		}
 	}
 
-	//移動処理(前歩きスタート)
+	//移動処理(前歩き)
 	if (patternCount_ == 2 && characterState_.isDown == false)
 	{
 		moveTimer_--;
@@ -967,15 +966,7 @@ void Enemy::Move()
 		bool isBackMove_ = false;
 		moveData_.velocity = { 0.0f, 0.0f, 0.0f };
 
-		if (moveTimer_ < 30 && characterState_.direction == Direction::Left && !characterState_.isHitCharacter)
-		{
-			moveData_.velocity.x = 0.01f;
-			isFrontMove_ = false;
-			isBackMove_ = true;
-			characterState_.isGuard = false;
-		}
-
-		if (moveTimer_ < 30 && characterState_.direction == Direction::Right && !characterState_.isHitCharacter)
+		if (moveTimer_ > 0 && characterState_.direction == Direction::Right)
 		{
 			moveData_.velocity.x = 0.01f;
 			isFrontMove_ = true;
@@ -983,20 +974,12 @@ void Enemy::Move()
 			characterState_.isGuard = false;
 		}
 
-		if (moveTimer_ >= 30 && characterState_.direction == Direction::Right)
-		{
-			moveData_.velocity.x = -0.01f;
-			isFrontMove_ = false;
-			isBackMove_ = true;
-			characterState_.isGuard = true;
-		}
-
-		if (moveTimer_ >= 30 && characterState_.direction == Direction::Left)
+		if (moveTimer_ > 0 && characterState_.direction == Direction::Left)
 		{
 			moveData_.velocity.x = -0.01f;
 			isFrontMove_ = true;
 			isBackMove_ = false;
-			characterState_.isGuard = true;
+			characterState_.isGuard = false;
 		}
 
 
@@ -1144,7 +1127,7 @@ void Enemy::AdjustGuardGauge()
 
 void Enemy::FinisherGaugeBarUpdate()
 {
-	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,17.8f };
+	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,19.3f };
 
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
 
@@ -1244,7 +1227,7 @@ void Enemy::DownAnimation()
 		//次の入力を受け取ったらこの処理にする
 		if (!player_->GetIsLightPunch() && hp_ > 0)
 		{
-			patternCount_ = Random(1, 2);
+			patternCount_ = RandomMove();
 			DownAnimationEnd(5, characterState_.isHitLightPunch);
 		}
 	}
@@ -1575,6 +1558,26 @@ int Enemy::Random(int min_value, int max_value)
 	std::uniform_int_distribution<int> dis(min_value, max_value);
 
 	return dis(gen);
+}
+
+int Enemy::RandomMove()
+{
+	std::vector<int> actions;
+
+	if (hp_ > 50)
+	{
+		actions = { 1, 2, 2 };
+	}
+	else
+	{
+		actions = { 1, 1, 2 };
+	}
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(0, static_cast<int>(actions.size()) - 1);
+
+	return actions[dis(gen)]; 
 }
 
 void Enemy::BulletShoot(const Vector3& startPosition, const Vector3& velocity)
