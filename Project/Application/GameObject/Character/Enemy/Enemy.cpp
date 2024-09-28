@@ -945,7 +945,7 @@ void Enemy::Move()
 
 		if (moveTimer_ <= 0)
 		{
-			if (distance >= 3.0f) 
+			if (distance >= 4.0f) 
 			{
 				moveTimer_ = Random(30, 60);
 				patternCount_ = RandomAttackOrMove();
@@ -1007,7 +1007,7 @@ void Enemy::Move()
 
 		if (moveTimer_ <= 0)
 		{
-			if (distance >= 3.0f)
+			if (distance >= 4.0f)
 			{
 				moveTimer_ = Random(30, 60);
 				patternCount_ = RandomAttackOrMove();
@@ -1560,14 +1560,7 @@ int Enemy::RandomMove()
 {
 	std::vector<int> actions;
 
-	if (hp_ > 50)
-	{
-		actions = { 1, 2, 2 };
-	}
-	else
-	{
-		actions = { 1, 1, 2 };
-	}
+	actions = { 1, 2, 2 };
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
