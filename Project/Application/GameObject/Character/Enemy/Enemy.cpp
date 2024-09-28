@@ -41,6 +41,9 @@ void Enemy::Initialize()
 
 	lineBox_.reset(LineBox::Create(aabb_));
 
+	//行動パターンの初期化
+	patternCount_ = RandomMove();
+
 	//リソース
 	//各ゲージの初期化
 	hpBar_ = {
@@ -739,23 +742,35 @@ void Enemy::OnCollision(Collider* collider)
 		{
 			if (!characterState_.isDown && firstAttack_ != "JumpAttack")
 			{
-				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				if (!isHitAudio_)
+				{
+					audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				}
+		
 				ApplyDamage();
 				characterState_.isHitLightPunch = true;
 
 				AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 				HitStop(10);
+
+				isHitAudio_ = true;
 			}
 			else
 			{
-				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				if (!isHitAudio_)
+				{
+					audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+				}
+
 				ApplyDamage();
 				characterState_.isHitLightPunch = true;
 
 				AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 				HitStop(10);
+
+				isHitAudio_ = true;
 			}
 		}
 
@@ -953,7 +968,7 @@ void Enemy::Move()
 			else
 			{
 				moveTimer_ = Random(30, 60);
-				patternCount_ = Random(2, 4);
+				patternCount_ = Random(2, 3);
 			}
 		}
 
@@ -1015,7 +1030,7 @@ void Enemy::Move()
 			else
 			{
 				moveTimer_ = Random(30, 60);
-				patternCount_ = Random(2,4);
+				patternCount_ = Random(2,3);
 			}
 		}
 
@@ -1180,6 +1195,8 @@ void Enemy::Reset()
 
 	hp_ = 100;
 
+	patternCount_ = RandomMove();
+
 	animationIndex_ = 5;
 	animationTime_ = 0.0f;
 	model_->SetAnimationTime(animationTime_);
@@ -1192,6 +1209,7 @@ void Enemy::Reset()
 	characterState_.direction = Direction::Left;
 
 	isCancel_ = false;
+	isHitAudio_ = false;
 
 	worldTransform_.UpdateMatrixEuler();
 }
@@ -1224,6 +1242,7 @@ void Enemy::DownAnimation()
 		if (!player_->GetIsLightPunch() && hp_ > 0)
 		{
 			patternCount_ = RandomMove();
+			isHitAudio_ = false;
 			DownAnimationEnd(5, characterState_.isHitLightPunch);
 		}
 	}
@@ -1573,7 +1592,7 @@ int Enemy::RandomAttackOrMove()
 {
 	std::vector<int> actions;
 
-	actions = { 2, 2, 4 };
+	actions = { 2, 2, 3, 4 };
 
 	std::random_device rd;
 	std::mt19937 gen(rd());

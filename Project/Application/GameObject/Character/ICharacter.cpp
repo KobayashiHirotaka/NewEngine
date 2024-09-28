@@ -9,7 +9,7 @@ void ICharacter::Initialize()
 
 #endif // DEBUG
 
-		isDebug_ = true;
+		//isDebug_ = true;
 }
 
 void ICharacter::Update()

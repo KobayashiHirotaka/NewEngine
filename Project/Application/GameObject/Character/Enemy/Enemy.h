@@ -141,6 +141,8 @@ private:
 
 	bool isCancel_ = false;
 
+	bool isHitAudio_ = false;
+
 	//リソース
 	//スプライト(hp)
 	UI hpBar_;
