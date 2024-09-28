@@ -125,8 +125,6 @@ void GamePlayScene::Initialize()
 
 #endif // DEBUG
 
-	isDebug_ = true;
-
 	//ラウンドごとの時間
 	currentSeconds_ = 99;
 	UpdateNumberSprite();
@@ -381,10 +379,10 @@ void GamePlayScene::Draw()
 	Model::BonePreDraw();
 
 	//playerのbone描画
-	player_->BoneDraw(camera_);
+	//player_->BoneDraw(camera_);
 
 	//enemyのbone描画
-	enemy_->BoneDraw(camera_);
+	//enemy_->BoneDraw(camera_);
 
 	Model::BonePostDraw();
 
