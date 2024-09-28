@@ -6,6 +6,7 @@ void BackGround::Initialize()
 	//inputのinstance
 	input_ = Input::GetInstance();
 
+	//メインの背景
 	model_[0].reset(Model::CreateFromOBJ("resource/BackStage", "House.gltf"));
 	model_[1].reset(Model::CreateFromOBJ("resource/BackStage", "Grass1.gltf"));
 	model_[2].reset(Model::CreateFromOBJ("resource/BackStage", "Grass2.gltf"));
@@ -17,7 +18,7 @@ void BackGround::Initialize()
 
 	worldTransform_[0].Initialize();
 	worldTransform_[0].translation = { 0.0f,-0.4f,70.0f };
-	worldTransform_[0].scale = { 1.3f,1.3f,1.3f };
+	worldTransform_[0].scale = { 1.8f,1.8f,1.8f };
 
 	worldTransform_[1].Initialize();
 	worldTransform_[1].translation = { 18.0f,-0.4f,70.0f };
@@ -86,8 +87,8 @@ void BackGround::Draw(const Camera camera)
 void BackGround::ImGui()
 {
 	ImGui::Begin("BackGround");
-	ImGui::SliderFloat3("WTFT", &worldTransform_[5].translation.x, -40.0f, 40.0f);
-	ImGui::SliderFloat3("WTFR", &worldTransform_[5].rotation.x, 0.0f, 150.0f);
-	ImGui::SliderFloat3("WTFS", &worldTransform_[5].scale.x, 0.0f, 300.0f);
+	ImGui::SliderFloat3("WTFT", &worldTransform_[0].translation.x, -40.0f, 40.0f);
+	ImGui::SliderFloat3("WTFR", &worldTransform_[0].rotation.x, 0.0f, 150.0f);
+	ImGui::SliderFloat3("WTFS", &worldTransform_[0].scale.x, 0.0f, 300.0f);
 	ImGui::End();
 }
