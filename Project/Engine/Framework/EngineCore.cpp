@@ -5,7 +5,7 @@ D3DResourceLeakChecker EngineCore::leakCheck;
 void EngineCore::Initialize()
 {
 	win_ = WindowsApp::GetInstance();
-	win_->CreateGameWindow(L"LE3A_08_コバヤシヒロタカ_モノクロファイター", win_->kClientWidth, win_->kClientHeight);
+	win_->CreateGameWindow(L"LE3A_08_コバヤシ_ヒロタカ_モノクロファイター", win_->kClientWidth, win_->kClientHeight);
 
 	dxCore_ = DirectXCore::GetInstance();
 	dxCore_->Initialize();
@@ -33,6 +33,8 @@ void EngineCore::Initialize()
 
 	Skybox::StaticInitialize();
 
+	Line::StaticInitialize();
+
 	Sprite::StaticInitialize();
 
 	GlobalVariables::GetInstance()->LoadFiles();
@@ -59,6 +61,8 @@ void EngineCore::Finalize()
 	ModelManager::DeleteInstance();
 
 	Skybox::Release();
+
+	Line::Release();
 
 	PostProcess::DeleteInstance();
 

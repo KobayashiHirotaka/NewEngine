@@ -24,7 +24,9 @@ public:
 
 	void ParticleDraw(const Camera& camera)override;
 
-	void OnCollision(Collider* collider, float damage)override;
+	void CollisionDraw(const Camera& camera)override;
+
+	void OnCollision(Collider* collider)override;
 
 	void Reset()override;
 
@@ -55,6 +57,8 @@ public:
 
 	void EvaluateAttackTiming()override;
 
+	void ApplyDamage()override;
+
 	//当たり判定の初期化
 	void ResetCollision()override;
 
@@ -65,6 +69,8 @@ public:
 	void HPBarUpdate()override;
 
 	void GuardGaugeBarUpdate()override;
+
+	void AdjustGuardGauge()override;
 
 	void FinisherGaugeBarUpdate()override;
 
@@ -109,10 +115,12 @@ private:
 	WorldTransform worldTransformCursol_;
 
 	//当たり判定
-	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 
 	//向き
 	bool isDirectionRight_ = false;
+
+	bool isCancel_ = false;
 
 	//リソース
 	//スプライト(hp)
@@ -130,6 +138,10 @@ private:
 	const float finisherGaugeBarSpace_ = 627.0f;
 	float finisherGaugeBarSize_ = 240.0f;
 
+	//キャラクターアイコンのスプライト
+	std::unique_ptr<Sprite>playerIconSprite_ = nullptr;
+	uint32_t playerIconTextureHandle_ = 0;
+
 	//スプライト(コンボ表示)
 	std::unique_ptr<Sprite>hitSprite_ = nullptr;
 	uint32_t hitTextureHandle_;
@@ -142,10 +154,9 @@ private:
 	uint32_t weaponAttackSoundHandle_ = 0u;
 	uint32_t damageSoundHandle_ = 0u;
 	uint32_t guardSoundHandle_ = 0u;
-	
-	//エディター用
-	std::string attackType;
 
 	bool isFinisherInvincible_ = false;
+
+	std::unique_ptr<LineBox> lineBox_ = nullptr;
 };
 

@@ -253,6 +253,12 @@
     <Filter Include="ヘッダー ファイル\Engine\3d\Skybox">
       <UniqueIdentifier>{aafb0df5-5686-418d-9787-d10259f37352}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Engine\3d\Line">
+      <UniqueIdentifier>{c85be4c4-60f1-445b-ba99-c7ead95554a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\3d\Line">
+      <UniqueIdentifier>{7428a170-ba2e-4067-b889-ef5a24d7df29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -435,6 +441,12 @@
     <ClCompile Include="Engine\3D\Skybox\Skybox.cpp">
       <Filter>ソース ファイル\Engine\3d\Skybox</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\3D\Line\Line.cpp">
+      <Filter>ソース ファイル\Engine\3d\Line</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Line\LineBox.cpp">
+      <Filter>ソース ファイル\Engine\3d\Line</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -463,6 +475,9 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="resource\shaders\Skybox.hlsli">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="resource\shaders\Line.hlsli">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
@@ -671,6 +686,12 @@
     <ClInclude Include="Engine\3D\Skybox\Skybox.h">
       <Filter>ヘッダー ファイル\Engine\3d\Skybox</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\3D\Line\Line.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Line\LineBox.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Line</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\Object3d.PS.hlsl">
@@ -728,6 +749,12 @@
       <Filter>shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\Skybox.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Line.VS.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Line.PS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
   </ItemGroup>

@@ -22,7 +22,7 @@ public:
 
 	void SetIsDead(bool isDead) { isDead_ = isDead; }
 
-	void OnCollision(Collider* collider, float damage)override;
+	void OnCollision(Collider* collider)override;
 
 	WorldTransform& GetWorldTransform()override { return worldTransform_; }
 

@@ -3,6 +3,8 @@
 void IGame3dObject::Initialize()
 {
 	worldTransform_.Initialize();
+
+	model_->GetMaterial()->SetEnvironmentCofficient(0.0f);
 }
 
 void IGame3dObject::Update()

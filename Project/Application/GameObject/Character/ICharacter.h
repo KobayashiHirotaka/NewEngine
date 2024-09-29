@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/3D/Model/Model.h"
 #include "Engine/3D/Model/ModelManager.h"
+#include "Engine/3D/Line/LineBox.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Utility/Collision/Collider.h"
@@ -110,6 +111,18 @@ public:
 		//硬直
 		int recoveryTime = 0;
 
+		//ダメージ
+		int damage = 0;
+
+		//ガードゲージ増加量
+		float guardGaugeIncreaseAmount = 0.0f;
+
+		//必殺技ゲージ増加量
+		float finisherGaugeIncreaseAmount = 0.0f;
+
+		//攻撃を受ける側の必殺技ゲージ増加量
+		const float takeFinisherGaugeIncreaseAmount = 1.5f;
+
 		//攻撃しているか
 		bool isAttack = false;
 
@@ -147,6 +160,15 @@ public:
 		bool isFinisher = false;
 		bool isFinisherFirstAttack = false;
 		bool isFinisherSecondAttack = false;
+
+		//ダメージを受けているかどうか
+		bool isDamaged = false;
+
+		//ガードしたかどうか
+		bool isGuarded = false;
+
+		//必殺技が増えているかどうか
+		bool isFinisherGaugeIncreased = false;
 	};
 
 	struct TimerData
@@ -174,6 +196,8 @@ public:
 	virtual void Draw(const Camera& camera) = 0;
 
 	virtual void BoneDraw(const Camera& camera) = 0;
+
+	virtual void CollisionDraw(const Camera& camera) = 0;
 
 	virtual void SpriteDraw() = 0;
 
@@ -218,6 +242,8 @@ public:
 
 	virtual void EvaluateAttackTiming() = 0;
 
+	virtual void ApplyDamage() = 0;
+
 	//当たり判定
 	virtual void ResetCollision() = 0;
 
@@ -227,6 +253,8 @@ public:
 	virtual void HPBarUpdate() = 0;
 
 	virtual void GuardGaugeBarUpdate() = 0;
+
+	virtual void AdjustGuardGauge() = 0;
 
 	virtual void FinisherGaugeBarUpdate() = 0;
 
@@ -266,6 +294,12 @@ public:
 
 	int GetAttackAnimationFrame() { return attackData_.attackAnimationFrame; };
 
+	int GetDamage() { return attackData_.damage; };
+
+	float GetGuardGaugeIncreaseAmount() { return attackData_.guardGaugeIncreaseAmount; };
+
+	float GetFinisherGaugeIncreaseAmount() { return attackData_.finisherGaugeIncreaseAmount; };
+
 	//エフェクトに関するGetter
 	bool GetIsShake() { return effectState_.isShake; };
 
@@ -279,6 +313,14 @@ public:
 
 	//Setter
 	void SetIsReset(bool isReset) { isReset_ = isReset; };
+
+	void SetDamage(int damage) { attackData_.damage = damage; };
+
+	void SetGuardGaugeIncreaseAmount(float guardGaugeIncreaseAmount) { attackData_.guardGaugeIncreaseAmount = guardGaugeIncreaseAmount; };
+
+	void SetFinisherGaugeIncreaseAmount(float finisherGaugeIncreaseAmount) { attackData_.finisherGaugeIncreaseAmount = finisherGaugeIncreaseAmount; };
+
+	void SetIsGuarded(bool isGuarded) { attackData_.isGuarded = isGuarded; };
 
 protected:
 	Input* input_ = nullptr;
@@ -319,4 +361,7 @@ protected:
 	//画面端
 	float leftEdge_ = -4.0f;
 	float rightEdge_ = 4.0f;
+
+	//エディター用
+	std::string attackType;
 };

@@ -110,14 +110,20 @@ void GamePlayScene::Initialize()
 	tensTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
 	onesTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
 
-	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, { 580.0f, 0.0f }));
-	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, { 620.0f, 0.0f }));
+	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, { 590.0f, 0.0f }));
+	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, { 630.0f, 0.0f }));
 
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
 	transitionSprite_->SetColor(transitionColor_);
 	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
 
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
+
+#ifdef _DEBUG
+
+	isDebug_ = true;
+
+#endif // DEBUG
 
 	//ラウンドごとの時間
 	currentSeconds_ = 99;
@@ -359,12 +365,23 @@ void GamePlayScene::Draw()
 
 	ParticleModel::PostDraw();
 
+	Line::PreDraw();
+
+	if (isDebug_)
+	{
+		player_->CollisionDraw(camera_);
+
+		enemy_->CollisionDraw(camera_);
+	}
+
+	Line::PostDraw();
+
 	Model::BonePreDraw();
 
-	////playerのbone描画
+	//playerのbone描画
 	//player_->BoneDraw(camera_);
 
-	////enemyのbone描画
+	//enemyのbone描画
 	//enemy_->BoneDraw(camera_);
 
 	Model::BonePostDraw();
@@ -465,7 +482,6 @@ void GamePlayScene::Draw()
 	{
 		attackCommandListSprite_[1]->Draw();
 	}
-
 	
 	Sprite::PostDraw();
 
@@ -487,6 +503,7 @@ void GamePlayScene::ImGui()
 {
 	ImGui::Begin("PlayScene");
 	ImGui::Text("roundTransitionTimer %d", roundTransitionTimer_);
+	ImGui::Checkbox("isDebug_", &isDebug_);
 	ImGui::End();
 
 	player_->ImGui("Player");

@@ -31,6 +31,8 @@ void Player::Initialize()
 	SetCollisionMask(kCollisionMaskPlayer);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
 
+	lineBox_.reset(LineBox::Create(aabb_));
+
 	//リソース
 	//各ゲージの初期化
 	hpBar_ = {
@@ -57,10 +59,10 @@ void Player::Initialize()
 
 	finisherGaugeBar_ = {
 		true,
-		TextureManager::LoadTexture("resource/images/guardGauge.png"),
+		TextureManager::LoadTexture("resource/images/finisherGauge.png"),
 		{299.0f, finisherGaugeBarSpace_},
 		0.0f,
-		{-finisherGaugeBarSize_  ,20.0f},
+		{-finisherGaugeBarSize_  ,19.3f},
 		nullptr,
 	};
 
@@ -71,6 +73,12 @@ void Player::Initialize()
 	comboNumSprite_.reset(Sprite::Create(comboNumTextureHandle_, { 1060.0f, 290.0f }));
 
 	finisherGaugeBar_.sprite_ = Sprite::Create(finisherGaugeBar_.textureHandle_, finisherGaugeBar_.position_);
+
+	//キャラクターアイコン
+	playerIconTextureHandle_ = TextureManager::LoadTexture("resource/images/PlayerIcon.png");
+
+	playerIconSprite_.reset(Sprite::Create(playerIconTextureHandle_, { 53.0f, 20.0f }));
+	playerIconSprite_->SetSize({ 120.0f,120.0f });
 
 	//SEの初期化
 	attackSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Attack.mp3");
@@ -101,7 +109,8 @@ void Player::Update()
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
-	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime, true);
+	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime, 
+		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, true);
 
 	//デバッグ用の処理
 	if (isDebug_)
@@ -153,6 +162,8 @@ void Player::Update()
 		timerData_.guardAnimationTimer = 60;
 	}
 
+	lineBox_->Update(aabb_);
+
 	particleEffectPlayer_->Update();
 
 	//worldTransformの更新
@@ -175,6 +186,11 @@ void Player::BoneDraw(const Camera& camera)
 	model_->BoneDraw(worldTransform_, camera, animationIndex_);
 }
 
+void Player::CollisionDraw(const Camera& camera)
+{
+	lineBox_->Draw(worldTransform_, camera);
+}
+
 void Player::SpriteDraw()
 {
 	if (hp_ <= 0)
@@ -185,6 +201,8 @@ void Player::SpriteDraw()
 	guardGaugeBar_.sprite_->Draw();
 
 	finisherGaugeBar_.sprite_->Draw();
+
+	playerIconSprite_->Draw();
 
 	if (comboCount_ >= 2)
 	{
@@ -221,6 +239,9 @@ void Player::ImGui(const char* title)
 	ImGui::Text("recoveryTime %d", attackData_.recoveryTime);
 
 	ImGui::Text("downAnimationTimer %d", timerData_.downAnimationTimer);
+
+	ImGui::Text("hp %d", hp_);
+	ImGui::Text("finisherGaugeIncreaseAmount %f", attackData_.finisherGaugeIncreaseAmount);
 
 	model_->GetLight()->ImGui("DirectionalLight");
 	model_->GetPointLight()->ImGui("PointLight");
@@ -324,12 +345,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -375,12 +396,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -428,12 +449,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -512,12 +533,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.5f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -545,7 +566,7 @@ void Player::BehaviorAttackUpdate()
 		
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -555,7 +576,7 @@ void Player::BehaviorAttackUpdate()
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -611,7 +632,7 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
@@ -632,7 +653,7 @@ void Player::BehaviorAttackUpdate()
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
@@ -676,14 +697,14 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
@@ -762,12 +783,12 @@ void Player::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.4f,0.3f,0.3f} };
+				aabb_ = { {-0.3f,0.0f,-0.3f},{0.4f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.4f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				aabb_ = { {-0.4f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 
@@ -813,7 +834,7 @@ void Player::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+				aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (!characterState_.isHitCharacter)
@@ -823,7 +844,7 @@ void Player::BehaviorAttackUpdate()
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+				aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (!characterState_.isHitCharacter)
@@ -906,12 +927,12 @@ void Player::BehaviorJumpUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {0.0f,0.0f,0.0f},{0.5f,0.5f,0.5f} };
+			aabb_ = { {0.0f,0.0f,0.0f},{0.5f,1.0f,0.5f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,-0.5f,-0.5f},{0.0f,0.0f,0.0f} };
+			aabb_ = { {-0.5f,0.0f,-0.5f},{0.0f,1.0f,0.0f} };
 			SetAABB(aabb_);
 		}
 
@@ -989,12 +1010,12 @@ void Player::BehaviorStanUpdate()
 
 	if (characterState_.direction == Direction::Left)
 	{
-		aabb_ = { {-0.6f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+		aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 		SetAABB(aabb_);
 	}
 	else if (characterState_.direction == Direction::Right)
 	{
-		aabb_ = { {-0.3f,-0.3f,-0.3f},{0.6f,0.3f,0.3f} };
+		aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 		SetAABB(aabb_);
 	}
 
@@ -1018,7 +1039,7 @@ void Player::BehaviorStanUpdate()
 	}
 }
 
-void Player::OnCollision(Collider* collider, float damage)
+void Player::OnCollision(Collider* collider)
 {
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemyBullet)
 	{
@@ -1028,12 +1049,11 @@ void Player::OnCollision(Collider* collider, float damage)
 			model_->SetAnimationTime(animationTime_);
 
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 8.0f;
-			hp_ += damage;
+			ApplyDamage();
 			characterState_.isHitBullet = true;
 			attackData_.isFinisher = false;
 
-			AdjustFinisherGauge(1.0f);
+			AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
 			HitStop(5);
 		}
@@ -1044,11 +1064,10 @@ void Player::OnCollision(Collider* collider, float damage)
 			model_->SetAnimationTime(animationTime_);
 
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			damage = 8.0f;
-			hp_ += damage;
+			ApplyDamage();
 			characterState_.isHitAirBullet = true;
 
-			AdjustFinisherGauge(1.0f);
+			AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
 			HitStop(5);
 		}
@@ -1059,7 +1078,7 @@ void Player::OnCollision(Collider* collider, float damage)
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.1f;
-			guardGauge_ -= 6.0f;
+			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -1077,7 +1096,7 @@ void Player::OnCollision(Collider* collider, float damage)
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.1f;
-			guardGauge_ -= 6.0f;
+			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -1105,7 +1124,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.3f;
 			enemyPosition += 0.2f;
-			guardGauge_ -= 1.0f;
+			AdjustGuardGauge();
 
 			enemy_->SetPositionX(enemyPosition);
 
@@ -1129,7 +1148,7 @@ void Player::OnCollision(Collider* collider, float damage)
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.3f;
 			enemyPosition -= 0.2f;
-			guardGauge_ -= 1.0f;
+			AdjustGuardGauge();
 
 			enemy_->SetPositionX(enemyPosition);
 
@@ -1150,7 +1169,7 @@ void Player::OnCollision(Collider* collider, float damage)
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x -= 0.2f;
-			guardGauge_ -= 1.0f;
+			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -1168,7 +1187,7 @@ void Player::OnCollision(Collider* collider, float damage)
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
 			worldTransform_.translation.x += 0.2f;
-			guardGauge_ -= 1.0f;
+			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
 			{
@@ -1186,11 +1205,10 @@ void Player::OnCollision(Collider* collider, float damage)
 			if (enemy_->GetIsAttack() && enemy_->GetIsLightPunch() && !characterState_.isDown && !characterState_.isGuard)
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-				damage = 2.0f;
-				hp_ += damage;
+				ApplyDamage();
 				characterState_.isHitLightPunch = true;
 
-				AdjustFinisherGauge(1.0f);
+				AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
 				HitStop(10);
 			}
@@ -1199,11 +1217,10 @@ void Player::OnCollision(Collider* collider, float damage)
 			if (enemy_->GetIsHighPunch() && !characterState_.isDown && !characterState_.isGuard)
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-				damage = 10.0f;
-				hp_ += damage;
+				ApplyDamage();
 				characterState_.isHitHighPunch = true;
 
-				AdjustFinisherGauge(2.0f);
+				AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
 				HitStop(10);
 			}
@@ -1212,44 +1229,46 @@ void Player::OnCollision(Collider* collider, float damage)
 			if (enemy_->GetIsTCMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-				damage = 2.0f;
-				hp_ += damage;
+				ApplyDamage();
 				characterState_.isHitTCMiddlePunch = true;
 
-				AdjustFinisherGauge(2.0f);
+				AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
 				HitStop(10);
 			}
 
 			//タックル
-			//キャンセルじゃないとき
-			if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && !characterState_.isDown && !characterState_.isGuard)
+			if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && !characterState_.isGuard)
 			{
-				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-				damage = 15.0f;
-				hp_ += damage;
-				characterState_.isHitTackle = true;
+				if (!characterState_.isDown)
+				{
+					//キャンセルじゃないとき
+					audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+					ApplyDamage();
+					characterState_.isHitTackle = true;
 
-				AdjustFinisherGauge(4.0f);
+					AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
-				HitStop(30);
-			}
+					HitStop(30);
+				}
+				else if (characterState_.isDown && worldTransform_.translation.y > 0.5f && !isCancel_)
+				{
+					//キャンセルのとき
+					isCancel_ = true;
+					attackData_.isDamaged = false;
+					attackData_.isFinisherGaugeIncreased = false;
+					audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+					ApplyDamage();
+					timerData_.downAnimationTimer = 60;
+					float animationTime = 0.0f;
+					model_->SetAnimationTime(animationTime);
+					characterState_.isHitHighPunch = false;
+					characterState_.isHitTackle = true;
 
-			//キャンセルのとき
-			if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.5f)
-			{
-				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-				damage = 4.0f;
-				hp_ += damage;
-				timerData_.downAnimationTimer = 60;
-				float animationTime = 0.0f;
-				model_->SetAnimationTime(animationTime);
-				characterState_.isHitHighPunch = false;
-				characterState_.isHitTackle = true;
+					AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
-				AdjustFinisherGauge(3.0f);
-
-				HitStop(10);
+					HitStop(10);
+				}
 			}
 		}
 	}
@@ -1396,6 +1415,7 @@ void Player::AttackStart(bool& isAttackType)
 
 void Player::AttackEnd(bool& isAttackType)
 {
+	enemy_->SetIsGuarded(false);
 	ICharacter::AttackEnd(isAttackType);
 }
 
@@ -1404,9 +1424,18 @@ void Player::EvaluateAttackTiming()
 	ICharacter::EvaluateAttackTiming();
 }
 
+void Player::ApplyDamage()
+{
+	if (!attackData_.isDamaged)
+	{
+		attackData_.isDamaged = true;
+		hp_ += enemy_->GetDamage();
+	}
+}
+
 void Player::ResetCollision()
 {
-	aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+	aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 	SetAABB(aabb_);
 }
 
@@ -1418,7 +1447,7 @@ void Player::ConfigureCollision(Vector3 min, Vector3 max)
 
 void Player::HPBarUpdate()
 {
-	hpBar_.size_ = { (hp_ / maxHp_) * barSize_,7.0f };
+	hpBar_.size_ = { (static_cast<float>(hp_) / static_cast<float>(maxHp_)) * barSize_, 7.0f };
 
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 
@@ -1459,9 +1488,22 @@ void Player::GuardGaugeBarUpdate()
 	}
 }
 
+void Player::AdjustGuardGauge()
+{
+	if (!attackData_.isGuarded)
+	{
+		if (finisherGauge_ > -50.0f)
+		{
+			guardGauge_ -= enemy_->GetGuardGaugeIncreaseAmount();
+		}
+
+		attackData_.isGuarded = true;
+	}
+}
+
 void Player::FinisherGaugeBarUpdate()
 {
-	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,20.0f };
+	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,19.3f };
 
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
 
@@ -1487,26 +1529,31 @@ void Player::FinisherGaugeBarUpdate()
 
 void Player::AdjustFinisherGauge(float value)
 {
-	if (finisherGauge_ > -50.0f)
-	{
-		finisherGauge_ -= value;
-
-		if (finisherGauge_ < -50.0f)
-		{
-			finisherGauge_ = -50.0f;
-		}
-	}
-
 	float finisherGaugeEnemy = enemy_->GetFinisherGauge();
 
-	if (finisherGaugeEnemy < 50.0f)
+	if (!attackData_.isFinisherGaugeIncreased)
 	{
-		finisherGaugeEnemy += value;
-
-		if (finisherGaugeEnemy > 50.0f)
+		if (finisherGauge_ > -50.0f)
 		{
-			finisherGaugeEnemy = 50.0f;
+			finisherGauge_ -= value * attackData_.takeFinisherGaugeIncreaseAmount;
 		}
+
+		if (finisherGaugeEnemy < 50.0f)
+		{
+			finisherGaugeEnemy += value;
+		}
+
+		attackData_.isFinisherGaugeIncreased = true;
+	}
+
+	if (finisherGauge_ < -50.0f)
+	{
+		finisherGauge_ = -50.0f;
+	}
+
+	if (finisherGaugeEnemy > 50.0f)
+	{
+		finisherGaugeEnemy = 50.0f;
 	}
 
 	enemy_->SetFinisherGauge(finisherGaugeEnemy);
@@ -1516,7 +1563,7 @@ void Player::Reset()
 {
 	ICharacter::Reset();
 
-	hp_ = -100.0f;
+	hp_ = -100;
 
 	animationIndex_ = 5;
 	animationTime_ = 0.0f;
@@ -1525,6 +1572,8 @@ void Player::Reset()
 	worldTransform_.translation = { -3.0f,0.0f,0.0f };
 	worldTransform_.rotation = { 0.0f,1.7f,0.0f };
 	characterState_.direction = Direction::Right;
+
+	isCancel_ = false;
 
 	worldTransform_.UpdateMatrixEuler();
 }
@@ -1554,7 +1603,7 @@ void Player::DownAnimation()
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
 		//次の入力を受け取ったらこの処理にする
-		if (!enemy_->GetIsLightPunch() && hp_ < 0.0f)
+		if (!enemy_->GetIsLightPunch() && hp_ < 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitLightPunch);
 		}
@@ -1577,7 +1626,7 @@ void Player::DownAnimation()
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		if (!enemy_->GetIsTCMiddlePunch() && hp_ < 0.0f)
+		if (!enemy_->GetIsTCMiddlePunch() && hp_ < 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitTCMiddlePunch);
 		}
@@ -1617,13 +1666,13 @@ void Player::DownAnimation()
 			}
 		}
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.1f, -0.3f}, {-0.1f, 0.1f, 0.3f} } :
-			AABB{ {0.1f, -0.1f, -0.3f}, {0.8f, 0.1f, 0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
+			AABB{ {0.0f, 0.0f, -0.3f}, {0.8f, 0.2f, 0.3f} };
 
 		animationIndex_ = 7;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		if (!enemy_->GetIsHighPunch() &&  worldTransform_.translation.y <= 0.0f && hp_ < 0.0f)
+		if (!enemy_->GetIsHighPunch() &&  worldTransform_.translation.y <= 0.0f && hp_ < 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitHighPunch);
 			ResetCollision();
@@ -1639,8 +1688,8 @@ void Player::DownAnimation()
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
 		float moveX = (characterState_.direction == Direction::Right) ? -0.08f : 0.08f;
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, -0.0f, -0.3f}, {-0.1f, 0.1f, 0.3f} } :
-			AABB{ {0.1f, -0.0f, -0.3f}, {0.8f, 0.1f, 0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.9f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
+			AABB{ {0.0f, 0.0f, -0.3f}, {0.9f, 0.2f, 0.3f} };
 
 		if (timerData_.downAnimationTimer > 55)
 		{
@@ -1674,9 +1723,10 @@ void Player::DownAnimation()
 
 		SetAABB(aabb_);
 
-		if (timerData_.downAnimationTimer < 0 && hp_ < 0.0f)
+		if (timerData_.downAnimationTimer < 0 && hp_ < 0)
 		{
 			DownAnimationEnd(4, characterState_.isHitTackle);
+			isCancel_ = false;
 			ResetCollision();
 		}
 	}
@@ -1700,7 +1750,7 @@ void Player::DownAnimation()
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		if (timerData_.downAnimationTimer < 30 && hp_ < 0.0f)
+		if (timerData_.downAnimationTimer < 30 && hp_ < 0)
 		{
 			DownAnimationEnd(4, characterState_.isHitBullet);
 			ResetCollision();
@@ -1743,7 +1793,7 @@ void Player::DownAnimation()
 		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
 		SetAABB(aabb_);
 
-		if (timerData_.downAnimationTimer < 30 && hp_ < 0.0f)
+		if (timerData_.downAnimationTimer < 30 && hp_ < 0)
 		{
 			DownAnimationEnd(4, characterState_.isHitAirBullet);
 			ResetCollision();

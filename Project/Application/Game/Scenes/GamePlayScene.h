@@ -1,6 +1,7 @@
 #pragma once
 #include "IScene.h"
 #include "Engine/3D/Skybox/Skybox.h"
+#include "Engine/3D/Line/Line.h"
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Character/Enemy/EnemyBullet.h"
@@ -174,4 +175,6 @@ private:
 
 	bool isRoundTransition_ = false;
 	int roundTransitionTimer_ = 150;
+
+	bool isDebug_ = false;
 };

@@ -20,11 +20,13 @@ public:
 
 	void BoneDraw(const Camera& camera)override;
 
+	void CollisionDraw(const Camera& camera)override;
+
 	void SpriteDraw()override;
 
 	void ParticleDraw(const Camera& camera)override;
 
-	void OnCollision(Collider* collider, float damage)override;
+	void OnCollision(Collider* collider)override;
 
 	void Reset()override;
 
@@ -55,6 +57,8 @@ public:
 
 	void EvaluateAttackTiming()override;
 
+	void ApplyDamage()override;
+
 	//当たり判定の初期化
 	void ResetCollision()override;
 
@@ -65,6 +69,8 @@ public:
 	void HPBarUpdate()override;
 
 	void GuardGaugeBarUpdate()override;
+
+	void AdjustGuardGauge()override;
 
 	void FinisherGaugeBarUpdate()override;
 
@@ -106,6 +112,10 @@ private:
 
 	int Random(int min_value, int max_value);
 
+	int RandomMove();
+
+	int RandomAttackOrMove();
+
 private:
 	Input* input_ = nullptr;
 
@@ -116,7 +126,7 @@ private:
 	int moveTimer_ = 60;
 
 	//当たり判定
-	AABB aabb_ = { {-0.3f,-0.3f,-0.3f},{0.3f,0.3f,0.3f} };
+	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 
 	//プレイヤー
 	Player* player_ = nullptr;
@@ -129,8 +139,9 @@ private:
 
 	bool hasShot_ = false;
 
-	//エディター用
-	std::string attackType;
+	bool isCancel_ = false;
+
+	bool isHitAudio_ = false;
 
 	//リソース
 	//スプライト(hp)
@@ -148,6 +159,10 @@ private:
 	const float finisherGaugeBarSpace_ = 627.0f;
 	float finisherGaugeBarSize_ = 240.0f;
 
+	//キャラクターアイコンのスプライト
+	std::unique_ptr<Sprite>enemyIconSprite_ = nullptr;
+	uint32_t enemyIconTextureHandle_ = 0;
+
 	//スプライト(コンボ表示)
 	std::unique_ptr<Sprite>hitSprite_ = nullptr;
 	uint32_t hitTextureHandle_;
@@ -160,5 +175,7 @@ private:
 	uint32_t weaponAttackSoundHandle_ = 0u;
 	uint32_t damageSoundHandle_ = 0u;
 	uint32_t guardSoundHandle_ = 0u;
+
+	std::unique_ptr<LineBox> lineBox_ = nullptr;
 };
 

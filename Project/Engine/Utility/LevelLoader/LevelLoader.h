@@ -38,8 +38,8 @@ public:
                 //キャラクターごとのデータ
                 std::string type;
 
-                float hp;
-                float maxHp;
+                int hp;
+                int maxHp;
 
                 float frontSpeed;
                 float backSpeed;
