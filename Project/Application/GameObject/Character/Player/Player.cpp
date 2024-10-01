@@ -1569,7 +1569,7 @@ void Player::Reset()
 	animationTime_ = 0.0f;
 	model_->SetAnimationTime(animationTime_);
 
-	worldTransform_.translation = { -3.0f,0.0f,0.0f };
+	worldTransform_.translation = { -1.5f,0.0f,0.0f };
 	worldTransform_.rotation = { 0.0f,1.7f,0.0f };
 	characterState_.direction = Direction::Right;
 

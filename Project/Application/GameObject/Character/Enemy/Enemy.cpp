@@ -1204,7 +1204,7 @@ void Enemy::Reset()
 	model_->Update();
 	UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
-	worldTransform_.translation = { 3.0f,0.0f,0.0f };
+	worldTransform_.translation = { 1.5f,0.0f,0.0f };
 	worldTransform_.rotation = { 0.0f,4.6f,0.0f };
 	characterState_.direction = Direction::Left;
 
@@ -1407,7 +1407,7 @@ void Enemy::DownAnimation()
 
 
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
-		float moveX = (characterState_.direction == Direction::Right) ? -0.08f : 0.08f;
+		float moveX = (characterState_.direction == Direction::Right) ? -0.1f : 0.1f;
 
 		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.9f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
 			AABB{ {0.0f, 0.0f, -0.3f}, {0.9f, 0.2f, 0.3f} };
