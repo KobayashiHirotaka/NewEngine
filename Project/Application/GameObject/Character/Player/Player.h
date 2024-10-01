@@ -158,5 +158,7 @@ private:
 	bool isFinisherInvincible_ = false;
 
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
+
+	const float value_ = 0.7f;
 };
 

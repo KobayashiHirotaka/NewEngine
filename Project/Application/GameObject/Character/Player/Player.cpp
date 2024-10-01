@@ -270,7 +270,7 @@ void Player::BehaviorRootUpdate()
 		}
 
 		//ジャンプ
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.translation.y == 0.0f && !characterState_.isDown)
+		if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > value_) && worldTransform_.translation.y == 0.0f && !characterState_.isDown)
 		{
 			characterState_.behaviorRequest = Behavior::kJump;
 		}
@@ -1296,12 +1296,12 @@ void Player::Move()
 
 		if (characterState_.isHitCharacter)
 		{
-			if (characterState_.direction == Direction::Right && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
+			if (characterState_.direction == Direction::Right && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > value_))
 			{
 				//敵を右方向に押す
 				PushEnemy(enemyPosition, 0.05f);
 			}
-			else if (characterState_.direction == Direction::Left && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+			else if (characterState_.direction == Direction::Left && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() > value_))
 			{
 				//敵を左方向に押す
 				PushEnemy(enemyPosition, -0.05f);
@@ -1317,9 +1317,25 @@ void Player::Move()
 			characterState_.isGuard = false;
 		}
 
+		if (input_->GetLeftStickX() < -value_ && characterState_.direction == Direction::Left && !characterState_.isDown)
+		{
+			moveData_.velocity.x = (float)input_->GetLeftStickX();
+			moveData_.velocity.x = -0.01f;
+			isFrontMove_ = true;
+			characterState_.isGuard = false;
+		}
+		
 		//前方向に移動(右を向いているとき)
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
+			moveData_.velocity.x = 0.01f;
+			isFrontMove_ = true;
+			characterState_.isGuard = false;
+		}
+
+		if (input_->GetLeftStickX() > value_ && characterState_.direction == Direction::Right && !characterState_.isDown)
+		{
+			moveData_.velocity.x = (float)input_->GetLeftStickX();
 			moveData_.velocity.x = 0.01f;
 			isFrontMove_ = true;
 			characterState_.isGuard = false;
@@ -1339,6 +1355,28 @@ void Player::Move()
 
 			//止まってガード
 			if (characterState_.isGuard && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+			{
+				animationIndex_ = 2;
+				UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
+				moveData_.velocity.x = 0.0f;
+				isBackMove_ = false;
+			}
+		}
+
+		if (input_->GetLeftStickX() < -value_ && characterState_.direction == Direction::Right && !characterState_.isDown)
+		{
+			moveData_.velocity.x = (float)input_->GetLeftStickX();
+			characterState_.isGuard = true;
+
+			//移動しながらガード
+			if (!(input_->GetLeftStickY() < -value_))
+			{
+				moveData_.velocity.x = -0.01f;
+				isBackMove_ = true;
+			}
+
+			//止まってガード
+			if (characterState_.isGuard && input_->GetLeftStickY() < -value_)
 			{
 				animationIndex_ = 2;
 				UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
@@ -1369,9 +1407,33 @@ void Player::Move()
 			}
 		}
 
-		//移動していない時
-		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+		if (input_->GetLeftStickX() > value_ && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
+			moveData_.velocity.x = (float)input_->GetLeftStickX();
+			characterState_.isGuard = true;
+
+			//移動しながらガード
+			if (!(input_->GetLeftStickY() < -value_))
+			{
+				moveData_.velocity.x = 0.01f;
+				isBackMove_ = true;
+			}
+
+			//止まってガード
+			if (characterState_.isGuard && input_->GetLeftStickY() < -value_)
+			{
+				animationIndex_ = 2;
+				UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
+				moveData_.velocity.x = 0.0f;
+				isBackMove_ = false;
+			}
+		}
+
+		//移動していない時
+		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && 
+			!(input_->GetLeftStickX() > value_) && !(input_->GetLeftStickX() < -value_))
+		{
+			moveData_.velocity = { 0.0f, 0.0f, 0.0f };
 			characterState_.isGuard = false;
 		}
 
