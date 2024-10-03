@@ -299,7 +299,8 @@ void Player::BehaviorRootUpdate()
 		}
 		
 		//タックル攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)))
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || 
+			input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > value_ || input_->GetLeftStickX() < -value_))
 		{
 			attackType = "Tackle";
 			AttackStart(attackData_.isTackle);
@@ -307,7 +308,7 @@ void Player::BehaviorRootUpdate()
 
 		//アッパー攻撃
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !characterState_.isDown)
+			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && input_->GetLeftStickX() < value_ && input_->GetLeftStickX() > -value_ && !characterState_.isDown)
 		{
 			attackType = "Uppercut";
 			AttackStart(attackData_.isUppercut);
