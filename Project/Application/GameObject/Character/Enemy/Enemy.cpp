@@ -126,14 +126,14 @@ void Enemy::Update()
 		&& characterState_.behavior != Behavior::kAttack && !characterState_.isDown)
 	{
 		characterState_.direction = Direction::Left;
-		worldTransform_.rotation.y = 4.6f;
+		worldTransform_.rotation.y = characterState_.leftDirectionRotation;;
 	}
 
 	if (enemyWorldPosition.x < playerWorldPosition.x && characterState_.behavior != Behavior::kJump
 		&& characterState_.behavior != Behavior::kAttack && !characterState_.isDown)
 	{
 		characterState_.direction = Direction::Right;
-		worldTransform_.rotation.y = 1.7f;
+		worldTransform_.rotation.y = characterState_.rightDirectionRotation;;
 	}
 
 	if (player_->GetFinisherTimer() == 120)
@@ -1205,7 +1205,7 @@ void Enemy::Reset()
 	UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
 	worldTransform_.translation = { 1.5f,0.0f,0.0f };
-	worldTransform_.rotation = { 0.0f,4.6f,0.0f };
+	worldTransform_.rotation = { 0.0f,characterState_.leftDirectionRotation,0.0f };
 	characterState_.direction = Direction::Left;
 
 	isCancel_ = false;

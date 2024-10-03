@@ -43,6 +43,12 @@ public:
 		//向いている方向
 		Direction direction = Direction::Right;
 
+		//右方向を向いているときのモデルの回転
+		const float rightDirectionRotation = 1.7f;
+
+		//左方向を向いているときのモデルの回転
+		const float leftDirectionRotation = 4.6f;
+
 		//キャラクターと当たっているかどうか
 		bool isHitCharacter = false;
 
@@ -359,8 +365,8 @@ protected:
 	bool isFinisherCharge_ = false;
 
 	//画面端
-	float leftEdge_ = -4.0f;
-	float rightEdge_ = 4.0f;
+	const float leftEdge_ = -4.0f;
+	const float rightEdge_ = 4.0f;
 
 	//エディター用
 	std::string attackType;

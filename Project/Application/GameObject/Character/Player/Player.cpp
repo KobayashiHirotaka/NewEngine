@@ -141,7 +141,7 @@ void Player::Update()
 		&& characterState_.behavior != Behavior::kAttack && !characterState_.isDown)
 	{
 		characterState_.direction = Direction::Right;
-		worldTransform_.rotation.y = 1.7f;
+		worldTransform_.rotation.y = characterState_.rightDirectionRotation;
 		isDirectionRight_ = true;
 	}
 
@@ -149,7 +149,7 @@ void Player::Update()
 		&& characterState_.behavior != Behavior::kAttack && !characterState_.isDown)
 	{
 		characterState_.direction = Direction::Left;
-		worldTransform_.rotation.y = 4.6f;
+		worldTransform_.rotation.y = characterState_.leftDirectionRotation;
 		isDirectionRight_ = false;
 	}
 
@@ -888,7 +888,7 @@ void Player::BehaviorJumpInitialize()
 {
 	const float kJumpFirstSpeed_ = 0.3f;
 
-	const float kMoveSpeedX = 0.05f;
+	const float kMoveSpeedX = 0.07f;
 
 	moveData_.velocity.y = kJumpFirstSpeed_;
 
@@ -1651,7 +1651,7 @@ void Player::Reset()
 	model_->SetAnimationTime(animationTime_);
 
 	worldTransform_.translation = { -1.5f,0.0f,0.0f };
-	worldTransform_.rotation = { 0.0f,1.7f,0.0f };
+	worldTransform_.rotation = { 0.0f,characterState_.rightDirectionRotation,0.0f };
 	characterState_.direction = Direction::Right;
 
 	isCancel_ = false;
