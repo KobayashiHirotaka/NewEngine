@@ -887,7 +887,25 @@ void Player::BehaviorJumpInitialize()
 {
 	const float kJumpFirstSpeed_ = 0.3f;
 
+	const float kMoveSpeedX = 0.05f;
+
 	moveData_.velocity.y = kJumpFirstSpeed_;
+
+	if (input_->GetJoystickState())
+	{
+		float joystickInput = input_->GetLeftStickX();
+
+		const float kStickThreshold = 0.3f;  
+
+		if (fabs(joystickInput) > kStickThreshold)
+		{
+			moveData_.velocity.x = joystickInput * kMoveSpeedX;
+		}
+		else
+		{
+			moveData_.velocity.x = 0.0f;
+		}
+	}
 }
 
 void Player::BehaviorJumpUpdate()
