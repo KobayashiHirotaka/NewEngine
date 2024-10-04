@@ -106,11 +106,6 @@ void Enemy::Initialize()
 
 void Enemy::Update()
 {
-	if (input_->PressKey(DIK_D))
-	{
-		guardGauge_ += 0.3f;
-	}
-
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
@@ -549,6 +544,8 @@ void Enemy::BehaviorAttackUpdate()
 			animationIndex_ = 1;
 			characterState_.isGuard = false;
 
+			Vector2 respownPos = { 0.2f,0.5f };
+
 			if (!characterState_.isDown)
 			{
 				UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
@@ -559,14 +556,16 @@ void Enemy::BehaviorAttackUpdate()
 			{
 				if (characterState_.direction == Direction::Right)
 				{
-					Vector3 bulletStartPosition = { worldTransform_.translation.x + 0.2f, worldTransform_.translation.y + 0.5f, worldTransform_.translation.z };  // 弾の発射位置を敵の位置に設定
+					//弾の発射位置を敵の位置に設定
+					Vector3 bulletStartPosition = { worldTransform_.translation.x + respownPos.x, worldTransform_.translation.y + respownPos.y, worldTransform_.translation.z };
 					Vector3 bulletVelocity = Vector3{ 0.1f, 0.0f, 0.0f };
 
 					BulletShoot(bulletStartPosition, bulletVelocity);
 				}
 				else if (characterState_.direction == Direction::Left)
 				{
-					Vector3 bulletStartPosition = { worldTransform_.translation.x - 0.2f, worldTransform_.translation.y + 0.5f, worldTransform_.translation.z };  // 弾の発射位置を敵の位置に設定
+					//弾の発射位置を敵の位置に設定
+					Vector3 bulletStartPosition = { worldTransform_.translation.x - respownPos.x, worldTransform_.translation.y + respownPos.y, worldTransform_.translation.z };
 					Vector3 bulletVelocity = Vector3{ -0.1f, 0.0f, 0.0f };
 
 					BulletShoot(bulletStartPosition, bulletVelocity);
