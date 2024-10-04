@@ -18,12 +18,14 @@
 class ICharacter : public IGame3dObject
 {
 public:
+	//向き
 	enum class Direction
 	{
 		Left,
 		Right
 	};
 
+	//行動
 	enum class Behavior
 	{
 		kRoot,
@@ -32,6 +34,7 @@ public:
 		kStan
 	};
 
+	//キャラクターの状態
 	struct CharacterState
 	{
 		//現在の行動
@@ -87,6 +90,7 @@ public:
 		bool isHitAirBullet = false;
 	};
 
+	//エフェクト
 	struct EffectState
 	{
 		//シェイクしているかどうか
@@ -96,12 +100,14 @@ public:
 		bool isHSVFilter = false;
 	};
 
+	//移動データ
 	struct MoveData
 	{
-		//移動
+		//速度
 		Vector3 velocity = {};
 	};
 
+	//攻撃データ
 	struct AttackData
 	{
 		//攻撃フレーム
@@ -135,6 +141,15 @@ public:
 		//硬直中か
 		bool isRecovery = false;
 
+		//ダメージを受けているかどうか
+		bool isDamaged = false;
+
+		//ガードしたかどうか
+		bool isGuarded = false;
+
+		//必殺技ゲージが増えているかどうか
+		bool isFinisherGaugeIncreased = false;
+
 		//弱攻撃
 		bool isLightPunch = false;
 
@@ -166,17 +181,9 @@ public:
 		bool isFinisher = false;
 		bool isFinisherFirstAttack = false;
 		bool isFinisherSecondAttack = false;
-
-		//ダメージを受けているかどうか
-		bool isDamaged = false;
-
-		//ガードしたかどうか
-		bool isGuarded = false;
-
-		//必殺技が増えているかどうか
-		bool isFinisherGaugeIncreased = false;
 	};
 
+	//時間データ
 	struct TimerData
 	{
 		//ダウン演出の時間
@@ -195,6 +202,7 @@ public:
 		int finisherTimer = 120;
 	};
 
+	//基本
 	virtual void Initialize() = 0;
 
 	virtual void Update() = 0;
@@ -333,25 +341,31 @@ protected:
 
 	Audio* audio_ = nullptr;
 
+	//キャラクターの状態
 	CharacterState characterState_;
 
+	//エフェクト
 	EffectState effectState_;
 
+	//移動データ
 	MoveData moveData_;
 
+	//攻撃データ
 	AttackData attackData_;
 
+	//時間データ
 	TimerData timerData_;
 
+	//始動技
 	std::string firstAttack_;
 
+	//パーティクル
 	std::unique_ptr<ParticleEffectPlayer> particleEffectPlayer_;
+	bool isParticle_ = false;
 
 	//再生するanimationの番号
 	uint32_t animationIndex_ = 4;
 	float animationTime_ = 0.0f;
-
-	bool isParticle_ = false;
 
 	//コンボの数
 	int comboCount_ = 0;
@@ -367,6 +381,10 @@ protected:
 	//画面端
 	const float leftEdge_ = -4.0f;
 	const float rightEdge_ = 4.0f;
+
+	//攻撃時にめり込まないための画面端
+	const float attackLeftEdge_ = -3.5f;
+	const float attackRightEdge_ = 3.5f;
 
 	//エディター用
 	std::string attackType;

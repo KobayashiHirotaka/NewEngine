@@ -21,4 +21,6 @@ private:
 	std::unique_ptr<Model> model_;
 
 	WorldTransform worldTransform_;
+
+	Vector3 rotationSpeed_ = { 0.001f,0.001f,0.001f };
 };
