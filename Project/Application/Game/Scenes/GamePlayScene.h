@@ -132,6 +132,8 @@ private:
 	const int maxRoundStartTime_ = 100;
 	const int halfRoundStartTime_ = 50;
 
+	const int maxMigrationTime_ = 200;
+
 	const int outComeTime_ = 150;
 
 	//Sounds

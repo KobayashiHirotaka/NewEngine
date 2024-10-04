@@ -136,12 +136,12 @@ void GamePlayScene::Initialize()
 	currentSeconds_ = 99;
 	UpdateNumberSprite();
 
-	migrationTimer = 200;
+	migrationTimer = maxMigrationTime_;
 
 	frameTime = 1.0f / 60.0f;
 	elapsedTime = 0.0f;
 
-	roundStartTimer_ = 100;
+	roundStartTimer_ = maxRoundStartTime_;
 
 	//勝敗
 	isPlayerWin_ = false;
@@ -164,7 +164,7 @@ void GamePlayScene::Update()
 			elapsedTime += frameTime;
 
 			//タイムカウントを更新
-			if (currentSeconds_ > 0 && elapsedTime >= 1.0f && migrationTimer == 200)
+			if (currentSeconds_ > 0 && elapsedTime >= 1.0f && migrationTimer == maxMigrationTime_)
 			{
 				if (player_->GetFinisherTimer() == 120)
 				{
