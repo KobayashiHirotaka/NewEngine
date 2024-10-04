@@ -5,7 +5,7 @@
 #include <cassert>
 
 int GamePlayScene::migrationTimer = 200;
-float GamePlayScene::roundStartTimer_ = 100.0f;
+int GamePlayScene::roundStartTimer_ = 100;
 
 GamePlayScene::GamePlayScene() {};
 
@@ -63,11 +63,11 @@ void GamePlayScene::Initialize()
 	UICommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/UICommandList.png");
 	UICommandListSprite_.reset(Sprite::Create(UICommandListTextureHandle_, { 0.0f,0.0f }));
 
-	//基本操作説明用のSprite
+	//基本操作説明
 	generalCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/PlayGeneralCommandList.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
-	//攻撃操作説明用のSprite
+	//攻撃操作説明
 	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("resource/images/NewPlayAttackCommandList.png");
 	attackCommandListSprite_[0].reset(Sprite::Create(attackCommandListTextureHandle_[0], { 0.0f,0.0f }));
 
@@ -77,6 +77,7 @@ void GamePlayScene::Initialize()
 	commandListBackTextureHandle_ = TextureManager::LoadTexture("resource/images/CommandListBack.png");
 	commandListBackSprite_.reset(Sprite::Create(commandListBackTextureHandle_, { 0.0f,0.0f }));
 
+	//ラウンド表示
 	roundTextureHandle_[0] = TextureManager::LoadTexture("resource/images/Round1.png");
 	roundTextureHandle_[1] = TextureManager::LoadTexture("resource/images/Round2.png");
 	roundTextureHandle_[2] = TextureManager::LoadTexture("resource/images/Round3.png");
@@ -85,10 +86,6 @@ void GamePlayScene::Initialize()
 	roundSprite_[1].reset(Sprite::Create(roundTextureHandle_[1], { 0.0f, 0.0f }));
 	roundSprite_[2].reset(Sprite::Create(roundTextureHandle_[2], { 0.0f, 0.0f }));
 
-	fightTextureHandle_ = TextureManager::LoadTexture("resource/images/FIGHT.png");
-
-	fightSprite_.reset(Sprite::Create(fightTextureHandle_, { 0.0f, 0.0f }));
-
 	roundGetTextureHandle_ = TextureManager::LoadTexture("resource/images/RoundGet.png");
 
 	roundGetSprite_[0].reset(Sprite::Create(roundGetTextureHandle_, { 400.0f, 70.0f }));
@@ -96,6 +93,12 @@ void GamePlayScene::Initialize()
 	roundGetSprite_[2].reset(Sprite::Create(roundGetTextureHandle_, { 800.0f, 70.0f }));
 	roundGetSprite_[3].reset(Sprite::Create(roundGetTextureHandle_, { 720.0f, 70.0f }));
 
+	//ラウンド開始時
+	fightTextureHandle_ = TextureManager::LoadTexture("resource/images/FIGHT.png");
+
+	fightSprite_.reset(Sprite::Create(fightTextureHandle_, { 0.0f, 0.0f }));
+
+	//勝敗表示
 	winTextureHandle_ = TextureManager::LoadTexture("resource/images/WIN.png");
 	loseTextureHandle_ = TextureManager::LoadTexture("resource/images/LOSE.png");
 	drowTextureHandle_ = TextureManager::LoadTexture("resource/images/Drow.png");
@@ -104,19 +107,23 @@ void GamePlayScene::Initialize()
 	loseSprite_.reset(Sprite::Create(loseTextureHandle_, { 0.0f, 0.0f }));
 	drowSprite_.reset(Sprite::Create(drowTextureHandle_, { 0.0f, 0.0f }));
 
+	//UIの枠
 	frameUITextureHandle_ = TextureManager::LoadTexture("resource/images/frameUI.png");
 	frameUISprite_.reset(Sprite::Create(frameUITextureHandle_, { 0.0f, 0.0f }));
 
+	//数字
 	tensTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
 	onesTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
 
 	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, { 590.0f, 0.0f }));
 	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, { 630.0f, 0.0f }));
 
+	//トランジション
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
 	transitionSprite_->SetColor(transitionColor_);
 	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
 
+	//SE
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 
 #ifdef _DEBUG
@@ -129,12 +136,12 @@ void GamePlayScene::Initialize()
 	currentSeconds_ = 99;
 	UpdateNumberSprite();
 
-	migrationTimer = 200;
+	migrationTimer = maxMigrationTime_;
 
 	frameTime = 1.0f / 60.0f;
 	elapsedTime = 0.0f;
 
-	roundStartTimer_ = 100.0f;
+	roundStartTimer_ = maxRoundStartTime_;
 
 	//勝敗
 	isPlayerWin_ = false;
@@ -157,7 +164,7 @@ void GamePlayScene::Update()
 			elapsedTime += frameTime;
 
 			//タイムカウントを更新
-			if (currentSeconds_ > 0 && elapsedTime >= 1.0f && migrationTimer == 200)
+			if (currentSeconds_ > 0 && elapsedTime >= 1.0f && migrationTimer == maxMigrationTime_)
 			{
 				if (player_->GetFinisherTimer() == 120)
 				{
@@ -389,28 +396,29 @@ void GamePlayScene::Draw()
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
 	//ラウンド開始表示
-	if (roundStartTimer_ <= 100 && roundStartTimer_ > 50 && round_ == 1)
+	if (roundStartTimer_ <= maxRoundStartTime_ && roundStartTimer_ > halfRoundStartTime_)
 	{
-		roundSprite_[0]->Draw();
+		if (round_ == 1)
+		{
+			roundSprite_[0]->Draw();
+		}
+		else if (round_ == 2)
+		{
+			roundSprite_[1]->Draw();
+		}
+		else if (round_ == 3)
+		{
+			roundSprite_[2]->Draw();
+		}
 	}
 
-	if (roundStartTimer_ <= 100 && roundStartTimer_ > 50 && round_ == 2)
-	{
-		roundSprite_[1]->Draw();
-	}
-
-	if (roundStartTimer_ <= 100 && roundStartTimer_ > 50 && round_ == 3)
-	{
-		roundSprite_[2]->Draw();
-	}
-
-	if (roundStartTimer_ <= 50 && roundStartTimer_ > 0)
+	if (roundStartTimer_ <= halfRoundStartTime_ && roundStartTimer_ > 0)
 	{
 		fightSprite_->Draw();
 	}
 
 	//ラウンド終了時の勝敗表示
-	if (migrationTimer < 150 && migrationTimer > 0)
+	if (migrationTimer < outComeTime_ && migrationTimer > 0)
 	{
 		if (isPlayerWin_)
 		{
@@ -534,10 +542,11 @@ float GamePlayScene::Random(float min_value, float max_value)
 	return dis(gen);
 }
 
+//TODO:長いので簡潔にする
 void GamePlayScene::HandleGameOutcome()
 {
 	//Playerが勝ったとき
-	if (enemy_->GetHP() <= 0 && player_->GetHP() < 0.0f && round_ == 1 && !isRoundTransition_)
+	if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == 1 && !isRoundTransition_)
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
@@ -548,7 +557,7 @@ void GamePlayScene::HandleGameOutcome()
 			isRoundTransition_ = true;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0.0f && round_ == 2 && PlayerWinCount_ == 1 && !isRoundTransition_)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == 2 && PlayerWinCount_ == 1 && !isRoundTransition_)
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
@@ -558,7 +567,7 @@ void GamePlayScene::HandleGameOutcome()
 			PlayerWinCount_ = 2;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0.0f && round_ == 2 && PlayerWinCount_ == 0 && !isRoundTransition_)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == 2 && PlayerWinCount_ == 0 && !isRoundTransition_)
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
@@ -569,7 +578,7 @@ void GamePlayScene::HandleGameOutcome()
 			isRoundTransition_ = true;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0.0f && round_ == 3 && PlayerWinCount_ == 1 && !isRoundTransition_)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == 3 && PlayerWinCount_ == 1 && !isRoundTransition_)
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
@@ -630,7 +639,7 @@ void GamePlayScene::HandleGameOutcome()
 	}
 
 	//Enemyが勝ったとき
-	if (player_->GetHP() >= 0 && enemy_->GetHP() > 0.0f && round_ == 1 && !isRoundTransition_)
+	if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == 1 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
@@ -642,7 +651,7 @@ void GamePlayScene::HandleGameOutcome()
 			isRoundTransition_ = true;
 		}
 	}
-	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0.0f && round_ == 2 && EnemyWinCount_ == 1 && !isRoundTransition_)
+	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == 2 && EnemyWinCount_ == 1 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
@@ -653,7 +662,7 @@ void GamePlayScene::HandleGameOutcome()
 			EnemyWinCount_ = 2;
 		}
 	}
-	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0.0f && round_ == 2 && EnemyWinCount_ == 0 && !isRoundTransition_)
+	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == 2 && EnemyWinCount_ == 0 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
@@ -665,7 +674,7 @@ void GamePlayScene::HandleGameOutcome()
 			isRoundTransition_ = true;
 		}
 	}
-	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0.0f && round_ == 3 && EnemyWinCount_ == 1 && !isRoundTransition_)
+	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == 3 && EnemyWinCount_ == 1 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
@@ -972,7 +981,7 @@ void GamePlayScene::RoundTransition(int round)
 			frameTime = 1.0f / 60.0f;
 			elapsedTime = 0.0f;
 
-			roundStartTimer_ = 100.0f;
+			roundStartTimer_ = 100;
 			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
 			PostProcess::GetInstance()->SetIsVignetteActive(false);
 		}

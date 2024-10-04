@@ -93,14 +93,14 @@ void ICharacter::Update()
 	}
 
 	//端での攻撃時の処理
-	if (!attackData_.isAttack && worldTransform_.translation.x >= 3.5f && characterState_.direction == Direction::Right)
+	if (!attackData_.isAttack && worldTransform_.translation.x >= attackRightEdge_ && characterState_.direction == Direction::Right)
 	{
-		worldTransform_.translation.x = 3.5f;
+		worldTransform_.translation.x = attackRightEdge_;
 	}
 
-	if (!attackData_.isAttack && worldTransform_.translation.x <= -3.5f && characterState_.direction == Direction::Left)
+	if (!attackData_.isAttack && worldTransform_.translation.x <= attackLeftEdge_ && characterState_.direction == Direction::Left)
 	{
-		worldTransform_.translation.x = -3.5f;
+		worldTransform_.translation.x = attackLeftEdge_;
 	}
 
 	//ジャンプ中にプレイヤーと当たったときの処理
@@ -191,6 +191,7 @@ void ICharacter::Reset()
 	characterState_.isHitAirBullet = false;
 	characterState_.isDown = false;
 
+	//判定をリセット
 	ResetCollision();
 
 	//リセット
@@ -228,31 +229,56 @@ void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float fra
 
 void ICharacter::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
 {
+	//Behaviorの設定
 	characterState_.behaviorRequest = Behavior::kRoot;
+
+	//アニメーション用変数の設定
 	animationIndex_ = animationIndex;
 	timerData_.downAnimationTimer = 60;
 	animationTime_ = 0.0f;
 	model_->SetAnimationTime(animationTime_);
+
+	//くらった攻撃
 	isHitAttackType = false;
+
+	//ダメージを受けたかどうか
 	attackData_.isDamaged = false;
+
+	//必殺技ゲージの増加がされたかどうか
 	attackData_.isFinisherGaugeIncreased = false;
+
+	//ダウンしているかどうか
 	characterState_.isDown = false;
 }
 
 void ICharacter::AttackStart(bool& isAttackType)
-{
+{   
+	//Behaviorの設定
 	characterState_.behaviorRequest = Behavior::kAttack;
+
+	//アニメーション用変数の設定
 	animationTime_ = 0.0f;
 	model_->SetAnimationTime(animationTime_);
+
+	//攻撃した技
 	isAttackType = true;
 }
 
 void ICharacter::AttackEnd(bool& isAttackType)
 {
+	//Behaviorの設定
 	characterState_.behaviorRequest = Behavior::kRoot;
+
+	//攻撃しているかどうか
 	attackData_.isAttack = false;
+
+	//硬直中かどうか
 	attackData_.isRecovery = false;
+
+	//攻撃した技
 	isAttackType = false;
+
+	//アニメーション用変数の設定
 	animationTime_ = 0.0f;
 	attackData_.attackAnimationFrame = 0;
 	model_->SetAnimationTime(animationTime_);
@@ -260,6 +286,7 @@ void ICharacter::AttackEnd(bool& isAttackType)
 
 void ICharacter::EvaluateAttackTiming()
 {
+	//攻撃
 	if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame <= attackData_.attackEndTime)
 	{
 		attackData_.isAttack = true;
@@ -269,6 +296,7 @@ void ICharacter::EvaluateAttackTiming()
 		attackData_.isAttack = false;
 	}
 
+	//硬直
 	if (attackData_.attackAnimationFrame >= attackData_.attackEndTime && attackData_.attackAnimationFrame <= attackData_.recoveryTime)
 	{
 		attackData_.isRecovery = true;

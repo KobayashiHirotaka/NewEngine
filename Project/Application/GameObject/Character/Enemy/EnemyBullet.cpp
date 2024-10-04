@@ -8,9 +8,11 @@ void EnemyBullet::Initialize(Model* model, const Vector3& positon, const Vector3
 
 	model_ = model;
 
+	//worldTransformの初期化
 	worldTransform_.Initialize();
 	worldTransform_.translation = positon;
 
+	//速度の設定
 	velocity_ = velocity;
 
 	//当たり判定の設定
@@ -24,6 +26,7 @@ void EnemyBullet::Initialize(Model* model, const Vector3& positon, const Vector3
 	particleEffectPlayer_ = std::make_unique<ParticleEffectPlayer>();
 	particleEffectPlayer_->Initialize();
 
+	//worldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 }
 
@@ -53,8 +56,10 @@ void EnemyBullet::Update()
 					worldTransform_.translation.y,worldTransform_.translation.z });
 	}
 
+	//Lightingの設定
 	model_->GetLight()->SetEnableLighting(false);
 
+	//worldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 
 	ImGui::Begin("EBullet");

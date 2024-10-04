@@ -14,9 +14,11 @@ public:
 	//Transition用の時間
 	static const int kTransitionTime = 60;
 
+	//ラウンド移行の時間
 	static int migrationTimer;
 
-	static float roundStartTimer_;
+	//ラウンド開始までの時間
+	static int roundStartTimer_;
 
 	GamePlayScene();
 
@@ -32,14 +34,17 @@ public:
 
 	void ImGui()override;
 
-	void UpdateNumberSprite();
-
 	float Random(float min_value, float max_value);
 
+	//数字の更新関数
+	void UpdateNumberSprite();
+
+	//勝敗を決める関数
 	void HandleGameOutcome();
 
 	//void HandleTransition();
 
+	//ラウンド間でのトランジション
 	void RoundTransition(int round);
 
 private:
@@ -121,9 +126,15 @@ private:
 	//時間
 	int currentSeconds_;
 
-	//60FPSを仮定
 	float frameTime = 1.0f / 60.0f;  
 	float elapsedTime = 0.0f;
+
+	const int maxRoundStartTime_ = 100;
+	const int halfRoundStartTime_ = 50;
+
+	const int maxMigrationTime_ = 200;
+
+	const int outComeTime_ = 150;
 
 	//Sounds
 	uint32_t selectSoundHandle_ = 0u;

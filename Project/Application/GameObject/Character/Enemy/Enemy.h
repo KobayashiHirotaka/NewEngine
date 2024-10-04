@@ -143,34 +143,33 @@ private:
 
 	bool isHitAudio_ = false;
 
-	//リソース
-	//スプライト(hp)
+	//Sprite(hp)
 	UI hpBar_;
 	const float barSpace_ = 15.6f;
 	float barSize_ = 480.0f;
 
-	//スプライト(ガードゲージ)
+	//Sprite(ガードゲージ)
 	UI guardGaugeBar_;
 	const float guardGaugeBarSpace_ = 48.5f;
 	float guardGaugeBarSize_ = 240.0f;
 
-	//スプライト(必殺技ゲージ)
+	//Sprite(必殺技ゲージ)
 	UI finisherGaugeBar_;
 	const float finisherGaugeBarSpace_ = 627.0f;
 	float finisherGaugeBarSize_ = 240.0f;
 
-	//キャラクターアイコンのスプライト
+	//キャラクターアイコンのSprite
 	std::unique_ptr<Sprite>enemyIconSprite_ = nullptr;
 	uint32_t enemyIconTextureHandle_ = 0;
 
-	//スプライト(コンボ表示)
+	//Sprite(コンボ表示)
 	std::unique_ptr<Sprite>hitSprite_ = nullptr;
 	uint32_t hitTextureHandle_;
 
 	std::unique_ptr<Sprite>comboNumSprite_ = nullptr;
 	uint32_t comboNumTextureHandle_;
 
-	//サウンド
+	//Sounds
 	uint32_t attackSoundHandle_ = 0u;
 	uint32_t weaponAttackSoundHandle_ = 0u;
 	uint32_t damageSoundHandle_ = 0u;

@@ -9,6 +9,7 @@ void Ground::Initialize()
 
 void Ground::Update()
 {
+	//映り込みの設定
 	model_->GetMaterial()->SetEnvironmentCofficient(0.0f);
 
 	//model_->GetMaterial()->ImGui();
@@ -19,6 +20,7 @@ void Ground::Update()
 
 void Ground::Draw(const Camera& camera)
 {
+	//モデルの描画
 	model_->Draw(worldTransform_, camera, 0);
 }
 

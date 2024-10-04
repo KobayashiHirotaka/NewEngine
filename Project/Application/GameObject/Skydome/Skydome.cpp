@@ -6,24 +6,30 @@ void Skydome::Initialize()
 	//inputのinstance
 	input_ = Input::GetInstance();
 
+	//モデルの生成
 	model_.reset(Model::CreateFromOBJ("resource/skydome", "skydome.obj"));
 
+	//worldTransformの初期化
 	worldTransform_.Initialize();
 	worldTransform_.scale = { 250.0f,250.0f,250.0f };
-
-	model_->GetMaterial()->SetEnvironmentCofficient(0.0f);
 }
 
 void Skydome::Update()
 {
-	worldTransform_.rotation.y += 0.001f;
-	worldTransform_.rotation.z += 0.001f;
+	//映り込みの設定
+	model_->GetMaterial()->SetEnvironmentCofficient(0.0f);
 
+	//回転
+	worldTransform_.rotation.y += rotationSpeed_.y;
+	worldTransform_.rotation.z += rotationSpeed_.z;
+
+	//worldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 }
 
 void Skydome::Draw(const Camera camera)
 {
+	//モデルの描画
 	model_->Draw(worldTransform_, camera, 0);
 }
 

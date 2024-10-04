@@ -141,7 +141,7 @@ void Player::Update()
 		&& characterState_.behavior != Behavior::kAttack && !characterState_.isDown)
 	{
 		characterState_.direction = Direction::Right;
-		worldTransform_.rotation.y = 1.7f;
+		worldTransform_.rotation.y = characterState_.rightDirectionRotation;
 		isDirectionRight_ = true;
 	}
 
@@ -149,7 +149,7 @@ void Player::Update()
 		&& characterState_.behavior != Behavior::kAttack && !characterState_.isDown)
 	{
 		characterState_.direction = Direction::Left;
-		worldTransform_.rotation.y = 4.6f;
+		worldTransform_.rotation.y = characterState_.leftDirectionRotation;
 		isDirectionRight_ = false;
 	}
 
@@ -270,7 +270,7 @@ void Player::BehaviorRootUpdate()
 		}
 
 		//ジャンプ
-		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) && worldTransform_.translation.y == 0.0f && !characterState_.isDown)
+		if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > value_) && worldTransform_.translation.y == 0.0f && !characterState_.isDown)
 		{
 			characterState_.behaviorRequest = Behavior::kJump;
 		}
@@ -299,7 +299,8 @@ void Player::BehaviorRootUpdate()
 		}
 		
 		//タックル攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT)))
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || 
+			input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > value_ || input_->GetLeftStickX() < -value_))
 		{
 			attackType = "Tackle";
 			AttackStart(attackData_.isTackle);
@@ -307,7 +308,7 @@ void Player::BehaviorRootUpdate()
 
 		//アッパー攻撃
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !characterState_.isDown)
+			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && input_->GetLeftStickX() < value_ && input_->GetLeftStickX() > -value_ && !characterState_.isDown)
 		{
 			attackType = "Uppercut";
 			AttackStart(attackData_.isUppercut);
@@ -887,7 +888,33 @@ void Player::BehaviorJumpInitialize()
 {
 	const float kJumpFirstSpeed_ = 0.3f;
 
+	const float kMoveSpeedX = 0.07f;
+
 	moveData_.velocity.y = kJumpFirstSpeed_;
+
+	//TODO:ジャンプ距離の修正(一定にする)
+	if (input_->GetJoystickState())
+	{
+		float joystickInput = input_->GetLeftStickX();
+
+		const float kStickThreshold = 0.3f;  
+
+		if (fabs(joystickInput) > kStickThreshold)
+		{
+			moveData_.velocity.x = joystickInput * kMoveSpeedX;
+		}
+		else
+		{
+			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
+			{
+				moveData_.velocity.x = 0.05f;
+			}
+			else if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+			{
+				moveData_.velocity.x = -0.05f;
+			}
+		}
+	}
 }
 
 void Player::BehaviorJumpUpdate()
@@ -1286,22 +1313,25 @@ void Player::Move()
 	if (input_->GetJoystickState())
 	{
 		const float deadZone = 0.7f;
+		const float valueY = -0.3f;
 		bool isFrontMove_ = false;
 		bool isBackMove_ = false;
 
 		moveData_.velocity = { 0.0f, 0.0f, 0.0f };
+
+		moveData_.velocity.x = (float)input_->GetLeftStickX();
 
 		//敵の位置を取得する（例: enemyPosition という変数）
 		Vector3 enemyPosition = enemy_->GetWorldPosition();
 
 		if (characterState_.isHitCharacter)
 		{
-			if (characterState_.direction == Direction::Right && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
+			if (characterState_.direction == Direction::Right && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > value_))
 			{
 				//敵を右方向に押す
 				PushEnemy(enemyPosition, 0.05f);
 			}
-			else if (characterState_.direction == Direction::Left && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+			else if (characterState_.direction == Direction::Left && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() > value_))
 			{
 				//敵を左方向に押す
 				PushEnemy(enemyPosition, -0.05f);
@@ -1317,8 +1347,22 @@ void Player::Move()
 			characterState_.isGuard = false;
 		}
 
+		if (input_->GetLeftStickX() < -value_ && characterState_.direction == Direction::Left && !characterState_.isDown)
+		{
+			moveData_.velocity.x = -0.01f;
+			isFrontMove_ = true;
+			characterState_.isGuard = false;
+		}
+		
 		//前方向に移動(右を向いているとき)
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Right && !characterState_.isDown)
+		{
+			moveData_.velocity.x = 0.01f;
+			isFrontMove_ = true;
+			characterState_.isGuard = false;
+		}
+
+		if (input_->GetLeftStickX() > value_ && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
 			moveData_.velocity.x = 0.01f;
 			isFrontMove_ = true;
@@ -1339,6 +1383,27 @@ void Player::Move()
 
 			//止まってガード
 			if (characterState_.isGuard && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+			{
+				animationIndex_ = 2;
+				UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
+				moveData_.velocity.x = 0.0f;
+				isBackMove_ = false;
+			}
+		}
+
+		if (input_->GetLeftStickX() < -value_ && characterState_.direction == Direction::Right && !characterState_.isDown)
+		{
+			characterState_.isGuard = true;
+
+			//移動しながらガード
+			if (!(input_->GetLeftStickY() < valueY))
+			{
+				moveData_.velocity.x = -0.01f;
+				isBackMove_ = true;
+			}
+
+			//止まってガード
+			if (characterState_.isGuard && input_->GetLeftStickY() < valueY)
 			{
 				animationIndex_ = 2;
 				UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
@@ -1369,9 +1434,32 @@ void Player::Move()
 			}
 		}
 
-		//移動していない時
-		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+		if (input_->GetLeftStickX() > value_ && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
+			characterState_.isGuard = true;
+
+			//移動しながらガード
+			if (!(input_->GetLeftStickY() < valueY))
+			{
+				moveData_.velocity.x = 0.01f;
+				isBackMove_ = true;
+			}
+
+			//止まってガード
+			if (characterState_.isGuard && input_->GetLeftStickY() < valueY)
+			{
+				animationIndex_ = 2;
+				UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
+				moveData_.velocity.x = 0.0f;
+				isBackMove_ = false;
+			}
+		}
+
+		//移動していない時
+		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && 
+			!(input_->GetLeftStickX() > value_) && !(input_->GetLeftStickX() < -value_))
+		{
+			moveData_.velocity = { 0.0f, 0.0f, 0.0f };
 			characterState_.isGuard = false;
 		}
 
@@ -1570,7 +1658,7 @@ void Player::Reset()
 	model_->SetAnimationTime(animationTime_);
 
 	worldTransform_.translation = { -1.5f,0.0f,0.0f };
-	worldTransform_.rotation = { 0.0f,1.7f,0.0f };
+	worldTransform_.rotation = { 0.0f,characterState_.rightDirectionRotation,0.0f };
 	characterState_.direction = Direction::Right;
 
 	isCancel_ = false;
