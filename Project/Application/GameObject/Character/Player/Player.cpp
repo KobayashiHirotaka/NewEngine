@@ -904,7 +904,14 @@ void Player::BehaviorJumpInitialize()
 		}
 		else
 		{
-			moveData_.velocity.x = 0.0f;
+			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
+			{
+				moveData_.velocity.x = 0.05f;
+			}
+			else if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+			{
+				moveData_.velocity.x = -0.05f;
+			}
 		}
 	}
 }
@@ -1305,6 +1312,7 @@ void Player::Move()
 	if (input_->GetJoystickState())
 	{
 		const float deadZone = 0.7f;
+		const float valueY = -0.3f;
 		bool isFrontMove_ = false;
 		bool isBackMove_ = false;
 
@@ -1384,18 +1392,17 @@ void Player::Move()
 
 		if (input_->GetLeftStickX() < -value_ && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
-			moveData_.velocity.x = (float)input_->GetLeftStickX();
 			characterState_.isGuard = true;
 
 			//移動しながらガード
-			if (!(input_->GetLeftStickY() < -value_))
+			if (!(input_->GetLeftStickY() < valueY))
 			{
 				moveData_.velocity.x = -0.01f;
 				isBackMove_ = true;
 			}
 
 			//止まってガード
-			if (characterState_.isGuard && input_->GetLeftStickY() < -value_)
+			if (characterState_.isGuard && input_->GetLeftStickY() < valueY)
 			{
 				animationIndex_ = 2;
 				UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
@@ -1428,18 +1435,17 @@ void Player::Move()
 
 		if (input_->GetLeftStickX() > value_ && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
-			moveData_.velocity.x = (float)input_->GetLeftStickX();
 			characterState_.isGuard = true;
 
 			//移動しながらガード
-			if (!(input_->GetLeftStickY() < -value_))
+			if (!(input_->GetLeftStickY() < valueY))
 			{
 				moveData_.velocity.x = 0.01f;
 				isBackMove_ = true;
 			}
 
 			//止まってガード
-			if (characterState_.isGuard && input_->GetLeftStickY() < -value_)
+			if (characterState_.isGuard && input_->GetLeftStickY() < valueY)
 			{
 				animationIndex_ = 2;
 				UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
