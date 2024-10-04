@@ -5,7 +5,7 @@
 #include <cassert>
 
 int GamePlayScene::migrationTimer = 200;
-float GamePlayScene::roundStartTimer_ = 100.0f;
+int GamePlayScene::roundStartTimer_ = 100;
 
 GamePlayScene::GamePlayScene() {};
 
@@ -134,7 +134,7 @@ void GamePlayScene::Initialize()
 	frameTime = 1.0f / 60.0f;
 	elapsedTime = 0.0f;
 
-	roundStartTimer_ = 100.0f;
+	roundStartTimer_ = 100;
 
 	//勝敗
 	isPlayerWin_ = false;
@@ -972,7 +972,7 @@ void GamePlayScene::RoundTransition(int round)
 			frameTime = 1.0f / 60.0f;
 			elapsedTime = 0.0f;
 
-			roundStartTimer_ = 100.0f;
+			roundStartTimer_ = 100;
 			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
 			PostProcess::GetInstance()->SetIsVignetteActive(false);
 		}

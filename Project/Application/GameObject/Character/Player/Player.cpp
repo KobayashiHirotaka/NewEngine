@@ -892,6 +892,7 @@ void Player::BehaviorJumpInitialize()
 
 	moveData_.velocity.y = kJumpFirstSpeed_;
 
+	//TODO:ジャンプ距離の修正(一定にする)
 	if (input_->GetJoystickState())
 	{
 		float joystickInput = input_->GetLeftStickX();

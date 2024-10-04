@@ -14,9 +14,11 @@ public:
 	//Transition用の時間
 	static const int kTransitionTime = 60;
 
+	//ラウンド移行の時間
 	static int migrationTimer;
 
-	static float roundStartTimer_;
+	//ラウンド開始までの時間
+	static int roundStartTimer_;
 
 	GamePlayScene();
 
@@ -32,14 +34,17 @@ public:
 
 	void ImGui()override;
 
-	void UpdateNumberSprite();
-
 	float Random(float min_value, float max_value);
 
+	//数字の更新関数
+	void UpdateNumberSprite();
+
+	//勝敗を決める関数
 	void HandleGameOutcome();
 
 	//void HandleTransition();
 
+	//ラウンド間でのトランジション
 	void RoundTransition(int round);
 
 private:
