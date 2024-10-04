@@ -126,9 +126,13 @@ private:
 	//時間
 	int currentSeconds_;
 
-	//60FPSを仮定
 	float frameTime = 1.0f / 60.0f;  
 	float elapsedTime = 0.0f;
+
+	const int maxRoundStartTime_ = 100;
+	const int halfRoundStartTime_ = 50;
+
+	const int outComeTime_ = 150;
 
 	//Sounds
 	uint32_t selectSoundHandle_ = 0u;
