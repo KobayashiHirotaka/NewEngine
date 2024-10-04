@@ -1310,6 +1310,8 @@ void Player::Move()
 
 		moveData_.velocity = { 0.0f, 0.0f, 0.0f };
 
+		moveData_.velocity.x = (float)input_->GetLeftStickX();
+
 		//敵の位置を取得する（例: enemyPosition という変数）
 		Vector3 enemyPosition = enemy_->GetWorldPosition();
 
@@ -1338,7 +1340,6 @@ void Player::Move()
 
 		if (input_->GetLeftStickX() < -value_ && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
-			moveData_.velocity.x = (float)input_->GetLeftStickX();
 			moveData_.velocity.x = -0.01f;
 			isFrontMove_ = true;
 			characterState_.isGuard = false;
@@ -1354,7 +1355,6 @@ void Player::Move()
 
 		if (input_->GetLeftStickX() > value_ && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
-			moveData_.velocity.x = (float)input_->GetLeftStickX();
 			moveData_.velocity.x = 0.01f;
 			isFrontMove_ = true;
 			characterState_.isGuard = false;
