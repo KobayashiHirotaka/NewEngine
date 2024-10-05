@@ -897,21 +897,22 @@ void Player::BehaviorJumpInitialize()
 	{
 		float joystickInput = input_->GetLeftStickX();
 
-		const float kStickThreshold = 0.3f;  
+		const float kStickThreshold = 0.3f;
+		const float kMoveSpeedX = 0.05f;  
 
 		if (fabs(joystickInput) > kStickThreshold)
 		{
-			moveData_.velocity.x = joystickInput * kMoveSpeedX;
+			moveData_.velocity.x = (joystickInput > 0 ? kMoveSpeedX : -kMoveSpeedX);
 		}
 		else
 		{
 			if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
 			{
-				moveData_.velocity.x = 0.05f;
+				moveData_.velocity.x = kMoveSpeedX;
 			}
 			else if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
 			{
-				moveData_.velocity.x = -0.05f;
+				moveData_.velocity.x = -kMoveSpeedX;
 			}
 		}
 	}
