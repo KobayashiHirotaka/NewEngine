@@ -567,7 +567,7 @@ void Player::BehaviorAttackUpdate()
 		
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
+			aabb_ = { {-0.1f,0.0f,-0.3f},{0.75f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -577,7 +577,7 @@ void Player::BehaviorAttackUpdate()
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+			aabb_ = { {-0.75f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -633,13 +633,13 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
-			SetAABB(aabb_);
-
 			EvaluateAttackTiming();
 
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 			{
+				aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
+				SetAABB(aabb_);
+
 				worldTransform_.translation.x += 0.15f;
 			}
 
@@ -654,13 +654,13 @@ void Player::BehaviorAttackUpdate()
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
-			SetAABB(aabb_);
-
 			EvaluateAttackTiming();
 
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 			{
+				aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+				SetAABB(aabb_);
+
 				worldTransform_.translation.x -= 0.15f;
 			}
 
