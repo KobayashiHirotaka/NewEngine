@@ -1600,7 +1600,7 @@ int Enemy::RandomAttackOrMove()
 
 	if (hp_ >= 50.0f)
 	{
-		actions = { 2, 3 };
+		actions = { 2, 2, 3 };
 	}
 	else
 	{
