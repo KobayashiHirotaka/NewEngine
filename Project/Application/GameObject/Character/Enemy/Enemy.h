@@ -116,6 +116,8 @@ private:
 
 	int RandomAttackOrMove();
 
+	int RandomBulletOrMove();
+	
 private:
 	Input* input_ = nullptr;
 

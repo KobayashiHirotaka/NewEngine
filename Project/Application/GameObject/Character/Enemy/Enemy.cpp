@@ -962,12 +962,12 @@ void Enemy::Move()
 			if (distance >= 4.0f) 
 			{
 				moveTimer_ = Random(30, 60);
-				patternCount_ = RandomAttackOrMove();
+				patternCount_ = RandomBulletOrMove();
 			}
 			else
 			{
 				moveTimer_ = Random(30, 60);
-				patternCount_ = Random(2, 3);
+				patternCount_ = RandomAttackOrMove();
 			}
 		}
 
@@ -1024,12 +1024,12 @@ void Enemy::Move()
 			if (distance >= 4.0f)
 			{
 				moveTimer_ = Random(30, 60);
-				patternCount_ = RandomAttackOrMove();
+				patternCount_ = RandomBulletOrMove();
 			}
 			else
 			{
 				moveTimer_ = Random(30, 60);
-				patternCount_ = Random(2,3);
+				patternCount_ = RandomAttackOrMove();
 			}
 		}
 
@@ -1578,7 +1578,14 @@ int Enemy::RandomMove()
 {
 	std::vector<int> actions;
 
-	actions = { 1, 2, 2 };
+	if (hp_ >= 50.0f)
+	{
+		actions = { 1, 2, 2 };
+	}
+	else
+	{
+		actions = { 1, 1, 2 };
+	}
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -1591,7 +1598,20 @@ int Enemy::RandomAttackOrMove()
 {
 	std::vector<int> actions;
 
-	actions = { 2, 3, 4 };
+	actions = { 2, 3 };
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(0, static_cast<int>(actions.size()) - 1);
+
+	return actions[dis(gen)];
+}
+
+int Enemy::RandomBulletOrMove()
+{
+	std::vector<int> actions;
+
+	actions = { 2, 2, 4 };
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
