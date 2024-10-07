@@ -325,12 +325,12 @@ void Enemy::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
+				aabb_ = { {-0.3f,0.0f,-0.3f},{0.4f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+				aabb_ = { {-0.4f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 
@@ -1598,7 +1598,14 @@ int Enemy::RandomAttackOrMove()
 {
 	std::vector<int> actions;
 
-	actions = { 2, 3 };
+	if (hp_ >= 50.0f)
+	{
+		actions = { 2, 3 };
+	}
+	else
+	{
+		actions = { 2, 2, 4 };
+	}
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
