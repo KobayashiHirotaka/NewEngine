@@ -1591,7 +1591,7 @@ int Enemy::RandomAttackOrMove()
 {
 	std::vector<int> actions;
 
-	actions = { 2, 2, 3, 4 };
+	actions = { 2, 3, 4 };
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
