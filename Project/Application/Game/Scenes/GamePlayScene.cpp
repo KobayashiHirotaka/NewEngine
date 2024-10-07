@@ -374,12 +374,16 @@ void GamePlayScene::Draw()
 
 	Line::PreDraw();
 
-	if (isDebug_)
+	player_->CollisionDraw(camera_);
+
+	enemy_->CollisionDraw(camera_);
+
+	/*if (isDebug_)
 	{
 		player_->CollisionDraw(camera_);
 
 		enemy_->CollisionDraw(camera_);
-	}
+	}*/
 
 	Line::PostDraw();
 

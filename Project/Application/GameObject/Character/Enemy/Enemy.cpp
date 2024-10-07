@@ -480,13 +480,13 @@ void Enemy::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
-				SetAABB(aabb_);
-
 				EvaluateAttackTiming();
 
 				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 				{
+					aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
+					SetAABB(aabb_);
+
 					worldTransform_.translation.x += 0.15f;
 				}
 
@@ -501,13 +501,13 @@ void Enemy::BehaviorAttackUpdate()
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
-				SetAABB(aabb_);
-
 				EvaluateAttackTiming();
 
 				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 				{
+					aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+					SetAABB(aabb_);
+
 					worldTransform_.translation.x -= 0.15f;
 				}
 
