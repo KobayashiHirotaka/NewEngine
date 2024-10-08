@@ -263,7 +263,7 @@ void Player::BehaviorRootUpdate()
 	//コントローラーの取得
 	if (input_->GetJoystickState())
 	{
-		if (!characterState_.isDown && comboCount_ <= 1)
+		if (!characterState_.isDown && comboCount_ == 0)
 		{
 			//移動
 			Move();
@@ -1940,7 +1940,7 @@ void Player::HitCombo()
 	{
 		firstAttack_ = "LightPunch";
 		comboCount_ = 1;
-		timerData_.comboTimer = 60;
+		timerData_.comboTimer = 80;
 		timerData_.comboTimer--;
 	}
 
