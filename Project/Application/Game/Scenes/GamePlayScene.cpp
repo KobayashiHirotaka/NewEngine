@@ -98,6 +98,11 @@ void GamePlayScene::Initialize()
 
 	fightSprite_.reset(Sprite::Create(fightTextureHandle_, { 0.0f, 0.0f }));
 
+	//KO表示
+	koTextureHandle_ = TextureManager::LoadTexture("resource/images/KO.png");
+
+	koSprite_.reset(Sprite::Create(koTextureHandle_, { 0.0f, 0.0f }));
+
 	//勝敗表示
 	winTextureHandle_ = TextureManager::LoadTexture("resource/images/WIN.png");
 	loseTextureHandle_ = TextureManager::LoadTexture("resource/images/LOSE.png");
@@ -424,14 +429,15 @@ void GamePlayScene::Draw()
 	//ラウンド終了時の勝敗表示
 	if (migrationTimer < outComeTime_ && migrationTimer > 0)
 	{
+	
 		if (isPlayerWin_)
 		{
-			winSprite_->Draw();
+			koSprite_->Draw();
 		}
 
 		if (!isPlayerWin_ && !isDrow_)
 		{
-			loseSprite_->Draw();
+			koSprite_->Draw();
 		}
 
 		if (isDrow_)
@@ -555,7 +561,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -566,7 +572,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -576,7 +582,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -587,7 +593,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -599,7 +605,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -610,7 +616,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -620,7 +626,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -631,7 +637,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -649,7 +655,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			EnemyWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -661,7 +667,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			EnemyWinCount_ = 2;
 		}
@@ -672,7 +678,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			EnemyWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -684,7 +690,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			EnemyWinCount_ = 2;
 		}
@@ -697,7 +703,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			EnemyWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -709,7 +715,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			EnemyWinCount_ = 2;
 		}
@@ -720,7 +726,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			EnemyWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -732,7 +738,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			EnemyWinCount_ = 2;
 		}
@@ -754,7 +760,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isDrow_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 1;
 			EnemyWinCount_ = 1;
@@ -766,7 +772,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isDrow_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 1;
 			EnemyWinCount_ = 1;
@@ -778,7 +784,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -788,7 +794,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			EnemyWinCount_ = 2;
 		}
@@ -798,7 +804,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -808,7 +814,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			EnemyWinCount_ = 2;
 		}
@@ -820,7 +826,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isDrow_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 1;
 			EnemyWinCount_ = 1;
@@ -832,7 +838,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isDrow_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 1;
 			EnemyWinCount_ = 1;
@@ -844,7 +850,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -854,7 +860,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			EnemyWinCount_ = 2;
 		}
@@ -864,7 +870,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -874,7 +880,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < 0)
+		if (migrationTimer < testKoActiveTime_)
 		{
 			EnemyWinCount_ = 2;
 		}

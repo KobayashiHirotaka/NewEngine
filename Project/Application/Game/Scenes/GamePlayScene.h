@@ -87,6 +87,10 @@ private:
 	std::unique_ptr<Sprite>fightSprite_ = nullptr;
 	uint32_t fightTextureHandle_;
 
+	//KO表示用Sprite
+	std::unique_ptr<Sprite>koSprite_ = nullptr;
+	uint32_t koTextureHandle_;
+
 	//勝敗に関するSprite
 	std::unique_ptr<Sprite>winSprite_ = nullptr;
 	uint32_t winTextureHandle_;
@@ -135,6 +139,7 @@ private:
 	const int maxMigrationTime_ = 200;
 
 	const int outComeTime_ = 150;
+	const int testKoActiveTime_ = 0;
 
 	//Sounds
 	uint32_t selectSoundHandle_ = 0u;

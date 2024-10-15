@@ -343,7 +343,7 @@ void Enemy::BehaviorAttackUpdate()
 			}
 
 			//キャンセルの処理(中TC)
-			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() &&
+			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() && player_->GetHP() < 0 &&
 				attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30)
 			{
 				attackType = "TCMiddlePunch";
@@ -392,7 +392,7 @@ void Enemy::BehaviorAttackUpdate()
 			}
 
 			//キャンセルの処理(強攻撃)
-			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() &&
+			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() && player_->GetHP() < 0 &&
 				attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30)
 			{
 				attackType = "HighPunch";
@@ -449,7 +449,8 @@ void Enemy::BehaviorAttackUpdate()
 			}
 
 			//キャンセルの処理(タックル攻撃)
-			if (!characterState_.isDown && player_->GetIsDown() && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30)
+			if (!characterState_.isDown && player_->GetIsDown() && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
+				&& player_->GetHP() < 0)
 			{
 				attackType = "Tackle";
 				attackData_.isAttack = false;

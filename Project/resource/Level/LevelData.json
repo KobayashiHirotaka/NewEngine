@@ -126,7 +126,7 @@
             "file_name": "newPlayer",
             "character_data": {
                 "type": "",
-                "hp": -100.0,
+                "hp": -10.0,
                 "maxHp": 100.0,
                 "frontSpeed": "0.04",
                 "backSpeed": "0.04",
