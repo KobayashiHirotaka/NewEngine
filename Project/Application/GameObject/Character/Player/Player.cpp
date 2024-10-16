@@ -1365,7 +1365,7 @@ void Player::Move()
 				//敵を右方向に押す
 				PushEnemy(enemyPosition, 0.05f);
 			}
-			else if (characterState_.direction == Direction::Left && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() > value_))
+			else if (characterState_.direction == Direction::Left && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -value_))
 			{
 				//敵を左方向に押す
 				PushEnemy(enemyPosition, -0.05f);

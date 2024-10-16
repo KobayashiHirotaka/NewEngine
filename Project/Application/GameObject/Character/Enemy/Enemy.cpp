@@ -870,15 +870,6 @@ void Enemy::OnCollision(Collider* collider)
 				characterState_.isHitTCHighPunch = true;
 			}
 
-			if (characterState_.direction == Direction::Right)
-			{
-				worldTransform_.translation.x -= 0.1f;
-			}
-			else if(characterState_.direction == Direction::Left)
-			{
-				worldTransform_.translation.x -= 0.1f;
-			}
-
 			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 			HitStop(10);
@@ -1445,6 +1436,18 @@ void Enemy::DownAnimation()
 
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+		}
+
+		if (timerData_.downAnimationTimer > 55)
+		{
+			if (characterState_.direction == Direction::Right)
+			{
+				worldTransform_.translation.x -= 0.1f;
+			}
+			else if (characterState_.direction == Direction::Left)
+			{
+				worldTransform_.translation.x += 0.1f;
+			}
 		}
 
 		animationIndex_ = 4;
