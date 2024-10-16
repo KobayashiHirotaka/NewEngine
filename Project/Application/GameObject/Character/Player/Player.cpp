@@ -1079,7 +1079,10 @@ void Player::OnCollision(Collider* collider)
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			ApplyDamage();
 
-			if (hp_ < 0)
+			characterState_.isHitBullet = true;
+			attackData_.isFinisher = false;
+
+			/*if (hp_ < 0)
 			{
 				characterState_.isHitBullet = true;
 				attackData_.isFinisher = false;
@@ -1088,7 +1091,7 @@ void Player::OnCollision(Collider* collider)
 			{
 				characterState_.isHitTCHighPunch = true;
 				attackData_.isFinisher = false;
-			}
+			}*/
 
 			AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
@@ -1103,14 +1106,16 @@ void Player::OnCollision(Collider* collider)
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			ApplyDamage();
 
-			if (hp_ < 0)
+			characterState_.isHitAirBullet = true;
+
+			/*if (hp_ < 0)
 			{
 				characterState_.isHitAirBullet = true;
 			}
 			else
 			{
 				characterState_.isHitTCHighPunch = true;
-			}
+			}*/
 
 			AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
@@ -1252,14 +1257,16 @@ void Player::OnCollision(Collider* collider)
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 				ApplyDamage();
 
-				if (hp_ < 0)
+				characterState_.isHitLightPunch = true;
+
+			/*	if (hp_ < 0)
 				{
 					characterState_.isHitLightPunch = true;
 				}
 				else
 				{
 					characterState_.isHitTCHighPunch = true;
-				}
+				}*/
 
 				AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
@@ -1283,15 +1290,17 @@ void Player::OnCollision(Collider* collider)
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 				ApplyDamage();
+
+				characterState_.isHitTCMiddlePunch = true;
 				
-				if (hp_ < 0)
+				/*if (hp_ < 0)
 				{
 					characterState_.isHitTCMiddlePunch = true;
 				}
 				else
 				{
 					characterState_.isHitTCHighPunch = true;
-				}
+				}*/
 
 				AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
