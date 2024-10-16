@@ -25,7 +25,7 @@
             "file_name": "remakePlayer",
             "character_data": {
                 "type": "",
-                "hp": 9.999994277954102,
+                "hp": 100.0,
                 "maxHp": 100.0,
                 "frontSpeed": "0.02",
                 "backSpeed": "0.02",
@@ -126,7 +126,7 @@
             "file_name": "newPlayer",
             "character_data": {
                 "type": "",
-                "hp": -10.0,
+                "hp": -100.0,
                 "maxHp": 100.0,
                 "frontSpeed": "0.04",
                 "backSpeed": "0.04",
