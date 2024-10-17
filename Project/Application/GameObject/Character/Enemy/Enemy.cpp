@@ -1451,18 +1451,18 @@ void Enemy::DownAnimation()
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		//修正中
-		if (timerData_.downAnimationTimer > 55)
-		{
-			if (characterState_.direction == Direction::Right)
-			{
-				worldTransform_.translation.x -= 0.1f;
-			}
-			else if (characterState_.direction == Direction::Left)
-			{
-				worldTransform_.translation.x += 0.1f;
-			}
-		}
+		////修正中
+		//if (timerData_.downAnimationTimer > 55)
+		//{
+		//	if (characterState_.direction == Direction::Right)
+		//	{
+		//		worldTransform_.translation.x -= 0.1f;
+		//	}
+		//	else if (characterState_.direction == Direction::Left)
+		//	{
+		//		worldTransform_.translation.x += 0.1f;
+		//	}
+		//}
 
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);

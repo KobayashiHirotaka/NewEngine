@@ -153,6 +153,24 @@ void Player::Update()
 		isDirectionRight_ = false;
 	}
 
+	//敵の位置を取得する
+	Vector3 enemyPosition = enemy_->GetWorldPosition();
+
+	//着地時の押し出し処理
+	//if (worldTransform_.translation.y > 0.0f)
+	//{
+	//	if (characterState_.direction == Direction::Right && enemyPosition.x <= worldTransform_.translation.x + 0.3f)
+	//	{
+	//		//敵を右方向に押す
+	//		PushEnemy(enemyPosition, 0.1f);
+	//	}
+	//	else if (characterState_.direction == Direction::Left && enemyPosition.x >= worldTransform_.translation.x - 0.3f)
+	//	{
+	//		//敵を左方向に押す
+	//		PushEnemy(enemyPosition, -0.1f);
+	//	}
+	//}
+
 	HitCombo();
 
 	ComboNumberSpriteUpdate();
@@ -1348,7 +1366,7 @@ void Player::Move()
 
 		moveData_.velocity.x = (float)input_->GetLeftStickX();
 
-		//敵の位置を取得する（例: enemyPosition という変数）
+		//敵の位置を取得する
 		Vector3 enemyPosition = enemy_->GetWorldPosition();
 
 		if (characterState_.isHitCharacter)
