@@ -1079,10 +1079,7 @@ void Player::OnCollision(Collider* collider)
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			ApplyDamage();
 
-			characterState_.isHitBullet = true;
-			attackData_.isFinisher = false;
-
-			/*if (hp_ < 0)
+			if (hp_ < 0)
 			{
 				characterState_.isHitBullet = true;
 				attackData_.isFinisher = false;
@@ -1091,7 +1088,7 @@ void Player::OnCollision(Collider* collider)
 			{
 				characterState_.isHitTCHighPunch = true;
 				attackData_.isFinisher = false;
-			}*/
+			}
 
 			AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
@@ -1107,15 +1104,6 @@ void Player::OnCollision(Collider* collider)
 			ApplyDamage();
 
 			characterState_.isHitAirBullet = true;
-
-			/*if (hp_ < 0)
-			{
-				characterState_.isHitAirBullet = true;
-			}
-			else
-			{
-				characterState_.isHitTCHighPunch = true;
-			}*/
 
 			AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
@@ -1257,16 +1245,14 @@ void Player::OnCollision(Collider* collider)
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 				ApplyDamage();
 
-				characterState_.isHitLightPunch = true;
-
-			/*	if (hp_ < 0)
+				if (hp_ < 0)
 				{
 					characterState_.isHitLightPunch = true;
 				}
 				else
 				{
 					characterState_.isHitTCHighPunch = true;
-				}*/
+				}
 
 				AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
@@ -1291,16 +1277,14 @@ void Player::OnCollision(Collider* collider)
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 				ApplyDamage();
 
-				characterState_.isHitTCMiddlePunch = true;
-				
-				/*if (hp_ < 0)
+				if (hp_ < 0)
 				{
 					characterState_.isHitTCMiddlePunch = true;
 				}
 				else
 				{
 					characterState_.isHitTCHighPunch = true;
-				}*/
+				}
 
 				AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
@@ -1773,6 +1757,42 @@ void Player::DownAnimation()
 		if (!enemy_->GetIsTCMiddlePunch() && hp_ < 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitTCMiddlePunch);
+		}
+	}
+
+	//TC強攻撃
+	if (characterState_.isHitTCHighPunch)
+	{
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
+		float moveX = (characterState_.direction == Direction::Right) ? -0.02f : 0.02f;
+
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
+			AABB{ {0.0f, 0.0f, -0.3f}, {0.9f, 0.2f, 0.3f} };
+
+		if (timerData_.downAnimationTimer > 55)
+		{
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
+						worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
+		}
+
+		if (timerData_.downAnimationTimer > 35 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
+			(characterState_.direction == Direction::Right && worldTransform_.translation.x > leftEdge_)))
+		{
+			worldTransform_.translation.x += moveX;
+		}
+
+		animationIndex_ = 7;
+		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
+
+		SetAABB(aabb_);
+
+		if (!enemy_->GetIsTCHighPunch() && hp_ < 0)
+		{
+			DownAnimationEnd(5, characterState_.isHitTCHighPunch);
+			ResetCollision();
 		}
 	}
 
