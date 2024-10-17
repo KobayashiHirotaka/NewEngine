@@ -1288,11 +1288,11 @@ void Enemy::DownAnimation()
 		{
 			if (characterState_.direction == Direction::Right)
 			{
-				worldTransform_.translation.x -= 0.1f;
+				worldTransform_.translation.x -= 0.05f;
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				worldTransform_.translation.x += 0.1f;
+				worldTransform_.translation.x += 0.05f;
 			}
 		}
 
