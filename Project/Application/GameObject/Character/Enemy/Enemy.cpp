@@ -1296,7 +1296,7 @@ void Enemy::DownAnimation()
 			}
 		}
 
-		animationIndex_ = 13;
+		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
 		//次の入力を受け取ったらこの処理にする
