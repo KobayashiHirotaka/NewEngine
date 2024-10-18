@@ -977,11 +977,9 @@ void Enemy::Move()
 		bool isBackMove_ = false;
 		moveData_.velocity = { 0.0f, 0.0f, 0.0f };
 
-		animationIndex_ = 0;
-		UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
-
 		if (characterState_.direction == Direction::Right)
 		{
+			animationIndex_ = 0;
 			moveData_.velocity.x = -0.01f;
 			isFrontMove_ = false;
 			isBackMove_ = true;
@@ -990,6 +988,7 @@ void Enemy::Move()
 
 		if (characterState_.direction == Direction::Left)
 		{
+			animationIndex_ = 13;
 			moveData_.velocity.x = 0.01f;
 			isFrontMove_ = false;
 			isBackMove_ = true;
@@ -998,6 +997,8 @@ void Enemy::Move()
 
 		if (isBackMove_)
 		{
+			UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
+
 			moveData_.velocity = Normalize(moveData_.velocity);
 			moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
 
