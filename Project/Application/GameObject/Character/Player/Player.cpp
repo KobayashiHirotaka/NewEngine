@@ -364,12 +364,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
+			aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+			aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -415,12 +415,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
+			aabb_ = { {0.0f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+			aabb_ = { {-0.6f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -468,12 +468,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
+			aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+			aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -552,12 +552,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
+			aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+			aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -655,7 +655,7 @@ void Player::BehaviorAttackUpdate()
 
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 			{
-				aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
+				aabb_ = { {-0.1f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				worldTransform_.translation.x += 0.15f;
@@ -676,7 +676,7 @@ void Player::BehaviorAttackUpdate()
 
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 			{
-				aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+				aabb_ = { {-0.6f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				worldTransform_.translation.x -= 0.15f;
@@ -716,14 +716,14 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
+			aabb_ = { {0.0f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+			aabb_ = { {-0.6f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
@@ -802,12 +802,12 @@ void Player::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,0.0f,-0.3f},{0.4f,1.0f,0.3f} };
+				aabb_ = { {0.0f,0.0f,-0.3f},{0.4f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.4f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+				aabb_ = { {-0.4f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 
@@ -853,7 +853,7 @@ void Player::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
+				aabb_ = { {0.0f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (!characterState_.isHitCharacter)
@@ -863,7 +863,7 @@ void Player::BehaviorAttackUpdate()
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+				aabb_ = { {-0.6f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (!characterState_.isHitCharacter)
@@ -1787,8 +1787,8 @@ void Player::DownAnimation()
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
 		float moveX = (characterState_.direction == Direction::Right) ? -0.02f : 0.02f;
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
-			AABB{ {0.0f, 0.0f, -0.3f}, {0.9f, 0.2f, 0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
+			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
 
 		if (timerData_.downAnimationTimer > 55)
 		{
@@ -1848,8 +1848,8 @@ void Player::DownAnimation()
 			}
 		}
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
-			AABB{ {0.0f, 0.0f, -0.3f}, {0.8f, 0.2f, 0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
+			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
 
 		animationIndex_ = 7;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
@@ -1870,8 +1870,8 @@ void Player::DownAnimation()
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
 		float moveX = (characterState_.direction == Direction::Right) ? -0.08f : 0.08f;
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.9f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
-			AABB{ {0.0f, 0.0f, -0.3f}, {0.9f, 0.2f, 0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
+			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
 
 		if (timerData_.downAnimationTimer > 55)
 		{
@@ -1972,7 +1972,9 @@ void Player::DownAnimation()
 		animationIndex_ = 7;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
+			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
+
 		SetAABB(aabb_);
 
 		if (timerData_.downAnimationTimer < 30 && hp_ < 0)
