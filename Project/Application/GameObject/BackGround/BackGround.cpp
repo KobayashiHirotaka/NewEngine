@@ -15,6 +15,7 @@ void BackGround::Initialize()
 	model_[5].reset(Model::CreateFromOBJ("resource/BackStage", "Tree.gltf"));
 	model_[6].reset(Model::CreateFromOBJ("resource/BackStage", "Planet1.gltf"));
 	model_[7].reset(Model::CreateFromOBJ("resource/BackStage", "Planet2.gltf"));
+	model_[8].reset(Model::CreateFromOBJ("resource/BackStage", "testHouse.gltf"));
 
 	worldTransform_[0].Initialize();
 	worldTransform_[0].translation = { 0.0f,-0.4f,70.0f };
@@ -48,7 +49,11 @@ void BackGround::Initialize()
 	worldTransform_[7].translation = { -17.0f,15.5f,90.0f };
 	worldTransform_[7].scale = { 1.5f,1.5f,1.5f };
 
-	for (int i = 0; i < 8; i++)
+	worldTransform_[8].Initialize();
+	worldTransform_[8].translation = { 0.0f,-0.4f,70.0f };
+	worldTransform_[8].scale = { 1.8f,1.8f,1.8f };
+
+	for (int i = 0; i < 9; i++)
 	{
 		model_[i]->GetMaterial()->SetEnvironmentCofficient(0.1f);
 	}
@@ -70,7 +75,7 @@ void BackGround::Update()
 	}
 
 
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 9; i++)
 	{
 		worldTransform_[i].UpdateMatrixEuler();
 	}
@@ -78,9 +83,20 @@ void BackGround::Update()
 
 void BackGround::Draw(const Camera camera)
 {
-	for (int i = 0; i < 8; i++)
+	if (stateNum_ == 0)
 	{
-		model_[i]->Draw(worldTransform_[i], camera, 0);
+		for (int i = 0; i < 8; i++)
+		{
+			model_[i]->Draw(worldTransform_[i], camera, 0);
+		}
+	}
+
+	if (stateNum_ == 1)
+	{
+		for (int i = 1; i < 9; i++)
+		{
+			model_[i]->Draw(worldTransform_[i], camera, 0);
+		}
 	}
 }
 

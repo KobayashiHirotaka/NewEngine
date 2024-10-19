@@ -196,6 +196,7 @@ void GamePlayScene::Update()
 		{
 			isShake_ = true;
 			shakeTimer_ = kShakeTime;
+			backGround_->SetStateNum(1);
 		}
 
 		if (isShake_)

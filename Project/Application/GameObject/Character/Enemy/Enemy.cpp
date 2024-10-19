@@ -1487,7 +1487,7 @@ void Enemy::DownAnimation()
 		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
 			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
 
-		if (timerData_.downAnimationTimer > 57)
+		if (timerData_.downAnimationTimer > 55)
 		{
 			effectState_.isShake = true;
 
