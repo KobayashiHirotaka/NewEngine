@@ -130,7 +130,7 @@ private:
 	//時間
 	int currentSeconds_;
 
-	float frameTime = 1.0f / 60.0f;  
+	float frameTime = 1.0f / 60.0f;
 	float elapsedTime = 0.0f;
 
 	const int maxRoundStartTime_ = 100;
@@ -157,7 +157,7 @@ private:
 	float transitionTimer_ = 0;
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
-	
+
 	//モデルの骨を描画するかどうか
 	bool isBoneDraw_ = true;
 
@@ -190,7 +190,9 @@ private:
 	WorldTransform skyboxWorldTransform_;
 
 	bool isRoundTransition_ = false;
-	int roundTransitionTimer_ = 150;
+	int roundTransitionTimer_ = 100;
 
 	bool isDebug_ = false;
+
+	bool isKO_ = false;
 };

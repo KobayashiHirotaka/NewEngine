@@ -746,7 +746,7 @@ void Enemy::OnCollision(Collider* collider)
 				{
 					audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 				}
-		
+	
 				ApplyDamage();
 
 				if (hp_ > 0)
@@ -913,7 +913,6 @@ void Enemy::OnCollision(Collider* collider)
 		if (player_->GetIsUppercut() && player_->GetIsAttack() && !characterState_.isGuard &&!characterState_.isDown)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			ApplyDamage();
 
 			if (hp_ > 0)
 			{
@@ -933,7 +932,6 @@ void Enemy::OnCollision(Collider* collider)
 		if (player_->GetIsFinisherFirstAttack() && player_->GetIsAttack() && !characterState_.isGuard && !characterState_.isDown)
 		{
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
-			ApplyDamage();
 
 			if (hp_ > 0)
 			{
@@ -988,7 +986,7 @@ void Enemy::Move()
 
 		if (characterState_.direction == Direction::Left)
 		{
-			animationIndex_ = 13;
+			animationIndex_ = 0;
 			moveData_.velocity.x = 0.01f;
 			isFrontMove_ = false;
 			isBackMove_ = true;
@@ -1259,6 +1257,7 @@ void Enemy::Reset()
 
 	isCancel_ = false;
 	isHitAudio_ = false;
+	isKO_ = false;
 
 	worldTransform_.UpdateMatrixEuler();
 }
@@ -1284,6 +1283,11 @@ void Enemy::DownAnimation()
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
+		if(timerData_.downAnimationTimer < 50 && hp_ <= 0)
+		{
+			isKO_ = true;
+		}
+
 		//修正中
 		if (timerData_.downAnimationTimer > 58)
 		{
@@ -1305,6 +1309,7 @@ void Enemy::DownAnimation()
 		{
 			patternCount_ = RandomMove();
 			isHitAudio_ = false;
+			isKO_ = false;
 			DownAnimationEnd(5, characterState_.isHitLightPunch);
 		}
 	}
@@ -1366,6 +1371,11 @@ void Enemy::DownAnimation()
 			}
 		}
 
+		if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
+		{
+			isKO_ = true;
+		}
+
 		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
 			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
 
@@ -1374,6 +1384,7 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsHighPunch() && worldTransform_.translation.y <= 0.0f && hp_ > 0)
 		{
+			isKO_ = false;
 			DownAnimationEnd(5, characterState_.isHitHighPunch);
 			ResetCollision();
 		}
@@ -1393,11 +1404,17 @@ void Enemy::DownAnimation()
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
+		if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
+		{
+			isKO_ = true;
+		}
+
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
 		if (!player_->GetIsTCMiddlePunch() && hp_ > 0)
 		{
+			isKO_ = false;
 			DownAnimationEnd(5, characterState_.isHitTCMiddlePunch);
 		}
 	}
@@ -1420,6 +1437,11 @@ void Enemy::DownAnimation()
 						worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
 		}
 
+		if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
+		{
+			isKO_ = true;
+		}
+
 		if (timerData_.downAnimationTimer > 35 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
 			(characterState_.direction == Direction::Right && worldTransform_.translation.x > leftEdge_)))
 		{
@@ -1433,6 +1455,7 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsTCHighPunch() && hp_ > 0)
 		{
+			isKO_ = false;
 			DownAnimationEnd(5, characterState_.isHitTCHighPunch);
 			ResetCollision();
 		}
@@ -1450,6 +1473,11 @@ void Enemy::DownAnimation()
 
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+		}
+
+		if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
+		{
+			isKO_ = true;
 		}
 
 		////修正中
@@ -1470,6 +1498,7 @@ void Enemy::DownAnimation()
 
 		if (timerData_.downAnimationTimer < 38 && hp_ > 0)
 		{
+			isKO_ = false;
 			DownAnimationEnd(5, characterState_.isHitJumpAttack);
 		}
 	}
@@ -1484,9 +1513,6 @@ void Enemy::DownAnimation()
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
 		float moveX = (characterState_.direction == Direction::Right) ? -0.1f : 0.1f;
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
-			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
-
 		if (timerData_.downAnimationTimer > 55)
 		{
 			effectState_.isShake = true;
@@ -1497,6 +1523,13 @@ void Enemy::DownAnimation()
 		else
 		{
 			effectState_.isShake = false;
+			aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
+				AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
+
+			if (hp_ <= 0)
+			{
+				isKO_ = true;
+			}
 		}
 
 		if (timerData_.downAnimationTimer > 35 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
@@ -1522,6 +1555,7 @@ void Enemy::DownAnimation()
 		if (timerData_.downAnimationTimer < 0 && hp_ > 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitTackle);
+			isKO_ = false;
 			isCancel_ = false;
 			ResetCollision();
 		}
@@ -1541,11 +1575,17 @@ void Enemy::DownAnimation()
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
+		if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
+		{
+			isKO_ = true;
+		}
+
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
 		if (!player_->GetIsUppercut() && hp_ > 0)
 		{
+			isKO_ = false;
 			DownAnimationEnd(5, characterState_.isHitUppercut);
 		}
 	}
@@ -1564,11 +1604,17 @@ void Enemy::DownAnimation()
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
+		if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
+		{
+			isKO_ = true;
+		}
+
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
 		if (!player_->GetIsFinisherFirstAttack())
 		{
+			isKO_ = false;
 			DownAnimationEnd(5, characterState_.isHitFinisherFirstAttack);
 		}
 	}
@@ -1584,6 +1630,10 @@ void Enemy::DownAnimation()
 
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+		}
+		else if(hp_ <= 0)
+		{
+			isKO_ = true;
 		}
 
 		if (timerData_.downAnimationTimer < 50 && timerData_.downAnimationTimer > 45)
@@ -1613,6 +1663,7 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsFinisherSecondAttack())
 		{
+			isKO_ = false;
 			DownAnimationEnd(5, characterState_.isHitFinisherSecondAttack);
 		}
 	}

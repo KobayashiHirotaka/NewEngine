@@ -182,8 +182,34 @@ void GamePlayScene::Update()
 			}
 		}
 
-		//Game3dObjectManagerの更新
-		game3dObjectManager_->Update();
+		if (enemy_->GetIsKO() && migrationTimer > 20)
+		{
+			isKO_ = true;
+
+			if (player_->GetIsDirectionRight())
+			{
+				camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x + 2.0f,
+				player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 5.5f }, 0.1f);
+			}
+			else
+			{
+				camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x - 2.0f,
+				player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 5.5f }, 0.1f);
+			}
+		}
+		else
+		{
+			isKO_ = false;
+
+			Vector3 translation_ = { 0.0f,1.0f,-13.0f };
+			camera_.translation_ = Lerp(camera_.translation_, translation_, 0.005f);
+		}
+
+		if (!isKO_)
+		{
+			//Game3dObjectManagerの更新
+			game3dObjectManager_->Update();
+		}
 
 		//Skydomeの更新
 		skydome_->Update();
@@ -196,7 +222,7 @@ void GamePlayScene::Update()
 		{
 			isShake_ = true;
 			shakeTimer_ = kShakeTime;
-			backGround_->SetStateNum(1);
+			//backGround_->SetStateNum(1);
 		}
 
 		if (isShake_)
@@ -428,7 +454,7 @@ void GamePlayScene::Draw()
 	}
 
 	//ラウンド終了時の勝敗表示
-	if (migrationTimer < outComeTime_ && migrationTimer > 0)
+	if (migrationTimer < outComeTime_ && migrationTimer > 20)
 	{
 	
 		if (isPlayerWin_)
@@ -562,7 +588,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
 			PlayerWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -573,7 +599,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -583,7 +609,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
 			PlayerWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -594,7 +620,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -827,7 +853,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isDrow_ = true;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
 			PlayerWinCount_ = 1;
 			EnemyWinCount_ = 1;
@@ -839,7 +865,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isDrow_ = true;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
 			PlayerWinCount_ = 1;
 			EnemyWinCount_ = 1;
@@ -851,7 +877,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -861,7 +887,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
 			EnemyWinCount_ = 2;
 		}
@@ -871,7 +897,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -881,7 +907,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
 			EnemyWinCount_ = 2;
 		}
