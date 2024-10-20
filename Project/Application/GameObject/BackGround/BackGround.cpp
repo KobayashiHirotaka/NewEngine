@@ -13,8 +13,8 @@ void BackGround::Initialize()
 	model_[3].reset(Model::CreateFromOBJ("resource/BackStage", "wall.gltf"));
 	model_[4].reset(Model::CreateFromOBJ("resource/BackStage", "wall.gltf"));
 	model_[5].reset(Model::CreateFromOBJ("resource/BackStage", "wall.gltf"));
-	model_[6].reset(Model::CreateFromOBJ("resource/BackStage", "Planet1.gltf"));
-	model_[7].reset(Model::CreateFromOBJ("resource/BackStage", "Planet2.gltf"));
+	model_[6].reset(Model::CreateFromOBJ("resource/BackStage", "wall.gltf"));
+	model_[7].reset(Model::CreateFromOBJ("resource/BackStage", "wall.gltf"));
 	model_[8].reset(Model::CreateFromOBJ("resource/BackStage", "testHouse.gltf"));
 
 	worldTransform_[0].Initialize();
@@ -62,20 +62,6 @@ void BackGround::Initialize()
 
 void BackGround::Update()
 {
-	for (int i = 6; i < 8; i++)
-	{
-		float animationTime = 0.0f;
-		animationTime = model_[i]->GetAnimationTime();
-
-		animationTime += 1.0f / 60.0f;
-
-		animationTime = std::fmod(animationTime, model_[i]->GetAnimation()[0].duration);
-
-		model_[i]->SetAnimationTime(animationTime);
-		model_[i]->ApplyAnimation(0);
-	}
-
-
 	for (int i = 0; i < 9; i++)
 	{
 		worldTransform_[i].UpdateMatrixEuler();
