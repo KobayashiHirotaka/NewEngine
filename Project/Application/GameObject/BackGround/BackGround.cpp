@@ -7,27 +7,28 @@ void BackGround::Initialize()
 	input_ = Input::GetInstance();
 
 	//メインの背景
-	model_[0].reset(Model::CreateFromOBJ("resource/BackStage", "House.gltf"));
-	model_[1].reset(Model::CreateFromOBJ("resource/BackStage", "Grass1.gltf"));
-	model_[2].reset(Model::CreateFromOBJ("resource/BackStage", "Grass2.gltf"));
-	model_[3].reset(Model::CreateFromOBJ("resource/BackStage", "Grass3.gltf"));
-	model_[4].reset(Model::CreateFromOBJ("resource/BackStage", "Grass4.gltf"));
-	model_[5].reset(Model::CreateFromOBJ("resource/BackStage", "Tree.gltf"));
+	model_[0].reset(Model::CreateFromOBJ("resource/BackStage", "wall.gltf"));
+	model_[1].reset(Model::CreateFromOBJ("resource/BackStage", "wall.gltf"));
+	model_[2].reset(Model::CreateFromOBJ("resource/BackStage", "wall.gltf"));
+	model_[3].reset(Model::CreateFromOBJ("resource/BackStage", "wall.gltf"));
+	model_[4].reset(Model::CreateFromOBJ("resource/BackStage", "wall.gltf"));
+	model_[5].reset(Model::CreateFromOBJ("resource/BackStage", "wall.gltf"));
 	model_[6].reset(Model::CreateFromOBJ("resource/BackStage", "Planet1.gltf"));
 	model_[7].reset(Model::CreateFromOBJ("resource/BackStage", "Planet2.gltf"));
 	model_[8].reset(Model::CreateFromOBJ("resource/BackStage", "testHouse.gltf"));
 
 	worldTransform_[0].Initialize();
-	worldTransform_[0].translation = { 0.0f,-0.4f,70.0f };
-	worldTransform_[0].scale = { 1.8f,1.8f,1.8f };
+	worldTransform_[0].translation = { 0.0f,-0.4f,13.0f };
+	worldTransform_[0].rotation.y = 3.2f;
+	worldTransform_[0].scale = { 4.0f,4.0f,1.8f };
 
 	worldTransform_[1].Initialize();
 	worldTransform_[1].translation = { 18.0f,-0.4f,70.0f };
 	worldTransform_[1].scale = { 2.0f,2.0f,2.0f };
 
 	worldTransform_[2].Initialize();
-	worldTransform_[2].translation = { 25.0f,-0.4f,70.0f };
-	worldTransform_[2].scale = { 2.0f,2.0f,2.0f };
+	worldTransform_[2].translation = { 8.0f,-0.4f,17.0f };
+	worldTransform_[2].scale = { 1.5f,4.0f,1.8f };
 
 	worldTransform_[3].Initialize();
 	worldTransform_[3].translation = { -18.0f,-0.4f,70.0f };
@@ -38,8 +39,8 @@ void BackGround::Initialize()
 	worldTransform_[4].scale = { 1.7f,1.7f,1.7f };
 
 	worldTransform_[5].Initialize();
-	worldTransform_[5].translation = { -25.0f,-0.4f,70.0f };
-	worldTransform_[5].scale = { 1.3f,1.3f,1.3f };
+	worldTransform_[5].translation = { -8.0f,-0.4f,17.0f };
+	worldTransform_[5].scale = { 1.5f,6.0f,1.8f };
 
 	worldTransform_[6].Initialize();
 	worldTransform_[6].translation = { 15.0f,11.0f,75.0f };
@@ -55,7 +56,7 @@ void BackGround::Initialize()
 
 	for (int i = 0; i < 9; i++)
 	{
-		model_[i]->GetMaterial()->SetEnvironmentCofficient(0.1f);
+		model_[i]->GetMaterial()->SetEnvironmentCofficient(0.0f);
 	}
 }
 
