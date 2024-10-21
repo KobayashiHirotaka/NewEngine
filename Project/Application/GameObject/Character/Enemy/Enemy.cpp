@@ -716,7 +716,7 @@ void Enemy::OnCollision(Collider* collider)
 			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x -= 0.18f;
+			worldTransform_.translation.x -= 0.1f;
 			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
@@ -731,7 +731,7 @@ void Enemy::OnCollision(Collider* collider)
 			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x += 0.18f;
+			worldTransform_.translation.x += 0.1f;
 			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
@@ -1093,7 +1093,7 @@ void Enemy::Move()
 		}
 	}
 
-	//ガード(その場)
+	//ガード
 	if (player_->GetIsAttack() && player_->GetIsTackle() && !characterState_.isDown)
 	{
 		isGuardMode_ = true;
@@ -1113,13 +1113,14 @@ void Enemy::Move()
 		animationIndex_ = 13;
 		UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
 
+		//確定反撃
 		if (!player_->GetIsAttack())
 		{
 			guardTimer_--;
 
 			if (guardTimer_ < 0)
 			{
-				guardTimer_ = 5;
+				guardTimer_ = 4;
 				isGuardMode_ = false;
 				characterState_.isGuard = false;
 				moveTimer_ = Random(30, 60);

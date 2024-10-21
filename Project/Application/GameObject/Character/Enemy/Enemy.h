@@ -184,6 +184,6 @@ private:
 	bool isKO_ = false;
 
 	bool isGuardMode_ = false;
-	int guardTimer_ = 5;
+	int guardTimer_ = 4;
 };
 
