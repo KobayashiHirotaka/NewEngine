@@ -669,6 +669,11 @@ void Player::BehaviorAttackUpdate()
 				particleEffectPlayer_->PlayParticle("PlayerRightNackle", { worldTransform_.translation.x + particlePositionX,
 					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
 			}
+			else
+			{
+				aabb_ = { {-0.1f,0.0f,-0.3f},{0.2f,1.0f,0.3f} };
+				SetAABB(aabb_);
+			}
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
@@ -690,6 +695,11 @@ void Player::BehaviorAttackUpdate()
 
 				particleEffectPlayer_->PlayParticle("PlayerLeftNackle", { worldTransform_.translation.x - particlePositionX,
 					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
+			}
+			else
+			{
+				aabb_ = { {-0.2f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
+				SetAABB(aabb_);
 			}
 		}
 
@@ -1369,14 +1379,15 @@ void Player::Move()
 		//敵の位置を取得する
 		Vector3 enemyPosition = enemy_->GetWorldPosition();
 
+
 		if (characterState_.isHitCharacter)
 		{
-			if (characterState_.direction == Direction::Right && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > value_))
+			if (characterState_.direction == Direction::Right && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > value_))
 			{
 				//敵を右方向に押す
 				PushEnemy(enemyPosition, 0.05f);
 			}
-			else if (characterState_.direction == Direction::Left && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -value_))
+			else if (characterState_.direction == Direction::Left && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -value_))
 			{
 				//敵を左方向に押す
 				PushEnemy(enemyPosition, -0.05f);

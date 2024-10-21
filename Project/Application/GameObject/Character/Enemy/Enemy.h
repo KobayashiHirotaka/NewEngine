@@ -182,5 +182,8 @@ private:
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
 
 	bool isKO_ = false;
+
+	bool isGuardMode_ = false;
+	int guardTimer_ = 5;
 };
 

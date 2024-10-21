@@ -300,6 +300,11 @@ void Enemy::BehaviorRootUpdate()
 			AttackStart(attackData_.isLightPunch);
 		}
 
+		if (characterState_.isDown)
+		{
+			isGuardMode_ = false;
+			characterState_.isGuard = false;
+		}
 	}
 }
 
@@ -711,7 +716,7 @@ void Enemy::OnCollision(Collider* collider)
 			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x -= 0.2f;
+			worldTransform_.translation.x -= 0.18f;
 			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
@@ -726,7 +731,7 @@ void Enemy::OnCollision(Collider* collider)
 			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x += 0.2f;
+			worldTransform_.translation.x += 0.18f;
 			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
@@ -1085,6 +1090,49 @@ void Enemy::Move()
 		{
 			moveTimer_ = Random(30, 60);
 			patternCount_ = 5;
+		}
+	}
+
+	//ガード(その場)
+	if (player_->GetIsAttack() && player_->GetIsTackle() && !characterState_.isDown)
+	{
+		isGuardMode_ = true;
+	}
+
+	if (characterState_.isDown)
+	{
+		isGuardMode_ = false;
+		characterState_.isGuard = false;
+	}
+
+	if (isGuardMode_)
+	{
+		patternCount_ = 6;
+		characterState_.isGuard = true;
+
+		animationIndex_ = 13;
+		UpdateAnimationTime(animationTime_, true, 30.0f, animationIndex_, model_);
+
+		if (!player_->GetIsAttack())
+		{
+			guardTimer_--;
+
+			if (guardTimer_ < 0)
+			{
+				guardTimer_ = 5;
+				isGuardMode_ = false;
+				characterState_.isGuard = false;
+				moveTimer_ = Random(30, 60);
+
+				if (characterState_.isHitCharacter)
+				{
+					patternCount_ = 5;
+				}
+				else
+				{
+					patternCount_ = 2;
+				}
+			}
 		}
 	}
 }
