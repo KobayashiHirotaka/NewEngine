@@ -18,17 +18,19 @@ void BackGround::Initialize()
 	model_[8].reset(Model::CreateFromOBJ("resource/BackStage", "testHouse.gltf"));
 
 	worldTransform_[0].Initialize();
-	worldTransform_[0].translation = { 0.0f,-0.4f,13.0f };
-	worldTransform_[0].rotation.y = 3.2f;
+	worldTransform_[0].translation = { 6.8f,0.0f,13.0f };
+	worldTransform_[0].rotation.y = 3.8f;
 	worldTransform_[0].scale = { 4.0f,4.0f,1.8f };
 
 	worldTransform_[1].Initialize();
-	worldTransform_[1].translation = { 18.0f,-0.4f,70.0f };
-	worldTransform_[1].scale = { 2.0f,2.0f,2.0f };
+	worldTransform_[1].translation = { -6.8f,0.0f,13.0f };
+	worldTransform_[1].rotation.y = 2.5f;
+	worldTransform_[1].scale = { 2.0f,2.0f,1.8f };
 
 	worldTransform_[2].Initialize();
-	worldTransform_[2].translation = { 8.0f,-0.4f,17.0f };
-	worldTransform_[2].scale = { 1.5f,4.0f,1.8f };
+	worldTransform_[2].translation = { 0.0f,0.0f,17.0f };
+	worldTransform_[2].rotation.y = 3.2f;
+	worldTransform_[2].scale = { 2.0f,2.0f,1.8f };
 
 	worldTransform_[3].Initialize();
 	worldTransform_[3].translation = { -18.0f,-0.4f,70.0f };
