@@ -553,7 +553,6 @@ void GamePlayScene::ImGui()
 
 	player_->ImGui("Player");
 	enemy_->ImGui("Enemy");
-	backGround_->ImGui();
 
 	camera_.ImGui();
 }
