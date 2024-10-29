@@ -1,4 +1,5 @@
 # NewEngine
+- 開発言語 C/C++/hlsl
 
 ## エンジンの機能
 
