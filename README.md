@@ -1,10 +1,10 @@
 # NewEngine
 DirectX12を用いて自作エンジンを開発しており、そのエンジンを使って個人の就職作品も制作しています。
 - 主なエンジン機能
-　- 基本的なSprite描画、Model描画
+   - 基本的なSprite描画、Model描画
   
 - 開発言語
-　- C/C++/HLSL/Python
+　 - C/C++/HLSL/Python
 
 # 現在制作しているゲームの概要
 
