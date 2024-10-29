@@ -6,6 +6,8 @@
 - 制作人数：1人
 - 開発環境：DirectX12
 
+- ![スクリーンショット 2024-10-30 030752](https://github.com/user-attachments/assets/fbb43040-2da2-4ae2-aba8-734f7d479fdf)
+
 ## 特にこだわっているところ
 
 
