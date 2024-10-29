@@ -4,7 +4,7 @@ DirectX12を用いて自作エンジンを開発しており、そのエンジ�
    - 基本的なSprite描画、Model描画
   
 - 開発言語
-　 - C/C++/HLSL/Python
+   - C/C++/HLSL/Python
 
 # 現在制作しているゲームの概要
 
