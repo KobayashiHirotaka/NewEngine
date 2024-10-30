@@ -35,7 +35,7 @@
 - ダメージ
 - ゲージ増加量
   
-![スクリーンショット 2024-10-30 030752](https://github.com/user-attachments/assets/6834cdb5-de2f-4e68-ba17-78f5120e59b8)
+![スクリーンショット 2024-10-30 211155](https://github.com/user-attachments/assets/a82934e8-2487-459a-a19a-b1f45971bedc)
 
 ## 今後の展望
 - 攻撃時やコンボ時に背景を変化させる(背景オブジェクトが壊れるなど)
