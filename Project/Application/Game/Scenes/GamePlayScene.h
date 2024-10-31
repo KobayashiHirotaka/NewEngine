@@ -195,4 +195,8 @@ private:
 	bool isDebug_ = false;
 
 	bool isKO_ = false;
+
+	//スティック操作対応
+	const float value_ = 0.7f;
+	int stickInputCooldown_ = 10;
 };

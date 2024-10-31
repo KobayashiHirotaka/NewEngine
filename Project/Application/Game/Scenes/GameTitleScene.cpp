@@ -150,21 +150,29 @@ void GameTitleScene::Update()
 
 		if (isOpen_)
 		{
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT))
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) || (input_->GetLeftStickX() > value_ && stickInputCooldown_ <= 0))
 			{
-				if (spriteCount_ < 3) 
+				if (spriteCount_ < 3)
 				{
 					spriteCount_++;
 					audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+					stickInputCooldown_ = 10;
 				}
 			}
-			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT))
+			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) || (input_->GetLeftStickX() < -value_ && stickInputCooldown_ <= 0))
 			{
-				if (spriteCount_ > 1) 
+				if (spriteCount_ > 1)
 				{
 					spriteCount_--;
 					audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+					stickInputCooldown_ = 10;
 				}
+			}
+
+			//クールダウンを減らす
+			if (stickInputCooldown_ > 0)
+			{
+				stickInputCooldown_--;
 			}
 		}
 	}
