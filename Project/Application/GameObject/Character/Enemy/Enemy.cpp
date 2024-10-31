@@ -1332,11 +1332,6 @@ void Enemy::DownAnimation()
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		if(timerData_.downAnimationTimer < 50 && hp_ <= 0)
-		{
-			isKO_ = true;
-		}
-
 		//修正中
 		if (timerData_.downAnimationTimer > 58)
 		{
@@ -1420,11 +1415,6 @@ void Enemy::DownAnimation()
 			}
 		}
 
-		if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
-		{
-			isKO_ = true;
-		}
-
 		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
 			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
 
@@ -1453,11 +1443,6 @@ void Enemy::DownAnimation()
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
-		{
-			isKO_ = true;
-		}
-
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
@@ -1484,11 +1469,6 @@ void Enemy::DownAnimation()
 		{
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
 						worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
-		}
-
-		if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
-		{
-			isKO_ = true;
 		}
 
 		if (timerData_.downAnimationTimer > 35 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
@@ -1522,11 +1502,6 @@ void Enemy::DownAnimation()
 
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
-		}
-
-		if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
-		{
-			isKO_ = true;
 		}
 
 		////修正中
@@ -1624,11 +1599,6 @@ void Enemy::DownAnimation()
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
-		if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
-		{
-			isKO_ = true;
-		}
-
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 40.0f, animationIndex_, model_);
 
@@ -1651,11 +1621,6 @@ void Enemy::DownAnimation()
 
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
-		}
-
-		if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
-		{
-			isKO_ = true;
 		}
 
 		animationIndex_ = 4;
@@ -1715,6 +1680,11 @@ void Enemy::DownAnimation()
 			isKO_ = false;
 			DownAnimationEnd(5, characterState_.isHitFinisherSecondAttack);
 		}
+	}
+
+	if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
+	{
+		isKO_ = true;
 	}
 }
 

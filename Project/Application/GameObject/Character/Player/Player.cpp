@@ -1008,26 +1008,6 @@ void Player::BehaviorJumpUpdate()
 			ResetCollision();
 		}
 
-
-		//キャンセルの処理(弱パンチ)
-		if (input_->GetJoystickState())
-		{
-			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 10 && attackData_.attackAnimationFrame < 20
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& characterState_.isHitCharacter)
-			{
-				characterState_.behaviorRequest = Behavior::kAttack;
-				attackType = "LightPunch";
-				attackData_.isAttack = false;
-				attackData_.isJumpAttack = false;
-				attackData_.isLightPunch = true;
-				animationTime_ = 0.0f;
-				attackData_.attackAnimationFrame = 0;
-				model_->SetAnimationTime(animationTime_);
-				ResetCollision();
-			}
-		}
-
 		attackData_.attackAnimationFrame++;
 	}
 	else
@@ -1720,6 +1700,8 @@ void Player::Reset()
 	isCancel_ = false;
 
 	worldTransform_.UpdateMatrixEuler();
+
+	isKO_ = false;
 }
 
 void Player::HitStop(int milliseconds)
@@ -1763,6 +1745,7 @@ void Player::DownAnimation()
 		if (!enemy_->GetIsLightPunch() && hp_ < 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitLightPunch);
+			isKO_ = false;
 		}
 	}
 
@@ -1786,6 +1769,7 @@ void Player::DownAnimation()
 		if (!enemy_->GetIsTCMiddlePunch() && hp_ < 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitTCMiddlePunch);
+			isKO_ = false;
 		}
 	}
 
@@ -1822,6 +1806,7 @@ void Player::DownAnimation()
 		{
 			DownAnimationEnd(5, characterState_.isHitTCHighPunch);
 			ResetCollision();
+			isKO_ = false;
 		}
 	}
 
@@ -1869,6 +1854,7 @@ void Player::DownAnimation()
 		{
 			DownAnimationEnd(5, characterState_.isHitHighPunch);
 			ResetCollision();
+			isKO_ = false;
 		}
 	}
 
@@ -1920,6 +1906,7 @@ void Player::DownAnimation()
 		{
 			DownAnimationEnd(4, characterState_.isHitTackle);
 			isCancel_ = false;
+			isKO_ = false;
 			ResetCollision();
 		}
 	}
@@ -1949,6 +1936,7 @@ void Player::DownAnimation()
 			ResetCollision();
 
 			isParticle_ = false;
+			isKO_ = false;
 		}
 	}
 	else if (characterState_.isHitAirBullet)
@@ -1994,7 +1982,13 @@ void Player::DownAnimation()
 			ResetCollision();
 
 			isParticle_ = false;
+			isKO_ = false;
 		}
+	}
+
+	if (timerData_.downAnimationTimer < 50 && hp_ >= 0)
+	{
+		isKO_ = true;
 	}
 }
 

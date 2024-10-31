@@ -97,8 +97,6 @@ public:
 
 	const std::vector<EnemyBullet*>& GetBullets() const{ return bullets_; };
 
-	bool GetIsKO() { return isKO_; };
-
 	//Setter
 	void SetPlayer(Player* player) { player_ = player; };
 
@@ -180,8 +178,6 @@ private:
 	uint32_t guardSoundHandle_ = 0u;
 
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
-
-	bool isKO_ = false;
 
 	bool isGuardMode_ = false;
 	int guardTimer_ = 4;

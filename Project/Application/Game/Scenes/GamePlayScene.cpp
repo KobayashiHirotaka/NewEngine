@@ -182,7 +182,22 @@ void GamePlayScene::Update()
 			}
 		}
 
-		if (enemy_->GetIsKO() && migrationTimer > 20)
+		if (player_->GetIsKO() && migrationTimer > 20)
+		{
+			isKO_ = true;
+
+			if (player_->GetIsDirectionRight())
+			{
+				camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x - 2.0f,
+				player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 5.5f }, 0.1f);
+			}
+			else
+			{
+				camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x + 2.0f,
+				player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 5.5f }, 0.1f);
+			}
+		}
+		else if (enemy_->GetIsKO() && migrationTimer > 20)
 		{
 			isKO_ = true;
 
@@ -406,16 +421,12 @@ void GamePlayScene::Draw()
 
 	Line::PreDraw();
 
-	player_->CollisionDraw(camera_);
-
-	enemy_->CollisionDraw(camera_);
-
-	/*if (isDebug_)
+	if (isDebug_)
 	{
 		player_->CollisionDraw(camera_);
 
 		enemy_->CollisionDraw(camera_);
-	}*/
+	}
 
 	Line::PostDraw();
 
