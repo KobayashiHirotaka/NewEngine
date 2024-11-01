@@ -566,7 +566,7 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::ImGui()
 {
-	ImGui::Begin("PlayScene");
+	/*ImGui::Begin("PlayScene");
 	ImGui::Text("roundTransitionTimer %d", roundTransitionTimer_);
 	ImGui::Checkbox("isDebug_", &isDebug_);
 	ImGui::End();
@@ -574,7 +574,7 @@ void GamePlayScene::ImGui()
 	player_->ImGui("Player");
 	enemy_->ImGui("Enemy");
 
-	camera_.ImGui();
+	camera_.ImGui();*/
 }
 
 void GamePlayScene::UpdateNumberSprite()

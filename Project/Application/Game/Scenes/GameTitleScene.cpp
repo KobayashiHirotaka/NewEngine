@@ -277,7 +277,7 @@ void GameTitleScene::ImGui()
 	ImGui::Begin("TitleScene");
 	ImGui::End();
 
-	skydome_->ImGui();
+	//skydome_->ImGui();
 }
 
 void GameTitleScene::AnimationTitle()
