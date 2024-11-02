@@ -194,7 +194,7 @@ private:
 	WorldTransform skyboxWorldTransform_;
 
 	bool isRoundTransition_ = false;
-	int roundTransitionTimer_ = 100;
+	int roundTransitionTimer_ = 150;
 
 	bool isDebug_ = false;
 

@@ -106,6 +106,7 @@ void Player::Initialize()
 
 void Player::Update()
 {
+
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット

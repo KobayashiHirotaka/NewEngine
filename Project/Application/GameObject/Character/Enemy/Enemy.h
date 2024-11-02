@@ -100,6 +100,8 @@ public:
 	//Setter
 	void SetPlayer(Player* player) { player_ = player; };
 
+	void SetIsKO(bool isKO) { isKO_ = isKO; };
+
 private:
 	void HitStop(int milliseconds);
 

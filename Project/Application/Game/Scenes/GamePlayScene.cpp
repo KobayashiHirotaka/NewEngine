@@ -220,6 +220,8 @@ void GamePlayScene::Update()
 		{
 			isKO_ = false;
 
+			enemy_->SetIsKO(false);
+
 			Vector3 translation_ = { 0.0f,1.0f,-13.0f };
 			camera_.translation_ = Lerp(camera_.translation_, translation_, 0.005f);
 		}
@@ -616,7 +618,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
 		{
 			PlayerWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -627,7 +629,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -637,7 +639,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
 		{
 			PlayerWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -648,7 +650,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = true;
 
-		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
+		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
 		{
 			PlayerWinCount_ = 2;
 		}
@@ -710,7 +712,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
 		{
 			EnemyWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -722,7 +724,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
 		{
 			EnemyWinCount_ = 2;
 		}
@@ -733,7 +735,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
 		{
 			EnemyWinCount_ = 1;
 			isRoundTransition_ = true;
@@ -745,7 +747,7 @@ void GamePlayScene::HandleGameOutcome()
 		migrationTimer--;
 		isPlayerWin_ = false;
 
-		if (migrationTimer < testKoActiveTime_)
+		if (migrationTimer < testKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
 		{
 			EnemyWinCount_ = 2;
 		}
@@ -1017,7 +1019,7 @@ void GamePlayScene::RoundTransition(int round)
 			transitionColor_.w = Lerp(transitionColor_.w, 1.0f, 0.1f);
 			transitionSprite_->SetColor(transitionColor_);
 		}
-		else if (roundTransitionTimer_ <= 75 && roundTransitionTimer_ > 0)
+		else if (roundTransitionTimer_ <= 65 && roundTransitionTimer_ > 0)
 		{
 			transitionColor_.w = Lerp(transitionColor_.w, 0.0f, 0.1f);
 			transitionSprite_->SetColor(transitionColor_);
