@@ -36,6 +36,10 @@ void GamePlayScene::Initialize()
 	levelLoarder_ = LevelLoader::GetInstance();
 	levelLoarder_->LoadLevel("LevelData");
 
+	//InputLogのinstance
+	inputLog_ = std::make_unique<InputLog>();
+	inputLog_->Initialize();
+
 	//Playerの生成、初期化
 	player_ = game3dObjectManager_->GetGameObject<Player>("Player");
 
@@ -354,6 +358,9 @@ void GamePlayScene::Update()
 
 	collisionManager_->CheckAllCollision();
 
+	//InputLogの更新
+	inputLog_->Update();
+
 	//Camera、DebugCameraの処理
 	debugCamera_.Update();
 
@@ -553,6 +560,8 @@ void GamePlayScene::Draw()
 	PostProcess::GetInstance()->PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
+
+	inputLog_->Draw();
 
 	transitionSprite_->Draw();
 

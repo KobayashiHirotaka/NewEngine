@@ -2,6 +2,7 @@
 #include "IScene.h"
 #include "Engine/3D/Skybox/Skybox.h"
 #include "Engine/3D/Line/Line.h"
+#include "Application/Game/InputLog/InputLog.h"
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Character/Enemy/EnemyBullet.h"
@@ -64,6 +65,9 @@ private:
 
 	//CollisionManager
 	std::unique_ptr<CollisionManager> collisionManager_;
+
+	//InputLog
+	std::unique_ptr<InputLog> inputLog_;
 
 	//Camera
 	Camera camera_;

@@ -259,6 +259,12 @@
     <Filter Include="ヘッダー ファイル\Engine\3d\Line">
       <UniqueIdentifier>{7428a170-ba2e-4067-b889-ef5a24d7df29}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Project\Game\InputLog">
+      <UniqueIdentifier>{20d88a06-4091-4170-9d32-0e5e649b3eb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\Game\InputLog">
+      <UniqueIdentifier>{718d56d9-bd9c-4711-b319-7370a69a3a7d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -446,6 +452,9 @@
     </ClCompile>
     <ClCompile Include="Engine\3D\Line\LineBox.cpp">
       <Filter>ソース ファイル\Engine\3d\Line</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\InputLog\InputLog.cpp">
+      <Filter>ソース ファイル\Project\Game\InputLog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -691,6 +700,9 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\Line\LineBox.h">
       <Filter>ヘッダー ファイル\Engine\3d\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\InputLog\InputLog.h">
+      <Filter>ヘッダー ファイル\Project\Game\InputLog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
