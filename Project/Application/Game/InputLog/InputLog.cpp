@@ -15,6 +15,7 @@ void InputLog::Initialize()
 	stickTextureHandle_[5] = TextureManager::LoadTexture("resource/images/arrow_7.png");
 	stickTextureHandle_[6] = TextureManager::LoadTexture("resource/images/arrow_8.png");
 	stickTextureHandle_[7] = TextureManager::LoadTexture("resource/images/arrow_9.png");
+    stickTextureHandle_[8] = TextureManager::LoadTexture("resource/images/N.png");
 
 	//ボタン
 	buttonTextureHandle_[0] = TextureManager::LoadTexture("resource/images/A.png");
@@ -89,6 +90,10 @@ void InputLog::Update()
     { 
         stickInput = 1; 
     } 
+    else
+    {
+        stickInput = 8;
+    }
 
     //ボタン入力の検出
     //Aボタン
@@ -111,13 +116,6 @@ void InputLog::Update()
     { 
         buttonInput = 3;
     }
-    else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_RIGHT_SHOULDER))
-    {
-        buttonInput = 4;
-    }
-
-    //RBボタンの状態
-    rbPressed = input_->IsPressButtonEnter(XINPUT_GAMEPAD_RIGHT_BUMPER);
 
     //入力が検出されたら履歴に追加
     if (stickInput != -1 || buttonInput != -1) 
@@ -192,16 +190,6 @@ void InputLog::Draw()
             float buttonPosX = (stick == -1) ? leftPositionX_ : rightPositionX_;
             buttonSprites_[index]->SetPosition({ buttonPosX, drawPosY });
             buttonSprites_[index]->SetTexture(buttonTextureHandle_[button]);
-            buttonSprites_[index]->Draw();
-        }
-
-        //RBボタンの描画
-        if (button == 4) 
-        { 
-            //ボタンの右側に表示
-            float rbButtonPosX = rightPositionX_ + 70.0f; 
-            buttonSprites_[index]->SetPosition({ rbButtonPosX, drawPosY });
-            buttonSprites_[index]->SetTexture(buttonTextureHandle_[4]); 
             buttonSprites_[index]->Draw();
         }
     }

@@ -18,7 +18,7 @@ private:
 
 	//スティック入力のSprite
 	std::vector<std::unique_ptr<Sprite>> stickSprites_;
-	uint32_t stickTextureHandle_[8];
+	uint32_t stickTextureHandle_[9];
 
 	//ボタン入力のSprite
 	std::vector<std::unique_ptr<Sprite>> buttonSprites_;
