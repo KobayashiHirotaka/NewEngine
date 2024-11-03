@@ -439,7 +439,7 @@ void GamePlayScene::Draw()
 
 	Line::PreDraw();
 
-	if (isDebug_)
+	if (isDebug_ && !isOpen_)
 	{
 		player_->CollisionDraw(camera_);
 
@@ -563,7 +563,10 @@ void GamePlayScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	inputLog_->Draw();
+	if (!isOpen_)
+	{
+		inputLog_->Draw();
+	}
 
 	transitionSprite_->Draw();
 
