@@ -563,7 +563,7 @@ void GamePlayScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	if (!isOpen_)
+	if (!isOpen_ && isDebug_)
 	{
 		inputLog_->Draw();
 	}
