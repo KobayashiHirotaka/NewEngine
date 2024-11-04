@@ -106,6 +106,7 @@ void Player::Initialize()
 
 void Player::Update()
 {
+
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
@@ -152,6 +153,24 @@ void Player::Update()
 		worldTransform_.rotation.y = characterState_.leftDirectionRotation;
 		isDirectionRight_ = false;
 	}
+
+	//敵の位置を取得する
+	Vector3 enemyPosition = enemy_->GetWorldPosition();
+
+	//着地時の押し出し処理
+	//if (worldTransform_.translation.y > 0.0f)
+	//{
+	//	if (characterState_.direction == Direction::Right && enemyPosition.x <= worldTransform_.translation.x + 0.3f)
+	//	{
+	//		//敵を右方向に押す
+	//		PushEnemy(enemyPosition, 0.1f);
+	//	}
+	//	else if (characterState_.direction == Direction::Left && enemyPosition.x >= worldTransform_.translation.x - 0.3f)
+	//	{
+	//		//敵を左方向に押す
+	//		PushEnemy(enemyPosition, -0.1f);
+	//	}
+	//}
 
 	HitCombo();
 
@@ -247,9 +266,9 @@ void Player::ImGui(const char* title)
 	model_->GetPointLight()->ImGui("PointLight");
 	model_->GetSpotLight()->ImGui("SpotLight");
 
-	ImGui::SliderFloat3("WTFT", &worldTransformCursol_.translation.x, -100.0f, 100.0f);
+	/*ImGui::SliderFloat3("WTFT", &worldTransformCursol_.translation.x, -100.0f, 100.0f);
 	ImGui::SliderFloat3("WTFR", &worldTransformCursol_.rotation.x, 0.0f, 16.0f);
-	ImGui::SliderFloat3("WTFS", &worldTransformCursol_.scale.x, 0.0f, 16.0f);
+	ImGui::SliderFloat3("WTFS", &worldTransformCursol_.scale.x, 0.0f, 16.0f);*/
 	ImGui::End();
 }
 
@@ -263,7 +282,7 @@ void Player::BehaviorRootUpdate()
 	//コントローラーの取得
 	if (input_->GetJoystickState())
 	{
-		if (!characterState_.isDown && comboCount_ <= 1)
+		if (!characterState_.isDown && comboCount_ == 0)
 		{
 			//移動
 			Move();
@@ -346,12 +365,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
+			aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+			aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -397,12 +416,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
+			aabb_ = { {0.0f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+			aabb_ = { {-0.6f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -450,12 +469,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
+			aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+			aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -534,12 +553,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
+			aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+			aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -567,7 +586,7 @@ void Player::BehaviorAttackUpdate()
 		
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
+			aabb_ = { {-0.1f,0.0f,-0.3f},{0.75f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -577,7 +596,7 @@ void Player::BehaviorAttackUpdate()
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+			aabb_ = { {-0.75f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -633,13 +652,13 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
-			SetAABB(aabb_);
-
 			EvaluateAttackTiming();
 
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 			{
+				aabb_ = { {-0.1f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
+				SetAABB(aabb_);
+
 				worldTransform_.translation.x += 0.15f;
 			}
 
@@ -651,16 +670,21 @@ void Player::BehaviorAttackUpdate()
 				particleEffectPlayer_->PlayParticle("PlayerRightNackle", { worldTransform_.translation.x + particlePositionX,
 					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
 			}
+			else
+			{
+				aabb_ = { {-0.1f,0.0f,-0.3f},{0.2f,1.0f,0.3f} };
+				SetAABB(aabb_);
+			}
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
-			SetAABB(aabb_);
-
 			EvaluateAttackTiming();
 
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 			{
+				aabb_ = { {-0.6f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
+				SetAABB(aabb_);
+
 				worldTransform_.translation.x -= 0.15f;
 			}
 
@@ -672,6 +696,11 @@ void Player::BehaviorAttackUpdate()
 
 				particleEffectPlayer_->PlayParticle("PlayerLeftNackle", { worldTransform_.translation.x - particlePositionX,
 					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
+			}
+			else
+			{
+				aabb_ = { {-0.2f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
+				SetAABB(aabb_);
 			}
 		}
 
@@ -698,14 +727,14 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
+			aabb_ = { {0.0f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+			aabb_ = { {-0.6f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
@@ -784,12 +813,12 @@ void Player::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,0.0f,-0.3f},{0.4f,1.0f,0.3f} };
+				aabb_ = { {0.0f,0.0f,-0.3f},{0.4f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.4f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+				aabb_ = { {-0.4f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 
@@ -835,7 +864,7 @@ void Player::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
+				aabb_ = { {0.0f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (!characterState_.isHitCharacter)
@@ -845,7 +874,7 @@ void Player::BehaviorAttackUpdate()
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+				aabb_ = { {-0.6f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (!characterState_.isHitCharacter)
@@ -980,26 +1009,6 @@ void Player::BehaviorJumpUpdate()
 			ResetCollision();
 		}
 
-
-		//キャンセルの処理(弱パンチ)
-		if (input_->GetJoystickState())
-		{
-			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 10 && attackData_.attackAnimationFrame < 20
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& characterState_.isHitCharacter)
-			{
-				characterState_.behaviorRequest = Behavior::kAttack;
-				attackType = "LightPunch";
-				attackData_.isAttack = false;
-				attackData_.isJumpAttack = false;
-				attackData_.isLightPunch = true;
-				animationTime_ = 0.0f;
-				attackData_.attackAnimationFrame = 0;
-				model_->SetAnimationTime(animationTime_);
-				ResetCollision();
-			}
-		}
-
 		attackData_.attackAnimationFrame++;
 	}
 	else
@@ -1078,8 +1087,17 @@ void Player::OnCollision(Collider* collider)
 
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			ApplyDamage();
-			characterState_.isHitBullet = true;
-			attackData_.isFinisher = false;
+
+			if (hp_ < 0)
+			{
+				characterState_.isHitBullet = true;
+				attackData_.isFinisher = false;
+			}
+			else
+			{
+				characterState_.isHitTCHighPunch = true;
+				attackData_.isFinisher = false;
+			}
 
 			AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
@@ -1093,6 +1111,7 @@ void Player::OnCollision(Collider* collider)
 
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			ApplyDamage();
+
 			characterState_.isHitAirBullet = true;
 
 			AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
@@ -1234,7 +1253,15 @@ void Player::OnCollision(Collider* collider)
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 				ApplyDamage();
-				characterState_.isHitLightPunch = true;
+
+				if (hp_ < 0)
+				{
+					characterState_.isHitLightPunch = true;
+				}
+				else
+				{
+					characterState_.isHitTCHighPunch = true;
+				}
 
 				AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
@@ -1258,7 +1285,15 @@ void Player::OnCollision(Collider* collider)
 			{
 				audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 				ApplyDamage();
-				characterState_.isHitTCMiddlePunch = true;
+
+				if (hp_ < 0)
+				{
+					characterState_.isHitTCMiddlePunch = true;
+				}
+				else
+				{
+					characterState_.isHitTCHighPunch = true;
+				}
 
 				AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
@@ -1322,17 +1357,18 @@ void Player::Move()
 
 		moveData_.velocity.x = (float)input_->GetLeftStickX();
 
-		//敵の位置を取得する（例: enemyPosition という変数）
+		//敵の位置を取得する
 		Vector3 enemyPosition = enemy_->GetWorldPosition();
+
 
 		if (characterState_.isHitCharacter)
 		{
-			if (characterState_.direction == Direction::Right && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > value_))
+			if (characterState_.direction == Direction::Right && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > value_))
 			{
 				//敵を右方向に押す
 				PushEnemy(enemyPosition, 0.05f);
 			}
-			else if (characterState_.direction == Direction::Left && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() > value_))
+			else if (characterState_.direction == Direction::Left && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -value_))
 			{
 				//敵を左方向に押す
 				PushEnemy(enemyPosition, -0.05f);
@@ -1665,6 +1701,8 @@ void Player::Reset()
 	isCancel_ = false;
 
 	worldTransform_.UpdateMatrixEuler();
+
+	isKO_ = false;
 }
 
 void Player::HitStop(int milliseconds)
@@ -1688,6 +1726,19 @@ void Player::DownAnimation()
 				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
 		}
 
+		//修正中
+		if (timerData_.downAnimationTimer > 58)
+		{
+			if (characterState_.direction == Direction::Right)
+			{
+				worldTransform_.translation.x -= 0.05f;
+			}
+			else if (characterState_.direction == Direction::Left)
+			{
+				worldTransform_.translation.x += 0.05f;
+			}
+		}
+
 		animationIndex_ = 4;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
@@ -1695,6 +1746,7 @@ void Player::DownAnimation()
 		if (!enemy_->GetIsLightPunch() && hp_ < 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitLightPunch);
+			isKO_ = false;
 		}
 	}
 
@@ -1718,6 +1770,44 @@ void Player::DownAnimation()
 		if (!enemy_->GetIsTCMiddlePunch() && hp_ < 0)
 		{
 			DownAnimationEnd(5, characterState_.isHitTCMiddlePunch);
+			isKO_ = false;
+		}
+	}
+
+	//TC強攻撃
+	if (characterState_.isHitTCHighPunch)
+	{
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
+		float moveX = (characterState_.direction == Direction::Right) ? -0.02f : 0.02f;
+
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
+			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
+
+		if (timerData_.downAnimationTimer > 55)
+		{
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
+						worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
+		}
+
+		if (timerData_.downAnimationTimer > 35 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
+			(characterState_.direction == Direction::Right && worldTransform_.translation.x > leftEdge_)))
+		{
+			worldTransform_.translation.x += moveX;
+		}
+
+		animationIndex_ = 7;
+		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
+
+		SetAABB(aabb_);
+
+		if (!enemy_->GetIsTCHighPunch() && hp_ < 0)
+		{
+			DownAnimationEnd(5, characterState_.isHitTCHighPunch);
+			ResetCollision();
+			isKO_ = false;
 		}
 	}
 
@@ -1755,8 +1845,8 @@ void Player::DownAnimation()
 			}
 		}
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.8f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
-			AABB{ {0.0f, 0.0f, -0.3f}, {0.8f, 0.2f, 0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
+			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
 
 		animationIndex_ = 7;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
@@ -1765,6 +1855,7 @@ void Player::DownAnimation()
 		{
 			DownAnimationEnd(5, characterState_.isHitHighPunch);
 			ResetCollision();
+			isKO_ = false;
 		}
 	}
 
@@ -1777,8 +1868,8 @@ void Player::DownAnimation()
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
 		float moveX = (characterState_.direction == Direction::Right) ? -0.08f : 0.08f;
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-0.9f, 0.0f, -0.3f}, {0.0f, 0.2f, 0.3f} } :
-			AABB{ {0.0f, 0.0f, -0.3f}, {0.9f, 0.2f, 0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
+			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
 
 		if (timerData_.downAnimationTimer > 55)
 		{
@@ -1816,6 +1907,7 @@ void Player::DownAnimation()
 		{
 			DownAnimationEnd(4, characterState_.isHitTackle);
 			isCancel_ = false;
+			isKO_ = false;
 			ResetCollision();
 		}
 	}
@@ -1845,6 +1937,7 @@ void Player::DownAnimation()
 			ResetCollision();
 
 			isParticle_ = false;
+			isKO_ = false;
 		}
 	}
 	else if (characterState_.isHitAirBullet)
@@ -1879,7 +1972,9 @@ void Player::DownAnimation()
 		animationIndex_ = 7;
 		UpdateAnimationTime(animationTime_, false, 30.0f, animationIndex_, model_);
 
-		aabb_ = { {-0.8f,-0.3f,-0.3f},{-0.1f,0.0f,0.3f} };
+		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
+			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
+
 		SetAABB(aabb_);
 
 		if (timerData_.downAnimationTimer < 30 && hp_ < 0)
@@ -1888,7 +1983,13 @@ void Player::DownAnimation()
 			ResetCollision();
 
 			isParticle_ = false;
+			isKO_ = false;
 		}
+	}
+
+	if (timerData_.downAnimationTimer < 50 && hp_ >= 0)
+	{
+		isKO_ = true;
 	}
 }
 
@@ -1940,7 +2041,7 @@ void Player::HitCombo()
 	{
 		firstAttack_ = "LightPunch";
 		comboCount_ = 1;
-		timerData_.comboTimer = 60;
+		timerData_.comboTimer = 80;
 		timerData_.comboTimer--;
 	}
 

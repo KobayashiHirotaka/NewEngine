@@ -15,16 +15,20 @@ public:
 
 	void ImGui();
 
+	void SetStateNum(int stateNum) { stateNum_ = stateNum; };
+
 private:
 	Input* input_ = nullptr;
 
-	std::unique_ptr<Model> model_[8];
+	std::unique_ptr<Model> model_[9];
 
-	WorldTransform worldTransform_[8];
+	WorldTransform worldTransform_[9];
 
 	//スケールアニメーション用の変数
 	float scaleAnimationTime_ = 0.0f;
 	const float scaleSpeed_ = 2.0f; 
 	const float minScale_ = 0.7f;
 	const float maxScale_ = 1.2f;
+
+	int stateNum_ = 0;
 };

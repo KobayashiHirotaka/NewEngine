@@ -2,6 +2,7 @@
 #include "IScene.h"
 #include "Engine/3D/Skybox/Skybox.h"
 #include "Engine/3D/Line/Line.h"
+#include "Application/Game/InputLog/InputLog.h"
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Character/Enemy/EnemyBullet.h"
@@ -65,6 +66,9 @@ private:
 	//CollisionManager
 	std::unique_ptr<CollisionManager> collisionManager_;
 
+	//InputLog
+	std::unique_ptr<InputLog> inputLog_;
+
 	//Camera
 	Camera camera_;
 	DebugCamera debugCamera_;
@@ -86,6 +90,10 @@ private:
 	//試合開始時用のSprite(Fightの文字)
 	std::unique_ptr<Sprite>fightSprite_ = nullptr;
 	uint32_t fightTextureHandle_;
+
+	//KO表示用Sprite
+	std::unique_ptr<Sprite>koSprite_ = nullptr;
+	uint32_t koTextureHandle_;
 
 	//勝敗に関するSprite
 	std::unique_ptr<Sprite>winSprite_ = nullptr;
@@ -126,7 +134,7 @@ private:
 	//時間
 	int currentSeconds_;
 
-	float frameTime = 1.0f / 60.0f;  
+	float frameTime = 1.0f / 60.0f;
 	float elapsedTime = 0.0f;
 
 	const int maxRoundStartTime_ = 100;
@@ -135,6 +143,7 @@ private:
 	const int maxMigrationTime_ = 200;
 
 	const int outComeTime_ = 150;
+	const int testKoActiveTime_ = 0;
 
 	//Sounds
 	uint32_t selectSoundHandle_ = 0u;
@@ -152,7 +161,7 @@ private:
 	float transitionTimer_ = 0;
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
-	
+
 	//モデルの骨を描画するかどうか
 	bool isBoneDraw_ = true;
 
@@ -188,4 +197,10 @@ private:
 	int roundTransitionTimer_ = 150;
 
 	bool isDebug_ = false;
+
+	bool isKO_ = false;
+
+	//スティック操作対応
+	const float value_ = 0.7f;
+	int stickInputCooldown_ = 10;
 };

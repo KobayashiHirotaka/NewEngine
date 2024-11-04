@@ -325,6 +325,8 @@ public:
 
 	int GetComboCount() { return comboCount_; };
 
+	bool GetIsKO() { return isKO_; };
+
 	//Setter
 	void SetIsReset(bool isReset) { isReset_ = isReset; };
 
@@ -388,4 +390,7 @@ protected:
 
 	//エディター用
 	std::string attackType;
+
+	//KOしているかどうか
+	bool isKO_ = false;
 };

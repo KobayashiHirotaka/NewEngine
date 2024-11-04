@@ -100,6 +100,8 @@ public:
 	//Setter
 	void SetPlayer(Player* player) { player_ = player; };
 
+	void SetIsKO(bool isKO) { isKO_ = isKO; };
+
 private:
 	void HitStop(int milliseconds);
 
@@ -116,6 +118,8 @@ private:
 
 	int RandomAttackOrMove();
 
+	int RandomBulletOrMove();
+	
 private:
 	Input* input_ = nullptr;
 
@@ -176,5 +180,8 @@ private:
 	uint32_t guardSoundHandle_ = 0u;
 
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
+
+	bool isGuardMode_ = false;
+	int guardTimer_ = 4;
 };
 

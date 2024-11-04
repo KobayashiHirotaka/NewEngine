@@ -9,15 +9,15 @@ void GameManager::Initialize()
 	sceneManager_->ChangeScene("GameTitleScene");
 }
 
-void GameManager::Finalize()
-{
-	EngineCore::Finalize();
-}
+//void GameManager::Finalize()
+//{
+//	EngineCore::Finalize();
+//}
 
-void GameManager::Update()
-{
-	EngineCore::Update();
-}
+//void GameManager::Update()
+//{
+//	EngineCore::Update();
+//}
 
 void GameManager::Draw()
 {

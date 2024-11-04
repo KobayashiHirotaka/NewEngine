@@ -1,0 +1,170 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v3.3.32",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0,
+                2,
+                3,
+                4
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "name" : "tmpParent",
+            "translation" : [
+                1.5525529384613037,
+                0,
+                -2.6876718997955322
+            ]
+        },
+        {
+            "mesh" : 0,
+            "name" : "skyscraperB",
+            "translation" : [
+                -4.6918559074401855,
+                0,
+                -3.244745969772339
+            ]
+        },
+        {
+            "children" : [
+                1
+            ],
+            "name" : "tmpParent.001"
+        },
+        {
+            "name" : "tmpParent.003"
+        },
+        {
+            "name" : "tmpParent.005",
+            "translation" : [
+                0,
+                0,
+                -4.699211120605469
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "name" : "\u30de\u30c6\u30ea\u30a2\u30eb.008",
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 0
+                },
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.5
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Mesh skyscraperB",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2
+                    },
+                    "indices" : 3,
+                    "material" : 0
+                }
+            ]
+        }
+    ],
+    "textures" : [
+        {
+            "sampler" : 0,
+            "source" : 0
+        }
+    ],
+    "images" : [
+        {
+            "mimeType" : "image/png",
+            "name" : "wall",
+            "uri" : "wall.png"
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 1413,
+            "max" : [
+                0.6200000047683716,
+                4.480000019073486,
+                0.6200000047683716
+            ],
+            "min" : [
+                -0.6200000047683716,
+                -1.6362507342514723e-16,
+                -0.6200000047683716
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 1413,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 1413,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5123,
+            "count" : 2196,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 16956,
+            "byteOffset" : 0,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 16956,
+            "byteOffset" : 16956,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 11304,
+            "byteOffset" : 33912,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 4392,
+            "byteOffset" : 45216,
+            "target" : 34963
+        }
+    ],
+    "samplers" : [
+        {
+            "magFilter" : 9729,
+            "minFilter" : 9987
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 49608,
+            "uri" : "middleBill.bin"
+        }
+    ]
+}

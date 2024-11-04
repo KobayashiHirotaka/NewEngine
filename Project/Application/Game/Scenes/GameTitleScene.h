@@ -84,4 +84,8 @@ private:
 	//Skybox
 	std::unique_ptr<Skybox> skybox_;
 	WorldTransform skyboxWorldTransform_;
+
+	//スティック操作対応
+	const float value_ = 0.7f;
+	int stickInputCooldown_ = 10;
 };

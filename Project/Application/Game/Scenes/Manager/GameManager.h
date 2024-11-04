@@ -7,10 +7,10 @@ class GameManager : public EngineCore
 public:
 	void Initialize() override;
 
-	void Update()override;
+	//void Update()override;
 
 	void Draw()override;
 
-	void Finalize()override;
+	//void Finalize()override;
 };
 
