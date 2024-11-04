@@ -25,7 +25,7 @@ void InputLog::Initialize()
 	buttonTextureHandle_[4] = TextureManager::LoadTexture("resource/images/RB.png");
 	buttonTextureHandle_[5] = TextureManager::LoadTexture("resource/images/LB.png");
 
-	// スプライトの初期化
+	//スプライトの初期化
 	for (int i = 0; i < maxHistorySize_; i++) 
     {
 		stickSprites_.emplace_back(Sprite::Create(stickTextureHandle_[0], { leftPositionX_, basePositionY_ - i * verticalSpacing_ }));
@@ -170,17 +170,17 @@ void InputLog::Draw()
     size_t historySize = inputHistory_.size();
 
     //各入力履歴の描画
-    for (size_t index = 0; index < historySize && index < maxHistorySize_; ++index)
+    for (size_t i = 0; i < historySize && i < maxHistorySize_; i++)
     {
-        const auto& [stick, button] = inputHistory_[index];
-        float drawPosY = basePositionY_ + index * verticalSpacing_; 
+        const auto& [stick, button] = inputHistory_[i];
+        float drawPosY = basePositionY_ + i * verticalSpacing_;
 
         //スティック入力の描画
         if (stick != -1)
         {
-            stickSprites_[index]->SetPosition({ leftPositionX_, drawPosY });
-            stickSprites_[index]->SetTexture(stickTextureHandle_[stick]);
-            stickSprites_[index]->Draw();
+            stickSprites_[i]->SetPosition({ leftPositionX_, drawPosY });
+            stickSprites_[i]->SetTexture(stickTextureHandle_[stick]);
+            stickSprites_[i]->Draw();
         }
 
         //ボタン入力の描画
@@ -188,9 +188,9 @@ void InputLog::Draw()
         {
             //ボタンのみの入力があれば左側に表示
             float buttonPosX = (stick == -1) ? leftPositionX_ : rightPositionX_;
-            buttonSprites_[index]->SetPosition({ buttonPosX, drawPosY });
-            buttonSprites_[index]->SetTexture(buttonTextureHandle_[button]);
-            buttonSprites_[index]->Draw();
+            buttonSprites_[i]->SetPosition({ buttonPosX, drawPosY });
+            buttonSprites_[i]->SetTexture(buttonTextureHandle_[button]);
+            buttonSprites_[i]->Draw();
         }
     }
 }
