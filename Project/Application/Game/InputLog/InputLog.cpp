@@ -22,8 +22,8 @@ void InputLog::Initialize()
 	buttonTextureHandle_[1] = TextureManager::LoadTexture("resource/images/B.png");
 	buttonTextureHandle_[2] = TextureManager::LoadTexture("resource/images/X.png");
 	buttonTextureHandle_[3] = TextureManager::LoadTexture("resource/images/Y.png");
-	buttonTextureHandle_[4] = TextureManager::LoadTexture("resource/images/RB.png");
-	buttonTextureHandle_[5] = TextureManager::LoadTexture("resource/images/LB.png");
+	buttonTextureHandle_[4] = TextureManager::LoadTexture("resource/images/LB.png");
+	buttonTextureHandle_[5] = TextureManager::LoadTexture("resource/images/RB.png");
 
 	//スプライトの初期化
 	for (int i = 0; i < maxHistorySize_; i++) 
@@ -43,15 +43,15 @@ void InputLog::Update()
 
     // スティック入力の検出
     //左
-    if (input_->GetLeftStickX() < -value_) 
+    if (input_->GetLeftStickX() < -value_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
     { 
         //左下
-        if (input_->GetLeftStickY() < -value_)
+        if (input_->GetLeftStickY() < -value_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
         {
             stickInput = 0;
         }
         //左上
-        else if (input_->GetLeftStickY() > value_)
+        else if (input_->GetLeftStickY() > value_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
         {
             stickInput = 5;
         }
@@ -62,15 +62,15 @@ void InputLog::Update()
         }
     }  
     //右
-    else if (input_->GetLeftStickX() > value_)
+    else if (input_->GetLeftStickX() > value_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
     { 
-        //右上
-        if (input_->GetLeftStickY() < -value_)
+        //右下
+        if (input_->GetLeftStickY() < -value_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
         {
             stickInput = 2;
         }
-        //右下
-        else if (input_->GetLeftStickY() > value_)
+        //右上
+        else if (input_->GetLeftStickY() > value_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
         {
             stickInput = 7;
         }
@@ -81,12 +81,12 @@ void InputLog::Update()
         }
     }  
     //上
-    else if (input_->GetLeftStickY() > value_)
+    else if (input_->GetLeftStickY() > value_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
     { 
         stickInput = 6;
     }  
     //下
-    else if (input_->GetLeftStickY() < -value_) 
+    else if (input_->GetLeftStickY() < -value_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
     { 
         stickInput = 1; 
     } 
@@ -115,6 +115,11 @@ void InputLog::Update()
     else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)) 
     { 
         buttonInput = 3;
+    }
+    //LBボタン
+    else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER))
+    {
+        buttonInput = 4;
     }
 
     //入力が検出されたら履歴に追加
