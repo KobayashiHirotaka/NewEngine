@@ -4,7 +4,7 @@
 - 制作開始：2024年 1月～ (現在9ヶ月)
 - 制作時間：約370時間
 - 制作人数：1人
-- 開発環境：DirectX12
+- 開発環境：DirectX12、Windows SDK(10.0.22621.3233)
   
 ![スクリーンショット 2024-10-30 030752](https://github.com/user-attachments/assets/6834cdb5-de2f-4e68-ba17-78f5120e59b8)
 
