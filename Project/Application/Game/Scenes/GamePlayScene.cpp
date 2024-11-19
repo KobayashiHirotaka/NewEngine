@@ -368,6 +368,15 @@ void GamePlayScene::Update()
 
 #ifdef _DEBUG
 
+	if (input_->PressKey(DIK_A))
+	{
+		camera_.translation_.x -= 0.1f;
+	}
+	else if (input_->PressKey(DIK_D))
+	{
+		camera_.translation_.x += 0.1f;
+	}
+
 	if (input_->PushKey(DIK_K))
 	{
 		isDebugCamera_ = true;
@@ -401,14 +410,14 @@ void GamePlayScene::Draw()
 
 	Skybox::PreDraw();
 
-	//skybox_->Draw(skyboxWorldTransform_, camera_);
+	skybox_->Draw(skyboxWorldTransform_, camera_);
 
 	Skybox::PostDraw();
 
 	Model::PreDraw();
 
-	////Skydomeの描画
-	skydome_->Draw(camera_);
+	//Skydomeの描画
+	//skydome_->Draw(camera_);
 
 	if (!isOpen_)
 	{
@@ -563,7 +572,7 @@ void GamePlayScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	if (!isOpen_ && isDebug_)
+	if (!isOpen_)
 	{
 		inputLog_->Draw();
 	}

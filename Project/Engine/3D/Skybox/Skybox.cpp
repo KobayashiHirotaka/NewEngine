@@ -28,7 +28,7 @@ void Skybox::StaticInitialize()
 void Skybox::Initialize()
 {
 	//テクスチャの読み込み
-	textureHandle_ = textureManager_->LoadTexture("resource/images/skybox.dds");
+	textureHandle_ = textureManager_->LoadTexture("resource/images/mario.dds");
 
 	//頂点リソースの作成
 	CreateVertexResource();
