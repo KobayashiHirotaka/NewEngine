@@ -131,6 +131,13 @@ void GamePlayScene::Initialize()
 	testTextureHandle_ = TextureManager::LoadTexture("resource/images/mario.dds");
 	testSprite_.reset(Sprite::Create(testTextureHandle_, { 0.0f, 0.0f }));
 
+	//モデルの生成
+	testModel_.reset(Model::CreateFromOBJ("resource/models", "mario.obj"));
+
+	//testWorldTransformの初期化
+	testWorldTransform_.Initialize();
+	testWorldTransform_.scale = { 1.0f,1.0f,1.0f };
+
 	//トランジション
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
 	transitionSprite_->SetColor(transitionColor_);
@@ -351,6 +358,9 @@ void GamePlayScene::Update()
 		}
 	}
 
+	//testWorldTransformの更新
+	testWorldTransform_.UpdateMatrixEuler();
+
 	//当たり判定
 	collisionManager_->ClearColliders();
 	collisionManager_->AddCollider(player_);
@@ -425,6 +435,9 @@ void GamePlayScene::Draw()
 
 	if (!isOpen_)
 	{
+		//テストモデルの描画
+		testModel_->Draw(testWorldTransform_, camera_, 0);
+
 		//Game3dObjectManagerの描画
 		game3dObjectManager_->Draw(camera_);
 
@@ -547,8 +560,8 @@ void GamePlayScene::Draw()
 			roundGetSprite_[2]->Draw();
 		}
 
-		//TLテスト用
-		testSprite_->Draw();
+		////TLテスト用
+		//testSprite_->Draw();
 	}
 
 	/*if (isOpen_)

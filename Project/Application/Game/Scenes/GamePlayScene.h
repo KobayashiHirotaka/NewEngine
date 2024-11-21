@@ -207,4 +207,7 @@ private:
 	//TLテスト用
 	std::unique_ptr<Sprite>testSprite_ = nullptr;
 	uint32_t testTextureHandle_;
+
+	std::unique_ptr<Model> testModel_;
+	WorldTransform testWorldTransform_;
 };
