@@ -144,7 +144,22 @@ DirectX::ScratchImage TextureManager::OpenImage(const std::string& filePath)
 	}
 	assert(SUCCEEDED(hr));
 
-	return image;
+	//ミップマップの作成
+	DirectX::ScratchImage mipImages{};
+
+	if (DirectX::IsCompressed(image.GetMetadata().format))
+	{
+		mipImages = std::move(image);
+	}
+	else
+	{
+		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 4, mipImages);
+	}
+
+	assert(SUCCEEDED(hr));
+
+	//ミップマップ付きのデータを返す
+	return mipImages;
 }
 
 Microsoft::WRL::ComPtr<ID3D12Resource> TextureManager::CreateTextureResource(const DirectX::TexMetadata& metadata)
