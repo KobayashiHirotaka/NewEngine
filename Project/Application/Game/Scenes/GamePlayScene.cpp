@@ -127,6 +127,10 @@ void GamePlayScene::Initialize()
 	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, { 590.0f, 0.0f }));
 	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, { 630.0f, 0.0f }));
 
+	//テスト
+	testTextureHandle_ = TextureManager::LoadTexture("resource/images/mario.dds");
+	testSprite_.reset(Sprite::Create(testTextureHandle_, { 0.0f, 0.0f }));
+
 	//トランジション
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
 	transitionSprite_->SetColor(transitionColor_);
@@ -543,6 +547,8 @@ void GamePlayScene::Draw()
 			roundGetSprite_[2]->Draw();
 		}
 
+		//TLテスト用
+		testSprite_->Draw();
 	}
 
 	/*if (isOpen_)

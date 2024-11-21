@@ -203,4 +203,8 @@ private:
 	//スティック操作対応
 	const float value_ = 0.7f;
 	int stickInputCooldown_ = 10;
+
+	//TLテスト用
+	std::unique_ptr<Sprite>testSprite_ = nullptr;
+	uint32_t testTextureHandle_;
 };
