@@ -135,11 +135,11 @@ void GamePlayScene::Initialize()
 	//SE
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 
-#ifdef _DEBUG
+#ifdef _ADJUSTMENT
 
 	isDebug_ = true;
 
-#endif // DEBUG
+#endif // ADJUSTMENT
 
 	//ラウンドごとの時間
 	currentSeconds_ = 99;
@@ -366,7 +366,7 @@ void GamePlayScene::Update()
 	//Camera、DebugCameraの処理
 	debugCamera_.Update();
 
-#ifdef _DEBUG
+#ifdef _ADJUSTMENT
 
 	if (input_->PushKey(DIK_K))
 	{
@@ -377,7 +377,7 @@ void GamePlayScene::Update()
 		isDebugCamera_ = false;
 	}
 
-#endif // DEBUG
+#endif 
 
 	if (isDebugCamera_)
 	{

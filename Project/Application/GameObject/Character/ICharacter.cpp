@@ -3,11 +3,11 @@
 
 void ICharacter::Initialize()
 {
-#ifdef _DEBUG
+#ifdef _ADJUSTMENT
 
 		isDebug_ = true;
 
-#endif // DEBUG
+#endif 
 
 		//isDebug_ = true;
 }

@@ -87,7 +87,7 @@ void GameTitleScene::Update()
 		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 	}
 
-#endif // DEBUG
+#endif 
 
 	//Skydomeの更新
 	skydome_->Update();
