@@ -28,7 +28,7 @@ void ImGuiManager::Initialize()
 
 void ImGuiManager::Draw()
 {
-#ifdef _ADJUSTMENT
+#ifdef _USE_IMGUI
 	ID3D12GraphicsCommandList* commandList = dxCore_->GetCommandList();
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap_.Get() };
