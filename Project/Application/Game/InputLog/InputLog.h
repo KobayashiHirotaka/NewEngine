@@ -48,6 +48,12 @@ private:
 	//ボタン表示のX座標
 	const float rightPositionX_ = 110.0f;  
 
+	//経過フレーム表示(10の位)のX座標
+	const float numberTensPositionX_ = 10.0f;
+
+	//経過フレーム表示(1の位)のX座標
+	const float numberOnesPositionX_ = 30.0f;
+
 	//初期のY座標
 	const float basePositionY_ = 150.0f; 
 

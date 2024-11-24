@@ -41,10 +41,10 @@ void InputLog::Initialize()
 		buttonSprites_.emplace_back(Sprite::Create(buttonTextureHandle_[0], { rightPositionX_, basePositionY_ - i * verticalSpacing_ }));
 		buttonSprites_.back()->SetSize({ 40.0f, 40.0f });
 
-        numberTensSprites_.emplace_back(Sprite::Create(digitTextureHandles_[0], { leftPositionX_ - 50.0f, basePositionY_ - i * verticalSpacing_ }));
+        numberTensSprites_.emplace_back(Sprite::Create(digitTextureHandles_[0], { numberTensPositionX_, basePositionY_ - i * verticalSpacing_ }));
         numberTensSprites_.back()->SetSize({ 40.0f, 40.0f });
 
-        numberOnesSprites_.emplace_back(Sprite::Create(digitTextureHandles_[0], { leftPositionX_ - 30.0f, basePositionY_ - i * verticalSpacing_ }));
+        numberOnesSprites_.emplace_back(Sprite::Create(digitTextureHandles_[0], { numberOnesPositionX_, basePositionY_ - i * verticalSpacing_ }));
         numberOnesSprites_.back()->SetSize({ 40.0f, 40.0f });
 	}
 }
@@ -159,19 +159,19 @@ void InputLog::Update()
         }
     }
 
-    // 経過フレームを加算
+    //経過フレームを加算
     for (size_t i = 0; i < frameCounts_.size(); ++i)
     {
-        // 新しい入力がされた場合、過去の入力のフレームは加算せず停止
+        //新しい入力がされた場合、過去の入力の経過フレームは停止
         if (i == 0 || inputHistory_[i] == inputHistory_[i - 1])
         {
-            // 現在の入力または前回と同じ入力が続いている場合のみ加算
+            //現在の入力の場合のみ加算
             frameCounts_[i] = std::clamp(frameCounts_[i] + 1, 0, 99);
         }
         else
         {
-            // 新しい入力が来た場合、過去の入力の経過フレームを保持しつつ加算を停止
-            frameCounts_[i] = frameCounts_[i];  // 現在のフレーム数を保持
+            //新しい入力がされた場合、過去の入力の経過フレームを保持しつつ加算を停止
+            frameCounts_[i] = frameCounts_[i]; 
         }
     }
 
@@ -222,12 +222,12 @@ void InputLog::Draw()
 
             //10の位の数字
             numberTensSprites_[i]->SetTexture(digitTextureHandles_[tens]);
-            numberTensSprites_[i]->SetPosition({ leftPositionX_ - 50.0f, drawPosY });
+            numberTensSprites_[i]->SetPosition({ numberTensPositionX_, drawPosY });
             numberTensSprites_[i]->Draw();
 
             //1の位の数字
             numberOnesSprites_[i]->SetTexture(digitTextureHandles_[ones]);
-            numberOnesSprites_[i]->SetPosition({ leftPositionX_ - 30.0f, drawPosY });
+            numberOnesSprites_[i]->SetPosition({ numberOnesPositionX_, drawPosY });
             numberOnesSprites_[i]->Draw();
         }
     }
