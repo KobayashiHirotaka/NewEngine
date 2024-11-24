@@ -78,7 +78,7 @@ void GameTitleScene::Initialize()
 
 void GameTitleScene::Update()
 {
-#ifdef _DEBUG
+#ifdef _ADJUSTMENT
 
 	//デバッグ用のシーン切り替え
 	if (input_->PushKey(DIK_SPACE))

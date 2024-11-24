@@ -25,14 +25,27 @@ void InputLog::Initialize()
 	buttonTextureHandle_[4] = TextureManager::LoadTexture("resource/images/LB.png");
 	buttonTextureHandle_[5] = TextureManager::LoadTexture("resource/images/RB.png");
 
+    //数字
+    for (int i = 0; i < 10; ++i)
+    {
+        std::string path = "resource/number/" + std::to_string(i) + ".png";
+        digitTextureHandles_[i] = TextureManager::LoadTexture(path.c_str());
+    }
+
 	//スプライトの初期化
 	for (int i = 0; i < maxHistorySize_; i++) 
     {
 		stickSprites_.emplace_back(Sprite::Create(stickTextureHandle_[0], { leftPositionX_, basePositionY_ - i * verticalSpacing_ }));
-		stickSprites_.back()->SetSize({ 55.0f, 55.0f });
+		stickSprites_.back()->SetSize({ 40.0f, 40.0f });
 
 		buttonSprites_.emplace_back(Sprite::Create(buttonTextureHandle_[0], { rightPositionX_, basePositionY_ - i * verticalSpacing_ }));
-		buttonSprites_.back()->SetSize({ 55.0f, 55.0f });
+		buttonSprites_.back()->SetSize({ 40.0f, 40.0f });
+
+        numberTensSprites_.emplace_back(Sprite::Create(digitTextureHandles_[0], { leftPositionX_ - 50.0f, basePositionY_ - i * verticalSpacing_ }));
+        numberTensSprites_.back()->SetSize({ 40.0f, 40.0f });
+
+        numberOnesSprites_.emplace_back(Sprite::Create(digitTextureHandles_[0], { leftPositionX_ - 30.0f, basePositionY_ - i * verticalSpacing_ }));
+        numberOnesSprites_.back()->SetSize({ 40.0f, 40.0f });
 	}
 }
 
@@ -123,41 +136,42 @@ void InputLog::Update()
     }
 
     //入力が検出されたら履歴に追加
-    if (stickInput != -1 || buttonInput != -1) 
+    if (stickInput != -1 || buttonInput != -1)
     {
         //直前の履歴を取得
         auto lastInput = inputHistory_.empty() ? std::pair<int, int>(-1, -1) : inputHistory_.front();
 
-        //ボタンが押された場合は履歴を更新
-        if (buttonInput != -1) 
+        //スティックまたはボタン入力が前回と異なる場合、履歴を更新
+        if (stickInput != lastInput.first || buttonInput != lastInput.second)
         {
-            //操作が変わらない場合でもボタンが押されているなら更新
-            if (stickInput == lastInput.first)
-            {
-                //操作が前回と同じでもボタン入力があれば履歴を追加
-                inputHistory_.emplace_front(stickInput, buttonInput);
-            }
-            else
-            {
-                //スティック入力が異なる場合は通常通り追加
-                inputHistory_.emplace_front(stickInput, buttonInput);
-            }
-        }
-        else if (stickInput != lastInput.first) 
-        {
-            //ボタンが押されていない場合、スティックが変わったときのみ履歴を追加
             inputHistory_.emplace_front(stickInput, buttonInput);
+            frameCounts_.emplace_front(0);
+        }
+    }
+    else
+    {
+        //入力がない状態の時
+        if (inputHistory_.empty() || inputHistory_.front() != std::make_pair(-1, -1))
+        {
+            //入力履歴を最新のものに更新する
+            inputHistory_.emplace_front(-1, -1);
+            frameCounts_.emplace_front(0);
         }
     }
 
-    //前回がNだった場合
-    if (stickInput == -1 && buttonInput == -1)
+    // 経過フレームを加算
+    for (size_t i = 0; i < frameCounts_.size(); ++i)
     {
-        //入力がない状態の時
-        if (!inputHistory_.empty() && (inputHistory_.front().first != -1 || inputHistory_.front().second != -1)) 
+        // 新しい入力がされた場合、過去の入力のフレームは加算せず停止
+        if (i == 0 || inputHistory_[i] == inputHistory_[i - 1])
         {
-            //入力履歴を最新のものに更新する
-            inputHistory_.emplace_front(-1, -1); 
+            // 現在の入力または前回と同じ入力が続いている場合のみ加算
+            frameCounts_[i] = std::clamp(frameCounts_[i] + 1, 0, 99);
+        }
+        else
+        {
+            // 新しい入力が来た場合、過去の入力の経過フレームを保持しつつ加算を停止
+            frameCounts_[i] = frameCounts_[i];  // 現在のフレーム数を保持
         }
     }
 
@@ -165,7 +179,8 @@ void InputLog::Update()
     if (inputHistory_.size() > maxHistorySize_)
     {
         //古い入力を削除
-        inputHistory_.pop_back();  
+        inputHistory_.pop_back();
+        frameCounts_.pop_back();
     }
 }
 
@@ -197,6 +212,23 @@ void InputLog::Draw()
             buttonSprites_[i]->SetTexture(buttonTextureHandle_[button]);
             buttonSprites_[i]->Draw();
         }
+
+        //経過フレームの描画
+        if (i < frameCounts_.size())
+        {
+            int frame = frameCounts_[i];
+            int tens = frame / 10;  
+            int ones = frame % 10; 
+
+            //10の位の数字
+            numberTensSprites_[i]->SetTexture(digitTextureHandles_[tens]);
+            numberTensSprites_[i]->SetPosition({ leftPositionX_ - 50.0f, drawPosY });
+            numberTensSprites_[i]->Draw();
+
+            //1の位の数字
+            numberOnesSprites_[i]->SetTexture(digitTextureHandles_[ones]);
+            numberOnesSprites_[i]->SetPosition({ leftPositionX_ - 30.0f, drawPosY });
+            numberOnesSprites_[i]->Draw();
+        }
     }
 }
-
