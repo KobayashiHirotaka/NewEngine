@@ -375,12 +375,12 @@ protected:
 	bool isFinisherCharge_ = false;
 
 	//画面端
-	const float leftEdge_ = -4.0f;
-	const float rightEdge_ = 4.0f;
+	float leftEdge_ = -6.0f;
+	float rightEdge_ = 6.0f;
 
 	//攻撃時にめり込まないための画面端
-	const float attackLeftEdge_ = -3.5f;
-	const float attackRightEdge_ = 3.5f;
+	float attackLeftEdge_ = -5.5f;
+	float attackRightEdge_ = 5.5f;
 
 	//エディター用
 	std::string attackType;

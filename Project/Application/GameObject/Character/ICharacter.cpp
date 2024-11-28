@@ -81,16 +81,16 @@ void ICharacter::Update()
 		break;
 	}
 
-	////画面端の処理
-	//if (worldTransform_.translation.x >= rightEdge_)
-	//{
-	//	worldTransform_.translation.x = rightEdge_;
-	//}
+	//画面端の処理
+	if (worldTransform_.translation.x >= rightEdge_)
+	{
+		worldTransform_.translation.x = rightEdge_;
+	}
 
-	//if (worldTransform_.translation.x <= leftEdge_)
-	//{
-	//	worldTransform_.translation.x = leftEdge_;
-	//}
+	if (worldTransform_.translation.x <= leftEdge_)
+	{
+		worldTransform_.translation.x = leftEdge_;
+	}
 
 	//端での攻撃時の処理
 	if (!attackData_.isAttack && worldTransform_.translation.x >= attackRightEdge_ && characterState_.direction == Direction::Right)
@@ -121,8 +121,12 @@ void ICharacter::Update()
 
 	characterState_.isHitCharacter = false;
 
-	ImGui::Begin("CharacterDEBUG");
+	ImGui::Begin("Character");
 	ImGui::Checkbox("isDebug", &isDebug_);
+	ImGui::SliderFloat("LeftEdge", &leftEdge_, -10.0f, 1.0f);
+	ImGui::SliderFloat("RightEdge", &rightEdge_, 1.0f, 10.0f);
+	ImGui::SliderFloat("attackLeftEdge", &attackLeftEdge_, -10.0f, 1.0f);
+	ImGui::SliderFloat("attackRightEdge", &attackRightEdge_, 1.0f, 10.0f);
 	ImGui::End();
 }
 

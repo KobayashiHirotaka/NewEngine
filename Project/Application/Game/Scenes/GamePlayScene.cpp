@@ -595,8 +595,8 @@ void GamePlayScene::ImGui()
 	ImGui::Checkbox("isDebug_", &isDebug_);
 	ImGui::End();*/
 
-	//player_->ImGui("Player");
-	//enemy_->ImGui("Enemy");
+	player_->ImGui("Player");
+	enemy_->ImGui("Enemy");
 
 	//camera_.ImGui();
 
