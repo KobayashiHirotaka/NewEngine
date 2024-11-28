@@ -382,6 +382,13 @@ protected:
 	float attackLeftEdge_ = -5.5f;
 	float attackRightEdge_ = 5.5f;
 
+	//距離
+	float distance_ = 0.0f;
+	const float maxDistance_ = 6.0f;
+
+	//前フレームのX座標
+	float previousPositionX_ = 0.0f;
+
 	//エディター用
 	std::string attackType;
 

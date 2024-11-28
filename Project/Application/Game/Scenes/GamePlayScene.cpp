@@ -224,9 +224,6 @@ void GamePlayScene::Update()
 			isKO_ = false;
 
 			enemy_->SetIsKO(false);
-
-			//Vector3 translation_ = { 0.0f,1.0f,-13.0f };
-			//camera_.translation_ = Lerp(camera_.translation_, translation_, 0.005f);
 		}
 
 		if (!isKO_)
@@ -256,7 +253,6 @@ void GamePlayScene::Update()
 			if (--shakeTimer_ < 0)
 			{
 				isShake_ = false;
-				camera_.translation_.y = 1.0f;
 			}
 		}
 	}
@@ -277,26 +273,22 @@ void GamePlayScene::Update()
 		if (player_->GetIsDirectionRight())
 		{
 			camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x + 4.0f,
-			player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 4.5f }, 0.1f);
+			player_->GetWorldPosition().y + 0.8f, player_->GetWorldPosition().z - 4.5f }, 0.1f);
 
 			camera_.rotation_.y = Lerp(camera_.rotation_.y, -0.7f, 0.1f);
 		}
 		else
 		{
 			camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x - 4.0f,
-			player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 4.5f }, 0.1f);
+			player_->GetWorldPosition().y + 0.8f, player_->GetWorldPosition().z - 4.5f }, 0.1f);
 
 			camera_.rotation_.y = Lerp(camera_.rotation_.y, 0.7f, 0.1f);
 		}
 	}
 	else
 	{
-		//Vector3 translation_ = { 0.0f,1.0f,-13.0f };
-
-		//camera_.translation_ = translation_;
-		//camera_.rotation_.y = 0.0f;
-		//camera_.translation_ = Lerp(camera_.translation_, translation_, 0.1f);
-		//camera_.rotation_.y = Lerp(camera_.rotation_.y, 0.0f, 0.1f);
+		//CameraControllerの更新
+		cameraController_->Update(player_->GetWorldPosition(), enemy_->GetWorldPosition(), player_->GetDirection());
 	}
 
 	//勝ち負けの処理
@@ -365,9 +357,6 @@ void GamePlayScene::Update()
 
 	//InputLogの更新
 	inputLog_->Update();
-
-	//CameraControllerの更新
-	cameraController_->Update(player_->GetWorldPosition(), enemy_->GetWorldPosition(), player_->GetDirection());
 
 	//Camera、DebugCameraの処理
 	debugCamera_.Update();
@@ -445,12 +434,14 @@ void GamePlayScene::Draw()
 
 	Line::PreDraw();
 
-	if (isDebug_ && !isOpen_)
-	{
-		player_->CollisionDraw(cameraController_->GetCamera());
+	//if (isDebug_ && !isOpen_)
+	//{
+	//	//Playerの当たり判定描画
+	//	player_->CollisionDraw(cameraController_->GetCamera());
 
-		enemy_->CollisionDraw(cameraController_->GetCamera());
-	}
+	//	//Enemyの当たり判定描画
+	//	enemy_->CollisionDraw(cameraController_->GetCamera());
+	//}
 
 	Line::PostDraw();
 
@@ -458,11 +449,11 @@ void GamePlayScene::Draw()
 
 #ifdef _ADJUSTMENT
 
-	//playerのbone描画
-	player_->BoneDraw(cameraController_->GetCamera());
+	////playerのbone描画
+	//player_->BoneDraw(cameraController_->GetCamera());
 
-	//enemyのbone描画
-	enemy_->BoneDraw(cameraController_->GetCamera());
+	////enemyのbone描画
+	//enemy_->BoneDraw(cameraController_->GetCamera());
 
 #endif
 

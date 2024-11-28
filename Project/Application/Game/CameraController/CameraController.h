@@ -19,13 +19,15 @@ private:
 
 	Camera camera_;
 
-	Vector3 position_ = { 0.0f,1.0f,-9.0f };
+	Vector3 position_ = { 0.0f,0.8f,-4.5f };
 
-	float cameraSpeed_ = 0.03f;
+	Vector3 cameraSpeed_ = { 0.25f, 0.5f, 0.04f };
 
-	float point_ = 2.0f;
+	float point_ = 3.0f;
 
-	const float min_ = -9.0f;
+	float min_ = -4.5f;
+	float max_ = -9.5f;
 
-	const float max_ = -12.0f;
+	float distance_ = 0.0f;
+	float previousDistance_ = 0.0f;
 };

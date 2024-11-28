@@ -154,8 +154,15 @@ void Player::Update()
 		isDirectionRight_ = false;
 	}
 
-	//敵の位置を取得する
-	Vector3 enemyPosition = enemy_->GetWorldPosition();
+	Vector3 difference = playerWorldPosition - enemyWorldPosition;
+	distance_ = Length(difference);
+
+	if (std::abs(maxDistance_ < distance_))
+	{
+		worldTransform_.translation.x = previousPositionX_;
+	}
+
+	previousPositionX_ = worldTransform_.translation.x;
 
 	//TODO
 	//着地時の押し出し処理
@@ -262,6 +269,8 @@ void Player::ImGui(const char* title)
 
 	ImGui::Text("hp %d", hp_);
 	ImGui::Text("finisherGaugeIncreaseAmount %f", attackData_.finisherGaugeIncreaseAmount);
+
+	ImGui::Text("previousPositionX %f", previousPositionX_);
 
 	model_->GetLight()->ImGui("DirectionalLight");
 	model_->GetPointLight()->ImGui("PointLight");

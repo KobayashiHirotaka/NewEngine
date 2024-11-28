@@ -106,6 +106,21 @@ void Enemy::Initialize()
 
 void Enemy::Update()
 {
+#ifdef _ADJUSTMENT
+	const float speedX = 0.05f;
+
+	if (input_->PressKey(DIK_D))
+	{
+		worldTransform_.translation.x += speedX;
+	}
+
+	if (input_->PressKey(DIK_A))
+	{
+		worldTransform_.translation.x -= speedX;
+	}
+
+#endif
+
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
@@ -130,6 +145,16 @@ void Enemy::Update()
 		characterState_.direction = Direction::Right;
 		worldTransform_.rotation.y = characterState_.rightDirectionRotation;;
 	}
+
+	Vector3 difference = playerWorldPosition - enemyWorldPosition;
+	distance_ = Length(difference);
+
+	if (std::abs(maxDistance_ < distance_))
+	{
+		worldTransform_.translation.x = previousPositionX_;
+	}
+
+	previousPositionX_ = worldTransform_.translation.x;
 
 	if (player_->GetFinisherTimer() == 120)
 	{
@@ -242,6 +267,8 @@ void Enemy::ImGui(const char* title)
 	ImGui::Text("patternCount %d", patternCount_);
 	ImGui::Text("comboTimer %d", timerData_.comboTimer);
 	ImGui::Text("hp %d", hp_);
+
+	ImGui::Text("previousPositionX %f", previousPositionX_);
 
 	model_->GetLight()->ImGui("DirectionalLight");
 	model_->GetPointLight()->ImGui("PointLight");

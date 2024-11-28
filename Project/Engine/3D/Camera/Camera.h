@@ -43,9 +43,7 @@ public:
 	Vector3 translation_ = { 0.0f,0.0f,0.0f };
 
 	//視野角
-	float fov_ = 0.45f;
-
-	float viewWidth_;
+	float fov_ = 0.5f;
 
 	//アスペクト比
 	float aspectRatio_ = (float)16 / 9;

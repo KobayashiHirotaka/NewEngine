@@ -11,44 +11,23 @@ void CameraController::Initialize()
 
 void CameraController::Update(const Vector3 characterPosition1, const Vector3 characterPositon2, const Direction direction)
 {
-#ifdef _ADJUSTMENT
-
-	if (input_->PressKey(DIK_W))
-	{
-		position_.z += cameraSpeed_;
-	}
-
-	if (input_->PressKey(DIK_S))
-	{
-		position_.z -= cameraSpeed_;
-	}
-
-	if (input_->PressKey(DIK_D))
-	{
-		position_.x += cameraSpeed_;
-	}
-
-	if (input_->PressKey(DIK_A))
-	{
-		position_.x -= cameraSpeed_;
-	}
-
-#endif
-
 	//2体のキャラクターの中心座標
-	float centerX = (characterPosition1.x + characterPositon2.x) / 2;
-	position_.x = centerX;
+	Vector2 center = { (characterPosition1.x + characterPositon2.x) / 2,  ((characterPosition1.y + characterPositon2.y) + 0.8f) / 2 };
+	//position_.x = center.x;
+	//position_.y = center.y;
+
+	position_.x = Lerp(position_.x, center.x, cameraSpeed_.x);
+	position_.y = Lerp(position_.y, center.y, cameraSpeed_.y);
 
 	//2体のキャラクターの座標の差
 	Vector3 difference = characterPosition1 - characterPositon2;
-	float distance = Length(difference);
+	distance_ = Length(difference);
 
 	if (input_->GetJoystickState())
 	{
-		if (distance >= point_)
+		if (distance_ >= point_)
 		{
-			if (direction == Direction::Right && input_->GetLeftStickX() <= -input_->GetDeadZone() ||
-				direction == Direction::Left && input_->GetLeftStickX() >= input_->GetDeadZone())
+			if (distance_ > previousDistance_)
 			{
 				if (position_.z <= max_)
 				{
@@ -57,13 +36,12 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 				else
 				{
 					//position_.z = Lerp(position_.z, max_, cameraSpeed_);
-					position_.z -= cameraSpeed_;
+					position_.z -= cameraSpeed_.z;
 				}
 			}
 		}
 
-		if (direction == Direction::Right && input_->GetLeftStickX() >= input_->GetDeadZone() ||
-			direction == Direction::Left && input_->GetLeftStickX() <= -input_->GetDeadZone())
+		if (previousDistance_ > distance_)
 		{
 			if (position_.z >= min_)
 			{
@@ -72,9 +50,12 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 			else
 			{
 				//position_.z = Lerp(position_.z, min_, cameraSpeed_);
-				position_.z += cameraSpeed_;
+				position_.z += cameraSpeed_.z;
 			}
 		}
+
+		//前フレームの距離を記録
+		previousDistance_ = distance_;
 	}
 
 	camera_.translation_ = position_;
@@ -86,7 +67,9 @@ void CameraController::ImGui()
 {
 	ImGui::Begin("CameraController");
 	ImGui::SliderFloat3("WTFT", &position_.x, -50.0f, 50.0f);
-	ImGui::SliderFloat("cameraSpeed", &cameraSpeed_, 0.01f, 0.1f);
+	ImGui::SliderFloat3("cameraSpeed", &cameraSpeed_.x, 0.01f, 0.1f);
 	ImGui::SliderFloat("point", &point_, 1.0f, 5.0f);
+	ImGui::SliderFloat("distance", &distance_, 0.0f, 10.0f);
+	ImGui::SliderFloat("previousDistance", &previousDistance_, 0.0f, 10.0f);
 	ImGui::End();
 }
