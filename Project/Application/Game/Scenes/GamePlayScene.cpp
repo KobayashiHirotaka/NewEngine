@@ -367,7 +367,7 @@ void GamePlayScene::Update()
 	inputLog_->Update();
 
 	//CameraControllerの更新
-	cameraController_->Update();
+	cameraController_->Update(player_->GetWorldPosition(), enemy_->GetWorldPosition(), player_->GetDirection());
 
 	//Camera、DebugCameraの処理
 	debugCamera_.Update();

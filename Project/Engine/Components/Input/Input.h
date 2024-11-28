@@ -53,6 +53,8 @@ public:
 
 	float GetRightStickY();
 
+	float GetDeadZone() { return deadZone_; };
+
 private:
 	Input() = default;
 	~Input() = default;
@@ -74,5 +76,7 @@ private:
 
 	XINPUT_STATE state_{};
 	XINPUT_STATE preState_{};
+
+	const float deadZone_ = 0.7f;
 };
 

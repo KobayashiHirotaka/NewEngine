@@ -81,16 +81,16 @@ void ICharacter::Update()
 		break;
 	}
 
-	//画面端の処理
-	if (worldTransform_.translation.x >= rightEdge_)
-	{
-		worldTransform_.translation.x = rightEdge_;
-	}
+	////画面端の処理
+	//if (worldTransform_.translation.x >= rightEdge_)
+	//{
+	//	worldTransform_.translation.x = rightEdge_;
+	//}
 
-	if (worldTransform_.translation.x <= leftEdge_)
-	{
-		worldTransform_.translation.x = leftEdge_;
-	}
+	//if (worldTransform_.translation.x <= leftEdge_)
+	//{
+	//	worldTransform_.translation.x = leftEdge_;
+	//}
 
 	//端での攻撃時の処理
 	if (!attackData_.isAttack && worldTransform_.translation.x >= attackRightEdge_ && characterState_.direction == Direction::Right)

@@ -11,6 +11,7 @@
 #include "Engine/2D/Sprite/UI.h"
 #include "Engine/3D/Particle/ParticleEffectPlayer.h"
 #include "Engine/3D/Model/IGame3dObject.h"
+#include "Application/GameObject/Character/Direction.h"
 #include <random>
 #include <numbers>
 #include <unordered_map>
@@ -18,13 +19,6 @@
 class ICharacter : public IGame3dObject
 {
 public:
-	//向き
-	enum class Direction
-	{
-		Left,
-		Right
-	};
-
 	//行動
 	enum class Behavior
 	{
