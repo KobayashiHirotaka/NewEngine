@@ -16,8 +16,8 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 	//position_.x = center.x;
 	//position_.y = center.y;
 
-	position_.x = Lerp(position_.x, center.x, cameraSpeed_.x);
-	position_.y = Lerp(position_.y, center.y, cameraSpeed_.y);
+	position_.x = center.x;
+	position_.y = center.y;
 
 	//2体のキャラクターの座標の差
 	Vector3 difference = characterPosition1 - characterPositon2;
@@ -35,8 +35,8 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 				}
 				else
 				{
-					//position_.z = Lerp(position_.z, max_, cameraSpeed_);
-					position_.z -= cameraSpeed_.z;
+					position_.z = Lerp(position_.z, max_, cameraSpeed_.z);
+					//position_.z -= cameraSpeed_.z;
 				}
 			}
 		}
@@ -49,8 +49,8 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 			}
 			else
 			{
-				//position_.z = Lerp(position_.z, min_, cameraSpeed_);
-				position_.z += cameraSpeed_.z;
+				position_.z = Lerp(position_.z, min_, cameraSpeed_.z);
+				//position_.z += cameraSpeed_.z;
 			}
 		}
 

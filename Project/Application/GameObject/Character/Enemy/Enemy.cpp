@@ -149,12 +149,21 @@ void Enemy::Update()
 	Vector3 difference = playerWorldPosition - enemyWorldPosition;
 	distance_ = Length(difference);
 
-	if (std::abs(maxDistance_ < distance_))
+	if (distance_ >= maxDistance_)
 	{
-		worldTransform_.translation.x = previousPositionX_;
+		// x座標が前方向に移動することを許可し、後ろには戻れないようにする
+		if ((worldTransform_.translation.x < previousPositionX_ && characterState_.direction == Direction::Right) ||
+			(worldTransform_.translation.x > previousPositionX_ && characterState_.direction == Direction::Left))
+		{
+			// 後ろに動かないように、x座標を固定
+			worldTransform_.translation.x = previousPositionX_;
+		}
 	}
-
-	previousPositionX_ = worldTransform_.translation.x;
+	else
+	{
+		// もし距離が maxDistance_ 未満ならば、previousPositionX_ を更新
+		previousPositionX_ = worldTransform_.translation.x;
+	}
 
 	if (player_->GetFinisherTimer() == 120)
 	{
