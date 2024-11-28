@@ -46,3 +46,9 @@ void CameraController::ImGui()
 	ImGui::SliderFloat3("WTFT", &position_.x, -50.0f, 50.0f);
 	ImGui::End();
 }
+
+void CameraController::Move(const Vector3 characterPosition1, const Vector3 characterPositon2)
+{
+	float centerX = (characterPosition1.x + characterPositon2.x) / 2;
+}
+

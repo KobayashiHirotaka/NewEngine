@@ -9,6 +9,8 @@ public:
 
 	void Update();
 
+	void Move(const Vector3 characterPosition1, const Vector3 characterPositon2);
+
 	void ImGui();
 
 	Camera GetCamera() { return camera_; };
