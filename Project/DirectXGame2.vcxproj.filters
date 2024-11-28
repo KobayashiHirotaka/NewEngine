@@ -456,6 +456,9 @@
     <ClCompile Include="Application\Game\InputLog\InputLog.cpp">
       <Filter>ソース ファイル\Project\Game\InputLog</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Game\CameraController\CameraController.cpp">
+      <Filter>ソース ファイル\Engine\3d\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -703,6 +706,9 @@
     </ClInclude>
     <ClInclude Include="Application\Game\InputLog\InputLog.h">
       <Filter>ヘッダー ファイル\Project\Game\InputLog</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\CameraController\CameraController.h">
+      <Filter>ヘッダー ファイル\Engine\3d\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
