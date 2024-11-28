@@ -56,7 +56,8 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 				}
 				else
 				{
-					position_.z = Lerp(position_.z, max_, cameraSpeed_);
+					//position_.z = Lerp(position_.z, max_, cameraSpeed_);
+					position_.z -= cameraSpeed_;
 				}
 			}
 		}
@@ -70,7 +71,8 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 			}
 			else
 			{
-				position_.z = Lerp(position_.z, min_, cameraSpeed_);
+				//position_.z = Lerp(position_.z, min_, cameraSpeed_);
+				position_.z += cameraSpeed_;
 			}
 		}
 	}

@@ -45,6 +45,8 @@ public:
 	//視野角
 	float fov_ = 0.45f;
 
+	float viewWidth_;
+
 	//アスペクト比
 	float aspectRatio_ = (float)16 / 9;
 
