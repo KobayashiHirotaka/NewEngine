@@ -265,6 +265,12 @@
     <Filter Include="ソース ファイル\Project\Game\InputLog">
       <UniqueIdentifier>{718d56d9-bd9c-4711-b319-7370a69a3a7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Project\Game\CameraController">
+      <UniqueIdentifier>{f14ccced-e679-4b6a-97ed-a1246108c128}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\Game\CameraController">
+      <UniqueIdentifier>{127880b0-3a41-4759-9016-eeb418d5d70a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -457,7 +463,7 @@
       <Filter>ソース ファイル\Project\Game\InputLog</Filter>
     </ClCompile>
     <ClCompile Include="Application\Game\CameraController\CameraController.cpp">
-      <Filter>ソース ファイル\Engine\3d\Camera</Filter>
+      <Filter>ソース ファイル\Project\Game\CameraController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -708,7 +714,7 @@
       <Filter>ヘッダー ファイル\Project\Game\InputLog</Filter>
     </ClInclude>
     <ClInclude Include="Application\Game\CameraController\CameraController.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Camera</Filter>
+      <Filter>ヘッダー ファイル\Project\Game\CameraController</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

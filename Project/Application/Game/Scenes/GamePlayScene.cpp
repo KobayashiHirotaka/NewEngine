@@ -40,6 +40,9 @@ void GamePlayScene::Initialize()
 	inputLog_ = std::make_unique<InputLog>();
 	inputLog_->Initialize();
 
+	cameraController_ = std::make_unique<CameraController>();
+	cameraController_->Initialize();
+
 	//Playerの生成、初期化
 	player_ = game3dObjectManager_->GetGameObject<Player>("Player");
 
@@ -222,8 +225,8 @@ void GamePlayScene::Update()
 
 			enemy_->SetIsKO(false);
 
-			Vector3 translation_ = { 0.0f,1.0f,-13.0f };
-			camera_.translation_ = Lerp(camera_.translation_, translation_, 0.005f);
+			//Vector3 translation_ = { 0.0f,1.0f,-13.0f };
+			//camera_.translation_ = Lerp(camera_.translation_, translation_, 0.005f);
 		}
 
 		if (!isKO_)
@@ -288,12 +291,12 @@ void GamePlayScene::Update()
 	}
 	else
 	{
-		Vector3 translation_ = { 0.0f,1.0f,-13.0f };
+		//Vector3 translation_ = { 0.0f,1.0f,-13.0f };
 
 		//camera_.translation_ = translation_;
 		//camera_.rotation_.y = 0.0f;
-		camera_.translation_ = Lerp(camera_.translation_, translation_, 0.1f);
-		camera_.rotation_.y = Lerp(camera_.rotation_.y, 0.0f, 0.1f);
+		//camera_.translation_ = Lerp(camera_.translation_, translation_, 0.1f);
+		//camera_.rotation_.y = Lerp(camera_.rotation_.y, 0.0f, 0.1f);
 	}
 
 	//勝ち負けの処理
@@ -363,6 +366,9 @@ void GamePlayScene::Update()
 	//InputLogの更新
 	inputLog_->Update();
 
+	//CameraControllerの更新
+	cameraController_->Update();
+
 	//Camera、DebugCameraの処理
 	debugCamera_.Update();
 
@@ -401,25 +407,25 @@ void GamePlayScene::Draw()
 
 	Skybox::PreDraw();
 
-	//skybox_->Draw(skyboxWorldTransform_, camera_);
+	//skybox_->Draw(skyboxWorldTransform_, cameraController_->GetCamera());
 
 	Skybox::PostDraw();
 
 	Model::PreDraw();
 
 	////Skydomeの描画
-	skydome_->Draw(camera_);
+	skydome_->Draw(cameraController_->GetCamera());
 
 	if (!isOpen_)
 	{
 		//Game3dObjectManagerの描画
-		game3dObjectManager_->Draw(camera_);
+		game3dObjectManager_->Draw(cameraController_->GetCamera());
 
 		//Enemyの弾の描画
-		enemy_->BulletDraw(camera_);
+		enemy_->BulletDraw(cameraController_->GetCamera());
 
 		//BackGroundの描画
-		backGround_->Draw(camera_);
+		backGround_->Draw(cameraController_->GetCamera());
 	}
 
 	Model::PostDraw();
@@ -429,10 +435,10 @@ void GamePlayScene::Draw()
 	if (GamePlayScene::roundStartTimer_ <= 0 && !isOpen_)
 	{
 		//Playerのparticle描画
-		player_->ParticleDraw(camera_);
+		player_->ParticleDraw(cameraController_->GetCamera());
 
 		//Enemyのparticle描画
-		enemy_->ParticleDraw(camera_);
+		enemy_->ParticleDraw(cameraController_->GetCamera());
 	}
 
 	ParticleModel::PostDraw();
@@ -441,20 +447,24 @@ void GamePlayScene::Draw()
 
 	if (isDebug_ && !isOpen_)
 	{
-		player_->CollisionDraw(camera_);
+		player_->CollisionDraw(cameraController_->GetCamera());
 
-		enemy_->CollisionDraw(camera_);
+		enemy_->CollisionDraw(cameraController_->GetCamera());
 	}
 
 	Line::PostDraw();
 
 	Model::BonePreDraw();
 
+#ifdef _ADJUSTMENT
+
 	//playerのbone描画
-	//player_->BoneDraw(camera_);
+	player_->BoneDraw(cameraController_->GetCamera());
 
 	//enemyのbone描画
-	//enemy_->BoneDraw(camera_);
+	enemy_->BoneDraw(cameraController_->GetCamera());
+
+#endif
 
 	Model::BonePostDraw();
 

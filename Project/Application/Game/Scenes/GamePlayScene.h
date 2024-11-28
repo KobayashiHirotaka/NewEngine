@@ -3,6 +3,7 @@
 #include "Engine/3D/Skybox/Skybox.h"
 #include "Engine/3D/Line/Line.h"
 #include "Application/Game/InputLog/InputLog.h"
+#include "Application/Game/CameraController/CameraController.h"
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Character/Enemy/EnemyBullet.h"
@@ -73,6 +74,9 @@ private:
 	Camera camera_;
 	DebugCamera debugCamera_;
 	bool isDebugCamera_ = false;
+
+	//CameraController
+	std::unique_ptr<CameraController> cameraController_;
 
 	//Timer用のSprite
 	std::unique_ptr<Sprite>numberTensSprite_ = nullptr;
