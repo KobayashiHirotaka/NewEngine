@@ -12,7 +12,7 @@ public:
 
 	void ImGui();
 
-	Camera GetCamera() { return camera_; };
+	Camera& GetCamera() { return camera_; };
 
 private:
 	Input* input_ = nullptr;
