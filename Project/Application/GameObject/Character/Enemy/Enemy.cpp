@@ -127,7 +127,7 @@ void Enemy::Update()
 		HitStop::Initialize(3.0f);
 	}
 
-	HitStop::Update();
+	//HitStop::Update();
 
 	ICharacter::Update();
 
@@ -796,7 +796,7 @@ void Enemy::OnCollision(Collider* collider)
 	
 				ApplyDamage();
 
-				attackData_.isHitStop_ = true;
+				//attackData_.isHitStop_ = true;
 
 				if (hp_ > 0)
 				{
@@ -820,7 +820,7 @@ void Enemy::OnCollision(Collider* collider)
 
 				ApplyDamage();
 
-				attackData_.isHitStop_ = true;
+				//attackData_.isHitStop_ = true;
 			
 				if (hp_ > 0)
 				{

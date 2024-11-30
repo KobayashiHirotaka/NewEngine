@@ -314,8 +314,7 @@ void Player::BehaviorRootUpdate()
 
 		//攻撃
 		//弱攻撃
-		if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) &&
-			input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))) && !characterState_.isDown)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B)) && !characterState_.isDown)
 		{
 			attackType = "LightPunch";
 			AttackStart(attackData_.isLightPunch);
@@ -328,12 +327,12 @@ void Player::BehaviorRootUpdate()
 		//	AttackStart(attackData_.isMiddlePunch);
 		//}
 
-		//強攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !characterState_.isDown)
-		{
-			attackType = "HighPunch";
-			AttackStart(attackData_.isHighPunch);
-		}
+		////強攻撃
+		//if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !characterState_.isDown)
+		//{
+		//	attackType = "HighPunch";
+		//	AttackStart(attackData_.isHighPunch);
+		//}
 		
 		//タックル攻撃
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || 
@@ -404,8 +403,7 @@ void Player::BehaviorAttackUpdate()
 		if (input_->GetJoystickState())
 		{
 			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 10 && attackData_.attackAnimationFrame < 20 && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) 
-				|| input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B)) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && 
-				characterState_.isHitCharacter)
+				|| input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))  && characterState_.isHitCharacter)
 			{
 				attackType = "TCMiddlePunch";
 				attackData_.isAttack = false;
@@ -455,8 +453,7 @@ void Player::BehaviorAttackUpdate()
 		if (input_->GetJoystickState())
 		{
 			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 8 && attackData_.attackAnimationFrame < 25
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& characterState_.isHitCharacter)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
 			{
 				attackType = "TCMiddlePunch";
 				attackData_.isAttack = false;
@@ -509,8 +506,7 @@ void Player::BehaviorAttackUpdate()
 		{
 			//弱コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& characterState_.isHitCharacter)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && characterState_.isHitCharacter)
 			{
 				attackType = "TCHighPunch";
 				attackData_.isAttack = false;
@@ -524,8 +520,7 @@ void Player::BehaviorAttackUpdate()
 
 			//中コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& characterState_.isHitCharacter)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
 			{
 				attackType = "HighPunch";
 				attackData_.isAttack = false;
@@ -539,8 +534,7 @@ void Player::BehaviorAttackUpdate()
 
 			//強コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& characterState_.isHitCharacter)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && characterState_.isHitCharacter)
 			{
 				attackType = "Uppercut";
 				attackData_.isAttack = false;
@@ -635,10 +629,8 @@ void Player::BehaviorAttackUpdate()
 		if (input_->GetJoystickState())
 		{
 			//タックル攻撃
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) || 
-				input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || 
-				input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))))
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30 && 
+				input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))
 			{
 				attackType = "Tackle";
 				attackData_.isAttack = false;
@@ -764,13 +756,12 @@ void Player::BehaviorAttackUpdate()
 			ResetCollision();
 		}
 
-		//キャンセルの処理(横A)
+		//キャンセルの処理(超必)
 		if (input_->GetJoystickState())
 		{
 			//強コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 10 && attackData_.attackAnimationFrame < 40
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)
-				&& isFinisherCharge_)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && isFinisherCharge_)
 			{
 				attackData_.isAttack = false;
 				attackData_.isUppercut = false;
