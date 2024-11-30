@@ -137,8 +137,7 @@ void Enemy::Update()
 
 	//振り向きの処理
 	Vector3 playerWorldPosition = player_->GetWorldPosition();
-
-	Vector3 enemyWorldPosition = GetWorldPosition();
+	Vector3 enemyWorldPosition = worldTransform_.translation;
 
 	if (enemyWorldPosition.x > playerWorldPosition.x && characterState_.behavior != Behavior::kJump
 		&& characterState_.behavior != Behavior::kAttack && !characterState_.isDown)
@@ -154,21 +153,21 @@ void Enemy::Update()
 		worldTransform_.rotation.y = characterState_.rightDirectionRotation;;
 	}
 
-	Vector3 difference = playerWorldPosition - enemyWorldPosition;
-	distance_ = Length(difference);
+	difference_ = playerWorldPosition - enemyWorldPosition;
+	difference_.y = 0.0f;
+	distance_ = Length(difference_);
 
 	//後ろに戻れないようにする
 	if (distance_ >= maxDistance_)
 	{
-		if ((worldTransform_.translation.x < previousPositionX_ && characterState_.direction == Direction::Right) ||
-			(worldTransform_.translation.x > previousPositionX_ && characterState_.direction == Direction::Left))
+		if (worldTransform_.translation.x < previousPositionX_ && characterState_.direction == Direction::Right)
 		{
-			worldTransform_.translation.x = previousPositionX_;
+			worldTransform_.translation.x = playerWorldPosition.x - maxDistance_;
 		}
-	}
-	else
-	{
-		previousPositionX_ = worldTransform_.translation.x;
+		else if (worldTransform_.translation.x > previousPositionX_ && characterState_.direction == Direction::Left)
+		{
+			worldTransform_.translation.x = playerWorldPosition.x + maxDistance_;
+		}
 	}
 
 	if (player_->GetFinisherTimer() == 120)

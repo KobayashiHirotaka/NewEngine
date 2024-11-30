@@ -391,6 +391,7 @@ protected:
 	float attackRightEdge_ = 5.5f;
 
 	//距離
+	Vector3 difference_ = { 0.0f,0.0f,0.0f };
 	float distance_ = 0.0f;
 	const float maxDistance_ = 5.0f;
 

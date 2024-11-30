@@ -21,12 +21,12 @@ private:
 
 	Vector3 position_ = { 0.0f,0.8f,-5.0f };
 
-	Vector3 cameraSpeed_ = { 0.5f, 0.5f, 0.04f };
+	Vector3 cameraSpeed_ = { 1.5f, 0.5f, 0.03f };
 
 	float point_ = 2.8f;
 
 	float min_ = -5.0f;
-	float max_ = -9.5f;
+	float max_ = -8.0f;
 
 	float distance_ = 0.0f;
 	float previousDistance_ = 0.0f;

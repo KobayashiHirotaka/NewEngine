@@ -136,7 +136,7 @@ void Player::Update()
 	model_->GetMaterial()->ImGui();
 
 	//振り向きの処理
-	Vector3 playerWorldPosition = GetWorldPosition();
+	Vector3 playerWorldPosition = worldTransform_.translation;
 	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
 
 	if (enemyWorldPosition.x > playerWorldPosition.x && characterState_.behavior != Behavior::kJump
@@ -155,22 +155,26 @@ void Player::Update()
 		isDirectionRight_ = false;
 	}
 
-	Vector3 difference = playerWorldPosition - enemyWorldPosition;
-	distance_ = Length(difference);
+	difference_ = playerWorldPosition - enemyWorldPosition;
+	difference_.y = 0.0f;
+	distance_ = Length(difference_);
 
 	//後ろに戻れないようにする
 	if (distance_ >= maxDistance_)
 	{
-		if ((worldTransform_.translation.x < previousPositionX_ && characterState_.direction == Direction::Right) ||
-			(worldTransform_.translation.x > previousPositionX_ && characterState_.direction == Direction::Left))
+		if (worldTransform_.translation.x < previousPositionX_ && characterState_.direction == Direction::Right)
 		{
-			worldTransform_.translation.x = previousPositionX_;
+			worldTransform_.translation.x = enemyWorldPosition.x - maxDistance_;
+			moveData_.velocity.x = 0.0f;
+		}
+		else if (worldTransform_.translation.x > previousPositionX_ && characterState_.direction == Direction::Left)
+		{
+			worldTransform_.translation.x = enemyWorldPosition.x + maxDistance_;
+			moveData_.velocity.x = 0.0f;
 		}
 	}
-	else
-	{
-		previousPositionX_ = worldTransform_.translation.x;
-	}
+
+	previousPositionX_ = worldTransform_.translation.x;
 
 	//TODO
 	//着地時の押し出し処理
@@ -278,7 +282,7 @@ void Player::ImGui(const char* title)
 	ImGui::Text("hp %d", hp_);
 	ImGui::Text("finisherGaugeIncreaseAmount %f", attackData_.finisherGaugeIncreaseAmount);
 
-	ImGui::Text("previousPositionX %f", previousPositionX_);
+	ImGui::Text("distance %f", distance_);
 
 	model_->GetLight()->ImGui("DirectionalLight");
 	model_->GetPointLight()->ImGui("PointLight");
@@ -926,8 +930,6 @@ void Player::BehaviorJumpInitialize()
 {
 	const float kJumpFirstSpeed_ = 0.3f;
 
-	const float kMoveSpeedX = 0.07f;
-
 	moveData_.velocity.y = kJumpFirstSpeed_;
 
 	if (input_->GetJoystickState())
@@ -957,6 +959,11 @@ void Player::BehaviorJumpInitialize()
 
 void Player::BehaviorJumpUpdate()
 {
+	if (distance_ >= maxDistance_)
+	{
+		moveData_.velocity.x = 0.0f;
+	}
+
 	worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 	const float kGravityAcceleration_ = 0.02f;
