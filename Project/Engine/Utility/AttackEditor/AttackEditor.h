@@ -31,9 +31,11 @@ struct AttackParameter
     //必殺技ゲージ増加量
     float finisherGaugeIncreaseAmount = 0.0f;
 
-    //攻撃の属性
-    std::string attackAttribute;
+    //ヒットストップ
+    int hitStop = 0;
 
+    //攻撃の属性
+    //std::string attackAttribute;
 };
 
 class AttackEditor
@@ -50,7 +52,7 @@ public:
     void LoadFile(const std::string& loadFilePath, std::unordered_map<std::string, AttackParameter>& attackParameters);
 
     void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, 
-        int& damage, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, bool isPlayer);
+        int& damage, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, int hitStop, bool isPlayer);
 
 private:
     AttackEditor() = default;

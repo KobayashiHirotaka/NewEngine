@@ -1,5 +1,6 @@
 #include "ICharacter.h"
 #include "Application/Game/Scenes/GamePlayScene.h"
+#include "Application/Game/GameTimer/GameTimer.h"
 
 void ICharacter::Initialize()
 {
@@ -8,7 +9,6 @@ void ICharacter::Initialize()
 		isDebug_ = true;
 
 #endif 
-
 		//isDebug_ = true;
 }
 
@@ -210,7 +210,7 @@ void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float fra
 
 	animationTime = modelFighterBody->GetAnimationTime();
 
-	animationTime += 1.0f / frameRate;
+	animationTime += frameRate * GameTimer::GetDeltaTime();
 
 	if (isLoop)
 	{

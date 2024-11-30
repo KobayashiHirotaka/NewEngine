@@ -271,6 +271,18 @@
     <Filter Include="ソース ファイル\Project\Game\CameraController">
       <UniqueIdentifier>{127880b0-3a41-4759-9016-eeb418d5d70a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Project\Game\GameTimer">
+      <UniqueIdentifier>{43ccbe13-dfa8-4c51-a22d-d2982d8cc550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\Game\GameTimer">
+      <UniqueIdentifier>{336d9dee-a83b-4559-a287-a78f7ccf1856}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\Game\HitStop">
+      <UniqueIdentifier>{5a505a5f-4ab3-4a1f-bdb1-ef2d4a1ead5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\Game\HitStop">
+      <UniqueIdentifier>{54cdd9d4-4079-44e1-b856-87c1e621cdd7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -464,6 +476,12 @@
     </ClCompile>
     <ClCompile Include="Application\Game\CameraController\CameraController.cpp">
       <Filter>ソース ファイル\Project\Game\CameraController</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\GameTimer\GameTimer.cpp">
+      <Filter>ソース ファイル\Project\Game\GameTimer</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\HitStop\HitStop.cpp">
+      <Filter>ソース ファイル\Project\Game\HitStop</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -716,8 +734,14 @@
     <ClInclude Include="Application\Game\CameraController\CameraController.h">
       <Filter>ヘッダー ファイル\Project\Game\CameraController</Filter>
     </ClInclude>
+    <ClInclude Include="Application\Game\GameTimer\GameTimer.h">
+      <Filter>ヘッダー ファイル\Project\Game\GameTimer</Filter>
+    </ClInclude>
     <ClInclude Include="Application\GameObject\Character\Direction.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\HitStop\HitStop.h">
+      <Filter>ヘッダー ファイル\Project\Game\HitStop</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

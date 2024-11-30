@@ -95,8 +95,6 @@ public:
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
 
 private:
-	void HitStop(int milliseconds);
-
 	void PushEnemy(Vector3& enemyPosition, float pushSpeed);
 
 	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, 

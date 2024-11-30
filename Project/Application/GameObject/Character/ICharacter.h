@@ -12,6 +12,7 @@
 #include "Engine/3D/Particle/ParticleEffectPlayer.h"
 #include "Engine/3D/Model/IGame3dObject.h"
 #include "Application/GameObject/Character/Direction.h"
+#include "Application/Game/HitStop/HitStop.h"
 #include <random>
 #include <numbers>
 #include <unordered_map>
@@ -126,6 +127,9 @@ public:
 		//必殺技ゲージ増加量
 		float finisherGaugeIncreaseAmount = 0.0f;
 
+		//ヒットストップ
+		int hitStop = 0;
+
 		//攻撃を受ける側の必殺技ゲージ増加量
 		const float takeFinisherGaugeIncreaseAmount = 1.5f;
 
@@ -143,6 +147,8 @@ public:
 
 		//必殺技ゲージが増えているかどうか
 		bool isFinisherGaugeIncreased = false;
+
+		bool isHitStop_ = false;
 
 		//弱攻撃
 		bool isLightPunch = false;
@@ -308,6 +314,8 @@ public:
 
 	float GetFinisherGaugeIncreaseAmount() { return attackData_.finisherGaugeIncreaseAmount; };
 
+	int GetHitStop() { return attackData_.hitStop; };
+
 	//エフェクトに関するGetter
 	bool GetIsShake() { return effectState_.isShake; };
 
@@ -394,4 +402,7 @@ protected:
 
 	//KOしているかどうか
 	bool isKO_ = false;
+
+	//攻撃判定時間の調整用
+	const float scaleFacter_ = 100.0f;
 };

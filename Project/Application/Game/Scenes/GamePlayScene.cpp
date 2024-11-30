@@ -2,6 +2,7 @@
 #include "Engine/Framework/SceneManager.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include "Application/GameObject/Character/ICharacter.h"
+#include "Application/Game/GameTimer/GameTimer.h"
 #include <cassert>
 
 int GamePlayScene::migrationTimer = 200;
@@ -173,7 +174,7 @@ void GamePlayScene::Update()
 		if (roundStartTimer_ <= 0)
 		{
 			//時間経過を加算
-			elapsedTime += frameTime;
+			elapsedTime += GameTimer::GetDeltaTime();
 
 			//タイムカウントを更新
 			if (currentSeconds_ > 0 && elapsedTime >= 1.0f && migrationTimer == maxMigrationTime_)

@@ -5,7 +5,8 @@
         "damage": 10,
         "finisherGaugeIncreaseAmount": 0.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "recoveryTime": 65
+        "recoveryTime": 65,
+        "hitStop": 10
     },
     "FinisherSecondAttack": {
         "attackEndTime": 17,
@@ -13,7 +14,8 @@
         "damage": 5,
         "finisherGaugeIncreaseAmount": 0.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "recoveryTime": 25
+        "recoveryTime": 25,
+        "hitStop": 10
     },
     "HighPunch": {
         "attackEndTime": 25,
@@ -21,7 +23,8 @@
         "damage": 7,
         "finisherGaugeIncreaseAmount": 3.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "recoveryTime": 40
+        "recoveryTime": 40,
+        "hitStop": 10
     },
     "JumpAttack": {
         "attackEndTime": 18,
@@ -29,7 +32,8 @@
         "damage": 3,
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "recoveryTime": 25
+        "recoveryTime": 25,
+        "hitStop": 10
     },
     "LightPunch": {
         "attackEndTime": 15,
@@ -37,7 +41,8 @@
         "damage": 2,
         "finisherGaugeIncreaseAmount": 1.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "recoveryTime": 25
+        "recoveryTime": 25,
+        "hitStop": 10
     },
     "MiddlePunch": {
         "attackEndTime": 18,
@@ -45,7 +50,8 @@
         "damage": 5,
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "recoveryTime": 25
+        "recoveryTime": 25,
+        "hitStop": 10
     },
     "TCHighPunch": {
         "attackEndTime": 25,
@@ -53,7 +59,8 @@
         "damage": 6,
         "finisherGaugeIncreaseAmount": 5.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "recoveryTime": 40
+        "recoveryTime": 40,
+        "hitStop": 10
     },
     "TCMiddlePunch": {
         "attackEndTime": 25,
@@ -61,7 +68,8 @@
         "damage": 4,
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "recoveryTime": 35
+        "recoveryTime": 35,
+        "hitStop": 10
     },
     "Tackle": {
         "attackEndTime": 50,
@@ -69,7 +77,8 @@
         "damage": 10,
         "finisherGaugeIncreaseAmount": 4.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "recoveryTime": 100
+        "recoveryTime": 100,
+        "hitStop": 10
     },
     "Uppercut": {
         "attackEndTime": 25,
@@ -77,6 +86,7 @@
         "damage": 8,
         "finisherGaugeIncreaseAmount": 3.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "recoveryTime": 34
+        "recoveryTime": 34,
+        "hitStop": 10
     }
 }

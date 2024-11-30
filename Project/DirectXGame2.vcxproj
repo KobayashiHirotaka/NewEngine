@@ -23,6 +23,8 @@
     <ClCompile Include="Application\GameObject\Ground\Ground.cpp" />
     <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp" />
     <ClCompile Include="Application\Game\CameraController\CameraController.cpp" />
+    <ClCompile Include="Application\Game\GameTimer\GameTimer.cpp" />
+    <ClCompile Include="Application\Game\HitStop\HitStop.cpp" />
     <ClCompile Include="Application\Game\InputLog\InputLog.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameLoseScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
@@ -164,6 +166,8 @@
     <ClInclude Include="Application\GameObject\Ground\Ground.h" />
     <ClInclude Include="Application\GameObject\Skydome\Skydome.h" />
     <ClInclude Include="Application\Game\CameraController\CameraController.h" />
+    <ClInclude Include="Application\Game\GameTimer\GameTimer.h" />
+    <ClInclude Include="Application\Game\HitStop\HitStop.h" />
     <ClInclude Include="Application\Game\InputLog\InputLog.h" />
     <ClInclude Include="Application\Game\Scenes\GameLoseScene.h" />
     <ClInclude Include="Application\Game\Scenes\GamePlayScene.h" />
