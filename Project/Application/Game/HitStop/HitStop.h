@@ -4,11 +4,13 @@
 class HitStop
 {
 public:
-	static void Initialize(const float time);
+	void Start(const float time);
 
-	static void Update();
+	void Update();
 
 private:
-	static float time_;
+	float time_ = 0.0f;;
+
+	bool isActiive_ = false;
 };
 

@@ -276,6 +276,7 @@ void Player::ImGui(const char* title)
 	ImGui::Text("attackStartTime %d", attackData_.attackStartTime);
 	ImGui::Text("swingTime %d", attackData_.attackEndTime);
 	ImGui::Text("recoveryTime %d", attackData_.recoveryTime);
+	ImGui::Text("hitStop %f", attackData_.hitStop);
 
 	ImGui::Text("downAnimationTimer %d", timerData_.downAnimationTimer);
 
@@ -673,7 +674,7 @@ void Player::BehaviorAttackUpdate()
 				aabb_ = { {-0.1f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
-				worldTransform_.translation.x += 0.15f;
+				worldTransform_.translation.x += 9.0f * GameTimer::GetDeltaTime();
 			}
 
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
@@ -699,7 +700,7 @@ void Player::BehaviorAttackUpdate()
 				aabb_ = { {-0.6f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
-				worldTransform_.translation.x -= 0.15f;
+				worldTransform_.translation.x -= 9.0f * GameTimer::GetDeltaTime();
 			}
 
 
@@ -928,7 +929,7 @@ void Player::BehaviorAttackUpdate()
 
 void Player::BehaviorJumpInitialize()
 {
-	const float kJumpFirstSpeed_ = 0.3f;
+	const float kJumpFirstSpeed_ = 18.0f;
 
 	moveData_.velocity.y = kJumpFirstSpeed_;
 
@@ -937,7 +938,7 @@ void Player::BehaviorJumpInitialize()
 		float joystickInput = input_->GetLeftStickX();
 
 		const float kStickThreshold = 0.3f;
-		const float kMoveSpeedX = 0.05f;  
+		const float kMoveSpeedX = 3.0f;  
 
 		if (fabs(joystickInput) > kStickThreshold)
 		{
@@ -964,11 +965,15 @@ void Player::BehaviorJumpUpdate()
 		moveData_.velocity.x = 0.0f;
 	}
 
-	worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
+	Vector3 deltaVelocity = { moveData_.velocity.x * GameTimer::GetDeltaTime(),
+		moveData_.velocity.y * GameTimer::GetDeltaTime(),
+		moveData_.velocity.z * GameTimer::GetDeltaTime() };
 
-	const float kGravityAcceleration_ = 0.02f;
+	worldTransform_.translation = Add(worldTransform_.translation, deltaVelocity);
 
-	Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_,0.0f };
+	const float kGravityAcceleration_ = 80.0f;
+
+	Vector3 accelerationVector_ = { 0.0f,-kGravityAcceleration_ * GameTimer::GetDeltaTime(),0.0f };
 
 	moveData_.velocity = Add(moveData_.velocity, accelerationVector_);
 

@@ -32,7 +32,7 @@ struct AttackParameter
     float finisherGaugeIncreaseAmount = 0.0f;
 
     //ヒットストップ
-    int hitStop = 0;
+    float hitStop = 0.0f;
 
     //攻撃の属性
     //std::string attackAttribute;
@@ -52,7 +52,7 @@ public:
     void LoadFile(const std::string& loadFilePath, std::unordered_map<std::string, AttackParameter>& attackParameters);
 
     void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, 
-        int& damage, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, int hitStop, bool isPlayer);
+        int& damage, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, bool isPlayer);
 
 private:
     AttackEditor() = default;

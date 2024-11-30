@@ -37,9 +37,12 @@ void GamePlayScene::Initialize()
 	levelLoarder_ = LevelLoader::GetInstance();
 	levelLoarder_->LoadLevel("LevelData");
 
-	//InputLogのinstance
+	//InputLogの生成
 	inputLog_ = std::make_unique<InputLog>();
 	inputLog_->Initialize();
+
+	//HitStopの生成
+	hitStop_ = std::make_unique<HitStop>();
 
 	cameraController_ = std::make_unique<CameraController>();
 	cameraController_->Initialize();
@@ -51,7 +54,10 @@ void GamePlayScene::Initialize()
 	enemy_ = game3dObjectManager_->GetGameObject<Enemy>("Enemy");
 
 	player_->SetEnemy(enemy_);
+	player_->SetHitStop(hitStop_.get());
+
 	enemy_->SetPlayer(player_);
+	enemy_->SetHitStop(hitStop_.get());
 
 	//Skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
@@ -336,6 +342,8 @@ void GamePlayScene::Update()
 
 	collisionManager_->CheckAllCollision();
 
+	hitStop_->Update();
+
 	//InputLogの更新
 	inputLog_->Update();
 
@@ -415,14 +423,14 @@ void GamePlayScene::Draw()
 
 	Line::PreDraw();
 
-	//if (isDebug_ && !isOpen_)
-	//{
-	//	//Playerの当たり判定描画
-	//	player_->CollisionDraw(cameraController_->GetCamera());
+	if (isDebug_ && !isOpen_)
+	{
+		//Playerの当たり判定描画
+		player_->CollisionDraw(cameraController_->GetCamera());
 
-	//	//Enemyの当たり判定描画
-	//	enemy_->CollisionDraw(cameraController_->GetCamera());
-	//}
+		//Enemyの当たり判定描画
+		enemy_->CollisionDraw(cameraController_->GetCamera());
+	}
 
 	Line::PostDraw();
 

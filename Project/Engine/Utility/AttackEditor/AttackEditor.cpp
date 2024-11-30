@@ -66,7 +66,7 @@ void AttackEditor::Update()
                     ImGui::SliderInt("damage", &param.damage, 0, 100);
                     ImGui::SliderFloat("guardGaugeIncreaseAmount", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
                     ImGui::SliderFloat("finisherGaugeIncreaseAmount", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
-                    ImGui::SliderInt("hitStop", &param.hitStop, 0, 100);
+                    ImGui::SliderFloat("hitStop", &param.hitStop, 0.0f, 1.0f);
                 }
                 else
                 {
@@ -141,7 +141,7 @@ void AttackEditor::Update()
                     ImGui::SliderInt("damage", &param.damage, 0, 100);
                     ImGui::SliderFloat("guardGaugeIncreaseAmount", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
                     ImGui::SliderFloat("finisherGaugeIncreaseAmount", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
-                    ImGui::SliderInt("hitStop", &param.hitStop, 0, 100);
+                    ImGui::SliderFloat("hitStop", &param.hitStop, 0.0f, 1.0f);
                 }
                 else
                 {
@@ -240,14 +240,14 @@ void AttackEditor::LoadFile(const std::string& loadFilePath, std::unordered_map<
             param["damage"].get<int>(),
             param["guardGaugeIncreaseAmount"].get<float>(),
             param["finisherGaugeIncreaseAmount"].get<float>(),
-            param["hitStop"].get<int>()
+            param["hitStop"].get<float>()
         };
     }
 }
 
 
 void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime,
-    int& damage, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, int hitStop, bool isPlayer)
+    int& damage, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, bool isPlayer)
 {
     const auto& attackParameters = isPlayer ? playerAttackParameter_ : enemyAttackParameter_;
 

@@ -9,6 +9,7 @@
 #include "Application/GameObject/Character/Enemy/EnemyBullet.h"
 #include "Application/GameObject/Skydome/Skydome.h"
 #include "Application/GameObject/BackGround/BackGround.h"
+#include "Application/Game/HitStop/HitStop.h"
 
 class GamePlayScene : public IScene
 {
@@ -69,6 +70,9 @@ private:
 
 	//InputLog
 	std::unique_ptr<InputLog> inputLog_;
+
+	//HitStop
+	std::unique_ptr<HitStop> hitStop_;
 
 	//Camera
 	Camera camera_;

@@ -83,6 +83,9 @@ public:
 		//弾
 		bool isHitBullet = false;
 		bool isHitAirBullet = false;
+
+		//ヒットストップ
+		bool isHitStop = false;
 	};
 
 	//エフェクト
@@ -128,7 +131,7 @@ public:
 		float finisherGaugeIncreaseAmount = 0.0f;
 
 		//ヒットストップ
-		int hitStop = 0;
+		float hitStop = 0.0f;
 
 		//攻撃を受ける側の必殺技ゲージ増加量
 		const float takeFinisherGaugeIncreaseAmount = 1.5f;
@@ -191,6 +194,9 @@ public:
 
 		//ガード演出の時間
 		int guardAnimationTimer = 60;
+
+		//エフェクトを出す時間
+		int effectTimer = 60;
 
 		//スタンの時間
 		int stanTimer = 60;
@@ -314,7 +320,7 @@ public:
 
 	float GetFinisherGaugeIncreaseAmount() { return attackData_.finisherGaugeIncreaseAmount; };
 
-	int GetHitStop() { return attackData_.hitStop; };
+	float GetHitStop() { return attackData_.hitStop; };
 
 	//エフェクトに関するGetter
 	bool GetIsShake() { return effectState_.isShake; };
@@ -340,6 +346,8 @@ public:
 
 	void SetIsGuarded(bool isGuarded) { attackData_.isGuarded = isGuarded; };
 
+	void SetHitStop(HitStop* hitStop) { hitStop_ = hitStop; };
+
 protected:
 	Input* input_ = nullptr;
 
@@ -362,6 +370,9 @@ protected:
 
 	//始動技
 	std::string firstAttack_;
+
+	//HitStop
+	HitStop* hitStop_;
 
 	//パーティクル
 	std::unique_ptr<ParticleEffectPlayer> particleEffectPlayer_;
@@ -404,6 +415,6 @@ protected:
 	//KOしているかどうか
 	bool isKO_ = false;
 
-	//攻撃判定時間の調整用
+	//時間の調整用
 	const float scaleFacter_ = 100.0f;
 };

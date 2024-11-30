@@ -236,9 +236,10 @@ void ICharacter::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
 	//Behaviorの設定
 	characterState_.behaviorRequest = Behavior::kRoot;
 
-	//アニメーション用変数の設定
+	//アニメーション,演出用変数の設定
 	animationIndex_ = animationIndex;
 	timerData_.downAnimationTimer = 60;
+	timerData_.effectTimer = 60;
 	animationTime_ = 0.0f;
 	model_->SetAnimationTime(animationTime_);
 

@@ -122,13 +122,6 @@ void Enemy::Update()
 
 #endif
 
-	if (attackData_.isHitStop_)
-	{
-		HitStop::Initialize(3.0f);
-	}
-
-	HitStop::Update();
-
 	ICharacter::Update();
 
 	//エディタで設定したパラメータをセット
@@ -795,7 +788,7 @@ void Enemy::OnCollision(Collider* collider)
 	
 				ApplyDamage();
 
-				//attackData_.isHitStop_ = true;
+				hitStop_->Start(player_->GetHitStop());
 
 				if (hp_ > 0)
 				{
@@ -810,7 +803,7 @@ void Enemy::OnCollision(Collider* collider)
 
 				isHitAudio_ = true;
 			}
-			else
+			else if(characterState_.isDown && firstAttack_ == "JumpAttack")
 			{
 				if (!isHitAudio_)
 				{
@@ -819,7 +812,12 @@ void Enemy::OnCollision(Collider* collider)
 
 				ApplyDamage();
 
-				//attackData_.isHitStop_ = true;
+				/*attackData_.isHitStop_ = true;
+
+				if (attackData_.isHitStop_)
+				{
+					hitStop_->Start(0.1f);
+				}*/
 			
 				if (hp_ > 0)
 				{
@@ -831,8 +829,6 @@ void Enemy::OnCollision(Collider* collider)
 				}
 
 				AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
-
-				//HitStop(10);
 
 				isHitAudio_ = true;
 			}
@@ -854,8 +850,6 @@ void Enemy::OnCollision(Collider* collider)
 			}
 
 			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
-
-			//HitStop(10);
 		}
 
 		//強パンチ
@@ -909,6 +903,8 @@ void Enemy::OnCollision(Collider* collider)
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			ApplyDamage();
 
+			hitStop_->Start(0.15f);
+
 			if (hp_ > 0)
 			{
 				characterState_.isHitJumpAttack = true;
@@ -919,7 +915,6 @@ void Enemy::OnCollision(Collider* collider)
 			}
 
 			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
-			//HitStop(5);
 		}
 
 		//タックル
@@ -934,7 +929,7 @@ void Enemy::OnCollision(Collider* collider)
 
 				AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
-				//HitStop(6);
+				hitStop_->Start(0.12f);
 			}
 			else if (characterState_.isDown && worldTransform_.translation.y > 0.5f && !isCancel_)
 			{
@@ -952,7 +947,7 @@ void Enemy::OnCollision(Collider* collider)
 
 				AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
-				//HitStop(6);
+				hitStop_->Start(0.3f);
 			}
 		}
 
@@ -1359,7 +1354,6 @@ void Enemy::DownAnimation()
 	if (characterState_.isHitLightPunch)
 	{
 		characterState_.isDown = true;
-		//attackData_.isHitStop_ = false;
 
 		timerData_.downAnimationTimer--;
 
@@ -1393,6 +1387,7 @@ void Enemy::DownAnimation()
 			patternCount_ = RandomMove();
 			isHitAudio_ = false;
 			isKO_ = false;
+			attackData_.isHitStop_ = false;
 			DownAnimationEnd(5, characterState_.isHitLightPunch);
 		}
 	}
@@ -1533,14 +1528,16 @@ void Enemy::DownAnimation()
 	if (characterState_.isHitJumpAttack)
 	{
 		characterState_.isDown = true;
-		timerData_.downAnimationTimer--;
+		timerData_.downAnimationTimer -= static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
 
-		if (timerData_.downAnimationTimer > 55)
+		timerData_.effectTimer--;
+		
+		float particlePosX = (characterState_.direction == Direction::Right) ? -0.1f : 0.1f;
+
+		if (timerData_.effectTimer > 55)
 		{
-			float particlePosX = (characterState_.direction == Direction::Right) ? -0.1f : 0.1f;
-
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
-				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+						worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
 		}
 
 		////修正中
@@ -1570,13 +1567,15 @@ void Enemy::DownAnimation()
 	if (characterState_.isHitTackle)
 	{
 		characterState_.isDown = true;
-		timerData_.downAnimationTimer--;
+		timerData_.downAnimationTimer -= static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
 
 
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
-		float moveX = (characterState_.direction == Direction::Right) ? -0.1f : 0.1f;
+		float moveX = (characterState_.direction == Direction::Right) ? -6.0f : 6.0f;
 
-		if (timerData_.downAnimationTimer > 55)
+		timerData_.effectTimer--;
+
+		if (timerData_.effectTimer > 55)
 		{
 			effectState_.isShake = true;
 
@@ -1598,12 +1597,12 @@ void Enemy::DownAnimation()
 		if (timerData_.downAnimationTimer > 35 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
 				(characterState_.direction == Direction::Right && worldTransform_.translation.x > leftEdge_)))
 		{
-			worldTransform_.translation.x += moveX;
+			worldTransform_.translation.x += moveX * GameTimer::GetDeltaTime();
 		}
 
 		if (worldTransform_.translation.y > 0.0f)
 		{
-			worldTransform_.translation.y -= 0.03f;
+			worldTransform_.translation.y -= 1.8f * GameTimer::GetDeltaTime();
 		}
 		else if (worldTransform_.translation.y <= 0.0f)
 		{
