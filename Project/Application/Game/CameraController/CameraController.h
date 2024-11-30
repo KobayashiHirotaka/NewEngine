@@ -21,7 +21,7 @@ private:
 
 	Vector3 position_ = { 0.0f,0.8f,-5.0f };
 
-	Vector3 cameraSpeed_ = { 0.25f, 0.5f, 0.01f };
+	Vector3 cameraSpeed_ = { 0.5f, 0.5f, 0.04f };
 
 	float point_ = 2.8f;
 

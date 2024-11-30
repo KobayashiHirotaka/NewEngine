@@ -16,47 +16,61 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 	//position_.x = center.x;
 	//position_.y = center.y;
 
-	position_.x = center.x;
+	if (center.x <= 5.0f) 
+	{
+		position_.x = position_.x + (center.x - position_.x) * cameraSpeed_.x;
+	}
+	else 
+	{
+		position_.x = 5.0f; 
+	}
+
+	if (center.x >= -5.0f)
+	{
+		position_.x = position_.x + (center.x - position_.x) * cameraSpeed_.x;
+	}
+	else
+	{
+		position_.x = -5.0f;
+	}
+
 	position_.y = center.y;
 
 	//2体のキャラクターの座標の差
 	Vector3 difference = characterPosition1 - characterPositon2;
 	distance_ = Length(difference);
 
-	if (input_->GetJoystickState())
+	if (distance_ >= point_)
 	{
-		if (distance_ >= point_)
+		if (distance_ > previousDistance_)
 		{
-			if (distance_ > previousDistance_)
+			if (position_.z <= max_)
 			{
-				if (position_.z <= max_)
-				{
-					position_.z = max_;
-				}
-				else
-				{
-					position_.z = Lerp(position_.z, max_, cameraSpeed_.z);
-					//position_.z -= cameraSpeed_.z;
-				}
-			}
-		}
-
-		if (previousDistance_ > distance_)
-		{
-			if (position_.z >= min_)
-			{
-				position_.z = min_;
+				position_.z = max_;
 			}
 			else
 			{
-				position_.z = Lerp(position_.z, min_, cameraSpeed_.z);
-				//position_.z += cameraSpeed_.z;
+				//position_.z = Lerp(position_.z, max_, cameraSpeed_.z);
+				position_.z -= cameraSpeed_.z;
 			}
 		}
-
-		//前フレームの距離を記録
-		previousDistance_ = distance_;
 	}
+
+	if (previousDistance_ > distance_)
+	{
+		if (position_.z >= min_)
+		{
+			position_.z = min_;
+		}
+		else
+		{
+			//position_.z = Lerp(position_.z, min_, cameraSpeed_.z);
+			position_.z += cameraSpeed_.z;
+		}
+	}
+
+	//前フレームの距離を記録
+	previousDistance_ = distance_;
 
 	camera_.translation_ = position_;
 

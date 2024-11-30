@@ -112,12 +112,12 @@ void Enemy::Update()
 
 	if (input_->PressKey(DIK_D))
 	{
-		attackData_.isHitStop_ = true;
+		worldTransform_.translation.x += speedX;
 	}
 
 	if (input_->PressKey(DIK_A))
 	{
-		attackData_.isHitStop_ = false;
+		worldTransform_.translation.x -= speedX;
 	}
 
 #endif
@@ -127,7 +127,7 @@ void Enemy::Update()
 		HitStop::Initialize(3.0f);
 	}
 
-	//HitStop::Update();
+	HitStop::Update();
 
 	ICharacter::Update();
 
@@ -1360,7 +1360,7 @@ void Enemy::DownAnimation()
 	if (characterState_.isHitLightPunch)
 	{
 		characterState_.isDown = true;
-		attackData_.isHitStop_ = false;
+		//attackData_.isHitStop_ = false;
 
 		timerData_.downAnimationTimer--;
 

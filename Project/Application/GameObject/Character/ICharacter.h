@@ -392,7 +392,7 @@ protected:
 
 	//距離
 	float distance_ = 0.0f;
-	const float maxDistance_ = 6.0f;
+	const float maxDistance_ = 5.0f;
 
 	//前フレームのX座標
 	float previousPositionX_ = 0.0f;

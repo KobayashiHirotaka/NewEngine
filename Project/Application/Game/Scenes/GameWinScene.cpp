@@ -133,14 +133,14 @@ void GameWinScene::Draw()
 
 	Skybox::PreDraw();
 
-	skybox_->Draw(skyboxWorldTransform_, camera_);
+	//skybox_->Draw(skyboxWorldTransform_, camera_);
 
 	Skybox::PostDraw();
 
 	Model::PreDraw();
 
-	////Skydomeの描画
-	//skydome_->Draw(camera_);
+	//Skydomeの描画
+	skydome_->Draw(camera_);
 
 	Model::PostDraw();
 
