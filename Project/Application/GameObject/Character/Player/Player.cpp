@@ -1903,7 +1903,7 @@ void Player::DownAnimation()
 			effectState_.isShake = false;
 		}
 
-		if (timerData_.downAnimationTimer > 35 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
+		if (timerData_.downAnimationTimer > 50 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
 			(characterState_.direction == Direction::Right && worldTransform_.translation.x > leftEdge_)))
 		{
 			worldTransform_.translation.x += moveX * GameTimer::GetDeltaTime();

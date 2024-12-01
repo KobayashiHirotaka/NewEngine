@@ -112,9 +112,9 @@ void Enemy::Update()
 
 	if (input_->PressKey(DIK_D))
 	{
-		animationIndex_ = 1;
-		attackType = "Shot";
-		AttackStart(attackData_.isShot);
+		animationIndex_ = 8;
+		attackType = "Tackle";
+		AttackStart(attackData_.isTackle);
 	}
 
 	if (input_->PressKey(DIK_A))
@@ -1591,7 +1591,7 @@ void Enemy::DownAnimation()
 			}
 		}
 
-		if (timerData_.downAnimationTimer > 35 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
+		if (timerData_.downAnimationTimer > 50 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
 				(characterState_.direction == Direction::Right && worldTransform_.translation.x > leftEdge_)))
 		{
 			worldTransform_.translation.x += moveX * GameTimer::GetDeltaTime();
