@@ -1331,7 +1331,7 @@ void Player::OnCollision(Collider* collider)
 
 					AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
-					//HitStop(30);
+					hitStop_->Start(enemy_->GetHitStop());
 				}
 				else if (characterState_.isDown && worldTransform_.translation.y > 0.5f && !isCancel_)
 				{
@@ -1349,7 +1349,7 @@ void Player::OnCollision(Collider* collider)
 
 					AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
-					//HitStop(10);
+					hitStop_->Start(0.3f);
 				}
 			}
 		}
@@ -1881,15 +1881,17 @@ void Player::DownAnimation()
 	if (characterState_.isHitTackle)
 	{
 		characterState_.isDown = true;
-		timerData_.downAnimationTimer--;
+		timerData_.downAnimationTimer -= static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
 
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
-		float moveX = (enemy_->GetDirection() == Direction::Right) ? 0.08f : -0.08f;
+		float moveX = (enemy_->GetDirection() == Direction::Right) ? 6.0f : -6.0f;
+
+		timerData_.effectTimer--;
 
 		aabb_ = (enemy_->GetDirection() == Direction::Right) ?  AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} } :
 			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
 
-		if (timerData_.downAnimationTimer > 55)
+		if (timerData_.effectTimer > 55)
 		{
 			effectState_.isShake = true;
 
@@ -1904,12 +1906,12 @@ void Player::DownAnimation()
 		if (timerData_.downAnimationTimer > 35 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
 			(characterState_.direction == Direction::Right && worldTransform_.translation.x > leftEdge_)))
 		{
-			worldTransform_.translation.x += moveX;
+			worldTransform_.translation.x += moveX * GameTimer::GetDeltaTime();
 		}
 
 		if (worldTransform_.translation.y > 0.0f)
 		{
-			worldTransform_.translation.y -= 0.03f;
+			worldTransform_.translation.y -= 1.8f * GameTimer::GetDeltaTime();
 		}
 		else if (worldTransform_.translation.y <= 0.0f)
 		{

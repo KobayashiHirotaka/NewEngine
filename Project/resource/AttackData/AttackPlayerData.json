@@ -32,7 +32,7 @@
         "damage": 3,
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "hitStop": 0.0,
+        "hitStop": 0.11999999731779099,
         "recoveryTime": 25
     },
     "LightPunch": {
@@ -77,7 +77,7 @@
         "damage": 10,
         "finisherGaugeIncreaseAmount": 4.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "hitStop": 0.0,
+        "hitStop": 0.11999999731779099,
         "recoveryTime": 100
     },
     "Uppercut": {

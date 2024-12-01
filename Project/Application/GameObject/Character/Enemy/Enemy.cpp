@@ -527,7 +527,7 @@ void Enemy::BehaviorAttackUpdate()
 					aabb_ = { {-0.1f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 					SetAABB(aabb_);
 
-					worldTransform_.translation.x += 0.15f;
+					worldTransform_.translation.x += 9.0f * GameTimer::GetDeltaTime();
 				}
 
 				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
@@ -548,7 +548,7 @@ void Enemy::BehaviorAttackUpdate()
 					aabb_ = { {-0.6f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
 					SetAABB(aabb_);
 
-					worldTransform_.translation.x -= 0.15f;
+					worldTransform_.translation.x -= 9.0f * GameTimer::GetDeltaTime();
 				}
 
 
@@ -903,7 +903,7 @@ void Enemy::OnCollision(Collider* collider)
 			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
 			ApplyDamage();
 
-			hitStop_->Start(0.15f);
+			hitStop_->Start(player_->GetHitStop());
 
 			if (hp_ > 0)
 			{
@@ -929,7 +929,7 @@ void Enemy::OnCollision(Collider* collider)
 
 				AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
-				hitStop_->Start(0.12f);
+				hitStop_->Start(player_->GetHitStop());
 			}
 			else if (characterState_.isDown && worldTransform_.translation.y > 0.5f && !isCancel_)
 			{
