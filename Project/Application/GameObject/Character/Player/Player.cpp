@@ -1884,7 +1884,16 @@ void Player::DownAnimation()
 		timerData_.downAnimationTimer -= static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
 
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
-		float moveX = (enemy_->GetDirection() == Direction::Right) ? 6.0f : -6.0f;
+		float moveX = 0.0f;
+
+		if (!enemy_->GetIsDown())
+		{
+			moveX = (enemy_->GetDirection() == Direction::Right) ? 6.0f : -6.0f;
+		}
+		else
+		{
+			moveX = (enemy_->GetDirection() == Direction::Right) ? 3.0f : -3.0f;
+		}
 
 		timerData_.effectTimer--;
 
@@ -1903,7 +1912,7 @@ void Player::DownAnimation()
 			effectState_.isShake = false;
 		}
 
-		if (timerData_.downAnimationTimer > 50 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
+		if (timerData_.downAnimationTimer > 35 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
 			(characterState_.direction == Direction::Right && worldTransform_.translation.x > leftEdge_)))
 		{
 			worldTransform_.translation.x += moveX * GameTimer::GetDeltaTime();
