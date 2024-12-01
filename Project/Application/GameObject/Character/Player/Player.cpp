@@ -2061,7 +2061,7 @@ void Player::HitCombo()
 	{
 		firstAttack_ = "LightPunch";
 		comboCount_ = 1;
-		timerData_.comboTimer = 80;
+		timerData_.comboTimer = 30;
 		timerData_.comboTimer--;
 	}
 

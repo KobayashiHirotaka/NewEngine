@@ -112,7 +112,9 @@ void Enemy::Update()
 
 	if (input_->PressKey(DIK_D))
 	{
-		worldTransform_.translation.x += speedX;
+		animationIndex_ = 12;
+		attackType = "LightPunch";
+		AttackStart(attackData_.isLightPunch);
 	}
 
 	if (input_->PressKey(DIK_A))
