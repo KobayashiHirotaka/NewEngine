@@ -12,23 +12,23 @@ void CameraController::Initialize()
 void CameraController::Update(const Vector3 characterPosition1, const Vector3 characterPositon2, const Direction direction)
 {
 	//2体のキャラクターの中心座標
-	Vector2 center = { (characterPosition1.x + characterPositon2.x) / 2,  ((characterPosition1.y + characterPositon2.y) + 0.8f) / 2 };
+	center_ = { (characterPosition1.x + characterPositon2.x) / 2,  ((characterPosition1.y + characterPositon2.y) + 0.8f) / 2 };
 	//position_.x = center.x;
 	//position_.y = center.y;
 
-	position_.x = position_.x + (center.x - position_.x) * cameraSpeed_.x;
+	position_.x = position_.x + (center_.x - position_.x) * cameraSpeed_.x;
 
-	if (center.x > 5.0f) 
+	if (center_.x > 5.0f)
 	{
 		position_.x = 5.0f;
 	}
 
-	if (center.x < -5.0f)
+	if (center_.x < -5.0f)
 	{
 		position_.x = -5.0f;
 	}
 
-	position_.y = center.y;
+	position_.y = center_.y;
 
 	//2体のキャラクターの座標の差
 	Vector3 difference = characterPosition1 - characterPositon2;

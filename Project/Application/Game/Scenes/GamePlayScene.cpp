@@ -152,7 +152,7 @@ void GamePlayScene::Initialize()
 #endif // ADJUSTMENT
 
 	//ラウンドごとの時間
-	currentSeconds_ = 3;
+	currentSeconds_ = 99;
 	UpdateNumberSprite();
 
 	migrationTimer = maxMigrationTime_;
@@ -252,29 +252,67 @@ void GamePlayScene::Update()
 	//	PostProcess::GetInstance()->SetIsVignetteActive(false);
 	//}
 
-	//右向き用のカメラ移動
+	//必殺技発動時のカメラ移動処理
 	if (player_->GetIsFinisher() && player_->GetFinisherTimer() != 120)
 	{
-		/*if (player_->GetIsDirectionRight())
-		{
-			cameraController_->GetCamera().translation_ = Lerp(cameraController_->GetCamera().translation_, {player_->GetWorldPosition().x + 4.0f,
-			player_->GetWorldPosition().y + 0.8f, player_->GetWorldPosition().z - 4.5f }, 0.1f);
+		isFinisherStart_ = true;
+	}
 
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -0.7f, 0.1f);
+	if (isFinisherStart_)
+	{
+		if (player_->GetIsDirectionRight())
+		{
+			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, player_->GetWorldPosition().x + 4.0f, 0.2f);
+			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -0.7f, 0.2f);
 			cameraController_->GetCamera().UpdateMatrix();
 		}
 		else
 		{
-			cameraController_->GetCamera().translation_ = Lerp(cameraController_->GetCamera().translation_, { player_->GetWorldPosition().x - 4.0f,
-			player_->GetWorldPosition().y + 0.8f, player_->GetWorldPosition().z - 4.5f }, 0.1f);
-
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, 0.7f, 0.1f);
+			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, player_->GetWorldPosition().x - 4.0f, 0.2f);
+			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, 0.7f, 0.2f);
 			cameraController_->GetCamera().UpdateMatrix();
-		}*/
+		}
+
+		if (!player_->GetIsFinisherEffect())
+		{
+			isFinisherStart_ = false;
+			isFinisherEnd_ = true;
+		}
 	}
-	else
+
+	if (isFinisherEnd_)
 	{
-		//CameraControllerの更新
+		if (player_->GetIsDirectionRight())
+		{
+			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, cameraController_->GetCenter().x - 0.1f, 0.2f);
+			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, 0.1f, 0.1f);
+			cameraController_->GetCamera().UpdateMatrix();
+
+			if (cameraController_->GetCamera().rotation_.y >= 0.0f)
+			{
+				isFinisherEnd_ = false;
+				cameraController_->GetCamera().translation_.x = cameraController_->GetCenter().x;
+				cameraController_->GetCamera().rotation_.y = 0.0f;
+			}
+		}
+		else
+		{
+			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, cameraController_->GetCenter().x + 0.1f, 0.2f);
+			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -0.1f, 0.1f);
+			cameraController_->GetCamera().UpdateMatrix();
+
+			if (cameraController_->GetCamera().rotation_.y <= 0.0f)
+			{
+				isFinisherEnd_ = false;
+				cameraController_->GetCamera().translation_.x = cameraController_->GetCenter().x;
+				cameraController_->GetCamera().rotation_.y = 0.0f;
+			}
+		}
+	}
+
+	if (!isFinisherStart_ && !isFinisherEnd_)
+	{
+		//通常時のCameraControllerの更新
 		cameraController_->Update(player_->GetWorldPosition(), enemy_->GetWorldPosition(), player_->GetDirection());
 	}
 

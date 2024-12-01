@@ -14,6 +14,8 @@ public:
 
 	Camera& GetCamera() { return camera_; };
 
+	Vector2 GetCenter() { return center_; };
+
 private:
 	Input* input_ = nullptr;
 
@@ -22,6 +24,8 @@ private:
 	Vector3 position_ = { 0.0f,0.8f,-5.0f };
 
 	Vector3 cameraSpeed_ = { 1.5f, 0.5f, 0.03f };
+
+	Vector2 center_ = { 0.0f,0.0f };
 
 	float point_ = 2.8f;
 

@@ -785,21 +785,20 @@ void Player::BehaviorAttackUpdate()
 	//超必
 	if (attackData_.isFinisher)
 	{
-		bool isFinisherEffect = false;
 		characterState_.isGuard = false;
 
 		if (timerData_.finisherTimer > 40 && attackData_.attackAnimationFrame < 80 && !attackData_.isFinisherFirstAttack && !attackData_.isFinisherSecondAttack)
 		{
-			isFinisherEffect = true;
+			isFinisherEffect_ = true;
 			timerData_.finisherTimer--;
 			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
 		}
 		else
 		{
-			isFinisherEffect = false;
+			isFinisherEffect_ = false;
 		}
 
-		if (isFinisherEffect)
+		if (isFinisherEffect_)
 		{
 			if (isDirectionRight_)
 			{
@@ -1670,6 +1669,8 @@ void Player::FinisherGaugeBarUpdate()
 	{
 		isFinisherCharge_ = false;
 	}
+
+	finisherGauge_ = -50.0f;
 }
 
 void Player::AdjustFinisherGauge(float value)
@@ -1723,6 +1724,8 @@ void Player::Reset()
 	worldTransform_.UpdateMatrixEuler();
 
 	isKO_ = false;
+
+	isFinisherEffect_ = false;
 }
 
 void Player::DownAnimation()
@@ -1841,7 +1844,7 @@ void Player::DownAnimation()
 
 			const float kJumpFirstSpeed_ = 0.15f;
 
-			moveData_.velocity.x = (characterState_.direction == Direction::Right) ? -0.025f : 0.025f;
+			moveData_.velocity.x = (enemy_->GetDirection() == Direction::Right) ? 0.025f : -0.025f;
 			moveData_.velocity.y = kJumpFirstSpeed_;
 		}
 		else if (timerData_.downAnimationTimer > -30)
@@ -1860,8 +1863,8 @@ void Player::DownAnimation()
 			}
 		}
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
-			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
+		aabb_ = (enemy_->GetDirection() == Direction::Right) ? AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} } :
+			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
 
 		animationIndex_ = 7;
 		UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
@@ -1881,10 +1884,10 @@ void Player::DownAnimation()
 		timerData_.downAnimationTimer--;
 
 		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
-		float moveX = (characterState_.direction == Direction::Right) ? -0.08f : 0.08f;
+		float moveX = (enemy_->GetDirection() == Direction::Right) ? 0.08f : -0.08f;
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
-			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
+		aabb_ = (enemy_->GetDirection() == Direction::Right) ?  AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} } :
+			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
 
 		if (timerData_.downAnimationTimer > 55)
 		{
@@ -1972,7 +1975,7 @@ void Player::DownAnimation()
 
 		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x > -4.0f)
 		{
-			worldTransform_.translation.x -= characterState_.direction == Direction::Left ? -0.08f : 0.08f;
+			worldTransform_.translation.x -= enemy_->GetDirection() == Direction::Right ? -0.08f : 0.08f;
 		}
 
 		if (worldTransform_.translation.y > 0.0f)
@@ -1987,8 +1990,8 @@ void Player::DownAnimation()
 		animationIndex_ = 7;
 		UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
-			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
+		aabb_ = (enemy_->GetDirection() == Direction::Right) ? AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} } :
+			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
 
 		SetAABB(aabb_);
 

@@ -91,6 +91,8 @@ public:
 
 	bool GetIsDirectionRight() { return isDirectionRight_; };
 
+	bool GetIsFinisherEffect() { return isFinisherEffect_; };
+
 	//Setter
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
 
@@ -157,5 +159,7 @@ private:
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
 
 	const float value_ = 0.7f;
+
+	bool isFinisherEffect_ = false;
 };
 
