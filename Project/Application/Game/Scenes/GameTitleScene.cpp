@@ -101,7 +101,13 @@ void GameTitleScene::Update()
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
 			isTransitionStart_ = true;
-			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+
+			if (!isPlayAudio_)
+			{
+				audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+			}
+
+			isPlayAudio_ = true;
 		}
 	}
 

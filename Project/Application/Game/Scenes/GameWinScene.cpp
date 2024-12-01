@@ -70,7 +70,13 @@ void GameWinScene::Update()
 			if (isTransitionEnd_)
 			{
 				isTransitionStart_ = true;
-				audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+
+				if (!isPlayAudio_)
+				{
+					audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+				}
+
+				isPlayAudio_ = true;
 			}
 		}
 	}

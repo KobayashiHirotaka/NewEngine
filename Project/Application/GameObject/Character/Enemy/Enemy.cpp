@@ -364,12 +364,12 @@ void Enemy::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {0.0f,0.0f,-0.3f},{0.4f,1.0f,0.3f} };
+				aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.4f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
+				aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 
@@ -1147,6 +1147,9 @@ void Enemy::Move()
 		patternCount_ = 6;
 		characterState_.isGuard = true;
 
+		aabb_ = { {0.05f,0.0f,-0.3f},{0.05f,1.0f,0.3f} };
+		SetAABB(aabb_);
+
 		animationIndex_ = 13;
 		UpdateAnimationTime(animationTime_, true, 1.5f, animationIndex_, model_);
 
@@ -1161,15 +1164,7 @@ void Enemy::Move()
 				isGuardMode_ = false;
 				characterState_.isGuard = false;
 				moveTimer_ = Random(30, 60);
-
-				if (characterState_.isHitCharacter)
-				{
-					patternCount_ = 5;
-				}
-				else
-				{
-					patternCount_ = 2;
-				}
+				patternCount_ = 2;
 			}
 		}
 	}
