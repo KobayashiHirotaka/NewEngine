@@ -110,8 +110,8 @@ private:
 	std::unique_ptr<Sprite>loseSprite_ = nullptr;
 	uint32_t loseTextureHandle_;
 
-	std::unique_ptr<Sprite>drowSprite_ = nullptr;
-	uint32_t drowTextureHandle_;
+	std::unique_ptr<Sprite>timeOverSprite_ = nullptr;
+	uint32_t timeOverTextureHandle_;
 
 	//操作説明用のSprite
 	std::unique_ptr<Sprite>UICommandListSprite_ = nullptr;
@@ -207,6 +207,8 @@ private:
 	bool isDebug_ = false;
 
 	bool isKO_ = false;
+
+	bool isTimeOver_ = false;
 
 	//スティック操作対応
 	const float value_ = 0.7f;
