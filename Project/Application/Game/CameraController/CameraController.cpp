@@ -17,17 +17,6 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 	//position_.y = center.y;
 
 	position_.x = position_.x + (center_.x - position_.x) * cameraSpeed_.x;
-
-	if (center_.x > 5.0f)
-	{
-		position_.x = 5.0f;
-	}
-
-	if (center_.x < -5.0f)
-	{
-		position_.x = -5.0f;
-	}
-
 	position_.y = center_.y;
 
 	//2体のキャラクターの座標の差

@@ -233,7 +233,8 @@ void GamePlayScene::Update()
 
 		if (isShake_)
 		{
-			camera_.translation_.y = Random(shakePower_.x, shakePower_.y);
+			cameraController_->GetCamera().translation_.y = Random(shakePower_.x, shakePower_.y);
+			cameraController_->GetCamera().UpdateMatrix();
 
 			if (--shakeTimer_ < 0)
 			{
@@ -275,8 +276,8 @@ void GamePlayScene::Update()
 
 		if (!player_->GetIsFinisherEffect())
 		{
-			isFinisherStart_ = false;
 			isFinisherEnd_ = true;
+			isFinisherStart_ = false;
 		}
 	}
 
@@ -288,11 +289,11 @@ void GamePlayScene::Update()
 			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, 0.1f, 0.1f);
 			cameraController_->GetCamera().UpdateMatrix();
 
-			if (cameraController_->GetCamera().rotation_.y >= 0.0f)
+			if (cameraController_->GetCamera().translation_.x <= cameraController_->GetCenter().x && cameraController_->GetCamera().rotation_.y >= 0.0f)
 			{
-				isFinisherEnd_ = false;
 				cameraController_->GetCamera().translation_.x = cameraController_->GetCenter().x;
 				cameraController_->GetCamera().rotation_.y = 0.0f;
+				isFinisherEnd_ = false;
 			}
 		}
 		else
@@ -301,11 +302,11 @@ void GamePlayScene::Update()
 			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -0.1f, 0.1f);
 			cameraController_->GetCamera().UpdateMatrix();
 
-			if (cameraController_->GetCamera().rotation_.y <= 0.0f)
+			if (cameraController_->GetCamera().translation_.x >= cameraController_->GetCenter().x && cameraController_->GetCamera().rotation_.y <= 0.0f)
 			{
-				isFinisherEnd_ = false;
 				cameraController_->GetCamera().translation_.x = cameraController_->GetCenter().x;
 				cameraController_->GetCamera().rotation_.y = 0.0f;
+				isFinisherEnd_ = false;
 			}
 		}
 	}

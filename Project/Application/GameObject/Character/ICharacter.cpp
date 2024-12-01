@@ -95,12 +95,12 @@ void ICharacter::Update()
 	//端での攻撃時の処理
 	if (!attackData_.isAttack && worldTransform_.translation.x >= attackRightEdge_ && characterState_.direction == Direction::Right)
 	{
-		worldTransform_.translation.x = attackRightEdge_;
+		worldTransform_.translation.x = Lerp(worldTransform_.translation.x, attackRightEdge_, 0.1f);
 	}
 
 	if (!attackData_.isAttack && worldTransform_.translation.x <= attackLeftEdge_ && characterState_.direction == Direction::Left)
 	{
-		worldTransform_.translation.x = attackLeftEdge_;
+		worldTransform_.translation.x = Lerp(worldTransform_.translation.x, attackLeftEdge_, 0.1f);
 	}
 
 	//ジャンプ中にプレイヤーと当たったときの処理
