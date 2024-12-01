@@ -1978,6 +1978,7 @@ void Player::DownAnimation()
 		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x > -4.0f)
 		{
 			worldTransform_.translation.x -= enemy_->GetDirection() == Direction::Right ? -0.08f : 0.08f;
+			worldTransform_.rotation.y = enemy_->GetDirection() == Direction::Right ? characterState_.leftDirectionRotation : characterState_.rightDirectionRotation;
 		}
 
 		if (worldTransform_.translation.y > 0.0f)

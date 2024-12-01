@@ -112,9 +112,9 @@ void Enemy::Update()
 
 	if (input_->PressKey(DIK_D))
 	{
-		animationIndex_ = 12;
-		attackType = "LightPunch";
-		AttackStart(attackData_.isLightPunch);
+		animationIndex_ = 1;
+		attackType = "Shot";
+		AttackStart(attackData_.isShot);
 	}
 
 	if (input_->PressKey(DIK_A))
