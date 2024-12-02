@@ -7,7 +7,7 @@
 #include "Engine/Utility/Collision/CollisionConfig.h"
 #include "Application/Game/ParticleEffectPlayer/ParticleEffectPlayer.h"
 
-class EnemyBullet : public Collider
+class PlayerBullet : public Collider
 {
 public:
 	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);

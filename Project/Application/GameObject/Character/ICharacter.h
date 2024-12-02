@@ -9,9 +9,9 @@
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
 #include "Engine/2D/Sprite/UI.h"
-#include "Engine/3D/Particle/ParticleEffectPlayer.h"
 #include "Engine/3D/Model/IGame3dObject.h"
 #include "Application/GameObject/Character/Direction.h"
+#include "Application/Game/ParticleEffectPlayer/ParticleEffectPlayer.h"
 #include "Application/Game/HitStop/HitStop.h"
 #include <random>
 #include <numbers>
@@ -284,6 +284,8 @@ public:
 
 	//移動に関するGetter
 	Direction GetDirection() { return characterState_.direction; };
+
+	bool GetIsGuard() { return characterState_.isGuard; };
 
 	//攻撃に関するGetter
 	bool GetIsAttack() { return attackData_.isAttack; };

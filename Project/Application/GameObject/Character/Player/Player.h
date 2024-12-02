@@ -1,6 +1,7 @@
 #pragma once
 #include "Application/GameObject/Character/ICharacter.h"
 #include "Engine/Utility/AttackEditor/AttackEditor.h"
+#include "PlayerBullet.h"
 
 //前方宣言
 class Enemy;
@@ -59,6 +60,13 @@ public:
 
 	void ApplyDamage()override;
 
+	//弾関係の関数
+	void BulletShoot(const Vector3& startPosition, const Vector3& velocity);
+
+	void BulletsUpdate();
+
+	void BulletDraw(const Camera& camera);
+
 	//当たり判定の初期化
 	void ResetCollision()override;
 
@@ -92,6 +100,8 @@ public:
 	bool GetIsDirectionRight() { return isDirectionRight_; };
 
 	bool GetIsFinisherEffect() { return isFinisherEffect_; };
+
+	const std::vector<PlayerBullet*>& GetBullets() const { return bullets_; };
 
 	//Setter
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
@@ -161,5 +171,16 @@ private:
 	const float value_ = 0.7f;
 
 	bool isFinisherEffect_ = false;
+
+	//弾
+	std::unique_ptr<Model> bulletModel_;
+	std::vector<PlayerBullet*> bullets_;
+
+	int shotCooldownTimer_ = 0;
+
+	bool hasShot_ = false;
+
+	//ガードされたか
+	bool isGuarded_ = false;
 };
 

@@ -374,6 +374,11 @@ void GamePlayScene::Update()
 
 	collisionManager_->AddCollider(enemy_);
 
+	for (const auto& bullet : player_->GetBullets())
+	{
+		collisionManager_->AddCollider(bullet);
+	}
+
 	for (const auto& bullet : enemy_->GetBullets())
 	{
 		collisionManager_->AddCollider(bullet);
@@ -437,6 +442,9 @@ void GamePlayScene::Draw()
 	{
 		//Game3dObjectManagerの描画
 		game3dObjectManager_->Draw(cameraController_->GetCamera());
+
+		//Playerの弾の描画
+		player_->BulletDraw(cameraController_->GetCamera());
 
 		//Enemyの弾の描画
 		enemy_->BulletDraw(cameraController_->GetCamera());

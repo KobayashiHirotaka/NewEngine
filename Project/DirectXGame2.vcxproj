@@ -20,12 +20,14 @@
     <ClCompile Include="Application\GameObject\Character\Enemy\EnemyBullet.cpp" />
     <ClCompile Include="Application\GameObject\Character\ICharacter.cpp" />
     <ClCompile Include="Application\GameObject\Character\Player\Player.cpp" />
+    <ClCompile Include="Application\GameObject\Character\Player\PlayerBullet.cpp" />
     <ClCompile Include="Application\GameObject\Ground\Ground.cpp" />
     <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp" />
     <ClCompile Include="Application\Game\CameraController\CameraController.cpp" />
     <ClCompile Include="Application\Game\GameTimer\GameTimer.cpp" />
     <ClCompile Include="Application\Game\HitStop\HitStop.cpp" />
     <ClCompile Include="Application\Game\InputLog\InputLog.cpp" />
+    <ClCompile Include="Application\Game\ParticleEffectPlayer\ParticleEffectPlayer.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameLoseScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameTitleScene.cpp" />
@@ -50,7 +52,6 @@
     <ClCompile Include="Engine\3D\Particle\BaseParticle.cpp" />
     <ClCompile Include="Engine\3D\Particle\EmitterBuilder.cpp" />
     <ClCompile Include="Engine\3D\Particle\Particle.cpp" />
-    <ClCompile Include="Engine\3D\Particle\ParticleEffectPlayer.cpp" />
     <ClCompile Include="Engine\3D\Particle\ParticleEmitter.cpp" />
     <ClCompile Include="Engine\3D\Particle\ParticleModel.cpp" />
     <ClCompile Include="Engine\3D\Particle\ParticleSystem.cpp" />
@@ -163,12 +164,14 @@
     <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBullet.h" />
     <ClInclude Include="Application\GameObject\Character\ICharacter.h" />
     <ClInclude Include="Application\GameObject\Character\Player\Player.h" />
+    <ClInclude Include="Application\GameObject\Character\Player\PlayerBullet.h" />
     <ClInclude Include="Application\GameObject\Ground\Ground.h" />
     <ClInclude Include="Application\GameObject\Skydome\Skydome.h" />
     <ClInclude Include="Application\Game\CameraController\CameraController.h" />
     <ClInclude Include="Application\Game\GameTimer\GameTimer.h" />
     <ClInclude Include="Application\Game\HitStop\HitStop.h" />
     <ClInclude Include="Application\Game\InputLog\InputLog.h" />
+    <ClInclude Include="Application\Game\ParticleEffectPlayer\ParticleEffectPlayer.h" />
     <ClInclude Include="Application\Game\Scenes\GameLoseScene.h" />
     <ClInclude Include="Application\Game\Scenes\GamePlayScene.h" />
     <ClInclude Include="Application\Game\Scenes\GameTitleScene.h" />
@@ -196,7 +199,6 @@
     <ClInclude Include="Engine\3D\Particle\BaseParticle.h" />
     <ClInclude Include="Engine\3D\Particle\EmitterBuilder.h" />
     <ClInclude Include="Engine\3D\Particle\Particle.h" />
-    <ClInclude Include="Engine\3D\Particle\ParticleEffectPlayer.h" />
     <ClInclude Include="Engine\3D\Particle\ParticleEmitter.h" />
     <ClInclude Include="Engine\3D\Particle\ParticleModel.h" />
     <ClInclude Include="Engine\3D\Particle\ParticleSystem.h" />

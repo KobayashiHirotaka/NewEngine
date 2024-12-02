@@ -1,8 +1,8 @@
-#include "EnemyBullet.h"
+#include "PlayerBullet.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include <cassert>
 
-void EnemyBullet::Initialize(Model* model, const Vector3& positon, const Vector3& velocity) 
+void PlayerBullet::Initialize(Model* model, const Vector3& positon, const Vector3& velocity)
 {
 	assert(model);
 
@@ -18,8 +18,8 @@ void EnemyBullet::Initialize(Model* model, const Vector3& positon, const Vector3
 	//当たり判定の設定
 	SetAABB(aabb_);
 
-	SetCollisionAttribute(kCollisionAttributeEnemyBullet);
-	SetCollisionMask(kCollisionMaskEnemyBullet);
+	SetCollisionAttribute(kCollisionAttributePlayerBullet);
+	SetCollisionMask(kCollisionMaskPlayerBullet);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
 
 	//パーティクルエフェクトプレイヤーの生成
@@ -30,7 +30,7 @@ void EnemyBullet::Initialize(Model* model, const Vector3& positon, const Vector3
 	worldTransform_.UpdateMatrixEuler();
 }
 
-void EnemyBullet::Update() 
+void PlayerBullet::Update()
 {
 	//弾を移動させる処理
 	worldTransform_.translation = Add(worldTransform_.translation, velocity_);
@@ -47,12 +47,12 @@ void EnemyBullet::Update()
 	//パーティクルの再生
 	if (velocity_.x < 0.0f)
 	{
-		particleEffectPlayer_->PlayParticle("EnemyLeftBullet", { worldTransform_.translation.x,
+		particleEffectPlayer_->PlayParticle("PlayerLeftBullet", { worldTransform_.translation.x,
 					worldTransform_.translation.y,worldTransform_.translation.z });
 	}
 	else
 	{
-		particleEffectPlayer_->PlayParticle("EnemyRightBullet", { worldTransform_.translation.x,
+		particleEffectPlayer_->PlayParticle("PlayerRightBullet", { worldTransform_.translation.x,
 					worldTransform_.translation.y,worldTransform_.translation.z });
 	}
 
@@ -69,7 +69,7 @@ void EnemyBullet::Update()
 	ImGui::End();
 }
 
-void EnemyBullet::Draw(const Camera& camera)
+void PlayerBullet::Draw(const Camera& camera)
 {
 	//弾本体の描画
 	if (isDead_ == false)
@@ -78,7 +78,7 @@ void EnemyBullet::Draw(const Camera& camera)
 	}
 }
 
-void EnemyBullet::ParticleDraw(const Camera& camera)
+void PlayerBullet::ParticleDraw(const Camera& camera)
 {
 	//弾のパーティクルの描画
 	if (isDead_ == false)
@@ -88,16 +88,16 @@ void EnemyBullet::ParticleDraw(const Camera& camera)
 }
 
 
-void EnemyBullet::OnCollision(Collider* collider)
+void PlayerBullet::OnCollision(Collider* collider)
 {
 	//プレイヤーと弾が当たった時の処理
-	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer || collider->GetCollisionAttribute() & kCollisionAttributePlayerBullet)
+	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemy || collider->GetCollisionAttribute() & kCollisionAttributeEnemyBullet)
 	{
 		isDead_ = true;
 	}
 }
 
-Vector3 EnemyBullet::GetWorldPosition()
+Vector3 PlayerBullet::GetWorldPosition()
 {
 	Vector3 worldPos;
 

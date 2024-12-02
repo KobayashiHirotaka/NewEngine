@@ -97,6 +97,8 @@ public:
 
 	const std::vector<EnemyBullet*>& GetBullets() const{ return bullets_; };
 
+	bool GetIsGuardMode() { return isGuardMode_; };
+
 	//Setter
 	void SetPlayer(Player* player) { player_ = player; };
 
@@ -133,7 +135,7 @@ private:
 	//プレイヤー
 	Player* player_ = nullptr;
 
-	//敵の弾テスト用
+	//弾
 	std::unique_ptr<Model> bulletModel_;
 	std::vector<EnemyBullet*> bullets_;
 

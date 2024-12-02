@@ -33,7 +33,7 @@
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 0.0,
         "hitStop": 0.11999999731779099,
-        "recoveryTime": 25
+        "recoveryTime": 40
     },
     "LightPunch": {
         "attackEndTime": 15,
@@ -52,6 +52,15 @@
         "guardGaugeIncreaseAmount": 0.0,
         "hitStop": 0.0,
         "recoveryTime": 25
+    },
+    "Shot": {
+        "attackEndTime": 0,
+        "attackStartTime": 4,
+        "damage": 8,
+        "finisherGaugeIncreaseAmount": 2.0,
+        "guardGaugeIncreaseAmount": 6.0,
+        "hitStop": 0.0,
+        "recoveryTime": 45
     },
     "TCHighPunch": {
         "attackEndTime": 25,

@@ -109,9 +109,6 @@
     <Filter Include="ソース ファイル\Engine\3d\Light">
       <UniqueIdentifier>{37c16b38-2e4d-4ee8-bb66-697a1b4c8537}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Engine\3d\Camera">
-      <UniqueIdentifier>{85a72027-3992-45a4-a55e-61af2ef7f784}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Engine\3d\Model">
       <UniqueIdentifier>{3a1acfc6-3a38-4a4c-9d4a-260b02afc518}</UniqueIdentifier>
     </Filter>
@@ -283,6 +280,15 @@
     <Filter Include="ヘッダー ファイル\Project\Game\HitStop">
       <UniqueIdentifier>{54cdd9d4-4079-44e1-b856-87c1e621cdd7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Project\Game\ParticleEffectPlayer">
+      <UniqueIdentifier>{b862be1a-63a3-40b5-a108-3ca73ed3f9e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\Game\ParticleEffectPlayer">
+      <UniqueIdentifier>{ed76d32a-1f72-414e-958b-191758640864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Engine\2d\Camera">
+      <UniqueIdentifier>{85a72027-3992-45a4-a55e-61af2ef7f784}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -325,7 +331,7 @@
       <Filter>ソース ファイル\Engine\3d\WorldTransform</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\Camera\Camera.cpp">
-      <Filter>ソース ファイル\Engine\3d\Camera</Filter>
+      <Filter>ソース ファイル\Engine\2d\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Components\Input\Input.cpp">
       <Filter>ソース ファイル\Engine\Components\Input</Filter>
@@ -433,7 +439,7 @@
       <Filter>ソース ファイル\Engine\3d\Light</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\Camera\DebugCamera.cpp">
-      <Filter>ソース ファイル\Engine\3d\Camera</Filter>
+      <Filter>ソース ファイル\Engine\2d\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Utility\LevelLoader\LevelLoader.cpp">
       <Filter>ソース ファイル\Engine\Utility\LevelLoader</Filter>
@@ -452,9 +458,6 @@
     </ClCompile>
     <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp">
       <Filter>ソース ファイル\Engine\3d\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\3D\Particle\ParticleEffectPlayer.cpp">
-      <Filter>ソース ファイル\Engine\3d\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Application\GameObject\BackGround\BackGround.cpp">
       <Filter>ソース ファイル\Project\GameObject\BackGround</Filter>
@@ -482,6 +485,12 @@
     </ClCompile>
     <ClCompile Include="Application\Game\HitStop\HitStop.cpp">
       <Filter>ソース ファイル\Project\Game\HitStop</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Player\PlayerBullet.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\ParticleEffectPlayer\ParticleEffectPlayer.cpp">
+      <Filter>ソース ファイル\Project\Game\ParticleEffectPlayer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -710,9 +719,6 @@
     <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h">
       <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\3D\Particle\ParticleEffectPlayer.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="Application\GameObject\BackGround\BackGround.h">
       <Filter>ヘッダー ファイル\Project\GameObject\BackGround</Filter>
     </ClInclude>
@@ -742,6 +748,12 @@
     </ClInclude>
     <ClInclude Include="Application\Game\HitStop\HitStop.h">
       <Filter>ヘッダー ファイル\Project\Game\HitStop</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Player\PlayerBullet.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\ParticleEffectPlayer\ParticleEffectPlayer.h">
+      <Filter>ヘッダー ファイル\Project\Game\ParticleEffectPlayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

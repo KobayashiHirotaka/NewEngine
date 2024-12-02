@@ -112,9 +112,7 @@ void Enemy::Update()
 
 	if (input_->PressKey(DIK_D))
 	{
-		animationIndex_ = 8;
-		attackType = "Tackle";
-		AttackStart(attackData_.isTackle);
+		isGuardMode_ = true;
 	}
 
 	if (input_->PressKey(DIK_A))
@@ -277,7 +275,7 @@ void Enemy::ImGui(const char* title)
 	ImGui::Text("comboTimer %d", timerData_.comboTimer);
 	ImGui::Text("hp %d", hp_);
 
-	ImGui::Text("previousPositionX %f", previousPositionX_);
+	ImGui::Text("GuardTimer %d", guardTimer_);
 
 	model_->GetLight()->ImGui("DirectionalLight");
 	model_->GetPointLight()->ImGui("PointLight");
@@ -712,6 +710,86 @@ void Enemy::UpdateAnimationTime(float animationTime, bool isLoop, float frameRat
 
 void Enemy::OnCollision(Collider* collider)
 {
+	//弾との判定
+	if (collider->GetCollisionAttribute() & kCollisionAttributePlayerBullet)
+	{
+		if (!characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y <= 0.0f)
+		{
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
+
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+			ApplyDamage();
+
+			if (hp_ > 0)
+			{
+				characterState_.isHitBullet = true;
+				attackData_.isFinisher = false;
+			}
+			else
+			{
+				characterState_.isHitTCHighPunch = true;
+				attackData_.isFinisher = false;
+			}
+
+			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
+
+			//HitStop(5);
+		}
+
+		if (!characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.0f)
+		{
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
+
+			audio_->SoundPlayMP3(damageSoundHandle_, false, 1.0f);
+			ApplyDamage();
+
+			characterState_.isHitAirBullet = true;
+
+			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
+
+			//HitStop(5);
+		}
+
+		if (characterState_.isGuard && characterState_.direction == Direction::Right)
+		{
+			timerData_.guardAnimationTimer--;
+
+			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
+			worldTransform_.translation.x -= 0.1f;
+			AdjustGuardGauge();
+
+			if (timerData_.guardAnimationTimer > 55)
+			{
+
+				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + 0.1f,
+					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+			}
+
+			animationIndex_ = 2;
+			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+		}
+		else if (characterState_.isGuard && characterState_.direction == Direction::Left)
+		{
+			timerData_.guardAnimationTimer--;
+
+			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
+			worldTransform_.translation.x += 0.1f;
+			AdjustGuardGauge();
+
+			if (timerData_.guardAnimationTimer > 55)
+			{
+
+				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - 0.1f,
+					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+			}
+
+			animationIndex_ = 2;
+			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+		}
+	}
+
 	//プレイヤーの近接攻撃との当たり判定
 	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
 	{
@@ -722,7 +800,7 @@ void Enemy::OnCollision(Collider* collider)
 			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x -= 0.3f;
+			worldTransform_.translation.x -= 0.2f;
 			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
@@ -737,7 +815,7 @@ void Enemy::OnCollision(Collider* collider)
 			timerData_.guardAnimationTimer--;
 
 			audio_->SoundPlayMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x += 0.3f;
+			worldTransform_.translation.x += 0.2f;
 			AdjustGuardGauge();
 
 			if (timerData_.guardAnimationTimer > 55)
@@ -1133,8 +1211,34 @@ void Enemy::Move()
 	}
 
 	//ガード
-	if (player_->GetIsAttack() && player_->GetIsTackle() && !characterState_.isDown)
+	if ((player_->GetIsAttack() && (player_->GetIsTackle() || player_->GetIsJumpAttack() && distance <= 1.0f) || patternCount_ == 6) && !characterState_.isDown)
 	{
+		patternCount_ = 6;
+		if (!isGuardMode_)
+		{
+			if (player_->GetIsAttack() && player_->GetIsTackle())
+			{
+				guardTimer_ = 4;
+				aabb_ = { {0.05f,0.0f,-0.3f},{0.05f,1.0f,0.3f} };
+				SetAABB(aabb_);
+			}
+			else
+			{
+				if (player_->GetIsJumpAttack())
+				{
+					guardTimer_ = 10;
+					aabb_ = { {-0.2f,0.0f,-0.3f},{0.2f,1.0f,0.3f} };
+					SetAABB(aabb_);
+				}
+				else
+				{
+					guardTimer_ = Random(20, 40);
+					aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+					SetAABB(aabb_);
+				}
+			}
+		}
+
 		isGuardMode_ = true;
 	}
 
@@ -1146,20 +1250,27 @@ void Enemy::Move()
 
 	if (isGuardMode_)
 	{
-		patternCount_ = 6;
 		characterState_.isGuard = true;
 
-		aabb_ = { {0.05f,0.0f,-0.3f},{0.05f,1.0f,0.3f} };
-		SetAABB(aabb_);
-
 		animationIndex_ = 13;
-		UpdateAnimationTime(animationTime_, true, 1.5f, animationIndex_, model_);
+		UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
 
-		//確定反撃
-		if (!player_->GetIsAttack())
+		guardTimer_--;
+
+		//突進攻撃に対しての確定反撃
+		if (!player_->GetIsAttack() && player_->GetIsTackle())
 		{
-			guardTimer_--;
-
+			if (guardTimer_ < 0)
+			{
+				guardTimer_ = 4;
+				isGuardMode_ = false;
+				characterState_.isGuard = false;
+				moveTimer_ = Random(30, 60);
+				patternCount_ = 2;
+			}
+		}
+		else
+		{
 			if (guardTimer_ < 0)
 			{
 				guardTimer_ = 4;
@@ -1726,6 +1837,82 @@ void Enemy::DownAnimation()
 		}
 	}
 
+	//弾攻撃
+	if (characterState_.isHitBullet)
+	{
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		if (!isParticle_)
+		{
+			effectState_.isShake = true;
+
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + (characterState_.direction == Direction::Left ? -0.1f : 0.1f),
+				worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
+
+			isParticle_ = true;
+		}
+
+		animationIndex_ = 4;
+		UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+
+		if (timerData_.downAnimationTimer < 30 && hp_ > 0)
+		{
+			DownAnimationEnd(5, characterState_.isHitBullet);
+			ResetCollision();
+
+			isParticle_ = false;
+			isKO_ = false;
+		}
+	}
+	else if (characterState_.isHitAirBullet)
+	{
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		if (!isParticle_)
+		{
+			effectState_.isShake = true;
+
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + (characterState_.direction == Direction::Left ? -0.1f : 0.1f),
+				worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
+
+			isParticle_ = true;
+		}
+
+		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x > -4.0f)
+		{
+			worldTransform_.translation.x -= player_->GetDirection() == Direction::Right ? -0.08f : 0.08f;
+			worldTransform_.rotation.y = player_->GetDirection() == Direction::Right ? characterState_.leftDirectionRotation : characterState_.rightDirectionRotation;
+		}
+
+		if (worldTransform_.translation.y > 0.0f)
+		{
+			worldTransform_.translation.y -= 0.03f;
+		}
+		else if (worldTransform_.translation.y <= 0.0f)
+		{
+			worldTransform_.translation.y = 0.0f;
+		}
+
+		animationIndex_ = 6;
+		UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+
+		aabb_ = (player_->GetDirection() == Direction::Right) ? AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} } :
+			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
+
+		SetAABB(aabb_);
+
+		if (timerData_.downAnimationTimer < 30 && hp_ > 0)
+		{
+			DownAnimationEnd(4, characterState_.isHitAirBullet);
+			ResetCollision();
+
+			isParticle_ = false;
+			isKO_ = false;
+		}
+	}
+
 	if (timerData_.downAnimationTimer < 50 && hp_ <= 0)
 	{
 		isKO_ = true;
@@ -1770,11 +1957,11 @@ int Enemy::RandomMove()
 
 	if (hp_ >= 50.0f)
 	{
-		actions = { 1, 2, 2 };
+		actions = { 1, 2, 2 ,6 };
 	}
 	else
 	{
-		actions = { 1, 1, 2 };
+		actions = { 1, 1, 2, 6 };
 	}
 
 	std::random_device rd;
@@ -1790,11 +1977,11 @@ int Enemy::RandomAttackOrMove()
 
 	if (hp_ >= 50.0f)
 	{
-		actions = { 2, 2, 3 };
+		actions = { 2, 2, 3 ,6 };
 	}
 	else
 	{
-		actions = { 2, 2, 4 };
+		actions = { 2, 2, 4, 6 };
 	}
 
 	std::random_device rd;
@@ -1808,7 +1995,7 @@ int Enemy::RandomBulletOrMove()
 {
 	std::vector<int> actions;
 
-	actions = { 2, 2, 4 };
+	actions = { 2, 2, 4, 6 };
 
 	std::random_device rd;
 	std::mt19937 gen(rd());

@@ -8,6 +8,12 @@ Player::~Player()
 	delete hpBar_.sprite_;
 	delete guardGaugeBar_.sprite_;
 	delete finisherGaugeBar_.sprite_;
+
+	for (auto& bullet : bullets_)
+	{
+		delete bullet;
+	}
+	bullets_.clear();
 }
 
 void Player::Initialize()
@@ -24,6 +30,9 @@ void Player::Initialize()
 
 	//WorldTransformの初期化
 	worldTransform_.Initialize();
+
+	//弾用モデル
+	bulletModel_.reset(Model::CreateFromOBJ("resource/bullet", "bullet.obj"));
 
 	//当たり判定の設定
 	SetAABB(aabb_);
@@ -203,6 +212,8 @@ void Player::Update()
 
 	lineBox_->Update(aabb_);
 
+	BulletsUpdate();
+
 	particleEffectPlayer_->Update();
 
 	//worldTransformの更新
@@ -250,9 +261,22 @@ void Player::SpriteDraw()
 	}
 }
 
+void Player::BulletDraw(const Camera& camera)
+{
+	for (auto& bullet : bullets_)
+	{
+		bullet->Draw(camera);
+	}
+}
+
 void Player::ParticleDraw(const Camera& camera)
 {
 	particleEffectPlayer_->Draw(camera);
+
+	for (auto& bullet : bullets_)
+	{
+		bullet->ParticleDraw(camera);
+	}
 }
 
 void Player::ImGui(const char* title)
@@ -297,7 +321,7 @@ void Player::ImGui(const char* title)
 
 void Player::BehaviorRootInitialize()
 {
-	animationIndex_ = 19;
+	animationIndex_ = 5;
 }
 
 void Player::BehaviorRootUpdate()
@@ -319,7 +343,7 @@ void Player::BehaviorRootUpdate()
 
 		//攻撃
 		//弱攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B)) && !characterState_.isDown)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !characterState_.isDown)
 		{
 			attackType = "LightPunch";
 			AttackStart(attackData_.isLightPunch);
@@ -353,6 +377,13 @@ void Player::BehaviorRootUpdate()
 		{
 			attackType = "Uppercut";
 			AttackStart(attackData_.isUppercut);
+		}
+
+		//弾
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown)
+		{
+			attackType = "Shot";
+			AttackStart(attackData_.isShot);
 		}
 
 		//必殺技
@@ -509,23 +540,23 @@ void Player::BehaviorAttackUpdate()
 		//キャンセルの処理
 		if (input_->GetJoystickState())
 		{
-			//弱コンボ
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && characterState_.isHitCharacter)
-			{
-				attackType = "TCHighPunch";
-				attackData_.isAttack = false;
-				attackData_.isTCMiddlePunch = false;
-				attackData_.isTCHighPunch = true;
-				animationTime_ = 0.0f;
-				attackData_.attackAnimationFrame = 0;
-				model_->SetAnimationTime(animationTime_);
-				ResetCollision();
-			}
+			////弱コンボ
+			//if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
+			//	&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && characterState_.isHitCharacter)
+			//{
+			//	attackType = "TCHighPunch";
+			//	attackData_.isAttack = false;
+			//	attackData_.isTCMiddlePunch = false;
+			//	attackData_.isTCHighPunch = true;
+			//	animationTime_ = 0.0f;
+			//	attackData_.attackAnimationFrame = 0;
+			//	model_->SetAnimationTime(animationTime_);
+			//	ResetCollision();
+			//}
 
 			//中コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && characterState_.isHitCharacter)
 			{
 				attackType = "HighPunch";
 				attackData_.isAttack = false;
@@ -539,7 +570,7 @@ void Player::BehaviorAttackUpdate()
 
 			//強コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && characterState_.isHitCharacter)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
 			{
 				attackType = "Uppercut";
 				attackData_.isAttack = false;
@@ -635,7 +666,7 @@ void Player::BehaviorAttackUpdate()
 		{
 			//タックル攻撃
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30 && 
-				input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))
+				input_->IsPressButtonEnter(XINPUT_GAMEPAD_X))
 			{
 				attackType = "Tackle";
 				attackData_.isAttack = false;
@@ -766,7 +797,7 @@ void Player::BehaviorAttackUpdate()
 		{
 			//強コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 10 && attackData_.attackAnimationFrame < 40
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && isFinisherCharge_)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && isFinisherCharge_)
 			{
 				attackData_.isAttack = false;
 				attackData_.isUppercut = false;
@@ -777,6 +808,52 @@ void Player::BehaviorAttackUpdate()
 				ResetCollision();
 				finisherGauge_ = 0.0f;
 			}
+		}
+
+		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
+	}
+
+	//弾攻撃
+	if (attackData_.isShot)
+	{
+		animationIndex_ = 19;
+		characterState_.isGuard = false;
+
+		Vector2 respownPos = { 0.2f,0.5f };
+
+		if (!characterState_.isDown)
+		{
+			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+		}
+
+		//まだ弾を発射していない場合
+		if (!hasShot_)
+		{
+			if (characterState_.direction == Direction::Right)
+			{
+				//弾の発射位置を敵の位置に設定
+				Vector3 bulletStartPosition = { worldTransform_.translation.x + respownPos.x, worldTransform_.translation.y + respownPos.y, worldTransform_.translation.z };
+				Vector3 bulletVelocity = Vector3{ 0.1f, 0.0f, 0.0f };
+
+				BulletShoot(bulletStartPosition, bulletVelocity);
+			}
+			else if (characterState_.direction == Direction::Left)
+			{
+				//弾の発射位置を敵の位置に設定
+				Vector3 bulletStartPosition = { worldTransform_.translation.x - respownPos.x, worldTransform_.translation.y + respownPos.y, worldTransform_.translation.z };
+				Vector3 bulletVelocity = Vector3{ -0.1f, 0.0f, 0.0f };
+
+				BulletShoot(bulletStartPosition, bulletVelocity);
+			}
+
+			hasShot_ = true;  // 弾を発射したことを記録
+		}
+
+		if (characterState_.isDown || attackData_.attackAnimationFrame >= attackData_.recoveryTime)
+		{
+			hasShot_ = false;
+			AttackEnd(attackData_.isShot);
+			ResetCollision();
 		}
 
 		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
@@ -926,6 +1003,32 @@ void Player::BehaviorAttackUpdate()
 	}
 }
 
+void Player::BulletShoot(const Vector3& startPosition, const Vector3& velocity)
+{
+	// 弾を生成してリストに追加する
+	PlayerBullet* newBullet = new PlayerBullet();
+	newBullet->Initialize(bulletModel_.get(), startPosition, velocity);
+	bullets_.push_back(newBullet);
+}
+
+void Player::BulletsUpdate()
+{
+	// 弾の更新と衝突判定などを行う
+	for (auto it = bullets_.begin(); it != bullets_.end();)
+	{
+		(*it)->Update();
+		if ((*it)->GetIsDead())
+		{
+			delete* it;
+			it = bullets_.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
 void Player::BehaviorJumpInitialize()
 {
 	const float kJumpFirstSpeed_ = 18.0f;
@@ -998,7 +1101,7 @@ void Player::BehaviorJumpUpdate()
 
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, true, 1.5f, animationIndex_, model_);
+			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
 		}
 
 		if (characterState_.direction == Direction::Right)
@@ -1014,18 +1117,35 @@ void Player::BehaviorJumpUpdate()
 
 		EvaluateAttackTiming();
 
-		if (worldTransform_.translation.y <= 0.0f && attackData_.attackAnimationFrame > attackData_.recoveryTime)
+		if (enemy_->GetIsGuard() && characterState_.isHitCharacter)
 		{
-			AttackEnd(attackData_.isJumpAttack);
-			ResetCollision();
+			isGuarded_ = true;
 		}
 
-		if (worldTransform_.translation.y <= 0.0f || characterState_.isDown)
+		if (isGuarded_)
 		{
-			worldTransform_.translation.y = 0.0f;
-			moveData_.velocity = { 0.0f,0.0f,0.0f };
-			AttackEnd(attackData_.isJumpAttack);
-			ResetCollision();
+			if (worldTransform_.translation.y <= 0.0f || characterState_.isDown)
+			{
+				worldTransform_.translation.y = 0.0f;
+				moveData_.velocity = { 0.0f,0.0f,0.0f };
+			}
+
+			if (attackData_.attackAnimationFrame > attackData_.recoveryTime)
+			{
+				AttackEnd(attackData_.isJumpAttack);
+				ResetCollision();
+				isGuarded_ = false;
+			}
+		}
+		else
+		{
+			if (worldTransform_.translation.y <= 0.0f || characterState_.isDown)
+			{
+				worldTransform_.translation.y = 0.0f;
+				moveData_.velocity = { 0.0f,0.0f,0.0f };
+				AttackEnd(attackData_.isJumpAttack);
+				ResetCollision();
+			}
 		}
 
 		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
@@ -1546,7 +1666,7 @@ void Player::Move()
 		}
 		else if(timerData_.guardAnimationTimer == 60 && !characterState_.isGuard)
 		{
-			animationIndex_ = 19;
+			animationIndex_ = 5;
 			UpdateAnimationTime(animationTime_, true, 1.0f, animationIndex_, model_);
 		}
 	}
@@ -1669,8 +1789,6 @@ void Player::FinisherGaugeBarUpdate()
 	{
 		isFinisherCharge_ = false;
 	}
-
-	finisherGauge_ = -50.0f;
 }
 
 void Player::AdjustFinisherGauge(float value)
