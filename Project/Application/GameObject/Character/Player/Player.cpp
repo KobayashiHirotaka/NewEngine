@@ -297,7 +297,7 @@ void Player::ImGui(const char* title)
 
 void Player::BehaviorRootInitialize()
 {
-	animationIndex_ = 5;
+	animationIndex_ = 19;
 }
 
 void Player::BehaviorRootUpdate()
@@ -1546,7 +1546,7 @@ void Player::Move()
 		}
 		else if(timerData_.guardAnimationTimer == 60 && !characterState_.isGuard)
 		{
-			animationIndex_ = 5;
+			animationIndex_ = 19;
 			UpdateAnimationTime(animationTime_, true, 1.0f, animationIndex_, model_);
 		}
 	}
