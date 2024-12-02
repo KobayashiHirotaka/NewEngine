@@ -1669,8 +1669,6 @@ void Player::FinisherGaugeBarUpdate()
 	{
 		isFinisherCharge_ = false;
 	}
-
-	finisherGauge_ = -50.0f;
 }
 
 void Player::AdjustFinisherGauge(float value)
