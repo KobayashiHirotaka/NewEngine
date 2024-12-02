@@ -27,7 +27,7 @@
                 "type": "",
                 "hp": 100.0,
                 "maxHp": 100.0,
-                "frontSpeed": "0.02",
+                "frontSpeed": "0.03",
                 "backSpeed": "0.02",
                 "guardGauge": "0.00",
                 "maxGuardGauge": "50.00",

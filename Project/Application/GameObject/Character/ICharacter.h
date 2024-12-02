@@ -11,6 +11,8 @@
 #include "Engine/2D/Sprite/UI.h"
 #include "Engine/3D/Particle/ParticleEffectPlayer.h"
 #include "Engine/3D/Model/IGame3dObject.h"
+#include "Application/GameObject/Character/Direction.h"
+#include "Application/Game/HitStop/HitStop.h"
 #include <random>
 #include <numbers>
 #include <unordered_map>
@@ -18,13 +20,6 @@
 class ICharacter : public IGame3dObject
 {
 public:
-	//向き
-	enum class Direction
-	{
-		Left,
-		Right
-	};
-
 	//行動
 	enum class Behavior
 	{
@@ -88,6 +83,9 @@ public:
 		//弾
 		bool isHitBullet = false;
 		bool isHitAirBullet = false;
+
+		//ヒットストップ
+		bool isHitStop = false;
 	};
 
 	//エフェクト
@@ -132,6 +130,9 @@ public:
 		//必殺技ゲージ増加量
 		float finisherGaugeIncreaseAmount = 0.0f;
 
+		//ヒットストップ
+		float hitStop = 0.0f;
+
 		//攻撃を受ける側の必殺技ゲージ増加量
 		const float takeFinisherGaugeIncreaseAmount = 1.5f;
 
@@ -149,6 +150,8 @@ public:
 
 		//必殺技ゲージが増えているかどうか
 		bool isFinisherGaugeIncreased = false;
+
+		bool isHitStop_ = false;
 
 		//弱攻撃
 		bool isLightPunch = false;
@@ -191,6 +194,9 @@ public:
 
 		//ガード演出の時間
 		int guardAnimationTimer = 60;
+
+		//エフェクトを出す時間
+		int effectTimer = 60;
 
 		//スタンの時間
 		int stanTimer = 60;
@@ -314,6 +320,8 @@ public:
 
 	float GetFinisherGaugeIncreaseAmount() { return attackData_.finisherGaugeIncreaseAmount; };
 
+	float GetHitStop() { return attackData_.hitStop; };
+
 	//エフェクトに関するGetter
 	bool GetIsShake() { return effectState_.isShake; };
 
@@ -338,6 +346,8 @@ public:
 
 	void SetIsGuarded(bool isGuarded) { attackData_.isGuarded = isGuarded; };
 
+	void SetHitStop(HitStop* hitStop) { hitStop_ = hitStop; };
+
 protected:
 	Input* input_ = nullptr;
 
@@ -361,6 +371,9 @@ protected:
 	//始動技
 	std::string firstAttack_;
 
+	//HitStop
+	HitStop* hitStop_;
+
 	//パーティクル
 	std::unique_ptr<ParticleEffectPlayer> particleEffectPlayer_;
 	bool isParticle_ = false;
@@ -381,16 +394,27 @@ protected:
 	bool isFinisherCharge_ = false;
 
 	//画面端
-	const float leftEdge_ = -4.0f;
-	const float rightEdge_ = 4.0f;
+	float leftEdge_ = -6.0f;
+	float rightEdge_ = 6.0f;
 
 	//攻撃時にめり込まないための画面端
-	const float attackLeftEdge_ = -3.5f;
-	const float attackRightEdge_ = 3.5f;
+	float attackLeftEdge_ = -5.5f;
+	float attackRightEdge_ = 5.5f;
+
+	//距離
+	Vector3 difference_ = { 0.0f,0.0f,0.0f };
+	float distance_ = 0.0f;
+	const float maxDistance_ = 5.0f;
+
+	//前フレームのX座標
+	float previousPositionX_ = 0.0f;
 
 	//エディター用
 	std::string attackType;
 
 	//KOしているかどうか
 	bool isKO_ = false;
+
+	//時間の調整用
+	const float scaleFacter_ = 100.0f;
 };

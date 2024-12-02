@@ -78,7 +78,7 @@ void GameTitleScene::Initialize()
 
 void GameTitleScene::Update()
 {
-#ifdef _DEBUG
+#ifdef _ADJUSTMENT
 
 	//デバッグ用のシーン切り替え
 	if (input_->PushKey(DIK_SPACE))
@@ -87,7 +87,7 @@ void GameTitleScene::Update()
 		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 	}
 
-#endif // DEBUG
+#endif 
 
 	//Skydomeの更新
 	skydome_->Update();
@@ -101,7 +101,13 @@ void GameTitleScene::Update()
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
 		{
 			isTransitionStart_ = true;
-			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+
+			if (!isPlayAudio_)
+			{
+				audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+			}
+
+			isPlayAudio_ = true;
 		}
 	}
 

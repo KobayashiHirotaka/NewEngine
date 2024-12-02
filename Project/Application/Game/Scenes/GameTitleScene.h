@@ -88,4 +88,6 @@ private:
 	//スティック操作対応
 	const float value_ = 0.7f;
 	int stickInputCooldown_ = 10;
+
+	bool isPlayAudio_ = false;
 };

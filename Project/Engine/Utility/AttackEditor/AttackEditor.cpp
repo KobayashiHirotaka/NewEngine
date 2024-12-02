@@ -19,7 +19,7 @@ void AttackEditor::Update()
 
     if (ImGui::BeginTabBar("##tabs"))
     {
-        // Player タブ
+        //Playerタブ
         if (ImGui::BeginTabItem("Player"))
         {
             if (ImGui::Button("Add"))
@@ -40,7 +40,7 @@ void AttackEditor::Update()
                 char buf[256];
                 strcpy_s(buf, sizeof(buf), tabName.c_str());
 
-                if (ImGui::CollapsingHeader(buf, ImGuiTreeNodeFlags_DefaultOpen))
+                if (ImGui::CollapsingHeader(buf))
                 {
                     if (ImGui::InputText("##TabName", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue))
                     {
@@ -66,6 +66,7 @@ void AttackEditor::Update()
                     ImGui::SliderInt("damage", &param.damage, 0, 100);
                     ImGui::SliderFloat("guardGaugeIncreaseAmount", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
                     ImGui::SliderFloat("finisherGaugeIncreaseAmount", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
+                    ImGui::SliderFloat("hitStop", &param.hitStop, 0.0f, 1.0f);
                 }
                 else
                 {
@@ -93,7 +94,7 @@ void AttackEditor::Update()
             ImGui::EndTabItem();
         }
 
-        // Enemy タブ
+        //Enemyタブ
         if (ImGui::BeginTabItem("Enemy"))
         {
             if (ImGui::Button("Add"))
@@ -114,7 +115,7 @@ void AttackEditor::Update()
                 char buf[256];
                 strcpy_s(buf, sizeof(buf), tabName.c_str());
 
-                if (ImGui::CollapsingHeader(buf, ImGuiTreeNodeFlags_DefaultOpen))
+                if (ImGui::CollapsingHeader(buf))
                 {
                     if (ImGui::InputText("##TabName", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue))
                     {
@@ -140,6 +141,7 @@ void AttackEditor::Update()
                     ImGui::SliderInt("damage", &param.damage, 0, 100);
                     ImGui::SliderFloat("guardGaugeIncreaseAmount", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
                     ImGui::SliderFloat("finisherGaugeIncreaseAmount", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
+                    ImGui::SliderFloat("hitStop", &param.hitStop, 0.0f, 1.0f);
                 }
                 else
                 {
@@ -185,7 +187,8 @@ void AttackEditor::SaveFile(const std::string& saveFilePath, const std::unordere
             {"recoveryTime", param.recoveryTime},
             {"damage", param.damage},
             {"guardGaugeIncreaseAmount", param.guardGaugeIncreaseAmount},
-            {"finisherGaugeIncreaseAmount", param.finisherGaugeIncreaseAmount}
+            {"finisherGaugeIncreaseAmount", param.finisherGaugeIncreaseAmount},
+            {"hitStop",param.hitStop}
         };
     }
 
@@ -236,14 +239,15 @@ void AttackEditor::LoadFile(const std::string& loadFilePath, std::unordered_map<
             param["recoveryTime"].get<int>(),
             param["damage"].get<int>(),
             param["guardGaugeIncreaseAmount"].get<float>(),
-            param["finisherGaugeIncreaseAmount"].get<float>()
+            param["finisherGaugeIncreaseAmount"].get<float>(),
+            param["hitStop"].get<float>()
         };
     }
 }
 
 
 void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime,
-    int& damage, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, bool isPlayer)
+    int& damage, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, bool isPlayer)
 {
     const auto& attackParameters = isPlayer ? playerAttackParameter_ : enemyAttackParameter_;
 
@@ -256,5 +260,6 @@ void AttackEditor::SetAttackParameters(const std::string& name, int& attackStart
         damage = it->second.damage;
         guardGaugeIncreaseAmount = it->second.guardGaugeIncreaseAmount;
         finisherGaugeIncreaseAmount = it->second.finisherGaugeIncreaseAmount;
+        hitStop = it->second.hitStop;
     }
 }

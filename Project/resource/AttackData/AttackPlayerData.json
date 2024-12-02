@@ -5,6 +5,7 @@
         "damage": 10,
         "finisherGaugeIncreaseAmount": 0.0,
         "guardGaugeIncreaseAmount": 0.0,
+        "hitStop": 0.0,
         "recoveryTime": 65
     },
     "FinisherSecondAttack": {
@@ -13,6 +14,7 @@
         "damage": 5,
         "finisherGaugeIncreaseAmount": 0.0,
         "guardGaugeIncreaseAmount": 0.0,
+        "hitStop": 0.0,
         "recoveryTime": 25
     },
     "HighPunch": {
@@ -21,6 +23,7 @@
         "damage": 7,
         "finisherGaugeIncreaseAmount": 3.0,
         "guardGaugeIncreaseAmount": 0.0,
+        "hitStop": 0.0,
         "recoveryTime": 40
     },
     "JumpAttack": {
@@ -29,6 +32,7 @@
         "damage": 3,
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 0.0,
+        "hitStop": 0.11999999731779099,
         "recoveryTime": 25
     },
     "LightPunch": {
@@ -37,6 +41,7 @@
         "damage": 2,
         "finisherGaugeIncreaseAmount": 1.0,
         "guardGaugeIncreaseAmount": 0.0,
+        "hitStop": 0.10000000149011612,
         "recoveryTime": 25
     },
     "MiddlePunch": {
@@ -45,6 +50,7 @@
         "damage": 5,
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 0.0,
+        "hitStop": 0.0,
         "recoveryTime": 25
     },
     "TCHighPunch": {
@@ -53,6 +59,7 @@
         "damage": 6,
         "finisherGaugeIncreaseAmount": 5.0,
         "guardGaugeIncreaseAmount": 0.0,
+        "hitStop": 0.0,
         "recoveryTime": 40
     },
     "TCMiddlePunch": {
@@ -61,6 +68,7 @@
         "damage": 4,
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 0.0,
+        "hitStop": 0.0,
         "recoveryTime": 35
     },
     "Tackle": {
@@ -69,6 +77,7 @@
         "damage": 10,
         "finisherGaugeIncreaseAmount": 4.0,
         "guardGaugeIncreaseAmount": 0.0,
+        "hitStop": 0.11999999731779099,
         "recoveryTime": 100
     },
     "Uppercut": {
@@ -77,6 +86,7 @@
         "damage": 8,
         "finisherGaugeIncreaseAmount": 3.0,
         "guardGaugeIncreaseAmount": 0.0,
+        "hitStop": 0.0,
         "recoveryTime": 34
     }
 }

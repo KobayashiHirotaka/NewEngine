@@ -103,8 +103,6 @@ public:
 	void SetIsKO(bool isKO) { isKO_ = isKO; };
 
 private:
-	void HitStop(int milliseconds);
-
 	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, 
 		int animationIndex, std::unique_ptr<Model>& modelFighterBody)override;
 

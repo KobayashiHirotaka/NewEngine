@@ -101,6 +101,8 @@ void EngineCore::Update()
 
 	postProcess_->Update();
 
+	GameTimer::Update();
+
 	imguiManager_->EndFlame();
 }
 

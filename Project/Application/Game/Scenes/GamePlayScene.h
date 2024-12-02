@@ -3,11 +3,13 @@
 #include "Engine/3D/Skybox/Skybox.h"
 #include "Engine/3D/Line/Line.h"
 #include "Application/Game/InputLog/InputLog.h"
+#include "Application/Game/CameraController/CameraController.h"
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Character/Enemy/EnemyBullet.h"
 #include "Application/GameObject/Skydome/Skydome.h"
 #include "Application/GameObject/BackGround/BackGround.h"
+#include "Application/Game/HitStop/HitStop.h"
 
 class GamePlayScene : public IScene
 {
@@ -69,10 +71,16 @@ private:
 	//InputLog
 	std::unique_ptr<InputLog> inputLog_;
 
+	//HitStop
+	std::unique_ptr<HitStop> hitStop_;
+
 	//Camera
 	Camera camera_;
 	DebugCamera debugCamera_;
 	bool isDebugCamera_ = false;
+
+	//CameraController
+	std::unique_ptr<CameraController> cameraController_;
 
 	//Timer用のSprite
 	std::unique_ptr<Sprite>numberTensSprite_ = nullptr;
@@ -102,8 +110,8 @@ private:
 	std::unique_ptr<Sprite>loseSprite_ = nullptr;
 	uint32_t loseTextureHandle_;
 
-	std::unique_ptr<Sprite>drowSprite_ = nullptr;
-	uint32_t drowTextureHandle_;
+	std::unique_ptr<Sprite>timeOverSprite_ = nullptr;
+	uint32_t timeOverTextureHandle_;
 
 	//操作説明用のSprite
 	std::unique_ptr<Sprite>UICommandListSprite_ = nullptr;
@@ -200,7 +208,12 @@ private:
 
 	bool isKO_ = false;
 
+	bool isTimeOver_ = false;
+
 	//スティック操作対応
 	const float value_ = 0.7f;
 	int stickInputCooldown_ = 10;
+
+	bool isFinisherStart_ = false;
+	bool isFinisherEnd_ = false;
 };

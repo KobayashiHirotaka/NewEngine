@@ -56,7 +56,7 @@ void GameWinScene::Update()
 		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
 	}
 
-#endif // DEBUG
+#endif 
 
 
 	//Skydomeの更新
@@ -70,7 +70,13 @@ void GameWinScene::Update()
 			if (isTransitionEnd_)
 			{
 				isTransitionStart_ = true;
-				audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+
+				if (!isPlayAudio_)
+				{
+					audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+				}
+
+				isPlayAudio_ = true;
 			}
 		}
 	}
@@ -133,14 +139,14 @@ void GameWinScene::Draw()
 
 	Skybox::PreDraw();
 
-	skybox_->Draw(skyboxWorldTransform_, camera_);
+	//skybox_->Draw(skyboxWorldTransform_, camera_);
 
 	Skybox::PostDraw();
 
 	Model::PreDraw();
 
-	////Skydomeの描画
-	//skydome_->Draw(camera_);
+	//Skydomeの描画
+	skydome_->Draw(camera_);
 
 	Model::PostDraw();
 

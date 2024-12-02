@@ -20,12 +20,12 @@ void BackGround::Initialize()
 	worldTransform_[0].Initialize();
 	worldTransform_[0].translation = { 6.8f,0.0f,13.0f };
 	worldTransform_[0].rotation.y = 3.8f;
-	worldTransform_[0].scale = { 4.0f,4.0f,1.8f };
+	worldTransform_[0].scale = { 5.0f,4.0f,1.8f };
 
 	worldTransform_[1].Initialize();
-	worldTransform_[1].translation = { -5.8f,0.0f,5.0f };
+	worldTransform_[1].translation = { -7.0f,0.0f,5.0f };
 	worldTransform_[1].rotation.y = -0.8f;
-	worldTransform_[1].scale = { 2.0f,2.0f,1.8f };
+	worldTransform_[1].scale = { 3.0f,2.0f,1.8f };
 
 	worldTransform_[2].Initialize();
 	worldTransform_[2].translation = { 0.0f,0.0f,12.3f };

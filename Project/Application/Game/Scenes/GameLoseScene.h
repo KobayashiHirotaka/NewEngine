@@ -57,6 +57,8 @@ private:
 	//Skybox
 	std::unique_ptr<Skybox> skybox_;
 	WorldTransform skyboxWorldTransform_;
+
+	bool isPlayAudio_ = false;
 };
 
 

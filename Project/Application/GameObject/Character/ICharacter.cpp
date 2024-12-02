@@ -1,14 +1,14 @@
 #include "ICharacter.h"
 #include "Application/Game/Scenes/GamePlayScene.h"
+#include "Application/Game/GameTimer/GameTimer.h"
 
 void ICharacter::Initialize()
 {
-#ifdef _DEBUG
+#ifdef _ADJUSTMENT
 
 		isDebug_ = true;
 
-#endif // DEBUG
-
+#endif 
 		//isDebug_ = true;
 }
 
@@ -95,12 +95,12 @@ void ICharacter::Update()
 	//端での攻撃時の処理
 	if (!attackData_.isAttack && worldTransform_.translation.x >= attackRightEdge_ && characterState_.direction == Direction::Right)
 	{
-		worldTransform_.translation.x = attackRightEdge_;
+		worldTransform_.translation.x = Lerp(worldTransform_.translation.x, attackRightEdge_, 0.1f);
 	}
 
 	if (!attackData_.isAttack && worldTransform_.translation.x <= attackLeftEdge_ && characterState_.direction == Direction::Left)
 	{
-		worldTransform_.translation.x = attackLeftEdge_;
+		worldTransform_.translation.x = Lerp(worldTransform_.translation.x, attackLeftEdge_, 0.1f);
 	}
 
 	//ジャンプ中にプレイヤーと当たったときの処理
@@ -121,8 +121,12 @@ void ICharacter::Update()
 
 	characterState_.isHitCharacter = false;
 
-	ImGui::Begin("CharacterDEBUG");
+	ImGui::Begin("Character");
 	ImGui::Checkbox("isDebug", &isDebug_);
+	ImGui::SliderFloat("LeftEdge", &leftEdge_, -10.0f, 1.0f);
+	ImGui::SliderFloat("RightEdge", &rightEdge_, 1.0f, 10.0f);
+	ImGui::SliderFloat("attackLeftEdge", &attackLeftEdge_, -10.0f, 1.0f);
+	ImGui::SliderFloat("attackRightEdge", &attackRightEdge_, 1.0f, 10.0f);
 	ImGui::End();
 }
 
@@ -206,7 +210,7 @@ void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float fra
 
 	animationTime = modelFighterBody->GetAnimationTime();
 
-	animationTime += 1.0f / frameRate;
+	animationTime += frameRate * GameTimer::GetDeltaTime();
 
 	if (isLoop)
 	{
@@ -232,9 +236,10 @@ void ICharacter::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
 	//Behaviorの設定
 	characterState_.behaviorRequest = Behavior::kRoot;
 
-	//アニメーション用変数の設定
+	//アニメーション,演出用変数の設定
 	animationIndex_ = animationIndex;
 	timerData_.downAnimationTimer = 60;
+	timerData_.effectTimer = 60;
 	animationTime_ = 0.0f;
 	model_->SetAnimationTime(animationTime_);
 

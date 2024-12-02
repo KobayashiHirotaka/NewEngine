@@ -2,6 +2,7 @@
 #include "Engine/Framework/SceneManager.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include "Application/GameObject/Character/ICharacter.h"
+#include "Application/Game/GameTimer/GameTimer.h"
 #include <cassert>
 
 int GamePlayScene::migrationTimer = 200;
@@ -36,9 +37,15 @@ void GamePlayScene::Initialize()
 	levelLoarder_ = LevelLoader::GetInstance();
 	levelLoarder_->LoadLevel("LevelData");
 
-	//InputLogのinstance
+	//InputLogの生成
 	inputLog_ = std::make_unique<InputLog>();
 	inputLog_->Initialize();
+
+	//HitStopの生成
+	hitStop_ = std::make_unique<HitStop>();
+
+	cameraController_ = std::make_unique<CameraController>();
+	cameraController_->Initialize();
 
 	//Playerの生成、初期化
 	player_ = game3dObjectManager_->GetGameObject<Player>("Player");
@@ -47,7 +54,10 @@ void GamePlayScene::Initialize()
 	enemy_ = game3dObjectManager_->GetGameObject<Enemy>("Enemy");
 
 	player_->SetEnemy(enemy_);
+	player_->SetHitStop(hitStop_.get());
+
 	enemy_->SetPlayer(player_);
+	enemy_->SetHitStop(hitStop_.get());
 
 	//Skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
@@ -110,11 +120,11 @@ void GamePlayScene::Initialize()
 	//勝敗表示
 	winTextureHandle_ = TextureManager::LoadTexture("resource/images/WIN.png");
 	loseTextureHandle_ = TextureManager::LoadTexture("resource/images/LOSE.png");
-	drowTextureHandle_ = TextureManager::LoadTexture("resource/images/Drow.png");
+	timeOverTextureHandle_ = TextureManager::LoadTexture("resource/images/TIMEOVER.png");
 
 	winSprite_.reset(Sprite::Create(winTextureHandle_, { 0.0f, 0.0f }));
 	loseSprite_.reset(Sprite::Create(loseTextureHandle_, { 0.0f, 0.0f }));
-	drowSprite_.reset(Sprite::Create(drowTextureHandle_, { 0.0f, 0.0f }));
+	timeOverSprite_.reset(Sprite::Create(timeOverTextureHandle_, { 0.0f, 0.0f }));
 
 	//UIの枠
 	frameUITextureHandle_ = TextureManager::LoadTexture("resource/images/frameUI.png");
@@ -135,11 +145,11 @@ void GamePlayScene::Initialize()
 	//SE
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 
-#ifdef _DEBUG
+#ifdef _ADJUSTMENT
 
 	isDebug_ = true;
 
-#endif // DEBUG
+#endif // ADJUSTMENT
 
 	//ラウンドごとの時間
 	currentSeconds_ = 99;
@@ -170,7 +180,7 @@ void GamePlayScene::Update()
 		if (roundStartTimer_ <= 0)
 		{
 			//時間経過を加算
-			elapsedTime += frameTime;
+			elapsedTime += GameTimer::GetDeltaTime();
 
 			//タイムカウントを更新
 			if (currentSeconds_ > 0 && elapsedTime >= 1.0f && migrationTimer == maxMigrationTime_)
@@ -189,41 +199,16 @@ void GamePlayScene::Update()
 		if (player_->GetIsKO() && migrationTimer > 20)
 		{
 			isKO_ = true;
-
-			if (player_->GetIsDirectionRight())
-			{
-				camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x - 2.0f,
-				player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 5.5f }, 0.1f);
-			}
-			else
-			{
-				camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x + 2.0f,
-				player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 5.5f }, 0.1f);
-			}
 		}
 		else if (enemy_->GetIsKO() && migrationTimer > 20)
 		{
 			isKO_ = true;
-
-			if (player_->GetIsDirectionRight())
-			{
-				camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x + 2.0f,
-				player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 5.5f }, 0.1f);
-			}
-			else
-			{
-				camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x - 2.0f,
-				player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 5.5f }, 0.1f);
-			}
 		}
 		else
 		{
 			isKO_ = false;
 
 			enemy_->SetIsKO(false);
-
-			Vector3 translation_ = { 0.0f,1.0f,-13.0f };
-			camera_.translation_ = Lerp(camera_.translation_, translation_, 0.005f);
 		}
 
 		if (!isKO_)
@@ -248,52 +233,88 @@ void GamePlayScene::Update()
 
 		if (isShake_)
 		{
-			camera_.translation_.y = Random(shakePower_.x, shakePower_.y);
+			cameraController_->GetCamera().translation_.y = Random(shakePower_.x, shakePower_.y);
+			cameraController_->GetCamera().UpdateMatrix();
 
 			if (--shakeTimer_ < 0)
 			{
 				isShake_ = false;
-				camera_.translation_.y = 1.0f;
 			}
 		}
 	}
 
-	//PostEffectの値変更
-	if (player_->GetHP() >= -25.0f)
+	////PostEffectの値変更
+	//if (player_->GetHP() >= -25.0f)
+	//{
+	//	PostProcess::GetInstance()->SetIsVignetteActive(true);
+	//}
+	//else
+	//{
+	//	PostProcess::GetInstance()->SetIsVignetteActive(false);
+	//}
+
+	//必殺技発動時のカメラ移動処理
+	if (player_->GetIsFinisher() && player_->GetFinisherTimer() != 120)
 	{
-		PostProcess::GetInstance()->SetIsVignetteActive(true);
-	}
-	else
-	{
-		PostProcess::GetInstance()->SetIsVignetteActive(false);
+		isFinisherStart_ = true;
 	}
 
-	//右向き用のカメラ移動
-	if (player_->GetIsFinisher() && player_->GetFinisherTimer() != 120)
+	if (isFinisherStart_)
 	{
 		if (player_->GetIsDirectionRight())
 		{
-			camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x + 4.0f,
-			player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 4.5f }, 0.1f);
-
-			camera_.rotation_.y = Lerp(camera_.rotation_.y, -0.7f, 0.1f);
+			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, player_->GetWorldPosition().x + 4.0f, 0.2f);
+			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -0.7f, 0.2f);
+			cameraController_->GetCamera().UpdateMatrix();
 		}
 		else
 		{
-			camera_.translation_ = Lerp(camera_.translation_, { player_->GetWorldPosition().x - 4.0f,
-			player_->GetWorldPosition().y + 1.0f, player_->GetWorldPosition().z - 4.5f }, 0.1f);
+			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, player_->GetWorldPosition().x - 4.0f, 0.2f);
+			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, 0.7f, 0.2f);
+			cameraController_->GetCamera().UpdateMatrix();
+		}
 
-			camera_.rotation_.y = Lerp(camera_.rotation_.y, 0.7f, 0.1f);
+		if (!player_->GetIsFinisherEffect())
+		{
+			isFinisherEnd_ = true;
+			isFinisherStart_ = false;
 		}
 	}
-	else
-	{
-		Vector3 translation_ = { 0.0f,1.0f,-13.0f };
 
-		//camera_.translation_ = translation_;
-		//camera_.rotation_.y = 0.0f;
-		camera_.translation_ = Lerp(camera_.translation_, translation_, 0.1f);
-		camera_.rotation_.y = Lerp(camera_.rotation_.y, 0.0f, 0.1f);
+	if (isFinisherEnd_)
+	{
+		if (player_->GetIsDirectionRight())
+		{
+			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, cameraController_->GetCenter().x - 0.1f, 0.2f);
+			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, 0.1f, 0.1f);
+			cameraController_->GetCamera().UpdateMatrix();
+
+			if (cameraController_->GetCamera().translation_.x <= cameraController_->GetCenter().x && cameraController_->GetCamera().rotation_.y >= 0.0f)
+			{
+				cameraController_->GetCamera().translation_.x = cameraController_->GetCenter().x;
+				cameraController_->GetCamera().rotation_.y = 0.0f;
+				isFinisherEnd_ = false;
+			}
+		}
+		else
+		{
+			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, cameraController_->GetCenter().x + 0.1f, 0.2f);
+			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -0.1f, 0.1f);
+			cameraController_->GetCamera().UpdateMatrix();
+
+			if (cameraController_->GetCamera().translation_.x >= cameraController_->GetCenter().x && cameraController_->GetCamera().rotation_.y <= 0.0f)
+			{
+				cameraController_->GetCamera().translation_.x = cameraController_->GetCenter().x;
+				cameraController_->GetCamera().rotation_.y = 0.0f;
+				isFinisherEnd_ = false;
+			}
+		}
+	}
+
+	if (!isFinisherStart_ && !isFinisherEnd_)
+	{
+		//通常時のCameraControllerの更新
+		cameraController_->Update(player_->GetWorldPosition(), enemy_->GetWorldPosition(), player_->GetDirection());
 	}
 
 	//勝ち負けの処理
@@ -360,13 +381,15 @@ void GamePlayScene::Update()
 
 	collisionManager_->CheckAllCollision();
 
+	hitStop_->Update();
+
 	//InputLogの更新
 	inputLog_->Update();
 
 	//Camera、DebugCameraの処理
 	debugCamera_.Update();
 
-#ifdef _DEBUG
+#ifdef _ADJUSTMENT
 
 	if (input_->PushKey(DIK_K))
 	{
@@ -377,7 +400,7 @@ void GamePlayScene::Update()
 		isDebugCamera_ = false;
 	}
 
-#endif // DEBUG
+#endif 
 
 	if (isDebugCamera_)
 	{
@@ -401,25 +424,25 @@ void GamePlayScene::Draw()
 
 	Skybox::PreDraw();
 
-	//skybox_->Draw(skyboxWorldTransform_, camera_);
+	//skybox_->Draw(skyboxWorldTransform_, cameraController_->GetCamera());
 
 	Skybox::PostDraw();
 
 	Model::PreDraw();
 
 	////Skydomeの描画
-	skydome_->Draw(camera_);
+	skydome_->Draw(cameraController_->GetCamera());
 
 	if (!isOpen_)
 	{
 		//Game3dObjectManagerの描画
-		game3dObjectManager_->Draw(camera_);
+		game3dObjectManager_->Draw(cameraController_->GetCamera());
 
 		//Enemyの弾の描画
-		enemy_->BulletDraw(camera_);
+		enemy_->BulletDraw(cameraController_->GetCamera());
 
 		//BackGroundの描画
-		backGround_->Draw(camera_);
+		backGround_->Draw(cameraController_->GetCamera());
 	}
 
 	Model::PostDraw();
@@ -429,10 +452,10 @@ void GamePlayScene::Draw()
 	if (GamePlayScene::roundStartTimer_ <= 0 && !isOpen_)
 	{
 		//Playerのparticle描画
-		player_->ParticleDraw(camera_);
+		player_->ParticleDraw(cameraController_->GetCamera());
 
 		//Enemyのparticle描画
-		enemy_->ParticleDraw(camera_);
+		enemy_->ParticleDraw(cameraController_->GetCamera());
 	}
 
 	ParticleModel::PostDraw();
@@ -441,20 +464,26 @@ void GamePlayScene::Draw()
 
 	if (isDebug_ && !isOpen_)
 	{
-		player_->CollisionDraw(camera_);
+		//Playerの当たり判定描画
+		player_->CollisionDraw(cameraController_->GetCamera());
 
-		enemy_->CollisionDraw(camera_);
+		//Enemyの当たり判定描画
+		enemy_->CollisionDraw(cameraController_->GetCamera());
 	}
 
 	Line::PostDraw();
 
 	Model::BonePreDraw();
 
-	//playerのbone描画
-	//player_->BoneDraw(camera_);
+#ifdef _ADJUSTMENT
 
-	//enemyのbone描画
-	//enemy_->BoneDraw(camera_);
+	////playerのbone描画
+	//player_->BoneDraw(cameraController_->GetCamera());
+
+	////enemyのbone描画
+	//enemy_->BoneDraw(cameraController_->GetCamera());
+
+#endif
 
 	Model::BonePostDraw();
 
@@ -486,19 +515,19 @@ void GamePlayScene::Draw()
 	if (migrationTimer < outComeTime_ && migrationTimer > 20)
 	{
 	
-		if (isPlayerWin_)
+		if (isPlayerWin_ && !isTimeOver_)
 		{
 			koSprite_->Draw();
 		}
 
-		if (!isPlayerWin_ && !isDrow_)
+		if (!isPlayerWin_ && !isTimeOver_)
 		{
 			koSprite_->Draw();
 		}
 
-		if (isDrow_)
+		if (isTimeOver_)
 		{
-			drowSprite_->Draw();
+			timeOverSprite_->Draw();
 		}
 	}
 
@@ -583,12 +612,14 @@ void GamePlayScene::ImGui()
 	/*ImGui::Begin("PlayScene");
 	ImGui::Text("roundTransitionTimer %d", roundTransitionTimer_);
 	ImGui::Checkbox("isDebug_", &isDebug_);
-	ImGui::End();
+	ImGui::End();*/
 
 	player_->ImGui("Player");
 	enemy_->ImGui("Enemy");
 
-	camera_.ImGui();*/
+	//camera_.ImGui();
+
+	cameraController_->ImGui();
 }
 
 void GamePlayScene::UpdateNumberSprite()
@@ -618,6 +649,7 @@ void GamePlayScene::HandleGameOutcome()
 	//Playerが勝ったとき
 	if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == 1 && !isRoundTransition_)
 	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = true;
 
@@ -629,6 +661,7 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == 2 && PlayerWinCount_ == 1 && !isRoundTransition_)
 	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = true;
 
@@ -639,6 +672,7 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == 2 && PlayerWinCount_ == 0 && !isRoundTransition_)
 	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = true;
 
@@ -650,6 +684,7 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == 3 && PlayerWinCount_ == 1 && !isRoundTransition_)
 	{
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = true;
 
@@ -664,6 +699,7 @@ void GamePlayScene::HandleGameOutcome()
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -675,6 +711,7 @@ void GamePlayScene::HandleGameOutcome()
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -685,6 +722,7 @@ void GamePlayScene::HandleGameOutcome()
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -696,6 +734,7 @@ void GamePlayScene::HandleGameOutcome()
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -759,9 +798,9 @@ void GamePlayScene::HandleGameOutcome()
 	//時間切れ
 	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 1 && !isRoundTransition_)
 	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = false;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -771,9 +810,9 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 2 && EnemyWinCount_ == 1 && !isRoundTransition_)
 	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = false;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -782,9 +821,9 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 2 && EnemyWinCount_ == 0 && !isRoundTransition_)
 	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = false;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -794,9 +833,9 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 3 && EnemyWinCount_ == 1 && !isRoundTransition_)
 	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		migrationTimer--;
 		isPlayerWin_ = false;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -806,8 +845,6 @@ void GamePlayScene::HandleGameOutcome()
 
 	if (EnemyWinCount_ == 2)
 	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-
 		if (isTransitionStart_ == false && isTransitionEnd_ == true)
 		{
 			isTransitionStart_ = true;
@@ -819,6 +856,7 @@ void GamePlayScene::HandleGameOutcome()
 	{
 		migrationTimer--;
 		isDrow_ = true;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -831,6 +869,7 @@ void GamePlayScene::HandleGameOutcome()
 	{
 		migrationTimer--;
 		isDrow_ = true;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -843,6 +882,7 @@ void GamePlayScene::HandleGameOutcome()
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -853,6 +893,7 @@ void GamePlayScene::HandleGameOutcome()
 	{
 		migrationTimer--;
 		isPlayerWin_ = false;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -863,6 +904,7 @@ void GamePlayScene::HandleGameOutcome()
 	{
 		migrationTimer--;
 		isPlayerWin_ = true;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -873,6 +915,7 @@ void GamePlayScene::HandleGameOutcome()
 	{
 		migrationTimer--;
 		isPlayerWin_ = false;
+		isTimeOver_ = true;
 
 		if (migrationTimer < testKoActiveTime_)
 		{
@@ -885,6 +928,7 @@ void GamePlayScene::HandleGameOutcome()
 	{
 		migrationTimer--;
 		isDrow_ = true;
+		isPlayerWin_ = true;
 
 		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
@@ -897,6 +941,7 @@ void GamePlayScene::HandleGameOutcome()
 	{
 		migrationTimer--;
 		isDrow_ = true;
+		isPlayerWin_ = true;
 
 		if (migrationTimer < testKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
@@ -1038,6 +1083,7 @@ void GamePlayScene::RoundTransition(int round)
 		{
 			isPlayerWin_ = false;
 			isDrow_ = false;
+			isTimeOver_ = false;
 			round_ = round;
 
 			player_->Reset();
