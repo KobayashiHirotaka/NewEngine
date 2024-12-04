@@ -340,7 +340,8 @@ void Player::BehaviorRootUpdate()
 		//}
 		
 		//タックル攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || 
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && 
+			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) ||
 			input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > value_ || input_->GetLeftStickX() < -value_))
 		{
 			attackType = "Tackle";
@@ -348,7 +349,8 @@ void Player::BehaviorRootUpdate()
 		}
 
 		//アッパー攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) &&
+			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && input_->GetLeftStickX() < value_ && input_->GetLeftStickX() > -value_ && !characterState_.isDown)
 		{
 			attackType = "Uppercut";
@@ -356,7 +358,8 @@ void Player::BehaviorRootUpdate()
 		}
 
 		//必殺技
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && isFinisherCharge_ && !characterState_.isDown)
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) &&
+			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isFinisherCharge_ && !characterState_.isDown)
 		{
 			attackType = "Finisher";
 			AttackStart(attackData_.isFinisher);
@@ -766,7 +769,8 @@ void Player::BehaviorAttackUpdate()
 		{
 			//強コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 10 && attackData_.attackAnimationFrame < 40
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && isFinisherCharge_)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && enemy_->GetComboCount() >= 3 && isFinisherCharge_ &&
+				characterState_.isHitCharacter)
 			{
 				attackData_.isAttack = false;
 				attackData_.isUppercut = false;
