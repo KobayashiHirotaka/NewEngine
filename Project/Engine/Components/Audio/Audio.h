@@ -91,6 +91,8 @@ public:
 
 	void SoundUnloadMP3(SoundDataMP3* soundData);
 
+	bool IsAudioPlaying(uint32_t audioHandle);
+
 	void StopAudio(uint32_t audioHandle);
 
 	void Release();

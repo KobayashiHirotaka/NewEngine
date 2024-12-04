@@ -72,8 +72,10 @@ void GameTitleScene::Initialize()
 	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
 
 	//BGMの再生,停止
-	audio_->StopAudio(titleSoundHandle_);
-	audio_->SoundPlayMP3(titleSoundHandle_, true, 0.2f);
+	if (!audio_->IsAudioPlaying(titleSoundHandle_))
+	{
+		audio_->SoundPlayMP3(titleSoundHandle_, true, 0.2f);
+	}
 };
 
 void GameTitleScene::Update()
