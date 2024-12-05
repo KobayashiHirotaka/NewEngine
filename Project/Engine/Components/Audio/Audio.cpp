@@ -259,6 +259,18 @@ void Audio::SoundUnloadMP3(SoundDataMP3* soundData)
 	soundData->wfex = {};
 }
 
+bool Audio::IsAudioPlaying(uint32_t audioHandle) 
+{
+	for (const Voice* voice : sourceVoices_)
+	{
+		if (voice->handle == audioHandle)
+		{
+			return true;
+		}
+	}
+	return false; 
+}
+
 void Audio::StopAudio(uint32_t audioHandle)
 {
 	HRESULT hr;

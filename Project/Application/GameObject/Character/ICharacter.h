@@ -16,6 +16,7 @@
 #include <random>
 #include <numbers>
 #include <unordered_map>
+#include <algorithm>
 
 class ICharacter : public IGame3dObject
 {

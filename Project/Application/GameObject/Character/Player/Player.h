@@ -93,6 +93,8 @@ public:
 
 	bool GetIsFinisherEffect() { return isFinisherEffect_; };
 
+	AABB GetAABB() { return aabb_; };
+
 	//Setter
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
 
