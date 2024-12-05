@@ -2,7 +2,7 @@ name: DebugBuild
 on:
   push:
     branches:
-      -master
+      - master
 env:
   # リポジトリのルートディレクトリを基点としたソリューションファイルのパス
   SOLUTION_FILE_PATH: Project/DirectXGame2.sln
@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    runs-on:  windows-2024　
+    runs-on:  windows-2022　
 
     steps:
       - name: Checkout
@@ -23,6 +23,5 @@ jobs:
           msbuild-architecture: x64
 
       - name: Build
-        run:
-          msbuild ${{env.SOLUTION_FILE_PATH}} /p:Platform=x64,Configuration=${{env.CONFIGRATION}}
+        run: msbuild ${{env.SOLUTION_FILE_PATH}} /p:Platform=x64,Configuration=${{env.CONFIGURATION}}
           
