@@ -176,22 +176,6 @@ void Player::Update()
 
 	previousPositionX_ = worldTransform_.translation.x;
 
-	//TODO
-	//着地時の押し出し処理
-	//if (worldTransform_.translation.y > 0.0f)
-	//{
-	//	if (characterState_.direction == Direction::Right && enemyPosition.x <= worldTransform_.translation.x + 0.3f)
-	//	{
-	//		//敵を右方向に押す
-	//		PushEnemy(enemyPosition, 0.1f);
-	//	}
-	//	else if (characterState_.direction == Direction::Left && enemyPosition.x >= worldTransform_.translation.x - 0.3f)
-	//	{
-	//		//敵を左方向に押す
-	//		PushEnemy(enemyPosition, -0.1f);
-	//	}
-	//}
-
 	HitCombo();
 
 	ComboNumberSpriteUpdate();
@@ -280,7 +264,7 @@ void Player::ImGui(const char* title)
 
 	ImGui::Text("downAnimationTimer %d", timerData_.downAnimationTimer);
 
-	ImGui::Text("hp %d", hp_);
+	ImGui::Text("characterState_.isHitCharacter %d", characterState_.isHitCharacter);
 	ImGui::Text("finisherGaugeIncreaseAmount %f", attackData_.finisherGaugeIncreaseAmount);
 
 	ImGui::Text("distance %f", distance_);
@@ -1184,6 +1168,39 @@ void Player::OnCollision(Collider* collider)
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemy)
 	{
 		characterState_.isHitCharacter = true;
+
+		//TODO
+		//着地直前かつキャラクターが接触している場合
+		if (worldTransform_.translation.y <= 0.1f && moveData_.velocity.y < 0.0f && characterState_.isHitCharacter)
+		{
+			float minX = (aabb_.max.x < enemy_->GetAABB().max.x) ? aabb_.max.x : enemy_->GetAABB().max.x;
+			float maxX = (aabb_.min.x > enemy_->GetAABB().min.x) ? aabb_.min.x : enemy_->GetAABB().min.x;
+
+			float overlapX = minX - maxX;
+
+			//X軸方向で重なりが発生している場合のみ押し出し
+			if (overlapX > 0)
+			{
+				//押し出し速度
+				const float pushSpeed = 0.1f;  
+				float pushAmount = overlapX * 0.5f;
+
+				//isCharacterがfalseになるまで押し出し続ける
+				if (characterState_.isHitCharacter)
+				{
+					if (enemy_->GetDirection() == Direction::Right)
+					{
+						//キャラクターが右に進む場合
+						enemy_->GetWorldTransform().translation.x -= pushAmount;
+					}
+					else
+					{
+						//キャラクターが左に進む場合
+						enemy_->GetWorldTransform().translation.x += pushAmount;
+					}
+				}
+			}
+		}
 
 		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Right)
 		{

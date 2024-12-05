@@ -97,6 +97,8 @@ public:
 
 	const std::vector<EnemyBullet*>& GetBullets() const{ return bullets_; };
 
+	AABB GetAABB() { return aabb_; };
+
 	//Setter
 	void SetPlayer(Player* player) { player_ = player; };
 
