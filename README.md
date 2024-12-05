@@ -1,3 +1,5 @@
+[![DebugBuild](https://github.com/KobayashiHirotaka/NewEngine/actions/workflows/DebugBuild.yml/badge.svg)](https://github.com/KobayashiHirotaka/NewEngine/actions/workflows/DebugBuild.yml)
+
 # 現在制作しているゲーム
 ## 『モノクロファイター』
 - ジャンル：格闘
@@ -43,5 +45,3 @@
 - 入力履歴の表示
 - エディターの拡張(当たり判定なども設定できるように)
 - ゲーム中のカメラ移動の追加
-
-[![DebugBuild](https://github.com/KobayashiHirotaka/NewEngine/actions/workflows/DebugBuild.yml/badge.svg)](https://github.com/KobayashiHirotaka/NewEngine/actions/workflows/DebugBuild.yml)
