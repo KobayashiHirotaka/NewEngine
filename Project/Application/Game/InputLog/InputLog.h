@@ -5,6 +5,13 @@
 #include <deque>
 #include <algorithm>
 
+/**
+ * @file InputLog.cpp
+ * @brief 入力履歴表示の管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 class InputLog
 {
 public:

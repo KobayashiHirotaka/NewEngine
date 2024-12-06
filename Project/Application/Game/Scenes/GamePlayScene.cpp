@@ -5,6 +5,13 @@
 #include "Application/Game/GameTimer/GameTimer.h"
 #include <cassert>
 
+/**
+ * @file GamePlayScene.cpp
+ * @brief プレイシーンの管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 int GamePlayScene::migrationTimer = 200;
 int GamePlayScene::roundStartTimer_ = 100;
 

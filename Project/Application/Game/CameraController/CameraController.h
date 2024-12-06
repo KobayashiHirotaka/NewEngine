@@ -3,6 +3,13 @@
 #include "Engine/Components/Input/Input.h"
 #include "Application/GameObject/Character/Direction.h"
 
+/**
+ * @file CameraController.h
+ * @brief ゲーム中のカメラの管理(初期化、更新など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 class CameraController
 {
 public:

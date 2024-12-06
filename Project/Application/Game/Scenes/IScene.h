@@ -14,6 +14,13 @@
 #include "Engine/Utility/LevelLoader/LevelLoader.h"
 #include <memory>
 
+/**
+ * @file IScene.h
+ * @brief 各シーンの継承元
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 class SceneManager;
 
 class IScene 
