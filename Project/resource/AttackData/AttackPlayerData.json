@@ -78,7 +78,7 @@
         "finisherGaugeIncreaseAmount": 4.0,
         "guardGaugeIncreaseAmount": 0.0,
         "hitStop": 0.11999999731779099,
-        "recoveryTime": 100
+        "recoveryTime": 90
     },
     "Uppercut": {
         "attackEndTime": 25,
