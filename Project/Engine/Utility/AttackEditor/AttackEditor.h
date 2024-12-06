@@ -66,10 +66,6 @@ private:
     std::unordered_map<std::string, AttackParameter> playerAttackParameter_;
     std::unordered_map<std::string, AttackParameter> enemyAttackParameter_;
 
-    //順序を保持
-    std::vector<std::string> playerAttackOrder_;
-    std::vector<std::string> enemyAttackOrder_;
-
     std::string tempTabName_;
 
     std::string savePlayerFilePath_ = "resource/AttackData/AttackPlayerData.json";
