@@ -18,6 +18,13 @@
 #include <unordered_map>
 #include <algorithm>
 
+/**
+ * @file ICharacter.h
+ * @brief 各キャラクター(Player,Enemy)の継承元
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 class ICharacter : public IGame3dObject
 {
 public:

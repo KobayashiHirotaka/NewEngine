@@ -2,6 +2,13 @@
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include <cassert>
 
+/**
+ * @file EnemyBullet.cpp
+ * @brief 敵の弾の管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 void EnemyBullet::Initialize(Model* model, const Vector3& positon, const Vector3& velocity) 
 {
 	assert(model);

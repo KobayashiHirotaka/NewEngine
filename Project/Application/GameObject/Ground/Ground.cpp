@@ -1,6 +1,13 @@
 #include "Ground.h"
 #include <cassert>
 
+/**
+ * @file Ground.cpp
+ * @brief 地面の管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 void Ground::Initialize()
 {
 	//worldTransformの初期化

@@ -3,6 +3,13 @@
 #include "Application/Game/Scenes/GamePlayScene.h"
 #include "Application/Game/GameTimer/GameTimer.h"
 
+/**
+ * @file Enemy.cpp
+ * @brief 敵の管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 Enemy::~Enemy()
 {
 	delete hpBar_.sprite_;

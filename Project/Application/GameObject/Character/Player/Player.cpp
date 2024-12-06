@@ -3,6 +3,13 @@
 #include "Application/Game/Scenes/GamePlayScene.h"
 #include "Application/Game/GameTimer/GameTimer.h"
 
+/**
+ * @file Player.cpp
+ * @brief 自機の管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 Player::~Player()
 {
 	delete hpBar_.sprite_;

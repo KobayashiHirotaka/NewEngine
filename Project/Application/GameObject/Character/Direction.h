@@ -1,5 +1,12 @@
 #pragma once
 
+/**
+ * @file Direction.h
+ * @brief キャラクターの向き
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 //向き
 enum class Direction
 {

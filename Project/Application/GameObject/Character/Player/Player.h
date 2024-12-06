@@ -2,6 +2,13 @@
 #include "Application/GameObject/Character/ICharacter.h"
 #include "Engine/Utility/AttackEditor/AttackEditor.h"
 
+/**
+ * @file Player.h
+ * @brief 自機の管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 //前方宣言
 class Enemy;
 

@@ -1,6 +1,13 @@
 #include "BackGround.h"
 #include <cassert>
 
+/**
+ * @file BackGround.cpp
+ * @brief 背景の管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 void BackGround::Initialize()
 {
 	//inputのinstance

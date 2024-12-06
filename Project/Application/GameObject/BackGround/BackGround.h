@@ -4,6 +4,13 @@
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/3D/Model/IGame3dObject.h"
 
+/**
+ * @file BackGround.h
+ * @brief 背景の管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 class BackGround
 {
 public:
