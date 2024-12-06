@@ -1,32 +1,14 @@
 {
-    "HighPunch": {
-        "attackEndTime": 25,
-        "attackStartTime": 5,
-        "damage": 8,
-        "finisherGaugeIncreaseAmount": 3.0,
-        "guardGaugeIncreaseAmount": 2.0,
-        "hitStop": 0.0,
-        "recoveryTime": 40
+    "タックル": {
+        "attackEndTime": 50,
+        "attackStartTime": 25,
+        "damage": 14,
+        "finisherGaugeIncreaseAmount": 4.0,
+        "guardGaugeIncreaseAmount": 8.0,
+        "hitStop": 0.11999999731779099,
+        "recoveryTime": 100
     },
-    "LightPunch": {
-        "attackEndTime": 18,
-        "attackStartTime": 5,
-        "damage": 2,
-        "finisherGaugeIncreaseAmount": 1.0,
-        "guardGaugeIncreaseAmount": 4.0,
-        "hitStop": 0.009999999776482582,
-        "recoveryTime": 25
-    },
-    "Shot": {
-        "attackEndTime": 0,
-        "attackStartTime": 4,
-        "damage": 8,
-        "finisherGaugeIncreaseAmount": 2.0,
-        "guardGaugeIncreaseAmount": 6.0,
-        "hitStop": 0.0,
-        "recoveryTime": 40
-    },
-    "TCMiddlePunch": {
+    "中攻撃(ターゲット)": {
         "attackEndTime": 25,
         "attackStartTime": 0,
         "damage": 5,
@@ -35,13 +17,31 @@
         "hitStop": 10.0,
         "recoveryTime": 30
     },
-    "Tackle": {
-        "attackEndTime": 50,
-        "attackStartTime": 25,
-        "damage": 14,
-        "finisherGaugeIncreaseAmount": 4.0,
-        "guardGaugeIncreaseAmount": 8.0,
-        "hitStop": 0.11999999731779099,
-        "recoveryTime": 100
+    "弱攻撃": {
+        "attackEndTime": 18,
+        "attackStartTime": 5,
+        "damage": 2,
+        "finisherGaugeIncreaseAmount": 1.0,
+        "guardGaugeIncreaseAmount": 4.0,
+        "hitStop": 0.009999999776482582,
+        "recoveryTime": 25
+    },
+    "強攻撃": {
+        "attackEndTime": 25,
+        "attackStartTime": 5,
+        "damage": 8,
+        "finisherGaugeIncreaseAmount": 3.0,
+        "guardGaugeIncreaseAmount": 2.0,
+        "hitStop": 0.0,
+        "recoveryTime": 40
+    },
+    "弾攻撃": {
+        "attackEndTime": 0,
+        "attackStartTime": 4,
+        "damage": 8,
+        "finisherGaugeIncreaseAmount": 2.0,
+        "guardGaugeIncreaseAmount": 6.0,
+        "hitStop": 0.0,
+        "recoveryTime": 40
     }
 }

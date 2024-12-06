@@ -9,6 +9,8 @@ AttackEditor* AttackEditor::GetInstance()
 
 void AttackEditor::Initialize()
 {
+    LoadJapaneseFont();
+
     LoadFile(loadPlayerFilePath_, playerAttackParameter_);
     LoadFile(loadEnemyFilePath_, enemyAttackParameter_);
 }
@@ -19,12 +21,12 @@ void AttackEditor::Update()
 
     if (ImGui::BeginTabBar("##tabs"))
     {
-        //Playerタブ
-        if (ImGui::BeginTabItem("Player"))
+        //プレイヤータブ
+        if (ImGui::BeginTabItem("プレイヤー"))
         {
-            if (ImGui::Button("Add"))
+            if (ImGui::Button("追加"))
             {
-                std::string newTabName = "newAttack" + std::to_string(playerAttackParameter_.size() + 1);
+                std::string newTabName = "攻撃" + std::to_string(playerAttackParameter_.size() + 1);
 
                 if (playerAttackParameter_.find(newTabName) == playerAttackParameter_.end())
                 {
@@ -42,7 +44,7 @@ void AttackEditor::Update()
 
                 if (ImGui::CollapsingHeader(buf))
                 {
-                    if (ImGui::InputText("##TabName", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue))
+                    if (ImGui::InputText("攻撃の名前", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue))
                     {
                         tempTabName_ = buf;
                         if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter)))
@@ -60,13 +62,13 @@ void AttackEditor::Update()
                         ++it;
                     }
 
-                    ImGui::SliderInt("attackStartTime", &param.attackStartTime, 0, 60);
-                    ImGui::SliderInt("attackEndTime", &param.attackEndTime, 0, 60);
-                    ImGui::SliderInt("recoveryTime", &param.recoveryTime, 0, 100);
-                    ImGui::SliderInt("damage", &param.damage, 0, 100);
-                    ImGui::SliderFloat("guardGaugeIncreaseAmount", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
-                    ImGui::SliderFloat("finisherGaugeIncreaseAmount", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
-                    ImGui::SliderFloat("hitStop", &param.hitStop, 0.0f, 1.0f);
+                    ImGui::SliderInt("当たり判定の付き初め", &param.attackStartTime, 0, 60);
+                    ImGui::SliderInt("当たり判定の付き終わり", &param.attackEndTime, 0, 60);
+                    ImGui::SliderInt("硬直時間", &param.recoveryTime, 0, 100);
+                    ImGui::SliderInt("ダメージ", &param.damage, 0, 100);
+                    ImGui::SliderFloat("ガードゲージ増加量", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
+                    ImGui::SliderFloat("必殺技ゲージ増加量", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
+                    ImGui::SliderFloat("ヒットストップ", &param.hitStop, 0.0f, 1.0f);
                 }
                 else
                 {
@@ -77,14 +79,14 @@ void AttackEditor::Update()
                 ImGui::Separator();
             }
 
-            if (ImGui::Button("Save"))
+            if (ImGui::Button("保存"))
             {
                 SaveFile(savePlayerFilePath_, playerAttackParameter_);
                 std::string message = savePlayerFilePath_ + " saved";
                 MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
             }
 
-            if (ImGui::Button("Load"))
+            if (ImGui::Button("読み込み"))
             {
                 LoadFile(loadPlayerFilePath_, playerAttackParameter_);
                 std::string message = loadPlayerFilePath_ + " loaded";
@@ -94,12 +96,12 @@ void AttackEditor::Update()
             ImGui::EndTabItem();
         }
 
-        //Enemyタブ
-        if (ImGui::BeginTabItem("Enemy"))
+        //エネミータブ
+        if (ImGui::BeginTabItem("エネミー"))
         {
-            if (ImGui::Button("Add"))
+            if (ImGui::Button("追加"))
             {
-                std::string newTabName = "newAttack" + std::to_string(enemyAttackParameter_.size() + 1);
+                std::string newTabName = "攻撃" + std::to_string(enemyAttackParameter_.size() + 1);
 
                 if (enemyAttackParameter_.find(newTabName) == enemyAttackParameter_.end())
                 {
@@ -117,7 +119,7 @@ void AttackEditor::Update()
 
                 if (ImGui::CollapsingHeader(buf))
                 {
-                    if (ImGui::InputText("##TabName", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue))
+                    if (ImGui::InputText("攻撃の名前", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue))
                     {
                         tempTabName_ = buf;
                         if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter)))
@@ -135,13 +137,13 @@ void AttackEditor::Update()
                         ++it;
                     }
 
-                    ImGui::SliderInt("attackStartTime", &param.attackStartTime, 0, 60);
-                    ImGui::SliderInt("attackEndTime", &param.attackEndTime, 0, 60);
-                    ImGui::SliderInt("recoveryTime", &param.recoveryTime, 0, 100);
-                    ImGui::SliderInt("damage", &param.damage, 0, 100);
-                    ImGui::SliderFloat("guardGaugeIncreaseAmount", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
-                    ImGui::SliderFloat("finisherGaugeIncreaseAmount", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
-                    ImGui::SliderFloat("hitStop", &param.hitStop, 0.0f, 1.0f);
+                    ImGui::SliderInt("当たり判定の付き初め", &param.attackStartTime, 0, 60);
+                    ImGui::SliderInt("当たり判定の付き終わり", &param.attackEndTime, 0, 60);
+                    ImGui::SliderInt("硬直時間", &param.recoveryTime, 0, 100);
+                    ImGui::SliderInt("ダメージ", &param.damage, 0, 100);
+                    ImGui::SliderFloat("ガードゲージ増加量", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
+                    ImGui::SliderFloat("必殺技ゲージ増加量", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
+                    ImGui::SliderFloat("ヒットストップ", &param.hitStop, 0.0f, 1.0f);
                 }
                 else
                 {
@@ -152,14 +154,14 @@ void AttackEditor::Update()
                 ImGui::Separator();
             }
 
-            if (ImGui::Button("Save"))
+            if (ImGui::Button("保存"))
             {
                 SaveFile(saveEnemyFilePath_, enemyAttackParameter_);
                 std::string message = saveEnemyFilePath_ + " saved";
                 MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
             }
 
-            if (ImGui::Button("Load"))
+            if (ImGui::Button("読み込み"))
             {
                 LoadFile(loadEnemyFilePath_, enemyAttackParameter_);
                 std::string message = loadEnemyFilePath_ + " loaded";
@@ -173,6 +175,20 @@ void AttackEditor::Update()
     }
 
     ImGui::End();
+}
+
+void AttackEditor::LoadJapaneseFont()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    ImFontConfig config;
+    config.MergeMode = false; 
+    config.PixelSnapH = true;
+
+    //日本語フォントの指定
+    if (io.Fonts->AddFontFromFileTTF("resource/AttackData/NotoSansJP-Medium.ttf", 18.0f, &config, io.Fonts->GetGlyphRangesJapanese()))
+    {
+        io.Fonts->Build(); 
+    }
 }
 
 void AttackEditor::SaveFile(const std::string& saveFilePath, const std::unordered_map<std::string, AttackParameter>& attackParameters)

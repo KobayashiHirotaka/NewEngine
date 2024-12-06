@@ -120,7 +120,7 @@ void Enemy::Update()
 	if (input_->PressKey(DIK_D))
 	{
 		animationIndex_ = 8;
-		attackType = "Tackle";
+		attackType = "タックル";
 		AttackStart(attackData_.isTackle);
 	}
 
@@ -323,7 +323,7 @@ void Enemy::BehaviorRootUpdate()
 		if (patternCount_ == 3 && !characterState_.isDown)
 		{
 			animationIndex_ = 8;
-			attackType = "Tackle";
+			attackType = "タックル";
 			AttackStart(attackData_.isTackle);
 		}
 
@@ -331,7 +331,7 @@ void Enemy::BehaviorRootUpdate()
 		if (patternCount_ == 4 && !characterState_.isDown)
 		{
 			animationIndex_ = 1;
-			attackType = "Shot";
+			attackType = "弾攻撃";
 			AttackStart(attackData_.isShot);
 		}
 
@@ -339,7 +339,7 @@ void Enemy::BehaviorRootUpdate()
 		if (patternCount_ == 5 && !characterState_.isDown)
 		{
 			animationIndex_ = 12;
-			attackType = "LightPunch";
+			attackType = "弱攻撃";
 			AttackStart(attackData_.isLightPunch);
 		}
 
@@ -394,7 +394,7 @@ void Enemy::BehaviorAttackUpdate()
 			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() && player_->GetHP() < 0 &&
 				attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30)
 			{
-				attackType = "TCMiddlePunch";
+				attackType = "中攻撃(ターゲット)";
 				attackData_.isAttack = false;
 				attackData_.isLightPunch = false;
 				attackData_.isTCMiddlePunch = true;
@@ -443,7 +443,7 @@ void Enemy::BehaviorAttackUpdate()
 			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() && player_->GetHP() < 0 &&
 				attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30)
 			{
-				attackType = "HighPunch";
+				attackType = "強攻撃";
 				attackData_.isAttack = false;
 				attackData_.isTCMiddlePunch = false;
 				attackData_.isHighPunch = true;
@@ -500,7 +500,7 @@ void Enemy::BehaviorAttackUpdate()
 			if (!characterState_.isDown && player_->GetIsDown() && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
 				&& player_->GetHP() < 0)
 			{
-				attackType = "Tackle";
+				attackType = "タックル";
 				attackData_.isAttack = false;
 				attackData_.isHighPunch = false;
 				attackData_.isTackle = true;

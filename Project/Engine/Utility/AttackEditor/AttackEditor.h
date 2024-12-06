@@ -47,6 +47,8 @@ public:
 
     void Update();
 
+    void LoadJapaneseFont();
+
     void SaveFile(const std::string& saveFilePath, const std::unordered_map<std::string, AttackParameter>& attackParameters);
 
     void LoadFile(const std::string& loadFilePath, std::unordered_map<std::string, AttackParameter>& attackParameters);
@@ -63,6 +65,10 @@ private:
 private:
     std::unordered_map<std::string, AttackParameter> playerAttackParameter_;
     std::unordered_map<std::string, AttackParameter> enemyAttackParameter_;
+
+    //順序を保持
+    std::vector<std::string> playerAttackOrder_;
+    std::vector<std::string> enemyAttackOrder_;
 
     std::string tempTabName_;
 
