@@ -4,6 +4,13 @@
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/3D/Model/IGame3dObject.h"
 
+/**
+ * @file Skydome.h
+ * @brief 簡単な説明
+ * @author 
+ * @date 未記録
+ */
+
 class Skydome
 {
 public:
