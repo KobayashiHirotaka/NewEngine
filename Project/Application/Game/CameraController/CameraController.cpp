@@ -16,7 +16,7 @@ void CameraController::Initialize()
 	camera_.UpdateMatrix();
 }
 
-void CameraController::Update(const Vector3 characterPosition1, const Vector3 characterPositon2, const Direction direction)
+void CameraController::Update(const Vector3 characterPosition1, const Vector3 characterPositon2)
 {
 	//2体のキャラクターの中心座標
 	center_ = { (characterPosition1.x + characterPositon2.x) / 2,  ((characterPosition1.y + characterPositon2.y) + 0.8f) / 2 };

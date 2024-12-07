@@ -213,7 +213,7 @@ void Player::Draw(const Camera& camera)
 
 void Player::BoneDraw(const Camera& camera)
 {
-	model_->BoneDraw(worldTransform_, camera, animationIndex_);
+	model_->BoneDraw(worldTransform_, camera);
 }
 
 void Player::CollisionDraw(const Camera& camera)
@@ -1189,8 +1189,7 @@ void Player::OnCollision(Collider* collider)
 			if (overlapX > 0)
 			{
 				//押し出し速度
-				const float pushSpeed = 0.1f;  
-				float pushAmount = overlapX * 0.5f;
+				float pushSpeed = overlapX * 0.5f;
 
 				//isCharacterがfalseになるまで押し出し続ける
 				if (characterState_.isHitCharacter)
@@ -1198,12 +1197,12 @@ void Player::OnCollision(Collider* collider)
 					if (enemy_->GetDirection() == Direction::Right)
 					{
 						//キャラクターが右に進む場合
-						enemy_->GetWorldTransform().translation.x -= pushAmount;
+						enemy_->GetWorldTransform().translation.x -= pushSpeed;
 					}
 					else
 					{
 						//キャラクターが左に進む場合
-						enemy_->GetWorldTransform().translation.x += pushAmount;
+						enemy_->GetWorldTransform().translation.x += pushSpeed;
 					}
 				}
 			}
@@ -1395,7 +1394,6 @@ void Player::Move()
 	//コントローラーの取得
 	if (input_->GetJoystickState())
 	{
-		const float deadZone = 0.7f;
 		const float valueY = -0.3f;
 		bool isFrontMove_ = false;
 		bool isBackMove_ = false;

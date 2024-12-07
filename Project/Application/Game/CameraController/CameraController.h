@@ -15,7 +15,7 @@ class CameraController
 public:
 	void Initialize();
 
-	void Update(const Vector3 characterPosition1, const Vector3 characterPositon2, const Direction direction);
+	void Update(const Vector3 characterPosition1, const Vector3 characterPositon2);
 
 	void ImGui();
 

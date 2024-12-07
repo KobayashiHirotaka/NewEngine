@@ -16,7 +16,7 @@ void ParticleEffectPlayer::Update()
 
 void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 {
-	if ("PlayerRightNackle" == name)
+	if (std::string("PlayerRightNackle") == name)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -35,7 +35,7 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
-	else if ("PlayerLeftNackle" == name)
+	else if (std::string("PlayerLeftNackle") == name)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -54,7 +54,7 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
-	else if ("EnemyRightNackle" == name)
+	else if (std::string("EnemyRightNackle") == name)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -73,7 +73,7 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
-	else if ("EnemyLeftNackle" == name)
+	else if (std::string("EnemyLeftNackle") == name)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -92,7 +92,7 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
-	else if ("RightBullet" == name)
+	else if (std::string("RightBullet") == name)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -111,7 +111,7 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
-	else if ("LeftBullet" == name)
+	else if (std::string("LeftBullet") == name)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -130,7 +130,7 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
-	else if ("Hit" == name)
+	else if (std::string("Hit") == name)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
@@ -149,7 +149,7 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
-	else if ("Guard" == name)
+	else if (std::string("Guard") == name)
 	{
 		ParticleEmitter* newParticleEmitter = EmitterBuilder()
 			.SetParticleType(ParticleEmitter::ParticleType::kNormal)

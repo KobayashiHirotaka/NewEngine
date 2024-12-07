@@ -321,7 +321,7 @@ void GamePlayScene::Update()
 	if (!isFinisherStart_ && !isFinisherEnd_)
 	{
 		//通常時のCameraControllerの更新
-		cameraController_->Update(player_->GetWorldPosition(), enemy_->GetWorldPosition(), player_->GetDirection());
+		cameraController_->Update(player_->GetWorldPosition(), enemy_->GetWorldPosition());
 	}
 
 	//勝ち負けの処理

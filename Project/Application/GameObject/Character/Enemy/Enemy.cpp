@@ -222,7 +222,7 @@ void Enemy::Draw(const Camera& camera)
 
 void Enemy::BoneDraw(const Camera& camera)
 {
-	model_->BoneDraw(worldTransform_, camera, animationIndex_);
+	model_->BoneDraw(worldTransform_, camera);
 }
 
 void Enemy::CollisionDraw(const Camera& camera)

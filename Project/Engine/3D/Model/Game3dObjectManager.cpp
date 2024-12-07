@@ -60,18 +60,6 @@ IGame3dObject* Game3dObjectManager::CreateGameObjectInternal(const std::string& 
 	return gameObject;
 }
 
-Camera* Game3dObjectManager::CreateCameraObject(const std::string& objectName)
-{
-	Camera* cameraObject = Game3dObjectManager::GetInstance()->CreateCameraObjectInternal(objectName);
-	return cameraObject;
-}
-
-Camera* Game3dObjectManager::CreateCameraObjectInternal(const std::string& objectName)
-{
-	Camera* cameraObject = new Camera();
-	cameraObjects_.push_back(std::unique_ptr<Camera>(cameraObject));
-	return cameraObject;
-}
 
 
 

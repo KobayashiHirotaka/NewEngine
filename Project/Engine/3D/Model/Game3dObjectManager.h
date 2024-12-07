@@ -22,10 +22,6 @@ public:
 	static IGame3dObject* CreateGameObject(const std::string& objectName);
 	IGame3dObject* CreateGameObjectInternal(const std::string& objectName);
 
-	//Cameraの生成
-	static Camera* CreateCameraObject(const std::string& objectName);
-	Camera* CreateCameraObjectInternal(const std::string& objectName);
-
 	//TypeごとObjectの生成
 	template <typename Type>
 	Type* CreateGameObjectFromType();
@@ -49,8 +45,6 @@ private:
 	static Game3dObjectManager* instance_;
 
 	std::vector<std::unique_ptr<IGame3dObject>> gameObjects_{};
-
-	std::vector<std::unique_ptr<Camera>> cameraObjects_{};
 
 	Game3dObjectFactory* gameObjectFactory_ = nullptr;
 };

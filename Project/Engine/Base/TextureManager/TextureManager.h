@@ -72,5 +72,5 @@ private:
 
 	std::array<Texture, kMaxDescriptors> textures_{};
 
-	uint32_t textureHandle_ = -1;
+	uint32_t textureHandle_ = 0xFFFFFFFF;
 };

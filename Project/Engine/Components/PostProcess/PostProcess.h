@@ -244,10 +244,10 @@ private:
 
     //ディスクリプタヒープのポインタとインデックス
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassRTVDescriptorHeap_ = nullptr;
-    uint32_t rtvIndex_ = -1;
+    uint32_t rtvIndex_ = 0xFFFFFFFF;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassSRVDescriptorHeap_ = nullptr;
-    uint32_t srvIndex_ = -1;
-    uint32_t depthSRVIndex_ = -1;
+    uint32_t srvIndex_ = 0xFFFFFFFF;
+    uint32_t depthSRVIndex_ = 0xFFFFFFFF;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassDSVDescriptorHeap_ = nullptr;
 
     //深度テクスチャのリソース

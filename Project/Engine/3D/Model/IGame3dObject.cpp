@@ -11,8 +11,3 @@ void IGame3dObject::Update()
 {
 	worldTransform_.UpdateMatrixEuler();
 }
-
-void IGame3dObject::Draw(const Camera& camera)
-{
-	
-}
