@@ -1176,34 +1176,33 @@ void Player::OnCollision(Collider* collider)
 	{
 		characterState_.isHitCharacter = true;
 
-		//TODO
-		//着地直前かつキャラクターが接触している場合
-		if (worldTransform_.translation.y <= 0.1f && moveData_.velocity.y < 0.0f && characterState_.isHitCharacter)
+		if (characterState_.isHitCharacter && !attackData_.isAttack) 
 		{
-			float minX = (aabb_.max.x < enemy_->GetAABB().max.x) ? aabb_.max.x : enemy_->GetAABB().max.x;
-			float maxX = (aabb_.min.x > enemy_->GetAABB().min.x) ? aabb_.min.x : enemy_->GetAABB().min.x;
+			//プレイヤーと敵のAABB
+			float playerMinX = worldTransform_.translation.x + aabb_.min.x;
+			float playerMaxX = worldTransform_.translation.x + aabb_.max.x;
+			float enemyMinX = enemy_->GetWorldTransform().translation.x + enemy_->GetAABB().min.x;
+			float enemyMaxX = enemy_->GetWorldTransform().translation.x + enemy_->GetAABB().max.x;
 
-			float overlapX = minX - maxX;
-
-			//X軸方向で重なりが発生している場合のみ押し出し
-			if (overlapX > 0)
+			//重なりチェック
+			if (!(playerMaxX < enemyMinX || playerMinX > enemyMaxX))
 			{
-				//押し出し速度
-				float pushSpeed = overlapX * 0.5f;
+				float overlapX =
+					((playerMaxX < enemyMaxX) ? playerMaxX : enemyMaxX) -
+					((playerMinX > enemyMinX) ? playerMinX : enemyMinX);
 
-				//isCharacterがfalseになるまで押し出し続ける
-				if (characterState_.isHitCharacter)
+				// 補正量を調整（例: 50% の補正にする）
+				float correctionFactor = 0.05f; // 補正率: 0 に近いほど近く、1 に近いほど完全補正
+				float adjustedOverlapX = overlapX * correctionFactor;
+
+				//位置補正
+				if (worldTransform_.translation.x < enemy_->GetWorldTransform().translation.x)
 				{
-					if (enemy_->GetDirection() == Direction::Right)
-					{
-						//キャラクターが右に進む場合
-						enemy_->GetWorldTransform().translation.x -= pushSpeed;
-					}
-					else
-					{
-						//キャラクターが左に進む場合
-						enemy_->GetWorldTransform().translation.x += pushSpeed;
-					}
+					worldTransform_.translation.x -= adjustedOverlapX;
+				}
+				else
+				{
+					worldTransform_.translation.x += adjustedOverlapX;
 				}
 			}
 		}

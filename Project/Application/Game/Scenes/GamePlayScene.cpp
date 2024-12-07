@@ -469,14 +469,14 @@ void GamePlayScene::Draw()
 
 	Line::PreDraw();
 
-	if (isDebug_ && !isOpen_)
-	{
-		//Playerの当たり判定描画
-		player_->CollisionDraw(cameraController_->GetCamera());
+	//if (isDebug_ && !isOpen_)
+	//{
+	//	//Playerの当たり判定描画
+	//	player_->CollisionDraw(cameraController_->GetCamera());
 
-		//Enemyの当たり判定描画
-		enemy_->CollisionDraw(cameraController_->GetCamera());
-	}
+	//	//Enemyの当たり判定描画
+	//	enemy_->CollisionDraw(cameraController_->GetCamera());
+	//}
 
 	Line::PostDraw();
 
