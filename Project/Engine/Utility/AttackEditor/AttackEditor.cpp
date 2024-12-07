@@ -17,7 +17,7 @@ void AttackEditor::Initialize()
 
 void AttackEditor::Update()
 {
-    ImGui::Begin("Attack Editor");
+    ImGui::Begin("アタックエディター");
 
     if (ImGui::BeginTabBar("##tabs"))
     {
