@@ -1775,14 +1775,7 @@ int Enemy::RandomMove()
 {
 	std::vector<int> actions;
 
-	if (hp_ >= 50.0f)
-	{
-		actions = { 1, 2, 2 };
-	}
-	else
-	{
-		actions = { 1, 1, 2 };
-	}
+	actions = { 1, 1, 2 };
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -1797,11 +1790,11 @@ int Enemy::RandomAttackOrMove()
 
 	if (hp_ >= 50.0f)
 	{
-		actions = { 2, 2, 3 };
+		actions = { 1, 2, 3 };
 	}
 	else
 	{
-		actions = { 2, 2, 4 };
+		actions = { 1, 2, 4 };
 	}
 
 	std::random_device rd;
@@ -1815,7 +1808,7 @@ int Enemy::RandomBulletOrMove()
 {
 	std::vector<int> actions;
 
-	actions = { 2, 2, 4 };
+	actions = { 1, 2, 4 };
 
 	std::random_device rd;
 	std::mt19937 gen(rd());

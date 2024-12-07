@@ -330,7 +330,7 @@ void GamePlayScene::Update()
 	skyboxWorldTransform_.UpdateMatrixEuler();
 
 	//操作説明の開閉
-	if (input_->GetJoystickState())
+	if (input_->GetJoystickState() && !isKO_&& roundStartTimer_ <= 0 && migrationTimer == 200)
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_START) && !isOpen_)
 		{
