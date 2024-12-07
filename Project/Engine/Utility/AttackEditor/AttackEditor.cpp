@@ -69,8 +69,8 @@ void AttackEditor::Update()
                     ImGui::SliderFloat("ガードゲージ増加量", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
                     ImGui::SliderFloat("必殺技ゲージ増加量", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
                     ImGui::SliderFloat("ヒットストップ", &param.hitStop, 0.0f, 1.0f);
-                    ImGui::SliderFloat3("当たり判定の最小値", &param.collisionMin.x, -2.0f, 3.0f); 
-                    ImGui::SliderFloat3("当たり判定の最大値", &param.collisionMax.x, -2.0f, 3.0f); 
+                    ImGui::SliderFloat3("当たり判定の最小値", &param.collisionMin.x, -2.0f, 2.0f); 
+                    ImGui::SliderFloat3("当たり判定の最大値", &param.collisionMax.x, -2.0f, 2.0f); 
                 }
                 else
                 {
@@ -146,8 +146,8 @@ void AttackEditor::Update()
                     ImGui::SliderFloat("ガードゲージ増加量", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
                     ImGui::SliderFloat("必殺技ゲージ増加量", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
                     ImGui::SliderFloat("ヒットストップ", &param.hitStop, 0.0f, 1.0f);
-                    ImGui::SliderFloat3("当たり判定の最小値", &param.collisionMin.x, -3.0f, 3.0f);
-                    ImGui::SliderFloat3("当たり判定の最大値", &param.collisionMax.x, -3.0f, 3.0f);
+                    ImGui::SliderFloat3("当たり判定の最小値", &param.collisionMin.x, -3.0f, 2.0f);
+                    ImGui::SliderFloat3("当たり判定の最大値", &param.collisionMax.x, -3.0f, 2.0f);
                 }
                 else
                 {

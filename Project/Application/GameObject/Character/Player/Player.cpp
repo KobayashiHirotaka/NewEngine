@@ -382,10 +382,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
+			aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
+			aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
