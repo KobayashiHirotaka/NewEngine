@@ -2,6 +2,16 @@
     "アッパー": {
         "attackEndTime": 25,
         "attackStartTime": 8,
+        "collisionMax": {
+            "x": 2.0,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "collisionMin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
         "damage": 8,
         "finisherGaugeIncreaseAmount": 3.0,
         "guardGaugeIncreaseAmount": 0.0,
@@ -11,6 +21,16 @@
     "ジャンプ攻撃": {
         "attackEndTime": 18,
         "attackStartTime": 5,
+        "collisionMax": {
+            "x": 2.0,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "collisionMin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
         "damage": 3,
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 0.0,
@@ -20,6 +40,16 @@
     "タックル": {
         "attackEndTime": 50,
         "attackStartTime": 25,
+        "collisionMax": {
+            "x": 2.0,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "collisionMin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
         "damage": 10,
         "finisherGaugeIncreaseAmount": 4.0,
         "guardGaugeIncreaseAmount": 0.0,
@@ -29,6 +59,16 @@
     "中攻撃": {
         "attackEndTime": 18,
         "attackStartTime": 8,
+        "collisionMax": {
+            "x": 2.0,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "collisionMin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
         "damage": 5,
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 0.0,
@@ -38,6 +78,16 @@
     "中攻撃(ターゲット)": {
         "attackEndTime": 25,
         "attackStartTime": 0,
+        "collisionMax": {
+            "x": 2.0,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "collisionMin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
         "damage": 4,
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 0.0,
@@ -47,6 +97,16 @@
     "弱攻撃": {
         "attackEndTime": 15,
         "attackStartTime": 4,
+        "collisionMax": {
+            "x": 0.5,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "collisionMin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
         "damage": 2,
         "finisherGaugeIncreaseAmount": 1.0,
         "guardGaugeIncreaseAmount": 0.0,
@@ -56,6 +116,16 @@
     "強攻撃": {
         "attackEndTime": 25,
         "attackStartTime": 5,
+        "collisionMax": {
+            "x": 2.0,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "collisionMin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
         "damage": 7,
         "finisherGaugeIncreaseAmount": 3.0,
         "guardGaugeIncreaseAmount": 0.0,
@@ -65,6 +135,16 @@
     "強攻撃(ターゲット)": {
         "attackEndTime": 25,
         "attackStartTime": 0,
+        "collisionMax": {
+            "x": 2.0,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "collisionMin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
         "damage": 6,
         "finisherGaugeIncreaseAmount": 5.0,
         "guardGaugeIncreaseAmount": 0.0,
@@ -74,6 +154,16 @@
     "必殺技(2段目)": {
         "attackEndTime": 17,
         "attackStartTime": 0,
+        "collisionMax": {
+            "x": 2.0,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "collisionMin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
         "damage": 5,
         "finisherGaugeIncreaseAmount": 0.0,
         "guardGaugeIncreaseAmount": 0.0,
@@ -83,6 +173,16 @@
     "必殺技(初段)": {
         "attackEndTime": 25,
         "attackStartTime": 0,
+        "collisionMax": {
+            "x": 2.0,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "collisionMin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
         "damage": 10,
         "finisherGaugeIncreaseAmount": 0.0,
         "guardGaugeIncreaseAmount": 0.0,

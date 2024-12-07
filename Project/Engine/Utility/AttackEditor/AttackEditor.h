@@ -34,6 +34,10 @@ struct AttackParameter
     //ヒットストップ
     float hitStop = 0.0f;
 
+    //当たり判定
+    Vector3 collisionMin = { 0.0f,0.0f,0.0f };
+    Vector3 collisionMax = { 0.0f,0.0f,0.0f };;
+
     //攻撃の属性
     //std::string attackAttribute;
 };
@@ -53,8 +57,11 @@ public:
 
     void LoadFile(const std::string& loadFilePath, std::unordered_map<std::string, AttackParameter>& attackParameters);
 
-    void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, 
-        int& damage, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, bool isPlayer);
+    void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& damage,
+        float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, Vector3& collisionMin, 
+        Vector3& collisionMax, bool isPlayer);
+
+    bool isFacingLeft = false;
 
 private:
     AttackEditor() = default;

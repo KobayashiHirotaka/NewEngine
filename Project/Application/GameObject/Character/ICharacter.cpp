@@ -289,6 +289,7 @@ void ICharacter::AttackEnd(bool& isAttackType)
 
 	//攻撃した技
 	isAttackType = false;
+	attackType = "";
 
 	//アニメーション用変数の設定
 	animationTime_ = 0.0f;

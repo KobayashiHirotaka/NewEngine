@@ -119,7 +119,8 @@ void Player::Update()
 
 	//エディタで設定したパラメータをセット
 	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime, 
-		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop, true);
+		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop,
+		aabb_.min, aabb_.max, true);
 
 	//デバッグ用の処理
 	if (isDebug_)
@@ -381,12 +382,10 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -1191,8 +1190,8 @@ void Player::OnCollision(Collider* collider)
 					((playerMaxX < enemyMaxX) ? playerMaxX : enemyMaxX) -
 					((playerMinX > enemyMinX) ? playerMinX : enemyMinX);
 
-				// 補正量を調整（例: 50% の補正にする）
-				float correctionFactor = 0.05f; // 補正率: 0 に近いほど近く、1 に近いほど完全補正
+				//補正量を調整
+				float correctionFactor = 0.05f; 
 				float adjustedOverlapX = overlapX * correctionFactor;
 
 				//位置補正
