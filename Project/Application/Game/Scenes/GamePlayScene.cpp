@@ -5,6 +5,13 @@
 #include "Application/Game/GameTimer/GameTimer.h"
 #include <cassert>
 
+/**
+ * @file GamePlayScene.cpp
+ * @brief プレイシーンの管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 int GamePlayScene::migrationTimer = 200;
 int GamePlayScene::roundStartTimer_ = 100;
 
@@ -314,7 +321,7 @@ void GamePlayScene::Update()
 	if (!isFinisherStart_ && !isFinisherEnd_)
 	{
 		//通常時のCameraControllerの更新
-		cameraController_->Update(player_->GetWorldPosition(), enemy_->GetWorldPosition(), player_->GetDirection());
+		cameraController_->Update(player_->GetWorldPosition(), enemy_->GetWorldPosition());
 	}
 
 	//勝ち負けの処理
@@ -323,7 +330,7 @@ void GamePlayScene::Update()
 	skyboxWorldTransform_.UpdateMatrixEuler();
 
 	//操作説明の開閉
-	if (input_->GetJoystickState())
+	if (input_->GetJoystickState() && !isKO_&& roundStartTimer_ <= 0 && migrationTimer == 200)
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_START) && !isOpen_)
 		{

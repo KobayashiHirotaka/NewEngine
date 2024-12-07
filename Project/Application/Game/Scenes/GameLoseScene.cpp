@@ -3,6 +3,13 @@
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>
 
+/**
+ * @file GameLoseScene.cpp
+ * @brief 敗北シーンの管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 GameLoseScene::GameLoseScene() {};
 
 GameLoseScene::~GameLoseScene() {};

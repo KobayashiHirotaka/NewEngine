@@ -3,6 +3,13 @@
 #include "Application/Game/Scenes/GamePlayScene.h"
 #include "Application/Game/GameTimer/GameTimer.h"
 
+/**
+ * @file Player.cpp
+ * @brief 自機の管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 Player::~Player()
 {
 	delete hpBar_.sprite_;
@@ -206,7 +213,7 @@ void Player::Draw(const Camera& camera)
 
 void Player::BoneDraw(const Camera& camera)
 {
-	model_->BoneDraw(worldTransform_, camera, animationIndex_);
+	model_->BoneDraw(worldTransform_, camera);
 }
 
 void Player::CollisionDraw(const Camera& camera)
@@ -305,21 +312,21 @@ void Player::BehaviorRootUpdate()
 		//弱攻撃
 		if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B)) && !characterState_.isDown)
 		{
-			attackType = "LightPunch";
+			attackType = "弱攻撃";
 			AttackStart(attackData_.isLightPunch);
 		}
 
 		////中攻撃
 		//if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !characterState_.isDown)
 		//{
-		//	attackType = "MiddlePunch";
+		//	attackType = "中攻撃";
 		//	AttackStart(attackData_.isMiddlePunch);
 		//}
 
 		////強攻撃
 		//if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !characterState_.isDown)
 		//{
-		//	attackType = "HighPunch";
+		//	attackType = "強攻撃";
 		//	AttackStart(attackData_.isHighPunch);
 		//}
 		
@@ -328,7 +335,7 @@ void Player::BehaviorRootUpdate()
 			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) ||
 			input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > value_ || input_->GetLeftStickX() < -value_))
 		{
-			attackType = "Tackle";
+			attackType = "タックル";
 			AttackStart(attackData_.isTackle);
 		}
 
@@ -337,7 +344,7 @@ void Player::BehaviorRootUpdate()
 			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
 			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && input_->GetLeftStickX() < value_ && input_->GetLeftStickX() > -value_ && !characterState_.isDown)
 		{
-			attackType = "Uppercut";
+			attackType = "アッパー";
 			AttackStart(attackData_.isUppercut);
 		}
 
@@ -345,7 +352,7 @@ void Player::BehaviorRootUpdate()
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) &&
 			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isFinisherCharge_ && !characterState_.isDown)
 		{
-			attackType = "Finisher";
+			attackType = "必殺技";
 			AttackStart(attackData_.isFinisher);
 			finisherGauge_ = 0.0f;
 			timerData_.finisherTimer = 120;
@@ -397,7 +404,7 @@ void Player::BehaviorAttackUpdate()
 			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 10 && attackData_.attackAnimationFrame < 20 && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) 
 				|| input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))  && characterState_.isHitCharacter)
 			{
-				attackType = "TCMiddlePunch";
+				attackType = "中攻撃(ターゲット)";
 				attackData_.isAttack = false;
 				attackData_.isLightPunch = false;
 				attackData_.isTCMiddlePunch = true;
@@ -447,7 +454,7 @@ void Player::BehaviorAttackUpdate()
 			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 8 && attackData_.attackAnimationFrame < 25
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
 			{
-				attackType = "TCMiddlePunch";
+				attackType = "中攻撃(ターゲット)";
 				attackData_.isAttack = false;
 				attackData_.isMiddlePunch = false;
 				attackData_.isTCMiddlePunch = true;
@@ -500,7 +507,7 @@ void Player::BehaviorAttackUpdate()
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && characterState_.isHitCharacter)
 			{
-				attackType = "TCHighPunch";
+				attackType = "強攻撃(ターゲット)";
 				attackData_.isAttack = false;
 				attackData_.isTCMiddlePunch = false;
 				attackData_.isTCHighPunch = true;
@@ -514,7 +521,7 @@ void Player::BehaviorAttackUpdate()
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
 			{
-				attackType = "HighPunch";
+				attackType = "強攻撃";
 				attackData_.isAttack = false;
 				attackData_.isTCMiddlePunch = false;
 				attackData_.isHighPunch = true;
@@ -528,7 +535,7 @@ void Player::BehaviorAttackUpdate()
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && characterState_.isHitCharacter)
 			{
-				attackType = "Uppercut";
+				attackType = "アッパー";
 				attackData_.isAttack = false;
 				attackData_.isTCMiddlePunch = false;
 				attackData_.isUppercut = true;
@@ -624,7 +631,7 @@ void Player::BehaviorAttackUpdate()
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30 && 
 				input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))
 			{
-				attackType = "Tackle";
+				attackType = "タックル";
 				attackData_.isAttack = false;
 				attackData_.isHighPunch = false;
 				attackData_.isTackle = true;
@@ -799,7 +806,7 @@ void Player::BehaviorAttackUpdate()
 		}
 		else if(!attackData_.isFinisherFirstAttack && !attackData_.isFinisherSecondAttack)
 		{
-			attackType = "FinisherFirstAttack";
+			attackType = "必殺技(初段)";
 			timerData_.finisherTimer = 120;
 			attackData_.isFinisherFirstAttack = true;
 			animationTime_ = 0.0f;
@@ -836,7 +843,7 @@ void Player::BehaviorAttackUpdate()
 
 			if (enemy_->GetIsDown() && attackData_.attackAnimationFrame > 10 && attackData_.attackAnimationFrame < 30)
 			{
-				attackType = "FinisherSecondAttack";
+				attackType = "必殺技(2段目)";
 				timerData_.finisherTimer = 120;
 				attackData_.isAttack = false;
 				attackData_.isFinisherFirstAttack = false;
@@ -888,7 +895,7 @@ void Player::BehaviorAttackUpdate()
 
 			if (attackData_.attackAnimationFrame > attackData_.recoveryTime)
 			{
-				attackType = "Tackle";
+				attackType = "タックル";
 				attackData_.isAttack = false;
 				attackData_.isFinisher = false;
 				attackData_.isFinisherSecondAttack = false;
@@ -969,7 +976,7 @@ void Player::BehaviorJumpUpdate()
 		if (worldTransform_.translation.y > 0.3f && !attackData_.isJumpAttack && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)
 			|| input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_A)))
 		{
-			attackType = "JumpAttack";
+			attackType = "ジャンプ攻撃";
 			attackData_.isAttack = false;
 			attackData_.isJumpAttack = true;
 			animationTime_ = 0.0f;
@@ -1182,8 +1189,7 @@ void Player::OnCollision(Collider* collider)
 			if (overlapX > 0)
 			{
 				//押し出し速度
-				const float pushSpeed = 0.1f;  
-				float pushAmount = overlapX * 0.5f;
+				float pushSpeed = overlapX * 0.5f;
 
 				//isCharacterがfalseになるまで押し出し続ける
 				if (characterState_.isHitCharacter)
@@ -1191,12 +1197,12 @@ void Player::OnCollision(Collider* collider)
 					if (enemy_->GetDirection() == Direction::Right)
 					{
 						//キャラクターが右に進む場合
-						enemy_->GetWorldTransform().translation.x -= pushAmount;
+						enemy_->GetWorldTransform().translation.x -= pushSpeed;
 					}
 					else
 					{
 						//キャラクターが左に進む場合
-						enemy_->GetWorldTransform().translation.x += pushAmount;
+						enemy_->GetWorldTransform().translation.x += pushSpeed;
 					}
 				}
 			}
@@ -1388,7 +1394,6 @@ void Player::Move()
 	//コントローラーの取得
 	if (input_->GetJoystickState())
 	{
-		const float deadZone = 0.7f;
 		const float valueY = -0.3f;
 		bool isFrontMove_ = false;
 		bool isBackMove_ = false;

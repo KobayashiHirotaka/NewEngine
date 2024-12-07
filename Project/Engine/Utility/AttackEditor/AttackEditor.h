@@ -47,6 +47,8 @@ public:
 
     void Update();
 
+    void LoadJapaneseFont();
+
     void SaveFile(const std::string& saveFilePath, const std::unordered_map<std::string, AttackParameter>& attackParameters);
 
     void LoadFile(const std::string& loadFilePath, std::unordered_map<std::string, AttackParameter>& attackParameters);

@@ -183,7 +183,8 @@ Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> DirectXCore::CreateDescriptorHeap(D
 	descriptorHeapDesc.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
 	//ディスクリプタヒープの生成ができないので起動できない
-	HRESULT hr = device_->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
+	HRESULT hr;
+	hr = device_->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
 	assert(SUCCEEDED(hr));
 
 	return descriptorHeap;
@@ -211,7 +212,8 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCore::CreateBufferResource(size_t 
 
 	//頂点リソースを作る
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
-	HRESULT hr = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
+	HRESULT hr;
+	hr = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
 		&resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
 		IID_PPV_ARGS(&resource));
 	assert(SUCCEEDED(hr));
@@ -349,7 +351,8 @@ void DirectXCore::CreateSwapChain()
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 
 	//コマンドキュー、ウィンドウハンドル、設定を渡して生成
-	HRESULT hr = dxgiFactory_->CreateSwapChainForHwnd(commandQueue_.Get(), win_->GetHwnd(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
+	HRESULT hr;
+	hr = dxgiFactory_->CreateSwapChainForHwnd(commandQueue_.Get(), win_->GetHwnd(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
 
 	//スワップチェーンの生成ができないので起動できない
 	assert(SUCCEEDED(hr));
@@ -399,7 +402,8 @@ void DirectXCore::CreateDSV()
 void DirectXCore::CreateFence()
 {
 	//Fenceを作る
-	HRESULT hr = device_->CreateFence(fenceValue_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
+	HRESULT hr;
+	hr = device_->CreateFence(fenceValue_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
 	assert(SUCCEEDED(hr));
 }
 
@@ -457,7 +461,8 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCore::CreateDepthStencilTextureRes
 
 	//Resourceの作成
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
-	HRESULT hr = device_->CreateCommittedResource(
+	HRESULT hr;
+	hr = device_->CreateCommittedResource(
 		&heapProperties,//Heapの設定
 		D3D12_HEAP_FLAG_NONE,//Heapの特殊な設定。特になし。
 		&resourceDesc,//Resourceの設定

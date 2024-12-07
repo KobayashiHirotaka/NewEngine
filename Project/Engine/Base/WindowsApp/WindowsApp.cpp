@@ -47,8 +47,10 @@ void WindowsApp::CreateGameWindow(const wchar_t* title, int32_t clientWidth, int
 	//システムタイマーの分解能をあげる
 	timeBeginPeriod(1);
 
+	HRESULT hr;
+
 	//COM初期化
-	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
+	hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
 	//ウィンドウプロシージャ
 	wc_.lpfnWndProc = WindowProc;

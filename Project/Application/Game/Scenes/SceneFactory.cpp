@@ -1,5 +1,12 @@
 #include "SceneFactory.h"
 
+/**
+ * @file SceneFactory.cpp
+ * @brief シーンの管理(作成)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 IScene* SceneFactory::CreateScene(const std::string& sceneName)
 {
 	IScene* newScene = nullptr;

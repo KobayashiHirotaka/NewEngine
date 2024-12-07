@@ -2,6 +2,13 @@
 #include "Application/Game/Scenes/GamePlayScene.h"
 #include "Application/Game/GameTimer/GameTimer.h"
 
+/**
+ * @file ICharacter.cpp
+ * @brief 各キャラクター(Player,Enemy)の継承元
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 void ICharacter::Initialize()
 {
 #ifdef _ADJUSTMENT

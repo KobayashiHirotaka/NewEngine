@@ -1217,7 +1217,8 @@ Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateTextureResource(uint32
 
 	//リソースの作成
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
-	HRESULT hr = device_->CreateCommittedResource(
+	HRESULT hr;
+	hr = device_->CreateCommittedResource(
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,
@@ -1445,7 +1446,8 @@ Microsoft::WRL::ComPtr<ID3D12Resource> PostProcess::CreateDepthStencilTextureRes
 
 	//Resourceの作成
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
-	HRESULT hr = device_->CreateCommittedResource(
+	HRESULT hr;
+	hr = device_->CreateCommittedResource(
 		&heapProperties,//Heapの設定
 		D3D12_HEAP_FLAG_NONE,//Heapの特殊な設定。特になし。
 		&resourceDesc,//Resourceの設定

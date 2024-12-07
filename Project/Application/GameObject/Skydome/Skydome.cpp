@@ -1,6 +1,13 @@
 #include "Skydome.h"
 #include <cassert>
 
+/**
+ * @file Skydome.cpp
+ * @brief 天球の管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 void Skydome::Initialize()
 {
 	//inputのinstance

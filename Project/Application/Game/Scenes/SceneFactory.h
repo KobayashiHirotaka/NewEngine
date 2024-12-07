@@ -5,6 +5,13 @@
 #include "Application/Game/Scenes/GameWinScene.h"
 #include "Application/Game/Scenes/GameLoseScene.h"
 
+/**
+ * @file SceneFactory.h
+ * @brief シーンの管理(作成)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 class SceneFactory : public AbstractSceneFactory 
 {
 public:

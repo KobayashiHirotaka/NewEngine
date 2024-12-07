@@ -1,32 +1,14 @@
 {
-    "FinisherFirstAttack": {
+    "アッパー": {
         "attackEndTime": 25,
-        "attackStartTime": 0,
-        "damage": 10,
-        "finisherGaugeIncreaseAmount": 0.0,
-        "guardGaugeIncreaseAmount": 0.0,
-        "hitStop": 0.0,
-        "recoveryTime": 65
-    },
-    "FinisherSecondAttack": {
-        "attackEndTime": 17,
-        "attackStartTime": 0,
-        "damage": 5,
-        "finisherGaugeIncreaseAmount": 0.0,
-        "guardGaugeIncreaseAmount": 0.0,
-        "hitStop": 0.0,
-        "recoveryTime": 25
-    },
-    "HighPunch": {
-        "attackEndTime": 25,
-        "attackStartTime": 5,
-        "damage": 7,
+        "attackStartTime": 8,
+        "damage": 8,
         "finisherGaugeIncreaseAmount": 3.0,
         "guardGaugeIncreaseAmount": 0.0,
         "hitStop": 0.0,
-        "recoveryTime": 40
+        "recoveryTime": 34
     },
-    "JumpAttack": {
+    "ジャンプ攻撃": {
         "attackEndTime": 18,
         "attackStartTime": 5,
         "damage": 3,
@@ -35,16 +17,16 @@
         "hitStop": 0.11999999731779099,
         "recoveryTime": 25
     },
-    "LightPunch": {
-        "attackEndTime": 15,
-        "attackStartTime": 4,
-        "damage": 2,
-        "finisherGaugeIncreaseAmount": 1.0,
+    "タックル": {
+        "attackEndTime": 50,
+        "attackStartTime": 25,
+        "damage": 10,
+        "finisherGaugeIncreaseAmount": 4.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "hitStop": 0.10000000149011612,
-        "recoveryTime": 25
+        "hitStop": 0.11999999731779099,
+        "recoveryTime": 90
     },
-    "MiddlePunch": {
+    "中攻撃": {
         "attackEndTime": 18,
         "attackStartTime": 8,
         "damage": 5,
@@ -53,16 +35,7 @@
         "hitStop": 0.0,
         "recoveryTime": 25
     },
-    "TCHighPunch": {
-        "attackEndTime": 25,
-        "attackStartTime": 0,
-        "damage": 6,
-        "finisherGaugeIncreaseAmount": 5.0,
-        "guardGaugeIncreaseAmount": 0.0,
-        "hitStop": 0.0,
-        "recoveryTime": 40
-    },
-    "TCMiddlePunch": {
+    "中攻撃(ターゲット)": {
         "attackEndTime": 25,
         "attackStartTime": 0,
         "damage": 4,
@@ -71,22 +44,49 @@
         "hitStop": 0.0,
         "recoveryTime": 35
     },
-    "Tackle": {
-        "attackEndTime": 50,
-        "attackStartTime": 25,
-        "damage": 10,
-        "finisherGaugeIncreaseAmount": 4.0,
+    "弱攻撃": {
+        "attackEndTime": 15,
+        "attackStartTime": 4,
+        "damage": 2,
+        "finisherGaugeIncreaseAmount": 1.0,
         "guardGaugeIncreaseAmount": 0.0,
-        "hitStop": 0.11999999731779099,
-        "recoveryTime": 100
+        "hitStop": 0.10000000149011612,
+        "recoveryTime": 25
     },
-    "Uppercut": {
+    "強攻撃": {
         "attackEndTime": 25,
-        "attackStartTime": 8,
-        "damage": 8,
+        "attackStartTime": 5,
+        "damage": 7,
         "finisherGaugeIncreaseAmount": 3.0,
         "guardGaugeIncreaseAmount": 0.0,
         "hitStop": 0.0,
-        "recoveryTime": 34
+        "recoveryTime": 40
+    },
+    "強攻撃(ターゲット)": {
+        "attackEndTime": 25,
+        "attackStartTime": 0,
+        "damage": 6,
+        "finisherGaugeIncreaseAmount": 5.0,
+        "guardGaugeIncreaseAmount": 0.0,
+        "hitStop": 0.0,
+        "recoveryTime": 40
+    },
+    "必殺技(2段目)": {
+        "attackEndTime": 17,
+        "attackStartTime": 0,
+        "damage": 5,
+        "finisherGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 0.0,
+        "hitStop": 0.0,
+        "recoveryTime": 25
+    },
+    "必殺技(初段)": {
+        "attackEndTime": 25,
+        "attackStartTime": 0,
+        "damage": 10,
+        "finisherGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 0.0,
+        "hitStop": 0.0,
+        "recoveryTime": 65
     }
 }

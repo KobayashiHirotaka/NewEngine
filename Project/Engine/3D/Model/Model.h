@@ -70,7 +70,7 @@ public:
 
 	void Draw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData);
 
-	void BoneDraw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData);
+	void BoneDraw(WorldTransform& worldTransform, const Camera& camera);
 
 	static void Release();
 
