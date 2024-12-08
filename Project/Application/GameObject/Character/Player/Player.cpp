@@ -1903,7 +1903,7 @@ void Player::DownAnimation()
 		}
 		else
 		{
-			moveX = (enemy_->GetDirection() == Direction::Right) ? 2.0f : -2.0f;
+			moveX = (enemy_->GetDirection() == Direction::Right) ? 3.0f : -3.0f;
 		}
 
 		timerData_.effectTimer--;
