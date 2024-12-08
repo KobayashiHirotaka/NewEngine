@@ -6,7 +6,27 @@
         "finisherGaugeIncreaseAmount": 4.0,
         "guardGaugeIncreaseAmount": 8.0,
         "hitStop": 0.11999999731779099,
-        "recoveryTime": 100
+        "leftCollisionMax": {
+            "x": 0.10000000149011612,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "leftCollisionMin": {
+            "x": -0.6000000238418579,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
+        "recoveryTime": 100,
+        "rightCollisionMax": {
+            "x": 0.6000000238418579,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "rightCollisionMin": {
+            "x": -0.10000000149011612,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        }
     },
     "中攻撃(ターゲット)": {
         "attackEndTime": 25,
@@ -15,7 +35,27 @@
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 2.0,
         "hitStop": 10.0,
-        "recoveryTime": 30
+        "leftCollisionMax": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "leftCollisionMin": {
+            "x": -0.5,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
+        "recoveryTime": 30,
+        "rightCollisionMax": {
+            "x": 0.5,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "rightCollisionMin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        }
     },
     "弱攻撃": {
         "attackEndTime": 18,
@@ -24,7 +64,27 @@
         "finisherGaugeIncreaseAmount": 1.0,
         "guardGaugeIncreaseAmount": 4.0,
         "hitStop": 0.009999999776482582,
-        "recoveryTime": 25
+        "leftCollisionMax": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "leftCollisionMin": {
+            "x": -0.5,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
+        "recoveryTime": 25,
+        "rightCollisionMax": {
+            "x": 0.5,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "rightCollisionMin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        }
     },
     "強攻撃": {
         "attackEndTime": 25,
@@ -33,7 +93,27 @@
         "finisherGaugeIncreaseAmount": 3.0,
         "guardGaugeIncreaseAmount": 2.0,
         "hitStop": 0.0,
-        "recoveryTime": 40
+        "leftCollisionMax": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "leftCollisionMin": {
+            "x": -0.6000000238418579,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
+        "recoveryTime": 40,
+        "rightCollisionMax": {
+            "x": 0.6000000238418579,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "rightCollisionMin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        }
     },
     "弾攻撃": {
         "attackEndTime": 0,
@@ -42,6 +122,26 @@
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 6.0,
         "hitStop": 0.0,
-        "recoveryTime": 40
+        "leftCollisionMax": {
+            "x": 0.30000001192092896,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "leftCollisionMin": {
+            "x": -0.30000001192092896,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        },
+        "recoveryTime": 40,
+        "rightCollisionMax": {
+            "x": 0.30000001192092896,
+            "y": 1.0,
+            "z": 0.30000001192092896
+        },
+        "rightCollisionMin": {
+            "x": -0.30000001192092896,
+            "y": 0.0,
+            "z": -0.30000001192092896
+        }
     }
 }

@@ -135,7 +135,8 @@ void Enemy::Update()
 
 	//エディタで設定したパラメータをセット
 	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
-		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop, false);
+		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop, 
+		aabb_, false, characterState_.direction);
 
 	//振り向きの処理
 	Vector3 playerWorldPosition = player_->GetWorldPosition();
@@ -373,12 +374,10 @@ void Enemy::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 
@@ -422,12 +421,10 @@ void Enemy::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 
@@ -469,7 +466,6 @@ void Enemy::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {0.0f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -479,7 +475,6 @@ void Enemy::BehaviorAttackUpdate()
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.6f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -533,7 +528,6 @@ void Enemy::BehaviorAttackUpdate()
 
 				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 				{
-					aabb_ = { {-0.1f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 					SetAABB(aabb_);
 
 					worldTransform_.translation.x += 9.0f * GameTimer::GetDeltaTime();
@@ -554,7 +548,6 @@ void Enemy::BehaviorAttackUpdate()
 
 				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 				{
-					aabb_ = { {-0.6f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
 					SetAABB(aabb_);
 
 					worldTransform_.translation.x -= 9.0f * GameTimer::GetDeltaTime();
