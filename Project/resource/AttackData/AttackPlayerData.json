@@ -4,7 +4,7 @@
         "attackStartTime": 8,
         "damage": 8,
         "finisherGaugeIncreaseAmount": 3.0,
-        "guardGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 5.0,
         "hitStop": 0.0,
         "leftCollisionMax": {
             "x": 0.0,
@@ -33,7 +33,7 @@
         "attackStartTime": 5,
         "damage": 3,
         "finisherGaugeIncreaseAmount": 2.0,
-        "guardGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 3.0,
         "hitStop": 0.11999999731779099,
         "leftCollisionMax": {
             "x": 0.0,
@@ -62,7 +62,7 @@
         "attackStartTime": 25,
         "damage": 10,
         "finisherGaugeIncreaseAmount": 4.0,
-        "guardGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 4.0,
         "hitStop": 0.11999999731779099,
         "leftCollisionMax": {
             "x": 0.10000000149011612,
@@ -91,7 +91,7 @@
         "attackStartTime": 8,
         "damage": 5,
         "finisherGaugeIncreaseAmount": 2.0,
-        "guardGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 3.0,
         "hitStop": 0.0,
         "leftCollisionMax": {
             "x": 0.0,
@@ -149,7 +149,7 @@
         "attackStartTime": 4,
         "damage": 2,
         "finisherGaugeIncreaseAmount": 1.0,
-        "guardGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 3.0,
         "hitStop": 0.10000000149011612,
         "leftCollisionMax": {
             "x": 0.0,
@@ -178,7 +178,7 @@
         "attackStartTime": 5,
         "damage": 7,
         "finisherGaugeIncreaseAmount": 3.0,
-        "guardGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 3.0,
         "hitStop": 0.0,
         "leftCollisionMax": {
             "x": 0.10000000149011612,
@@ -265,7 +265,7 @@
         "attackStartTime": 0,
         "damage": 10,
         "finisherGaugeIncreaseAmount": 0.0,
-        "guardGaugeIncreaseAmount": 0.0,
+        "guardGaugeIncreaseAmount": 10.0,
         "hitStop": 0.0,
         "leftCollisionMax": {
             "x": 0.0,
