@@ -1063,7 +1063,7 @@ void Enemy::Move()
 			}
 		}
 
-		if (characterState_.isHitCharacter)
+		if (characterState_.isHitCharacter && playerWorldPosition.y <= 0.0f)
 		{
 			moveTimer_ = Random(30, 60);
 			patternCount_ = 5;
@@ -1125,7 +1125,7 @@ void Enemy::Move()
 			}
 		}
 
-		if (characterState_.isHitCharacter)
+		if (characterState_.isHitCharacter && playerWorldPosition.y <= 0.0f)
 		{
 			moveTimer_ = Random(30, 60);
 			patternCount_ = 5;
@@ -1775,7 +1775,7 @@ int Enemy::RandomMove()
 {
 	std::vector<int> actions;
 
-	actions = { 1, 1, 2 };
+	actions = { 1, 2, 2 };
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -1790,7 +1790,7 @@ int Enemy::RandomAttackOrMove()
 
 	if (hp_ >= 50.0f)
 	{
-		actions = { 1, 2, 3 };
+		actions = { 2, 2, 3 };
 	}
 	else
 	{
