@@ -69,8 +69,14 @@ void AttackEditor::Update()
                     ImGui::SliderFloat("ガードゲージ増加量", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
                     ImGui::SliderFloat("必殺技ゲージ増加量", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
                     ImGui::SliderFloat("ヒットストップ", &param.hitStop, 0.0f, 1.0f);
-                    ImGui::SliderFloat3("当たり判定の最小値", &param.collisionMin.x, -2.0f, 2.0f); 
-                    ImGui::SliderFloat3("当たり判定の最大値", &param.collisionMax.x, -2.0f, 2.0f); 
+                    
+                    ImGui::Text("右向きの当たり判定");
+                    ImGui::SliderFloat3("最小値(右向き)", &param.rightCollisionMin.x, -3.0f, 3.0f);
+                    ImGui::SliderFloat3("最大値(右向き)", &param.rightCollisionMax.x, -3.0f, 3.0f);
+
+                    ImGui::Text("左向きの当たり判定");
+                    ImGui::SliderFloat3("最小値(左向き)", &param.leftCollisionMin.x, -3.0f, 3.0f);
+                    ImGui::SliderFloat3("最大値(左向き)", &param.leftCollisionMax.x, -3.0f, 3.0f);
                 }
                 else
                 {
@@ -146,8 +152,14 @@ void AttackEditor::Update()
                     ImGui::SliderFloat("ガードゲージ増加量", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
                     ImGui::SliderFloat("必殺技ゲージ増加量", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
                     ImGui::SliderFloat("ヒットストップ", &param.hitStop, 0.0f, 1.0f);
-                    ImGui::SliderFloat3("当たり判定の最小値", &param.collisionMin.x, -3.0f, 2.0f);
-                    ImGui::SliderFloat3("当たり判定の最大値", &param.collisionMax.x, -3.0f, 2.0f);
+
+                    ImGui::Text("右向きの当たり判定");
+                    ImGui::SliderFloat3("最小値(右向き)", &param.rightCollisionMin.x, -3.0f, 3.0f);
+                    ImGui::SliderFloat3("最大値(右向き)", &param.rightCollisionMax.x, -3.0f, 3.0f);
+
+                    ImGui::Text("左向きの当たり判定");
+                    ImGui::SliderFloat3("最小値(左向き)", &param.leftCollisionMin.x, -3.0f, 3.0f);
+                    ImGui::SliderFloat3("最大値(左向き)", &param.leftCollisionMax.x, -3.0f, 3.0f);
                 }
                 else
                 {
@@ -209,8 +221,10 @@ void AttackEditor::SaveFile(const std::string& saveFilePath, const std::unordere
             {"guardGaugeIncreaseAmount", param.guardGaugeIncreaseAmount},
             {"finisherGaugeIncreaseAmount", param.finisherGaugeIncreaseAmount},
             {"hitStop",param.hitStop},
-            {"collisionMin", {{"x", param.collisionMin.x}, {"y", param.collisionMin.y}, {"z", param.collisionMin.z}}},
-            {"collisionMax", {{"x", param.collisionMax.x}, {"y", param.collisionMax.y}, {"z", param.collisionMax.z}}},
+            {"rightCollisionMin", {{"x", param.rightCollisionMin.x}, {"y", param.rightCollisionMin.y}, {"z", param.rightCollisionMin.z}}},
+            {"rightCollisionMax", {{"x", param.rightCollisionMax.x}, {"y", param.rightCollisionMax.y}, {"z", param.rightCollisionMax.z}}},
+            {"leftCollisionMin", {{"x", param.leftCollisionMin.x}, {"y", param.leftCollisionMin.y}, {"z", param.leftCollisionMin.z}}},
+            {"leftCollisionMax", {{"x", param.leftCollisionMax.x}, {"y", param.leftCollisionMax.y}, {"z", param.leftCollisionMax.z}}}
         };
     }
 
@@ -263,16 +277,18 @@ void AttackEditor::LoadFile(const std::string& loadFilePath, std::unordered_map<
             param["guardGaugeIncreaseAmount"].get<float>(),
             param["finisherGaugeIncreaseAmount"].get<float>(),
             param["hitStop"].get<float>(),
-            {param["collisionMin"]["x"].get<float>(), param["collisionMin"]["y"].get<float>(), param["collisionMin"]["z"].get<float>()}, 
-            {param["collisionMax"]["x"].get<float>(), param["collisionMax"]["y"].get<float>(), param["collisionMax"]["z"].get<float>()}, 
+            {param["rightCollisionMin"]["x"].get<float>(), param["rightCollisionMin"]["y"].get<float>(), param["rightCollisionMin"]["z"].get<float>()},
+            {param["rightCollisionMax"]["x"].get<float>(), param["rightCollisionMax"]["y"].get<float>(), param["rightCollisionMax"]["z"].get<float>()},
+            {param["leftCollisionMin"]["x"].get<float>(), param["leftCollisionMin"]["y"].get<float>(), param["leftCollisionMin"]["z"].get<float>()},
+            {param["leftCollisionMax"]["x"].get<float>(), param["leftCollisionMax"]["y"].get<float>(), param["leftCollisionMax"]["z"].get<float>()}
         };
     }
 }
 
 
 void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& damage,
-    float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, Vector3& collisionMin, Vector3& collisionMax, 
-    bool isPlayer)
+    float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, AABB& collision, bool isPlayer,
+    Direction& direction)
 {
     const auto& attackParameters = isPlayer ? playerAttackParameter_ : enemyAttackParameter_;
 
@@ -286,7 +302,17 @@ void AttackEditor::SetAttackParameters(const std::string& name, int& attackStart
         guardGaugeIncreaseAmount = it->second.guardGaugeIncreaseAmount;
         finisherGaugeIncreaseAmount = it->second.finisherGaugeIncreaseAmount;
         hitStop = it->second.hitStop;
-        collisionMin = it->second.collisionMin;
-        collisionMax = it->second.collisionMax;
+        
+        //向きに応じてAABBを設定
+        if (direction == Direction::Right)
+        {
+            collision.min = it->second.rightCollisionMin;
+            collision.max = it->second.rightCollisionMax;
+        }
+        else
+        {
+            collision.min = it->second.leftCollisionMin;
+            collision.max = it->second.leftCollisionMax;
+        }
     }
 }

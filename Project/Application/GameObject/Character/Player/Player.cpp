@@ -120,7 +120,7 @@ void Player::Update()
 	//エディタで設定したパラメータをセット
 	AttackEditor::GetInstance()->SetAttackParameters(attackType, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime, 
 		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop,
-		aabb_.min, aabb_.max, true);
+		aabb_, true, characterState_.direction);
 
 	//デバッグ用の処理
 	if (isDebug_)
@@ -382,12 +382,10 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -432,12 +430,10 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {0.0f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -484,12 +480,10 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -565,12 +559,10 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {0.0f,0.0f,-0.3f},{0.5f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 		}
 
@@ -598,7 +590,6 @@ void Player::BehaviorAttackUpdate()
 		
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {-0.1f,0.0f,-0.3f},{0.75f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -608,7 +599,6 @@ void Player::BehaviorAttackUpdate()
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.75f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
@@ -666,7 +656,6 @@ void Player::BehaviorAttackUpdate()
 
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 			{
-				aabb_ = { {-0.1f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				worldTransform_.translation.x += 9.0f * GameTimer::GetDeltaTime();
@@ -692,7 +681,6 @@ void Player::BehaviorAttackUpdate()
 
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
 			{
-				aabb_ = { {-0.6f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				worldTransform_.translation.x -= 9.0f * GameTimer::GetDeltaTime();
@@ -737,14 +725,12 @@ void Player::BehaviorAttackUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {0.0f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.6f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 			SetAABB(aabb_);
 
 			EvaluateAttackTiming();
@@ -822,12 +808,10 @@ void Player::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {0.0f,0.0f,-0.3f},{0.4f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.4f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 				SetAABB(aabb_);
 			}
 
@@ -873,7 +857,6 @@ void Player::BehaviorAttackUpdate()
 
 			if (characterState_.direction == Direction::Right)
 			{
-				aabb_ = { {0.0f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (!characterState_.isHitCharacter)
@@ -883,7 +866,6 @@ void Player::BehaviorAttackUpdate()
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				aabb_ = { {-0.6f,0.0f,-0.3f},{0.0f,1.0f,0.3f} };
 				SetAABB(aabb_);
 
 				if (!characterState_.isHitCharacter)
@@ -999,12 +981,10 @@ void Player::BehaviorJumpUpdate()
 
 		if (characterState_.direction == Direction::Right)
 		{
-			aabb_ = { {0.0f,0.0f,0.0f},{0.5f,1.0f,0.5f} };
 			SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			aabb_ = { {-0.5f,0.0f,-0.5f},{0.0f,1.0f,0.0f} };
 			SetAABB(aabb_);
 		}
 
@@ -1193,7 +1173,7 @@ void Player::OnCollision(Collider* collider)
 					((playerMinX > enemyMinX) ? playerMinX : enemyMinX);
 
 				//補正量を調整
-				float correctionFactor = 0.05f; 
+				float correctionFactor = 3.0f * GameTimer::GetDeltaTime(); 
 				float adjustedOverlapX = overlapX * correctionFactor;
 
 				//位置補正

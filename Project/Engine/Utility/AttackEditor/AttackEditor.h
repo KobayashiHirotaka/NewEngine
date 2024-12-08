@@ -2,6 +2,7 @@
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/Utility/Math/MyMath.h"
 #include "Engine/externals/nlohmann/json.hpp"
+#include "Application/GameObject/Character/Direction.h"
 #include <variant>
 #include <string>
 #include <map>
@@ -35,8 +36,10 @@ struct AttackParameter
     float hitStop = 0.0f;
 
     //当たり判定
-    Vector3 collisionMin = { 0.0f,0.0f,0.0f };
-    Vector3 collisionMax = { 0.0f,0.0f,0.0f };
+    Vector3 rightCollisionMin = { 0.0f, 0.0f, 0.0f };
+    Vector3 rightCollisionMax = { 0.0f, 0.0f, 0.0f };
+    Vector3 leftCollisionMin = { 0.0f, 0.0f, 0.0f };
+    Vector3 leftCollisionMax = { 0.0f, 0.0f, 0.0f };
 
     //攻撃の属性
     //std::string attackAttribute;
@@ -51,21 +54,21 @@ public:
 
     void Update();
 
-    void LoadJapaneseFont();
+    void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& damage,
+        float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, AABB& collision, bool isPlayer, 
+        Direction& direction);
 
     void SaveFile(const std::string& saveFilePath, const std::unordered_map<std::string, AttackParameter>& attackParameters);
 
     void LoadFile(const std::string& loadFilePath, std::unordered_map<std::string, AttackParameter>& attackParameters);
-
-    void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& damage,
-        float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, Vector3& collisionMin, 
-        Vector3& collisionMax, bool isPlayer);
 
 private:
     AttackEditor() = default;
     ~AttackEditor() = default;
     AttackEditor(const AttackEditor& obj) = default;
     AttackEditor& operator=(const AttackEditor& obj) = default;
+
+    void LoadJapaneseFont();
 
 private:
     std::unordered_map<std::string, AttackParameter> playerAttackParameter_;
