@@ -73,7 +73,7 @@ void BackGround::Initialize()
 
 void BackGround::Update()
 {
-	ImGui();
+	//ImGui();
 
 	for (int i = 0; i < 9; i++)
 	{

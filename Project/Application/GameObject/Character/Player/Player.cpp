@@ -114,6 +114,13 @@ void Player::Initialize()
 
 void Player::Update()
 {
+#ifdef _ADJUSTMENT
+	if (input_->PressKey(DIK_S))
+	{
+		finisherGauge_ = -50.0f;
+	}
+
+#endif
 
 	ICharacter::Update();
 
@@ -141,7 +148,7 @@ void Player::Update()
 		}
 	}
 
-	model_->GetMaterial()->ImGui();
+	//model_->GetMaterial()->ImGui();
 
 	//振り向きの処理
 	Vector3 playerWorldPosition = worldTransform_.translation;
@@ -1157,7 +1164,7 @@ void Player::OnCollision(Collider* collider)
 	{
 		characterState_.isHitCharacter = true;
 
-		if (characterState_.isHitCharacter && !attackData_.isAttack) 
+		if (characterState_.isHitCharacter && !attackData_.isAttack && !attackData_.isTackle && !attackData_.isUppercut && !isFinisherEffect_)
 		{
 			//プレイヤーと敵のAABB
 			float playerMinX = worldTransform_.translation.x + aabb_.min.x;
@@ -1892,11 +1899,11 @@ void Player::DownAnimation()
 
 		if (!enemy_->GetIsDown())
 		{
-			moveX = (enemy_->GetDirection() == Direction::Right) ? 6.0f : -6.0f;
+			moveX = (enemy_->GetDirection() == Direction::Right) ? 4.8f : -4.8f;
 		}
 		else
 		{
-			moveX = (enemy_->GetDirection() == Direction::Right) ? 3.0f : -3.0f;
+			moveX = (enemy_->GetDirection() == Direction::Right) ? 2.0f : -2.0f;
 		}
 
 		timerData_.effectTimer--;

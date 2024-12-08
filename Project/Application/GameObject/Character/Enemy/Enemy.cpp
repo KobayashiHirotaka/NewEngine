@@ -1149,7 +1149,7 @@ void Enemy::Move()
 		patternCount_ = 6;
 		characterState_.isGuard = true;
 
-		aabb_ = { {0.05f,0.0f,-0.3f},{0.05f,1.0f,0.3f} };
+		aabb_ = { {-0.05f,0.0f,-0.3f},{0.05f,1.0f,0.3f} };
 		SetAABB(aabb_);
 
 		animationIndex_ = 13;
@@ -1572,11 +1572,18 @@ void Enemy::DownAnimation()
 
 		if (!player_->GetIsDown())
 		{
-			moveX = (characterState_.direction == Direction::Right) ? -6.0f : 6.0f;
+			if (comboCount_ >= 5)
+			{
+				moveX = (characterState_.direction == Direction::Right) ? -6.0f : 6.0f;
+			}
+			else
+			{
+				moveX = (characterState_.direction == Direction::Right) ? -4.8f : 4.8f;
+			}
 		}
 		else
 		{
-			moveX = (characterState_.direction == Direction::Right) ? -3.0f : 3.0f;
+			moveX = (characterState_.direction == Direction::Right) ? -2.0f : 2.0f;
 		}
 
 		timerData_.effectTimer--;
