@@ -1,6 +1,6 @@
 /**
  * @file HitStop.h
- * @brief ヒットストップの管理(開始、更新など)を行う
+ * @brief ヒットストップの開始と更新処理を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

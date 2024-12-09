@@ -1,6 +1,6 @@
 /**
  * @file GameLoseScene.h
- * @brief 敗北シーンの管理(初期化、更新、描画など)を行う
+ * @brief 敗北シーンの初期化、更新、描画などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

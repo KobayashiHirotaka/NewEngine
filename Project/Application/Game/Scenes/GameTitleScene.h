@@ -1,6 +1,6 @@
 /**
  * @file GameTitleScene.h
- * @brief タイトルシーンの管理(初期化、更新、描画など)を行う
+ * @brief タイトルシーンの初期化、更新、描画などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

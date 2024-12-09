@@ -1,6 +1,6 @@
 /**
  * @file SceneFactory.cpp
- * @brief シーンの管理(作成)を行う
+ * @brief シーンの生成を行うファクトリークラス
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

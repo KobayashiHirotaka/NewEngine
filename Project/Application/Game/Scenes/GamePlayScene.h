@@ -1,6 +1,6 @@
 /**
  * @file GamePlayScene.h
- * @brief プレイシーンの管理(初期化、更新、描画など)を行う
+ * @brief プレイシーンの初期化、更新、描画などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

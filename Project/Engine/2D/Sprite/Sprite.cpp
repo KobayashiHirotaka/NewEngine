@@ -1,6 +1,6 @@
 /**
  * @file Sprite.cpp
- * @brief スプライトの管理(読み込み、描画など)を行う
+ * @brief スプライトの読み込み、描画などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

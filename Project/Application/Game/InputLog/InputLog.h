@@ -1,6 +1,6 @@
 /**
  * @file InputLog.cpp
- * @brief 入力履歴表示の管理(初期化、更新、描画など)を行う
+ * @brief 入力履歴表示、経過フレームの表示を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

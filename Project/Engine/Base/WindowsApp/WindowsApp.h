@@ -1,6 +1,6 @@
 /**
  * @file WindowsApp.h
- * @brief アプリケーションのウィンドウ管理を行う
+ * @brief アプリケーションのウィンドウ生成などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

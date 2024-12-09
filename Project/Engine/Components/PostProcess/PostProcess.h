@@ -1,6 +1,6 @@
 /**
  * @file PostProcess.h
- * @brief ポストプロセスエフェクトの管理(ブルーム、ビネット、グレースケールなど)を行う
+ * @brief マルチパスを使用してポストプロセスエフェクト(ブルーム、ビネット、グレースケールなど)を適応する
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

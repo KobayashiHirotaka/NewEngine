@@ -1,6 +1,6 @@
 /**
  * @file Audio.cpp
- * @brief 音声データの管理(読み込み、再生、停止など)を行う
+ * @brief 音声データの読み込み、再生、停止などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

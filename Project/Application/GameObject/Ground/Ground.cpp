@@ -1,6 +1,6 @@
 /**
  * @file Ground.cpp
- * @brief 地面の管理(初期化、更新、描画など)を行う
+ * @brief 地面の初期化、更新、描画などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

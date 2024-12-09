@@ -1,6 +1,6 @@
 /**
  * @file CameraController.h
- * @brief ゲーム中のカメラの管理(初期化、更新など)を行う
+ * @brief ゲーム中のカメラの制御、更新を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

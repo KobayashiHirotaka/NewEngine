@@ -1,6 +1,6 @@
 /**
  * @file IScene.h
- * @brief 各シーンの継承元
+ * @brief シーンの基底クラス
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

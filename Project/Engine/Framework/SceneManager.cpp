@@ -1,6 +1,6 @@
 /**
  * @file SceneManager.cpp
- * @brief 各シーンの管理
+ * @brief 各シーンの管理(更新、描画、シーン遷移など)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

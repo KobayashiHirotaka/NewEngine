@@ -1,6 +1,6 @@
 /**
  * @file GameTimer.cpp
- * @brief ゲーム中の時間の管理(更新など)を行う
+ * @brief ゲーム中の時間(経過時間)の管理を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

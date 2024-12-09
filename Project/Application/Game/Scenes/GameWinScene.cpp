@@ -1,6 +1,6 @@
 /**
  * @file GameWinScene.cpp
- * @brief 勝利シーンの管理(初期化、更新、描画など)を行う
+ * @brief 勝利シーンの初期化、更新、描画などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

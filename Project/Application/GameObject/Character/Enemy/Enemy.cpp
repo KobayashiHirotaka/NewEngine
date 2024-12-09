@@ -1,6 +1,6 @@
 /**
  * @file Enemy.cpp
- * @brief 敵の管理(初期化、更新、描画など)を行う
+ * @brief 敵の管理(移動、攻撃など)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

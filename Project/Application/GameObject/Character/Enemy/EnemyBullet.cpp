@@ -1,6 +1,6 @@
 /**
  * @file EnemyBullet.cpp
- * @brief 敵の弾の管理(初期化、更新、描画など)を行う
+ * @brief 敵の弾の管理(移動、削除)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

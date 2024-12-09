@@ -1,6 +1,6 @@
 /**
  * @file Player.cpp
- * @brief 自機の管理(初期化、更新、描画など)を行う
+ * @brief プレイヤーの管理(移動、攻撃など)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

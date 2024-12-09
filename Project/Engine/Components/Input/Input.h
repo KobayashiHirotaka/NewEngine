@@ -1,6 +1,6 @@
 /**
  * @file Input.h
- * @brief 入力の管理(キーボード、マウス、パッド)を行う
+ * @brief 入力の受付(キーボード、マウス、パッド)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

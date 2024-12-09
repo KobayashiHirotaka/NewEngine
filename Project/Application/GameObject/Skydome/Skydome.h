@@ -1,6 +1,6 @@
 /**
  * @file Skydome.h
- * @brief 天球の管理(初期化、更新、描画など)を行う
+ * @brief 天球の初期化、更新、描画などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
