@@ -1,3 +1,10 @@
+/**
+ * @file SpotLight.cpp
+ * @brief スポットライトの初期化、更新、ライティングの設定などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "SpotLight.h"
 
 void SpotLight::Initialize()

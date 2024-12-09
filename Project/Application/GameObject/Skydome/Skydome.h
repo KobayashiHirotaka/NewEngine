@@ -1,15 +1,15 @@
-#pragma once
-#include "Engine/Components/Input/Input.h"
-#include "Engine/3D/WorldTransform/WorldTransform.h"
-#include "Engine/3D/Camera/Camera.h"
-#include "Engine/3D/Model/IGame3dObject.h"
-
 /**
  * @file Skydome.h
  * @brief 天球の管理(初期化、更新、描画など)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
+
+#pragma once
+#include "Engine/Components/Input/Input.h"
+#include "Engine/3D/WorldTransform/WorldTransform.h"
+#include "Engine/3D/Camera/Camera.h"
+#include "Engine/3D/Model/IGame3dObject.h"
 
 class Skydome
 {

@@ -1,3 +1,10 @@
+/**
+ * @file SceneManager.cpp
+ * @brief 各シーンの管理
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "SceneManager.h"
 #include "Engine/Utility/GlobalVariables.h"
 

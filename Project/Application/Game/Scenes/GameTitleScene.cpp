@@ -1,14 +1,14 @@
-#include "GameTitleScene.h"
-#include "Engine/Framework/SceneManager.h"
-#include "Engine/Components/PostProcess/PostProcess.h"
-#include <cassert>
-
 /**
  * @file GameTitleScene.cpp
  * @brief タイトルシーンの管理(初期化、更新、描画など)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
+
+#include "GameTitleScene.h"
+#include "Engine/Framework/SceneManager.h"
+#include "Engine/Components/PostProcess/PostProcess.h"
+#include <cassert>
 
 GameTitleScene::GameTitleScene() {};
 

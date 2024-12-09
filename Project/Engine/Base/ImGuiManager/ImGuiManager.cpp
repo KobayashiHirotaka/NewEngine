@@ -1,3 +1,10 @@
+/**
+ * @file ImGuiManager.cpp
+ * @brief ImGuiの管理(初期化、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "ImGuiManager.h"
 
 ImGuiManager* ImGuiManager::GetInstance()

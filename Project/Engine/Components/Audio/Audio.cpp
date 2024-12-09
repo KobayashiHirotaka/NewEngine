@@ -1,3 +1,10 @@
+/**
+ * @file Audio.cpp
+ * @brief 音声データの管理(読み込み、再生、停止など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "Audio.h"
 #include <cassert>
 

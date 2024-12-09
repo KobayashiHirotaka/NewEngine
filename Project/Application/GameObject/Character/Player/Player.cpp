@@ -1,14 +1,14 @@
-#include "Player.h"
-#include "Application/GameObject/Character/Enemy/Enemy.h"
-#include "Application/Game/Scenes/GamePlayScene.h"
-#include "Application/Game/GameTimer/GameTimer.h"
-
 /**
  * @file Player.cpp
  * @brief 自機の管理(初期化、更新、描画など)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
+
+#include "Player.h"
+#include "Application/GameObject/Character/Enemy/Enemy.h"
+#include "Application/Game/Scenes/GamePlayScene.h"
+#include "Application/Game/GameTimer/GameTimer.h"
 
 Player::~Player()
 {

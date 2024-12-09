@@ -1,16 +1,16 @@
-#pragma once
-#include "Engine/Base/TextureManager/TextureManager.h"
-#include "Engine/2D/Sprite/Sprite.h"
-#include "Engine/Components/Input/Input.h"
-#include <deque>
-#include <algorithm>
-
 /**
  * @file InputLog.cpp
  * @brief 入力履歴表示の管理(初期化、更新、描画など)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
+
+#pragma once
+#include "Engine/Base/TextureManager/TextureManager.h"
+#include "Engine/2D/Sprite/Sprite.h"
+#include "Engine/Components/Input/Input.h"
+#include <deque>
+#include <algorithm>
 
 class InputLog
 {

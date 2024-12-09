@@ -1,3 +1,10 @@
+/**
+ * @file SceneManager.h
+ * @brief 各シーンの管理
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "AbstractSceneFactory.h"
 #include "Application/Game/Scenes/IScene.h"
 #include <memory>

@@ -1,3 +1,10 @@
+/**
+ * @file EnemyBullet.h
+ * @brief 敵の弾の管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/3D/Model/Model.h"
 #include "Engine/Utility/Math/MyMath.h"
@@ -6,13 +13,6 @@
 #include "Engine/Utility/Collision/Collider.h"
 #include "Engine/Utility/Collision/CollisionConfig.h"
 #include "Engine/3D/Particle/ParticleEffectPlayer.h"
-
-/**
- * @file EnemyBullet.h
- * @brief 敵の弾の管理(初期化、更新、描画など)を行う
- * @author  KOBAYASHI HIROTAKA
- * @date 未記録
- */
 
 class EnemyBullet : public Collider
 {

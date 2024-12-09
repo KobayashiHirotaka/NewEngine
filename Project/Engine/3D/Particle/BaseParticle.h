@@ -1,3 +1,10 @@
+/**
+ * @file BaseParticle.h
+ * @brief パーティクルの基底クラス
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/Utility/Math/MyMath.h"
 

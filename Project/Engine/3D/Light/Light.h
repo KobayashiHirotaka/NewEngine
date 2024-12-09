@@ -1,3 +1,10 @@
+/**
+ * @file Light.h
+ * @brief ライトの初期化、更新、ライティングの設定などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Utility/Math/MyMath.h"

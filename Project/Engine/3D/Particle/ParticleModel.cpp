@@ -1,3 +1,10 @@
+/**
+ * @file ParticleModel.cpp
+ * @brief パーティクルモデルの読み込み、生成、描画などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "ParticleModel.h"
 
 DirectXCore* ParticleModel::dxCore_ = nullptr;

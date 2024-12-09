@@ -1,3 +1,10 @@
+/**
+ * @file PostProcess.h
+ * @brief ポストプロセスエフェクトの管理(ブルーム、ビネット、グレースケールなど)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Utility/Math/MyMath.h"

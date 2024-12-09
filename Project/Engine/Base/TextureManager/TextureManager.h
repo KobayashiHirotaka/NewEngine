@@ -1,3 +1,10 @@
+/**
+ * @file TextureManager.h
+ * @brief テクスチャの管理(読み込みやSRVの作成など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/externals/DirectXTex/DirectXTex.h"

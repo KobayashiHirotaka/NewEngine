@@ -1,3 +1,10 @@
+/**
+ * @file IGame3dObject.cpp
+ * @brief 3Dオブジェクトの基底クラス
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "IGame3dObject.h"
 
 void IGame3dObject::Initialize()

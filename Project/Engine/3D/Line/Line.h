@@ -1,3 +1,10 @@
+/**
+ * @file Line.h
+ * @brief 線の生成、更新、描画などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Base/TextureManager/TextureManager.h"

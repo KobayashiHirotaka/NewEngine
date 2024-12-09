@@ -1,3 +1,10 @@
+/**
+ * @file ParticleEmitter.cpp
+ * @brief エミッターに設定されたパラメータに基づいてパーティクルを生成、更新を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "ParticleEmitter.h"
 
 void ParticleEmitter::Initialize()

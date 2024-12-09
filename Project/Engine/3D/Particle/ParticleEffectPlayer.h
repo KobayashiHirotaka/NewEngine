@@ -1,3 +1,10 @@
+/**
+ * @file ParticleEmitter.h
+ * @brief パーティクルエフェクトの生成、再生などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/3D/Particle/ParticleModel.h"
 #include "Engine/3D/Particle/ParticleSystem.h"

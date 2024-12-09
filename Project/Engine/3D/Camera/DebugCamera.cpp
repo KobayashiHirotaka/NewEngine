@@ -1,3 +1,10 @@
+/**
+ * @file DebugCamera.cpp
+ * @brief デバッグカメラの管理(移動、回転など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "DebugCamera.h"
 
 DebugCamera::DebugCamera()

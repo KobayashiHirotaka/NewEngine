@@ -1,3 +1,10 @@
+/**
+ * @file LevelLoader.h
+ * @brief Blenderからオブジェクトのデータを読み込んでゲームに反映
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/3D/Model/Model.h"
 #include "Engine/3D/Model/IGame3dObject.h"

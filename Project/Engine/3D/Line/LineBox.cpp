@@ -1,3 +1,10 @@
+/**
+ * @file LineBox.cpp
+ * @brief 線(Box)の生成、更新、描画などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "LineBox.h"
 
 void LineBox::Initialize(AABB aabb)

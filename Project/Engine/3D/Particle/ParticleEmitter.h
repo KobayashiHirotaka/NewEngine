@@ -1,3 +1,10 @@
+/**
+ * @file ParticleEmitter.h
+ * @brief エミッターに設定されたパラメータに基づいてパーティクルを生成、更新を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Particle.h"
 #include "Engine/3D/Particle/Random.h"

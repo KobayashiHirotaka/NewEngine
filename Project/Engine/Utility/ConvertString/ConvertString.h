@@ -1,3 +1,10 @@
+/**
+ * @file ConvertString.h
+ * @brief ログ出力と文字列の変換
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include <string>
 #include <format>

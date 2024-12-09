@@ -1,3 +1,10 @@
+/**
+ * @file ParticleSystem.h
+ * @brief パーティクルシステムの初期化、更新、エミッターの追加などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Base/TextureManager/TextureManager.h"

@@ -1,11 +1,11 @@
-#include "SceneFactory.h"
-
 /**
  * @file SceneFactory.cpp
  * @brief シーンの管理(作成)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
+
+#include "SceneFactory.h"
 
 IScene* SceneFactory::CreateScene(const std::string& sceneName)
 {

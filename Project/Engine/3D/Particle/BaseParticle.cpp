@@ -1,3 +1,10 @@
+/**
+ * @file BaseParticle.cpp
+ * @brief パーティクルの基底クラス
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "BaseParticle.h"
 
 void BaseParticle::Initialize(const Vector3& translation, const Vector3& rotation, const Vector3& scale, const Vector3& velocity, const Vector4& color, float lifeTime)

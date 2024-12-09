@@ -1,3 +1,10 @@
+/**
+ * @file Random.cpp
+ * @brief 乱数生成を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "Random.h"
 
 std::mt19937 Random::randomEngine_;

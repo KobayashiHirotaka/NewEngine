@@ -1,3 +1,10 @@
+/**
+ * @file Structs.h
+ * @brief 複数の構造体(Vector、アニメーションなど)を定義
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include <stdint.h>
 #include <vector>

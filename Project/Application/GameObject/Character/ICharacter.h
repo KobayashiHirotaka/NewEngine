@@ -1,3 +1,10 @@
+/**
+ * @file ICharacter.h
+ * @brief 各キャラクター(Player,Enemy)の基底クラス
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/3D/Model/Model.h"
 #include "Engine/3D/Model/ModelManager.h"
@@ -17,13 +24,6 @@
 #include <numbers>
 #include <unordered_map>
 #include <algorithm>
-
-/**
- * @file ICharacter.h
- * @brief 各キャラクター(Player,Enemy)の継承元
- * @author  KOBAYASHI HIROTAKA
- * @date 未記録
- */
 
 class ICharacter : public IGame3dObject
 {

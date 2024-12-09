@@ -1,3 +1,10 @@
+/**
+ * @file Line.cpp
+ * @brief 線の生成、更新、描画などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "Line.h"
 
 DirectXCore* Line::dxCore_ = nullptr;

@@ -1,3 +1,10 @@
+/**
+ * @file Camera.cpp
+ * @brief カメラの更新、行列計算などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "Camera.h"
 
 Camera::Camera()

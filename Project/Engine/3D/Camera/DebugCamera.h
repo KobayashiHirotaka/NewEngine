@@ -1,3 +1,10 @@
+/**
+ * @file DebugCamera.h
+ * @brief デバッグカメラの管理(移動、回転など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/3D/Camera/Camera.h"

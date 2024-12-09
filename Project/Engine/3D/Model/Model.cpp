@@ -1,3 +1,10 @@
+/**
+ * @file Model.cpp
+ * @brief モデルの読み込み、生成、描画などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "Model.h"
 
 DirectXCore* Model::dxCore_ = nullptr;

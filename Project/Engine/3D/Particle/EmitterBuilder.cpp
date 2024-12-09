@@ -1,3 +1,10 @@
+/**
+ * @file EmitterBuilder.cpp
+ * @brief パーティクルエミッターの生成を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "EmitterBuilder.h"
 
 EmitterBuilder::EmitterBuilder()

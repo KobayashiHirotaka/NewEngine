@@ -1,3 +1,10 @@
+/**
+ * @file GamePlayScene.h
+ * @brief プレイシーンの管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "IScene.h"
 #include "Engine/3D/Skybox/Skybox.h"
@@ -10,13 +17,6 @@
 #include "Application/GameObject/Skydome/Skydome.h"
 #include "Application/GameObject/BackGround/BackGround.h"
 #include "Application/Game/HitStop/HitStop.h"
-
-/**
- * @file GamePlayScene.h
- * @brief プレイシーンの管理(初期化、更新、描画など)を行う
- * @author  KOBAYASHI HIROTAKA
- * @date 未記録
- */
 
 class GamePlayScene : public IScene
 {

@@ -1,3 +1,10 @@
+/**
+ * @file Material.cpp
+ * @brief マテリアルの初期化、更新などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "Material.h"
 
 void Material::Initialize()

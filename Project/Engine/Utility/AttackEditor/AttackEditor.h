@@ -1,3 +1,10 @@
+/**
+ * @file AttackEditor.h
+ * @brief 攻撃に関するパラメータ調整ができるエディター
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/Utility/Math/MyMath.h"

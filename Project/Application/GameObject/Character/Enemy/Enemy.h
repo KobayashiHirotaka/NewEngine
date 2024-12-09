@@ -1,13 +1,13 @@
-#pragma once
-#include "Application/GameObject/Character/ICharacter.h"
-#include "EnemyBullet.h"
-
 /**
  * @file Enemy.h
  * @brief 敵の管理(初期化、更新、描画など)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
+
+#pragma once
+#include "Application/GameObject/Character/ICharacter.h"
+#include "EnemyBullet.h"
 
 //前方宣言
 class Player;

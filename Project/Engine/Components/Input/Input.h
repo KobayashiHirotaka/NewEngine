@@ -1,3 +1,10 @@
+/**
+ * @file Input.h
+ * @brief 入力の管理(キーボード、マウス、パッド)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #define DIRECTINPUT_VERSION 0x0800//DirectInputのバージョン指定
 #include <dinput.h>

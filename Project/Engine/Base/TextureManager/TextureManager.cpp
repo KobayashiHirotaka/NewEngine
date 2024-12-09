@@ -1,3 +1,10 @@
+/**
+ * @file TextureManager.cpp
+ * @brief テクスチャの管理(読み込みやSRVの作成など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "TextureManager.h"
 
 uint32_t TextureManager::descriptorSizeSRV = 0;

@@ -1,3 +1,10 @@
+/**
+ * @file DirectXCore.cpp
+ * @brief DirectX12の初期化、リソース管理、描画処理などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "DirectXCore.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
 

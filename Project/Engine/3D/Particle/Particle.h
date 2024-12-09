@@ -1,3 +1,10 @@
+/**
+ * @file Particle.h
+ * @brief パーティクルの初期化、更新を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "BaseParticle.h"
 #include "Engine/Utility/Math/MyMath.h"

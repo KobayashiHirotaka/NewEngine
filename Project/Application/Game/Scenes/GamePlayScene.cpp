@@ -1,16 +1,16 @@
-#include "GamePlayScene.h"
-#include "Engine/Framework/SceneManager.h"
-#include "Engine/Components/PostProcess/PostProcess.h"
-#include "Application/GameObject/Character/ICharacter.h"
-#include "Application/Game/GameTimer/GameTimer.h"
-#include <cassert>
-
 /**
  * @file GamePlayScene.cpp
  * @brief プレイシーンの管理(初期化、更新、描画など)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
+
+#include "GamePlayScene.h"
+#include "Engine/Framework/SceneManager.h"
+#include "Engine/Components/PostProcess/PostProcess.h"
+#include "Application/GameObject/Character/ICharacter.h"
+#include "Application/Game/GameTimer/GameTimer.h"
+#include <cassert>
 
 int GamePlayScene::migrationTimer = 200;
 int GamePlayScene::roundStartTimer_ = 100;

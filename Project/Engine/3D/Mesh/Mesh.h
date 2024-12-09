@@ -1,3 +1,10 @@
+/**
+ * @file Mesh.h
+ * @brief メッシュの初期化、描画などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Utility/Math/MyMath.h"

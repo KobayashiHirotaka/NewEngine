@@ -1,3 +1,10 @@
+/**
+ * @file MyMath.h
+ * @brief 数学関数の定義
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/Utility/Structs.h"
 #include <cmath>

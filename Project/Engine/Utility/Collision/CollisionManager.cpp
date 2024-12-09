@@ -1,3 +1,10 @@
+/**
+ * @file CollisionManager.cpp
+ * @brief 当たり判定の管理(球やAABBなど)
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "CollisionManager.h"
 
 void CollisionManager::CheckAllCollision()

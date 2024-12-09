@@ -1,3 +1,10 @@
+/**
+ * @file CollisionManager.h
+ * @brief 当たり判定の管理(球やAABBなど)
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include <list>
 #include"Collider.h"

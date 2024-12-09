@@ -1,3 +1,10 @@
+/**
+ * @file CollisionConfig.h
+ * @brief 当たり判定の属性
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include <cstdint>
 

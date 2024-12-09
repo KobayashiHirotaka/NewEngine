@@ -1,3 +1,10 @@
+/**
+ * @file Game3dObjectFactory.cpp
+ * @brief 3Dオブジェクトの生成を行うファクトリークラス
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "Game3dObjectFactory.h"
 
 IGame3dObject* Game3dObjectFactory::CreateGameObject(const std::string& objectName)

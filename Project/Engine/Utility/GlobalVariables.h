@@ -1,3 +1,10 @@
+/**
+ * @file GlobalVariables.h
+ * @brief 変数を調整し、jsonに出力、読み込みができる
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/Utility/Math/MyMath.h"

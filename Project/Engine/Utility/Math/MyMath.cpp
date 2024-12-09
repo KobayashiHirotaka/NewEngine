@@ -1,3 +1,10 @@
+/**
+ * @file MyMath.cpp
+ * @brief 数学関数の定義
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "MyMath.h"
 
 //float

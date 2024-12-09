@@ -1,3 +1,10 @@
+/**
+ * @file WindowsApp.h
+ * @brief アプリケーションのウィンドウ管理を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include <Windows.h>
 #include <cstdint>

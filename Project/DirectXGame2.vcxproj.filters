@@ -599,9 +599,6 @@
     <ClInclude Include="Engine\3D\Mesh\Mesh.h">
       <Filter>ヘッダー ファイル\Engine\3d\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Base\D3DResourceLeakChecker.h">
-      <Filter>ソース ファイル\Engine\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\3D\Particle\BaseParticle.h">
       <Filter>ヘッダー ファイル\Engine\3d\Particle</Filter>
     </ClInclude>
@@ -742,6 +739,9 @@
     </ClInclude>
     <ClInclude Include="Application\Game\HitStop\HitStop.h">
       <Filter>ヘッダー ファイル\Project\Game\HitStop</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\D3DResourceLeakChecker.h">
+      <Filter>ヘッダー ファイル\Engine\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

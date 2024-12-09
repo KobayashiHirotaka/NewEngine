@@ -1,3 +1,10 @@
+/**
+ * @file Input.cpp
+ * @brief 入力の管理(キーボード、マウス、パッド)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "Input.h"
 
 Input* Input::instance_ = nullptr;

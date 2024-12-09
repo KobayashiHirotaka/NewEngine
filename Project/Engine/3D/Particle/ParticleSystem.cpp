@@ -1,3 +1,10 @@
+/**
+ * @file ParticleSystem.cpp
+ * @brief パーティクルシステムの初期化、更新、エミッターの追加などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "ParticleSystem.h"
 
 void ParticleSystem::Initialize()

@@ -1,3 +1,10 @@
+/**
+ * @file D3DResourceLeakChecker.h
+ * @brief リークチェックを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include <d3d12.h>
 #include <dxgi1_6.h>

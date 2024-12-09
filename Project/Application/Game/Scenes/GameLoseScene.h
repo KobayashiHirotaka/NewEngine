@@ -1,13 +1,13 @@
-#include "IScene.h"
-#include "Engine/3D/Skybox/Skybox.h"
-#include "Application/GameObject/Skydome/Skydome.h"
-
 /**
  * @file GameLoseScene.h
  * @brief 敗北シーンの管理(初期化、更新、描画など)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
+
+#include "IScene.h"
+#include "Engine/3D/Skybox/Skybox.h"
+#include "Application/GameObject/Skydome/Skydome.h"
 
 class GameLoseScene : public IScene
 {

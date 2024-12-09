@@ -1,3 +1,10 @@
+/**
+ * @file Game3dObjectManager.h
+ * @brief 3Dオブジェクトの管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "IGame3dObject.h"
 #include "Game3dObjectFactory.h"

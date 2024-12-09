@@ -1,11 +1,11 @@
-#include "GameManager.h"
-
 /**
  * @file GameManager.cpp
  * @brief ゲーム全体の管理（初期化、描画など）を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
+
+#include "GameManager.h"
 
 void GameManager::Initialize()
 {

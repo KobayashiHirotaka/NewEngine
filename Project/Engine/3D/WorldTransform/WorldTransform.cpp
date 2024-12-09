@@ -1,3 +1,10 @@
+/**
+ * @file WorldTransform.cpp
+ * @brief オブジェクトのワールド座標の更新やペアレントなどを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "WorldTransform.h"
 
 void WorldTransform::Initialize()

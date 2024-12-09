@@ -1,3 +1,10 @@
+/**
+ * @file Mesh.cpp
+ * @brief メッシュの初期化、描画などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "Mesh.h"
 
 void Mesh::Initialize(const std::vector<VertexData>& vertices, const std::vector<uint32_t>& indices)

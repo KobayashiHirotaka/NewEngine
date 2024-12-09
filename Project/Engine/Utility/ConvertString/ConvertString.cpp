@@ -1,3 +1,10 @@
+/**
+ * @file ConvertString.cpp
+ * @brief ログ出力と文字列の変換
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "ConvertString.h"
 
 void Log(const std::string& message)

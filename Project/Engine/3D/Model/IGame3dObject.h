@@ -1,3 +1,10 @@
+/**
+ * @file IGame3dObject.h
+ * @brief 3Dオブジェクトの基底クラス
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine//3D/Model/Model.h"
 

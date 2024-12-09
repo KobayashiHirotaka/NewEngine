@@ -1,3 +1,11 @@
+/**
+ * @file WindowsApp.cpp
+ * @brief アプリケーションのウィンドウ管理を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
+
 #include "WindowsApp.h"
 #pragma comment(lib,"winmm.lib")
 

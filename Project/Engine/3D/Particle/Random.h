@@ -1,3 +1,10 @@
+/**
+ * @file Random.h
+ * @brief 乱数生成を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include <random>
 

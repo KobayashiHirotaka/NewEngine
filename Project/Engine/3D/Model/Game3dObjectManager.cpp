@@ -1,3 +1,10 @@
+/**
+ * @file Game3dObjectManager.cpp
+ * @brief 3Dオブジェクトの管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "Game3dObjectManager.h"
 
 Game3dObjectManager* Game3dObjectManager::instance_ = nullptr;

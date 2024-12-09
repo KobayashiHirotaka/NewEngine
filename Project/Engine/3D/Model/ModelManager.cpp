@@ -1,3 +1,10 @@
+/**
+ * @file ModelManager.cpp
+ * @brief モデルの管理(読み込み、検索)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "ModelManager.h"
 
 ModelManager* ModelManager::instance_ = nullptr;

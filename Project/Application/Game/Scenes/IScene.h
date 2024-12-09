@@ -1,3 +1,10 @@
+/**
+ * @file IScene.h
+ * @brief 各シーンの継承元
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/3D/Model/Model.h"
@@ -13,13 +20,6 @@
 #include "Engine/Utility/Collision/CollisionManager.h"
 #include "Engine/Utility/LevelLoader/LevelLoader.h"
 #include <memory>
-
-/**
- * @file IScene.h
- * @brief 各シーンの継承元
- * @author  KOBAYASHI HIROTAKA
- * @date 未記録
- */
 
 class SceneManager;
 

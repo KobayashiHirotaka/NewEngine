@@ -1,3 +1,10 @@
+/**
+ * @file PostProcess.cpp
+ * @brief ポストプロセスエフェクトの管理(ブルーム、ビネット、グレースケールなど)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "PostProcess.h"
 
 uint32_t PostProcess::descriptorSizeRTV;

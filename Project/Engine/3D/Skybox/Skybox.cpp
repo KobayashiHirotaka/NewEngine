@@ -1,3 +1,10 @@
+/**
+ * @file Skybox.cpp
+ * @brief Skyboxの生成、描画などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "Skybox.h"
 
 DirectXCore* Skybox::dxCore_ = nullptr;

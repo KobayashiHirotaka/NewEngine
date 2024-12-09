@@ -1,3 +1,11 @@
+
+/**
+ * @file UI.h
+ * @brief UIの構造体
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Sprite.h"
 #include "Engine/Utility/Math/MyMath.h"

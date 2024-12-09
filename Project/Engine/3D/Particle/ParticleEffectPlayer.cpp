@@ -1,3 +1,10 @@
+/**
+ * @file ParticleEmitter.h
+ * @brief パーティクルエフェクトの生成、再生などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "ParticleEffectPlayer.h"
 
 void ParticleEffectPlayer::Initialize()

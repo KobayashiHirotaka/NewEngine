@@ -1,3 +1,10 @@
+/**
+ * @file EngineCore.cpp
+ * @brief エンジン機能の管理(初期化、更新、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "EngineCore.h"
 
 D3DResourceLeakChecker EngineCore::leakCheck;

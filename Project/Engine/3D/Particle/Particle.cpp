@@ -1,3 +1,10 @@
+/**
+ * @file Particle.cpp
+ * @brief パーティクルの初期化、更新を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "Particle.h"
 
 void Particle::Initialize(const Vector3& translation, const Vector3& rotation, const Vector3& scale, const Vector3& velocity, const Vector4& color, float lifeTime)

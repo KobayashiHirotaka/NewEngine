@@ -1,3 +1,10 @@
+/**
+ * @file EmitterBuilder.h
+ * @brief パーティクルエミッターの生成を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "ParticleEmitter.h"
 

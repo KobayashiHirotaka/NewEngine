@@ -1,13 +1,13 @@
-#include "ICharacter.h"
-#include "Application/Game/Scenes/GamePlayScene.h"
-#include "Application/Game/GameTimer/GameTimer.h"
-
 /**
  * @file ICharacter.cpp
- * @brief 各キャラクター(Player,Enemy)の継承元
+ * @brief 各キャラクター(Player,Enemy)の基底クラス
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
+
+#include "ICharacter.h"
+#include "Application/Game/Scenes/GamePlayScene.h"
+#include "Application/Game/GameTimer/GameTimer.h"
 
 void ICharacter::Initialize()
 {

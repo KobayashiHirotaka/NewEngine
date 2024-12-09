@@ -1,3 +1,10 @@
+/**
+ * @file Sprite.h
+ * @brief スプライトの管理(読み込み、描画など)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/Base/DirectXCore/DirectXCore.h"
 #include "Engine/Base/TextureManager/TextureManager.h"

@@ -1,3 +1,10 @@
+/**
+ * @file Game3dObjectFactory.h
+ * @brief 3Dオブジェクトの生成を行うファクトリークラス
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "IGame3dObject.h"
 #include "Application/GameObject/Character/Player/Player.h"

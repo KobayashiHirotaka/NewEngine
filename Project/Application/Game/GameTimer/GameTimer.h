@@ -1,12 +1,12 @@
-#pragma once
-#include <chrono>
-
 /**
  * @file GameTimer.h
  * @brief ゲーム中の時間の管理(更新など)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
+
+#pragma once
+#include <chrono>
 
 class GameTimer
 {

@@ -1,3 +1,10 @@
+/**
+ * @file LevelLoader.cpp
+ * @brief Blenderからオブジェクトのデータを読み込んでゲームに反映
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "LevelLoader.h"
 
 const std::string LevelLoader::kDirectoryPath = "resource/Level/";

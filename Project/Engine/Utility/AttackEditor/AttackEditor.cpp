@@ -1,3 +1,10 @@
+/**
+ * @file AttackEditor.cpp
+ * @brief 攻撃に関するパラメータ調整ができるエディター
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #include "AttackEditor.h"
 
 AttackEditor* AttackEditor::GetInstance()

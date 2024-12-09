@@ -1,3 +1,10 @@
+/**
+ * @file Collider.h
+ * @brief 当たり判定の基底クラス
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/Utility/Math/MyMath.h"

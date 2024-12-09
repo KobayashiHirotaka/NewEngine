@@ -1,3 +1,10 @@
+/**
+ * @file ModelManager.h
+ * @brief モデルの管理(読み込み、検索)を行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 未記録
+ */
+
 #pragma once
 #include "Engine/3D/Model/Model.h"
 #include <cassert>

@@ -1,14 +1,14 @@
-#pragma once
-#include "IScene.h"
-#include "Engine/3D/Skybox/Skybox.h"
-#include "Application/GameObject/Skydome/Skydome.h"
-
 /**
  * @file GameTitleScene.h
  * @brief タイトルシーンの管理(初期化、更新、描画など)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
+
+#pragma once
+#include "IScene.h"
+#include "Engine/3D/Skybox/Skybox.h"
+#include "Application/GameObject/Skydome/Skydome.h"
 
 class GameTitleScene : public IScene
 {
