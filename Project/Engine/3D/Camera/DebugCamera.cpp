@@ -54,17 +54,17 @@ void DebugCamera::Update()
 	//前後
 	if (input_->GetWheel() > 0)
 	{
-		const float speed = 1.0f;
+		const float kSpeed = 1.0f;
 
-		Vector3 move = { 0.0f,0.0f,speed };
+		Vector3 move = { 0.0f,0.0f,kSpeed };
 
 		offset_ = Add(offset_, move);
 	}
 	else if (input_->GetWheel() < 0)
 	{
-		const float speed = -1.0f;
+		const float kSpeed = -1.0f;
 
-		Vector3 move = { 0.0f,0.0f,speed };
+		Vector3 move = { 0.0f,0.0f,kSpeed };
 
 		offset_ = Add(offset_, move);
 	}
@@ -72,17 +72,17 @@ void DebugCamera::Update()
 	//左右
 	if (input_->PressKey(DIK_D))
 	{
-		const float speed = -0.2f;
+		const float kSpeed = -0.2f;
 
-		Vector3 move = { speed,0.0f,0.0f };
+		Vector3 move = { kSpeed,0.0f,0.0f };
 
 		offset_ = Add(offset_, move);
 	}
 	else if (input_->PressKey(DIK_A))
 	{
-		const float speed = 0.2f;
+		const float kSpeed = 0.2f;
 
-		Vector3 move = { speed,0.0f,0.0f };
+		Vector3 move = { kSpeed,0.0f,0.0f };
 
 		offset_ = Add(offset_, move);
 	}
@@ -90,17 +90,17 @@ void DebugCamera::Update()
 	//上下
 	if (input_->PressKey(DIK_W))
 	{
-		const float speed = -0.2f;
+		const float kSpeed = -0.2f;
 
-		Vector3 move = { 0.0f,speed,0.0f };
+		Vector3 move = { 0.0f,kSpeed,0.0f };
 
 		offset_ = Add(offset_, move);
 	}
 	else if (input_->PressKey(DIK_S))
 	{
-		const float speed = 0.2f;
+		const float kSpeed = 0.2f;
 
-		Vector3 move = { 0.0f,speed,0.0f };
+		Vector3 move = { 0.0f,kSpeed,0.0f };
 
 		offset_ = Add(offset_, move);
 	}
@@ -108,19 +108,19 @@ void DebugCamera::Update()
 	//X軸回転
 	if (input_->PressKey(DIK_UP))
 	{
-		const float speed = 0.02f;
+		const float kSpeed = 0.02f;
 
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
-		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(speed));
+		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(kSpeed));
 
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
 	else if (input_->PressKey(DIK_DOWN))
 	{
-		const float speed = -0.02f;
+		const float kSpeed = -0.02f;
 
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
-		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(speed));
+		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(kSpeed));
 
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
@@ -129,19 +129,19 @@ void DebugCamera::Update()
 	if (input_->PressKey(DIK_LEFT))
 	{
 
-		const float speed = 0.02f;
+		const float kSpeed = 0.02f;
 
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
-		matRotDelta = Multiply(matRotDelta, MakeRotateYMatrix(speed));
+		matRotDelta = Multiply(matRotDelta, MakeRotateYMatrix(kSpeed));
 
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
 	else if (input_->PressKey(DIK_RIGHT))
 	{
-		const float speed = -0.02f;
+		const float kSpeed = -0.02f;
 
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
-		matRotDelta = Multiply(matRotDelta, MakeRotateYMatrix(speed));
+		matRotDelta = Multiply(matRotDelta, MakeRotateYMatrix(kSpeed));
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
 }

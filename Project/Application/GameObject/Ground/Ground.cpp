@@ -19,8 +19,6 @@ void Ground::Update()
 	//映り込みの設定
 	model_->GetMaterial()->SetEnvironmentCofficient(0.0f);
 
-	//model_->GetMaterial()->ImGui();
-
 	//worldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 }

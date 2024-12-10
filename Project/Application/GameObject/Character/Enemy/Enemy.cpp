@@ -115,7 +115,7 @@ void Enemy::Initialize()
 void Enemy::Update()
 {
 #ifdef _ADJUSTMENT
-	const float speedX = 0.05f;
+	const float kSpeedX = 0.05f;
 
 	if (input_->PressKey(DIK_D))
 	{
@@ -126,8 +126,13 @@ void Enemy::Update()
 
 	if (input_->PressKey(DIK_A))
 	{
-		worldTransform_.translation.x -= speedX;
+		worldTransform_.translation.x -= kSpeedX;
 	}
+
+	/*if (input_->PressKey(DIK_F))
+	{
+		guardGauge_ += 0.5f;
+	}*/
 
 #endif
 
@@ -514,8 +519,8 @@ void Enemy::UpdateBehaviorAttack()
 			animationIndex_ = 8;
 			characterState_.isGuard = false;
 			float particlePositionX = 0.0f;
-			int particleTime = 60;
-			int moveTime = 40;
+			const int kParticleTime = 60;
+			const int kMoveTime = 40;
 
 			if (!characterState_.isDown)
 			{
@@ -526,14 +531,14 @@ void Enemy::UpdateBehaviorAttack()
 			{
 				EvaluateAttackTiming();
 
-				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
+				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kMoveTime)
 				{
 					SetAABB(aabb_);
 
 					worldTransform_.translation.x += 9.0f * GameTimer::GetDeltaTime();
 				}
 
-				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
+				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kParticleTime)
 				{
 					particlePositionX = 0.1f;
 					particlePositionX += 0.3f;
@@ -546,7 +551,7 @@ void Enemy::UpdateBehaviorAttack()
 			{
 				EvaluateAttackTiming();
 
-				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
+				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kMoveTime)
 				{
 					SetAABB(aabb_);
 
@@ -554,7 +559,7 @@ void Enemy::UpdateBehaviorAttack()
 				}
 
 
-				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
+				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kParticleTime)
 				{
 					particlePositionX = 0.1f;
 					particlePositionX += 0.3f;
@@ -600,7 +605,7 @@ void Enemy::UpdateBehaviorAttack()
 				{
 					//弾の発射位置を敵の位置に設定
 					Vector3 bulletStartPosition = { worldTransform_.translation.x + respownPos.x, worldTransform_.translation.y + respownPos.y, worldTransform_.translation.z };
-					Vector3 bulletVelocity = Vector3{ 0.1f, 0.0f, 0.0f };
+					Vector3 bulletVelocity = { 0.1f, 0.0f, 0.0f };
 
 					ShootBullet(bulletStartPosition, bulletVelocity);
 				}
@@ -608,7 +613,7 @@ void Enemy::UpdateBehaviorAttack()
 				{
 					//弾の発射位置を敵の位置に設定
 					Vector3 bulletStartPosition = { worldTransform_.translation.x - respownPos.x, worldTransform_.translation.y + respownPos.y, worldTransform_.translation.z };
-					Vector3 bulletVelocity = Vector3{ -0.1f, 0.0f, 0.0f };
+					Vector3 bulletVelocity = { -0.1f, 0.0f, 0.0f };
 
 					ShootBullet(bulletStartPosition, bulletVelocity);
 				}
@@ -669,9 +674,8 @@ void Enemy::UpdateBehaviorStan()
 {
 	animationIndex_ = 9;
 	float animationTime = 0.0f;
-	float animationDuration;
 	animationTime = model_->GetAnimationTime();
-	animationDuration = model_->GetAnimation()[animationIndex_].duration;
+	float animationDuration = model_->GetAnimation()[animationIndex_].duration;
 
 	if (characterState_.direction == Direction::Left)
 	{

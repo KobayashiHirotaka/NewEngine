@@ -9,9 +9,9 @@
 
 GlobalVariables* GlobalVariables::GetInstance()
 {
-	static GlobalVariables instance;
+	static GlobalVariables sInstance;
 
-	return &instance;
+	return &sInstance;
 }
 
 int32_t GlobalVariables::GetIntValue(const std::string& groupName, const std::string& key)

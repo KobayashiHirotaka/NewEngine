@@ -9,8 +9,8 @@
 
 ImGuiManager* ImGuiManager::GetInstance()
 {
-	static ImGuiManager instance;
-	return &instance;
+	static ImGuiManager sInstance;
+	return &sInstance;
 }
 
 void ImGuiManager::Initialize()

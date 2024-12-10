@@ -9,9 +9,9 @@
 
 AttackEditor* AttackEditor::GetInstance()
 {
-    static AttackEditor instance;
+    static AttackEditor sInstance;
 
-    return &instance;
+    return &sInstance;
 }
 
 void AttackEditor::Initialize()

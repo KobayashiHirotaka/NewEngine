@@ -120,6 +120,11 @@ void Player::Update()
 		finisherGauge_ = -50.0f;
 	}
 
+	/*if (input_->PressKey(DIK_D))
+	{
+		guardGauge_ -= 0.5f ;
+	}*/
+
 #endif
 
 	ICharacter::Update();
@@ -649,8 +654,8 @@ void Player::UpdateBehaviorAttack()
 		animationIndex_ = 9;
 		characterState_.isGuard = false;
 		float particlePositionX = 0.0f;
-		int particleTime = 60;
-		int moveTime = 40;
+		const int kParticleTime = 60;   
+		const int kMoveTime = 40;       
 
 		if (!characterState_.isDown)
 		{
@@ -661,14 +666,14 @@ void Player::UpdateBehaviorAttack()
 		{
 			EvaluateAttackTiming();
 
-			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
+			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kMoveTime)
 			{
 				SetAABB(aabb_);
 
 				worldTransform_.translation.x += 9.0f * GameTimer::GetDeltaTime();
 			}
 
-			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
+			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kParticleTime)
 			{
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
@@ -686,7 +691,7 @@ void Player::UpdateBehaviorAttack()
 		{
 			EvaluateAttackTiming();
 
-			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < moveTime)
+			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kMoveTime)
 			{
 				SetAABB(aabb_);
 
@@ -694,7 +699,7 @@ void Player::UpdateBehaviorAttack()
 			}
 
 
-			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < particleTime)
+			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kParticleTime)
 			{
 				particlePositionX = 0.1f;
 				particlePositionX += 0.3f;
@@ -1043,9 +1048,8 @@ void Player::UpdateBehaviorStan()
 	}
 
 	animationIndex_ = 10;
-	float animationDuration;
 	animationTime_ = model_->GetAnimationTime();
-	animationDuration = model_->GetAnimation()[animationIndex_].duration;
+	float animationDuration = model_->GetAnimation()[animationIndex_].duration;;
 
 	if (characterState_.direction == Direction::Left)
 	{
@@ -1381,7 +1385,7 @@ void Player::Move()
 	//コントローラーの取得
 	if (input_->GetJoystickState())
 	{
-		const float valueY = -0.3f;
+		const float kValueY = -0.3f;
 		bool isFrontMove_ = false;
 		bool isBackMove_ = false;
 
@@ -1465,14 +1469,14 @@ void Player::Move()
 			characterState_.isGuard = true;
 
 			//移動しながらガード
-			if (!(input_->GetLeftStickY() < valueY))
+			if (!(input_->GetLeftStickY() < kValueY))
 			{
 				moveData_.velocity.x = -0.01f;
 				isBackMove_ = true;
 			}
 
 			//止まってガード
-			if (characterState_.isGuard && input_->GetLeftStickY() < valueY)
+			if (characterState_.isGuard && input_->GetLeftStickY() < kValueY)
 			{
 				animationIndex_ = 2;
 				UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
@@ -1508,14 +1512,14 @@ void Player::Move()
 			characterState_.isGuard = true;
 
 			//移動しながらガード
-			if (!(input_->GetLeftStickY() < valueY))
+			if (!(input_->GetLeftStickY() < kValueY))
 			{
 				moveData_.velocity.x = 0.01f;
 				isBackMove_ = true;
 			}
 
 			//止まってガード
-			if (characterState_.isGuard && input_->GetLeftStickY() < valueY)
+			if (characterState_.isGuard && input_->GetLeftStickY() < kValueY)
 			{
 				animationIndex_ = 2;
 				UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);

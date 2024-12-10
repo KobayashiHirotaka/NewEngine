@@ -10,8 +10,8 @@
 
 Audio* Audio::GetInstance()
 {
-	static Audio instance;
-	return &instance;
+	static Audio sInstance;
+	return &sInstance;
 }
 
 void Audio::Initialize()
