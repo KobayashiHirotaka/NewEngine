@@ -412,8 +412,8 @@ void Player::UpdateBehaviorAttack()
 		//キャンセルの処理(中TC)
 		if (input_->GetJoystickState())
 		{
-			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 10 && attackData_.attackAnimationFrame < 20 && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) 
-				|| input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))  && characterState_.isHitCharacter)
+			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 10 && attackData_.attackAnimationFrame < 30 && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) 
+				|| input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))  && enemy_->GetIsDown())
 			{
 				attackType_ = "中攻撃(ターゲット)";
 				attackData_.isAttack = false;
@@ -482,6 +482,8 @@ void Player::UpdateBehaviorAttack()
 	{
 		animationIndex_ = 12;
 		characterState_.isGuard = false;
+		const int kMoveTime = 5;
+		const float kMoveSpeed = 0.03f;
 
 		if (!characterState_.isDown)
 		{
@@ -493,10 +495,20 @@ void Player::UpdateBehaviorAttack()
 		if (characterState_.direction == Direction::Right)
 		{
 			SetAABB(aabb_);
+
+			if (attackData_.attackAnimationFrame < kMoveTime)
+			{
+				worldTransform_.translation.x += kMoveSpeed;
+			}
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
 			SetAABB(aabb_);
+
+			if (attackData_.attackAnimationFrame < kMoveTime)
+			{
+				worldTransform_.translation.x -= kMoveSpeed;
+			}
 		}
 
 		EvaluateAttackTiming();
@@ -512,7 +524,7 @@ void Player::UpdateBehaviorAttack()
 		{
 			//弱コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && characterState_.isHitCharacter)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && enemy_->GetIsDown())
 			{
 				attackType_ = "強攻撃(ターゲット)";
 				attackData_.isAttack = false;
@@ -561,6 +573,8 @@ void Player::UpdateBehaviorAttack()
 	{
 		animationIndex_ = 11;
 		characterState_.isGuard = false;
+		const int kMoveTime = 5;
+		const float kMoveSpeed = 0.03f;
 
 		if (!characterState_.isDown)
 		{
@@ -572,10 +586,20 @@ void Player::UpdateBehaviorAttack()
 		if (characterState_.direction == Direction::Right)
 		{
 			SetAABB(aabb_);
+
+			if (attackData_.attackAnimationFrame < kMoveTime)
+			{
+				worldTransform_.translation.x += kMoveSpeed;
+			}
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
 			SetAABB(aabb_);
+
+			if (attackData_.attackAnimationFrame < kMoveTime)
+			{
+				worldTransform_.translation.x -= kMoveSpeed;
+			}
 		}
 
 		EvaluateAttackTiming();
