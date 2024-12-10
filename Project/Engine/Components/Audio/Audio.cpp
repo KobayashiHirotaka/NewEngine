@@ -29,7 +29,7 @@ void Audio::Initialize()
 	assert(SUCCEEDED(hr));
 }
 
-uint32_t Audio::SoundLoadWave(const char* filename)
+uint32_t Audio::LoadSoundWave(const char* filename)
 {
 	//同じ音声データがないか探す
 	for (SoundDataWave& soundData : soundDatasWav_)
@@ -123,7 +123,7 @@ uint32_t Audio::SoundLoadWave(const char* filename)
 	return audioHandle_;
 }
 
-uint32_t Audio::SoundLoadMP3(const std::filesystem::path& filename)
+uint32_t Audio::LoadSoundMP3(const std::filesystem::path& filename)
 {
 	//同じ音声データがないか探す
 	for (SoundDataMP3& soundData : soundDatas_)
@@ -193,7 +193,7 @@ uint32_t Audio::SoundLoadMP3(const std::filesystem::path& filename)
 	return audioHandle_;
 }
 
-void Audio::SoundPlayWave(uint32_t audioHandle, bool roopFlag, float volume)
+void Audio::PlaySoundWave(uint32_t audioHandle, bool roopFlag, float volume)
 {
 	HRESULT hr;
 	voiceHandle_++;
@@ -222,7 +222,7 @@ void Audio::SoundPlayWave(uint32_t audioHandle, bool roopFlag, float volume)
 	hr = pSourceVoice->Start();
 }
 
-void Audio::SoundPlayMP3(uint32_t audioHandle, bool roopFlag, float volume)
+void Audio::PlaySoundMP3(uint32_t audioHandle, bool roopFlag, float volume)
 {
 	HRESULT hr;
 	voiceHandle_++;
@@ -251,7 +251,7 @@ void Audio::SoundPlayMP3(uint32_t audioHandle, bool roopFlag, float volume)
 	hr = pSourceVoice->Start();
 }
 
-void Audio::SoundUnloadWave(SoundDataWave* soundData)
+void Audio::UnloadSoundWave(SoundDataWave* soundData)
 {
 	delete[] soundData->pBuffer;
 	soundData->pBuffer = 0;
@@ -259,7 +259,7 @@ void Audio::SoundUnloadWave(SoundDataWave* soundData)
 	soundData->wfex = {};
 }
 
-void Audio::SoundUnloadMP3(SoundDataMP3* soundData)
+void Audio::UnloadSoundMP3(SoundDataMP3* soundData)
 {
 	soundData->pBuffer.clear();
 	soundData->bufferSize = 0;
@@ -306,12 +306,12 @@ void Audio::Release()
 
 	for (int i = 0; i < soundDatasWav_.size(); i++)
 	{
-		SoundUnloadWave(&soundDatasWav_[i]);
+		UnloadSoundWave(&soundDatasWav_[i]);
 	}
 
 	for (int i = 0; i < soundDatas_.size(); i++)
 	{
-		SoundUnloadMP3(&soundDatas_[i]);
+		UnloadSoundMP3(&soundDatas_[i]);
 	}
 
 	MFShutdown();

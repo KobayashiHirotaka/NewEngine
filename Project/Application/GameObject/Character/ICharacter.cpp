@@ -46,19 +46,19 @@ void ICharacter::Update()
 		{
 		case Behavior::kRoot:
 		default:
-			BehaviorRootInitialize();
+			InitializeBehaviorRoot();
 			break;
 
 		case Behavior::kAttack:
-			BehaviorAttackInitialize();
+			InitializeBehaviorAttack();
 			break;
 
 		case Behavior::kJump:
-			BehaviorJumpInitialize();
+			InitializeBehaviorJump();
 			break;
 
 		case Behavior::kStan:
-			BehaviorStanInitialize();
+			InitializeBehaviorStan();
 			break;
 		}
 
@@ -69,22 +69,22 @@ void ICharacter::Update()
 	{
 	case Behavior::kRoot:
 	default:
-		if (GamePlayScene::roundStartTimer_ <= 0 && GamePlayScene::migrationTimer == 200)
+		if (GamePlayScene::sRoundStartTimer_ <= 0 && GamePlayScene::sMigrationTimer == 200)
 		{
-			BehaviorRootUpdate();
+			UpdateBehaviorRoot();
 		}
 		break;
 
 	case Behavior::kAttack:
-		BehaviorAttackUpdate();
+		UpdateBehaviorAttack();
 		break;
 
 	case Behavior::kJump:
-		BehaviorJumpUpdate();
+		UpdateBehaviorJump();
 		break;
 
 	case Behavior::kStan:
-		BehaviorStanUpdate();
+		UpdateBehaviorStan();
 		break;
 	}
 
@@ -120,11 +120,11 @@ void ICharacter::Update()
 	DownAnimation();
 
 	//各ゲージの更新処理
-	HPBarUpdate();
+	UpdateHPBar();
 
-	GuardGaugeBarUpdate();
+	UpdateGuardGaugeBar();
 
-	FinisherGaugeBarUpdate();
+	UpdateFinisherGaugeBar();
 
 	characterState_.isHitCharacter = false;
 
@@ -238,7 +238,7 @@ void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float fra
 	modelFighterBody->ApplyAnimation(animationIndex);
 }
 
-void ICharacter::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
+void ICharacter::EndDownAnimation(int animationIndex, bool& isHitAttackType)
 {
 	//Behaviorの設定
 	characterState_.behaviorRequest = Behavior::kRoot;
@@ -263,7 +263,7 @@ void ICharacter::DownAnimationEnd(int animationIndex, bool& isHitAttackType)
 	characterState_.isDown = false;
 }
 
-void ICharacter::AttackStart(bool& isAttackType)
+void ICharacter::StartAttack(bool& isAttackType)
 {   
 	//Behaviorの設定
 	characterState_.behaviorRequest = Behavior::kAttack;
@@ -276,7 +276,7 @@ void ICharacter::AttackStart(bool& isAttackType)
 	isAttackType = true;
 }
 
-void ICharacter::AttackEnd(bool& isAttackType)
+void ICharacter::EndAttack(bool& isAttackType)
 {
 	//Behaviorの設定
 	characterState_.behaviorRequest = Behavior::kRoot;
@@ -289,7 +289,7 @@ void ICharacter::AttackEnd(bool& isAttackType)
 
 	//攻撃した技
 	isAttackType = false;
-	attackType = "";
+	attackType_ = "";
 
 	//アニメーション用変数の設定
 	animationTime_ = 0.0f;

@@ -34,10 +34,10 @@ private:
 
 	Vector2 center_ = { 0.0f,0.0f };
 
-	float point_ = 2.8f;
+	const float kPoint_ = 2.8f;
 
-	float min_ = -5.0f;
-	float max_ = -8.0f;
+	const float kMin_ = -5.0f;
+	const float kMax_ = -8.0f;
 
 	float distance_ = 0.0f;
 	float previousDistance_ = 0.0f;

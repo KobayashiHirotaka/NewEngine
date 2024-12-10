@@ -85,7 +85,7 @@ void EnemyBullet::Draw(const Camera& camera)
 	}
 }
 
-void EnemyBullet::ParticleDraw(const Camera& camera)
+void EnemyBullet::DrawParticle(const Camera& camera)
 {
 	//弾のパーティクルの描画
 	if (isDead_ == false)

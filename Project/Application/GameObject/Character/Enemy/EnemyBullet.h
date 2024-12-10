@@ -23,7 +23,7 @@ public:
 
 	void Draw(const Camera& camera);
 
-	void ParticleDraw(const Camera& camera);
+	void DrawParticle(const Camera& camera);
 
 	bool GetIsDead() const { return isDead_; }
 
@@ -41,7 +41,7 @@ private:
 	Model* model_ = nullptr;
 
 	//速度
-	Vector3 velocity_;
+	Vector3 velocity_ = { 0.0f,0.0f,0.0f };
 
 	//生きている時間
 	static const int32_t kLifeTime = 100;

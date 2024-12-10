@@ -31,13 +31,13 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 	difference.y = 0.0f;
 	distance_ = Length(difference);
 
-	if (distance_ >= point_)
+	if (distance_ >= kPoint_)
 	{
 		if (distance_ > previousDistance_)
 		{
-			if (position_.z <= max_)
+			if (position_.z <= kMax_)
 			{
-				position_.z = max_;
+				position_.z = kMax_;
 			}
 			else
 			{
@@ -49,9 +49,9 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 
 	if (previousDistance_ > distance_)
 	{
-		if (position_.z >= min_)
+		if (position_.z >= kMin_)
 		{
-			position_.z = min_;
+			position_.z = kMin_;
 		}
 		else
 		{
@@ -73,7 +73,7 @@ void CameraController::ImGui()
 	ImGui::Begin("CameraController");
 	ImGui::SliderFloat3("WTFT", &position_.x, -50.0f, 50.0f);
 	ImGui::SliderFloat3("cameraSpeed", &cameraSpeed_.x, 0.01f, 0.1f);
-	ImGui::SliderFloat("point", &point_, 1.0f, 5.0f);
+	//ImGui::SliderFloat("point", &point_, 1.0f, 5.0f);
 	ImGui::SliderFloat("distance", &distance_, 0.0f, 10.0f);
 	ImGui::SliderFloat("previousDistance", &previousDistance_, 0.0f, 10.0f);
 	ImGui::End();

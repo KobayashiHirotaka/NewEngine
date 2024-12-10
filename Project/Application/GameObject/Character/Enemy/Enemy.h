@@ -25,42 +25,42 @@ public:
 
 	void ImGui(const char* title)override;
 
-	void BoneDraw(const Camera& camera)override;
+	void DrawBone(const Camera& camera)override;
 
-	void CollisionDraw(const Camera& camera)override;
+	void DrawCollision(const Camera& camera)override;
 
-	void SpriteDraw()override;
+	void DrawSprite()override;
 
-	void ParticleDraw(const Camera& camera)override;
+	void DrawParticle(const Camera& camera)override;
 
 	void OnCollision(Collider* collider)override;
 
 	void Reset()override;
 
 	//行動関数
-	void BehaviorRootInitialize()override;
+	void InitializeBehaviorRoot()override;
 
-	void BehaviorRootUpdate()override;
+	void UpdateBehaviorRoot()override;
 
-	void BehaviorAttackInitialize()override;
+	void InitializeBehaviorAttack()override;
 
-	void BehaviorAttackUpdate()override;
+	void UpdateBehaviorAttack()override;
 
-	void BehaviorJumpInitialize()override;
+	void InitializeBehaviorJump()override;
 
-	void BehaviorJumpUpdate()override;
+	void UpdateBehaviorJump()override;
 
-	void BehaviorStanInitialize()override;
+	void InitializeBehaviorStan()override;
 
-	void BehaviorStanUpdate()override;
+	void UpdateBehaviorStan()override;
 
 	//移動
 	void Move();
 
 	//攻撃
-	void AttackStart(bool& isAttackType)override;
+	void StartAttack(bool& isAttackType)override;
 
-	void AttackEnd(bool& isAttackType)override;
+	void EndAttack(bool& isAttackType)override;
 
 	void EvaluateAttackTiming()override;
 
@@ -73,24 +73,24 @@ public:
 	void ConfigureCollision(Vector3 min, Vector3 max)override;
 
 	//UIの更新関数
-	void HPBarUpdate()override;
+	void UpdateHPBar()override;
 
-	void GuardGaugeBarUpdate()override;
+	void UpdateGuardGaugeBar()override;
 
 	void AdjustGuardGauge()override;
 
-	void FinisherGaugeBarUpdate()override;
+	void UpdateFinisherGaugeBar()override;
 
 	void AdjustFinisherGauge(float value)override;
 
-	void ComboNumberSpriteUpdate()override;
+	void UpdateComboNumberSprite()override;
 
 	//弾関係の関数
-	void BulletShoot(const Vector3& startPosition, const Vector3& velocity);
+	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
 
-	void BulletsUpdate();
+	void UpdateBullets();
 
-	void BulletDraw(const Camera& camera);
+	void DrawBullet(const Camera& camera);
 
 	//コンボ
 	void HitCombo();
@@ -112,12 +112,12 @@ public:
 	void SetIsKO(bool isKO) { isKO_ = isKO; };
 
 private:
-	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, 
+	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate,
 		int animationIndex, std::unique_ptr<Model>& modelFighterBody)override;
 
 	void DownAnimation()override;
 
-	void DownAnimationEnd(int animationIndex, bool& isHitAttackType);
+	void EndDownAnimation(int animationIndex, bool& isHitAttackType);
 
 	int Random(int min_value, int max_value);
 

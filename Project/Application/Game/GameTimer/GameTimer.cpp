@@ -7,12 +7,12 @@
 
 #include "GameTimer.h"
 
-float GameTimer::deltaTime_ = 0.0f;
-float GameTimer::timeScale_ = 1.0f;
+float GameTimer::sDeltaTime_ = 0.0f;
+float GameTimer::sTimeScale_ = 1.0f;
 
 void GameTimer::Update()
 {
-	deltaTime_ = 1.0f / 60.0f;
+	sDeltaTime_ = 1.0f / 60.0f;
 
-	deltaTime_ *= timeScale_;
+	sDeltaTime_ *= sTimeScale_;
 }

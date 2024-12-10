@@ -160,7 +160,7 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera, const uin
 	mesh_->Draw();
 }
 
-void Model::BoneDraw(WorldTransform& worldTransform, const Camera& camera)
+void Model::DrawBone(WorldTransform& worldTransform, const Camera& camera)
 {
 	/*worldTransform.matWorld = Multiply(modelData_.rootNode.localMatrix, worldTransform.matWorld);
 	worldTransform.TransferMatrix();*/
@@ -273,13 +273,13 @@ void Model::PostDraw()
 
 }
 
-void Model::BonePreDraw()
+void Model::PreDrawBone()
 {
 	commandList_->SetGraphicsRootSignature(boneRootSignature_.Get());
 	commandList_->SetPipelineState(boneGraphicsPipelineState_.Get());
 }
 
-void Model::BonePostDraw()
+void Model::PostDrawBone()
 {
 
 }

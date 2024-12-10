@@ -49,7 +49,7 @@ void GameWinScene::Initialize()
 	transitionSprite_->SetColor(transitionColor_);
 	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
 
-	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
+	selectSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Select.mp3");
 };
 
 void GameWinScene::Update()
@@ -60,7 +60,7 @@ void GameWinScene::Update()
 	if (input_->PushKey(DIK_SPACE))
 	{
 		isTransitionStart_ = true;
-		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+		audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
 	}
 
 #endif 
@@ -80,7 +80,7 @@ void GameWinScene::Update()
 
 				if (!isPlayAudio_)
 				{
-					audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+					audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
 				}
 
 				isPlayAudio_ = true;

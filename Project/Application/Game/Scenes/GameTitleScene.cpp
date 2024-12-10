@@ -75,13 +75,13 @@ void GameTitleScene::Initialize()
 	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
 
 	//BGM,SEの読み込み
-	titleSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/BGM.mp3");
-	selectSoundHandle_ = audio_->SoundLoadMP3("resource/Sounds/Select.mp3");
+	titleSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/BGM.mp3");
+	selectSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Select.mp3");
 
 	//BGMの再生,停止
 	if (!audio_->IsAudioPlaying(titleSoundHandle_))
 	{
-		audio_->SoundPlayMP3(titleSoundHandle_, true, 0.2f);
+		audio_->PlaySoundMP3(titleSoundHandle_, true, 0.2f);
 	}
 };
 
@@ -93,7 +93,7 @@ void GameTitleScene::Update()
 	if (input_->PushKey(DIK_SPACE))
 	{
 		isTransitionStart_ = true;
-		audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+		audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
 	}
 
 #endif 
@@ -113,7 +113,7 @@ void GameTitleScene::Update()
 
 			if (!isPlayAudio_)
 			{
-				audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+				audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
 			}
 
 			isPlayAudio_ = true;
@@ -152,13 +152,13 @@ void GameTitleScene::Update()
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !isOpen_)
 		{
-			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+			audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
 			isOpen_ = true;
 			spriteCount_ = 1;
 		}
 		else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && isOpen_)
 		{
-			audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+			audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
 			isOpen_ = false;
 			spriteCount_ = 0;
 		}
@@ -170,7 +170,7 @@ void GameTitleScene::Update()
 				if (spriteCount_ < 3)
 				{
 					spriteCount_++;
-					audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+					audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
 					stickInputCooldown_ = 10;
 				}
 			}
@@ -179,7 +179,7 @@ void GameTitleScene::Update()
 				if (spriteCount_ > 1)
 				{
 					spriteCount_--;
-					audio_->SoundPlayMP3(selectSoundHandle_, false, 1.0f);
+					audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
 					stickInputCooldown_ = 10;
 				}
 			}

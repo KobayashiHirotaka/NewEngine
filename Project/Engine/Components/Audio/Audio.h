@@ -86,17 +86,17 @@ public:
 
 	void Initialize();
 
-	uint32_t SoundLoadWave(const char* filename);
+	uint32_t LoadSoundWave(const char* filename);
 
-	uint32_t SoundLoadMP3(const std::filesystem::path& filename);
+	uint32_t LoadSoundMP3(const std::filesystem::path& filename);
 
-	void SoundPlayWave(uint32_t audioHandle, bool roopFlag, float volume);
+	void PlaySoundWave(uint32_t audioHandle, bool roopFlag, float volume);
 
-	void SoundPlayMP3(uint32_t audioHandle, bool roopFlag, float volume);
+	void PlaySoundMP3(uint32_t audioHandle, bool roopFlag, float volume);
 
-	void SoundUnloadWave(SoundDataWave* soundData);
+	void UnloadSoundWave(SoundDataWave* soundData);
 
-	void SoundUnloadMP3(SoundDataMP3* soundData);
+	void UnloadSoundMP3(SoundDataMP3* soundData);
 
 	bool IsAudioPlaying(uint32_t audioHandle);
 

@@ -77,7 +77,7 @@ public:
 
 	void Draw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData);
 
-	void BoneDraw(WorldTransform& worldTransform, const Camera& camera);
+	void DrawBone(WorldTransform& worldTransform, const Camera& camera);
 
 	static void Release();
 
@@ -87,9 +87,9 @@ public:
 
 	static void PostDraw();
 
-	static void BonePreDraw();
+	static void PreDrawBone();
 
-	static void BonePostDraw();
+	static void PostDrawBone();
 
 	Material* GetMaterial() { return material_.get(); };
 

@@ -15,13 +15,13 @@ public:
 
 	static void Update();
 
-	static float GetDeltaTime() { return deltaTime_; };
+	static float GetDeltaTime() { return sDeltaTime_; };
 
-	static void SetTimeScale(float timeScale) { timeScale_ = timeScale; };
+	static void SetTimeScale(float timeScale) { sTimeScale_ = timeScale; };
 
 private:
-	static float deltaTime_;
+	static float sDeltaTime_;
 
-	static float timeScale_;
+	static float sTimeScale_;
 };
 

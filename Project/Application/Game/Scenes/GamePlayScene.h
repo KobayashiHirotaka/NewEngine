@@ -25,10 +25,10 @@ public:
 	static const int kTransitionTime = 60;
 
 	//ラウンド移行の時間
-	static int migrationTimer;
+	static int sMigrationTimer;
 
 	//ラウンド開始までの時間
-	static int roundStartTimer_;
+	static int sRoundStartTimer_;
 
 	GamePlayScene();
 
@@ -147,25 +147,25 @@ private:
 	bool isOpen_ = false;
 
 	//時間
-	int currentSeconds_;
+	int currentSeconds_ = 0;
 
-	float frameTime = 1.0f / 60.0f;
-	float elapsedTime = 0.0f;
+	float frameTime_ = 1.0f / 60.0f;
+	float elapsedTime_ = 0.0f;
 
-	const int maxRoundStartTime_ = 100;
-	const int halfRoundStartTime_ = 50;
+	const int kMaxRoundStartTime_ = 100;
+	const int kHalfRoundStartTime_ = kMaxRoundStartTime_ / 2;
 
-	const int maxMigrationTime_ = 200;
+	const int kMaxMigrationTime_ = 200;
 
-	const int outComeTime_ = 150;
-	const int testKoActiveTime_ = 0;
+	const int kOutComeTime_ = 150;
+	const int kKoActiveTime_ = 0;
 
 	//Sounds
 	uint32_t selectSoundHandle_ = 0u;
 
 	//Shake
 	bool isShake_ = false;
-	const int kShakeTime = 10;
+	const int kShakeTime_ = 10;
 	int shakeTimer_ = 0;
 	Vector2 shakePower_ = { 0.9f,1.1f };
 
@@ -218,7 +218,7 @@ private:
 	bool isTimeOver_ = false;
 
 	//スティック操作対応
-	const float value_ = 0.7f;
+	const float kValue_ = 0.7f;
 	int stickInputCooldown_ = 10;
 
 	bool isFinisherStart_ = false;

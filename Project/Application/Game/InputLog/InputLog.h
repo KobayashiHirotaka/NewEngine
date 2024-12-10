@@ -44,27 +44,27 @@ private:
 	std::deque<int> frameCounts_;
 
 	//表示する履歴の最大数
-	const int maxHistorySize_ = 8; 
+	const int kMaxHistorySize_ = 8; 
 
 	//縦の間隔
-	const float verticalSpacing_ = 50.0f; 
+	const float kVerticalSpacing_ = 50.0f; 
 
 	//操作表示のX座標
-	const float leftPositionX_ = 70.0f;   
+	const float kLeftPositionX_ = 70.0f;   
 
 	//ボタン表示のX座標
-	const float rightPositionX_ = 110.0f;  
+	const float kRightPositionX_ = 110.0f;  
 
 	//経過フレーム表示(10の位)のX座標
-	const float numberTensPositionX_ = 10.0f;
+	const float kNumberTensPositionX_ = 10.0f;
 
 	//経過フレーム表示(1の位)のX座標
-	const float numberOnesPositionX_ = 30.0f;
+	const float kNumberOnesPositionX_ = 30.0f;
 
 	//初期のY座標
-	const float basePositionY_ = 150.0f; 
+	const float kBasePositionY_ = 150.0f; 
 
 	//stickのしきい値
-	const float value_ = 0.7f;
+	const float kValue_ = 0.7f;
 };
 

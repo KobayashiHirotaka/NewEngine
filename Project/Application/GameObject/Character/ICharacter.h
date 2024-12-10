@@ -223,13 +223,13 @@ public:
 
 	virtual void Draw(const Camera& camera) = 0;
 
-	virtual void BoneDraw(const Camera& camera) = 0;
+	virtual void DrawBone(const Camera& camera) = 0;
 
-	virtual void CollisionDraw(const Camera& camera) = 0;
+	virtual void DrawCollision(const Camera& camera) = 0;
 
-	virtual void SpriteDraw() = 0;
+	virtual void DrawSprite() = 0;
 
-	virtual void ParticleDraw(const Camera& camera) = 0;
+	virtual void DrawParticle(const Camera& camera) = 0;
 
 	virtual void ImGui(const char* title) = 0;
 
@@ -241,32 +241,32 @@ public:
 
 	virtual void DownAnimation() = 0;
 
-	virtual void DownAnimationEnd(int animationIndex, bool& isHitAttackType) = 0;
+	virtual void EndDownAnimation(int animationIndex, bool& isHitAttackType) = 0;
 
 	//キャラクターの行動関数
-	virtual void BehaviorRootInitialize() = 0;
+	virtual void InitializeBehaviorRoot() = 0;
 
-	virtual void BehaviorRootUpdate() = 0;
+	virtual void UpdateBehaviorRoot() = 0;
 
-	virtual void BehaviorAttackInitialize() = 0;
+	virtual void InitializeBehaviorAttack() = 0;
 	 
-	virtual void BehaviorAttackUpdate() = 0;
+	virtual void UpdateBehaviorAttack() = 0;
 
-	virtual void BehaviorJumpInitialize() = 0;
+	virtual void InitializeBehaviorJump() = 0;
 
-	virtual void BehaviorJumpUpdate() = 0;
+	virtual void UpdateBehaviorJump() = 0;
 
-	virtual void BehaviorStanInitialize() = 0;
+	virtual void InitializeBehaviorStan() = 0;
 
-	virtual void BehaviorStanUpdate() = 0;
+	virtual void UpdateBehaviorStan() = 0;
 
 	//移動
 	virtual void Move() = 0;
 
 	//攻撃
-	virtual void AttackStart(bool& isAttackType) = 0;
+	virtual void StartAttack(bool& isAttackType) = 0;
 
-	virtual void AttackEnd(bool& isAttackType) = 0;
+	virtual void EndAttack(bool& isAttackType) = 0;
 
 	virtual void EvaluateAttackTiming() = 0;
 
@@ -278,17 +278,17 @@ public:
 	virtual void ConfigureCollision(Vector3 min, Vector3 max) = 0;
 
 	//UIの更新関数
-	virtual void HPBarUpdate() = 0;
+	virtual void UpdateHPBar() = 0;
 
-	virtual void GuardGaugeBarUpdate() = 0;
+	virtual void UpdateGuardGaugeBar() = 0;
 
 	virtual void AdjustGuardGauge() = 0;
 
-	virtual void FinisherGaugeBarUpdate() = 0;
+	virtual void UpdateFinisherGaugeBar() = 0;
 
 	virtual void AdjustFinisherGauge(float value) = 0;
 
-	virtual void ComboNumberSpriteUpdate() = 0;
+	virtual void UpdateComboNumberSprite() = 0;
 
 	//移動に関するGetter
 	Direction GetDirection() { return characterState_.direction; };
@@ -418,7 +418,7 @@ protected:
 	float previousPositionX_ = 0.0f;
 
 	//エディター用
-	std::string attackType;
+	std::string attackType_;
 
 	//KOしているかどうか
 	bool isKO_ = false;
