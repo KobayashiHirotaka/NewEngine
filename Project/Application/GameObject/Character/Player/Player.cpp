@@ -1192,7 +1192,7 @@ void Player::OnCollision(Collider* collider)
 	{
 		characterState_.isHitCharacter = true;
 
-		if (characterState_.isHitCharacter && !attackData_.isAttack && !attackData_.isTackle && !attackData_.isUppercut && !isFinisherEffect_)
+		if (characterState_.isHitCharacter && !characterState_.isDown && !attackData_.isAttack && !attackData_.isTackle && !attackData_.isUppercut && !isFinisherEffect_)
 		{
 			//プレイヤーと敵のAABB
 			float playerMinX = worldTransform_.translation.x + aabb_.min.x;
