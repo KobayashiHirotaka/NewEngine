@@ -7,23 +7,23 @@
 
 #include "ModelManager.h"
 
-ModelManager* ModelManager::instance_ = nullptr;
+ModelManager* ModelManager::sInstance_ = nullptr;
 
 ModelManager* ModelManager::GetInstance()
 {
-	if (instance_ == nullptr)
+	if (sInstance_ == nullptr)
 	{
-		instance_ = new ModelManager();
+		sInstance_ = new ModelManager();
 	}
-	return instance_;
+	return sInstance_;
 }
 
 void ModelManager::DeleteInstance()
 {
-	if (instance_ != nullptr)
+	if (sInstance_ != nullptr)
 	{
-		delete instance_;
-		instance_ = nullptr;
+		delete sInstance_;
+		sInstance_ = nullptr;
 	}
 }
 

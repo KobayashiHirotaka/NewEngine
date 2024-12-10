@@ -47,7 +47,7 @@ public:
 	void Run();
 
 protected:
-	static D3DResourceLeakChecker leakCheck;
+	static D3DResourceLeakChecker sLeakCheck_;
 
 	WindowsApp* win_ = nullptr;
 

@@ -7,26 +7,26 @@
 
 #include "Sprite.h"
 
-DirectXCore* Sprite::dxCore_ = nullptr;
-TextureManager* Sprite::textureManager_ = nullptr;
-ID3D12Device* Sprite::device_ = nullptr;
-ID3D12GraphicsCommandList* Sprite::commandList_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcUtils> Sprite::dxcUtils_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcCompiler3> Sprite::dxcCompiler_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcIncludeHandler> Sprite::includeHandler_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12RootSignature> Sprite::rootSignature_ = nullptr;
-std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, Sprite::kCountOfBlendMode> Sprite::graphicsPipelineState_{};
+DirectXCore* Sprite::sDxCore_ = nullptr;
+TextureManager* Sprite::sTextureManager_ = nullptr;
+ID3D12Device* Sprite::sDevice_ = nullptr;
+ID3D12GraphicsCommandList* Sprite::sCommandList_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcUtils> Sprite::sDxcUtils_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcCompiler3> Sprite::sDxcCompiler_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcIncludeHandler> Sprite::sIncludeHandler_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12RootSignature> Sprite::sRootSignature_ = nullptr;
+std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, Sprite::kCountOfBlendMode> Sprite::sGraphicsPipelineState_{};
 Matrix4x4 Sprite::matProjection_{};
 
 void Sprite::StaticInitialize()
 {
-	dxCore_ = DirectXCore::GetInstance();
+	sDxCore_ = DirectXCore::GetInstance();
 
-	textureManager_ = TextureManager::GetInstance();
+	sTextureManager_ = TextureManager::GetInstance();
 
-	device_ = dxCore_->GetDevice();
+	sDevice_ = sDxCore_->GetDevice();
 
-	commandList_ = dxCore_->GetCommandList();
+	sCommandList_ = sDxCore_->GetCommandList();
 
 	InitializeDXC();
 
@@ -41,7 +41,7 @@ void Sprite::Initialize(uint32_t textureHandle, Vector2 position)
 
 	position_ = position;
 
-	resourceDesc_ = textureManager_->GetResourceDesc(textureHandle_);
+	resourceDesc_ = sTextureManager_->GetResourceDesc(textureHandle_);
 
 	texSize_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
 	size_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
@@ -74,37 +74,37 @@ void Sprite::Draw()
 	UpdateMatrix();
 
 	//VBVを設定
-	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	sCommandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
 	//形状を設定。PSOに設定しているものとは別。同じものを設定すると考えておけば良い
-	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	sCommandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//マテリアルCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 
 	//wvp用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
 
 	//DescriptorHeapを設定
-	textureManager_->SetGraphicsDescriptorHeap();
+	sTextureManager_->SetGraphicsDescriptorHeap();
 
 	//DescriptorTableを設定
-	textureManager_->SetGraphicsRootDescriptorTable(2, textureHandle_);
+	sTextureManager_->SetGraphicsRootDescriptorTable(2, textureHandle_);
 
 	//描画
-	commandList_->DrawInstanced(6, 1, 0, 0);
+	sCommandList_->DrawInstanced(6, 1, 0, 0);
 }
 
 void Sprite::Release()
 {
-	dxcUtils_.Reset();
-	dxcCompiler_.Reset();
-	includeHandler_.Reset();
-	rootSignature_.Reset();
+	sDxcUtils_.Reset();
+	sDxcCompiler_.Reset();
+	sIncludeHandler_.Reset();
+	sRootSignature_.Reset();
 
 	for (int i = 0; i < kCountOfBlendMode; i++)
 	{
-		graphicsPipelineState_[i].Reset();
+		sGraphicsPipelineState_[i].Reset();
 	}
 }
 
@@ -119,8 +119,8 @@ Sprite* Sprite::Create(uint32_t textureHandle, Vector2 position)
 
 void Sprite::PreDraw(BlendMode blendMode)
 {
-	commandList_->SetGraphicsRootSignature(rootSignature_.Get());
-	commandList_->SetPipelineState(graphicsPipelineState_[blendMode].Get());
+	sCommandList_->SetGraphicsRootSignature(sRootSignature_.Get());
+	sCommandList_->SetPipelineState(sGraphicsPipelineState_[blendMode].Get());
 }
 
 void Sprite::PostDraw()
@@ -140,14 +140,14 @@ void Sprite::ImGui(const char* Title)
 void Sprite::InitializeDXC()
 {
 	//dxccompilerを初期化
-	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
+	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&sDxcUtils_));
 	assert(SUCCEEDED(hr));
 
-	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
+	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&sDxcCompiler_));
 	assert(SUCCEEDED(hr));
 
 	//現時点ではincludeはしないが、includeに対応するための設定を行っておく
-	hr = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
+	hr = sDxcUtils_->CreateDefaultIncludeHandler(&sIncludeHandler_);
 	assert(SUCCEEDED(hr));
 }
 
@@ -157,7 +157,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> Sprite::CompileShader(const std::wstring& fileP
 	Log(ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
 	//hlslファイルを読む
 	IDxcBlobEncoding* shaderSource = nullptr;
-	HRESULT hr = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
+	HRESULT hr = sDxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
 	//読めなかったら止める
 	assert(SUCCEEDED(hr));
 	//読み込んだファイルの内容を設定する
@@ -177,11 +177,11 @@ Microsoft::WRL::ComPtr<IDxcBlob> Sprite::CompileShader(const std::wstring& fileP
 	};
 	//実際にShaderをコンパイルする
 	IDxcResult* shaderResult = nullptr;
-	hr = dxcCompiler_->Compile(
+	hr = sDxcCompiler_->Compile(
 		&shaderSourceBuffer,//読み込んだファイル
 		arguments,//コンパイルオプション
 		_countof(arguments),//コンパイルオプションの数
-		includeHandler_.Get(),//includeが含まれた諸々
+		sIncludeHandler_.Get(),//includeが含まれた諸々
 		IID_PPV_ARGS(&shaderResult)//コンパイル結果
 	);
 	//コンパイルエラーではなくdxcが起動できないほど致命的な状況
@@ -263,8 +263,8 @@ void Sprite::CreatePSO()
 		assert(false);
 	}
 	//バイナリを元に生成
-	hr = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
-		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
+	hr = sDevice_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
+		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&sRootSignature_));
 	assert(SUCCEEDED(hr));
 
 
@@ -317,7 +317,7 @@ void Sprite::CreatePSO()
 
 	//PSOを作成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-	graphicsPipelineStateDesc.pRootSignature = rootSignature_.Get();//RootSignature
+	graphicsPipelineStateDesc.pRootSignature = sRootSignature_.Get();//RootSignature
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;//InputLayout
 	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),
 	vertexShaderBlob->GetBufferSize() };//VertexShader
@@ -338,7 +338,7 @@ void Sprite::CreatePSO()
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	//実際に生成
-	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_[kBlendModeNone]));
+	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_[kBlendModeNone]));
 	assert(SUCCEEDED(hr));
 
 
@@ -355,7 +355,7 @@ void Sprite::CreatePSO()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 
 	//実際に生成
-	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_[kBlendModeNormal]));
+	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_[kBlendModeNormal]));
 	assert(SUCCEEDED(hr));
 
 
@@ -367,7 +367,7 @@ void Sprite::CreatePSO()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 
 	//実際に生成
-	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_[kBlendModeAdd]));
+	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_[kBlendModeAdd]));
 	assert(SUCCEEDED(hr));
 
 
@@ -379,7 +379,7 @@ void Sprite::CreatePSO()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 
 	//実際に生成
-	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_[kBlendModeSubtract]));
+	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_[kBlendModeSubtract]));
 	assert(SUCCEEDED(hr));
 
 
@@ -391,7 +391,7 @@ void Sprite::CreatePSO()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 
 	//実際に生成
-	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_[kBlendModeMultiply]));
+	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_[kBlendModeMultiply]));
 	assert(SUCCEEDED(hr));
 
 
@@ -403,13 +403,13 @@ void Sprite::CreatePSO()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 
 	//実際に生成
-	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_[kBlendModeScreen]));
+	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_[kBlendModeScreen]));
 	assert(SUCCEEDED(hr));
 }
 
 void Sprite::CreateVertexBuffer()
 {
-	vertexResource_ = dxCore_->CreateBufferResource(sizeof(VertexData) * 6);
+	vertexResource_ = sDxCore_->CreateBufferResource(sizeof(VertexData) * 6);
 
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 6;
@@ -461,7 +461,7 @@ void Sprite::CreateVertexBuffer()
 void Sprite::CreateMaterialResource()
 {
 	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
-	materialResource_ = dxCore_->CreateBufferResource(sizeof(MaterialData));
+	materialResource_ = sDxCore_->CreateBufferResource(sizeof(MaterialData));
 	//マテリアルにデータを書き込む
 	MaterialData* materialData = nullptr;
 	//書き込むためのアドレスを取得
@@ -474,7 +474,7 @@ void Sprite::CreateMaterialResource()
 void Sprite::CreateWVPResource()
 {
 	//WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
-	wvpResource_ = dxCore_->CreateBufferResource(sizeof(Matrix4x4));
+	wvpResource_ = sDxCore_->CreateBufferResource(sizeof(Matrix4x4));
 	//データを書き込む
 	Matrix4x4* wvpData = nullptr;
 	//書き込むためのアドレスを取得
@@ -561,7 +561,7 @@ void Sprite::UpdateMatrix()
 
 void Sprite::AdjustTextureSize()
 {
-	resourceDesc_ = textureManager_->GetResourceDesc(textureHandle_);
+	resourceDesc_ = sTextureManager_->GetResourceDesc(textureHandle_);
 
 	textureSize_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
 }

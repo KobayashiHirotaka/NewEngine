@@ -35,7 +35,7 @@ private:
 	ModelManager& operator=(const ModelManager&) = delete;
 
 private:
-	static ModelManager* instance_;
+	static ModelManager* sInstance_;
 
 	//モデルデータ
 	std::map<std::string, std::unique_ptr<Model>> models_;

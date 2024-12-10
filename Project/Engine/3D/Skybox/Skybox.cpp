@@ -7,25 +7,25 @@
 
 #include "Skybox.h"
 
-DirectXCore* Skybox::dxCore_ = nullptr;
-TextureManager* Skybox::textureManager_ = nullptr;
-ID3D12Device* Skybox::device_ = nullptr;
-ID3D12GraphicsCommandList* Skybox::commandList_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcUtils> Skybox::dxcUtils_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcCompiler3> Skybox::dxcCompiler_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcIncludeHandler> Skybox::includeHandler_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12RootSignature> Skybox::rootSignature_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12PipelineState> Skybox::graphicsPipelineState_ = nullptr;
+DirectXCore* Skybox::sDxCore_ = nullptr;
+TextureManager* Skybox::sTextureManager_ = nullptr;
+ID3D12Device* Skybox::sDevice_ = nullptr;
+ID3D12GraphicsCommandList* Skybox::sCommandList_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcUtils> Skybox::sDxcUtils_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcCompiler3> Skybox::sDxcCompiler_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcIncludeHandler> Skybox::sIncludeHandler_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12RootSignature> Skybox::sRootSignature_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12PipelineState> Skybox::sGraphicsPipelineState_ = nullptr;
 
 void Skybox::StaticInitialize()
 {
-	dxCore_ = DirectXCore::GetInstance();
+	sDxCore_ = DirectXCore::GetInstance();
 
-	textureManager_ = TextureManager::GetInstance();
+	sTextureManager_ = TextureManager::GetInstance();
 
-	device_ = dxCore_->GetDevice();
+	sDevice_ = sDxCore_->GetDevice();
 
-	commandList_ = dxCore_->GetCommandList();
+	sCommandList_ = sDxCore_->GetCommandList();
 
 	InitializeDXC();
 
@@ -35,7 +35,7 @@ void Skybox::StaticInitialize()
 void Skybox::Initialize()
 {
 	//テクスチャの読み込み
-	textureHandle_ = textureManager_->LoadTexture("resource/images/skybox.dds");
+	textureHandle_ = sTextureManager_->LoadTexture("resource/images/skybox.dds");
 
 	//頂点リソースの作成
 	CreateVertexResource();
@@ -53,40 +53,40 @@ void Skybox::Draw(WorldTransform& worldTransform, const Camera& camera)
 	UpdateMaterialResource();
 	
 	//DescriptorHeapを設定
-	textureManager_->SetGraphicsDescriptorHeap();
+	sTextureManager_->SetGraphicsDescriptorHeap();
 
 	//VBVを設定
-	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	sCommandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
 	//形状を設定
-	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	sCommandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//IndexBufferを設定
-	commandList_->IASetIndexBuffer(&indexBufferView_);
+	sCommandList_->IASetIndexBuffer(&indexBufferView_);
 
 	//マテリアルCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::Material), materialResource_->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::Material), materialResource_->GetGPUVirtualAddress());
 
 	//WorldTransform用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldTransform), worldTransform.constBuff->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldTransform), worldTransform.constBuff->GetGPUVirtualAddress());
 
 	//ViewProjection用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff_->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff_->GetGPUVirtualAddress());
 
 	//DescriptorTableを設定
-	textureManager_->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Texture), textureHandle_);
+	sTextureManager_->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Texture), textureHandle_);
 
 	//描画
-	commandList_->DrawIndexedInstanced(kMaxIndices, 1, 0, 0, 0);
+	sCommandList_->DrawIndexedInstanced(kMaxIndices, 1, 0, 0, 0);
 }
 
 void Skybox::Release()
 {
-	dxcUtils_.Reset();
-	dxcCompiler_.Reset();
-	includeHandler_.Reset();
-	rootSignature_.Reset();
-	graphicsPipelineState_.Reset();
+	sDxcUtils_.Reset();
+	sDxcCompiler_.Reset();
+	sIncludeHandler_.Reset();
+	sRootSignature_.Reset();
+	sGraphicsPipelineState_.Reset();
 }
 
 Skybox* Skybox::Create()
@@ -99,8 +99,8 @@ Skybox* Skybox::Create()
 
 void Skybox::PreDraw()
 {
-	commandList_->SetGraphicsRootSignature(rootSignature_.Get());
-	commandList_->SetPipelineState(graphicsPipelineState_.Get());
+	sCommandList_->SetGraphicsRootSignature(sRootSignature_.Get());
+	sCommandList_->SetPipelineState(sGraphicsPipelineState_.Get());
 }
 
 void Skybox::PostDraw()
@@ -111,14 +111,14 @@ void Skybox::PostDraw()
 void Skybox::InitializeDXC()
 {
 	//dxccompilerを初期化
-	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
+	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&sDxcUtils_));
 	assert(SUCCEEDED(hr));
 
-	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
+	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&sDxcCompiler_));
 	assert(SUCCEEDED(hr));
 
 	//現時点ではincludeはしないが、includeに対応するための設定を行っておく
-	hr = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
+	hr = sDxcUtils_->CreateDefaultIncludeHandler(&sIncludeHandler_);
 	assert(SUCCEEDED(hr));
 }
 
@@ -128,7 +128,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> Skybox::CompileShader(const std::wstring& fileP
 	Log(ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
 	//hlslファイルを読む
 	IDxcBlobEncoding* shaderSource = nullptr;
-	HRESULT hr = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
+	HRESULT hr = sDxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
 	//読めなかったら止める
 	assert(SUCCEEDED(hr));
 	//読み込んだファイルの内容を設定する
@@ -148,11 +148,11 @@ Microsoft::WRL::ComPtr<IDxcBlob> Skybox::CompileShader(const std::wstring& fileP
 	};
 	//実際にShaderをコンパイルする
 	IDxcResult* shaderResult = nullptr;
-	hr = dxcCompiler_->Compile(
+	hr = sDxcCompiler_->Compile(
 		&shaderSourceBuffer,//読み込んだファイル
 		arguments,//コンパイルオプション
 		_countof(arguments),//コンパイルオプションの数
-		includeHandler_.Get(),//includeが含まれた諸々
+		sIncludeHandler_.Get(),//includeが含まれた諸々
 		IID_PPV_ARGS(&shaderResult)//コンパイル結果
 	);
 	//コンパイルエラーではなくdxcが起動できないほど致命的な状況
@@ -239,8 +239,8 @@ void Skybox::CreatePSO()
 		assert(false);
 	}
 	//バイナリを元に生成
-	hr = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
-		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
+	hr = sDevice_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
+		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&sRootSignature_));
 	assert(SUCCEEDED(hr));
 
 
@@ -305,7 +305,7 @@ void Skybox::CreatePSO()
 
 	//PSOを作成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-	graphicsPipelineStateDesc.pRootSignature = rootSignature_.Get();//RootSignature
+	graphicsPipelineStateDesc.pRootSignature = sRootSignature_.Get();//RootSignature
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;//InputLayout
 	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };//VertexShader
 	graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize() };//PixelShader
@@ -324,7 +324,7 @@ void Skybox::CreatePSO()
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	
 	//実際に生成
-	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_));
+	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_));
 	assert(SUCCEEDED(hr));
 }
 
@@ -366,7 +366,7 @@ void Skybox::CreateVertexResource()
 	vertices_[22] = { -1.0f,-1.0f,-1.0f,1.0f };
 	vertices_[23] = { 1.0f,-1.0f,-1.0f,1.0f };
 
-	vertexResource_ = dxCore_->CreateBufferResource(sizeof(Vector4) * kMaxVertices);
+	vertexResource_ = sDxCore_->CreateBufferResource(sizeof(Vector4) * kMaxVertices);
 
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = UINT(sizeof(Vector4) * kMaxVertices);
@@ -428,7 +428,7 @@ void Skybox::CreateIndexResource()
 	indices_[34] = 21;
 	indices_[35] = 23;
 
-	indexResource_ = dxCore_->CreateBufferResource(sizeof(uint32_t) * kMaxIndices);
+	indexResource_ = sDxCore_->CreateBufferResource(sizeof(uint32_t) * kMaxIndices);
 
 	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
 	indexBufferView_.SizeInBytes = UINT(sizeof(uint32_t) * kMaxIndices);
@@ -442,7 +442,7 @@ void Skybox::CreateIndexResource()
 
 void Skybox::CreateMaterialResource()
 {
-	materialResource_ = dxCore_->CreateBufferResource(sizeof(Vector4));
+	materialResource_ = sDxCore_->CreateBufferResource(sizeof(Vector4));
 
 	UpdateMaterialResource();
 }

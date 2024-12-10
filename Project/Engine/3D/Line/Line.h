@@ -54,17 +54,17 @@ private:
 	void UpdateVertexBuffer();
 
 private:
-	static DirectXCore* dxCore_;
+	static DirectXCore* sDxCore_;
 
-	static TextureManager* textureManager_;
+	static TextureManager* sTextureManager_;
 
-	static ID3D12Device* device_;
+	static ID3D12Device* sDevice_;
 
-	static ID3D12GraphicsCommandList* commandList_;
+	static ID3D12GraphicsCommandList* sCommandList_;
 
-	static Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_;
-	static Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_;
-	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_;
+	static Microsoft::WRL::ComPtr<IDxcUtils> sDxcUtils_;
+	static Microsoft::WRL::ComPtr<IDxcCompiler3> sDxcCompiler_;
+	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> sIncludeHandler_;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexBuffer_ = nullptr;
 
@@ -72,8 +72,8 @@ private:
 
 	std::vector<Vector4> vertices_{};
 
-	static Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
+	static Microsoft::WRL::ComPtr<ID3D12RootSignature> sRootSignature_;
 
-	static Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_;
+	static Microsoft::WRL::ComPtr<ID3D12PipelineState> sGraphicsPipelineState_;
 };
 

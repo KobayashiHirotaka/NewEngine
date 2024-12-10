@@ -49,7 +49,7 @@ private:
 	const Game3dObjectManager& operator=(const Game3dObjectManager&) = delete;
 
 private:
-	static Game3dObjectManager* instance_;
+	static Game3dObjectManager* sInstance_;
 
 	std::vector<std::unique_ptr<IGame3dObject>> gameObjects_{};
 

@@ -90,7 +90,7 @@ private:
     LevelLoader& operator=(const LevelLoader& obj) = default;
 
 private:
-    static LevelLoader* instance_;
+    static LevelLoader* sInstance_;
 
     std::map<std::string, std::unique_ptr<LevelData>>levelDatas_;
 };

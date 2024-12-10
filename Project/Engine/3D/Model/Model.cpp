@@ -7,29 +7,29 @@
 
 #include "Model.h"
 
-DirectXCore* Model::dxCore_ = nullptr;
-TextureManager* Model::textureManager_ = nullptr;
-ID3D12Device* Model::device_ = nullptr;
-ID3D12GraphicsCommandList* Model::commandList_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcUtils> Model::dxcUtils_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcCompiler3> Model::dxcCompiler_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcIncludeHandler> Model::includeHandler_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12RootSignature> Model::rootSignature_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12PipelineState> Model::graphicsPipelineState_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12RootSignature> Model::boneRootSignature_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12PipelineState> Model::boneGraphicsPipelineState_ = nullptr;
-std::list<ModelData> Model::modelDatas_{};
-uint32_t Model::environmentTextureHandle_;
+DirectXCore* Model::sDxCore_ = nullptr;
+TextureManager* Model::sTextureManager_ = nullptr;
+ID3D12Device* Model::sDevice_ = nullptr;
+ID3D12GraphicsCommandList* Model::sCommandList_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcUtils> Model::sDxcUtils_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcCompiler3> Model::sDxcCompiler_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcIncludeHandler> Model::sIncludeHandler_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12RootSignature> Model::sRootSignature_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12PipelineState> Model::sGraphicsPipelineState_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12RootSignature> Model::sBoneRootSignature_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12PipelineState> Model::sBoneGraphicsPipelineState_ = nullptr;
+std::list<ModelData> Model::sModelDatas_{};
+uint32_t Model::sEnvironmentTextureHandle_;
 
 void Model::StaticInitialize()
 {
-	dxCore_ = DirectXCore::GetInstance();
+	sDxCore_ = DirectXCore::GetInstance();
 
-	textureManager_ = TextureManager::GetInstance();
+	sTextureManager_ = TextureManager::GetInstance();
 
-	device_ = dxCore_->GetDevice();
+	sDevice_ = sDxCore_->GetDevice();
 
-	commandList_ = dxCore_->GetCommandList();
+	sCommandList_ = sDxCore_->GetCommandList();
 
 	InitializeDXC();
 
@@ -37,7 +37,7 @@ void Model::StaticInitialize()
 
 	CreateBonePSO();
 
-	environmentTextureHandle_ = textureManager_->LoadTexture("resource/images/skybox.dds");
+	sEnvironmentTextureHandle_ = sTextureManager_->LoadTexture("resource/images/skybox.dds");
 }
 
 void Model::Update()
@@ -132,16 +132,16 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera, const uin
 	material_->SetGraphicsCommand(UINT(RootParameterIndex::Material));
 
 	//WorldTransform用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldTransform), worldTransform.constBuff->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::WorldTransform), worldTransform.constBuff->GetGPUVirtualAddress());
 
 	//ViewProjection用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff_->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff_->GetGPUVirtualAddress());
 
 	//DescriptorHeapを設定
-	textureManager_->SetGraphicsDescriptorHeap();
+	sTextureManager_->SetGraphicsDescriptorHeap();
 
 	//DescriptorTableを設定
-	textureManager_->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Texture), textureHandle_);
+	sTextureManager_->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Texture), textureHandle_);
 
 	//Lightを設定
 	light_->SetGraphicsCommand(UINT(RootParameterIndex::Light));
@@ -152,9 +152,9 @@ void Model::Draw(WorldTransform& worldTransform, const Camera& camera, const uin
 	//SpotLightを設定
 	spotLight_->SetGraphicsCommand(UINT(RootParameterIndex::SpotLight));
 
-	textureManager_->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Skinning), skinningTextureHandle_);
+	sTextureManager_->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Skinning), skinningTextureHandle_);
 
-	textureManager_->SetGraphicsRootDescriptorTable(8, environmentTextureHandle_);
+	sTextureManager_->SetGraphicsRootDescriptorTable(8, sEnvironmentTextureHandle_);
 
 	//描画
 	mesh_->Draw();
@@ -167,29 +167,29 @@ void Model::DrawBone(WorldTransform& worldTransform, const Camera& camera)
 
 	UpdateBoneVertices(skeleton_, skeleton_.root, boneVertices_);
 
-	dxCore_->GetCommandList()->IASetVertexBuffers(0, 1, &boneVertexBufferView_);
+	sDxCore_->GetCommandList()->IASetVertexBuffers(0, 1, &boneVertexBufferView_);
 
-	dxCore_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+	sDxCore_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	//WorldTransform用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(0), worldTransform.constBuff->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(UINT(0), worldTransform.constBuff->GetGPUVirtualAddress());
 
 	//ViewProjection用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(1), camera.constBuff_->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(UINT(1), camera.constBuff_->GetGPUVirtualAddress());
 
 	//描画
-	dxCore_->GetCommandList()->DrawInstanced(UINT(boneVertices_.size()), 1, 0, 0);
+	sDxCore_->GetCommandList()->DrawInstanced(UINT(boneVertices_.size()), 1, 0, 0);
 }
 
 void Model::Release()
 {
-	dxcUtils_.Reset();
-	dxcCompiler_.Reset();
-	includeHandler_.Reset();
-	rootSignature_.Reset();
-	graphicsPipelineState_.Reset();
-	boneRootSignature_.Reset();
-	boneGraphicsPipelineState_.Reset();
+	sDxcUtils_.Reset();
+	sDxcCompiler_.Reset();
+	sIncludeHandler_.Reset();
+	sRootSignature_.Reset();
+	sGraphicsPipelineState_.Reset();
+	sBoneRootSignature_.Reset();
+	sBoneGraphicsPipelineState_.Reset();
 }
 
 Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string& filename)
@@ -203,7 +203,7 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 	//モデルデータを読み込む
 	ModelData modelData;
 
-	for (ModelData existingModelData : modelDatas_)
+	for (ModelData existingModelData : sModelDatas_)
 	{
 		if (existingModelData.name == filename)
 		{
@@ -221,7 +221,7 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 		modelData = model->LoadModelFile(directoryPath, filename);
 		modelData.name = filename;
 		model->modelData_ = modelData;
-		modelDatas_.push_back(modelData);
+		sModelDatas_.push_back(modelData);
 	}
 
 	model->animation_ = model->LoadAnimationFile(directoryPath, filename);
@@ -241,7 +241,7 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 	model->mesh_->Initialize(modelData.vertices, modelData.indices);
 
 	//テクスチャのハンドルの取得
-	model->textureHandle_ = textureManager_->LoadTexture(modelData.material.textureFilePath);
+	model->textureHandle_ = sTextureManager_->LoadTexture(modelData.material.textureFilePath);
 
 	//マテリアルの作成
 	model->material_ = std::make_unique<Material>();
@@ -264,8 +264,8 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 
 void Model::PreDraw()
 {
-	commandList_->SetGraphicsRootSignature(rootSignature_.Get());
-	commandList_->SetPipelineState(graphicsPipelineState_.Get());
+	sCommandList_->SetGraphicsRootSignature(sRootSignature_.Get());
+	sCommandList_->SetPipelineState(sGraphicsPipelineState_.Get());
 }
 
 void Model::PostDraw()
@@ -275,8 +275,8 @@ void Model::PostDraw()
 
 void Model::PreDrawBone()
 {
-	commandList_->SetGraphicsRootSignature(boneRootSignature_.Get());
-	commandList_->SetPipelineState(boneGraphicsPipelineState_.Get());
+	sCommandList_->SetGraphicsRootSignature(sBoneRootSignature_.Get());
+	sCommandList_->SetPipelineState(sBoneGraphicsPipelineState_.Get());
 }
 
 void Model::PostDrawBone()
@@ -287,14 +287,14 @@ void Model::PostDrawBone()
 void Model::InitializeDXC()
 {
 	//dxccompilerを初期化
-	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
+	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&sDxcUtils_));
 	assert(SUCCEEDED(hr));
 
-	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
+	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&sDxcCompiler_));
 	assert(SUCCEEDED(hr));
 
 	//現時点ではincludeはしないが、includeに対応するための設定を行っておく
-	hr = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
+	hr = sDxcUtils_->CreateDefaultIncludeHandler(&sIncludeHandler_);
 	assert(SUCCEEDED(hr));
 }
 
@@ -304,7 +304,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> Model::CompileShader(const std::wstring& filePa
 	Log(ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
 	//hlslファイルを読む
 	IDxcBlobEncoding* shaderSource = nullptr;
-	HRESULT hr = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
+	HRESULT hr = sDxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
 	//読めなかったら止める
 	assert(SUCCEEDED(hr));
 	//読み込んだファイルの内容を設定する
@@ -324,11 +324,11 @@ Microsoft::WRL::ComPtr<IDxcBlob> Model::CompileShader(const std::wstring& filePa
 	};
 	//実際にShaderをコンパイルする
 	IDxcResult* shaderResult = nullptr;
-	hr = dxcCompiler_->Compile(
+	hr = sDxcCompiler_->Compile(
 		&shaderSourceBuffer,//読み込んだファイル
 		arguments,//コンパイルオプション
 		_countof(arguments),//コンパイルオプションの数
-		includeHandler_.Get(),//includeが含まれた諸々
+		sIncludeHandler_.Get(),//includeが含まれた諸々
 		IID_PPV_ARGS(&shaderResult)//コンパイル結果
 	);
 	//コンパイルエラーではなくdxcが起動できないほど致命的な状況
@@ -444,8 +444,8 @@ void Model::CreatePSO()
 		assert(false);
 	}
 	//バイナリを元に生成
-	hr = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
-		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
+	hr = sDevice_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
+		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&sRootSignature_));
 	assert(SUCCEEDED(hr));
 
 
@@ -528,7 +528,7 @@ void Model::CreatePSO()
 
 	//PSOを作成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-	graphicsPipelineStateDesc.pRootSignature = rootSignature_.Get();//RootSignature
+	graphicsPipelineStateDesc.pRootSignature = sRootSignature_.Get();//RootSignature
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;//InputLayout
 	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),
 	vertexShaderBlob->GetBufferSize() };//VertexShader
@@ -550,7 +550,7 @@ void Model::CreatePSO()
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	//実際に生成
-	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_));
+	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_));
 	assert(SUCCEEDED(hr));
 }
 
@@ -602,8 +602,8 @@ void Model::CreateBonePSO()
 		assert(false);
 	}
 	//バイナリを元に生成
-	hr = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
-		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&boneRootSignature_));
+	hr = sDevice_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
+		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&sBoneRootSignature_));
 	assert(SUCCEEDED(hr));
 
 
@@ -663,7 +663,7 @@ void Model::CreateBonePSO()
 
 	//PSOを作成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-	graphicsPipelineStateDesc.pRootSignature = boneRootSignature_.Get();//RootSignature
+	graphicsPipelineStateDesc.pRootSignature = sBoneRootSignature_.Get();//RootSignature
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;//InputLayout
 	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),
 	vertexShaderBlob->GetBufferSize() };//VertexShader
@@ -685,7 +685,7 @@ void Model::CreateBonePSO()
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	//実際に生成
-	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&boneGraphicsPipelineState_));
+	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sBoneGraphicsPipelineState_));
 	assert(SUCCEEDED(hr));
 }
 
@@ -1010,11 +1010,11 @@ SkinCluster Model::CreateSkinCluster(const Skeleton& skeleton, const ModelData& 
 {
 	//palette用のResourceを確保
 	SkinCluster skinCluster;
-	skinCluster.paletteResource = dxCore_->CreateBufferResource(sizeof(WellForGPU) * skeleton.joints.size());
+	skinCluster.paletteResource = sDxCore_->CreateBufferResource(sizeof(WellForGPU) * skeleton.joints.size());
 	WellForGPU* mappedPalette = nullptr;
 	skinCluster.paletteResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedPalette));
 	skinCluster.mappedPalette = { mappedPalette, skeleton.joints.size() };
-	skinningTextureHandle_ = textureManager_->CreateInstancingSRV(skinCluster.paletteResource, UINT(skeleton.joints.size()), sizeof(WellForGPU));
+	skinningTextureHandle_ = sTextureManager_->CreateInstancingSRV(skinCluster.paletteResource, UINT(skeleton.joints.size()), sizeof(WellForGPU));
 
 	//palette用のsrvを作成
 	D3D12_SHADER_RESOURCE_VIEW_DESC paletteSrvDesc{};
@@ -1027,7 +1027,7 @@ SkinCluster Model::CreateSkinCluster(const Skeleton& skeleton, const ModelData& 
 	paletteSrvDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
 
 	//influence用のResourceを確保
-	skinCluster.influenceResource = dxCore_->CreateBufferResource(sizeof(VertexInfluence) * modelData.vertices.size());
+	skinCluster.influenceResource = sDxCore_->CreateBufferResource(sizeof(VertexInfluence) * modelData.vertices.size());
 	VertexInfluence* mappedInfluence = nullptr;
 	skinCluster.influenceResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedInfluence));
 	std::memset(mappedInfluence, 0, sizeof(VertexInfluence) * modelData.vertices.size());
@@ -1077,7 +1077,7 @@ SkinCluster Model::CreateSkinCluster(const Skeleton& skeleton, const ModelData& 
 
 void Model::CreateBoneVertexBuffer()
 {
-	boneVertexBuffer_ = dxCore_->CreateBufferResource(sizeof(Vector4) * boneVertices_.size());
+	boneVertexBuffer_ = sDxCore_->CreateBufferResource(sizeof(Vector4) * boneVertices_.size());
 
 	boneVertexBufferView_.BufferLocation = boneVertexBuffer_->GetGPUVirtualAddress();
 	boneVertexBufferView_.SizeInBytes = UINT(sizeof(Vector4) * boneVertices_.size());

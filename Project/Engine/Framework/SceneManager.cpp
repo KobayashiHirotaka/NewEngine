@@ -8,23 +8,23 @@
 #include "SceneManager.h"
 #include "Engine/Utility/GlobalVariables.h"
 
-SceneManager* SceneManager::instance_ = nullptr;
+SceneManager* SceneManager::sInstance_ = nullptr;
 
 SceneManager* SceneManager::GetInstance()
 {
-	if (instance_ == nullptr)
+	if (sInstance_ == nullptr)
 	{
-		instance_ = new SceneManager();
+		sInstance_ = new SceneManager();
 	}
-	return instance_;
+	return sInstance_;
 }
 
 void SceneManager::DeleteInstance()
 {
-	if (instance_ != nullptr)
+	if (sInstance_ != nullptr)
 	{
-		delete instance_;
-		instance_ = nullptr;
+		delete sInstance_;
+		sInstance_ = nullptr;
 	}
 }
 

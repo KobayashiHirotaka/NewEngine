@@ -31,7 +31,7 @@ private:
 	const SceneManager& operator = (const SceneManager&) = delete;
 
 private:
-	static SceneManager* instance_;
+	static SceneManager* sInstance_;
 
 	IScene* currentScene_;
 

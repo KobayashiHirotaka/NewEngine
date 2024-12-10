@@ -11,23 +11,23 @@ const std::string LevelLoader::kDirectoryPath = "resource/Level/";
 
 const std::string LevelLoader::kExtension = ".json";
 
-LevelLoader* LevelLoader::instance_ = nullptr;
+LevelLoader* LevelLoader::sInstance_ = nullptr;
 
 LevelLoader* LevelLoader::GetInstance()
 {
-	if (instance_ == nullptr)
+	if (sInstance_ == nullptr)
 	{
-		instance_ = new LevelLoader();
+		sInstance_ = new LevelLoader();
 	}
-	return instance_;
+	return sInstance_;
 }
 
 void LevelLoader::DeleteInstance()
 {
-	if (instance_ != nullptr)
+	if (sInstance_ != nullptr)
 	{
-		delete instance_;
-		instance_ = nullptr;
+		delete sInstance_;
+		sInstance_ = nullptr;
 	}
 }
 

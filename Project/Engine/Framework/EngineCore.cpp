@@ -7,7 +7,7 @@
 
 #include "EngineCore.h"
 
-D3DResourceLeakChecker EngineCore::leakCheck;
+D3DResourceLeakChecker EngineCore::sLeakCheck_;
 
 void EngineCore::Initialize()
 {

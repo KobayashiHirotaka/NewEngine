@@ -7,22 +7,22 @@
 
 #include "Random.h"
 
-std::mt19937 Random::randomEngine_;
+std::mt19937 Random::sRandomEngine_;
 
 void Random::Initialize()
 {
 	std::random_device seedGenerator;
-	randomEngine_ = std::mt19937(seedGenerator());
+	sRandomEngine_ = std::mt19937(seedGenerator());
 }
 
 int Random::GetRandomInt(int min, int max)
 {
 	std::uniform_int_distribution<int> distribution(min, max);
-	return distribution(randomEngine_);
+	return distribution(sRandomEngine_);
 }
 
 float Random::GetRandomFloat(float min, float max)
 {
 	std::uniform_real_distribution<float> distribution(min, max);
-	return distribution(randomEngine_);
+	return distribution(sRandomEngine_);
 }

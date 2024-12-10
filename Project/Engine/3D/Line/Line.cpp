@@ -7,25 +7,25 @@
 
 #include "Line.h"
 
-DirectXCore* Line::dxCore_ = nullptr;
-TextureManager* Line::textureManager_ = nullptr;
-ID3D12Device* Line::device_ = nullptr;
-ID3D12GraphicsCommandList* Line::commandList_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcUtils> Line::dxcUtils_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcCompiler3> Line::dxcCompiler_ = nullptr;
-Microsoft::WRL::ComPtr<IDxcIncludeHandler> Line::includeHandler_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12RootSignature> Line::rootSignature_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12PipelineState> Line::graphicsPipelineState_ = nullptr;
+DirectXCore* Line::sDxCore_ = nullptr;
+TextureManager* Line::sTextureManager_ = nullptr;
+ID3D12Device* Line::sDevice_ = nullptr;
+ID3D12GraphicsCommandList* Line::sCommandList_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcUtils> Line::sDxcUtils_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcCompiler3> Line::sDxcCompiler_ = nullptr;
+Microsoft::WRL::ComPtr<IDxcIncludeHandler> Line::sIncludeHandler_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12RootSignature> Line::sRootSignature_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12PipelineState> Line::sGraphicsPipelineState_ = nullptr;
 
 void Line::StaticInitialize()
 {
-	dxCore_ = DirectXCore::GetInstance();
+	sDxCore_ = DirectXCore::GetInstance();
 
-	textureManager_ = TextureManager::GetInstance();
+	sTextureManager_ = TextureManager::GetInstance();
 
-	device_ = dxCore_->GetDevice();
+	sDevice_ = sDxCore_->GetDevice();
 
-	commandList_ = dxCore_->GetCommandList();
+	sCommandList_ = sDxCore_->GetCommandList();
 
 	InitializeDXC();
 
@@ -42,18 +42,18 @@ void Line::Draw(WorldTransform& worldTransform, const Camera& camera)
 {
 	UpdateVertexBuffer();
 
-	dxCore_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	sDxCore_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
-	dxCore_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+	sDxCore_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	//WorldTransform用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(0), worldTransform.constBuff->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(UINT(0), worldTransform.constBuff->GetGPUVirtualAddress());
 
 	//ViewProjection用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(UINT(1), camera.constBuff_->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(UINT(1), camera.constBuff_->GetGPUVirtualAddress());
 
 	//描画
-	dxCore_->GetCommandList()->DrawInstanced(UINT(vertices_.size()), 1, 0, 0);
+	sDxCore_->GetCommandList()->DrawInstanced(UINT(vertices_.size()), 1, 0, 0);
 }
 
 Line* Line::Create(Vector4 start, Vector4 end)
@@ -71,17 +71,17 @@ Line* Line::Create(Vector4 start, Vector4 end)
 
 void Line::Release()
 {
-	dxcUtils_.Reset();
-	dxcCompiler_.Reset();
-	includeHandler_.Reset();
-	rootSignature_.Reset();
-	graphicsPipelineState_.Reset();
+	sDxcUtils_.Reset();
+	sDxcCompiler_.Reset();
+	sIncludeHandler_.Reset();
+	sRootSignature_.Reset();
+	sGraphicsPipelineState_.Reset();
 }
 
 void Line::PreDraw()
 {
-	commandList_->SetGraphicsRootSignature(rootSignature_.Get());
-	commandList_->SetPipelineState(graphicsPipelineState_.Get());
+	sCommandList_->SetGraphicsRootSignature(sRootSignature_.Get());
+	sCommandList_->SetPipelineState(sGraphicsPipelineState_.Get());
 }
 
 void Line::PostDraw()
@@ -92,14 +92,14 @@ void Line::PostDraw()
 void Line::InitializeDXC()
 {
 	//dxccompilerを初期化
-	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
+	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&sDxcUtils_));
 	assert(SUCCEEDED(hr));
 
-	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
+	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&sDxcCompiler_));
 	assert(SUCCEEDED(hr));
 
 	//現時点ではincludeはしないが、includeに対応するための設定を行っておく
-	hr = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
+	hr = sDxcUtils_->CreateDefaultIncludeHandler(&sIncludeHandler_);
 	assert(SUCCEEDED(hr));
 }
 
@@ -109,7 +109,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> Line::CompileShader(const std::wstring& filePat
 	Log(ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
 	//hlslファイルを読む
 	IDxcBlobEncoding* shaderSource = nullptr;
-	HRESULT hr = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
+	HRESULT hr = sDxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
 	//読めなかったら止める
 	assert(SUCCEEDED(hr));
 	//読み込んだファイルの内容を設定する
@@ -129,11 +129,11 @@ Microsoft::WRL::ComPtr<IDxcBlob> Line::CompileShader(const std::wstring& filePat
 	};
 	//実際にShaderをコンパイルする
 	IDxcResult* shaderResult = nullptr;
-	hr = dxcCompiler_->Compile(
+	hr = sDxcCompiler_->Compile(
 		&shaderSourceBuffer,//読み込んだファイル
 		arguments,//コンパイルオプション
 		_countof(arguments),//コンパイルオプションの数
-		includeHandler_.Get(),//includeが含まれた諸々
+		sIncludeHandler_.Get(),//includeが含まれた諸々
 		IID_PPV_ARGS(&shaderResult)//コンパイル結果
 	);
 	//コンパイルエラーではなくdxcが起動できないほど致命的な状況
@@ -213,8 +213,8 @@ void Line::CreatePSO()
 		assert(false);
 	}
 	//バイナリを元に生成
-	hr = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
-		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
+	hr = sDevice_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
+		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&sRootSignature_));
 	assert(SUCCEEDED(hr));
 
 
@@ -274,7 +274,7 @@ void Line::CreatePSO()
 
 	//PSOを作成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-	graphicsPipelineStateDesc.pRootSignature = rootSignature_.Get();//RootSignature
+	graphicsPipelineStateDesc.pRootSignature = sRootSignature_.Get();//RootSignature
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;//InputLayout
 	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),
 	vertexShaderBlob->GetBufferSize() };//VertexShader
@@ -296,13 +296,13 @@ void Line::CreatePSO()
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	//実際に生成
-	hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_));
+	hr = sDevice_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&sGraphicsPipelineState_));
 	assert(SUCCEEDED(hr));
 }
 
 void Line::CreateVertexBuffer()
 {
-	vertexBuffer_ = dxCore_->CreateBufferResource(sizeof(Vector4) * vertices_.size());
+	vertexBuffer_ = sDxCore_->CreateBufferResource(sizeof(Vector4) * vertices_.size());
 
 	vertexBufferView_.BufferLocation = vertexBuffer_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = UINT(sizeof(Vector4) * vertices_.size());

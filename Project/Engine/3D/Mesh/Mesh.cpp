@@ -22,7 +22,7 @@ void Mesh::Initialize(const std::vector<VertexData>& vertices, const std::vector
 
 void Mesh::Draw()
 {
-	//dxCore_->GetCommandList()->DrawInstanced(UINT(vertices_.size()), 1, 0, 0);
+	//sDxCore_->GetCommandList()->DrawInstanced(UINT(vertices_.size()), 1, 0, 0);
 	dxCore_->GetCommandList()->DrawIndexedInstanced(UINT(indices_.size()), 1, 0, 0, 0);
 }
 

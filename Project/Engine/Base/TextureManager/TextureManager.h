@@ -20,7 +20,7 @@ class TextureManager
 public:
 	static const size_t kMaxDescriptors = 256;
 
-	static uint32_t descriptorSizeSRV;
+	static uint32_t sDescriptorSizeSRV;
 
 	struct Texture
 	{
@@ -67,7 +67,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
 
 private:
-	static TextureManager* instance_;
+	static TextureManager* sInstance_;
 
 	DirectXCore* dxCore_ = nullptr;
 

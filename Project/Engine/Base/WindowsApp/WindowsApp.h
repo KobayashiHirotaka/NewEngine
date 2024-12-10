@@ -41,7 +41,7 @@ private:
 	const WindowsApp& operator=(const WindowsApp&) = delete;
 
 private:
-	static WindowsApp* instance_;
+	static WindowsApp* sInstance_;
 
 	WNDCLASS wc_{};
 	RECT wrc_{};

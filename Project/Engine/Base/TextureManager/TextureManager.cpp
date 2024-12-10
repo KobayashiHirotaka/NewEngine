@@ -7,24 +7,24 @@
 
 #include "TextureManager.h"
 
-uint32_t TextureManager::descriptorSizeSRV = 0;
-TextureManager* TextureManager::instance_ = nullptr;
+uint32_t TextureManager::sDescriptorSizeSRV = 0;
+TextureManager* TextureManager::sInstance_ = nullptr;
 
 TextureManager* TextureManager::GetInstance()
 {
-	if (instance_ == nullptr)
+	if (sInstance_ == nullptr)
 	{
-		instance_ = new TextureManager();
+		sInstance_ = new TextureManager();
 	}
-	return instance_;
+	return sInstance_;
 }
 
 void TextureManager::DeleteInstance()
 {
-	if (instance_ != nullptr)
+	if (sInstance_ != nullptr)
 	{
-		delete instance_;
-		instance_ = nullptr;
+		delete sInstance_;
+		sInstance_ = nullptr;
 	}
 }
 
@@ -36,7 +36,7 @@ void TextureManager::Initialize()
 
 	commandList_ = dxCore_->GetCommandList();
 
-	descriptorSizeSRV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	sDescriptorSizeSRV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	srvDescriptorHeap_ = dxCore_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxDescriptors, true);
 
@@ -74,8 +74,8 @@ uint32_t TextureManager::CreateInstancingSRV(const Microsoft::WRL::ComPtr<ID3D12
 	instancingSrvDesc.Buffer.NumElements = kNumInstance;
 	instancingSrvDesc.Buffer.StructureByteStride = UINT(size);
 
-	textures_[textureHandle_].textureSrvHandleCPU = GetCPUDescriptorHandle(srvDescriptorHeap_.Get(), descriptorSizeSRV, textureHandle_);
-	textures_[textureHandle_].textureSrvHandleGPU = GetGPUDescriptorHandle(srvDescriptorHeap_.Get(), descriptorSizeSRV, textureHandle_);
+	textures_[textureHandle_].textureSrvHandleCPU = GetCPUDescriptorHandle(srvDescriptorHeap_.Get(), sDescriptorSizeSRV, textureHandle_);
+	textures_[textureHandle_].textureSrvHandleGPU = GetGPUDescriptorHandle(srvDescriptorHeap_.Get(), sDescriptorSizeSRV, textureHandle_);
 
 	device_->CreateShaderResourceView(instancingResource.Get(), &instancingSrvDesc, textures_[textureHandle_].textureSrvHandleCPU);
 	return textureHandle_;
@@ -123,8 +123,8 @@ uint32_t TextureManager::LoadInternal(const std::string& filePath)
 	}
 
 	//SRVを作成するDescriptorHeapの場所を決める
-	textures_[textureHandle_].textureSrvHandleCPU = GetCPUDescriptorHandle(srvDescriptorHeap_.Get(), descriptorSizeSRV, textureHandle_);
-	textures_[textureHandle_].textureSrvHandleGPU = GetGPUDescriptorHandle(srvDescriptorHeap_.Get(), descriptorSizeSRV, textureHandle_);
+	textures_[textureHandle_].textureSrvHandleCPU = GetCPUDescriptorHandle(srvDescriptorHeap_.Get(), sDescriptorSizeSRV, textureHandle_);
+	textures_[textureHandle_].textureSrvHandleGPU = GetGPUDescriptorHandle(srvDescriptorHeap_.Get(), sDescriptorSizeSRV, textureHandle_);
 
 	//SRVの作成
 	device_->CreateShaderResourceView(textures_[textureHandle_].resource.Get(), &srvDesc, textures_[textureHandle_].textureSrvHandleCPU);

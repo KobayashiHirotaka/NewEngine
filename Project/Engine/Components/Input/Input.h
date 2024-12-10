@@ -6,7 +6,7 @@
  */
 
 #pragma once
-#define DIRECTINPUT_VERSION 0x0800//DirectInputのバージョン指定
+#define DIRECTINPUT_VERSION 0x0800 //DirectInputのバージョン指定
 #include <dinput.h>
 #include <Xinput.h>
 #pragma comment(lib,"dinput8.lib")
@@ -60,7 +60,7 @@ public:
 
 	float GetRightStickY();
 
-	float GetDeadZone() { return deadZone_; };
+	float GetDeadZone() { return kDeadZone_; };
 
 private:
 	Input() = default;
@@ -69,7 +69,7 @@ private:
 	const Input& operator = (const Input&) = delete;
 
 private:
-	static Input* instance_;
+	static Input* sInstance_;
 
 	Microsoft::WRL::ComPtr<IDirectInput8>directInput_ = nullptr;
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> keyboard_ = nullptr;
@@ -84,6 +84,6 @@ private:
 	XINPUT_STATE state_{};
 	XINPUT_STATE preState_{};
 
-	const float deadZone_ = 0.7f;
+	const float kDeadZone_ = 0.7f;
 };
 

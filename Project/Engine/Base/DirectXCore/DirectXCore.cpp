@@ -8,25 +8,25 @@
 #include "DirectXCore.h"
 #include "Engine/Base/TextureManager/TextureManager.h"
 
-uint32_t DirectXCore::descriptorSizeRTV = 0;
-uint32_t DirectXCore::descriptorSizeDSV = 0;
-DirectXCore* DirectXCore::instance_ = nullptr;
+uint32_t DirectXCore::sDescriptorSizeRTV = 0;
+uint32_t DirectXCore::sDescriptorSizeDSV = 0;
+DirectXCore* DirectXCore::sInstance_ = nullptr;
 
 DirectXCore* DirectXCore::GetInstance()
 {
-	if (instance_ == nullptr)
+	if (sInstance_ == nullptr)
 	{
-		instance_ = new DirectXCore();
+		sInstance_ = new DirectXCore();
 	}
-	return instance_;
+	return sInstance_;
 }
 
 void DirectXCore::DeleteInstance()
 {
-	if (instance_ != nullptr)
+	if (sInstance_ != nullptr)
 	{
-		delete instance_;
-		instance_ = nullptr;
+		delete sInstance_;
+		sInstance_ = nullptr;
 	}
 }
 
@@ -38,8 +38,8 @@ void DirectXCore::Initialize()
 
 	CreateDXGIDevice();
 
-	descriptorSizeRTV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	descriptorSizeDSV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+	sDescriptorSizeRTV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	sDescriptorSizeDSV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
 	CreateCommand();
 
@@ -81,7 +81,7 @@ void DirectXCore::PreDraw()
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2]{};
 
 	rtvHandles[0] = rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
-	rtvHandles[1].ptr = rtvHandles[0].ptr + descriptorSizeRTV;
+	rtvHandles[1].ptr = rtvHandles[0].ptr + sDescriptorSizeRTV;
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 
 	//描画先のRTVとDSVを設定する
@@ -162,7 +162,7 @@ void DirectXCore::SetBackBuffer()
 	//ディスクリプタハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2]{};
 	rtvHandles[0] = rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
-	rtvHandles[1].ptr = rtvHandles[0].ptr + descriptorSizeRTV;
+	rtvHandles[1].ptr = rtvHandles[0].ptr + sDescriptorSizeRTV;
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 
 	//描画先のRTVとDSVを設定する
@@ -390,7 +390,7 @@ void DirectXCore::CreateRTV()
 	rtvHandles[0] = rtvStartHandle;
 	device_->CreateRenderTargetView(swapChainResources_[0].Get(), &rtvDesc_, rtvHandles[0]);
 
-	rtvHandles[1].ptr = rtvHandles[0].ptr + descriptorSizeRTV;
+	rtvHandles[1].ptr = rtvHandles[0].ptr + sDescriptorSizeRTV;
 
 	device_->CreateRenderTargetView(swapChainResources_[1].Get(), &rtvDesc_, rtvHandles[1]);
 }

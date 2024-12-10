@@ -9,23 +9,23 @@
 #include "WindowsApp.h"
 #pragma comment(lib,"winmm.lib")
 
-WindowsApp* WindowsApp::instance_ = nullptr;
+WindowsApp* WindowsApp::sInstance_ = nullptr;
 
 WindowsApp* WindowsApp::GetInstance()
 {
-	if (instance_ == nullptr)
+	if (sInstance_ == nullptr)
 	{
-		instance_ = new WindowsApp();
+		sInstance_ = new WindowsApp();
 	}
-	return instance_;
+	return sInstance_;
 }
 
 void WindowsApp::DeleteInstance()
 {
-	if (instance_ != nullptr)
+	if (sInstance_ != nullptr)
 	{
-		delete instance_;
-		instance_ = nullptr;
+		delete sInstance_;
+		sInstance_ = nullptr;
 	}
 }
 

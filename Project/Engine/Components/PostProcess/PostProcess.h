@@ -17,9 +17,9 @@ class PostProcess
 {
 public:
     //ディスクリプタサイズ
-    static uint32_t descriptorSizeRTV;
-    static uint32_t descriptorSizeSRV;
-    static uint32_t descriptorSizeDSV;
+    static uint32_t sDescriptorSizeRTV;
+    static uint32_t sDescriptorSizeSRV;
+    static uint32_t sDescriptorSizeDSV;
 
     struct Texture
     {
@@ -223,7 +223,7 @@ private:
     D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
 
 private:
-    static PostProcess* instance_;
+    static PostProcess* sInstance_;
 
     DirectXCore* dxCore_ = nullptr;
     ID3D12GraphicsCommandList* commandList_;

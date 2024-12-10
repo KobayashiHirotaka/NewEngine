@@ -22,8 +22,8 @@
 class DirectXCore
 {
 public:
-	static uint32_t descriptorSizeRTV;
-	static uint32_t descriptorSizeDSV;
+	static uint32_t sDescriptorSizeRTV;
+	static uint32_t sDescriptorSizeDSV;
 
 	static DirectXCore* GetInstance();
 
@@ -76,7 +76,7 @@ private:
 	void UpdateFixFPS();
 
 private:
-	static DirectXCore* instance_;
+	static DirectXCore* sInstance_;
 
 	WindowsApp* win_ = nullptr;
 

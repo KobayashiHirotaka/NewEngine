@@ -7,26 +7,26 @@
 
 #include "PostProcess.h"
 
-uint32_t PostProcess::descriptorSizeRTV;
-uint32_t PostProcess::descriptorSizeSRV;
-uint32_t PostProcess::descriptorSizeDSV;
-PostProcess* PostProcess::instance_ = nullptr;
+uint32_t PostProcess::sDescriptorSizeRTV;
+uint32_t PostProcess::sDescriptorSizeSRV;
+uint32_t PostProcess::sDescriptorSizeDSV;
+PostProcess* PostProcess::sInstance_ = nullptr;
 
 PostProcess* PostProcess::GetInstance()
 {
-	if (instance_ == nullptr)
+	if (sInstance_ == nullptr)
 	{
-		instance_ = new PostProcess();
+		sInstance_ = new PostProcess();
 	}
-	return instance_;
+	return sInstance_;
 }
 
 void PostProcess::DeleteInstance()
 {
-	if (instance_ != nullptr)
+	if (sInstance_ != nullptr)
 	{
-		delete instance_;
-		instance_ = nullptr;
+		delete sInstance_;
+		sInstance_ = nullptr;
 	}
 }
 
@@ -38,9 +38,9 @@ void PostProcess::Initialize()
 
 	device_ = dxCore_->GetDevice();
 
-	descriptorSizeRTV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	descriptorSizeSRV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	descriptorSizeDSV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+	sDescriptorSizeRTV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	sDescriptorSizeSRV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	sDescriptorSizeDSV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
 	// 頂点情報の設定
 	vertices_.push_back(VertexPosUV{ {-1.0f,-1.0f,1.0,1.0f},{0.0f,1.0f} });
@@ -137,8 +137,8 @@ void PostProcess::PreDraw()
 
 	// レンダーターゲットの設定
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
-	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, firstPassResource_.rtvIndex);
-	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, linearDepthResource_.rtvIndex);
+	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), sDescriptorSizeRTV, firstPassResource_.rtvIndex);
+	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), sDescriptorSizeRTV, linearDepthResource_.rtvIndex);
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = multiPassDSVDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	commandList_->OMSetRenderTargets(2, rtvHandles, false, &dsvHandle);
 
@@ -888,12 +888,12 @@ void PostProcess::Draw()
 	commandList_->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 	//ディスクリプタテーブルを設定
 	D3D12_GPU_DESCRIPTOR_HANDLE srvHandles[6];
-	srvHandles[0] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, depthSRVIndex_);
-	srvHandles[1] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, secondPassResource_.srvIndex);;
-	srvHandles[2] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, blurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
-	srvHandles[3] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, highIntensityBlurResource_[static_cast<int>(BlurState::Vertical)].srvIndex);
-	srvHandles[4] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, shrinkBlurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
-	srvHandles[5] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, shrinkHighIntensityBlurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
+	srvHandles[0] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, depthSRVIndex_);
+	srvHandles[1] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, secondPassResource_.srvIndex);;
+	srvHandles[2] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, blurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
+	srvHandles[3] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, highIntensityBlurResource_[static_cast<int>(BlurState::Vertical)].srvIndex);
+	srvHandles[4] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, shrinkBlurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
+	srvHandles[5] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, shrinkHighIntensityBlurResources_[static_cast<int>(BlurState::Vertical)].srvIndex);
 	commandList_->SetGraphicsRootDescriptorTable(0, srvHandles[0]);
 	commandList_->SetGraphicsRootDescriptorTable(1, srvHandles[1]);
 	commandList_->SetGraphicsRootDescriptorTable(2, srvHandles[2]);
@@ -943,8 +943,8 @@ void PostProcess::PreSecondPassDraw()
 
 	//RTVハンドルを取得する
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
-	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, secondPassResource_.rtvIndex);
-	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, highIntensityResource_.rtvIndex);
+	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), sDescriptorSizeRTV, secondPassResource_.rtvIndex);
+	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), sDescriptorSizeRTV, highIntensityResource_.rtvIndex);
 	//描画先のRTVを設定する
 	commandList_->OMSetRenderTargets(2, rtvHandles, false, nullptr);
 	//指定した色で画面をクリアする
@@ -988,7 +988,7 @@ void PostProcess::SecondPassDraw()
 	ID3D12DescriptorHeap* descriptorHeaps[] = { multiPassSRVDescriptorHeap_.Get() };
 	commandList_->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 	//ディスクリプタテーブルを設定
-	D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, firstPassResource_.srvIndex);
+	D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, firstPassResource_.srvIndex);
 	commandList_->SetGraphicsRootDescriptorTable(0, srvHandle);
 	//形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -1033,8 +1033,8 @@ void PostProcess::PreBlur(BlurState blurState)
 
 	//RTVハンドルを取得する
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
-	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, blurResources_[static_cast<size_t>(blurState)].rtvIndex);
-	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, highIntensityBlurResource_[static_cast<size_t>(blurState)].rtvIndex);
+	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), sDescriptorSizeRTV, blurResources_[static_cast<size_t>(blurState)].rtvIndex);
+	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), sDescriptorSizeRTV, highIntensityBlurResource_[static_cast<size_t>(blurState)].rtvIndex);
 	//描画先のRTVを設定する
 	commandList_->OMSetRenderTargets(2, rtvHandles, false, nullptr);
 	//指定した色で画面をクリアする
@@ -1076,8 +1076,8 @@ void PostProcess::Blur(BlurState blurState, uint32_t srvIndex, uint32_t highInte
 	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	//ディスクリプタテーブルを設定
 	D3D12_GPU_DESCRIPTOR_HANDLE srvHandles[2];
-	srvHandles[0] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, srvIndex);
-	srvHandles[1] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, highIntensitySrvIndex);
+	srvHandles[0] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, srvIndex);
+	srvHandles[1] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, highIntensitySrvIndex);
 	commandList_->SetGraphicsRootDescriptorTable(0, srvHandles[0]);
 	commandList_->SetGraphicsRootDescriptorTable(1, srvHandles[1]);
 	//CBVをセット
@@ -1123,8 +1123,8 @@ void PostProcess::PreShrinkBlur(BlurState blurState)
 
 	//RTVハンドルを取得する
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
-	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, shrinkBlurResources_[static_cast<size_t>(blurState)].rtvIndex);
-	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, shrinkHighIntensityBlurResources_[static_cast<size_t>(blurState)].rtvIndex);
+	rtvHandles[0] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), sDescriptorSizeRTV, shrinkBlurResources_[static_cast<size_t>(blurState)].rtvIndex);
+	rtvHandles[1] = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), sDescriptorSizeRTV, shrinkHighIntensityBlurResources_[static_cast<size_t>(blurState)].rtvIndex);
 	//描画先のRTVを設定する
 	commandList_->OMSetRenderTargets(2, rtvHandles, false, nullptr);
 	//指定した色で画面をクリアする
@@ -1166,8 +1166,8 @@ void PostProcess::ShrinkBlur(BlurState blurState, uint32_t srvIndex, uint32_t hi
 	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	//ディスクリプタテーブルを設定
 	D3D12_GPU_DESCRIPTOR_HANDLE srvHandles[2];
-	srvHandles[0] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, srvIndex);
-	srvHandles[1] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, highIntensitySrvIndex);
+	srvHandles[0] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, srvIndex);
+	srvHandles[1] = PostProcess::GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, highIntensitySrvIndex);
 	commandList_->SetGraphicsRootDescriptorTable(0, srvHandles[0]);
 	commandList_->SetGraphicsRootDescriptorTable(1, srvHandles[1]);
 	//CBVをセット
@@ -1477,7 +1477,7 @@ uint32_t PostProcess::CreateRTV(const Microsoft::WRL::ComPtr<ID3D12Resource>& re
 	rtvDesc.Format = format;
 
 	//RTVの作成
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), descriptorSizeRTV, rtvIndex_);
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = PostProcess::GetCPUDescriptorHandle(multiPassRTVDescriptorHeap_.Get(), sDescriptorSizeRTV, rtvIndex_);
 	device_->CreateRenderTargetView(resource.Get(), &rtvDesc, rtvHandle);
 
 	return rtvIndex_;
@@ -1496,7 +1496,7 @@ uint32_t PostProcess::CreateSRV(const Microsoft::WRL::ComPtr<ID3D12Resource>& re
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
 	//SRVの作成
-	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = PostProcess::GetCPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, srvIndex_);
+	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = PostProcess::GetCPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, srvIndex_);
 	device_->CreateShaderResourceView(resource.Get(), &srvDesc, srvHandle);
 
 	return srvIndex_;
@@ -1520,10 +1520,10 @@ void PostProcess::CreateDSV()
 	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
 
 	D3D12_CPU_DESCRIPTOR_HANDLE srvCPUHandle =
-		GetCPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, srvIndex_);
+		GetCPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, srvIndex_);
 
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGPUHandle =
-		GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), descriptorSizeSRV, srvIndex_);
+		GetGPUDescriptorHandle(multiPassSRVDescriptorHeap_.Get(), sDescriptorSizeSRV, srvIndex_);
 
 	//DXGI_FORMAT_D24_UNORM
 	depthTextureSrvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;

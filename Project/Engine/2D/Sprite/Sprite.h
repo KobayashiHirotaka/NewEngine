@@ -128,21 +128,21 @@ private:
 	void AdjustTextureSize();
 
 private:
-	static DirectXCore* dxCore_;
+	static DirectXCore* sDxCore_;
 
-	static TextureManager* textureManager_;
+	static TextureManager* sTextureManager_;
 
-	static ID3D12Device* device_;
+	static ID3D12Device* sDevice_;
 
-	static ID3D12GraphicsCommandList* commandList_;
+	static ID3D12GraphicsCommandList* sCommandList_;
 
-	static Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_;
-	static Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_;
-	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_;
+	static Microsoft::WRL::ComPtr<IDxcUtils> sDxcUtils_;
+	static Microsoft::WRL::ComPtr<IDxcCompiler3> sDxcCompiler_;
+	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> sIncludeHandler_;
 
-	static Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
+	static Microsoft::WRL::ComPtr<ID3D12RootSignature> sRootSignature_;
 
-	static std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, kCountOfBlendMode> graphicsPipelineState_;
+	static std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, kCountOfBlendMode> sGraphicsPipelineState_;
 
 	static Matrix4x4 matProjection_;
 

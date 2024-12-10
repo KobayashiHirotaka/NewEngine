@@ -7,23 +7,23 @@
 
 #include "Game3dObjectManager.h"
 
-Game3dObjectManager* Game3dObjectManager::instance_ = nullptr;
+Game3dObjectManager* Game3dObjectManager::sInstance_ = nullptr;
 
 Game3dObjectManager* Game3dObjectManager::GetInstance()
 {
-	if (instance_ == nullptr)
+	if (sInstance_ == nullptr)
 	{
-		instance_ = new Game3dObjectManager();
+		sInstance_ = new Game3dObjectManager();
 	}
-	return instance_;
+	return sInstance_;
 }
 
 void Game3dObjectManager::DeleteInstance()
 {
-	if (instance_ != nullptr)
+	if (sInstance_ != nullptr)
 	{
-		delete instance_;
-		instance_ = nullptr;
+		delete sInstance_;
+		sInstance_ = nullptr;
 	}
 }
 

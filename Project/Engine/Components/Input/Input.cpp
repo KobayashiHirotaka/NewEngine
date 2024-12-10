@@ -7,23 +7,23 @@
 
 #include "Input.h"
 
-Input* Input::instance_ = nullptr;
+Input* Input::sInstance_ = nullptr;
 
 Input* Input::GetInstance()
 {
-	if (instance_ == nullptr)
+	if (sInstance_ == nullptr)
 	{
-		instance_ = new Input();
+		sInstance_ = new Input();
 	}
-	return instance_;
+	return sInstance_;
 }
 
 void Input::DeleteInstance()
 {
-	if (instance_ != nullptr)
+	if (sInstance_ != nullptr)
 	{
-		delete instance_;
-		instance_ = nullptr;
+		delete sInstance_;
+		sInstance_ = nullptr;
 	}
 }
 

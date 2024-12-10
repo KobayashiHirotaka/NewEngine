@@ -18,6 +18,6 @@ public:
 	static float GetRandomFloat(float min, float max);
 
 private:
-	static std::mt19937 randomEngine_;
+	static std::mt19937 sRandomEngine_;
 };
 
