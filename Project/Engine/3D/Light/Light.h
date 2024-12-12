@@ -16,28 +16,39 @@ class Light
 public:
 	struct ConstBuffDataLight
 	{
+		//ライティングするか
 		int32_t enableLighting;
 
+		//使用するライティングのタイプ
 		LightingType lightingType;
 
+		//モデルのタイプ
 		ModelType modelType;
 
+		//パディング
 		float padding;
 
+		//ライティングの色 
 		Vector4 color;
 
+		//ライティングの方向
 		Vector3 direction;
 
+		//ライティングの強度
 		float intensity;
 	};
 
+	/// <summary>初期化</summary>
 	void Initialize();
 
+	/// <summary>更新</summary>
 	void Update();
 
+	/// <summary>グラフィックスコマンドを設定</summary>
 	void SetGraphicsCommand(UINT rootParameterIndex);
 
-	void ImGui(const char* Title);
+	/// <summary>ImGui</summary>
+	void ImGui();
 
 	//EnableLighting
 	const int32_t& GetEnableLighting() const { return enableLighting_; };
@@ -64,19 +75,27 @@ public:
 	void SetIntensity(const float& intensity) { intensity_ = intensity; };
 
 private:
+	//DirectXCoreのポインタ
 	DirectXCore* dxCore_ = nullptr;
 
+	//ライティングリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> lightingResource_ = nullptr;
 
+	//ライティングするか
 	int32_t enableLighting_ = true;
 
+	//ライティングタイプ
 	LightingType lightingType_ = LightingType::HalfLambert;
 
+	//モデルタイプ
 	ModelType modelType_ = ModelType::PhongReflectionModel;
 
-	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
+	//ライティングの色
+	Vector4 color_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-	Vector3 direction_ = { -1.0f,-5.5f,0.67f };
+	//ライティングの方向
+	Vector3 direction_ = { -1.0f, -5.5f, 0.67f };
 
+	//ライティングの強度
 	float intensity_ = 1.0f;
 };

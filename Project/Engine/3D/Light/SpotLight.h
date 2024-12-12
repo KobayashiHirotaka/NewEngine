@@ -17,38 +17,54 @@ class SpotLight
 public:
 	struct ConstBuffDataSpotLight
 	{
+		//ライティングするか
 		int32_t enableLighting;
 
+		//使用するライティングのタイプ
 		LightingType lightingType;
 
+		//モデルのタイプ
 		ModelType modelType;
 
+		//パディング
 		float padding;
 
+		//ライティングの色 
 		Vector4 color;
 
+		//ライティングの方向
 		Vector3 direction;
 
+		//ライトの距離
 		float distance;
 
+		//ライトの位置
 		Vector3 position;
 
+		//ライティングの強度
 		float intensity;
 
+		//ライティングの減衰率
 		float decay;
 
+		//コサイン
 		float cosAngle;
 
+		//減衰開始距離に対応するコサイン
 		float cosFalloffStart;
 	};
 
+	/// <summary>初期化</summary>
 	void Initialize();
 
+	/// <summary>更新</summary>
 	void Update();
 
+	/// <summary>グラフィックスコマンドを設定</summary>
 	void SetGraphicsCommand(UINT rootParameterIndex);
 
-	void ImGui(const char* Title);
+	/// <summary>ImGui</summary>
+	void ImGui();
 
 	//EnableLighting
 	const int32_t& GetEnableLighting() const { return enableLighting_; };
@@ -91,30 +107,43 @@ public:
 	void SetCosFalloffStart(const float& cosFalloffStart) { cosFalloffStart_ = cosFalloffStart; };
 
 private:
+	//DirectXCoreのポインタ
 	DirectXCore* dxCore_ = nullptr;
 
+	//ライティングリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> lightingResource_ = nullptr;
 
+	//ライティングするか
 	int32_t enableLighting_ = false;
 
+	//ライティングタイプ
 	LightingType lightingType_ = LightingType::HalfLambert;
 
+	//モデルタイプ
 	ModelType modelType_ = ModelType::PhongReflectionModel;
 
-	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
+	//ライティングの色
+	Vector4 color_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 
+	//ライティングの方向
 	Vector3 direction_ = Normalize({ -1.0f,-1.0f,0.0f });
 
+	//ライトの距離
 	float distance_ = 7.0f;
 
+	//ライトの位置
 	Vector3 position_ = { 2.0f,1.25f,0.0f };
 
+	//ライティングの強度
 	float intensity_ = 4.0f;
 
+	//ライティングの減衰率
 	float decay_ = 2.0f;
 
+	//コサイン
 	float cosAngle_ = std::cos(std::numbers::pi_v<float> / 3.0f);
 
+	//減衰開始距離に対応するコサイン
 	float cosFalloffStart_ = 1.0f;
 };
 

@@ -11,4 +11,5 @@
 #include<fstream>
 #include<cassert>
 
+/// <summary>CSVファイルの読み込み</summary>
 std::stringstream LoadCSV(const std::string& filename);

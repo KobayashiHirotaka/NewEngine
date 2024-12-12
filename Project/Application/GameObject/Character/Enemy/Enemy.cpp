@@ -291,10 +291,6 @@ void Enemy::ImGui()
 	ImGui::Text("hp %d", hp_);
 
 	ImGui::Text("previousPositionX %f", previousPositionX_);
-
-	model_->GetLight()->ImGui("DirectionalLight");
-	model_->GetPointLight()->ImGui("PointLight");
-	model_->GetSpotLight()->ImGui("SpotLight");
 	ImGui::End();
 }
 
