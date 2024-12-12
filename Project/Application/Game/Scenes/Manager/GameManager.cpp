@@ -9,25 +9,21 @@
 
 void GameManager::Initialize()
 {
+	//EngineCore初期化
 	EngineCore::Initialize();
 
+	//シーンファクトリーの作成と設定
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneManager_->SetSceneFactory(sceneFactory_.get());
+
+	//初期シーンの設定
 	sceneManager_->ChangeScene("GameTitleScene");
 }
 
-//void GameManager::Finalize()
-//{
-//	EngineCore::Finalize();
-//}
-
-//void GameManager::Update()
-//{
-//	EngineCore::Update();
-//}
-
 void GameManager::Draw()
 {
+	//EngineCoreの描画処理
 	EngineCore::Draw();
 }
+
 

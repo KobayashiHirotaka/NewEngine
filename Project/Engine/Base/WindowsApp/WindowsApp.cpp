@@ -13,6 +13,7 @@ WindowsApp* WindowsApp::sInstance_ = nullptr;
 
 WindowsApp* WindowsApp::GetInstance()
 {
+	//インスタンスを生成
 	if (sInstance_ == nullptr)
 	{
 		sInstance_ = new WindowsApp();
@@ -22,6 +23,7 @@ WindowsApp* WindowsApp::GetInstance()
 
 void WindowsApp::DeleteInstance()
 {
+	//インスタンスを削除
 	if (sInstance_ != nullptr)
 	{
 		delete sInstance_;
