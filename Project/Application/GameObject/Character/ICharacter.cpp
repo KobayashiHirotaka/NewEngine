@@ -13,6 +13,7 @@ void ICharacter::Initialize()
 {
 #ifdef _ADJUSTMENT
 
+	    //デバッグ状態かどうか
 		isDebug_ = true;
 
 #endif 
@@ -21,9 +22,8 @@ void ICharacter::Initialize()
 
 void ICharacter::Update()
 {
+	//シェイク
 	effectState_.isShake = false;
-
-	//worldTransform_.scale = { 1.3f,1.3f,1.3f };
 
 	//アニメーションの適応
 	model_->ApplyAnimation(animationIndex_);
@@ -46,18 +46,22 @@ void ICharacter::Update()
 		{
 		case Behavior::kRoot:
 		default:
+			//移動
 			InitializeBehaviorRoot();
 			break;
 
 		case Behavior::kAttack:
+			//攻撃
 			InitializeBehaviorAttack();
 			break;
 
 		case Behavior::kJump:
+			//ジャンプ
 			InitializeBehaviorJump();
 			break;
 
 		case Behavior::kStan:
+			//スタン
 			InitializeBehaviorStan();
 			break;
 		}
@@ -69,21 +73,25 @@ void ICharacter::Update()
 	{
 	case Behavior::kRoot:
 	default:
-		if (GamePlayScene::sRoundStartTimer_ <= 0 && GamePlayScene::sMigrationTimer == 200)
+		if (GamePlayScene::sRoundStartTimer_ <= 0 && GamePlayScene::sMigrationTimer == maxMigrationTime_)
 		{
+			//移動
 			UpdateBehaviorRoot();
 		}
 		break;
 
 	case Behavior::kAttack:
+		//攻撃
 		UpdateBehaviorAttack();
 		break;
 
 	case Behavior::kJump:
+		//ジャンプ
 		UpdateBehaviorJump();
 		break;
 
 	case Behavior::kStan:
+		//スタン
 		UpdateBehaviorStan();
 		break;
 	}
@@ -102,12 +110,12 @@ void ICharacter::Update()
 	//端での攻撃時の処理
 	if (!attackData_.isAttack && worldTransform_.translation.x >= attackRightEdge_ && characterState_.direction == Direction::Right)
 	{
-		worldTransform_.translation.x = Lerp(worldTransform_.translation.x, attackRightEdge_, 0.1f);
+		worldTransform_.translation.x = Lerp(worldTransform_.translation.x, attackRightEdge_, lerpSpeed_);
 	}
 
 	if (!attackData_.isAttack && worldTransform_.translation.x <= attackLeftEdge_ && characterState_.direction == Direction::Left)
 	{
-		worldTransform_.translation.x = Lerp(worldTransform_.translation.x, attackLeftEdge_, 0.1f);
+		worldTransform_.translation.x = Lerp(worldTransform_.translation.x, attackLeftEdge_, lerpSpeed_);
 	}
 
 	//ジャンプ中にプレイヤーと当たったときの処理
@@ -126,14 +134,18 @@ void ICharacter::Update()
 
 	UpdateFinisherGaugeBar();
 
+	//キャラクターと当たっているか
 	characterState_.isHitCharacter = false;
+}
 
+void ICharacter::ImGui()
+{
 	ImGui::Begin("Character");
 	ImGui::Checkbox("isDebug", &isDebug_);
-	ImGui::SliderFloat("LeftEdge", &leftEdge_, -10.0f, 1.0f);
-	ImGui::SliderFloat("RightEdge", &rightEdge_, 1.0f, 10.0f);
-	ImGui::SliderFloat("attackLeftEdge", &attackLeftEdge_, -10.0f, 1.0f);
-	ImGui::SliderFloat("attackRightEdge", &attackRightEdge_, 1.0f, 10.0f);
+	ImGui::SliderFloat("LeftEdge", &leftEdge_, kMinLeftEdge_, kMaxLeftEdge_);
+	ImGui::SliderFloat("RightEdge", &rightEdge_, kMinRightEdge_, kMaxRightEdge_);
+	ImGui::SliderFloat("attackLeftEdge", &attackLeftEdge_, kMinAttackLeftEdge_, kMaxAttackLeftEdge_);
+	ImGui::SliderFloat("attackRightEdge", &attackRightEdge_, kMinAttackRightEdge_, kMaxAttackRightEdge_);
 	ImGui::End();
 }
 
@@ -147,11 +159,11 @@ void ICharacter::Reset()
 	animationTime_ = 0;
 
 	//時間
-	timerData_.downAnimationTimer = 60;
-	timerData_.guardAnimationTimer = 60;
-	timerData_.stanTimer = 60;
-	timerData_.comboTimer = 60;
-	timerData_.finisherTimer = 120;
+	timerData_.downAnimationTimer = timerData_.maxDownAnimationTimer;
+	timerData_.guardAnimationTimer = timerData_.maxGuardAnimationTimer;
+	timerData_.stanTimer = timerData_.maxStanTimer;
+	timerData_.comboTimer = timerData_.maxComboTimer;
+	timerData_.finisherTimer = timerData_.maxFinisherTimer;
 
 	//コンボカウント
 	comboCount_ = 0;
@@ -217,8 +229,10 @@ void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float fra
 
 	animationTime = modelFighterBody->GetAnimationTime();
 
+	//アニメーションの再生
 	animationTime += frameRate * GameTimer::GetDeltaTime();
 
+	//ループするか
 	if (isLoop)
 	{
 		animationTime = std::fmod(animationTime, modelFighterBody->GetAnimation()[animationIndex].duration);
@@ -245,8 +259,8 @@ void ICharacter::EndDownAnimation(int animationIndex, bool& isHitAttackType)
 
 	//アニメーション,演出用変数の設定
 	animationIndex_ = animationIndex;
-	timerData_.downAnimationTimer = 60;
-	timerData_.effectTimer = 60;
+	timerData_.downAnimationTimer = timerData_.maxDownAnimationTimer;
+	timerData_.effectTimer = timerData_.maxEffectTimer;
 	animationTime_ = 0.0f;
 	model_->SetAnimationTime(animationTime_);
 

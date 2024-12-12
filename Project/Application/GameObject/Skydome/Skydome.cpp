@@ -42,10 +42,5 @@ void Skydome::Draw(const Camera camera)
 
 void Skydome::ImGui()
 {
-	//ImGui
-	ImGui::Begin("Skydome");
-	ImGui::DragFloat3("WTFT", &worldTransform_.translation.x, kMinTranslation_, kMaxTranslation_);
-	ImGui::DragFloat3("WTFR", &worldTransform_.rotation.x, kMinRotation_, kMaxRotation_);
-	ImGui::DragFloat3("WTFS", &worldTransform_.scale.x, kMinScale_, kMaxScale_);
-	ImGui::End();
+
 }

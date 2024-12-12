@@ -11,17 +11,20 @@
 class GameTimer
 {
 public:
-	//void Initialize();
-
+	/// <summary>更新</summary>
 	static void Update();
 
+	//DeltaTimeのGetter
 	static float GetDeltaTime() { return sDeltaTime_; };
 
+	//TimeScaleのGetter
 	static void SetTimeScale(float timeScale) { sTimeScale_ = timeScale; };
 
 private:
+	//経過時間
 	static float sDeltaTime_;
 
+	//時間スケール
 	static float sTimeScale_;
 };
 

@@ -23,7 +23,7 @@ public:
 
 	void Draw(const Camera& camera)override;
 
-	void ImGui(const char* title)override;
+	void ImGui()override;
 
 	void DrawBone(const Camera& camera)override;
 
