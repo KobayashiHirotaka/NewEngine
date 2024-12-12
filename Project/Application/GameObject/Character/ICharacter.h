@@ -198,22 +198,28 @@ public:
 	struct TimerData
 	{
 		//ダウン演出の時間
-		int downAnimationTimer = 60;
+		const int maxDownAnimationTimer = 60;
+		int downAnimationTimer = maxDownAnimationTimer;
 
 		//ガード演出の時間
-		int guardAnimationTimer = 60;
+		const int maxGuardAnimationTimer = 60;
+		int guardAnimationTimer = maxGuardAnimationTimer;
 
 		//エフェクトを出す時間
-		int effectTimer = 60;
+		const int maxEffectTimer = 60;
+		int effectTimer = maxEffectTimer;
 
 		//スタンの時間
-		int stanTimer = 60;
+		const int maxStanTimer = 60;
+		int stanTimer = maxStanTimer;
 
 		//コンボの猶予時間
-		int comboTimer = 60;
+		const int maxComboTimer = 60;
+		int comboTimer = maxComboTimer;
 
 		//超必殺技の演出時間
-		int finisherTimer = 120;
+		const int maxFinisherTimer = 120;
+		int finisherTimer = maxFinisherTimer;
 	};
 
 	//基本
@@ -231,7 +237,7 @@ public:
 
 	virtual void DrawParticle(const Camera& camera) = 0;
 
-	virtual void ImGui(const char* title) = 0;
+	virtual void ImGui() = 0;
 
 	virtual void Reset() = 0;
 
@@ -343,9 +349,7 @@ public:
 
 	bool GetIsKO() { return isKO_; };
 
-	//Setter
-	void SetIsReset(bool isReset) { isReset_ = isReset; };
-
+	//攻撃に関するSetter
 	void SetDamage(int damage) { attackData_.damage = damage; };
 
 	void SetGuardGaugeIncreaseAmount(float guardGaugeIncreaseAmount) { attackData_.guardGaugeIncreaseAmount = guardGaugeIncreaseAmount; };
@@ -356,9 +360,14 @@ public:
 
 	void SetHitStop(HitStop* hitStop) { hitStop_ = hitStop; };
 
+	//リセット状態のSetter
+	void SetIsReset(bool isReset) { isReset_ = isReset; };
+
 protected:
+	//Inputのポインタ
 	Input* input_ = nullptr;
 
+	//Audioのポインタ
 	Audio* audio_ = nullptr;
 
 	//キャラクターの状態
@@ -425,4 +434,22 @@ protected:
 
 	//時間の調整用
 	const float scaleFacter_ = 100.0f;
+
+	//ゲーム開始時間
+	const int maxMigrationTime_ = 200;
+
+	//補完速度
+	const float lerpSpeed_ = 0.1f;
+
+
+
+	//ImGui用
+	const float kMinLeftEdge_ = -10.0f;
+	const float kMaxLeftEdge_ = 1.0f;
+	const float kMinRightEdge_ = 1.0f;
+	const float kMaxRightEdge_ = 10.0f;
+	const float kMinAttackLeftEdge_ = -10.0f;
+	const float kMaxAttackLeftEdge_ = 1.0f;
+	const float kMinAttackRightEdge_ = 1.0f;
+	const float kMaxAttackRightEdge_ = 10.0f;
 };

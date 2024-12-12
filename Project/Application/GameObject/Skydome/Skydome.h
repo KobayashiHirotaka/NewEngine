@@ -47,12 +47,4 @@ private:
 
 	//アニメーションデータ
 	uint32_t animationData_ = 0;
-
-	//ImGui用
-	const float kMinTranslation_ = -14.0f;
-	const float kMaxTranslation_ = 14.0f;
-	const float kMinRotation_ = 0.0f;
-	const float kMaxRotation_ = 150.0f;
-	const float kMinScale_ = 0.0f;
-	const float kMaxScale_ = 300.0f;
 };
