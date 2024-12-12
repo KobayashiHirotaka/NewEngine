@@ -9,10 +9,13 @@
 
 void CameraController::Initialize()
 {
+	//Inputのインスタンスの取得
 	input_ = Input::GetInstance();
 
+	//カメラの座標を設定
 	camera_.translation_ = position_;
 
+	//カメラの更新
 	camera_.UpdateMatrix();
 }
 
@@ -20,9 +23,8 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 {
 	//2体のキャラクターの中心座標
 	center_ = { (characterPosition1.x + characterPositon2.x) / 2,  ((characterPosition1.y + characterPositon2.y) + 0.8f) / 2 };
-	//position_.x = center.x;
-	//position_.y = center.y;
 
+	//カメラの座標(X,Y)を常に中心にする
 	position_.x = position_.x + (center_.x - position_.x) * cameraSpeed_.x;
 	position_.y = center_.y;
 
@@ -31,6 +33,7 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 	difference.y = 0.0f;
 	distance_ = Length(difference);
 
+	//カメラのZ座標を動かす
 	if (distance_ >= kPoint_)
 	{
 		if (distance_ > previousDistance_)
@@ -41,7 +44,6 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 			}
 			else
 			{
-				//position_.z = Lerp(position_.z, max_, cameraSpeed_.z);
 				position_.z -= cameraSpeed_.z;
 			}
 		}
@@ -55,7 +57,6 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 		}
 		else
 		{
-			//position_.z = Lerp(position_.z, min_, cameraSpeed_.z);
 			position_.z += cameraSpeed_.z;
 		}
 	}
@@ -63,18 +64,14 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 	//前フレームの距離を記録
 	previousDistance_ = distance_;
 
+	//カメラの座標を設定
 	camera_.translation_ = position_;
 
+	//カメラの更新
 	camera_.UpdateMatrix();
 }
 
 void CameraController::ImGui()
 {
-	ImGui::Begin("CameraController");
-	ImGui::SliderFloat3("WTFT", &position_.x, -50.0f, 50.0f);
-	ImGui::SliderFloat3("cameraSpeed", &cameraSpeed_.x, 0.01f, 0.1f);
-	//ImGui::SliderFloat("point", &point_, 1.0f, 5.0f);
-	ImGui::SliderFloat("distance", &distance_, 0.0f, 10.0f);
-	ImGui::SliderFloat("previousDistance", &previousDistance_, 0.0f, 10.0f);
-	ImGui::End();
+
 }

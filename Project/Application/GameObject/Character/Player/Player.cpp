@@ -259,9 +259,9 @@ void Player::DrawParticle(const Camera& camera)
 	particleEffectPlayer_->Draw(camera);
 }
 
-void Player::ImGui(const char* title)
+void Player::ImGui()
 {
-	ImGui::Begin(title);
+	ImGui::Begin("Player");
 	ImGui::DragFloat3("WTFT", &worldTransform_.translation.x, -14.0f, 14.0f);
 	ImGui::DragFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 150.0f);
 	ImGui::DragFloat3("WTFS", &worldTransform_.scale.x, 0.0f, 300.0f);

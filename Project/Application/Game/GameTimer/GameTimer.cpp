@@ -12,7 +12,10 @@ float GameTimer::sTimeScale_ = 1.0f;
 
 void GameTimer::Update()
 {
-	sDeltaTime_ = 1.0f / 60.0f;
+	//1フレームあたりの時間
+	const float deltaTime = 1.0f / 60.0f;
+	sDeltaTime_ = deltaTime;
 
+	//時間スケールを反映
 	sDeltaTime_ *= sTimeScale_;
 }

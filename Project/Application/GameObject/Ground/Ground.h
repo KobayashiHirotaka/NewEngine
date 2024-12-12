@@ -24,7 +24,7 @@ public:
 	void Draw(const Camera& camera)override;
 
 	/// <summary>ImGui</summary>
-	void ImGui(const char* title)override;
+	void ImGui()override;
 
 private:
 };

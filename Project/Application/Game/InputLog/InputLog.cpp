@@ -9,19 +9,20 @@
 
 void InputLog::Initialize()
 {
-	//Inputのinstance
+    //Inputのインスタンスの取得
 	input_ = Input::GetInstance();
 
 	//リソース
-	//操作
-	stickTextureHandle_[0] = TextureManager::LoadTexture("resource/images/arrow_1.png");
-	stickTextureHandle_[1] = TextureManager::LoadTexture("resource/images/arrow_2.png");
-	stickTextureHandle_[2] = TextureManager::LoadTexture("resource/images/arrow_3.png");
-	stickTextureHandle_[3] = TextureManager::LoadTexture("resource/images/arrow_4.png");
-	stickTextureHandle_[4] = TextureManager::LoadTexture("resource/images/arrow_6.png");
-	stickTextureHandle_[5] = TextureManager::LoadTexture("resource/images/arrow_7.png");
-	stickTextureHandle_[6] = TextureManager::LoadTexture("resource/images/arrow_8.png");
-	stickTextureHandle_[7] = TextureManager::LoadTexture("resource/images/arrow_9.png");
+	//操作(矢印)
+    const std::vector<int> arrowIndices = { 1, 2, 3, 4, 6, 7, 8, 9 };  
+
+    for (size_t i = 0; i < arrowIndices.size(); ++i)
+    {
+        std::string path = "resource/images/arrow_" + std::to_string(arrowIndices[i]) + ".png";
+        stickTextureHandle_[i] = TextureManager::LoadTexture(path.c_str());
+    }
+
+    //操作(N)
     stickTextureHandle_[8] = TextureManager::LoadTexture("resource/images/N.png");
 
 	//ボタン
@@ -33,33 +34,33 @@ void InputLog::Initialize()
 	buttonTextureHandle_[5] = TextureManager::LoadTexture("resource/images/RB.png");
 
     //数字
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < kMaxNum_; ++i)
     {
         std::string path = "resource/number/" + std::to_string(i) + ".png";
-        digitTextureHandles_[i] = TextureManager::LoadTexture(path.c_str());
+        digitTextureHandle_[i] = TextureManager::LoadTexture(path.c_str());
     }
 
 	//スプライトの初期化
 	for (int i = 0; i < kMaxHistorySize_; i++) 
     {
 		stickSprites_.emplace_back(Sprite::Create(stickTextureHandle_[0], { kLeftPositionX_, kBasePositionY_ - i * kVerticalSpacing_ }));
-		stickSprites_.back()->SetSize({ 40.0f, 40.0f });
+		stickSprites_.back()->SetSize({ textureSize_.x, textureSize_.y });
 
 		buttonSprites_.emplace_back(Sprite::Create(buttonTextureHandle_[0], { kRightPositionX_, kBasePositionY_ - i * kVerticalSpacing_ }));
-		buttonSprites_.back()->SetSize({ 40.0f, 40.0f });
+		buttonSprites_.back()->SetSize({ textureSize_.x, textureSize_.y });
 
-        numberTensSprites_.emplace_back(Sprite::Create(digitTextureHandles_[0], { kNumberTensPositionX_, kBasePositionY_ - i * kVerticalSpacing_ }));
-        numberTensSprites_.back()->SetSize({ 40.0f, 40.0f });
+        numberTensSprites_.emplace_back(Sprite::Create(digitTextureHandle_[0], { kNumberTensPositionX_, kBasePositionY_ - i * kVerticalSpacing_ }));
+        numberTensSprites_.back()->SetSize({ textureSize_.x, textureSize_.y });
 
-        numberOnesSprites_.emplace_back(Sprite::Create(digitTextureHandles_[0], { kNumberTensPositionX_, kBasePositionY_ - i * kVerticalSpacing_ }));
-        numberOnesSprites_.back()->SetSize({ 40.0f, 40.0f });
+        numberOnesSprites_.emplace_back(Sprite::Create(digitTextureHandle_[0], { kNumberTensPositionX_, kBasePositionY_ - i * kVerticalSpacing_ }));
+        numberOnesSprites_.back()->SetSize({ textureSize_.x, textureSize_.y });
 	}
 }
 
 void InputLog::Update()
 {
-    int stickInput = -1;
-    int buttonInput = -1;
+    int stickInput = kNoInput_;
+    int buttonInput = kNoInput_;
 
     // スティック入力の検出
     //左
@@ -68,17 +69,17 @@ void InputLog::Update()
         //左下
         if (input_->GetLeftStickY() < -kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
         {
-            stickInput = 0;
+            stickDirection_ = StickDirection::DownLeft;
         }
         //左上
         else if (input_->GetLeftStickY() > kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
         {
-            stickInput = 5;
+            stickDirection_ = StickDirection::UpLeft;
         }
         //左
         else
         {
-            stickInput = 3;
+            stickDirection_ = StickDirection::Left;
         }
     }  
     //右
@@ -87,66 +88,77 @@ void InputLog::Update()
         //右下
         if (input_->GetLeftStickY() < -kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
         {
-            stickInput = 2;
+            stickDirection_ = StickDirection::DownRight;
         }
         //右上
         else if (input_->GetLeftStickY() > kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
         {
-            stickInput = 7;
+            stickDirection_ = StickDirection::UpRight;
         }
         //右
         else
         {
-            stickInput = 4;
+            stickDirection_ = StickDirection::Right;
         }
     }  
     //上
     else if (input_->GetLeftStickY() > kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
     { 
-        stickInput = 6;
+        stickDirection_ = StickDirection::Up;
     }  
     //下
     else if (input_->GetLeftStickY() < -kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
     { 
-        stickInput = 1; 
+        stickDirection_ = StickDirection::Down;
     } 
     else
     {
-        stickInput = 8;
+        stickDirection_ = StickDirection::Neutral;
     }
+
+    stickInput = static_cast<int>(stickDirection_);
 
     //ボタン入力の検出
     //Aボタン
     if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
     { 
-        buttonInput = 0;
+        button_ = Button::A;
+        buttonInput = static_cast<int>(button_);
     }
     //Bボタン
     else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
     { 
-        buttonInput = 1; 
+        button_ = Button::B;
+        buttonInput = static_cast<int>(button_);
     }
     //Xボタン
     else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X))
     {
-        buttonInput = 2;
+        button_ = Button::X;
+        buttonInput = static_cast<int>(button_);
     }
     //Yボタン
     else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)) 
     { 
-        buttonInput = 3;
+        button_ = Button::Y;
+        buttonInput = static_cast<int>(button_);
     }
     //LBボタン
     else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER))
     {
-        buttonInput = 4;
+        button_ = Button::LB;
+        buttonInput = static_cast<int>(button_);
+    }
+    else
+    {
+        buttonInput = kNoInput_;
     }
 
     //入力が検出されたら履歴に追加
-    if (stickInput != -1 || buttonInput != -1)
+    if (stickInput != kNoInput_ || buttonInput != kNoInput_)
     {
         //直前の履歴を取得
-        auto lastInput = inputHistory_.empty() ? std::pair<int, int>(-1, -1) : inputHistory_.front();
+        auto lastInput = inputHistory_.empty() ? std::pair<int, int>(kNoInput_, kNoInput_) : inputHistory_.front();
 
         //スティックまたはボタン入力が前回と異なる場合、履歴を更新
         if (stickInput != lastInput.first || buttonInput != lastInput.second)
@@ -158,26 +170,35 @@ void InputLog::Update()
     else
     {
         //入力がない状態の時
-        if (inputHistory_.empty() || inputHistory_.front() != std::make_pair(-1, -1))
+        if (inputHistory_.empty() || inputHistory_.front() != std::make_pair(kNoInput_, kNoInput_))
         {
             //入力履歴を最新のものに更新する
-            inputHistory_.emplace_front(-1, -1);
+            inputHistory_.emplace_front(kNoInput_, kNoInput_);
             frameCounts_.emplace_front(0);
         }
     }
 
+    //最小フレーム数
+    const int kMinFrameCount = 0;
+
+    //最大フレーム数
+    const int kMaxFrameCount = 99;  
+
+    //フレームの加算値
+    const int kFrameIncrement = 1;  
+
     //経過フレームを加算
     for (size_t i = 0; i < frameCounts_.size(); ++i)
     {
-        //新しい入力がされた場合、過去の入力の経過フレームは停止
-        if (i == 0 || inputHistory_[i] == inputHistory_[i - 1])
+        //新しい入力がされた場合、過去の入力の経過フレームはそのまま保持
+        if (i == 0 || inputHistory_[i] == inputHistory_[i - kFrameIncrement])
         {
             //現在の入力の場合のみ加算
-            frameCounts_[i] = std::clamp(frameCounts_[i] + 1, 0, 99);
+            frameCounts_[i] = std::clamp(frameCounts_[i] + kFrameIncrement, kMinFrameCount, kMaxFrameCount);
         }
         else
         {
-            //新しい入力がされた場合、過去の入力の経過フレームを保持しつつ加算を停止
+            //新しい入力がされた場合、過去の入力の経過フレームをそのまま保持
             frameCounts_[i] = frameCounts_[i]; 
         }
     }
@@ -203,7 +224,7 @@ void InputLog::Draw()
         float drawPosY = kBasePositionY_ + i * kVerticalSpacing_;
 
         //スティック入力の描画
-        if (stick != -1)
+        if (stick != kNoInput_)
         {
             stickSprites_[i]->SetPosition({ kLeftPositionX_, drawPosY });
             stickSprites_[i]->SetTexture(stickTextureHandle_[stick]);
@@ -211,29 +232,32 @@ void InputLog::Draw()
         }
 
         //ボタン入力の描画
-        if (button != -1)
+        if (button != kNoInput_)
         {
             //ボタンのみの入力があれば左側に表示
-            float buttonPosX = (stick == -1) ? kLeftPositionX_ : kRightPositionX_;
+            float buttonPosX = (stick == kNoInput_) ? kLeftPositionX_ : kRightPositionX_;
             buttonSprites_[i]->SetPosition({ buttonPosX, drawPosY });
             buttonSprites_[i]->SetTexture(buttonTextureHandle_[button]);
             buttonSprites_[i]->Draw();
         }
 
+        //10進数の桁を分けるための定数
+        const int kBaseForDecimal = 10;
+
         //経過フレームの描画
         if (i < frameCounts_.size())
         {
             int frame = frameCounts_[i];
-            int tens = frame / 10;  
-            int ones = frame % 10; 
+            int tens = frame / kBaseForDecimal;
+            int ones = frame % kBaseForDecimal;
 
             //10の位の数字
-            numberTensSprites_[i]->SetTexture(digitTextureHandles_[tens]);
+            numberTensSprites_[i]->SetTexture(digitTextureHandle_[tens]);
             numberTensSprites_[i]->SetPosition({ kNumberTensPositionX_, drawPosY });
             numberTensSprites_[i]->Draw();
 
             //1の位の数字
-            numberOnesSprites_[i]->SetTexture(digitTextureHandles_[ones]);
+            numberOnesSprites_[i]->SetTexture(digitTextureHandle_[ones]);
             numberOnesSprites_[i]->SetPosition({ kNumberOnesPositionX_, drawPosY });
             numberOnesSprites_[i]->Draw();
         }

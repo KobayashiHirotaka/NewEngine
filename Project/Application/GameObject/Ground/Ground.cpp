@@ -29,7 +29,7 @@ void Ground::Draw(const Camera& camera)
 	model_->Draw(worldTransform_, camera, 0);
 }
 
-void Ground::ImGui(const char* title)
+void Ground::ImGui()
 {
 
 }

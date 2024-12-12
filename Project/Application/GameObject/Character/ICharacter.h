@@ -223,77 +223,116 @@ public:
 	};
 
 	//基本
+	/// <summary>初期化</summary>
 	virtual void Initialize() = 0;
 
+	/// <summary>更新</summary>
 	virtual void Update() = 0;
 
+	/// <summary>描画</summary>
 	virtual void Draw(const Camera& camera) = 0;
 
+	/// <summary>骨の描画</summary>
 	virtual void DrawBone(const Camera& camera) = 0;
 
+	/// <summary>当たり判定の描画</summary>
 	virtual void DrawCollision(const Camera& camera) = 0;
 
+	/// <summary>スプライトの描画</summary>
 	virtual void DrawSprite() = 0;
 
+	/// <summary>パーティクルの描画</summary>
 	virtual void DrawParticle(const Camera& camera) = 0;
 
+	/// <summary>ImGui</summary>
 	virtual void ImGui() = 0;
 
+	/// <summary>リセット</summary>
 	virtual void Reset() = 0;
 
+
 	//アニメーション
+	/// <summary>アニメーションの更新</summary>
 	virtual void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, 
 		int animationIndex,std::unique_ptr<Model>& modelFighterBody) = 0;
 
+	/// <summary>ダウンアニメーション</summary>
 	virtual void DownAnimation() = 0;
 
+	/// <summary>ダウンアニメーションの終了</summary>
 	virtual void EndDownAnimation(int animationIndex, bool& isHitAttackType) = 0;
 
-	//キャラクターの行動関数
+
+	//キャラクターの状態
+	/// <summary>移動状態の初期化</summary>
 	virtual void InitializeBehaviorRoot() = 0;
 
+	/// <summary>移動状態の更新</summary>
 	virtual void UpdateBehaviorRoot() = 0;
 
+	/// <summary>攻撃状態の初期化</summary>
 	virtual void InitializeBehaviorAttack() = 0;
 	 
+	/// <summary>攻撃状態の更新</summary>
 	virtual void UpdateBehaviorAttack() = 0;
 
+	/// <summary>ジャンプ状態の初期化</summary>
 	virtual void InitializeBehaviorJump() = 0;
 
+	/// <summary>ジャンプ状態の更新</summary>
 	virtual void UpdateBehaviorJump() = 0;
 
+	/// <summary>スタン状態の初期化</summary>
 	virtual void InitializeBehaviorStan() = 0;
 
+	/// <summary>ジャンプ状態の更新</summary>
 	virtual void UpdateBehaviorStan() = 0;
 
+
 	//移動
+	/// <summary>移動</summary>
 	virtual void Move() = 0;
 
+
 	//攻撃
+	/// <summary>攻撃の開始</summary>
 	virtual void StartAttack(bool& isAttackType) = 0;
 
+	/// <summary>攻撃の終了</summary>
 	virtual void EndAttack(bool& isAttackType) = 0;
 
+	/// <summary>攻撃タイミングを評価</summary>
 	virtual void EvaluateAttackTiming() = 0;
 
+	/// <summary>ダメージの適応</summary>
 	virtual void ApplyDamage() = 0;
 
+
 	//当たり判定
+	/// <summary>当たり判定のリセット</summary>
 	virtual void ResetCollision() = 0;
 
+	/// <summary>当たり判定の設定</summary>
 	virtual void ConfigureCollision(Vector3 min, Vector3 max) = 0;
 
-	//UIの更新関数
+
+	//UI野更新
+	/// <summary>HPのUIの更新</summary>
 	virtual void UpdateHPBar() = 0;
 
+	/// <summary>ガードゲージのUIの更新</summary>
 	virtual void UpdateGuardGaugeBar() = 0;
 
+	/// <summary>ガードゲージのUIの適応</summary>
 	virtual void AdjustGuardGauge() = 0;
 
+	/// <summary>必殺技ゲージのUIの適応</summary>
 	virtual void UpdateFinisherGaugeBar() = 0;
 
+	/// <summary>必殺技ゲージのUIの適応</summary>
 	virtual void AdjustFinisherGauge(float value) = 0;
 
+	/// <summary>コンボ表示のUIの更新</summary>
 	virtual void UpdateComboNumberSprite() = 0;
 
 	//移動に関するGetter

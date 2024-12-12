@@ -11,13 +11,17 @@
 class HitStop
 {
 public:
+	/// <summary>開始</summary>
 	void Start(const float time);
 
+	/// <summary>更新</summary>
 	void Update();
 
 private:
+	//時間
 	float time_ = 0.0f;;
 
+	//ヒットストップが有効かどうか
 	bool isActiive_ = false;
 };
 
