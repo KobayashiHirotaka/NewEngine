@@ -9,6 +9,7 @@
 
 IGame3dObject* Game3dObjectFactory::CreateGameObject(const std::string& objectName)
 {
+	//オブジェクト名に応じて対応するゲームオブジェクトを生成
 	if (objectName == "Player")
 	{
 		Player* player = new Player();

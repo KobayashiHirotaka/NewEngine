@@ -14,6 +14,7 @@
 class Game3dObjectFactory
 {
 public:
+	/// <summary>ゲームオブジェクトの生成</summary>
 	IGame3dObject* CreateGameObject(const std::string& objectName);
 
 private:

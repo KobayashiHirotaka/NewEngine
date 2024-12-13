@@ -170,7 +170,7 @@ private:
 	//TextureManagerのポインタ
 	static TextureManager* sTextureManager_;
 
-	//DirectX関連のリソース
+	//DirectX初期化関連
 	static ID3D12Device* sDevice_;
 	static ID3D12GraphicsCommandList* sCommandList_;
 	static Microsoft::WRL::ComPtr<IDxcUtils> sDxcUtils_;

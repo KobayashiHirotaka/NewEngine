@@ -15,21 +15,26 @@
 class Game3dObjectManager
 {
 public:
+	/// <summary>インスタンスの取得</summary>
 	static Game3dObjectManager* GetInstance();
 
+	/// <summary>インスタンスの削除</summary>
 	static void DeleteInstance();
 
+	/// <summary>初期化</summary>
 	void Initialize();
 
+	/// <summary>更新</summary>
 	void Update();
 
+	/// <summary>描画</summary>
 	void Draw(const Camera& camera);
 
-	//Objectの生成
+	//オブジェクトのの生成
 	static IGame3dObject* CreateGameObject(const std::string& objectName);
 	IGame3dObject* CreateGameObjectInternal(const std::string& objectName);
 
-	//TypeごとObjectの生成
+	//Typeごとオブジェクトの生成
 	template <typename Type>
 	Type* CreateGameObjectFromType();
 
@@ -37,29 +42,35 @@ public:
 	Type* CreateGameObjectInternalFromType();
 
 	//Getter,Setter
+	//ゲームオブジェクト
 	template <typename Type>
 	Type* GetGameObject(const std::string& tag);
 
+	//ゲームオブジェクトファクトリー
 	void SetGameObjectFactory(Game3dObjectFactory* gameObjectFactory) { gameObjectFactory_ = gameObjectFactory; };
 
 private:
+	//シングルトン
 	Game3dObjectManager() = default;
 	~Game3dObjectManager() = default;
 	Game3dObjectManager(const Game3dObjectManager&) = delete;
 	const Game3dObjectManager& operator=(const Game3dObjectManager&) = delete;
 
 private:
+	//Game3dObjectManagerのインスタンス
 	static Game3dObjectManager* sInstance_;
 
+	//ゲームオブジェクト
 	std::vector<std::unique_ptr<IGame3dObject>> gameObjects_{};
 
+	//ゲームオブジェクトファクトリー
 	Game3dObjectFactory* gameObjectFactory_ = nullptr;
 };
 
 template <typename Type>
 Type* Game3dObjectManager::CreateGameObjectFromType()
 {
-	//GameObjectを作成
+	//ゲームオブジェクトを作成
 	Type* gameObject = Game3dObjectManager::GetInstance()->CreateGameObjectInternalFromType<Type>();
 	return gameObject;
 }
@@ -67,6 +78,7 @@ Type* Game3dObjectManager::CreateGameObjectFromType()
 template <typename Type>
 Type* Game3dObjectManager::CreateGameObjectInternalFromType()
 {
+	//新しいゲームオブジェクトを動的に作成
 	Type* gameObject = new Type();
 	gameObject->Initialize();
 	gameObject->SetGameObjectManager(this);
@@ -77,10 +89,13 @@ Type* Game3dObjectManager::CreateGameObjectInternalFromType()
 template <typename Type>
 Type* Game3dObjectManager::GetGameObject(const std::string& tag)
 {
+	//全てのゲームオブジェクトをループしてタグを検索
 	for (std::unique_ptr<IGame3dObject>& gameObject : gameObjects_)
 	{
+		//タグを取得
 		gameObject->GetTag();
 
+		//タグが一致する場合、動的キャストして返す
 		if (gameObject->GetTag() == tag)
 		{
 			return dynamic_cast<Type*> (gameObject.get());

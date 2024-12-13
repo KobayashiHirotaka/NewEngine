@@ -51,7 +51,7 @@ void Light::Update()
 
 void Light::SetGraphicsCommand(UINT rootParameterIndex)
 {
-    //グラフィックコマンドリストに定数バッファのビューを設定
+    //コマンドリストに定数バッファのビューを設定
 	dxCore_->GetCommandList()->SetGraphicsRootConstantBufferView(rootParameterIndex, lightingResource_->GetGPUVirtualAddress());
 }
 

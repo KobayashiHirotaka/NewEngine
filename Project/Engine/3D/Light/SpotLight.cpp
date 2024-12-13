@@ -59,7 +59,7 @@ void SpotLight::Update()
 
 void SpotLight::SetGraphicsCommand(UINT rootParameterIndex)
 {
-	//グラフィックコマンドリストに定数バッファのビューを設定
+	//コマンドリストに定数バッファのビューを設定
 	dxCore_->GetCommandList()->SetGraphicsRootConstantBufferView(rootParameterIndex, lightingResource_->GetGPUVirtualAddress());
 }
 
