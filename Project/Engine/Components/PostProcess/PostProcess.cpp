@@ -14,6 +14,7 @@ PostProcess* PostProcess::sInstance_ = nullptr;
 
 PostProcess* PostProcess::GetInstance()
 {
+	//インスタンスを生成
 	if (sInstance_ == nullptr)
 	{
 		sInstance_ = new PostProcess();
@@ -23,6 +24,7 @@ PostProcess* PostProcess::GetInstance()
 
 void PostProcess::DeleteInstance()
 {
+	//インスタンスを削除
 	if (sInstance_ != nullptr)
 	{
 		delete sInstance_;

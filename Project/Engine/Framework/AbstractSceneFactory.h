@@ -12,7 +12,9 @@
 class AbstractSceneFactory
 {
 public:
+	/// <summary>デストラクタ</summary>
 	virtual ~AbstractSceneFactory() = default;
 
+	/// <summary>シーンを生成</summary>
 	virtual IScene* CreateScene(const std::string& sceneName) = 0;
 };

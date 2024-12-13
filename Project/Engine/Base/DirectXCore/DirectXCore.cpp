@@ -14,6 +14,7 @@ DirectXCore* DirectXCore::sInstance_ = nullptr;
 
 DirectXCore* DirectXCore::GetInstance()
 {
+	//インスタンスを生成
 	if (sInstance_ == nullptr)
 	{
 		sInstance_ = new DirectXCore();
@@ -23,6 +24,7 @@ DirectXCore* DirectXCore::GetInstance()
 
 void DirectXCore::DeleteInstance()
 {
+	//インスタンスを削除
 	if (sInstance_ != nullptr)
 	{
 		delete sInstance_;
@@ -32,27 +34,37 @@ void DirectXCore::DeleteInstance()
 
 void DirectXCore::Initialize()
 {
+	//FPSを固定するための初期化
 	InitializeFixFPS();
 
+	//WindowsAppのインスタンスを取得
 	win_ = WindowsApp::GetInstance();
 
+	//DXGIデバイスの作成
 	CreateDXGIDevice();
 
+	//RTV、DSVのディスクリプタサイズを取得
 	sDescriptorSizeRTV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	sDescriptorSizeDSV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
+	//コマンドの作成
 	CreateCommand();
 
+	//スワップチェーンの作成
 	CreateSwapChain();
 
+	//RTV、DSV用のディスクリプタヒープを作成
 	rtvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
 	dsvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 
+	//深度ステンシルテクスチャリソースを作成
 	depthStencilResource_ = CreateDepthStencilTextureResource(win_->kClientWidth, win_->kClientHeight);
 
+	//RTV、DSVの作成
 	CreateRTV();
 	CreateDSV();
 
+	//フェンスの作成
 	CreateFence();
 }
 

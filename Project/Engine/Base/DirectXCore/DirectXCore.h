@@ -22,62 +22,92 @@
 class DirectXCore
 {
 public:
+	//RTV用のディスクリプタサイズ
 	static uint32_t sDescriptorSizeRTV;
+
+	//DSV用のディスクリプタサイズ
 	static uint32_t sDescriptorSizeDSV;
 
+	/// <summary>インスタンスの取得</summary>
 	static DirectXCore* GetInstance();
 
+	/// <summary>インスタンスの削除</summary>
 	static void DeleteInstance();
 
+	/// <summary>初期化</summary>
 	void Initialize();
 
+	/// <summary>描画前の処理</summary>
 	void PreDraw();
 
+	/// <summary>描画後の処理</summary>
 	void PostDraw();
 
+	/// <summary>バックバッファの設定</summary>
 	void SetBackBuffer();
 
+	/// <summary>深度バッファのクリア</summary>
 	void ClearDepthBuffer();
 
+	/// <summary>バッファリソースを作成</summary>
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
+	//Getter
+	//DirectXデバイス
 	ID3D12Device* GetDevice() const { return device_.Get(); };
 
+	//コマンドリスト
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); };
 
+	//ディスクリプタヒープ
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
 
 private:
+	/// <summary>DXGIデバイスを作成</summary>
 	void CreateDXGIDevice();
 
+	/// <summary>コマンドを作成</summary>
 	void CreateCommand();
 
+	/// <summary>スワップチェーンを作成</summary>
 	void CreateSwapChain();
 
+	/// <summary>RTVを作成</summary>
 	void CreateRTV();
 
+	/// <summary>DSVを作成</summary>
 	void CreateDSV();
 
+	/// <summary>フェンスを作成</summary>
 	void CreateFence();
 
+	/// <summary>ビューポートを作成</summary>
 	void CreateViewport();
 
+	/// <summary>シザー矩形を作成</summary>
 	void CreateScissorRect();
 
+	/// <summary>深度ステンシルテクスチャリソースを作成</summary>
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(int32_t width, int32_t height);
 
 private:
+	//シングルトン
 	DirectXCore() = default;
 	~DirectXCore() = default;
 	DirectXCore(const DirectXCore&) = delete;
 	DirectXCore& operator=(const DirectXCore&) = delete;
 
+	/// <summary>FPS固定のための初期化</summary>
 	void InitializeFixFPS();
+
+	/// <summary>FPS固定のための更新</summary>
 	void UpdateFixFPS();
 
 private:
+	//DirectXCoreのインスタンス
 	static DirectXCore* sInstance_;
 
+	//WindowsAppのポインタ
 	WindowsApp* win_ = nullptr;
 
 	//DXGIファクトリーの生成
