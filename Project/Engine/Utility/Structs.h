@@ -60,6 +60,7 @@ struct VertexData
 	Vector3 normal;
 };
 
+//アニメーション
 struct VertexWeightData
 {
 	float weight;

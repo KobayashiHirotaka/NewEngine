@@ -49,9 +49,6 @@ void EngineCore::Initialize()
 	Line::StaticInitialize();
 	Sprite::StaticInitialize();
 
-	//GlobalVariablesのロード
-	GlobalVariables::GetInstance()->LoadFiles();
-
 	//AttackEditorのロード
 	AttackEditor::GetInstance()->Initialize();
 

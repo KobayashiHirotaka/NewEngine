@@ -21,7 +21,6 @@
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/3D/Particle/Random.h"
-#include "Engine/Utility/GlobalVariables.h"
 #include "Engine/3D/Model/Game3dObjectFactory.h"
 #include "Engine/3D/Model/Game3dObjectManager.h"
 #include "Engine/Utility/LevelLoader/LevelLoader.h"

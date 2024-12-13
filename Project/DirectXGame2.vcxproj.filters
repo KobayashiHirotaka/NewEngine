@@ -351,9 +351,6 @@
     <ClCompile Include="Engine\Utility\Math\MyMath.cpp">
       <Filter>ソース ファイル\Engine\Utility\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Utility\GlobalVariables.cpp">
-      <Filter>ソース ファイル\Engine\Utility</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Components\PostProcess\PostProcess.cpp">
       <Filter>ソース ファイル\Engine\Components\PostProcess</Filter>
     </ClCompile>
@@ -589,9 +586,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Utility\Math\MyMath.h">
       <Filter>ヘッダー ファイル\Engine\Utility\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Utility\GlobalVariables.h">
-      <Filter>ヘッダー ファイル\Engine\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Components\PostProcess\PostProcess.h">
       <Filter>ヘッダー ファイル\Engine\Components\PostProcess</Filter>

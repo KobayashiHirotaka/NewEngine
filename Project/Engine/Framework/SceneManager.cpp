@@ -6,7 +6,6 @@
  */
 
 #include "SceneManager.h"
-#include "Engine/Utility/GlobalVariables.h"
 
 SceneManager* SceneManager::sInstance_ = nullptr;
 

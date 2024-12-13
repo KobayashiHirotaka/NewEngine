@@ -98,7 +98,6 @@
     <ClCompile Include="Engine\Utility\Collision\CollisionManager.cpp" />
     <ClCompile Include="Engine\Utility\ConvertString\ConvertString.cpp" />
     <ClCompile Include="Engine\Utility\CSV\LoadCSV.cpp" />
-    <ClCompile Include="Engine\Utility\GlobalVariables.cpp" />
     <ClCompile Include="Engine\Utility\LevelLoader\LevelLoader.cpp" />
     <ClCompile Include="Engine\Utility\Math\MyMath.cpp" />
     <ClCompile Include="main.cpp" />
@@ -228,7 +227,6 @@
     <ClInclude Include="Engine\Utility\Collision\CollisionManager.h" />
     <ClInclude Include="Engine\Utility\ConvertString\ConvertString.h" />
     <ClInclude Include="Engine\Utility\CSV\LoadCSV.h" />
-    <ClInclude Include="Engine\Utility\GlobalVariables.h" />
     <ClInclude Include="Engine\Utility\LevelLoader\LevelLoader.h" />
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
     <ClInclude Include="Engine\Utility\Structs.h" />
