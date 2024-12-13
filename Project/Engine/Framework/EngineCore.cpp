@@ -45,7 +45,6 @@ void EngineCore::Initialize()
 	//静的リソースの初期化
 	Model::StaticInitialize();
 	ParticleModel::StaticInitialize();
-	Skybox::StaticInitialize();
 	Line::StaticInitialize();
 	Sprite::StaticInitialize();
 
@@ -70,7 +69,6 @@ void EngineCore::Finalize()
 	Model::Release();
 	Sprite::Release();
 	ParticleModel::Release();
-	Skybox::Release();
 	Line::Release();
 
 	//ModelManagerのインスタンスを削除

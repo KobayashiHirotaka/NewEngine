@@ -12,6 +12,7 @@ TextureManager* TextureManager::sInstance_ = nullptr;
 
 TextureManager* TextureManager::GetInstance()
 {
+	//インスタンスを生成
 	if (sInstance_ == nullptr)
 	{
 		sInstance_ = new TextureManager();
@@ -21,6 +22,7 @@ TextureManager* TextureManager::GetInstance()
 
 void TextureManager::DeleteInstance()
 {
+	//インスタンスを削除
 	if (sInstance_ != nullptr)
 	{
 		delete sInstance_;
@@ -30,21 +32,28 @@ void TextureManager::DeleteInstance()
 
 void TextureManager::Initialize()
 {
+	//DirectXCoreのインスタンスの取得
 	dxCore_ = DirectXCore::GetInstance();
 
+	//デバイスの取得
 	device_ = dxCore_->GetDevice();
 
+	//コマンドリストの取得
 	commandList_ = dxCore_->GetCommandList();
 
+	//SRVディスクリプタインクリメントサイズを取得
 	sDescriptorSizeSRV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
+	//SRVディスクリプタヒープの作成
 	srvDescriptorHeap_ = dxCore_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxDescriptors, true);
 
+	//初期テクスチャの読み込み
 	LoadInternal("resource/images/white.png");
 }
 
 uint32_t TextureManager::LoadTexture(const std::string& filePath)
 {
+	//テクスチャの読み込み
 	uint32_t textureHandle = TextureManager::GetInstance()->LoadInternal(filePath);
 
 	return textureHandle;
@@ -52,12 +61,14 @@ uint32_t TextureManager::LoadTexture(const std::string& filePath)
 
 void TextureManager::SetGraphicsDescriptorHeap()
 {
+	//コマンドリストにディスクリプタヒープを設定
 	ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap_.Get() };
 	commandList_->SetDescriptorHeaps(1, descriptorHeaps);
 }
 
 void TextureManager::SetGraphicsRootDescriptorTable(UINT rootParameterIndex, uint32_t textureHandle)
 {
+	//コマンドリストにディスクリプタテーブルを設定
 	commandList_->SetGraphicsRootDescriptorTable(rootParameterIndex, textures_[textureHandle].textureSrvHandleGPU);
 }
 
@@ -65,6 +76,7 @@ uint32_t TextureManager::CreateInstancingSRV(const Microsoft::WRL::ComPtr<ID3D12
 {
 	textureHandle_++;
 
+	//インスタンシング用のSRV設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc{};
 	instancingSrvDesc.Format = DXGI_FORMAT_UNKNOWN;
 	instancingSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -74,15 +86,18 @@ uint32_t TextureManager::CreateInstancingSRV(const Microsoft::WRL::ComPtr<ID3D12
 	instancingSrvDesc.Buffer.NumElements = kNumInstance;
 	instancingSrvDesc.Buffer.StructureByteStride = UINT(size);
 
+	//SRVのディスクリプタを設定
 	textures_[textureHandle_].textureSrvHandleCPU = GetCPUDescriptorHandle(srvDescriptorHeap_.Get(), sDescriptorSizeSRV, textureHandle_);
 	textures_[textureHandle_].textureSrvHandleGPU = GetGPUDescriptorHandle(srvDescriptorHeap_.Get(), sDescriptorSizeSRV, textureHandle_);
 
+	//SRVをリソースに設定
 	device_->CreateShaderResourceView(instancingResource.Get(), &instancingSrvDesc, textures_[textureHandle_].textureSrvHandleCPU);
 	return textureHandle_;
 }
 
 uint32_t TextureManager::LoadInternal(const std::string& filePath)
 {
+	//同じテクスチャがすでに読み込まれていれば、そのハンドルを返す
 	for (int i = 0; i < kMaxDescriptors; i++)
 	{
 		if (textures_[i].name == filePath)
@@ -93,6 +108,7 @@ uint32_t TextureManager::LoadInternal(const std::string& filePath)
 
 	textureHandle_++;
 
+	//最大ハンドル数を超えた場合
 	if (textureHandle_ >= kMaxDescriptors)
 	{
 		assert(0);
@@ -228,6 +244,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> TextureManager::UploadTextureData(ID3D12R
 
 D3D12_CPU_DESCRIPTOR_HANDLE TextureManager::GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index)
 {
+	//CPUディスクリプタハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE handleCPU = descriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	handleCPU.ptr += static_cast<D3D12_CPU_DESCRIPTOR_HANDLE>((descriptorSize * index)).ptr;
 	return handleCPU;
@@ -235,6 +252,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE TextureManager::GetCPUDescriptorHandle(ID3D12Descrip
 
 D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index)
 {
+	//GPUディスクリプタハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap->GetGPUDescriptorHandleForHeapStart();
 	handleGPU.ptr += static_cast<D3D12_GPU_DESCRIPTOR_HANDLE>((descriptorSize * index)).ptr;
 	return handleGPU;
@@ -242,6 +260,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetGPUDescriptorHandle(ID3D12Descrip
 
 const D3D12_RESOURCE_DESC TextureManager::GetResourceDesc(uint32_t textureHandle)
 {
+	//テクスチャリソースを取得
 	D3D12_RESOURCE_DESC resourceDesc{};
 	resourceDesc = textures_[textureHandle].resource->GetDesc();
 

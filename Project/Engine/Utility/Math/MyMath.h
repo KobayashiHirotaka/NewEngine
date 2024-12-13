@@ -40,7 +40,7 @@ Vector3 Multiply(const float& v1, const Vector3& v2);
 /// <summary>正規化/summary>
 Vector3 Normalize(const Vector3& v);
 
-/// <summary>変換</summary>
+/// <summary>ベクトルを行列で変換</summary>
 Vector3 TransformNormal(const Vector3& vector, const Matrix4x4& matrix);
 
 /// <summary>線形補完</summary>

@@ -7,7 +7,6 @@
 
 #pragma once
 #include "IScene.h"
-#include "Engine/3D/Skybox/Skybox.h"
 #include "Engine/3D/Line/Line.h"
 #include "Application/Game/InputLog/InputLog.h"
 #include "Application/Game/CameraController/CameraController.h"
@@ -203,10 +202,6 @@ private:
 
 	//BackGround
 	std::unique_ptr<BackGround> backGround_;
-
-	//Skybox
-	std::unique_ptr<Skybox> skybox_;
-	WorldTransform skyboxWorldTransform_;
 
 	bool isRoundTransition_ = false;
 	int roundTransitionTimer_ = 150;

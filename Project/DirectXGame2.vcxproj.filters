@@ -247,12 +247,6 @@
     <Filter Include="ソース ファイル\Engine\Utility\AttackEditor">
       <UniqueIdentifier>{60bd5a7a-1d93-482f-825d-57386a4b39a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Engine\3d\Skybox">
-      <UniqueIdentifier>{dbd12fb0-ff46-4a47-b54a-ddef32575b21}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Engine\3d\Skybox">
-      <UniqueIdentifier>{aafb0df5-5686-418d-9787-d10259f37352}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Engine\3d\Line">
       <UniqueIdentifier>{c85be4c4-60f1-445b-ba99-c7ead95554a3}</UniqueIdentifier>
     </Filter>
@@ -459,9 +453,6 @@
     <ClCompile Include="Engine\Utility\AttackEditor\AttackEditor.cpp">
       <Filter>ソース ファイル\Engine\Utility\AttackEditor</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\3D\Skybox\Skybox.cpp">
-      <Filter>ソース ファイル\Engine\3d\Skybox</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\3D\Line\Line.cpp">
       <Filter>ソース ファイル\Engine\3d\Line</Filter>
     </ClCompile>
@@ -505,9 +496,6 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="resource\shaders\BoneVisualization.hlsli">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="resource\shaders\Skybox.hlsli">
       <Filter>shaders</Filter>
     </None>
     <None Include="resource\shaders\Line.hlsli">
@@ -710,9 +698,6 @@
     <ClInclude Include="Engine\Utility\AttackEditor\AttackEditor.h">
       <Filter>ヘッダー ファイル\Engine\Utility\AttackEditor</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\3D\Skybox\Skybox.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Skybox</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\3D\Line\Line.h">
       <Filter>ヘッダー ファイル\Engine\3d\Line</Filter>
     </ClInclude>
@@ -788,12 +773,6 @@
       <Filter>shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\BoneVisualization.PS.hlsl">
-      <Filter>shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="resource\shaders\Skybox.PS.hlsl">
-      <Filter>shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="resource\shaders\Skybox.VS.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\Line.VS.hlsl">

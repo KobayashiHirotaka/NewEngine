@@ -70,15 +70,9 @@ void GamePlayScene::Initialize()
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
-	//Skyboxの生成、初期化
-	skybox_.reset(Skybox::Create());
-
 	//BackGroundの生成、初期化
 	backGround_ = std::make_unique<BackGround>();
 	backGround_->Initialize();
-
-	skyboxWorldTransform_.Initialize();
-	skyboxWorldTransform_.scale = { 500.0f, 500.0f, 500.0f };
 
 	//リソース
 	UICommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/UICommandList.png");
@@ -327,8 +321,6 @@ void GamePlayScene::Update()
 	//勝ち負けの処理
 	HandleGameOutcome();
 
-	skyboxWorldTransform_.UpdateMatrixEuler();
-
 	//操作説明の開閉
 	if (input_->GetJoystickState() && !isKO_&& sRoundStartTimer_ <= 0 && sMigrationTimer == 200)
 	{
@@ -428,12 +420,6 @@ void GamePlayScene::Draw()
 	Model::PostDraw();
 
 	PostProcess::GetInstance()->PreDraw();
-
-	Skybox::PreDraw();
-
-	//skybox_->Draw(skyboxWorldTransform_, cameraController_->GetCamera());
-
-	Skybox::PostDraw();
 
 	Model::PreDraw();
 
