@@ -17,27 +17,40 @@
 class EnemyBullet : public Collider
 {
 public:
+	/// <summary>初期化</summary>
 	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
 
+	/// <summary>更新</summary>
 	void Update();
 
+	/// <summary>描画</summary>
 	void Draw(const Camera& camera);
 
+	/// <summary>パーティクルの描画</summary>
 	void DrawParticle(const Camera& camera);
 
-	bool GetIsDead() const { return isDead_; }
-
-	void SetIsDead(bool isDead) { isDead_ = isDead; }
-
+	/// <summary>当たり判定</summary>
 	void OnCollision(Collider* collider)override;
 
-	WorldTransform& GetWorldTransform()override { return worldTransform_; }
-
+	/// <summary>WorldPositionの取得</summary>
 	Vector3 GetWorldPosition() override;
 
+	//Getter
+	//WorldTransform
+	WorldTransform& GetWorldTransform()override { return worldTransform_; }
+	
+	//IsDead
+	bool GetIsDead() const { return isDead_; }
+
+	//Setter
+	//IsDead
+	void SetIsDead(bool isDead) { isDead_ = isDead; }
+
 private:
+	//WorldTransform
 	WorldTransform worldTransform_;
 
+	//モデル
 	Model* model_ = nullptr;
 
 	//速度
