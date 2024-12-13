@@ -15,56 +15,88 @@ class Player;
 class Enemy : public ICharacter, public Collider
 {
 public:
+	/// <summary>デストラクタ</summary>
 	~Enemy();
 
-	void Initialize()override;
+	//基本
+	/// <summary>初期化</summary>
+	virtual void Initialize()override;
 
-	void Update()override;
+	/// <summary>更新</summary>
+	virtual void Update()override;
 
-	void Draw(const Camera& camera)override;
+	/// <summary>描画</summary>
+	virtual void Draw(const Camera& camera)override;
 
-	void ImGui()override;
+	/// <summary>骨の描画</summary>
+	virtual void DrawBone(const Camera& camera)override;
 
-	void DrawBone(const Camera& camera)override;
+	/// <summary>当たり判定の描画</summary>
+	virtual void DrawCollision(const Camera& camera)override;
 
-	void DrawCollision(const Camera& camera)override;
+	/// <summary>スプライトの描画</summary>
+	virtual void DrawSprite()override;
 
-	void DrawSprite()override;
+	/// <summary>パーティクルの描画</summary>
+	virtual void DrawParticle(const Camera& camera)override;
 
-	void DrawParticle(const Camera& camera)override;
+	/// <summary>ImGui</summary>
+	virtual void ImGui()override;
 
-	void OnCollision(Collider* collider)override;
+	/// <summary>リセット</summary>
+	virtual void Reset()override;
 
-	void Reset()override;
 
-	//行動関数
-	void InitializeBehaviorRoot()override;
+	//キャラクターの状態
+	/// <summary>移動状態の初期化</summary>
+	virtual void InitializeBehaviorRoot()override;
 
-	void UpdateBehaviorRoot()override;
+	/// <summary>移動状態の更新</summary>
+	virtual void UpdateBehaviorRoot()override;
 
-	void InitializeBehaviorAttack()override;
+	/// <summary>攻撃状態の初期化</summary>
+	virtual void InitializeBehaviorAttack()override;
 
-	void UpdateBehaviorAttack()override;
+	/// <summary>攻撃状態の更新</summary>
+	virtual void UpdateBehaviorAttack()override;
 
-	void InitializeBehaviorJump()override;
+	/// <summary>ジャンプ状態の初期化</summary>
+	virtual void InitializeBehaviorJump()override;
 
-	void UpdateBehaviorJump()override;
+	/// <summary>ジャンプ状態の更新</summary>
+	virtual void UpdateBehaviorJump()override;
 
-	void InitializeBehaviorStan()override;
+	/// <summary>スタン状態の初期化</summary>
+	virtual void InitializeBehaviorStan()override;
 
-	void UpdateBehaviorStan()override;
+	/// <summary>ジャンプ状態の更新</summary>
+	virtual void UpdateBehaviorStan()override;
+
 
 	//移動
-	void Move();
+	/// <summary>移動</summary>
+	virtual void Move()override;
+
 
 	//攻撃
-	void StartAttack(bool& isAttackType)override;
+	/// <summary>攻撃の開始</summary>
+	virtual void StartAttack(bool& isAttackType)override;
 
-	void EndAttack(bool& isAttackType)override;
+	/// <summary>攻撃の終了</summary>
+	virtual void EndAttack(bool& isAttackType)override;
 
-	void EvaluateAttackTiming()override;
+	/// <summary>攻撃タイミングを評価</summary>
+	virtual void EvaluateAttackTiming()override;
 
-	void ApplyDamage()override;
+	/// <summary>ダメージの適応</summary>
+	virtual void ApplyDamage()override;
+
+	/// <summary>コンボされているとき</summary>
+	void HitCombo();
+
+
+	/// <summary>当たり判定</summary>
+	void OnCollision(Collider* collider)override;
 
 	//当たり判定の初期化
 	void ResetCollision()override;
@@ -72,66 +104,86 @@ public:
 	//当たり判定の設定
 	void ConfigureCollision(Vector3 min, Vector3 max)override;
 
-	//UIの更新関数
-	void UpdateHPBar()override;
 
-	void UpdateGuardGaugeBar()override;
+	//UIの更新
+    /// <summary>HPのUIの更新</summary>
+	virtual void UpdateHPBar()override;
 
-	void AdjustGuardGauge()override;
+	/// <summary>ガードゲージのUIの更新</summary>
+	virtual void UpdateGuardGaugeBar()override;
 
-	void UpdateFinisherGaugeBar()override;
+	/// <summary>ガードゲージのUIの適応</summary>
+	virtual void AdjustGuardGauge()override;
 
-	void AdjustFinisherGauge(float value)override;
+	/// <summary>必殺技ゲージのUIの適応</summary>
+	virtual void UpdateFinisherGaugeBar()override;
 
-	void UpdateComboNumberSprite()override;
+	/// <summary>必殺技ゲージのUIの適応</summary>
+	virtual void AdjustFinisherGauge(float value)override;
 
-	//弾関係の関数
+	/// <summary>コンボ表示のUIの更新</summary>
+	virtual void UpdateComboNumberSprite()override;
+
+
+	/// <summary>弾を発射</summary>
 	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
 
+	/// <summary>弾の更新</summary>
 	void UpdateBullets();
 
+	/// <summary>弾の描画</summary>
 	void DrawBullet(const Camera& camera);
 
-	//コンボ
-	void HitCombo();
 
-	//Getter
-	uint32_t GetAnimationIndex() { return animationIndex_; };
-
-	WorldTransform& GetWorldTransform()override { return worldTransform_; }
-
+	/// <summary>WorldPositionの取得</summary>
 	Vector3 GetWorldPosition() override;
 
-	const std::vector<EnemyBullet*>& GetBullets() const{ return bullets_; };
 
+	//Getter
+	//AnimationIndex
+	uint32_t GetAnimationIndex() { return animationIndex_; };
+
+	//WorldTransform
+	WorldTransform& GetWorldTransform()override { return worldTransform_; }
+
+	//AABB
 	AABB GetAABB() { return aabb_; };
 
+	//Bullets
+	const std::vector<EnemyBullet*>& GetBullets() const{ return bullets_; };
+
 	//Setter
+	//Player
 	void SetPlayer(Player* player) { player_ = player; };
 
+	//IsKO
 	void SetIsKO(bool isKO) { isKO_ = isKO; };
 
 private:
-	void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate,
+	//アニメーション
+	/// <summary>アニメーションの更新</summary>
+	virtual void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate,
 		int animationIndex, std::unique_ptr<Model>& modelFighterBody)override;
 
-	void DownAnimation()override;
+	/// <summary>ダウンアニメーション</summary>
+	virtual void DownAnimation()override;
 
-	void EndDownAnimation(int animationIndex, bool& isHitAttackType);
+	/// <summary>ダウンアニメーションの終了</summary>
+	virtual void EndDownAnimation(int animationIndex, bool& isHitAttackType)override;
 
+	/// <summary>指定した範囲内のランダムな整数を生成</summary>
 	int Random(int min_value, int max_value);
 
+	/// <summary>ランダムに移動方向を選択</summary>
 	int RandomMove();
 
+	/// <summary>ランダムに攻撃または移動を選択</summary>
 	int RandomAttackOrMove();
 
+	/// <summary>ランダムに弾攻撃または移動を選択</summary>
 	int RandomBulletOrMove();
 	
 private:
-	Input* input_ = nullptr;
-
-	Audio* audio_ = nullptr;
-
 	//行動のパターン
 	int patternCount_ = 1;
 	int moveTimer_ = 60;
@@ -146,12 +198,16 @@ private:
 	std::unique_ptr<Model> bulletModel_;
 	std::vector<EnemyBullet*> bullets_;
 
+	//弾攻撃のクールダウン
 	int shotCooldownTimer_ = 0;
 
+	//弾を打ったか
 	bool hasShot_ = false;
 
+	//キャンセルかどうか
 	bool isCancel_ = false;
 
+	//ヒット時の音
 	bool isHitAudio_ = false;
 
 	//Sprite(hp)
@@ -180,7 +236,7 @@ private:
 	std::unique_ptr<Sprite>comboNumSprite_ = nullptr;
 	uint32_t comboNumTextureHandle_;
 
-	//Sounds
+	//サウンド
 	uint32_t attackSoundHandle_ = 0u;
 	uint32_t weaponAttackSoundHandle_ = 0u;
 	uint32_t damageSoundHandle_ = 0u;
@@ -188,7 +244,10 @@ private:
 
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
 
+	//ガード状態か
 	bool isGuardMode_ = false;
+
+	//ガードタイマー(確定反撃用)
 	int guardTimer_ = 4;
 };
 

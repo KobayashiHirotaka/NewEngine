@@ -29,40 +29,52 @@ public:
 	//ラウンド開始までの時間
 	static int sRoundStartTimer_;
 
+	/// <summary>コンストラクタ</summary>
 	GamePlayScene();
 
+	/// <summary>デストラクタ</summary>
 	~GamePlayScene();
 
+	/// <summary>初期化</summary>
 	void Initialize()override;
 
+	/// <summary>更新</summary>
 	void Update()override;
 
+	/// <summary>描画</summary>
 	void Draw()override;
 
+	/// <summary>終了</summary>
 	void Finalize()override;
 
+	/// <summary>ImGui</summary>
 	void ImGui()override;
 
+	/// <summary>ランダム</summary>
 	float Random(float min_value, float max_value);
 
-	//数字の更新関数
+	/// <summary>数字の更新</summary>
 	void UpdateNumberSprite();
 
-	//勝敗を決める関数
+	/// <summary>勝敗を決める</summary>
 	void HandleGameOutcome();
+
+	/// <summary>ラウンド間でのトランジション</summary>
+	void RoundTransition(int round);
 
 	//void HandleTransition();
 
-	//ラウンド間でのトランジション
-	void RoundTransition(int round);
-
 private:
+	//TextureManager
 	TextureManager* textureManager_ = nullptr;
 
+	//ModelManager
 	ModelManager* modelManager_ = nullptr;
 
+	//Input
 	Input* input_ = nullptr;
 
+	//Audio
 	Audio* audio_ = nullptr;
 
 	//LevelLoader
@@ -146,16 +158,21 @@ private:
 	bool isOpen_ = false;
 
 	//時間
+	//現在の時間
 	int currentSeconds_ = 0;
 
+	//ゲーム中の時間
 	float frameTime_ = 1.0f / 60.0f;
 	float elapsedTime_ = 0.0f;
 
+	//ラウンド開始までの時間
 	const int kMaxRoundStartTime_ = 100;
 	const int kHalfRoundStartTime_ = kMaxRoundStartTime_ / 2;
 
+	//ラウンド切り替えの時間
 	const int kMaxMigrationTime_ = 200;
 
+	//勝敗表示用の時間
 	const int kOutComeTime_ = 150;
 	const int kKoActiveTime_ = 0;
 
@@ -175,6 +192,8 @@ private:
 	float transitionTimer_ = 0;
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
+	bool isRoundTransition_ = false;
+	int roundTransitionTimer_ = 150;
 
 	//モデルの骨を描画するかどうか
 	bool isBoneDraw_ = true;
@@ -203,19 +222,20 @@ private:
 	//BackGround
 	std::unique_ptr<BackGround> backGround_;
 
-	bool isRoundTransition_ = false;
-	int roundTransitionTimer_ = 150;
-
+	//デバッグかどうか
 	bool isDebug_ = false;
 
+	//どちらかがKOしているか
 	bool isKO_ = false;
 
+	//タイムオーバーかどうか
 	bool isTimeOver_ = false;
 
 	//スティック操作対応
 	const float kValue_ = 0.7f;
 	int stickInputCooldown_ = 10;
 
+	//必殺技の開始・終了
 	bool isFinisherStart_ = false;
 	bool isFinisherEnd_ = false;
 };

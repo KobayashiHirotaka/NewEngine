@@ -15,6 +15,7 @@
 class SceneFactory : public AbstractSceneFactory 
 {
 public:
+	/// <summary>シーンの生成</summary>
 	IScene* CreateScene(const std::string& sceneName) override;
 };
 

@@ -316,7 +316,7 @@ public:
 	virtual void ConfigureCollision(Vector3 min, Vector3 max) = 0;
 
 
-	//UI野更新
+	//UIの更新
 	/// <summary>HPのUIの更新</summary>
 	virtual void UpdateHPBar() = 0;
 

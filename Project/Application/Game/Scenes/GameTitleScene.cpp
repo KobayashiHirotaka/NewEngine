@@ -16,19 +16,19 @@ GameTitleScene::~GameTitleScene() {};
 
 void GameTitleScene::Initialize()
 {
-	//TextureManagerのインスタンス
+	//TextureManagerのインスタンスの取得
 	textureManager_ = TextureManager::GetInstance();
 
-	//ModelManagerのインスタンス
+	//ModelManagerのインスタンスの取得
 	modelManager_ = ModelManager::GetInstance();
 
-	//Inputのインスタンス
+	//Inputのインスタンスの取得
 	input_ = Input::GetInstance();
 
-	//Audioのインスタンス
+	//Audioのインスタンスの取得
 	audio_ = Audio::GetInstance();
 
-	//PostProcessのインスタンス
+	//PostProcessのインスタンスの取得
 	PostProcess::GetInstance()->SetIsPostProcessActive(true);
 
 	//PostEffectの切り替え
@@ -66,7 +66,7 @@ void GameTitleScene::Initialize()
 	//トランジション用のSprite
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
 	transitionSprite_->SetColor(transitionColor_);
-	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
+	transitionSprite_->SetSize(transitionTextureSize_);
 
 	//BGM,SEの読み込み
 	titleSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/BGM.mp3");
@@ -75,7 +75,8 @@ void GameTitleScene::Initialize()
 	//BGMの再生,停止
 	if (!audio_->IsAudioPlaying(titleSoundHandle_))
 	{
-		audio_->PlaySoundMP3(titleSoundHandle_, true, 0.2f);
+		const float bgmVolume = 0.2f;
+		audio_->PlaySoundMP3(titleSoundHandle_, true, bgmVolume);
 	}
 };
 
@@ -87,7 +88,7 @@ void GameTitleScene::Update()
 	if (input_->PushKey(DIK_SPACE))
 	{
 		isTransitionStart_ = true;
-		audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
+		audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
 	}
 
 #endif 
@@ -107,7 +108,7 @@ void GameTitleScene::Update()
 
 			if (!isPlayAudio_)
 			{
-				audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
+				audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
 			}
 
 			isPlayAudio_ = true;
@@ -115,13 +116,15 @@ void GameTitleScene::Update()
 	}
 
 	//トランジション
+	const float deltaTime = 1.0f / kTransitionTime;
+
 	if (!isTransitionEnd_)
 	{
-		transitionTimer_ += 1.0f / kTransitionTime;
-		transitionColor_.w = Lerp(transitionColor_.w, 0.0f, transitionTimer_);
+		transitionTimer_ += deltaTime;
+		transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, transitionTimer_);
 		transitionSprite_->SetColor(transitionColor_);
 
-		if (transitionColor_.w <= 0.0f)
+		if (transitionColor_.w <= kTransitionEndAlpha_)
 		{
 			isTransitionEnd_ = true;
 			transitionTimer_ = 0.0f;
@@ -130,55 +133,79 @@ void GameTitleScene::Update()
 
 	if (isTransitionStart_)
 	{
-		transitionTimer_ += 1.0f / kTransitionTime;
-		transitionColor_.w = Lerp(transitionColor_.w, 1.0f, transitionTimer_);
+		transitionTimer_ += deltaTime;
+		transitionColor_.w = Lerp(transitionColor_.w, kTransitionStartAlpha_, transitionTimer_);
 		transitionSprite_->SetColor(transitionColor_);
 
-		if (transitionColor_.w >= 1.0f)
+		if (transitionColor_.w >= kTransitionStartAlpha_)
 		{
 			sceneManager_->ChangeScene("GamePlayScene");
 			return;
 		}
 	}
 
+	//クールダウンタイム
+	const int kStickInputCooldownTime = 10;
+
 	//操作説明の開閉
 	if (input_->GetJoystickState())
 	{
+		//Bボタンを押して操作説明を開く
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !isOpen_)
 		{
-			audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
+			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
 			isOpen_ = true;
-			spriteCount_ = 1;
+			spriteCount_ = static_cast<int>(CommandSpriteType::GeneralCommandSprite);
 		}
+		//Bボタンを押して操作説明を閉じる
 		else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && isOpen_)
 		{
-			audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
+			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
 			isOpen_ = false;
-			spriteCount_ = 0;
+			spriteCount_ = static_cast<int>(CommandSpriteType::GeneralCommandSprite);
 		}
 
+		//操作説明が開いている場合
 		if (isOpen_)
 		{
+			//右の方向キーかスティック右入力で次の説明へ
 			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) || (input_->GetLeftStickX() > value_ && stickInputCooldown_ <= 0))
 			{
-				if (spriteCount_ < 3)
+				if (spriteCount_ != static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite)) 
 				{
-					spriteCount_++;
-					audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
-					stickInputCooldown_ = 10;
+					if (spriteCount_ == static_cast<int>(CommandSpriteType::GeneralCommandSprite))
+					{
+						spriteCount_ = static_cast<int>(CommandSpriteType::ComboAttackCommandSprite);
+					}
+					else if (spriteCount_ == static_cast<int>(CommandSpriteType::ComboAttackCommandSprite))
+					{
+						spriteCount_ = static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite);
+					}
+
+					audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
+					stickInputCooldown_ = kStickInputCooldownTime; 
 				}
 			}
+			//左の方向キーかスティック左入力で前の説明に戻る
 			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) || (input_->GetLeftStickX() < -value_ && stickInputCooldown_ <= 0))
 			{
-				if (spriteCount_ > 1)
+				if (spriteCount_ != static_cast<int>(CommandSpriteType::GeneralCommandSprite)) 
 				{
-					spriteCount_--;
-					audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
-					stickInputCooldown_ = 10;
+					if (spriteCount_ == static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite))
+					{
+						spriteCount_ = static_cast<int>(CommandSpriteType::ComboAttackCommandSprite);
+					}
+					else if (spriteCount_ == static_cast<int>(CommandSpriteType::ComboAttackCommandSprite))
+					{
+						spriteCount_ = static_cast<int>(CommandSpriteType::GeneralCommandSprite);
+					}
+
+					audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
+					stickInputCooldown_ = kStickInputCooldownTime;
 				}
 			}
 
-			//クールダウンを減らす
+			// クールダウンを減らす
 			if (stickInputCooldown_ > 0)
 			{
 				stickInputCooldown_--;
@@ -227,6 +254,7 @@ void GameTitleScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
+	//タイトルの描画
 	if (!isOpen_)
 	{
 		titleSprite_->Draw();
@@ -237,19 +265,22 @@ void GameTitleScene::Draw()
 		titleUISprite_->Draw();
 	}
 
-	//操作説明
-	if (isOpen_ && spriteCount_ == 1)
+	//操作説明の描画
+	if (isOpen_ && spriteCount_ == static_cast<int>(CommandSpriteType::GeneralCommandSprite))
 	{
+		//基本操作
 		generalCommandListSprite_->Draw();
 	}
 
-	if (isOpen_ && spriteCount_ == 2)
+	if (isOpen_ && spriteCount_ == static_cast<int>(CommandSpriteType::ComboAttackCommandSprite))
 	{
+		//コンボ攻撃
 		attackCommandListSprite_[0]->Draw();
 	}
 
-	if (isOpen_ && spriteCount_ == 3)
+	if (isOpen_ && spriteCount_ == static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite))
 	{
+		//必殺技攻撃
 		attackCommandListSprite_[1]->Draw();
 	}
 
@@ -263,6 +294,7 @@ void GameTitleScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
+	//トランジション
 	transitionSprite_->Draw();
 
 	Sprite::PostDraw();
@@ -277,8 +309,6 @@ void GameTitleScene::ImGui()
 {
 	ImGui::Begin("TitleScene");
 	ImGui::End();
-
-	//skydome_->ImGui();
 }
 
 void GameTitleScene::AnimationTitle()
@@ -293,14 +323,15 @@ void GameTitleScene::AnimationTitle()
 	float endY = startY + titleSpriteMoveSpeed_;
 
 	//移動
-	float interpolatedY = Lerp(startY, endY, 0.4f);
+	const float lerpSpeed = 0.4f;
+	float interpolatedY = Lerp(startY, endY, lerpSpeed);
 	titleSpritePosition_.y = interpolatedY;
 
 	//切り替えし
 	if (titleSpriteMoveTimer_ < 0)
 	{
-		titleSpriteMoveSpeed_ *= -1.0f;
-		titleSpriteMoveTimer_ = 30;
+		titleSpriteMoveSpeed_ *= kSpriteMoveSpeed_;
+		titleSpriteMoveTimer_ = kMaxSpriteMoveTime_;
 	}
 
 	titleSprite_->SetPosition(titleSpritePosition_);
