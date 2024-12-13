@@ -20,29 +20,48 @@ Matrix4x4 Sprite::matProjection_{};
 
 void Sprite::StaticInitialize()
 {
+	//DirectXCoreのインスタンスの取得
 	sDxCore_ = DirectXCore::GetInstance();
 
+	//TextureManagerのインスタンスの取得
 	sTextureManager_ = TextureManager::GetInstance();
 
+	//デバイスの取得
 	sDevice_ = sDxCore_->GetDevice();
 
+	//コマンドリストの取得
 	sCommandList_ = sDxCore_->GetCommandList();
 
+	//DXCの初期化
 	InitializeDXC();
 
+	//PSOの作成
 	CreatePSO();
 
-	matProjection_ = MakeOrthographicMatrix(0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 100.0f);
+	//投影の設定
+	const float kNearClip = 0.0f;
+	const float kFarClip = 100.0f;
+	const float kLeft = 0.0f;
+	const float kBottom = 0.0f;
+	const float kRight = 1280.0f;
+	const float kTop = 720.0f;
+
+	//投影行列の作成
+	matProjection_ = MakeOrthographicMatrix(kLeft, kBottom, kRight, kTop, kNearClip, kFarClip);
 }
 
 void Sprite::Initialize(uint32_t textureHandle, Vector2 position)
 {
+	//テクスチャハンドルの設定
 	textureHandle_ = textureHandle;
 
+	//スプライトの位置の設定
 	position_ = position;
 
+	//テクスチャのリソース情報を取得
 	resourceDesc_ = sTextureManager_->GetResourceDesc(textureHandle_);
 
+	//テクスチャのサイズを設定
 	texSize_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
 	size_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
 
@@ -58,13 +77,16 @@ void Sprite::Initialize(uint32_t textureHandle, Vector2 position)
 
 void Sprite::Update()
 {
+	//テクスチャサイズの調整
 	AdjustTextureSize();
 
+	//頂点情報の更新
 	UpdateVertex();
 }
 
 void Sprite::Draw()
 {
+	//更新
 	Update();
 
 	//マテリアルの更新
@@ -92,11 +114,12 @@ void Sprite::Draw()
 	sTextureManager_->SetGraphicsRootDescriptorTable(2, textureHandle_);
 
 	//描画
-	sCommandList_->DrawInstanced(6, 1, 0, 0);
+	sCommandList_->DrawInstanced(kNumVertices_, 1, 0, 0);
 }
 
 void Sprite::Release()
 {
+	//解放
 	sDxcUtils_.Reset();
 	sDxcCompiler_.Reset();
 	sIncludeHandler_.Reset();
@@ -119,7 +142,10 @@ Sprite* Sprite::Create(uint32_t textureHandle, Vector2 position)
 
 void Sprite::PreDraw(BlendMode blendMode)
 {
+	//ルートシグネチャの設定
 	sCommandList_->SetGraphicsRootSignature(sRootSignature_.Get());
+
+	//パイプライン状態の設定
 	sCommandList_->SetPipelineState(sGraphicsPipelineState_[blendMode].Get());
 }
 
@@ -128,13 +154,9 @@ void Sprite::PostDraw()
 
 }
 
-void Sprite::ImGui(const char* Title)
+void Sprite::ImGui()
 {
-	ImGui::Begin(Title);
-	ImGui::DragFloat2("textureSize", &textureSize_.x, 0.01f, 0.0f, 1600.0f);
-	ImGui::DragFloat2("position", &position_.x, 1.0f, -1280.0f, 1280.0f);
-	ImGui::DragFloat("rotation", &rotation_, 0.1f, 0.0f, 100.0f);
-	ImGui::End();
+
 }
 
 void Sprite::InitializeDXC()
@@ -409,27 +431,34 @@ void Sprite::CreatePSO()
 
 void Sprite::CreateVertexBuffer()
 {
-	vertexResource_ = sDxCore_->CreateBufferResource(sizeof(VertexData) * 6);
+	//頂点バッファのリソースの作成
+	vertexResource_ = sDxCore_->CreateBufferResource(sizeof(VertexData) * kNumVertices_);
 
+	//頂点バッファビューの設定
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
-	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 6;
+	vertexBufferView_.SizeInBytes = sizeof(VertexData) * kNumVertices_;
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
-	float left = 0.0f - anchorPoint_.x;
-	float right = 1.0f - anchorPoint_.x;
-	float top = 0.0f - anchorPoint_.y;
-	float bottom = 1.0f - anchorPoint_.y;
+	//アンカー点に基づいて四隅の位置を計算
+	float left = kDefaultAnchorX - anchorPoint_.x;
+	float right = kDefaultTextureWidth - anchorPoint_.x;
+	float top = kDefaultAnchorY - anchorPoint_.y;
+	float bottom = kDefaultTextureHeight - anchorPoint_.y;
+
+	//テクスチャのUV座標を計算
 	float texLeft = textureLeftTop_.x / resourceDesc_.Width;
 	float texRight = (textureLeftTop_.x + textureSize_.x) / resourceDesc_.Width;
 	float texTop = textureLeftTop_.y / resourceDesc_.Height;
 	float texBottom = (textureLeftTop_.y + textureSize_.y) / resourceDesc_.Height;
 
+	//反転処理(X軸)
 	if (isFlipX_)
 	{
 		left = -left;
 		right = -right;
 	}
 
+	//反転処理(Y軸)
 	if (isFlipY_)
 	{
 		top = -top;
@@ -485,21 +514,26 @@ void Sprite::CreateWVPResource()
 
 void Sprite::UpdateVertex()
 {
-	float left = 0.0f - anchorPoint_.x;
-	float right = 1.0f - anchorPoint_.x;
-	float top = 0.0f - anchorPoint_.y;
-	float bottom = 1.0f - anchorPoint_.y;
+	//アンカー点に基づいて四隅の位置を計算
+	float left = kDefaultAnchorX - anchorPoint_.x;
+	float right = kDefaultTextureWidth - anchorPoint_.x;
+	float top = kDefaultAnchorY - anchorPoint_.y;
+	float bottom = kDefaultTextureHeight - anchorPoint_.y;
+
+	//テクスチャのUV座標を計算
 	float texLeft = textureLeftTop_.x / resourceDesc_.Width;
 	float texRight = (textureLeftTop_.x + textureSize_.x) / resourceDesc_.Width;
 	float texTop = textureLeftTop_.y / resourceDesc_.Height;
 	float texBottom = (textureLeftTop_.y + textureSize_.y) / resourceDesc_.Height;
 
+	//反転処理(X軸)
 	if (isFlipX_)
 	{
 		left = -left;
 		right = -right;
 	}
 
+	//反転処理(Y軸)
 	if (isFlipY_)
 	{
 		top = -top;
@@ -561,7 +595,9 @@ void Sprite::UpdateMatrix()
 
 void Sprite::AdjustTextureSize()
 {
+	//テクスチャリソースの取得
 	resourceDesc_ = sTextureManager_->GetResourceDesc(textureHandle_);
 
+	//テクスチャのサイズを設定
 	textureSize_ = { float(resourceDesc_.Width),float(resourceDesc_.Height) };
 }

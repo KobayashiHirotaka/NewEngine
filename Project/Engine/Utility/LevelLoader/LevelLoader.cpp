@@ -15,6 +15,7 @@ LevelLoader* LevelLoader::sInstance_ = nullptr;
 
 LevelLoader* LevelLoader::GetInstance()
 {
+	//インスタンスを生成
 	if (sInstance_ == nullptr)
 	{
 		sInstance_ = new LevelLoader();
@@ -24,6 +25,7 @@ LevelLoader* LevelLoader::GetInstance()
 
 void LevelLoader::DeleteInstance()
 {
+	//インスタンスを削除
 	if (sInstance_ != nullptr)
 	{
 		delete sInstance_;
@@ -93,16 +95,20 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 		//今追加した要素の参照を得る
 		LevelData::ObjectData& objectData = levelData->objects.back();
 
+		//各種パラメータ
+		//オブジェクトの名前
 		if (object.contains("name"))
 		{
 			objectData.objectName = object["name"];
 		}
 
+		//ファイルの名前
 		if (object.contains("file_name"))
 		{
 			objectData.fileName = object["file_name"];
 		}
 
+		//表示するか
 		if (object.contains("visible"))
 		{
 			objectData.isVisible = object["visible"].get<bool>();
@@ -112,10 +118,12 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 			objectData.isVisible = true;
 		}
 
+		//キャラクターのパラメータ
 		if (objectData.objectName == "Player" || objectData.objectName == "Enemy")
 		{
 			json& characterData = object["character_data"];
 
+			//体力
 			if (characterData.contains("hp"))
 			{
 				objectData.characterData.hp = (int)characterData["hp"];
@@ -126,6 +134,7 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 				objectData.characterData.maxHp = (int)characterData["maxHp"];
 			}
 	
+			//足の速さ
 			if (characterData.contains("frontSpeed")) 
 			{
 				objectData.characterData.frontSpeed = std::stof(characterData["frontSpeed"].get<std::string>());
@@ -136,6 +145,7 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 				objectData.characterData.backSpeed = std::stof(characterData["backSpeed"].get<std::string>());
 			}
 
+			//ガードゲージ
 			if (characterData.contains("guardGauge"))
 			{
 				objectData.characterData.guardGauge = std::stof(characterData["guardGauge"].get<std::string>());
@@ -146,6 +156,7 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 				objectData.characterData.maxGuardGauge = std::stof(characterData["maxGuardGauge"].get<std::string>());
 			}
 
+			//必殺技ゲージ
 			if (characterData.contains("finisherGauge"))
 			{
 				objectData.characterData.finisherGauge = std::stof(characterData["finisherGauge"].get<std::string>());
@@ -245,6 +256,7 @@ void LevelLoader::CreateObjectsFromLevelData(const LevelData* levelData)
 
 		newObject->SetIsVisible(objectData.isVisible);
 
+		//キャラクターごとのパラメータ
 		if (objectData.objectName == "Player" || objectData.objectName == "Enemy")
 		{
 			newObject->SetHp(objectData.characterData.hp);
