@@ -20,16 +20,22 @@ std::list<ParticleModel::ModelData> ParticleModel::sModelDatas_{};
 
 void ParticleModel::StaticInitialize()
 {
+	//DirectXCoreのインスタンスの取得
 	sDxCore_ = DirectXCore::GetInstance();
 
+	//TextureManagerのインスタンスの取得
 	sTextureManager_ = TextureManager::GetInstance();
 
+	//デバイスの取得
 	sDevice_ = sDxCore_->GetDevice();
 
+	//コマンドリストの取得
 	sCommandList_ = sDxCore_->GetCommandList();
 
+	//DXCの初期化
 	InitializeDXC();
 
+	//PSOの作成
 	CreatePSO();
 }
 
@@ -45,16 +51,16 @@ void ParticleModel::Draw(const ParticleSystem* particleSystem, const Camera& cam
 	sCommandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//マテリアルCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::Material), materialResource_->GetGPUVirtualAddress());
 
 	//WorldTransform用のCBufferの場所を設定
-	sTextureManager_->SetGraphicsRootDescriptorTable(1, particleSystem->GetSrvIndex());
+	sTextureManager_->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::WorldTransform), particleSystem->GetSrvIndex());
 
 	//ViewProjection用のCBufferの場所を設定
-	sCommandList_->SetGraphicsRootConstantBufferView(2, camera.constBuff_->GetGPUVirtualAddress());
+	sCommandList_->SetGraphicsRootConstantBufferView(UINT(RootParameterIndex::ViewProjection), camera.constBuff_->GetGPUVirtualAddress());
 
 	//DescriptorTableを設定
-	sTextureManager_->SetGraphicsRootDescriptorTable(3, textureHandle_);
+	sTextureManager_->SetGraphicsRootDescriptorTable(UINT(RootParameterIndex::Texture), textureHandle_);
 
 	//描画
 	sCommandList_->DrawInstanced(UINT(vertices_.size()), particleSystem->GetNumInstance(), 0, 0);
@@ -62,6 +68,7 @@ void ParticleModel::Draw(const ParticleSystem* particleSystem, const Camera& cam
 
 void ParticleModel::Release()
 {
+	//解放
 	sDxcUtils_.Reset();
 	sDxcCompiler_.Reset();
 	sIncludeHandler_.Reset();
@@ -105,7 +112,10 @@ ParticleModel* ParticleModel::CreateFromOBJ(const std::string& directoryPath, co
 
 void ParticleModel::PreDraw()
 {
+	//ルートシグネチャの設定
 	sCommandList_->SetGraphicsRootSignature(sRootSignature_.Get());
+
+	//パイプライン状態の設定
 	sCommandList_->SetPipelineState(sGraphicsPipelineState_.Get());
 }
 
@@ -356,10 +366,13 @@ void ParticleModel::Initialize(const ModelData& modelData)
 {
 	//頂点データの取得
 	vertices_ = modelData.vertices;
+
 	//頂点リソースの作成
 	CreateVertexResource();
+
 	//マテリアル用のリソースの作成
 	CreateMaterialResource();
+
 	//テクスチャの読み込み
 	textureHandle_ = sTextureManager_->LoadTexture(modelData.material.textureFilePath);
 }
@@ -367,12 +380,15 @@ void ParticleModel::Initialize(const ModelData& modelData)
 
 void ParticleModel::CreateVertexResource()
 {
+	//頂点バッファリソースを作成
 	vertexResource_ = sDxCore_->CreateBufferResource(sizeof(VertexData) * vertices_.size());
 
+	//頂点バッファビューの設定
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * vertices_.size());
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
+	//データを転送
 	VertexData* vertexData = nullptr;
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	std::memcpy(vertexData, vertices_.data(), sizeof(VertexData) * vertices_.size());
@@ -382,12 +398,12 @@ void ParticleModel::CreateVertexResource()
 
 void ParticleModel::CreateMaterialResource()
 {
+	//マテリアル用のバッファリソースを作成
 	materialResource_ = sDxCore_->CreateBufferResource(sizeof(ConstBuffDataMaterial));
 
+	//データを転送
 	ConstBuffDataMaterial* materialData = nullptr;
-
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-
 	materialData->color = Vector4{ 1.0f,1.0f,1.0f,1.0f };
 	materialData->uvTransform = MakeIdentity4x4();
 	materialResource_->Unmap(0, nullptr);
@@ -401,15 +417,20 @@ ParticleModel::ModelData ParticleModel::LoadObjFile(const std::string& directory
 	std::vector<Vector3> normals;
 	std::vector<Vector2> texcoords;
 	std::string line;
+
+	//OBJファイルを開く
 	std::ifstream file(directoryPath + "/" + filename);
 	assert(file.is_open());
 
+
+	//ファイルの各行を読み込む
 	while (std::getline(file, line))
 	{
 		std::string identifier;
 		std::istringstream s(line);
 		s >> identifier;
 
+		//頂点位置の読み込み
 		if (identifier == "v")
 		{
 			Vector4 position;
@@ -418,6 +439,7 @@ ParticleModel::ModelData ParticleModel::LoadObjFile(const std::string& directory
 			position.w = 1.0f;
 			positions.push_back(position);
 		}
+		//テクスチャ座標の読み込み
 		else if (identifier == "vt")
 		{
 			Vector2 texcoord;
@@ -425,6 +447,7 @@ ParticleModel::ModelData ParticleModel::LoadObjFile(const std::string& directory
 			texcoord.y = 1.0f - texcoord.y;
 			texcoords.push_back(texcoord);
 		}
+		//法線ベクトルの読み込み
 		else if (identifier == "vn")
 		{
 			Vector3 normal;
@@ -432,6 +455,7 @@ ParticleModel::ModelData ParticleModel::LoadObjFile(const std::string& directory
 			normal.z *= -1.0f;
 			normals.push_back(normal);
 		}
+		//面情報(フェイス)の読み込み
 		else if (identifier == "f")
 		{
 			VertexData triangle[3];
@@ -460,6 +484,7 @@ ParticleModel::ModelData ParticleModel::LoadObjFile(const std::string& directory
 			modelData.vertices.push_back(triangle[1]);
 			modelData.vertices.push_back(triangle[0]);
 		}
+		//マテリアルテンプレートファイルの読み込み
 		else if (identifier == "mtllib")
 		{
 			std::string materialFilename;
@@ -473,6 +498,7 @@ ParticleModel::ModelData ParticleModel::LoadObjFile(const std::string& directory
 
 ParticleModel::MaterialData ParticleModel::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
 {
+	//マテリアルデータの読み込み
 	MaterialData materialData;
 	std::string line;
 	std::ifstream file(directoryPath + "/" + filename);

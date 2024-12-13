@@ -46,7 +46,7 @@ void Mesh::SetGraphicsCommand(D3D12_VERTEX_BUFFER_VIEW influenceBufferView)
 
 void Mesh::CreateVertexBuffer()
 {
-	//頂点バッファを作成
+	//頂点バッファリソースを作成
 	vertexBuffer_ = dxCore_->CreateBufferResource(sizeof(VertexData) * vertices_.size());
 
 	//バッファビューの設定
