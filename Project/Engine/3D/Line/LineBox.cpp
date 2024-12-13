@@ -9,27 +9,28 @@
 
 void LineBox::Initialize(AABB aabb)
 {
-    for (int i = 0; i < 12; i++)
+    //ラインの生成
+    for (int i = 0; i < kMaxLines_; i++)
     {
         lines_[i] = std::make_unique<Line>();
     }
 
     //AABBの最小座標
-    min_ = { aabb.min.x, aabb.min.y, aabb.min.z, 1.0f };
+    min_ = { aabb.min.x, aabb.min.y, aabb.min.z, min_.w };
 
     //AABBの最大座標
-    max_ = { aabb.max.x, aabb.max.y, aabb.max.z, 1.0f };
+    max_ = { aabb.max.x, aabb.max.y, aabb.max.z, max_.w };
 
     //AABBの8つの頂点を定義
-    vertices_[0] = { Vector4(min_.x, min_.y, min_.z, 1.0f) };
-    vertices_[1] = { Vector4(max_.x, min_.y, min_.z, 1.0f) };
-    vertices_[2] = { Vector4(min_.x, max_.y, min_.z, 1.0f) };
-    vertices_[3] = { Vector4(max_.x, max_.y, min_.z, 1.0f) };
+    vertices_[0] = { Vector4(min_.x, min_.y, min_.z, min_.w) };
+    vertices_[1] = { Vector4(max_.x, min_.y, min_.z, min_.w) };
+    vertices_[2] = { Vector4(min_.x, max_.y, min_.z, min_.w) };
+    vertices_[3] = { Vector4(max_.x, max_.y, min_.z, min_.w) };
 
-    vertices_[4] = { Vector4(min_.x, min_.y, max_.z, 1.0f) };
-    vertices_[5] = { Vector4(max_.x, min_.y, max_.z, 1.0f) };
-    vertices_[6] = { Vector4(min_.x, max_.y, max_.z, 1.0f) };
-    vertices_[7] = { Vector4(max_.x, max_.y, max_.z, 1.0f) };
+    vertices_[4] = { Vector4(min_.x, min_.y, max_.z, max_.w) };
+    vertices_[5] = { Vector4(max_.x, min_.y, max_.z, max_.w) };
+    vertices_[6] = { Vector4(min_.x, max_.y, max_.z, max_.w) };
+    vertices_[7] = { Vector4(max_.x, max_.y, max_.z, max_.w) };
 
     //AABBの12本の辺をラインとして描画
     lines_[0].reset(Line::Create(vertices_[0], vertices_[4]));
@@ -51,21 +52,23 @@ void LineBox::Initialize(AABB aabb)
 void LineBox::Update(AABB aabb)
 {
     //AABBの最小座標
-    min_ = { aabb.min.x, aabb.min.y, aabb.min.z, 1.0f };
+    min_ = { aabb.min.x, aabb.min.y, aabb.min.z, min_.w };
 
     //AABBの最大座標
-    max_ = { aabb.max.x, aabb.max.y, aabb.max.z, 1.0f };
+    max_ = { aabb.max.x, aabb.max.y, aabb.max.z, max_.w };
 
     //AABBの8つの頂点を定義
-    vertices_[0] = { Vector4(min_.x, min_.y, min_.z, 1.0f) };
-    vertices_[1] = { Vector4(max_.x, min_.y, min_.z, 1.0f) };
-    vertices_[2] = { Vector4(min_.x, max_.y, min_.z, 1.0f) };
-    vertices_[3] = { Vector4(max_.x, max_.y, min_.z, 1.0f) };
-    vertices_[4] = { Vector4(min_.x, min_.y, max_.z, 1.0f) };
-    vertices_[5] = { Vector4(max_.x, min_.y, max_.z, 1.0f) };
-    vertices_[6] = { Vector4(min_.x, max_.y, max_.z, 1.0f) };
-    vertices_[7] = { Vector4(max_.x, max_.y, max_.z, 1.0f) };
+    vertices_[0] = { Vector4(min_.x, min_.y, min_.z, min_.w) };
+    vertices_[1] = { Vector4(max_.x, min_.y, min_.z, min_.w) };
+    vertices_[2] = { Vector4(min_.x, max_.y, min_.z, min_.w) };
+    vertices_[3] = { Vector4(max_.x, max_.y, min_.z, min_.w) };
 
+    vertices_[4] = { Vector4(min_.x, min_.y, max_.z, max_.w) };
+    vertices_[5] = { Vector4(max_.x, min_.y, max_.z, max_.w) };
+    vertices_[6] = { Vector4(min_.x, max_.y, max_.z, max_.w) };
+    vertices_[7] = { Vector4(max_.x, max_.y, max_.z, max_.w) };
+
+    //線の更新
     lines_[0]->Update(vertices_[0], vertices_[4]);
     lines_[1]->Update(vertices_[0], vertices_[1]);
     lines_[2]->Update(vertices_[4], vertices_[5]);
@@ -84,7 +87,8 @@ void LineBox::Update(AABB aabb)
 
 void LineBox::Draw(WorldTransform& worldTransform, const Camera& camera)
 {
-    for (int i = 0; i < 12; i++)
+    //線の描画
+    for (int i = 0; i < kMaxLines_; i++)
     {
         lines_[i]->Draw(worldTransform, camera);
     }
@@ -92,6 +96,7 @@ void LineBox::Draw(WorldTransform& worldTransform, const Camera& camera)
 
 LineBox* LineBox::Create(AABB aabb)
 {
+    //LineBoxの生成、初期化
     LineBox* lineBox = new LineBox();
     lineBox->Initialize(aabb);
     return lineBox;

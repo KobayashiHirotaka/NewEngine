@@ -21,6 +21,7 @@ public:
     static uint32_t sDescriptorSizeSRV;
     static uint32_t sDescriptorSizeDSV;
 
+    //テクスチャ
     struct Texture
     {
         Microsoft::WRL::ComPtr<ID3D12Resource> resource;
@@ -28,12 +29,14 @@ public:
         uint32_t srvIndex;
     };
 
+    //頂点データ
     struct VertexPosUV
     {
         Vector4 position;
         Vector2 texcoord;
     };
 
+    //ブラーデータ
     struct BlurData
     {
         int32_t textureWidth;
@@ -42,42 +45,49 @@ public:
         float weights[8];
     };
 
+    //ブルームデータ
     struct BloomData
     {
         bool enable;
         float intensity;
     };
 
+    //ビネットデータ
     struct VignetteData
     {
         bool enable;
         float intensity;
     };
 
+    //グレースケールデータ
     struct GrayScaleData
     {
         bool enable;
         float padding[3];
     };
 
+    //ボックスフィルターデータ
     struct BoxFilterData
     {
         bool enable;
         float padding[3];
     };
 
+    //ガウシアンブラーデータ
     struct GaussianFilterData
     {
         bool enable;
         float padding[3];
     };
 
+    //輝度ベースアウトラインデータ
     struct LuminanceBasedOutlineData
     {
         bool enable;
         float padding[3];
     };
 
+    //深度ベースアウトラインデータ
     struct DepthBasedOutlineData
     {
         bool enable;
@@ -85,6 +95,7 @@ public:
         Matrix4x4 projectionInverse;
     };
 
+    //HSVフィルターデータ
     struct HSVFilterData
     {
         bool enable;
@@ -94,19 +105,29 @@ public:
         float value;
     };
 
+    /// <summary>インスタンスの取得</summary>
     static PostProcess* GetInstance();
 
+    /// <summary>インスタンスの削除</summary>
     static void DeleteInstance();
 
+    /// <summary>初期化</summary>
     void Initialize();
+
+    /// <summary>更新</summary>
     void Update();
+
+    /// <summary>描画前の処理</summary>
     void PreDraw();
+
+    /// <summary>描画後の処理</summary>
     void PostDraw();
 
-    //ポストプロセスのセッター
+    //Setter
+    //ポストプロセス
     void SetIsPostProcessActive(bool isActive) { isPostProcessActive_ = isActive; };
 
-    //ポストエフェクトのセッター
+    //ポストエフェクト用フラグ
     void SetIsBlurActive(bool isActive) { isBlurActive_ = isActive; };
     void SetIsShrinkBlurActive(bool isActive) { isShrinkBlurActive_ = isActive; };
     void SetIsBloomActive(bool isActive) { isBloomActive_ = isActive; };
@@ -118,8 +139,6 @@ public:
     void SetIsDepthBasedOutlineActive(float isActive) { isDepthBasedOutlineActive_ = isActive; };
     void SetIsHSVFilterActive(float isActive) { isHSVFilterActive_ = isActive; };
 
-
-    //ポストエフェクトのパラメーター用のセッター
     //ブルーム
     void SetBloomIntensity(float intensity) { bloomIntensity_ = intensity; };
 
@@ -139,11 +158,13 @@ private:
         Vertical,
     };
 
+    //シングルトン
     PostProcess() = default;
     ~PostProcess() = default;
     PostProcess(const PostProcess&) = delete;
     const PostProcess& operator=(const PostProcess&) = delete;
 
+    //DXC初期化
     void InitializeDXC();
     Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
     void InitializeVertexBuffer();
@@ -223,8 +244,10 @@ private:
     D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, const uint32_t descriptorSize, uint32_t index);
 
 private:
+    //PostProcessのインスタンス
     static PostProcess* sInstance_;
 
+    //DirectXのポインタ
     DirectXCore* dxCore_ = nullptr;
     ID3D12GraphicsCommandList* commandList_;
     ID3D12Device* device_;

@@ -23,25 +23,34 @@ uint32_t Model::sEnvironmentTextureHandle_;
 
 void Model::StaticInitialize()
 {
+	//DirectXCoreのインスタンスの取得
 	sDxCore_ = DirectXCore::GetInstance();
 
+	//TextureManagerのインスタンスの取得
 	sTextureManager_ = TextureManager::GetInstance();
 
+	//デバイスの取得
 	sDevice_ = sDxCore_->GetDevice();
 
+	//コマンドリストの取得
 	sCommandList_ = sDxCore_->GetCommandList();
 
+	//DXCの初期化
 	InitializeDXC();
 
+	//PSOの作成
 	CreatePSO();
 
+	//骨のPSOの作成
 	CreateBonePSO();
 
+	//環境テクスチャハンドルの設定
 	sEnvironmentTextureHandle_ = sTextureManager_->LoadTexture("resource/images/skybox.dds");
 }
 
 void Model::Update()
 {
+	//各ジョイントのローカル変換行列とスケルトン空間行列を計算
 	for (Joint& joint : skeleton_.joints)
 	{
 		joint.localMatrix = MakeAffineMatrix(joint.scale, joint.rotate, joint.translate);
@@ -56,6 +65,7 @@ void Model::Update()
 		}
 	}
 
+	//各ジョイントのワールド変換行列を設定（ワールド行列はSkeletonSpaceの情報を基に作成）
 	for (size_t i = 0; i < skeleton_.joints.size(); ++i)
 	{
 		if (i >= jointWorldTransform_.size())
@@ -77,6 +87,7 @@ void Model::Update()
 
 void Model::Draw(WorldTransform& worldTransform, const Camera& camera, const uint32_t animationData)
 {
+	//キーフレームのアニメーション
 	if (isKeyframeAnimation_)
 	{
 		//animationTime_ += 1.0f / 60.0f;//時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
@@ -183,6 +194,7 @@ void Model::DrawBone(WorldTransform& worldTransform, const Camera& camera)
 
 void Model::Release()
 {
+	//解放
 	sDxcUtils_.Reset();
 	sDxcCompiler_.Reset();
 	sIncludeHandler_.Reset();
@@ -224,12 +236,16 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 		sModelDatas_.push_back(modelData);
 	}
 
+	//アニメーションの読み込み
 	model->animation_ = model->LoadAnimationFile(directoryPath, filename);
 
+	//スケルトンの生成
 	model->skeleton_ = model->CreateSkelton(modelData.rootNode);
 
+	//スキンクラスターの生成
 	model->skinCluster_ = model->CreateSkinCluster(model->skeleton_, modelData);
 
+	//骨
 	if (!modelData.skinClusterData.empty())
 	{
 		model->CreateBoneVertices(model->skeleton_, model->skeleton_.root, model->boneVertices_);
@@ -264,7 +280,10 @@ Model* Model::CreateFromOBJ(const std::string& directoryPath, const std::string&
 
 void Model::PreDraw()
 {
+	//ルートシグネチャの設定
 	sCommandList_->SetGraphicsRootSignature(sRootSignature_.Get());
+
+	//パイプライン状態の設定
 	sCommandList_->SetPipelineState(sGraphicsPipelineState_.Get());
 }
 
@@ -275,7 +294,10 @@ void Model::PostDraw()
 
 void Model::PreDrawBone()
 {
+	//ルートシグネチャの設定
 	sCommandList_->SetGraphicsRootSignature(sBoneRootSignature_.Get());
+
+	//パイプライン状態の設定
 	sCommandList_->SetPipelineState(sBoneGraphicsPipelineState_.Get());
 }
 
@@ -774,6 +796,7 @@ ModelData Model::LoadModelFile(const std::string& directoryPath, const std::stri
 
 MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
 {
+	//マテリアルデータの読み込み
 	MaterialData materialData;
 	std::string line;
 	std::ifstream file(directoryPath + "/" + filename);
@@ -797,6 +820,7 @@ MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, c
 
 std::vector<Animation> Model::LoadAnimationFile(const std::string& directoryPath, const std::string& filename)
 {
+	//アニメーションの読み込み
 	std::vector<Animation> animation{};
 
 	Assimp::Importer importer;
@@ -936,6 +960,7 @@ Quaternion Model::CalculateValue(const std::vector<KeyframeQuaternion>& keyframe
 
 Skeleton Model::CreateSkelton(const Node& rootNode)
 {
+	//ジョイントの作成
 	Skeleton skeleton;
 	skeleton.root = CreateJoint(rootNode, {}, skeleton.joints);
 
@@ -949,6 +974,7 @@ Skeleton Model::CreateSkelton(const Node& rootNode)
 
 int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints)
 {
+	//Jointの生成
 	Joint joint;
 	joint.name = node.name;
 	joint.localMatrix = node.localMatrix;
@@ -971,9 +997,7 @@ int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& paren
 
 void Model::ApplyAnimation(const uint32_t animationData)
 {
-	//animationTime_ += 1.0f / 60.0f;
-	//animationTime_ = std::fmod(animationTime_, animation_.duration);
-
+	//アニメーションの適応
 	if (animation_.size() != 0)
 	{
 		for (Joint& joint : skeleton_.joints)
@@ -1077,12 +1101,15 @@ SkinCluster Model::CreateSkinCluster(const Skeleton& skeleton, const ModelData& 
 
 void Model::CreateBoneVertexBuffer()
 {
+	//骨用の頂点バッファを作成
 	boneVertexBuffer_ = sDxCore_->CreateBufferResource(sizeof(Vector4) * boneVertices_.size());
 
+	///骨用の頂点バッファビューの設定
 	boneVertexBufferView_.BufferLocation = boneVertexBuffer_->GetGPUVirtualAddress();
 	boneVertexBufferView_.SizeInBytes = UINT(sizeof(Vector4) * boneVertices_.size());
 	boneVertexBufferView_.StrideInBytes = sizeof(Vector4);
 
+	//データを転送
 	Vector4* vertexData = nullptr;
 	boneVertexBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	std::memcpy(vertexData, boneVertices_.data(), sizeof(Vector4) * boneVertices_.size());
@@ -1092,8 +1119,10 @@ void Model::CreateBoneVertexBuffer()
 
 void Model::CreateBoneVertices(const Skeleton& skeleton, int32_t index, std::vector<Vector4>& vertices)
 {
+	//現在のジョイント(親ジョイント)を取得
 	const Joint& parentJoint = skeleton.joints[index];
 
+	//子ジョイントに対して処理を行う
 	for (int32_t childIndex : parentJoint.children)
 	{
 		const Joint& childJoint = skeleton.joints[childIndex];
@@ -1105,9 +1134,13 @@ void Model::CreateBoneVertices(const Skeleton& skeleton, int32_t index, std::vec
 
 void Model::UpdateBoneVertices(const Skeleton& skeleton, int32_t index, std::vector<Vector4>& vertices)
 {
+	//以前の頂点データをクリア
 	vertices.clear();
+
+	//現在のジョイント(親ジョイント)を取得
 	const Joint& parentJoint = skeleton.joints[index];
 
+	//子ジョイントに対して処理を行う
 	for (int32_t childIndex : parentJoint.children)
 	{
 		const Joint& childJoint = skeleton.joints[childIndex];

@@ -7,12 +7,14 @@
 
 #pragma once
 
+//ライティングタイプ
 enum class LightingType
 {
 	LambertianReflectance,
 	HalfLambert,
 };
 
+//モデルタイプ
 enum class ModelType
 {
 	PhongReflectionModel,

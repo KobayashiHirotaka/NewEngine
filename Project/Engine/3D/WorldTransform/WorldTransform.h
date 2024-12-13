@@ -11,27 +11,38 @@
 
 struct ConstBufferDataWorldTransform
 {
+	//ワールド行列
 	Matrix4x4 matWorld;
+
+	//ワールド行列の逆行列転置
 	Matrix4x4 worldInverseTranspose;
 };
 
 class WorldTransform
 {
 public:
+	/// <summary>初期化</summary>
 	void Initialize();
 
+	/// <summary>定数バッファの作成</summary>
 	void CreateConstBuffer();
 
+	/// <summary>定数バッファをマップ</summary>
 	void Map();
 
+	/// <summary>行列転送の準備</summary>
 	void TransferMatrix();
 
+	/// <summary>オイラー角を使って行列を更新</summary>
 	void UpdateMatrixEuler();
 
+	/// <summary>クォータニオンを使って行列を更新</summary>
 	void UpdateMatrixQuaternion();
 
+	/// <summary>親を設定</summary>
 	void SetParent(const WorldTransform* parent);
 
+	/// <summary>親を削除</summary>
 	void DeleteParent();
 
 	//定数バッファ

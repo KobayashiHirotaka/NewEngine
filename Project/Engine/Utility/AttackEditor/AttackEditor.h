@@ -55,37 +55,64 @@ struct AttackParameter
 class AttackEditor
 {
 public:
+    /// <summary>インスタンスの取得</summary>
     static AttackEditor* GetInstance();
 
+    /// <summary>初期化</summary>
     void Initialize();
 
+    /// <summary>更新</summary>
     void Update();
 
+    /// <summary>調整したパラメータをセット</summary>
     void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& damage,
         float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, AABB& collision, bool isPlayer, 
         Direction& direction);
 
+    /// <summary>ファイルをセーブ</summary>
     void SaveFile(const std::string& saveFilePath, const std::unordered_map<std::string, AttackParameter>& attackParameters);
 
+    /// <summary>ファイルをロード</summary>
     void LoadFile(const std::string& loadFilePath, std::unordered_map<std::string, AttackParameter>& attackParameters);
 
 private:
+    //シングルトン
     AttackEditor() = default;
     ~AttackEditor() = default;
     AttackEditor(const AttackEditor& obj) = default;
     AttackEditor& operator=(const AttackEditor& obj) = default;
 
+    //日本語フォントのロード
     void LoadJapaneseFont();
 
 private:
+    //プレイヤーのパラメータ
     std::unordered_map<std::string, AttackParameter> playerAttackParameter_;
+
+    //エネミーのパラメータ
     std::unordered_map<std::string, AttackParameter> enemyAttackParameter_;
 
+    //タブの名前
     std::string tempTabName_;
 
+    //プレイヤーのファイルパス
     std::string savePlayerFilePath_ = "resource/AttackData/AttackPlayerData.json";
     std::string loadPlayerFilePath_ = "resource/AttackData/AttackPlayerData.json";
 
+    //エネミーのファイルパス
     std::string saveEnemyFilePath_ = "resource/AttackData/AttackEnemyData.json";
     std::string loadEnemyFilePath_ = "resource/AttackData/AttackEnemyData.json";
+
+
+    //ImGui用の変数
+    const int kIntMinValue_ = 0;
+    const int kMaxAttackTime_ = 60;
+    const int kMaxRecoveryTime_ = 100;
+    const int kMaxDamage_ = 100;
+    const float kFloatMinValue_ = 0.0f;
+    const float kMaxGuardGauge_ = 50.0f;
+    const float kMaxFinisherGauge_ = 50.0f;
+    const float kMaxHitStop_ = 1.0f;
+    const float kMinCollision_ = -3.0f;
+    const float kMaxCollision_ = 3.0f;
 };

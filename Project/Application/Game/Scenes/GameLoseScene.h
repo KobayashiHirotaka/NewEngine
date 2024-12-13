@@ -6,36 +6,46 @@
  */
 
 #include "IScene.h"
-#include "Engine/3D/Skybox/Skybox.h"
 #include "Application/GameObject/Skydome/Skydome.h"
 
 class GameLoseScene : public IScene
 {
 public:
-	//Transition用の時間
+	//トランジション用の時間
 	static const int kTransitionTime = 60;
 
+	/// <summary>コンストラクタ</summary>
 	GameLoseScene();
 
+	/// <summary>デストラクタ</summary>
 	~GameLoseScene();
 
+	/// <summary>初期化</summary>
 	void Initialize()override;
 
+	/// <summary>更新</summary>
 	void Update()override;
 
+	/// <summary>描画</summary>
 	void Draw()override;
 
+	/// <summary>終了</summary>
 	void Finalize()override;
 
+	/// <summary>ImGui</summary>
 	void ImGui()override;
 
 private:
+	//TextureManager
 	TextureManager* textureManager_ = nullptr;
 
+	//ModelManager
 	ModelManager* modelManager_ = nullptr;
 
+	//Input
 	Input* input_ = nullptr;
 
+	//Audio
 	Audio* audio_ = nullptr;
 
 	//Camera
@@ -50,22 +60,34 @@ private:
 	std::unique_ptr<Sprite>loseSceneSprite_ = nullptr;
 	uint32_t loseSceneTextureHandle_ = 0;
 
-	//Sounds
+	//サウンド
 	uint32_t selectSoundHandle_ = 0u;
 
-	//Transition
+	//大きさ
+	float volume_ = 1.0f;
+
+	//再生されているか
+	bool isPlayAudio_ = false;
+
+	//トランジション
+	//Sprite関係
 	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
 	uint32_t transitionTextureHandle_ = 0;
+	Vector2 transitionTextureSize_ = { 1280.0f,720.0f };
 	Vector4 transitionColor_ = { 0.0f,0.0f,0.0f,1.0f };
+
+	//トランジションタイマー
 	float transitionTimer_ = 0;
+
+	//トランジション開始時のアルファ値
+	const float kTransitionStartAlpha_ = 1.0f; 
+
+	//トランジション終了時のアルファ値
+	const float kTransitionEndAlpha_ = 0.0f;   
+
+	//トランジション開始・終了フラグ
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
-
-	//Skybox
-	std::unique_ptr<Skybox> skybox_;
-	WorldTransform skyboxWorldTransform_;
-
-	bool isPlayAudio_ = false;
 };
 
 

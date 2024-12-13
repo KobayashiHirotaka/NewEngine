@@ -11,6 +11,7 @@ Input* Input::sInstance_ = nullptr;
 
 Input* Input::GetInstance()
 {
+	//インスタンスを生成
 	if (sInstance_ == nullptr)
 	{
 		sInstance_ = new Input();
@@ -20,6 +21,7 @@ Input* Input::GetInstance()
 
 void Input::DeleteInstance()
 {
+	//インスタンスを削除
 	if (sInstance_ != nullptr)
 	{
 		delete sInstance_;
@@ -54,6 +56,7 @@ void Input::Initialize(WindowsApp* win)
 	hr = mouseDevice_->SetCooperativeLevel(win->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 	assert(SUCCEEDED(hr));
 
+	//キーボードの初期化
 	keys_ = {};
 	preKeys_ = {};
 
@@ -64,9 +67,10 @@ void Input::Initialize(WindowsApp* win)
 
 void Input::Update()
 {
+	//前フレームの入力状態を保存
 	preKeys_ = keys_;
-
-	mousePre_ = mouse_;
+	mousePre_ = mouse_;	
+	preState_ = state_;
 
 	//キーボード情報の取得開始
 	keyboard_->Acquire();
@@ -74,18 +78,17 @@ void Input::Update()
 	//マウス情報の取得開始
 	mouseDevice_->Acquire();
 
-	keys_ = {};
 	//全てのキーの入力状態を取得する
+	keys_ = {};
 	keyboard_->GetDeviceState(sizeof(keys_), &keys_);
 
 	//マウスの入力状態を取得する
 	mouseDevice_->GetDeviceState(sizeof(DIMOUSESTATE), &mouse_);
-
-	preState_ = state_;
 }
 
 bool Input::PushKey(uint8_t keyNumber)const
 {
+	//前フレームで押されて、現在は離されている
 	if (!keys_[keyNumber] && preKeys_[keyNumber])
 	{
 		return true;
@@ -98,6 +101,7 @@ bool Input::PushKey(uint8_t keyNumber)const
 
 bool Input::PressKey(uint8_t keyNumber)const
 {
+	//現在押されている
 	if (keys_[keyNumber])
 	{
 		return true;
@@ -110,6 +114,7 @@ bool Input::PressKey(uint8_t keyNumber)const
 
 bool Input::IsReleseKey(uint8_t keyNumber)const
 {
+	//現在押された瞬間
 	if (keys_[keyNumber] && !preKeys_[keyNumber])
 	{
 		return true;
@@ -122,6 +127,7 @@ bool Input::IsReleseKey(uint8_t keyNumber)const
 
 bool Input::IsPressMouse(int32_t mouseNum)
 {
+	//マウスボタンが押されている
 	if (mouse_.rgbButtons[mouseNum] == 0x80)
 	{
 		return true;
@@ -131,6 +137,7 @@ bool Input::IsPressMouse(int32_t mouseNum)
 
 bool Input::IsReleaseMouse(int32_t mouseNum)
 {
+	//マウスボタンが離されている
 	if (mouse_.rgbButtons[mouseNum] == 0x00)
 	{
 		return true;
@@ -140,6 +147,7 @@ bool Input::IsReleaseMouse(int32_t mouseNum)
 
 bool Input::IsPressMouseEnter(int32_t mouseNum)
 {
+	//マウスボタンが押された瞬間
 	if (mouse_.rgbButtons[mouseNum] == 0x80 && mousePre_.rgbButtons[mouseNum] == 0x00)
 	{
 		return true;
@@ -150,6 +158,7 @@ bool Input::IsPressMouseEnter(int32_t mouseNum)
 
 bool Input::IsPressMouseExit(int32_t mouseNum)
 {
+	//マウスボタンが離された瞬間
 	if (mouse_.rgbButtons[mouseNum] == 0x00 && mousePre_.rgbButtons[mouseNum] == 0x80)
 	{
 		return true;
@@ -159,11 +168,13 @@ bool Input::IsPressMouseExit(int32_t mouseNum)
 
 int32_t Input::GetWheel()
 {
+	//マウスホイールの回転値を返す
 	return mouse_.lZ;
 }
 
 bool Input::GetJoystickState()
 {
+	//ゲームパッドの状態を取得
 	DWORD dwResult = XInputGetState(0, &state_);
 	if (dwResult == ERROR_SUCCESS)
 	{
@@ -174,6 +185,7 @@ bool Input::GetJoystickState()
 
 bool Input::IsPressButton(WORD button)
 {
+	//指定されたボタンが押されている
 	if (state_.Gamepad.wButtons & button)
 	{
 		return true;
@@ -183,6 +195,7 @@ bool Input::IsPressButton(WORD button)
 
 bool Input::IsPressButtonEnter(WORD button)
 {
+	//指定されたボタンが押された瞬間
 	if ((state_.Gamepad.wButtons & button) && !(preState_.Gamepad.wButtons & button))
 	{
 		return true;
@@ -192,24 +205,28 @@ bool Input::IsPressButtonEnter(WORD button)
 
 float Input::GetLeftStickX()
 {
+	//左スティックのX軸値を返す
 	float leftStickXValue = static_cast<float>(state_.Gamepad.sThumbLX) / SHRT_MAX;
 	return leftStickXValue;
 }
 
 float Input::GetLeftStickY()
 {
+	//左スティックのY軸値を返す
 	float leftStickYValue = static_cast<float>(state_.Gamepad.sThumbLY) / SHRT_MAX;
 	return leftStickYValue;
 }
 
 float Input::GetRightStickX()
 {
+	//右スティックのX軸値を返す
 	float rightStickXValue = static_cast<float>(state_.Gamepad.sThumbRX) / SHRT_MAX;
 	return rightStickXValue;
 }
 
 float Input::GetRightStickY()
 {
+	//右スティックのY軸値を返す
 	float rightStickYValue = static_cast<float>(state_.Gamepad.sThumbRY) / SHRT_MAX;
 	return rightStickYValue;
 }

@@ -12,10 +12,21 @@
 
 struct UI
 {
+	//描画するか
 	bool isDraw_ = true;
+
+	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
+
+	//位置
 	Vector2 position_{};
+
+	//回転
 	float rotation_{};
+
+	//サイズ
 	Vector2 size_{};
+
+	//Spriteのポインタ
 	Sprite* sprite_ = nullptr;;
 };

@@ -9,6 +9,7 @@
 
 void CollisionManager::CheckAllCollision()
 {
+	//コライダーリストを順番に比較して衝突をチェック
 	std::list<Collider*>::iterator itrA = colliders_.begin();
 	for (; itrA != colliders_.end(); ++itrA)
 	{
@@ -17,7 +18,7 @@ void CollisionManager::CheckAllCollision()
 		++itrB;
 		for (; itrB != colliders_.end(); ++itrB)
 		{
-
+			//2つのコライダー間の衝突をチェック
 			CheckCollisionPair(*(itrA), *(itrB));
 		}
 	}
@@ -25,6 +26,7 @@ void CollisionManager::CheckAllCollision()
 
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB)
 {
+	//衝突属性とマスクが一致しない場合は衝突しない
 	if ((colliderA->GetCollisionAttribute() & colliderB->GetCollisionMask()) == 0 ||
 		(colliderB->GetCollisionAttribute() & colliderA->GetCollisionMask()) == 0)
 	{
@@ -40,6 +42,7 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 
 		float distance = Length(Subtract(posA, posB));
 
+		//距離が半径の合計以下なら衝突
 		if (distance <= colliderA->GetRadius() + colliderB->GetRadius())
 		{
 			colliderA->OnCollision(colliderB);
@@ -58,6 +61,7 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 		AABB aabbA = colliderA->GetAABB();
 		AABB aabbB = colliderB->GetAABB();
 
+		//AABB同士が重なっていたら衝突
 		if (posA.x + aabbA.min.x <= posB.x + aabbB.max.x && posA.x + aabbA.max.x >= posB.x + aabbB.min.x &&
 			posA.y + aabbA.min.y <= posB.y + aabbB.max.y && posA.y + aabbA.max.y >= posB.y + aabbB.min.y &&
 			posA.z + aabbA.min.z <= posB.z + aabbB.max.z && posA.z + aabbA.max.z >= posB.z + aabbB.min.z)
@@ -77,6 +81,7 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 		AABB aabbA = colliderA->GetAABB();
 		AABB aabbB = colliderB->GetAABB();
 
+		//球の最寄りの点とAABBとの距離を比較
 		if (colliderA->GetCollisionPrimitive() & kCollisionPrimitiveSphere)
 		{
 			Vector3 closestPoint
@@ -88,6 +93,7 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 
 			float distance = Length(Subtract(closestPoint, posA));
 
+			//距離が半径以下なら衝突
 			if (distance <= colliderA->GetRadius())
 			{
 				colliderA->OnCollision(colliderB);
@@ -106,10 +112,10 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 
 			float distance = Length(Subtract(closestPoint, posB));
 
+			//距離が半径以下なら衝突
 			if (distance <= colliderB->GetRadius())
 			{
 				colliderA->OnCollision(colliderB);
-				//コライダーBの衝突時コールバックを呼び出す
 				colliderB->OnCollision(colliderA);
 			}
 		}

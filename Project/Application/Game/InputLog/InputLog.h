@@ -12,7 +12,7 @@
 #include <deque>
 #include <algorithm>
 
- //スティック入力の方向
+//スティック入力の方向
 enum class StickDirection
 {
 	DownLeft,

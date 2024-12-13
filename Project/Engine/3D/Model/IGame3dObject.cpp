@@ -9,12 +9,15 @@
 
 void IGame3dObject::Initialize()
 {
+	//WorldTransformの初期化
 	worldTransform_.Initialize();
 
+	//映り込みの設定
 	model_->GetMaterial()->SetEnvironmentCofficient(0.0f);
 }
 
 void IGame3dObject::Update()
 {
+	//WorldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 }

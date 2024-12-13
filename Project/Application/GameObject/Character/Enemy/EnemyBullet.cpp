@@ -13,6 +13,7 @@ void EnemyBullet::Initialize(Model* model, const Vector3& positon, const Vector3
 {
 	assert(model);
 
+	//モデルの設定
 	model_ = model;
 
 	//worldTransformの初期化
@@ -68,12 +69,6 @@ void EnemyBullet::Update()
 
 	//worldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
-
-	ImGui::Begin("EBullet");
-	ImGui::Text("isDead = %d", isDead_);
-	ImGui::Text("isHit = %d", isHit_);
-	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
-	ImGui::End();
 }
 
 void EnemyBullet::Draw(const Camera& camera)

@@ -19,31 +19,41 @@ Microsoft::WRL::ComPtr<ID3D12PipelineState> Line::sGraphicsPipelineState_ = null
 
 void Line::StaticInitialize()
 {
+	//DirectXCoreのインスタンスの取得
 	sDxCore_ = DirectXCore::GetInstance();
 
+	//TextureManagerのインスタンスの取得
 	sTextureManager_ = TextureManager::GetInstance();
 
+	//デバイスの取得
 	sDevice_ = sDxCore_->GetDevice();
 
+	//コマンドリストの取得
 	sCommandList_ = sDxCore_->GetCommandList();
 
+	//DXCの初期化
 	InitializeDXC();
 
+	//PSOの作成
 	CreatePSO();
 }
 
 void Line::Update(Vector4 start, Vector4 end)
 {
+	//始点・終点の設定
 	vertices_[0] = start;
 	vertices_[1] = end;
 }
 
 void Line::Draw(WorldTransform& worldTransform, const Camera& camera)
 {
+	//頂点バッファの更新
 	UpdateVertexBuffer();
 
+	//VBVを設定
 	sDxCore_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
+	//形状を設定。PSOに設定しているものとは別。同じものを設定すると考えておけば良い
 	sDxCore_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	//WorldTransform用のCBufferの場所を設定
@@ -61,9 +71,11 @@ Line* Line::Create(Vector4 start, Vector4 end)
 	//新しいラインを作成
 	Line* line = new Line();
 
+	//始点・終点
 	line->vertices_.push_back(start);
 	line->vertices_.push_back(end);
 
+	//頂点バッファの作成
 	line->CreateVertexBuffer();
 
 	return line;
@@ -71,6 +83,7 @@ Line* Line::Create(Vector4 start, Vector4 end)
 
 void Line::Release()
 {
+	//解放
 	sDxcUtils_.Reset();
 	sDxcCompiler_.Reset();
 	sIncludeHandler_.Reset();
@@ -80,7 +93,10 @@ void Line::Release()
 
 void Line::PreDraw()
 {
+	//ルートシグネチャの設定
 	sCommandList_->SetGraphicsRootSignature(sRootSignature_.Get());
+
+	//パイプライン状態の設定
 	sCommandList_->SetPipelineState(sGraphicsPipelineState_.Get());
 }
 
@@ -302,12 +318,15 @@ void Line::CreatePSO()
 
 void Line::CreateVertexBuffer()
 {
+	//頂点バッファリソースを作成
 	vertexBuffer_ = sDxCore_->CreateBufferResource(sizeof(Vector4) * vertices_.size());
 
+	//頂点バッファビューの設定
 	vertexBufferView_.BufferLocation = vertexBuffer_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = UINT(sizeof(Vector4) * vertices_.size());
 	vertexBufferView_.StrideInBytes = sizeof(Vector4);
 
+	//頂点データの初期化
 	Vector4* vertexData = nullptr;
 	vertexBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	std::memcpy(vertexData, vertices_.data(), sizeof(Vector4) * vertices_.size());
@@ -316,6 +335,7 @@ void Line::CreateVertexBuffer()
 
 void Line::UpdateVertexBuffer()
 {
+	//頂点データの更新
 	Vector4* vertexData = nullptr;
 	vertexBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	std::memcpy(vertexData, vertices_.data(), sizeof(Vector4) * vertices_.size());

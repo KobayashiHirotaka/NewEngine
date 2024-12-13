@@ -12,17 +12,23 @@
 class ParticleEffectPlayer
 {
 public:
+	/// <summary>初期化</summary>
 	void Initialize();
 
+	/// <summary>更新</summary>
 	void Update();
 
+	/// <summary>描画</summary>
 	void Draw(const Camera& camera);
 
+	/// <summary>パーティクルeffectを再生</summary>
 	void PlayParticle(const char* name, Vector3 position);
 
 private:
-	//パーティクル
+	//モデル
 	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
+
+	//パーティクルシステム
 	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
 };
 

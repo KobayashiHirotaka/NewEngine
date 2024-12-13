@@ -9,21 +9,25 @@
 
 AttackEditor* AttackEditor::GetInstance()
 {
+    //インスタンスを生成
     static AttackEditor sInstance;
-
     return &sInstance;
 }
 
 void AttackEditor::Initialize()
 {
+    //日本語対応処理
     LoadJapaneseFont();
 
+    //ファイルをロード
     LoadFile(loadPlayerFilePath_, playerAttackParameter_);
     LoadFile(loadEnemyFilePath_, enemyAttackParameter_);
 }
 
 void AttackEditor::Update()
 {
+    const int kTabNameOffset = 1;
+
     ImGui::Begin("アタックエディター");
 
     if (ImGui::BeginTabBar("##tabs"))
@@ -31,9 +35,10 @@ void AttackEditor::Update()
         //プレイヤータブ
         if (ImGui::BeginTabItem("プレイヤー"))
         {
+            //タブの追加
             if (ImGui::Button("追加"))
             {
-                std::string newTabName = "攻撃" + std::to_string(playerAttackParameter_.size() + 1);
+                std::string newTabName = "攻撃" + std::to_string(playerAttackParameter_.size() + kTabNameOffset);
 
                 if (playerAttackParameter_.find(newTabName) == playerAttackParameter_.end())
                 {
@@ -41,6 +46,7 @@ void AttackEditor::Update()
                 }
             }
 
+            //攻撃ごとのタブ
             for (auto it = playerAttackParameter_.begin(); it != playerAttackParameter_.end(); )
             {
                 auto& [tabName, param] = *it;
@@ -69,21 +75,22 @@ void AttackEditor::Update()
                         ++it;
                     }
 
-                    ImGui::SliderInt("当たり判定の付き初め", &param.attackStartTime, 0, 60);
-                    ImGui::SliderInt("当たり判定の付き終わり", &param.attackEndTime, 0, 60);
-                    ImGui::SliderInt("硬直時間", &param.recoveryTime, 0, 100);
-                    ImGui::SliderInt("ダメージ", &param.damage, 0, 100);
-                    ImGui::SliderFloat("ガードゲージ増加量", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
-                    ImGui::SliderFloat("必殺技ゲージ増加量", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
-                    ImGui::SliderFloat("ヒットストップ", &param.hitStop, 0.0f, 1.0f);
-                    
+                    //各パラメータの調整
+                    ImGui::SliderInt("当たり判定の付き初め", &param.attackStartTime, kIntMinValue_, kMaxAttackTime_);
+                    ImGui::SliderInt("当たり判定の付き終わり", &param.attackEndTime, kIntMinValue_, kMaxAttackTime_);
+                    ImGui::SliderInt("硬直時間", &param.recoveryTime, kIntMinValue_, kMaxRecoveryTime_);
+                    ImGui::SliderInt("ダメージ", &param.damage, kIntMinValue_, kMaxDamage_);
+                    ImGui::SliderFloat("ガードゲージ増加量", &param.guardGaugeIncreaseAmount, kFloatMinValue_, kMaxGuardGauge_);
+                    ImGui::SliderFloat("必殺技ゲージ増加量", &param.finisherGaugeIncreaseAmount, kFloatMinValue_, kMaxFinisherGauge_);
+                    ImGui::SliderFloat("ヒットストップ", &param.hitStop, kFloatMinValue_, kMaxHitStop_);
+
                     ImGui::Text("右向きの当たり判定");
-                    ImGui::SliderFloat3("最小値(右向き)", &param.rightCollisionMin.x, -3.0f, 3.0f);
-                    ImGui::SliderFloat3("最大値(右向き)", &param.rightCollisionMax.x, -3.0f, 3.0f);
+                    ImGui::SliderFloat3("最小値(右向き)", &param.rightCollisionMin.x, kMinCollision_, kMaxCollision_);
+                    ImGui::SliderFloat3("最大値(右向き)", &param.rightCollisionMax.x, kMinCollision_, kMaxCollision_);
 
                     ImGui::Text("左向きの当たり判定");
-                    ImGui::SliderFloat3("最小値(左向き)", &param.leftCollisionMin.x, -3.0f, 3.0f);
-                    ImGui::SliderFloat3("最大値(左向き)", &param.leftCollisionMax.x, -3.0f, 3.0f);
+                    ImGui::SliderFloat3("最小値(左向き)", &param.leftCollisionMin.x, kMinCollision_, kMaxCollision_);
+                    ImGui::SliderFloat3("最大値(左向き)", &param.leftCollisionMax.x, kMinCollision_, kMaxCollision_);
                 }
                 else
                 {
@@ -94,6 +101,7 @@ void AttackEditor::Update()
                 ImGui::Separator();
             }
 
+            //各パラメータの保存
             if (ImGui::Button("保存"))
             {
                 SaveFile(savePlayerFilePath_, playerAttackParameter_);
@@ -101,6 +109,7 @@ void AttackEditor::Update()
                 MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
             }
 
+            //各パラメータの読み込み
             if (ImGui::Button("読み込み"))
             {
                 LoadFile(loadPlayerFilePath_, playerAttackParameter_);
@@ -114,9 +123,10 @@ void AttackEditor::Update()
         //エネミータブ
         if (ImGui::BeginTabItem("エネミー"))
         {
+            //タブの追加
             if (ImGui::Button("追加"))
             {
-                std::string newTabName = "攻撃" + std::to_string(enemyAttackParameter_.size() + 1);
+                std::string newTabName = "攻撃" + std::to_string(enemyAttackParameter_.size() + kTabNameOffset);
 
                 if (enemyAttackParameter_.find(newTabName) == enemyAttackParameter_.end())
                 {
@@ -124,6 +134,7 @@ void AttackEditor::Update()
                 }
             }
 
+            //攻撃ごとのタブ
             for (auto it = enemyAttackParameter_.begin(); it != enemyAttackParameter_.end(); )
             {
                 auto& [tabName, param] = *it;
@@ -152,21 +163,22 @@ void AttackEditor::Update()
                         ++it;
                     }
 
-                    ImGui::SliderInt("当たり判定の付き初め", &param.attackStartTime, 0, 60);
-                    ImGui::SliderInt("当たり判定の付き終わり", &param.attackEndTime, 0, 60);
-                    ImGui::SliderInt("硬直時間", &param.recoveryTime, 0, 100);
-                    ImGui::SliderInt("ダメージ", &param.damage, 0, 100);
-                    ImGui::SliderFloat("ガードゲージ増加量", &param.guardGaugeIncreaseAmount, 0.0f, 50.0f);
-                    ImGui::SliderFloat("必殺技ゲージ増加量", &param.finisherGaugeIncreaseAmount, 0.0f, 50.0f);
-                    ImGui::SliderFloat("ヒットストップ", &param.hitStop, 0.0f, 1.0f);
+                    //各パラメータの調整
+                    ImGui::SliderInt("当たり判定の付き初め", &param.attackStartTime, kIntMinValue_, kMaxAttackTime_);
+                    ImGui::SliderInt("当たり判定の付き終わり", &param.attackEndTime, kIntMinValue_, kMaxAttackTime_);
+                    ImGui::SliderInt("硬直時間", &param.recoveryTime, kIntMinValue_, kMaxRecoveryTime_);
+                    ImGui::SliderInt("ダメージ", &param.damage, kIntMinValue_, kMaxDamage_);
+                    ImGui::SliderFloat("ガードゲージ増加量", &param.guardGaugeIncreaseAmount, kFloatMinValue_, kMaxGuardGauge_);
+                    ImGui::SliderFloat("必殺技ゲージ増加量", &param.finisherGaugeIncreaseAmount, kFloatMinValue_, kMaxFinisherGauge_);
+                    ImGui::SliderFloat("ヒットストップ", &param.hitStop, kFloatMinValue_, kMaxHitStop_);
 
                     ImGui::Text("右向きの当たり判定");
-                    ImGui::SliderFloat3("最小値(右向き)", &param.rightCollisionMin.x, -3.0f, 3.0f);
-                    ImGui::SliderFloat3("最大値(右向き)", &param.rightCollisionMax.x, -3.0f, 3.0f);
+                    ImGui::SliderFloat3("最小値(右向き)", &param.rightCollisionMin.x, kMinCollision_, kMaxCollision_);
+                    ImGui::SliderFloat3("最大値(右向き)", &param.rightCollisionMax.x, kMinCollision_, kMaxCollision_);
 
                     ImGui::Text("左向きの当たり判定");
-                    ImGui::SliderFloat3("最小値(左向き)", &param.leftCollisionMin.x, -3.0f, 3.0f);
-                    ImGui::SliderFloat3("最大値(左向き)", &param.leftCollisionMax.x, -3.0f, 3.0f);
+                    ImGui::SliderFloat3("最小値(左向き)", &param.leftCollisionMin.x, kMinCollision_, kMaxCollision_);
+                    ImGui::SliderFloat3("最大値(左向き)", &param.leftCollisionMax.x, kMinCollision_, kMaxCollision_);
                 }
                 else
                 {
@@ -177,6 +189,7 @@ void AttackEditor::Update()
                 ImGui::Separator();
             }
 
+            //各パラメータの保存
             if (ImGui::Button("保存"))
             {
                 SaveFile(saveEnemyFilePath_, enemyAttackParameter_);
@@ -184,6 +197,7 @@ void AttackEditor::Update()
                 MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
             }
 
+            //各パラメータの読み込み
             if (ImGui::Button("読み込み"))
             {
                 LoadFile(loadEnemyFilePath_, enemyAttackParameter_);
@@ -207,8 +221,10 @@ void AttackEditor::LoadJapaneseFont()
     config.MergeMode = false; 
     config.PixelSnapH = true;
 
+    const float pixelSize = 18.0f;
+
     //日本語フォントの指定
-    if (io.Fonts->AddFontFromFileTTF("resource/AttackData/NotoSansJP-Medium.ttf", 18.0f, &config, io.Fonts->GetGlyphRangesJapanese()))
+    if (io.Fonts->AddFontFromFileTTF("resource/AttackData/NotoSansJP-Medium.ttf", pixelSize, &config, io.Fonts->GetGlyphRangesJapanese()))
     {
         io.Fonts->Build(); 
     }
@@ -218,6 +234,8 @@ void AttackEditor::SaveFile(const std::string& saveFilePath, const std::unordere
 {
     json root = json::object();
 
+
+    //jsonにパラメータを保存
     for (const auto& [tabName, param] : attackParameters)
     {
         root[tabName] = {
@@ -235,6 +253,7 @@ void AttackEditor::SaveFile(const std::string& saveFilePath, const std::unordere
         };
     }
 
+    //jsonファイルを生成(ディレクトリが存在しない場合)
     std::filesystem::path dir("resource/AttackData");
     if (!std::filesystem::exists(dir))
     {
@@ -256,6 +275,7 @@ void AttackEditor::SaveFile(const std::string& saveFilePath, const std::unordere
 
 void AttackEditor::LoadFile(const std::string& loadFilePath, std::unordered_map<std::string, AttackParameter>& attackParameters)
 {
+    //ファイルを開く
     std::ifstream ifs(loadFilePath);
     if (ifs.fail())
     {
@@ -271,6 +291,8 @@ void AttackEditor::LoadFile(const std::string& loadFilePath, std::unordered_map<
 
     attackParameters.clear();
 
+
+    //jsonからパラメータを読み込み
     for (auto it = root.begin(); it != root.end(); ++it)
     {
         const std::string& tabName = it.key();
@@ -297,6 +319,7 @@ void AttackEditor::SetAttackParameters(const std::string& name, int& attackStart
     float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, AABB& collision, bool isPlayer,
     Direction& direction)
 {
+    //調整したパラメータを各キャラクターが持っている変数に代入
     const auto& attackParameters = isPlayer ? playerAttackParameter_ : enemyAttackParameter_;
 
     auto it = attackParameters.find(name);

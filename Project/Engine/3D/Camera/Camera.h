@@ -13,35 +13,48 @@
 
 struct ConstBuffDataCamera
 {
+	//ワールド座標
 	Vector3 worldPosition;
+
+	//パディング
 	float padding;
+
+	//ビュー行列
 	Matrix4x4 view;
+
+	//投影行列
 	Matrix4x4 projection;
 };
 
 class Camera
 {
 public:
+	/// <summary>コンストラクタ</summary>
 	Camera();
 
+	/// <summary>デストラクタ</summary>
 	~Camera();
 
+	/// <summary>ビュー行列の更新</summary>
 	void UpdateViewMatrix();
 
+	/// <summary>プロジェクション行列の更新</summary>
 	void UpdateProjectionMatrix();
 
+	/// <summary>行列の更新</summary>
 	void UpdateMatrix();
 
+	/// <summary>行列の転送</summary>
 	void TransferMatrix();
 
+	/// <summary>ImGui</summary>
 	void ImGui();
-
-	//void SetTranslation(Vector3 translation) { translation_ = translation; };
-
-	//void SetRotation(Vector3 rotation) { rotation_ = rotation; };
 
 	//定数バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff_;
+
+	//ローカルスケール
+	Vector3 scale_ = { 1.0f,1.0f,1.0f };
 
 	//X,Y,Z軸回りのローカル回転角
 	Vector3 rotation_ = { 0.0f,0.0f,0.0f };
@@ -64,6 +77,6 @@ public:
 	//ビュー行列
 	Matrix4x4 matView_{};
 
-	//プロジェクション行列
+	//投影行列
 	Matrix4x4 matProjection_{};
 };

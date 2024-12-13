@@ -16,27 +16,21 @@ GameLoseScene::~GameLoseScene() {};
 
 void GameLoseScene::Initialize()
 {
-	//TextureManagerのinstance
+	//TextureManagerのインスタンスの取得
 	textureManager_ = TextureManager::GetInstance();
 
-	//ModelManagerのinstance
+	//ModelManagerのインスタンスの取得
 	modelManager_ = ModelManager::GetInstance();
 
-	//Inputのinstance
+	//Inputのインスタンスの取得
 	input_ = Input::GetInstance();
 
-	//Audioのinstance
+	//Audioのインスタンスの取得
 	audio_ = Audio::GetInstance();
 
 	//Skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
-
-	//Skyboxの生成、初期化
-	skybox_.reset(Skybox::Create());
-
-	skyboxWorldTransform_.Initialize();
-	skyboxWorldTransform_.scale = { 500.0f, 500.0f, 500.0f };
 
 	//DebugCameraの初期化
 	debugCamera_.Initialize();
@@ -45,10 +39,12 @@ void GameLoseScene::Initialize()
 	loseSceneTextureHandle_ = TextureManager::LoadTexture("resource/images/LoseScene.png");
 	loseSceneSprite_.reset(Sprite::Create(loseSceneTextureHandle_, { 0.0f,0.0f }));
 
+	//トランジション
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
 	transitionSprite_->SetColor(transitionColor_);
-	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
+	transitionSprite_->SetSize(transitionTextureSize_);
 
+	//サウンド
 	selectSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Select.mp3");
 };
 
@@ -60,7 +56,7 @@ void GameLoseScene::Update()
 	if (input_->PushKey(DIK_SPACE))
 	{
 		isTransitionStart_ = true;
-		audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
+		audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
 	}
 
 #endif 
@@ -79,7 +75,7 @@ void GameLoseScene::Update()
 
 				if (!isPlayAudio_)
 				{
-					audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
+					audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
 				}
 
 				isPlayAudio_ = true;
@@ -87,16 +83,16 @@ void GameLoseScene::Update()
 		}
 	}
 
-	skyboxWorldTransform_.UpdateMatrixEuler();
-
 	//トランジション
+	const float deltaTime = 1.0f / kTransitionTime;
+
 	if (!isTransitionEnd_)
 	{
-		transitionTimer_ += 1.0f / kTransitionTime;
-		transitionColor_.w = Lerp(transitionColor_.w, 0.0f, transitionTimer_);
+		transitionTimer_ += deltaTime;
+		transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, transitionTimer_);
 		transitionSprite_->SetColor(transitionColor_);
 
-		if (transitionColor_.w <= 0.0f)
+		if (transitionColor_.w <= kTransitionEndAlpha_)
 		{
 			isTransitionEnd_ = true;
 			transitionTimer_ = 0.0f;
@@ -105,11 +101,11 @@ void GameLoseScene::Update()
 
 	if (isTransitionStart_)
 	{
-		transitionTimer_ += 1.0f / kTransitionTime;
-		transitionColor_.w = Lerp(transitionColor_.w, 1.0f, transitionTimer_);
+		transitionTimer_ += deltaTime;
+		transitionColor_.w = Lerp(transitionColor_.w, kTransitionStartAlpha_, transitionTimer_);
 		transitionSprite_->SetColor(transitionColor_);
 
-		if (transitionColor_.w >= 1.0f)
+		if (transitionColor_.w >= kTransitionStartAlpha_)
 		{
 			sceneManager_->ChangeScene("GameTitleScene");
 		}
@@ -143,12 +139,6 @@ void GameLoseScene::Draw()
 {
 	PostProcess::GetInstance()->PreDraw();
 
-	Skybox::PreDraw();
-
-	//skybox_->Draw(skyboxWorldTransform_, camera_);
-
-	Skybox::PostDraw();
-
 	Model::PreDraw();
 
 	//Skydomeの描画
@@ -171,6 +161,7 @@ void GameLoseScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
+	//トランジション
 	transitionSprite_->Draw();
 
 	Sprite::PostDraw();

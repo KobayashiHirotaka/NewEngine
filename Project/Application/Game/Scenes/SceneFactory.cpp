@@ -9,8 +9,10 @@
 
 IScene* SceneFactory::CreateScene(const std::string& sceneName)
 {
+	//新しいシーン
 	IScene* newScene = nullptr;
 
+	//シーン名に応じて、対応するシーンを作成
 	if (sceneName == "GameTitleScene") 
 	{
 		newScene = new GameTitleScene();

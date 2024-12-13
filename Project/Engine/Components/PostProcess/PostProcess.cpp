@@ -14,6 +14,7 @@ PostProcess* PostProcess::sInstance_ = nullptr;
 
 PostProcess* PostProcess::GetInstance()
 {
+	//インスタンスを生成
 	if (sInstance_ == nullptr)
 	{
 		sInstance_ = new PostProcess();
@@ -23,6 +24,7 @@ PostProcess* PostProcess::GetInstance()
 
 void PostProcess::DeleteInstance()
 {
+	//インスタンスを削除
 	if (sInstance_ != nullptr)
 	{
 		delete sInstance_;
@@ -32,12 +34,16 @@ void PostProcess::DeleteInstance()
 
 void PostProcess::Initialize()
 {
+	//DirectXCoreのインスタンスの取得
 	dxCore_ = DirectXCore::GetInstance();
 
+	//コマンドリストの取得
 	commandList_ = dxCore_->GetCommandList();
 
+	//デバイスの取得
 	device_ = dxCore_->GetDevice();
 
+	//各ディスクリプタサイズの取得
 	sDescriptorSizeRTV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	sDescriptorSizeSRV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	sDescriptorSizeDSV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
@@ -50,6 +56,7 @@ void PostProcess::Initialize()
 	vertices_.push_back(VertexPosUV{ {1.0f,1.0f,1.0f,1.0f},{1.0f,0.0f} });
 	vertices_.push_back(VertexPosUV{ {1.0f,-1.0f,1.0f,1.0f},{1.0f,1.0f} });
 
+	//各種初期化、PSOの生成
 	InitializeVertexBuffer();
 	InitializeDXC();
 	CreatePSO();
