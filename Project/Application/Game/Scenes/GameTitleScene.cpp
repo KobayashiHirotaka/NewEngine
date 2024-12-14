@@ -169,7 +169,7 @@ void GameTitleScene::Update()
 		if (isOpen_)
 		{
 			//右の方向キーかスティック右入力で次の説明へ
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) || (input_->GetLeftStickX() > value_ && stickInputCooldown_ <= 0))
+			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) || (input_->GetLeftStickX() > kValue_ && stickInputCooldown_ <= 0))
 			{
 				if (spriteCount_ != static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite)) 
 				{
@@ -187,7 +187,7 @@ void GameTitleScene::Update()
 				}
 			}
 			//左の方向キーかスティック左入力で前の説明に戻る
-			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) || (input_->GetLeftStickX() < -value_ && stickInputCooldown_ <= 0))
+			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) || (input_->GetLeftStickX() < -kValue_ && stickInputCooldown_ <= 0))
 			{
 				if (spriteCount_ != static_cast<int>(CommandSpriteType::GeneralCommandSprite)) 
 				{

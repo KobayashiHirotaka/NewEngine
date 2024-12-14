@@ -20,7 +20,20 @@
 class GamePlayScene : public IScene
 {
 public:
-	//Transition用の時間
+	//操作説明の種類
+	enum class CommandSpriteType
+	{
+		//基本操作
+		GeneralCommandSprite,
+
+		//コンボ攻撃
+		ComboAttackCommandSprite,
+
+		//必殺技攻撃
+		FinisherAttackCommandSprite,
+	};
+
+	//トランジション用の時間
 	static const int kTransitionTime = 60;
 
 	//ラウンド移行の時間
@@ -100,6 +113,18 @@ private:
 	//CameraController
 	std::unique_ptr<CameraController> cameraController_;
 
+	//Player
+	Player* player_;
+
+	//Enemy
+	Enemy* enemy_;
+
+	//Skydome
+	std::unique_ptr<Skydome> skydome_;
+
+	//BackGround
+	std::unique_ptr<BackGround> backGround_;
+
 	//Timer用のSprite
 	std::unique_ptr<Sprite>numberTensSprite_ = nullptr;
 	std::unique_ptr<Sprite>numberOnesSprite_ = nullptr;
@@ -147,10 +172,6 @@ private:
 	std::unique_ptr<Sprite>frameUISprite_ = nullptr;
 	uint32_t frameUITextureHandle_ = 0;
 
-	//半透明のSprite
-	std::unique_ptr<Sprite>commandListBackSprite_ = nullptr;
-	uint32_t commandListBackTextureHandle_ = 0;
-
 	//何枚目のSpriteが表示されているか
 	int spriteCount_ = 0;
 
@@ -158,6 +179,9 @@ private:
 	bool isOpen_ = false;
 
 	//時間
+	//ラウンドの最大時間
+	const int kMaxRoundTime_ = 99;
+	
 	//現在の時間
 	int currentSeconds_ = 0;
 
@@ -176,30 +200,50 @@ private:
 	const int kOutComeTime_ = 150;
 	const int kKoActiveTime_ = 0;
 
-	//Sounds
+	//必殺技中の時間
+	const int kFinisherTime_ = 120;
+
+	//KO時間
+	const int kKOConditionTime = 20;
+
+	//サウンド
 	uint32_t selectSoundHandle_ = 0u;
+	const float volume_ = 1.0f;
 
-	//Shake
-	bool isShake_ = false;
-	const int kShakeTime_ = 10;
-	int shakeTimer_ = 0;
-	Vector2 shakePower_ = { 0.9f,1.1f };
-
-	//Transition
+	//トランジション
 	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
 	uint32_t transitionTextureHandle_ = 0;
+	Vector2 transitionTextureSize_ = { 1280.0f,720.0f };
 	Vector4 transitionColor_ = { 0.0f,0.0f,0.0f,1.0f };
+	
+	//トランジションタイマー
 	float transitionTimer_ = 0;
+
+	//トランジション開始時のアルファ値
+	const float kTransitionStartAlpha_ = 1.0f;
+
+	//トランジション終了時のアルファ値
+	const float kTransitionEndAlpha_ = 0.0f;
+
+	//トランジション開始・終了フラグ
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;
+
+	//ラウンド間のトランジション
 	bool isRoundTransition_ = false;
-	int roundTransitionTimer_ = 150;
+	const int kRoundTransitionTime_ = 150;
+	const int kHalfkRoundTransitionTime_ = kRoundTransitionTime_ / 2;
+	int roundTransitionTimer_ = kRoundTransitionTime_;
 
 	//モデルの骨を描画するかどうか
 	bool isBoneDraw_ = true;
 
 	//ラウンド
-	int round_ = 1;
+	const int kRoundOne_ = 1;
+	const int kRoundTwo_ = 2;
+	const int kRoundThree_ = 3;
+
+	int round_ = kRoundOne_;
 
 	//試合の結果
 	bool isPlayerWin_ = false;
@@ -210,17 +254,14 @@ private:
 	int PlayerWinCount_ = 0;
 	int EnemyWinCount_ = 0;
 
+	//勝利カウント
 	//Player
-	Player* player_;
+	const int kPlayerFirstWinCount_ = 1;   
+	const int kPlayerSecondWinCount_ = 2; 
 
 	//Enemy
-	Enemy* enemy_;
-
-	//Skydome
-	std::unique_ptr<Skydome> skydome_;
-
-	//BackGround
-	std::unique_ptr<BackGround> backGround_;
+	const int kEnemyFirstWinCount_ = 1;    
+	const int kEnemySecondWinCount_ = 2;   
 
 	//デバッグかどうか
 	bool isDebug_ = false;
@@ -238,4 +279,23 @@ private:
 	//必殺技の開始・終了
 	bool isFinisherStart_ = false;
 	bool isFinisherEnd_ = false;
+
+	//必殺技時のカメラ演出用のパラメータ
+	//プレイヤーの位置からのカメラのオフセット
+	const float kCameraFinisherOffsetY_ = 4.0f;
+
+	//カメラ移動と回転の補間速度
+	const float kCameraLerpSpeed_ = 0.2f;
+
+	//必殺技発動時のカメラ回転角
+	const float kCameraFinisherRotationY_ = 0.7f;
+
+	//必殺技終了時のカメラ微調整オフセット
+	const float kCameraEndCorrectionY_ = 0.1f;
+
+	//微調整用補間速度
+	const float kCameraSmallLerpSpeed_ = 0.1f;
+
+	//微小な回転補正角度
+	const float kCameraSmallRotationCorrection_ = 0.1f;
 };

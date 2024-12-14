@@ -12,6 +12,7 @@
 
 Player::~Player()
 {
+	//各ゲージの削除
 	delete hpBar_.sprite_;
 	delete guardGaugeBar_.sprite_;
 	delete finisherGaugeBar_.sprite_;
@@ -19,15 +20,11 @@ Player::~Player()
 
 void Player::Initialize()
 {
+	//タグの設定
 	IGame3dObject::SetTag("Player");
 
+	//初期化
 	ICharacter::Initialize();
-
-	//Inputのinstance
-	input_ = Input::GetInstance();
-
-	//Audioのinstance
-	audio_ = Audio::GetInstance();
 
 	//WorldTransformの初期化
 	worldTransform_.Initialize();
@@ -39,74 +36,99 @@ void Player::Initialize()
 	SetCollisionMask(kCollisionMaskPlayer);
 	SetCollisionPrimitive(kCollisionPrimitiveAABB);
 
+	//LineBoxの描画
 	lineBox_.reset(LineBox::Create(aabb_));
 
 	//リソース
-	//各ゲージの初期化
+	//体力ゲージ
+	const Vector2 kHpBarPosition = { 537.0f, kBarSpace_ };
+	const Vector2 kHpBarSize = { -barSize_  ,7.2f };
+
 	hpBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/HP.png"),
-		{537.0f, barSpace_},
+		kHpBarPosition,
 		0.0f,
-		{-barSize_  ,7.2f},
+		kHpBarSize,
 		nullptr,
 	};
 
 	hpBar_.sprite_ = Sprite::Create(hpBar_.textureHandle_, hpBar_.position_);
 
+	//ガードゲージ
+	const Vector2 kGuardGaugeBarPosition = { 537.0f, kGuardGaugeBarSpace_ };
+	const Vector2 kGuardGaugeBarSize = { -guardGaugeBarSize_  ,7.0f };
+
 	guardGaugeBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/guardGauge.png"),
-		{537.0f, guardGaugeBarSpace_},
+		{kGuardGaugeBarPosition},
 		0.0f,
-		{-guardGaugeBarSize_  ,7.0f},
+		{kGuardGaugeBarSize},
 		nullptr,
 	};
 
 	guardGaugeBar_.sprite_ = Sprite::Create(guardGaugeBar_.textureHandle_, guardGaugeBar_.position_);
 
+	//必殺技ゲージ
+	const Vector2 kFinisherGaugeBarPosition = { 299.0f, kFinisherGaugeBarSpace_ };
+	const Vector2 kFinisherGaugeBarSize = { -finisherGaugeBarSize_  ,19.3f };
+
 	finisherGaugeBar_ = {
 		true,
 		TextureManager::LoadTexture("resource/images/finisherGauge.png"),
-		{299.0f, finisherGaugeBarSpace_},
+		{kFinisherGaugeBarPosition},
 		0.0f,
-		{-finisherGaugeBarSize_  ,19.3f},
+		{kFinisherGaugeBarSize},
 		nullptr,
 	};
 
-	hitTextureHandle_ = TextureManager::LoadTexture("resource/images/Hit.png");
-	hitSprite_.reset(Sprite::Create(hitTextureHandle_, { 1090.0f, 180.0f }));
-
-	comboNumTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
-	comboNumSprite_.reset(Sprite::Create(comboNumTextureHandle_, { 1060.0f, 290.0f }));
-
 	finisherGaugeBar_.sprite_ = Sprite::Create(finisherGaugeBar_.textureHandle_, finisherGaugeBar_.position_);
 
+	//ヒット表示
+	const Vector2 kHitSpritePosition = { 1090.0f, 180.0f };
+
+	hitTextureHandle_ = TextureManager::LoadTexture("resource/images/Hit.png");
+	hitSprite_.reset(Sprite::Create(hitTextureHandle_, kHitSpritePosition));
+
+	//コンボ表示
+	const Vector2 kComboNumSpritePosition = { 1060.0f, 290.0f };
+
+	comboNumTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
+	comboNumSprite_.reset(Sprite::Create(comboNumTextureHandle_, kComboNumSpritePosition));
+
 	//キャラクターアイコン
+	const Vector2 kPlayerIconPosition = { 53.0f, 20.0f };
+	const Vector2 kPlayerIconSize = { 120.0f,120.0f };
+
 	playerIconTextureHandle_ = TextureManager::LoadTexture("resource/images/PlayerIcon.png");
 
-	playerIconSprite_.reset(Sprite::Create(playerIconTextureHandle_, { 53.0f, 20.0f }));
-	playerIconSprite_->SetSize({ 120.0f,120.0f });
+	playerIconSprite_.reset(Sprite::Create(playerIconTextureHandle_, kPlayerIconPosition));
+	playerIconSprite_->SetSize(kPlayerIconSize);
 
-	//SEの初期化
-	attackSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Attack.mp3");
-	weaponAttackSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/WeaponAttack.mp3");
-	damageSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/HitPunch1.mp3");
-	guardSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Guard.mp3");
+	//カーソル
+	const float kAdjustCursolPositionY = 0.4f;
+	const float kCursolRotationY = 1.5f;
+	const Vector3 kCursolScale = { 0.3f, 0.3f, 0.3f };
 
-	//カーソルの初期化
 	playerCursol_.reset(Model::CreateFromOBJ("resource/playerCursol", "playerCursol.obj"));
 
 	worldTransformCursol_.Initialize();
-	worldTransformCursol_.translation = { worldTransform_.translation.x, worldTransform_.translation.y + 0.4f, worldTransform_.translation.z };
-	worldTransformCursol_.rotation.y = 1.5f;
-	worldTransformCursol_.scale = { 0.3f, 0.3f, 0.3f };
+	worldTransformCursol_.translation = { worldTransform_.translation.x, worldTransform_.translation.y + kAdjustCursolPositionY, worldTransform_.translation.z };
+	worldTransformCursol_.rotation.y = kCursolRotationY;
+	worldTransformCursol_.scale = kCursolScale;
 
 	worldTransformCursol_.parent = &worldTransform_;
 
 	//パーティクル
 	particleEffectPlayer_ = std::make_unique<ParticleEffectPlayer>();
 	particleEffectPlayer_->Initialize();
+
+	//SEの読み込み
+	attackSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Attack.mp3");
+	weaponAttackSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/WeaponAttack.mp3");
+	damageSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/HitPunch1.mp3");
+	guardSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Guard.mp3");
 
 	//WorldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
@@ -115,21 +137,14 @@ void Player::Initialize()
 void Player::Update()
 {
 #ifdef _ADJUSTMENT
-	if (input_->PressKey(DIK_S))
-	{
-		finisherGauge_ = -50.0f;
-	}
 
-	/*if (input_->PressKey(DIK_D))
-	{
-		guardGauge_ -= 0.5f ;
-	}*/
-
+	
 #endif
 
+	//更新
 	ICharacter::Update();
 
-	//エディタで設定したパラメータをセット
+	//エディターで設定したパラメータをセット
 	AttackEditor::GetInstance()->SetAttackParameters(attackType_, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
 		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop,
 		aabb_, true, characterState_.direction);
@@ -137,23 +152,25 @@ void Player::Update()
 	//デバッグ用の処理
 	if (isDebug_)
 	{
+		Vector4 kAttackColor = { 1.0f,0.0f,0.0f,1.0f };
+		Vector4 kRecoveryColor = { 0.0f,0.0f,1.0f,1.0f };
+		Vector4 kDefaultColor = { 1.0f,1.0f,1.0f,1.0f };
+
 		if (attackData_.isAttack)
 		{
 			//攻撃中(攻撃判定あり)にモデルの色を変える
-			model_->GetMaterial()->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+			model_->GetMaterial()->SetColor(kAttackColor);
 		}
 	    else if (attackData_.isRecovery)
 	    {
 		    //硬直中にモデルの色を変える
-		    model_->GetMaterial()->SetColor({ 0.0f,0.0f,1.0f,1.0f });
+		    model_->GetMaterial()->SetColor(kRecoveryColor);
 	    }
 		else
 		{
-			model_->GetMaterial()->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+			model_->GetMaterial()->SetColor(kDefaultColor);
 		}
 	}
-
-	//model_->GetMaterial()->ImGui();
 
 	//振り向きの処理
 	Vector3 playerWorldPosition = worldTransform_.translation;
@@ -180,45 +197,50 @@ void Player::Update()
 	distance_ = Length(difference_);
 
 	//後ろに戻れないようにする
-	if (distance_ >= maxDistance_)
+	if (distance_ >= kMaxDistance_)
 	{
 		if (worldTransform_.translation.x < previousPositionX_ && characterState_.direction == Direction::Right)
 		{
-			worldTransform_.translation.x = enemyWorldPosition.x - maxDistance_;
+			worldTransform_.translation.x = enemyWorldPosition.x - kMaxDistance_;
 			moveData_.velocity.x = 0.0f;
 		}
 		else if (worldTransform_.translation.x > previousPositionX_ && characterState_.direction == Direction::Left)
 		{
-			worldTransform_.translation.x = enemyWorldPosition.x + maxDistance_;
+			worldTransform_.translation.x = enemyWorldPosition.x + kMaxDistance_;
 			moveData_.velocity.x = 0.0f;
 		}
 	}
 
 	previousPositionX_ = worldTransform_.translation.x;
 
+	//コンボ関連の処理
 	HitCombo();
-
 	UpdateComboNumberSprite();
 
+	//ガードアニメーションタイマーのリセット
 	if (!enemy_->GetIsAttack())
 	{
-		timerData_.guardAnimationTimer = 60;
+		timerData_.guardAnimationTimer = timerData_.maxGuardAnimationTimer;
 	}
 
+	//LineBoxの更新
 	lineBox_->Update(aabb_);
 
+	//ParticleEffectPlayerの更新
 	particleEffectPlayer_->Update();
 
-	//worldTransformの更新
+	//WorldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 	worldTransformCursol_.UpdateMatrixEuler();
 }
 
 void Player::Draw(const Camera& camera)
 {
+	//モデル描画
 	model_->Draw(worldTransform_, camera, animationIndex_);
 
-	if (!characterState_.isDown && timerData_.finisherTimer == 120)
+	//カーソル描画
+	if (!characterState_.isDown && timerData_.finisherTimer == timerData_.maxFinisherTimer)
 	{
 		playerCursol_->Draw(worldTransformCursol_, camera, 0);
 	}
@@ -226,28 +248,35 @@ void Player::Draw(const Camera& camera)
 
 void Player::DrawBone(const Camera& camera)
 {
+	//骨の描画
 	model_->DrawBone(worldTransform_, camera);
 }
 
 void Player::DrawCollision(const Camera& camera)
 {
+	//LineBoxの描画
 	lineBox_->Draw(worldTransform_, camera);
 }
 
 void Player::DrawSprite()
 {
+	//体力ゲージの描画
 	if (hp_ <= 0)
 	{
 		hpBar_.sprite_->Draw();
 	}
 
+	//ガードゲージの描画
 	guardGaugeBar_.sprite_->Draw();
 
+	//必殺技ゲージの描画
 	finisherGaugeBar_.sprite_->Draw();
 
+	//プレイヤーアイコンの描画
 	playerIconSprite_->Draw();
 
-	if (comboCount_ >= 2)
+	//コンボ表示の描画
+	if (comboCount_ >= kComboCount_[2])
 	{
 		hitSprite_->Draw();
 		comboNumSprite_->Draw();
@@ -256,48 +285,20 @@ void Player::DrawSprite()
 
 void Player::DrawParticle(const Camera& camera)
 {
+	//パーティクルの描画
 	particleEffectPlayer_->Draw(camera);
 }
 
 void Player::ImGui()
 {
-	ImGui::Begin("Player");
-	ImGui::DragFloat3("WTFT", &worldTransform_.translation.x, -14.0f, 14.0f);
-	ImGui::DragFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 150.0f);
-	ImGui::DragFloat3("WTFS", &worldTransform_.scale.x, 0.0f, 300.0f);
-
-	ImGui::SliderFloat3("WTFT", &worldTransform_.translation.x, -100.0f, 100.0f);
-	ImGui::SliderFloat3("WTFR", &worldTransform_.rotation.x, 0.0f, 16.0f);
-
-	ImGui::Text("isGuard %d", characterState_.isGuard);
-	ImGui::Text("attackAnimationFrame %d", attackData_.attackAnimationFrame);
-	ImGui::Text("isAttack %d", attackData_.isAttack);
-	ImGui::Text("isRecovery %d",attackData_.isRecovery);
-	ImGui::DragFloat("animationTime", &animationTime_, 0.0001f);
-
-	ImGui::Text("finisherTimer %d", timerData_.finisherTimer);
-
-	ImGui::Text("attackStartTime %d", attackData_.attackStartTime);
-	ImGui::Text("swingTime %d", attackData_.attackEndTime);
-	ImGui::Text("recoveryTime %d", attackData_.recoveryTime);
-	ImGui::Text("hitStop %f", attackData_.hitStop);
-
-	ImGui::Text("downAnimationTimer %d", timerData_.downAnimationTimer);
-
-	ImGui::Text("characterState_.isHitCharacter %d", characterState_.isHitCharacter);
-	ImGui::Text("finisherGaugeIncreaseAmount %f", attackData_.finisherGaugeIncreaseAmount);
-
-	ImGui::Text("distance %f", distance_);
-
-	/*ImGui::SliderFloat3("WTFT", &worldTransformCursol_.translation.x, -100.0f, 100.0f);
-	ImGui::SliderFloat3("WTFR", &worldTransformCursol_.rotation.x, 0.0f, 16.0f);
-	ImGui::SliderFloat3("WTFS", &worldTransformCursol_.scale.x, 0.0f, 16.0f);*/
-	ImGui::End();
+	
 }
 
 void Player::InitializeBehaviorRoot()
 {
-	animationIndex_ = 5;
+	//アニメーション
+	const int kAnimationIdle = 5;
+	animationIndex_ = kAnimationIdle;
 }
 
 void Player::UpdateBehaviorRoot()
@@ -312,7 +313,7 @@ void Player::UpdateBehaviorRoot()
 		}
 
 		//ジャンプ
-		if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > value_) && worldTransform_.translation.y == 0.0f && !characterState_.isDown)
+		if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > kValue_) && worldTransform_.translation.y == 0.0f && !characterState_.isDown)
 		{
 			characterState_.behaviorRequest = Behavior::kJump;
 		}
@@ -324,25 +325,11 @@ void Player::UpdateBehaviorRoot()
 			attackType_ = "弱攻撃";
 			StartAttack(attackData_.isLightPunch);
 		}
-
-		////中攻撃
-		//if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && !characterState_.isDown)
-		//{
-		//	attackType = "中攻撃";
-		//	StartAttack(attackData_.isMiddlePunch);
-		//}
-
-		////強攻撃
-		//if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !characterState_.isDown)
-		//{
-		//	attackType = "強攻撃";
-		//	StartAttack(attackData_.isHighPunch);
-		//}
 		
 		//タックル攻撃
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && 
 			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) ||
-			input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > value_ || input_->GetLeftStickX() < -value_))
+			input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kValue_ || input_->GetLeftStickX() < -kValue_))
 		{
 			attackType_ = "タックル";
 			StartAttack(attackData_.isTackle);
@@ -351,7 +338,7 @@ void Player::UpdateBehaviorRoot()
 		//アッパー攻撃
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) &&
 			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && input_->GetLeftStickX() < value_ && input_->GetLeftStickX() > -value_ && !characterState_.isDown)
+			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && input_->GetLeftStickX() < kValue_ && input_->GetLeftStickX() > -kValue_ && !characterState_.isDown)
 		{
 			attackType_ = "アッパー";
 			StartAttack(attackData_.isUppercut);
@@ -364,7 +351,7 @@ void Player::UpdateBehaviorRoot()
 			attackType_ = "必殺技";
 			StartAttack(attackData_.isFinisher);
 			finisherGauge_ = 0.0f;
-			timerData_.finisherTimer = 120;
+			timerData_.finisherTimer = timerData_.maxFinisherTimer;
 			attackData_.isFinisherFirstAttack = false;
 		}
 	}
@@ -380,14 +367,19 @@ void Player::UpdateBehaviorAttack()
 	//弱攻撃
 	if (attackData_.isLightPunch)
 	{
-		animationIndex_ = 13;
+		//アニメーション
+		const int kAnimationLighhtPunch = 13;
+		const float animationSpeed = 1.5f;
+
+		animationIndex_ = kAnimationLighhtPunch;
 		characterState_.isGuard = false;
 	
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 		}
 
+		//当たり判定を設定
 		if (characterState_.direction == Direction::Right)
 		{
 			SetAABB(aabb_);
@@ -397,8 +389,10 @@ void Player::UpdateBehaviorAttack()
 			SetAABB(aabb_);
 		}
 
+		//攻撃判定をつけるタイミングの設定
 		EvaluateAttackTiming();
 
+		//終了処理
 		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
 		{
 			EndAttack(attackData_.isLightPunch);
@@ -406,9 +400,15 @@ void Player::UpdateBehaviorAttack()
 		}
 
 		//キャンセルの処理(中TC)
+		//キャンセル始まりの時間
+		const int kCancelStartTime = 10;
+
+		//キャンセル終わりの時間
+		const int kCancelEndTime = 30;
+
 		if (input_->GetJoystickState())
 		{
-			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 10 && attackData_.attackAnimationFrame < 30 && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) 
+			if (!characterState_.isDown && attackData_.attackAnimationFrame >= kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X)
 				|| input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))  && enemy_->GetIsDown())
 			{
 				attackType_ = "中攻撃(ターゲット)";
@@ -422,76 +422,36 @@ void Player::UpdateBehaviorAttack()
 			}
 		}
 
-		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
-	}
-
-	//中攻撃
-	if (attackData_.isMiddlePunch)
-	{
-		animationIndex_ = 8;
-		characterState_.isGuard = false;
-
-		if (!characterState_.isDown)
-		{
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
-		}
-
-		if (characterState_.direction == Direction::Right)
-		{
-			SetAABB(aabb_);
-		}
-		else if (characterState_.direction == Direction::Left)
-		{
-			SetAABB(aabb_);
-		}
-
-		EvaluateAttackTiming();
-
-		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
-		{
-			EndAttack(attackData_.isMiddlePunch);
-			ResetCollision();
-		}
-
-		//キャンセルの処理(中TC)
-		if (input_->GetJoystickState())
-		{
-			if (!characterState_.isDown && attackData_.attackAnimationFrame >= 8 && attackData_.attackAnimationFrame < 25
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
-			{
-				attackType_ = "中攻撃(ターゲット)";
-				attackData_.isAttack = false;
-				attackData_.isMiddlePunch = false;
-				attackData_.isTCMiddlePunch = true;
-				animationTime_ = 0.0f;
-				attackData_.attackAnimationFrame = 0;
-				model_->SetAnimationTime(animationTime_);
-				ResetCollision();
-			}
-		}
-
-		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
+		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
 	}
 
 	//TC用の攻撃(2発目)
 	if (attackData_.isTCMiddlePunch)
 	{
-		animationIndex_ = 12;
+		//アニメーション
+		const int kAnimationTCMiddlePunch = 12;
+		const float animationSpeed = 1.5f;
+
+		animationIndex_ = kAnimationTCMiddlePunch;
 		characterState_.isGuard = false;
-		const int kMoveTime = 5;
-		const float kMoveSpeed = 0.03f;
 
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 		}
 
 		attackData_.isAttack = true;
 
+		//移動用のパラメータ
+		const int kMoveTime = 5;
+		const float kMoveSpeed = 0.03f;
+
+		//当たり判定を設定
 		if (characterState_.direction == Direction::Right)
 		{
 			SetAABB(aabb_);
 
+			//コンボがつながりやすくなるように移動する
 			if (attackData_.attackAnimationFrame < kMoveTime)
 			{
 				worldTransform_.translation.x += kMoveSpeed;
@@ -501,14 +461,17 @@ void Player::UpdateBehaviorAttack()
 		{
 			SetAABB(aabb_);
 
+			//コンボがつながりやすくなるように移動する
 			if (attackData_.attackAnimationFrame < kMoveTime)
 			{
 				worldTransform_.translation.x -= kMoveSpeed;
 			}
 		}
 
+		//攻撃判定をつけるタイミングの設定
 		EvaluateAttackTiming();
 
+		//終了処理
 		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
 		{
 			EndAttack(attackData_.isTCMiddlePunch);
@@ -516,10 +479,16 @@ void Player::UpdateBehaviorAttack()
 		}
 
 		//キャンセルの処理
+		//キャンセル始まりの時間
+		const int kCancelStartTime = 15;
+
+		//キャンセル終わりの時間
+		const int kCancelEndTime = 30;
+
 		if (input_->GetJoystickState())
 		{
 			//弱コンボ
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && enemy_->GetIsDown())
 			{
 				attackType_ = "強攻撃(ターゲット)";
@@ -533,7 +502,7 @@ void Player::UpdateBehaviorAttack()
 			}
 
 			//中コンボ
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
 			{
 				attackType_ = "強攻撃";
@@ -547,7 +516,7 @@ void Player::UpdateBehaviorAttack()
 			}
 
 			//強コンボ
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && characterState_.isHitCharacter)
 			{
 				attackType_ = "アッパー";
@@ -561,28 +530,36 @@ void Player::UpdateBehaviorAttack()
 			}
 		}
 
-		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
+		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
 	}
 
 	//TC用の攻撃(3発目)
 	if (attackData_.isTCHighPunch)
 	{
-		animationIndex_ = 11;
+		//アニメーション
+		const int kAnimationTCHighPunch = 11;
+		const float animationSpeed = 1.5f;
+
+		animationIndex_ = kAnimationTCHighPunch;
 		characterState_.isGuard = false;
-		const int kMoveTime = 5;
-		const float kMoveSpeed = 0.03f;
 
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 		}
 
 		attackData_.isAttack = true;
 
+		//移動用のパラメータ
+		const int kMoveTime = 5;
+		const float kMoveSpeed = 0.03f;
+
+		//当たり判定を設定
 		if (characterState_.direction == Direction::Right)
 		{
 			SetAABB(aabb_);
 
+			//コンボがつながりやすくなるように移動する
 			if (attackData_.attackAnimationFrame < kMoveTime)
 			{
 				worldTransform_.translation.x += kMoveSpeed;
@@ -592,55 +569,71 @@ void Player::UpdateBehaviorAttack()
 		{
 			SetAABB(aabb_);
 
+			//コンボがつながりやすくなるように移動する
 			if (attackData_.attackAnimationFrame < kMoveTime)
 			{
 				worldTransform_.translation.x -= kMoveSpeed;
 			}
 		}
 
+		//攻撃判定をつけるタイミングの設定
 		EvaluateAttackTiming();
 
+		//終了処理
 		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
 		{
 			EndAttack(attackData_.isTCHighPunch);
 			ResetCollision();
 		}
 
-		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
+		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
 	}
 
 	//強攻撃
 	if (attackData_.isHighPunch)
 	{
-		animationIndex_ = 3;
+		//アニメーション
+		const int kAnimationHighPunch = 3;
+		const float animationSpeed = 1.5f;
+
+		animationIndex_ = kAnimationHighPunch;
 		characterState_.isGuard = false;
 
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 		}
+
+		//移動用のパラメータ
+		const int kMoveTime = 15;
+		const float kMoveSpeed = 0.05f;
 		
+		//当たり判定を設定
 		if (characterState_.direction == Direction::Right)
 		{
 			SetAABB(aabb_);
 
-			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
+			//コンボがつながりやすくなるように移動する
+			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= kMoveTime)
 			{
-				worldTransform_.translation.x -= 0.05f;
+				worldTransform_.translation.x -= kMoveSpeed;
 			}
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
 			SetAABB(aabb_);
 
-			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= 15)
+			//コンボがつながりやすくなるように移動する
+			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= kMoveTime)
 			{
-				worldTransform_.translation.x += 0.05f;
+				worldTransform_.translation.x += kMoveSpeed;
 			}
 		}
 
+		//攻撃判定をつけるタイミングの設定
 		EvaluateAttackTiming();
 
+		//終了処理
 		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
 		{
 			EndAttack(attackData_.isHighPunch);
@@ -648,10 +641,16 @@ void Player::UpdateBehaviorAttack()
 		}
 
 		//キャンセルの処理(横A)
+		//キャンセル始まりの時間
+		const int kCancelStartTime = 15;
+
+		//キャンセル終わりの時間
+		const int kCancelEndTime = 30;
+
 		if (input_->GetJoystickState())
 		{
 			//タックル攻撃
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > 15 && attackData_.attackAnimationFrame < 30 && 
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime &&
 				input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))
 			{
 				attackType_ = "タックル";
@@ -665,109 +664,131 @@ void Player::UpdateBehaviorAttack()
 			}
 		}
 
-		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
+		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
 	}
 
 	//タックル攻撃
 	if (attackData_.isTackle)
 	{
-		animationIndex_ = 9;
+		//アニメーション
+		const int kAnimationTackle = 9;
+		const float animationSpeed = 1.5f;
+
+		animationIndex_ = kAnimationTackle;
 		characterState_.isGuard = false;
-		float particlePositionX = 0.0f;
-		const int kParticleTime = 60;   
-		const int kMoveTime = 40;       
 
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 		}
+
+		//パーティクル用のパラメータ
+		const int kParticleTime = 60;
+		const float kParticleMoveSpeed = 0.3f;
+		float particlePositionX = 0.1f;
+		float particlePositionY = 0.6f;
+
+		//移動用のパラメータ
+		const int kMoveTime = 40;
+		const float kMoveSpeed = 9.0f;
+
+		//攻撃判定をつけるタイミングの設定
+		EvaluateAttackTiming();
 
 		if (characterState_.direction == Direction::Right)
 		{
-			EvaluateAttackTiming();
-
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kMoveTime)
 			{
+				//当たり判定を設定
 				SetAABB(aabb_);
 
-				worldTransform_.translation.x += 9.0f * GameTimer::GetDeltaTime();
+				//移動
+				worldTransform_.translation.x += kMoveSpeed * GameTimer::GetDeltaTime();
 			}
 
+			//パーティクルの移動
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kParticleTime)
 			{
-				particlePositionX = 0.1f;
-				particlePositionX += 0.3f;
+				particlePositionX += kParticleMoveSpeed;
 
 				particleEffectPlayer_->PlayParticle("PlayerRightNackle", { worldTransform_.translation.x + particlePositionX,
-					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
+					worldTransform_.translation.y + particlePositionY,worldTransform_.translation.z });
 			}
 			else
 			{
-				aabb_ = { {-0.1f,0.0f,-0.3f},{0.2f,1.0f,0.3f} };
+				//硬直中の当たり判定を設定
+				const AABB recoveryCollsion = { {-0.1f,0.0f,-0.3f},{0.2f,1.0f,0.3f} };
+				aabb_ = recoveryCollsion;
 				SetAABB(aabb_);
 			}
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			EvaluateAttackTiming();
-
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kMoveTime)
 			{
+				//当たり判定を設定
 				SetAABB(aabb_);
 
-				worldTransform_.translation.x -= 9.0f * GameTimer::GetDeltaTime();
+				//移動
+				worldTransform_.translation.x -= kMoveSpeed * GameTimer::GetDeltaTime();
 			}
 
-
+			//パーティクルの移動
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kParticleTime)
 			{
-				particlePositionX = 0.1f;
-				particlePositionX += 0.3f;
+				particlePositionX += kParticleMoveSpeed;
 
 				particleEffectPlayer_->PlayParticle("PlayerLeftNackle", { worldTransform_.translation.x - particlePositionX,
-					worldTransform_.translation.y + 0.6f,worldTransform_.translation.z });
+					worldTransform_.translation.y + particlePositionY,worldTransform_.translation.z });
 			}
 			else
 			{
-				aabb_ = { {-0.2f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
+				//硬直中の当たり判定を設定
+				const AABB recoveryCollsion = { {-0.2f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
+				aabb_ = recoveryCollsion;
 				SetAABB(aabb_);
 			}
 		}
 
+		//終了処理
 		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
 		{
 			EndAttack(attackData_.isTackle);
 			ResetCollision();
 		}
 
-		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
+		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
 	}
 
 	//アッパー攻撃
 	if (attackData_.isUppercut)
 	{
-		animationIndex_ = 14;
+		//アニメーション
+		const int kAnimationUpperCut = 14;
+		const float animationSpeed = 1.5f;
+
+		animationIndex_ = kAnimationUpperCut;
 		characterState_.isGuard = false;
-		//Vector3 particlePosition = GetRightHandJointWorldPosition();
 
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 		}
 
+		//当たり判定を設定
 		if (characterState_.direction == Direction::Right)
 		{
 			SetAABB(aabb_);
-
-			EvaluateAttackTiming();
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
 			SetAABB(aabb_);
-
-			EvaluateAttackTiming();
 		}
 
+		//攻撃判定をつけるタイミングの設定
+		EvaluateAttackTiming();
+
+		//終了処理
 		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
 		{
 			EndAttack(attackData_.isUppercut);
@@ -775,11 +796,17 @@ void Player::UpdateBehaviorAttack()
 		}
 
 		//キャンセルの処理(超必)
+		//キャンセル始まりの時間
+		const int kCancelStartTime = 10;
+
+		//キャンセル終わりの時間
+		const int kCancelEndTime = 40;
+
 		if (input_->GetJoystickState())
 		{
 			//強コンボ
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > 10 && attackData_.attackAnimationFrame < 40
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && enemy_->GetComboCount() >= 3 && isFinisherCharge_ &&
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && enemy_->GetComboCount() >= kComboCount_[3] && isFinisherCharge_ &&
 				characterState_.isHitCharacter)
 			{
 				attackData_.isAttack = false;
@@ -793,19 +820,34 @@ void Player::UpdateBehaviorAttack()
 			}
 		}
 
-		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
+		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
 	}
 
 	//超必
 	if (attackData_.isFinisher)
 	{
+		//アニメーション
+		const int kAnimationFinisherRight = 15;
+		const int kAnimationFinisherLeft = 18;
+		const int kAnimationFinisherFirstAttack = 16;
+		const int kAnimationFinisherSecondAttack = 17;
+		const float animationSpeed = 1.5f;
+
 		characterState_.isGuard = false;
 
-		if (timerData_.finisherTimer > 40 && attackData_.attackAnimationFrame < 80 && !attackData_.isFinisherFirstAttack && !attackData_.isFinisherSecondAttack)
+		//移動用のパラメータ
+		const float kMoveSpeed = 0.01f;
+
+		//必殺技の時間
+		const int kFinisherStartTime = 40;
+		const int kFinisherEndTime = 80;
+
+		//必殺技演出
+		if (timerData_.finisherTimer > kFinisherStartTime && attackData_.attackAnimationFrame < kFinisherEndTime && !attackData_.isFinisherFirstAttack && !attackData_.isFinisherSecondAttack)
 		{
 			isFinisherEffect_ = true;
 			timerData_.finisherTimer--;
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 		}
 		else
 		{
@@ -816,28 +858,32 @@ void Player::UpdateBehaviorAttack()
 		{
 			if (isDirectionRight_)
 			{
-				animationIndex_ = 15;
+				animationIndex_ = kAnimationFinisherRight;
 			}
 			else 
 			{
-				animationIndex_ = 18;
+				animationIndex_ = kAnimationFinisherLeft;
 			}
 		}
+		//演出が終わったら必殺技(初段)に移る
 		else if(!attackData_.isFinisherFirstAttack && !attackData_.isFinisherSecondAttack)
 		{
 			attackType_ = "必殺技(初段)";
-			timerData_.finisherTimer = 120;
+			timerData_.finisherTimer = timerData_.maxFinisherTimer;
 			attackData_.isFinisherFirstAttack = true;
 			animationTime_ = 0.0f;
 			attackData_.attackAnimationFrame = 0;
 			model_->SetAnimationTime(animationTime_);
 		}
 
+		//必殺技(初段)
 		if (attackData_.isFinisherFirstAttack && !characterState_.isDown)
 		{
-			animationIndex_ = 16;
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+			//アニメーション
+			animationIndex_ = kAnimationFinisherFirstAttack;
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 
+			//当たり判定を設定
 			if (characterState_.direction == Direction::Right)
 			{
 				SetAABB(aabb_);
@@ -847,8 +893,10 @@ void Player::UpdateBehaviorAttack()
 				SetAABB(aabb_);
 			}
 
+			//攻撃判定をつけるタイミングの設定
 			EvaluateAttackTiming();
 
+			//無敵状態の付与
 			if (attackData_.isAttack)
 			{
 				isFinisherInvincible_ = true;
@@ -858,10 +906,17 @@ void Player::UpdateBehaviorAttack()
 				isFinisherInvincible_ = false;
 			}
 
-			if (enemy_->GetIsDown() && attackData_.attackAnimationFrame > 10 && attackData_.attackAnimationFrame < 30)
+			//当たっていたらキャンセル(必殺技2段目)
+			//キャンセル始まりの時間
+			const int kCancelStartTime = 10;
+
+			//キャンセル終わりの時間
+			const int kCancelEndTime = 30;
+
+			if (enemy_->GetIsDown() && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime)
 			{
 				attackType_ = "必殺技(2段目)";
-				timerData_.finisherTimer = 120;
+				timerData_.finisherTimer = timerData_.maxFinisherTimer;
 				attackData_.isAttack = false;
 				attackData_.isFinisherFirstAttack = false;
 				isFinisherInvincible_ = false;
@@ -872,9 +927,10 @@ void Player::UpdateBehaviorAttack()
 				ResetCollision();
 			}
 
+			//終了処理
 			if ((characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime) && !enemy_->GetIsDown())
 			{
-				timerData_.finisherTimer = 120;
+				timerData_.finisherTimer = timerData_.maxFinisherTimer;
 				EndAttack(attackData_.isFinisher);
 				ResetCollision();
 				attackData_.isFinisherFirstAttack = false;
@@ -882,32 +938,40 @@ void Player::UpdateBehaviorAttack()
 			}
 		}
 
+		//必殺技(2段目)
 		if (attackData_.isFinisherSecondAttack && !characterState_.isDown)
 		{
-			animationIndex_ = 17;
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+			//アニメーション
+			animationIndex_ = kAnimationFinisherSecondAttack;
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 
+			//当たり判定を設定
 			if (characterState_.direction == Direction::Right)
 			{
 				SetAABB(aabb_);
 
+				//コンボがつながりやすくなるように移動
 				if (!characterState_.isHitCharacter)
 				{
-					worldTransform_.translation.x += 0.01f;
+					worldTransform_.translation.x += kMoveSpeed;
 				}
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
 				SetAABB(aabb_);
 
+				//コンボがつながりやすくなるように移動
 				if (!characterState_.isHitCharacter)
 				{
-					worldTransform_.translation.x -= 0.01f;
+					worldTransform_.translation.x -= kMoveSpeed;
 				}
 			}
 
+			//攻撃判定をつけるタイミングの設定
+			EvaluateAttackTiming();
 			EvaluateAttackTiming();
 
+			//終了処理
 			if (attackData_.attackAnimationFrame > attackData_.recoveryTime)
 			{
 				attackType_ = "タックル";
@@ -922,9 +986,10 @@ void Player::UpdateBehaviorAttack()
 			}
 		}
 
+		//相打ちの場合
 		if (characterState_.isDown)
 		{
-			timerData_.finisherTimer = 120;
+			timerData_.finisherTimer = timerData_.maxFinisherTimer;
 			EndAttack(attackData_.isFinisher);
 			ResetCollision();
 			attackData_.isFinisherFirstAttack = false;
@@ -932,23 +997,26 @@ void Player::UpdateBehaviorAttack()
 			isFinisherInvincible_ = false;
 		}
 
-		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
+		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
 	}
 }
 
 void Player::InitializeBehaviorJump()
 {
+	//ジャンプの速さ
 	const float kJumpFirstSpeed_ = 18.0f;
 
 	moveData_.velocity.y = kJumpFirstSpeed_;
 
 	if (input_->GetJoystickState())
 	{
+		//スティック用のパラメータ
 		float joystickInput = input_->GetLeftStickX();
 
 		const float kStickThreshold = 0.3f;
 		const float kMoveSpeedX = 3.0f;  
 
+		//入力に応じたジャンプの初期設定
 		if (fabs(joystickInput) > kStickThreshold)
 		{
 			moveData_.velocity.x = (joystickInput > 0 ? kMoveSpeedX : -kMoveSpeedX);
@@ -969,11 +1037,13 @@ void Player::InitializeBehaviorJump()
 
 void Player::UpdateBehaviorJump()
 {
-	if (distance_ >= maxDistance_)
+	//離れているとき
+	if (distance_ >= kMaxDistance_)
 	{
 		moveData_.velocity.x = 0.0f;
 	}
 
+	//ジャンプ
 	Vector3 deltaVelocity = { moveData_.velocity.x * GameTimer::GetDeltaTime(),
 		moveData_.velocity.y * GameTimer::GetDeltaTime(),
 		moveData_.velocity.z * GameTimer::GetDeltaTime() };
@@ -986,9 +1056,12 @@ void Player::UpdateBehaviorJump()
 
 	moveData_.velocity = Add(moveData_.velocity, accelerationVector_);
 
+	//ジャンプ攻撃の入力
+	const float kPlayerPositionY = 0.3f;
+
 	if (input_->GetJoystickState())
 	{
-		if (worldTransform_.translation.y > 0.3f && !attackData_.isJumpAttack && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)
+		if (worldTransform_.translation.y > kPlayerPositionY && !attackData_.isJumpAttack && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)
 			|| input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_A)))
 		{
 			attackType_ = "ジャンプ攻撃";
@@ -1001,16 +1074,22 @@ void Player::UpdateBehaviorJump()
 		}
 	}
 
+	//ジャンプ攻撃
 	if (attackData_.isJumpAttack)
 	{
-		animationIndex_ = 6;
+		//アニメーション
+		const int kAnimationJumpAttack = 6;
+		const float animationSpeed = 1.5f;
+
+		animationIndex_ = kAnimationJumpAttack;
 		characterState_.isGuard = false;
 
 		if (!characterState_.isDown)
 		{
-			UpdateAnimationTime(animationTime_, true, 1.5f, animationIndex_, model_);
+			UpdateAnimationTime(animationTime_, true, animationSpeed, animationIndex_, model_);
 		}
 
+		//当たり判定を設定
 		if (characterState_.direction == Direction::Right)
 		{
 			SetAABB(aabb_);
@@ -1020,8 +1099,10 @@ void Player::UpdateBehaviorJump()
 			SetAABB(aabb_);
 		}
 
+		//攻撃判定をつけるタイミングの設定
 		EvaluateAttackTiming();
 
+		//終了処理
 		if (worldTransform_.translation.y <= 0.0f && attackData_.attackAnimationFrame > attackData_.recoveryTime)
 		{
 			EndAttack(attackData_.isJumpAttack);
@@ -1036,14 +1117,19 @@ void Player::UpdateBehaviorJump()
 			ResetCollision();
 		}
 
-		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
+		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
 	}
 	else
 	{
-		animationIndex_ = 5;
+		//アニメーション
+		const int kAnimationIdle = 5;
+		const float animationSpeed = 1.0f;
 
-		UpdateAnimationTime(animationTime_, true, 1.0f, animationIndex_, model_);
+		animationIndex_ = kAnimationIdle;
 
+		UpdateAnimationTime(animationTime_, true, animationSpeed, animationIndex_, model_);
+
+		//終了処理
 		if (worldTransform_.translation.y <= 0.0f || characterState_.isDown)
 		{
 			characterState_.behaviorRequest = Behavior::kRoot;
@@ -1056,47 +1142,45 @@ void Player::UpdateBehaviorJump()
 
 void Player::InitializeBehaviorStan()
 {
-	animationIndex_ = 10;
+
 }
 
 void Player::UpdateBehaviorStan()
 {
 	timerData_.stanTimer--;
-	if (timerData_.stanTimer > 55)
+
+	//アニメーション
+	const int kAnimationStun = 10;
+	const float animationSpeed = 1.0f;
+
+	animationIndex_ = kAnimationStun;
+
+	animationTime_ = model_->GetAnimationTime();
+	float animationDuration = model_->GetAnimation()[animationIndex_].duration;
+
+	if (!characterState_.isDown)
 	{
-		effectState_.isShake = true;
+		UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 	}
 
-	animationIndex_ = 10;
-	animationTime_ = model_->GetAnimationTime();
-	float animationDuration = model_->GetAnimation()[animationIndex_].duration;;
-
+	//当たり判定を設定
 	if (characterState_.direction == Direction::Left)
 	{
-		aabb_ = { {-0.6f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 		SetAABB(aabb_);
 	}
 	else if (characterState_.direction == Direction::Right)
 	{
-		aabb_ = { {-0.3f,0.0f,-0.3f},{0.6f,1.0f,0.3f} };
 		SetAABB(aabb_);
 	}
 
-	if (!characterState_.isDown)
-	{
-		animationTime_ += 1.0f / 60.0f;
-	}
-
-	model_->SetAnimationTime(animationTime_);
-	model_->ApplyAnimation(animationIndex_);
-
+	//終了処理
 	if (animationTime_ >= animationDuration || characterState_.isDown)
 	{
 		characterState_.behaviorRequest = Behavior::kRoot;
 		animationTime_ = 0.0f;
 		attackData_.attackAnimationFrame = 0;
 		guardGauge_ = 0.0f;
-		timerData_.stanTimer = 60;
+		timerData_.stanTimer = timerData_.maxStanTimer;
 		model_->SetAnimationTime(animationTime_);
 		
 	}
@@ -1104,16 +1188,34 @@ void Player::UpdateBehaviorStan()
 
 void Player::OnCollision(Collider* collider)
 {
+	//アニメーション
+	const int kAnimationGuard = 2;
+	const float animationSpeed = 1.5f;
+
+	//パーティクル
+	const int kParticleTime = 55;
+	const float kParticlePositionX = 0.1f;
+	const float kParticlePositionY = 0.5f;
+
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemyBullet)
 	{
+		//ガードバック
+		const float kGuardBackSpeed = 0.1f;
+
+		//地上で弾に当たった場合
 		if (!characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y <= 0.0f)
 		{
+			//アニメーション
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
 
-			audio_->PlaySoundMP3(damageSoundHandle_, false, 1.0f);
+			//サウンド再生
+			audio_->PlaySoundMP3(damageSoundHandle_, false, volume_);
+
+			//ダメージの適応
 			ApplyDamage();
 
+			//体力に応じてダウンの仕方を変更
 			if (hp_ < 0)
 			{
 				characterState_.isHitBullet = true;
@@ -1125,69 +1227,91 @@ void Player::OnCollision(Collider* collider)
 				attackData_.isFinisher = false;
 			}
 
+			//ゲージ増加
 			AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
-
-			//HitStop(5);
 		}
 
+		//空中で弾に当たった場合
 		if (!characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.0f)
 		{
+			//アニメーション
 			animationTime_ = 0.0f;
 			model_->SetAnimationTime(animationTime_);
 
-			audio_->PlaySoundMP3(damageSoundHandle_, false, 1.0f);
+			//サウンド再生
+			audio_->PlaySoundMP3(damageSoundHandle_, false, volume_);
+
+			//ダメージの適応
 			ApplyDamage();
 
+			//ダウン状態の設定
 			characterState_.isHitAirBullet = true;
 
+			//ゲージ増加
 			AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
-
-			//HitStop(5);
 		}
 
 		if (characterState_.isGuard && characterState_.direction == Direction::Right)
 		{
+			//ガードタイマー
 			timerData_.guardAnimationTimer--;
 
-			audio_->PlaySoundMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x -= 0.1f;
+			//アニメーション
+			animationIndex_ = kAnimationGuard;
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+			//サウンド再生
+			audio_->PlaySoundMP3(guardSoundHandle_, false, volume_);
+
+			//ガードバック
+			worldTransform_.translation.x -= kGuardBackSpeed;
+
+			//ゲージ増加
 			AdjustGuardGauge();
 
-			if (timerData_.guardAnimationTimer > 55)
+			//パーティクル
+			if (timerData_.guardAnimationTimer > kParticleTime)
 			{
 
-				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + 0.1f,
-					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + kParticlePositionX,
+					worldTransform_.translation.y + kParticlePositionY,worldTransform_.translation.z });
 			}
-
-			animationIndex_ = 2;
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
 		}
 		else if (characterState_.isGuard && characterState_.direction == Direction::Left)
 		{
+			//ガードタイマー
 			timerData_.guardAnimationTimer--;
 
-			audio_->PlaySoundMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x += 0.1f;
+			//アニメーション
+			animationIndex_ = kAnimationGuard;
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+			//サウンド再生
+			audio_->PlaySoundMP3(guardSoundHandle_, false, volume_);
+
+			//ガードバック
+			worldTransform_.translation.x += kGuardBackSpeed;
+
+			//ゲージ増加
 			AdjustGuardGauge();
 
-			if (timerData_.guardAnimationTimer > 55)
+			//パーティクル
+			if (timerData_.guardAnimationTimer > kParticleTime)
 			{
 
-				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - 0.1f,
-					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - kParticlePositionX,
+					worldTransform_.translation.y + kParticlePositionY,worldTransform_.translation.z });
 			}
-
-			animationIndex_ = 2;
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
 		}
 	}
 
 	//敵との当たり判定
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemy)
 	{
+		//キャラクター同士が当たっている
 		characterState_.isHitCharacter = true;
 
+		//押し出し
 		if (characterState_.isHitCharacter && !characterState_.isDown && !attackData_.isAttack && !attackData_.isTackle && !attackData_.isUppercut && !isFinisherEffect_)
 		{
 			//プレイヤーと敵のAABB
@@ -1204,8 +1328,8 @@ void Player::OnCollision(Collider* collider)
 					((playerMinX > enemyMinX) ? playerMinX : enemyMinX);
 
 				//補正量を調整
-				float correctionFactor = 3.0f * GameTimer::GetDeltaTime(); 
-				float adjustedOverlapX = overlapX * correctionFactor;
+				const float kCorrectionFactor = 3.0f; 
+				float adjustedOverlapX = overlapX * (kCorrectionFactor * GameTimer::GetDeltaTime());
 
 				//位置補正
 				if (worldTransform_.translation.x < enemy_->GetWorldTransform().translation.x)
@@ -1219,98 +1343,126 @@ void Player::OnCollision(Collider* collider)
 			}
 		}
 
-		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Right)
+		//タックル以外の攻撃をガードした場合
+		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && characterState_.isGuard)
 		{
+			//ガードバック
+			const float kGuardBackSpeed = 0.3f;
+
+			//ガードタイマー
 			timerData_.guardAnimationTimer--;
 
+			//アニメーション
+			animationIndex_ = kAnimationGuard;
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+			//サウンド再生
+			audio_->PlaySoundMP3(guardSoundHandle_, false, volume_);
+
+			//敵の座標
 			float enemyPosition = enemy_->GetWorldPosition().x;
 
-			audio_->PlaySoundMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x -= 0.3f;
-			enemyPosition += 0.2f;
+			//ゲージ増加
 			AdjustGuardGauge();
 
+			//向きに応じて処理を変える
+			if (characterState_.direction == Direction::Right)
+			{
+				//ガードバック
+				worldTransform_.translation.x -= kGuardBackSpeed;
+				enemyPosition += kGuardBackSpeed;
+
+				//パーティクル
+				if (timerData_.guardAnimationTimer > kParticleTime)
+				{
+
+					particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + kParticlePositionX,
+						worldTransform_.translation.y + kParticlePositionY,worldTransform_.translation.z });
+				}
+			}
+			else
+			{
+				//ガードバック
+				worldTransform_.translation.x += kGuardBackSpeed;
+				enemyPosition -= kGuardBackSpeed;
+
+				//パーティクル
+				if (timerData_.guardAnimationTimer > kParticleTime)
+				{
+
+					particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - kParticlePositionX,
+						worldTransform_.translation.y + kParticlePositionY,worldTransform_.translation.z });
+				}
+			}
+
+			//エネミーのざひょうをセット
 			enemy_->SetPositionX(enemyPosition);
-
-			if (timerData_.guardAnimationTimer > 55)
-			{
-
-				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + 0.1f,
-					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
-			}
-
-			animationIndex_ = 2;
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
 		}
 
-		if (enemy_->GetIsAttack() && !enemy_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Left)
+		//タックル攻撃をガードした場合
+		if (enemy_->GetIsAttack() && enemy_->GetIsTackle() && characterState_.isGuard)
 		{
+			//ガードバック
+			const float kGuardBackSpeed = 0.2f;
+
+			//ガードタイマー
 			timerData_.guardAnimationTimer--;
 
-			float enemyPosition = enemy_->GetWorldPosition().x;
+			//アニメーション
+			animationIndex_ = kAnimationGuard;
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+			
+			//サウンド再生
+			audio_->PlaySoundMP3(guardSoundHandle_, false, volume_);
 
-			audio_->PlaySoundMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x += 0.3f;
-			enemyPosition -= 0.2f;
+			//ゲージ増加
 			AdjustGuardGauge();
 
-			enemy_->SetPositionX(enemyPosition);
-
-			if (timerData_.guardAnimationTimer > 55)
+			//向きに応じて処理を変える
+			if (characterState_.direction == Direction::Right)
 			{
+				//ガードバック
+				worldTransform_.translation.x -= kGuardBackSpeed;
 
-				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - 0.1f,
-					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+				//パーティクル
+				if (timerData_.guardAnimationTimer > kParticleTime)
+				{
+
+					particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + kParticlePositionX,
+						worldTransform_.translation.y + kParticlePositionY,worldTransform_.translation.z });
+				}
 			}
+			else
+			{
+				//ガードバック
+				worldTransform_.translation.x += kGuardBackSpeed;
 
-			animationIndex_ = 2;
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+				//パーティクル
+				if (timerData_.guardAnimationTimer > kParticleTime)
+				{
+
+					particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - kParticlePositionX,
+						worldTransform_.translation.y + kParticlePositionY,worldTransform_.translation.z });
+				}
+			}
 		}
 
-		if (enemy_->GetIsAttack() && enemy_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Right)
+		//無敵状態ではない場合
+		if (!isFinisherInvincible_ && enemy_->GetIsAttack() && !characterState_.isDown && !characterState_.isGuard)
 		{
-			timerData_.guardAnimationTimer--;
+			//サウンド再生
+			audio_->PlaySoundMP3(damageSoundHandle_, false, volume_);
 
-			audio_->PlaySoundMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x -= 0.2f;
-			AdjustGuardGauge();
+			//ダメージの適応
+			ApplyDamage();
 
-			if (timerData_.guardAnimationTimer > 55)
-			{
-				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + 0.1f,
-					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
-			}
+			//ゲージ増加
+			AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
 
-			animationIndex_ = 2;
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
-		}
-
-		if (enemy_->GetIsAttack() && enemy_->GetIsTackle() && characterState_.isGuard && characterState_.direction == Direction::Left)
-		{
-			timerData_.guardAnimationTimer--;
-
-			audio_->PlaySoundMP3(guardSoundHandle_, false, 1.0f);
-			worldTransform_.translation.x += 0.2f;
-			AdjustGuardGauge();
-
-			if (timerData_.guardAnimationTimer > 55)
-			{
-				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - 0.1f,
-					worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
-			}
-
-			animationIndex_ = 2;
-			UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
-		}
-
-		if (!isFinisherInvincible_)
-		{
 			//弱パンチ
-			if (enemy_->GetIsAttack() && enemy_->GetIsLightPunch() && !characterState_.isDown && !characterState_.isGuard)
+			if (enemy_->GetIsLightPunch())
 			{
-				audio_->PlaySoundMP3(damageSoundHandle_, false, 1.0f);
-				ApplyDamage();
-
+				//体力に応じてダウン状態を変更
 				if (hp_ < 0)
 				{
 					characterState_.isHitLightPunch = true;
@@ -1319,30 +1471,11 @@ void Player::OnCollision(Collider* collider)
 				{
 					characterState_.isHitTCHighPunch = true;
 				}
-
-				AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
-
-				//HitStop(10);
 			}
-
-			//強パンチ
-			if (enemy_->GetIsHighPunch() && !characterState_.isDown && !characterState_.isGuard)
-			{
-				audio_->PlaySoundMP3(damageSoundHandle_, false, 1.0f);
-				ApplyDamage();
-				characterState_.isHitHighPunch = true;
-
-				AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
-
-				//HitStop(10);
-			}
-
 			//TC中パンチ
-			if (enemy_->GetIsTCMiddlePunch() && !characterState_.isDown && !characterState_.isGuard)
+			else if (enemy_->GetIsTCMiddlePunch())
 			{
-				audio_->PlaySoundMP3(damageSoundHandle_, false, 1.0f);
-				ApplyDamage();
-
+				//体力に応じてダウン状態を変更
 				if (hp_ < 0)
 				{
 					characterState_.isHitTCMiddlePunch = true;
@@ -1351,45 +1484,68 @@ void Player::OnCollision(Collider* collider)
 				{
 					characterState_.isHitTCHighPunch = true;
 				}
-
-				AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
-
-				//HitStop(10);
 			}
-
 			//タックル
-			if (enemy_->GetIsTackle() && enemy_->GetIsAttack() && !characterState_.isGuard)
+			else if (enemy_->GetIsTackle())
 			{
-				if (!characterState_.isDown)
-				{
-					//キャンセルじゃないとき
-					audio_->PlaySoundMP3(damageSoundHandle_, false, 1.0f);
-					ApplyDamage();
-					characterState_.isHitTackle = true;
+				//キャンセルではない場合
+				//ダウン状態の設定
+				characterState_.isHitTackle = true;
 
-					AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
+				//ヒットストップ
+				hitStop_->Start(enemy_->GetHitStop());
 
-					hitStop_->Start(enemy_->GetHitStop());
-				}
-				else if (characterState_.isDown && worldTransform_.translation.y > 0.5f && !isCancel_)
-				{
-					//キャンセルのとき
-					isCancel_ = true;
-					attackData_.isDamaged = false;
-					attackData_.isFinisherGaugeIncreased = false;
-					audio_->PlaySoundMP3(damageSoundHandle_, false, 1.0f);
-					ApplyDamage();
-					timerData_.downAnimationTimer = 60;
-					float animationTime = 0.0f;
-					model_->SetAnimationTime(animationTime);
-					characterState_.isHitHighPunch = false;
-					characterState_.isHitTackle = true;
-
-					AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
-
-					hitStop_->Start(0.3f);
-				}
 			}
+		}
+
+		//強パンチ
+		if (enemy_->GetIsHighPunch() && !characterState_.isDown && !characterState_.isGuard)
+		{
+			//サウンド再生
+			audio_->PlaySoundMP3(damageSoundHandle_, false, volume_);
+
+			//ダメージの適応
+			ApplyDamage();
+
+			//ゲージ増加
+			AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
+
+			//ダウン状態の設定
+			characterState_.isHitHighPunch = true;
+		}
+
+		//空中にいる場合
+		const float kPlayerPositionY = 0.5f;
+		if (!isFinisherInvincible_ && enemy_->GetIsTackle() &&  characterState_.isDown && worldTransform_.translation.y > kPlayerPositionY && !isCancel_)
+		{
+			//キャンセルのとき
+			const float kHitStop = 0.3f;
+			isCancel_ = true;
+			attackData_.isDamaged = false;
+			attackData_.isFinisherGaugeIncreased = false;
+
+			//サウンド再生
+			audio_->PlaySoundMP3(damageSoundHandle_, false, volume_);
+
+			//ダメージの適応
+			ApplyDamage();
+
+			//ゲージ増加
+			AdjustFinisherGauge(enemy_->GetFinisherGaugeIncreaseAmount());
+
+			//ダウンアニメーションタイマーの設定
+			timerData_.downAnimationTimer = timerData_.maxDownAnimationTimer;
+
+			//アニメーション
+			float animationTime = 0.0f;
+			model_->SetAnimationTime(animationTime);
+
+			//ダウン状態の設定
+			characterState_.isHitHighPunch = false;
+			characterState_.isHitTackle = true;
+
+			//ヒットストップ
+			hitStop_->Start(kHitStop);
 		}
 	}
 }
@@ -1397,6 +1553,7 @@ void Player::OnCollision(Collider* collider)
 void Player::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate,
 	int animationIndex, std::unique_ptr<Model>& modelFighterBody)
 {
+	//アニメーションの再生
 	ICharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, modelFighterBody);
 }
 
@@ -1405,64 +1562,77 @@ void Player::Move()
 	//コントローラーの取得
 	if (input_->GetJoystickState())
 	{
+		//入力
 		const float kValueY = -0.3f;
 		bool isFrontMove_ = false;
 		bool isBackMove_ = false;
 
-		moveData_.velocity = { 0.0f, 0.0f, 0.0f };
+		//アニメーション
+		const int kAnimationBackMove = 0;
+		const int kAnimationFrontMove = 1;
+		const int kAnimationGuard = 2;
+		const int kAnimationIdle = 5;
+		const float animationSpeed = 1.5f;
 
+		//速度
+		const float koveSpeed = 0.01f;
+		moveData_.velocity = { 0.0f, 0.0f, 0.0f };
 		moveData_.velocity.x = (float)input_->GetLeftStickX();
 
 		//敵の位置を取得する
 		Vector3 enemyPosition = enemy_->GetWorldPosition();
 
-
 		if (characterState_.isHitCharacter)
 		{
-			if (characterState_.direction == Direction::Right && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > value_))
+			const float kPushSpeed = 0.05f;
+			if (characterState_.direction == Direction::Right && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kValue_))
 			{
 				//敵を右方向に押す
-				PushEnemy(enemyPosition, 0.05f);
+				PushEnemy(enemyPosition, kPushSpeed);
 			}
-			else if (characterState_.direction == Direction::Left && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -value_))
+			else if (characterState_.direction == Direction::Left && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -kValue_))
 			{
 				//敵を左方向に押す
-				PushEnemy(enemyPosition, -0.05f);
+				PushEnemy(enemyPosition, -kPushSpeed);
 			}
 		}
 
 		//移動処理
-		//前方向に移動(左を向いているとき)
+		//前方向に移動(左を向いている場合)
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
-			moveData_.velocity.x = -0.01f;
+			//速度の設定
+			moveData_.velocity.x = -koveSpeed;
 			isFrontMove_ = true;
 			characterState_.isGuard = false;
 		}
 
-		if (input_->GetLeftStickX() < -value_ && characterState_.direction == Direction::Left && !characterState_.isDown)
+		if (input_->GetLeftStickX() < -kValue_ && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
-			moveData_.velocity.x = -0.01f;
+			//速度の設定
+			moveData_.velocity.x = -koveSpeed;
 			isFrontMove_ = true;
 			characterState_.isGuard = false;
 		}
 		
-		//前方向に移動(右を向いているとき)
+		//前方向に移動(右を向いている場合)
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
-			moveData_.velocity.x = 0.01f;
+			//速度の設定
+			moveData_.velocity.x = koveSpeed;
 			isFrontMove_ = true;
 			characterState_.isGuard = false;
 		}
 
-		if (input_->GetLeftStickX() > value_ && characterState_.direction == Direction::Right && !characterState_.isDown)
+		if (input_->GetLeftStickX() > kValue_ && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
-			moveData_.velocity.x = 0.01f;
+			//速度の設定
+			moveData_.velocity.x = koveSpeed;
 			isFrontMove_ = true;
 			characterState_.isGuard = false;
 		}
 
-		//後ろ方向に移動(右を向いているとき)
+		//後ろ方向に移動(右を向いている場合)
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
 			characterState_.isGuard = true;
@@ -1470,42 +1640,50 @@ void Player::Move()
 			//移動しながらガード
 			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 			{
-				moveData_.velocity.x = -0.01f;
+				//速度の設定
+				moveData_.velocity.x = -koveSpeed;
 				isBackMove_ = true;
 			}
 
 			//止まってガード
 			if (characterState_.isGuard && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
 			{
-				animationIndex_ = 2;
-				UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+				//アニメーション
+				animationIndex_ = kAnimationGuard;
+				UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+				//速度の設定
 				moveData_.velocity.x = 0.0f;
 				isBackMove_ = false;
 			}
 		}
 
-		if (input_->GetLeftStickX() < -value_ && characterState_.direction == Direction::Right && !characterState_.isDown)
+		if (input_->GetLeftStickX() < -kValue_ && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
 			characterState_.isGuard = true;
 
 			//移動しながらガード
 			if (!(input_->GetLeftStickY() < kValueY))
 			{
-				moveData_.velocity.x = -0.01f;
+				//速度の設定
+				moveData_.velocity.x = -koveSpeed;
 				isBackMove_ = true;
 			}
 
 			//止まってガード
 			if (characterState_.isGuard && input_->GetLeftStickY() < kValueY)
 			{
-				animationIndex_ = 2;
-				UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+				//アニメーション
+				animationIndex_ = kAnimationGuard;
+				UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+				//速度の設定
 				moveData_.velocity.x = 0.0f;
 				isBackMove_ = false;
 			}
 		}
 
-		//後ろ方向に移動(左を向いているとき)
+		//後ろ方向に移動(左を向いている場合)
 		if (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
 			characterState_.isGuard = true;
@@ -1513,44 +1691,52 @@ void Player::Move()
 			//移動しながらガード
 			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
 			{
-				moveData_.velocity.x = 0.01f;
+				//速度の設定
+				moveData_.velocity.x = koveSpeed;
 				isBackMove_ = true;
 			}
 
 			//止まってガード
 			if (characterState_.isGuard && input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
 			{
-				animationIndex_ = 2;
-				UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+				//アニメーション
+				animationIndex_ = kAnimationGuard;
+				UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+				//速度の設定
 				moveData_.velocity.x = 0.0f;
 				isBackMove_ = false;
 			}
 		}
 
-		if (input_->GetLeftStickX() > value_ && characterState_.direction == Direction::Left && !characterState_.isDown)
+		if (input_->GetLeftStickX() > kValue_ && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
 			characterState_.isGuard = true;
 
 			//移動しながらガード
 			if (!(input_->GetLeftStickY() < kValueY))
 			{
-				moveData_.velocity.x = 0.01f;
+				//速度の設定
+				moveData_.velocity.x = koveSpeed;
 				isBackMove_ = true;
 			}
 
 			//止まってガード
 			if (characterState_.isGuard && input_->GetLeftStickY() < kValueY)
 			{
-				animationIndex_ = 2;
-				UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
+				//アニメーション
+				animationIndex_ = kAnimationGuard;
+				UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+				//速度の設定
 				moveData_.velocity.x = 0.0f;
 				isBackMove_ = false;
 			}
 		}
 
-		//移動していない時
+		//移動していない場合
 		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && 
-			!(input_->GetLeftStickX() > value_) && !(input_->GetLeftStickX() < -value_))
+			!(input_->GetLeftStickX() > kValue_) && !(input_->GetLeftStickX() < -kValue_))
 		{
 			moveData_.velocity = { 0.0f, 0.0f, 0.0f };
 			characterState_.isGuard = false;
@@ -1559,54 +1745,64 @@ void Player::Move()
 		//移動
 		if (isFrontMove_)
 		{
-			animationIndex_ = 1;
-			UpdateAnimationTime(animationTime_, true, 1.5f, animationIndex_, model_);
+			//アニメーション
+			animationIndex_ = kAnimationFrontMove;
+			UpdateAnimationTime(animationTime_, true, animationSpeed, animationIndex_, model_);
 
+			//移動処理
 			moveData_.velocity = Normalize(moveData_.velocity);
 			moveData_.velocity = Multiply(frontSpeed_, moveData_.velocity);
-
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
+			//WorldTransformの更新
 			worldTransform_.UpdateMatrixEuler();
 		}
 		else if (isBackMove_)
 		{
-			animationIndex_ = 0;
-			UpdateAnimationTime(animationTime_, true, 1.5f, animationIndex_, model_);
+			//アニメーション
+			animationIndex_ = kAnimationBackMove;
+			UpdateAnimationTime(animationTime_, true, animationSpeed, animationIndex_, model_);
 
+			//移動処理
 			moveData_.velocity = Normalize(moveData_.velocity);
 			moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
-
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
+			//WorldTransformの更新
 			worldTransform_.UpdateMatrixEuler();
 		}
-		else if(timerData_.guardAnimationTimer == 60 && !characterState_.isGuard)
+		else if(timerData_.guardAnimationTimer == timerData_.maxGuardAnimationTimer && !characterState_.isGuard)
 		{
-			animationIndex_ = 5;
-			UpdateAnimationTime(animationTime_, true, 1.0f, animationIndex_, model_);
+			//アニメーション
+			const float kIdleAnimationSpeed = 1.0f;
+			animationIndex_ = kAnimationIdle;
+			UpdateAnimationTime(animationTime_, true, kIdleAnimationSpeed, animationIndex_, model_);
 		}
 	}
 }
 
 void Player::StartAttack(bool& isAttackType)
 {
+	//攻撃の開始処理
 	ICharacter::StartAttack(isAttackType);
 }
 
 void Player::EndAttack(bool& isAttackType)
 {
+	//攻撃の終了処理
 	enemy_->SetIsGuarded(false);
 	ICharacter::EndAttack(isAttackType);
 }
 
 void Player::EvaluateAttackTiming()
 {
+	//攻撃判定をつけるタイミングの設定
 	ICharacter::EvaluateAttackTiming();
 }
 
 void Player::ApplyDamage()
 {
+	//ダメージの適応
 	if (!attackData_.isDamaged)
 	{
 		attackData_.isDamaged = true;
@@ -1616,53 +1812,76 @@ void Player::ApplyDamage()
 
 void Player::ResetCollision()
 {
-	aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+	//当たり判定のリセット
+	aabb_ = defaultCollsiion_;
 	SetAABB(aabb_);
 }
 
 void Player::ConfigureCollision(Vector3 min, Vector3 max)
 {
+	//当たり判定の設定
 	aabb_ = { {min.x, min.y, min.z},{max.x, max.y, max.z} };
 	SetAABB(aabb_);
 }
 
 void Player::UpdateHPBar()
 {
-	hpBar_.size_ = { (static_cast<float>(hp_) / static_cast<float>(maxHp_)) * barSize_, 7.0f };
+	//体力ゲージ
+	const float kHpBarSizeY = 7.0f;
+	const int kDivisionFactor = 2;
+	const int kHalfHp = maxHp_ / kDivisionFactor;
+	const int kQuarterHp = kHalfHp / kDivisionFactor;
 
+	//色
+	const Vector4 kDefaultHpColor = { 0.0f, 1.0f, 0.0f, 1.0f };
+	const Vector4 kHalfHpColor = { 1.0f, 0.8f, 0.0f, 1.0f };
+	const Vector4 kQuarterHpColor = { 1.0f, 0.0f, 0.0f, 1.0f };
+
+	//サイズを設定
+	hpBar_.size_ = { (static_cast<float>(hp_) / static_cast<float>(maxHp_)) * barSize_, kHpBarSizeY };
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 
-	if (hp_ < -50)
+	//体力に応じて色を変化
+	if (hp_ < -kHalfHp)
 	{
-		hpBar_.sprite_->SetColor({ 0.0f, 1.0f, 0.0f, 1.0f });
+		hpBar_.sprite_->SetColor(kDefaultHpColor);
 	}
-
-	if (hp_ >= -50 && hp_ < -25)
+	else if (hp_ >= -kHalfHp && hp_ < -kQuarterHp)
 	{
-		hpBar_.sprite_->SetColor({ 1.0f, 0.8f, 0.0f, 1.0f });
+		hpBar_.sprite_->SetColor(kHalfHpColor);
 	}
-	else if (hp_ >= -25)
+	else if (hp_ >= -kQuarterHp)
 	{
-		hpBar_.sprite_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
+		hpBar_.sprite_->SetColor(kQuarterHpColor);
 	}
 }
 
 void Player::UpdateGuardGaugeBar()
 {
-	if (guardGauge_ < 0 && guardGauge_ > -50.0f)
+	//ガードゲージ
+	const float kGuradGaugeBarSizeY = 7.0f;
+	const float kGuardGaugeIncreaseSpeed = 0.03f;
+	const float kMaxGuardGauge = -50.0f;
+
+	//色
+	const Vector4 kDefaultGuardGaugeColor = { 0.0f, 0.5f, 1.0f, 1.0f };
+
+	if (guardGauge_ < 0.0f && guardGauge_ > kMaxGuardGauge)
 	{
-		guardGauge_ += 0.03f;
+		guardGauge_ += kGuardGaugeIncreaseSpeed;
 	}
 
-	guardGaugeBar_.size_ = { (guardGauge_ / maxGuardGauge_) * guardGaugeBarSize_,7.0f };
-
+	//サイズを設定
+	guardGaugeBar_.size_ = { (guardGauge_ / maxGuardGauge_) * guardGaugeBarSize_,kGuradGaugeBarSizeY };
 	guardGaugeBar_.sprite_->SetSize(guardGaugeBar_.size_);
 
-	guardGaugeBar_.sprite_->SetColor({ 0.0f, 0.5f, 1.0f, 1.0f });
+	//色を設定
+	guardGaugeBar_.sprite_->SetColor(kDefaultGuardGaugeColor);
 
-	if (guardGauge_ <= -50.0f)
+	//ガードゲージが最大になった場合
+	if (guardGauge_ <= kMaxGuardGauge)
 	{
-		guardGauge_ = -50.0f;
+		guardGauge_ = kMaxGuardGauge;
 		characterState_.isGuard = false;
 		attackData_.isAttack = false;
 		characterState_.behaviorRequest = Behavior::kStan;
@@ -1671,10 +1890,14 @@ void Player::UpdateGuardGaugeBar()
 
 void Player::AdjustGuardGauge()
 {
+	//攻撃パラメータに設定されているデータを適応
+	const float kMaxGuardGauge = -50.0f;
+
 	if (!attackData_.isGuarded)
 	{
-		if (finisherGauge_ > -50.0f)
+		if (guardGauge_ > kMaxGuardGauge)
 		{
+			//ガードゲージを増加
 			guardGauge_ -= enemy_->GetGuardGaugeIncreaseAmount();
 		}
 
@@ -1684,22 +1907,32 @@ void Player::AdjustGuardGauge()
 
 void Player::UpdateFinisherGaugeBar()
 {
-	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,19.3f };
+	//必殺技ゲージ
+	const float kFinisherGaugeBarSizeY = 19.3f;
+	const float kMaxFinisherGauge = -50.0f;
 
+	//色
+	const Vector4 kDefaultHpColor = { 0.0f, 0.5f, 1.0f, 1.0f };
+	const Vector4 kMaxChargeColor = { 1.0f, 0.5f, 0.0f, 1.0f };
+
+	//サイズを設定
+	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,kFinisherGaugeBarSizeY };
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
 
-	if (finisherGauge_ > -50.0f)
+	//ゲージの状態に応じて色を変化
+	if (finisherGauge_ > kMaxFinisherGauge)
 	{
-		finisherGaugeBar_.sprite_->SetColor({ 0.0f, 0.5f, 1.0f, 1.0f });
+		finisherGaugeBar_.sprite_->SetColor(kDefaultHpColor);
 	}
 	else
 	{
-		finisherGaugeBar_.sprite_->SetColor({ 1.0f, 0.5f, 0.0f, 1.0f });
+		finisherGaugeBar_.sprite_->SetColor(kMaxChargeColor);
 	}
 
-	if (finisherGauge_ <= -50.0f)
+	//必殺技ゲージが最大になった場合
+	if (finisherGauge_ <= kMaxFinisherGauge)
 	{
-		finisherGauge_ = -50.0f;
+		finisherGauge_ = kMaxFinisherGauge;
 		isFinisherCharge_ = true;
 	}
 	else
@@ -1710,16 +1943,20 @@ void Player::UpdateFinisherGaugeBar()
 
 void Player::AdjustFinisherGauge(float value)
 {
+	//敵の必殺技ゲージを取得
 	float finisherGaugeEnemy = enemy_->GetFinisherGauge();
+	const float kEnemyMaxFinisherGauge = 50.0f;
 
+	//攻撃パラメータに設定されているデータを適応
+	const float kMaxFinisherGauge = -50.0f;
 	if (!attackData_.isFinisherGaugeIncreased)
 	{
-		if (finisherGauge_ > -50.0f)
+		if (finisherGauge_ > kMaxFinisherGauge)
 		{
 			finisherGauge_ -= value * attackData_.takeFinisherGaugeIncreaseAmount;
 		}
 
-		if (finisherGaugeEnemy < 50.0f)
+		if (finisherGaugeEnemy < kEnemyMaxFinisherGauge)
 		{
 			finisherGaugeEnemy += value;
 		}
@@ -1727,14 +1964,15 @@ void Player::AdjustFinisherGauge(float value)
 		attackData_.isFinisherGaugeIncreased = true;
 	}
 
-	if (finisherGauge_ < -50.0f)
+	//最大値に設定
+	if (finisherGauge_ < kMaxFinisherGauge)
 	{
-		finisherGauge_ = -50.0f;
+		finisherGauge_ = kMaxFinisherGauge;
 	}
 
-	if (finisherGaugeEnemy > 50.0f)
+	if (finisherGaugeEnemy > kEnemyMaxFinisherGauge)
 	{
-		finisherGaugeEnemy = 50.0f;
+		finisherGaugeEnemy = kEnemyMaxFinisherGauge;
 	}
 
 	enemy_->SetFinisherGauge(finisherGaugeEnemy);
@@ -1742,24 +1980,32 @@ void Player::AdjustFinisherGauge(float value)
 
 void Player::Reset()
 {
+	const int kMaxHp = -100;
+
+	//リセット
 	ICharacter::Reset();
 
-	hp_ = -100;
+	//HPの設定
+	hp_ = kMaxHp;
 
-	animationIndex_ = 5;
+	//アニメーション
+	const int kAnimationIdle = 5;
+	animationIndex_ = kAnimationIdle;
 	animationTime_ = 0.0f;
 	model_->SetAnimationTime(animationTime_);
 
-	worldTransform_.translation = { -1.5f,0.0f,0.0f };
+	//WorldTransformの設定
+	const float kDefaultTranslationX = -1.5f;
+	worldTransform_.translation = { kDefaultTranslationX,0.0f,0.0f };
 	worldTransform_.rotation = { 0.0f,characterState_.rightDirectionRotation,0.0f };
 	characterState_.direction = Direction::Right;
 
-	isCancel_ = false;
-
+	//WorldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 
+	//フラグのリセット
 	isKO_ = false;
-
+	isCancel_ = false;
 	isFinisherEffect_ = false;
 }
 
@@ -1768,37 +2014,51 @@ void Player::DownAnimation()
 	//弱攻撃
 	if (characterState_.isHitLightPunch)
 	{
+		//ダウン状態に設定
 		characterState_.isDown = true;
 		timerData_.downAnimationTimer--;
 
-		if (timerData_.downAnimationTimer > 55)
-		{
-			float particlePosX = (characterState_.direction == Direction::Right) ? -0.1f : 0.1f;
+		//アニメーション
+		const int kAnimationLightDown = 4;
+		const float animationSpeed = 1.5f;
+		animationIndex_ = kAnimationLightDown;
+		UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 
-			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
-				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+		//パーティクル
+		const int kParticleTime = 55;
+		const float kParticleMoveSpeed = 0.1f;
+		float particlePositionX = (characterState_.direction == Direction::Right) ? -kParticleMoveSpeed : kParticleMoveSpeed;
+		const float particlePositionY = 0.5f;
+
+		if (timerData_.downAnimationTimer > kParticleTime)
+		{
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
+				 worldTransform_.translation.y + particlePositionY,worldTransform_.translation.z });
 		}
 
+		//ヒットバック
+		const int kHitBackTime = 58;
+		const float kHitBackSpeed = 0.05f;
+
 		//修正中
-		if (timerData_.downAnimationTimer > 58)
+		if (timerData_.downAnimationTimer > kHitBackTime)
 		{
 			if (characterState_.direction == Direction::Right)
 			{
-				worldTransform_.translation.x -= 0.05f;
+				worldTransform_.translation.x -= kHitBackSpeed;
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				worldTransform_.translation.x += 0.05f;
+				worldTransform_.translation.x += kHitBackSpeed;
 			}
 		}
 
-		animationIndex_ = 4;
-		UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
-
-		//次の入力を受け取ったらこの処理にする
+		//終了処理
 		if (!enemy_->GetIsLightPunch() && hp_ < 0)
 		{
-			EndDownAnimation(5, characterState_.isHitLightPunch);
+			//アニメーションの設定
+			const int kAnimationIdle = 5;
+			EndDownAnimation(kAnimationIdle, characterState_.isHitLightPunch);
 			isKO_ = false;
 		}
 	}
@@ -1806,23 +2066,34 @@ void Player::DownAnimation()
 	//TC中攻撃
 	if (characterState_.isHitTCMiddlePunch)
 	{
+		//ダウン状態に設定
 		characterState_.isDown = true;
 		timerData_.downAnimationTimer--;
 
-		if (timerData_.downAnimationTimer > 55)
-		{
-			float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
+		//アニメーション
+		const int kAnimationLightDown = 4;
+		const float animationSpeed = 1.5f;
+		animationIndex_ = kAnimationLightDown;
+		UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 
-			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
-				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+		//パーティクル
+		const int kParticleTime = 55;
+		const float kParticleMoveSpeed = 0.1f;
+		float particlePositionX = (characterState_.direction == Direction::Right) ? -kParticleMoveSpeed : kParticleMoveSpeed;
+		const float particlePositionY = 0.5f;
+
+		if (timerData_.downAnimationTimer > kParticleTime)
+		{
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
+				 worldTransform_.translation.y + particlePositionY,worldTransform_.translation.z });
 		}
 
-		animationIndex_ = 4;
-		UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
-
+		//終了処理
 		if (!enemy_->GetIsTCMiddlePunch() && hp_ < 0)
 		{
-			EndDownAnimation(5, characterState_.isHitTCMiddlePunch);
+			//アニメーションの設定
+			const int kAnimationIdle = 5;
+			EndDownAnimation(kAnimationIdle, characterState_.isHitTCMiddlePunch);
 			isKO_ = false;
 		}
 	}
@@ -1830,35 +2101,52 @@ void Player::DownAnimation()
 	//TC強攻撃
 	if (characterState_.isHitTCHighPunch)
 	{
+		//ダウン状態に設定
 		characterState_.isDown = true;
 		timerData_.downAnimationTimer--;
 
-		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
-		float moveX = (characterState_.direction == Direction::Right) ? -0.02f : 0.02f;
+		//アニメーション
+		const int kAnimationHeavyDown = 7;
+		const float animationSpeed = 1.5f;
+		animationIndex_ = kAnimationHeavyDown;
+		UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 
-		aabb_ = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
-			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
+		//パーティクル
+		const int kParticleTime = 55;
+		const float kParticleMoveSpeed = 0.1f;
+		float particlePositionX = (characterState_.direction == Direction::Right) ? -kParticleMoveSpeed : kParticleMoveSpeed;
+		const float particlePositionY = 0.5f;
 
-		if (timerData_.downAnimationTimer > 55)
+		if (timerData_.downAnimationTimer > kParticleTime)
 		{
-			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
-						worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
+						worldTransform_.translation.y + particlePositionY, worldTransform_.translation.z });
 		}
 
-		if (timerData_.downAnimationTimer > 35 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
+		//当たり判定の設定
+		const AABB kDownAABB = (characterState_.direction == Direction::Right) ? AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} } :
+			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
+
+		aabb_ = kDownAABB;
+		SetAABB(aabb_);
+
+		//移動処理
+		const int kMoveTime = 35;
+		const float kMoveSpeed = 0.02f;
+		float moveX = (characterState_.direction == Direction::Right) ? -kMoveSpeed : kMoveSpeed;
+
+		if (timerData_.downAnimationTimer > kMoveTime && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
 			(characterState_.direction == Direction::Right && worldTransform_.translation.x > leftEdge_)))
 		{
 			worldTransform_.translation.x += moveX;
 		}
 
-		animationIndex_ = 7;
-		UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
-
-		SetAABB(aabb_);
-
+		//終了処理
 		if (!enemy_->GetIsTCHighPunch() && hp_ < 0)
 		{
-			EndDownAnimation(5, characterState_.isHitTCHighPunch);
+			//アニメーションの設定
+			const int kAnimationIdle = 5;
+			EndDownAnimation(kAnimationIdle, characterState_.isHitTCHighPunch);
 			ResetCollision();
 			isKO_ = false;
 		}
@@ -1867,23 +2155,51 @@ void Player::DownAnimation()
 	//強攻撃
 	if (characterState_.isHitHighPunch)
 	{
+		//ダウン状態に設定
 		characterState_.isDown = true;
 		timerData_.downAnimationTimer--;
 
-		if (timerData_.downAnimationTimer > 55)
+		//アニメーション
+		const int kAnimationHeavyDown = 7;
+		const float animationSpeed = 1.5f;
+		animationIndex_ = kAnimationHeavyDown;
+		UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+		//パーティクル
+		const int kParticleTime = 55;
+		const float kParticleMoveSpeed = 0.1f;
+		float particlePositionX = (characterState_.direction == Direction::Right) ? -kParticleMoveSpeed : kParticleMoveSpeed;
+		const float particlePositionY = 0.5f;
+
+		if (timerData_.downAnimationTimer > kParticleTime)
 		{
-			float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
+				 worldTransform_.translation.y + particlePositionY,worldTransform_.translation.z });
+		}
 
-			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
-				 worldTransform_.translation.y + 0.5f,worldTransform_.translation.z });
+		//当たり判定の設定
+		const AABB kDownAABB = (enemy_->GetDirection() == Direction::Right) ? AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} } :
+			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
 
-			const float kJumpFirstSpeed_ = 0.15f;
+		aabb_ = kDownAABB;
+		SetAABB(aabb_);
 
-			moveData_.velocity.x = (enemy_->GetDirection() == Direction::Right) ? 0.025f : -0.025f;
+		//移動処理
+		const int kJumpTime = 55;
+		const int kFallTime = -30;
+		const float kJumpFirstSpeed_ = 0.15f;
+		const float kMoveSpeed = 0.025f;
+		float moveX = (enemy_->GetDirection() == Direction::Right) ? kMoveSpeed : -kMoveSpeed;
+
+		if (timerData_.downAnimationTimer > kJumpTime)
+		{
+			//ジャンプする
+			moveData_.velocity.x = moveX;
 			moveData_.velocity.y = kJumpFirstSpeed_;
 		}
-		else if (timerData_.downAnimationTimer > -30)
+		else if (timerData_.downAnimationTimer > kFallTime)
 		{
+			//落ちる
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 			const float kGravityAcceleration_ = 0.005f;
@@ -1898,15 +2214,12 @@ void Player::DownAnimation()
 			}
 		}
 
-		aabb_ = (enemy_->GetDirection() == Direction::Right) ? AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} } :
-			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
-
-		animationIndex_ = 7;
-		UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
-
+		//終了処理
 		if (!enemy_->GetIsHighPunch() &&  worldTransform_.translation.y <= 0.0f && hp_ < 0)
 		{
-			EndDownAnimation(5, characterState_.isHitHighPunch);
+			//アニメーションの設定
+			const int kAnimationIdle = 5;
+			EndDownAnimation(kAnimationIdle, characterState_.isHitHighPunch);
 			ResetCollision();
 			isKO_ = false;
 		}
@@ -1915,136 +2228,185 @@ void Player::DownAnimation()
 	//タックル攻撃
 	if (characterState_.isHitTackle)
 	{
+		//ダウン状態に設定
 		characterState_.isDown = true;
-		timerData_.downAnimationTimer -= static_cast<int>(GameTimer::GetDeltaTime() * scaleFacter_);
-
-		float particlePosX = (characterState_.direction == Direction::Right) ? 0.1f : -0.1f;
-		float moveX = 0.0f;
-
-		if (!enemy_->GetIsDown())
-		{
-			moveX = (enemy_->GetDirection() == Direction::Right) ? 4.8f : -4.8f;
-		}
-		else
-		{
-			moveX = (enemy_->GetDirection() == Direction::Right) ? 3.0f : -3.0f;
-		}
-
+		timerData_.downAnimationTimer -= static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
 		timerData_.effectTimer--;
 
-		aabb_ = (enemy_->GetDirection() == Direction::Right) ?  AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} } :
+		//アニメーション
+		const int kAnimationHeavyDown = 7;
+		const float animationSpeed = 1.5f;
+		animationIndex_ = kAnimationHeavyDown;
+		UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+		//パーティクル
+		const int kParticleTime = 55;
+		const float kParticleMoveSpeed = 0.1f;
+		float particlePositionX = (characterState_.direction == Direction::Right) ? -kParticleMoveSpeed : kParticleMoveSpeed;
+		const float particlePositionY = 0.5f;
+
+		if (timerData_.effectTimer > kParticleTime)
+		{
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
+				 worldTransform_.translation.y + particlePositionY,worldTransform_.translation.z });
+		}
+
+		//当たり判定の設定
+		const AABB kDownAABB = (enemy_->GetDirection() == Direction::Right) ? AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} } :
 			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
 
-		if (timerData_.effectTimer > 55)
-		{
-			effectState_.isShake = true;
+		aabb_ = kDownAABB;
+		SetAABB(aabb_);
 
-			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePosX,
-						worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
+		//移動処理
+		const int kMoveTime = 35;
+		const float kDefaultMoveSpeed = 4.8f;
+		const float kTradeMoveSpeed = 3.0f;
+		const float kFallSpeed = 1.8f;
+		float moveX = 0.0f;
+
+		//相手かダウン状態かどうかで速さを変化
+		if (!enemy_->GetIsDown())
+		{
+			moveX = (enemy_->GetDirection() == Direction::Right) ? kDefaultMoveSpeed : -kDefaultMoveSpeed;
 		}
 		else
 		{
-			effectState_.isShake = false;
+			moveX = (enemy_->GetDirection() == Direction::Right) ? kTradeMoveSpeed : -kTradeMoveSpeed;
 		}
 
-		if (timerData_.downAnimationTimer > 35 && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
+		//移動
+		if (timerData_.downAnimationTimer > kMoveTime && ((characterState_.direction == Direction::Left && worldTransform_.translation.x < rightEdge_) ||
 			(characterState_.direction == Direction::Right && worldTransform_.translation.x > leftEdge_)))
 		{
 			worldTransform_.translation.x += moveX * GameTimer::GetDeltaTime();
 		}
 
+		//空中でくらった場合
 		if (worldTransform_.translation.y > 0.0f)
 		{
-			worldTransform_.translation.y -= 1.8f * GameTimer::GetDeltaTime();
+			worldTransform_.translation.y -= kFallSpeed * GameTimer::GetDeltaTime();
 		}
 		else if (worldTransform_.translation.y <= 0.0f)
 		{
 			worldTransform_.translation.y = 0.0f;
 		}
 
-		animationIndex_ = 7;
-		UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
-
-		SetAABB(aabb_);
-
+		//終了処理
 		if (timerData_.downAnimationTimer < 0 && hp_ < 0)
 		{
-			EndDownAnimation(4, characterState_.isHitTackle);
+			//アニメーションの設定
+			const int kAnimationIdle = 5;
+			EndDownAnimation(kAnimationIdle, characterState_.isHitTackle);
 			isCancel_ = false;
 			isKO_ = false;
 			ResetCollision();
 		}
 	}
 
-	//弾攻撃
+	//弾攻撃(地上)
 	if (characterState_.isHitBullet)
 	{
+		//ダウン状態に設定
+		const int kDownTime = 30;
 		characterState_.isDown = true;
 		timerData_.downAnimationTimer--;
 
+		//アニメーション
+		const int kAnimationLightDown = 4;
+		const float animationSpeed = 1.5f;
+		animationIndex_ = kAnimationLightDown;
+		UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+		//パーティクル
+		const float kParticleMoveSpeed = 0.1f;
+		float particlePositionX = (characterState_.direction == Direction::Right) ? -kParticleMoveSpeed : kParticleMoveSpeed;
+		const float particlePositionY = 0.5f;
+
 		if (!isParticle_)
 		{
-			effectState_.isShake = true;
-
-			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + (characterState_.direction == Direction::Left ? -0.1f : 0.1f),
-				worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
+				worldTransform_.translation.y + particlePositionY, worldTransform_.translation.z });
 
 			isParticle_ = true;
 		}
 
-		animationIndex_ = 4;
-		UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
-
-		if (timerData_.downAnimationTimer < 30 && hp_ < 0)
+		//終了処理
+		if (timerData_.downAnimationTimer < kDownTime && hp_ < 0)
 		{
-			EndDownAnimation(4, characterState_.isHitBullet);
+			//アニメーションの設定
+			const int kAnimationIdle = 5;
+			EndDownAnimation(kAnimationIdle, characterState_.isHitBullet);
 			ResetCollision();
 
 			isParticle_ = false;
 			isKO_ = false;
 		}
 	}
+	//弾攻撃(空中)
 	else if (characterState_.isHitAirBullet)
 	{
+		//ダウン状態に設定
+		const int kDownTime = 30;
 		characterState_.isDown = true;
 		timerData_.downAnimationTimer--;
+		
+		//アニメーション
+		const int kAnimationHeavyDown = 7;
+		const float animationSpeed = 1.5f;
+		animationIndex_ = kAnimationHeavyDown;
+		UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+		//パーティクル
+		const float kParticleMoveSpeed = 0.1f;
+		float particlePositionX = (characterState_.direction == Direction::Right) ? -kParticleMoveSpeed : kParticleMoveSpeed;
+		const float particlePositionY = 0.5f;
 
 		if (!isParticle_) 
 		{
-			effectState_.isShake = true;
-
-			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + (characterState_.direction == Direction::Left ? -0.1f : 0.1f),
-				worldTransform_.translation.y + 0.5f, worldTransform_.translation.z });
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
+				 worldTransform_.translation.y + particlePositionY,worldTransform_.translation.z });
 
 			isParticle_ = true;
 		}
 
-		if (timerData_.downAnimationTimer > 35 && worldTransform_.translation.x > -4.0f)
+		//当たり判定の設定
+		const AABB kDownAABB = (enemy_->GetDirection() == Direction::Right) ? AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} } :
+			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
+
+		aabb_ = kDownAABB;
+		SetAABB(aabb_);
+
+		//移動処理
+		const int kMoveTime = 35;
+		const float kMoveSpeed = enemy_->GetDirection() == Direction::Right ? -0.08f : 0.08f;
+		const float kFallSpeed = 0.03f;
+		float moveX = kMoveSpeed;
+		float rotationY = enemy_->GetDirection() == Direction::Right ? characterState_.leftDirectionRotation : characterState_.rightDirectionRotation;
+
+		//移動
+		if (timerData_.downAnimationTimer > kMoveTime && worldTransform_.translation.x > -4.0f)
 		{
-			worldTransform_.translation.x -= enemy_->GetDirection() == Direction::Right ? -0.08f : 0.08f;
-			worldTransform_.rotation.y = enemy_->GetDirection() == Direction::Right ? characterState_.leftDirectionRotation : characterState_.rightDirectionRotation;
+			worldTransform_.translation.x -= moveX;
+			worldTransform_.rotation.y = rotationY;
 		}
 
+		//落ちる
 		if (worldTransform_.translation.y > 0.0f)
 		{
-			worldTransform_.translation.y -= 0.03f;
+			worldTransform_.translation.y -= kFallSpeed;
 		}
 		else if (worldTransform_.translation.y <= 0.0f)
 		{
 			worldTransform_.translation.y = 0.0f;
 		}
 
-		animationIndex_ = 7;
-		UpdateAnimationTime(animationTime_, false, 1.5f, animationIndex_, model_);
-
-		aabb_ = (enemy_->GetDirection() == Direction::Right) ? AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} } :
-			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
-
-		SetAABB(aabb_);
-
-		if (timerData_.downAnimationTimer < 30 && hp_ < 0)
+		//終了処理
+		if (timerData_.downAnimationTimer < kDownTime && hp_ < 0)
 		{
-			EndDownAnimation(4, characterState_.isHitAirBullet);
+			//アニメーションの設定
+			const int kAnimationIdle = 5;
+			EndDownAnimation(kAnimationIdle, characterState_.isHitAirBullet);
 			ResetCollision();
 
 			isParticle_ = false;
@@ -2052,7 +2414,9 @@ void Player::DownAnimation()
 		}
 	}
 
-	if (timerData_.downAnimationTimer < 50 && hp_ >= 0)
+	//KOの場合
+	const int kKOTime = 50;
+	if (timerData_.downAnimationTimer < kKOTime && hp_ >= 0)
 	{
 		isKO_ = true;
 	}
@@ -2060,16 +2424,8 @@ void Player::DownAnimation()
 
 void Player::EndDownAnimation(int animationIndex, bool& isHitAttackType)
 {
+	//ダウンアニメーションの終了処理
 	ICharacter::EndDownAnimation(animationIndex, isHitAttackType);
-}
-
-Vector3 Player::GetWorldPosition()
-{
-	Vector3 pos{};
-	pos.x = worldTransform_.matWorld.m[3][0];
-	pos.y = worldTransform_.matWorld.m[3][1];
-	pos.z = worldTransform_.matWorld.m[3][2];
-	return pos;
 }
 
 void Player::PushEnemy(Vector3& enemyPosition, float pushSpeed)
@@ -2084,6 +2440,7 @@ void Player::PushEnemy(Vector3& enemyPosition, float pushSpeed)
 
 void Player::UpdateComboNumberSprite()
 {
+	//コンボ表示の更新
 	int comboNum = comboCount_;
 
 	comboNumTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(comboNum) + ".png");
@@ -2093,103 +2450,136 @@ void Player::UpdateComboNumberSprite()
 
 void Player::HitCombo()
 {
+	//攻撃ごとの硬直
+	//弱
+	const int kLightRecoveryTime = 30;
+
+	//中
+	const int kMiddleRecoveryTime = 60;
+
+	//強
+	const int kHeavyRecoveryTime = 120;
+
+	//TODO:冗長的なコードなので改善する
 	//コンボを食らっているとき
+	//始動技がジャンプ攻撃の場合
 	if (characterState_.isHitJumpAttack && comboCount_ == 0)
 	{
 		firstAttack_ = "JumpAttack";
-		comboCount_ = 1;
-		timerData_.comboTimer = 60;
-		timerData_.comboTimer--;
-	}
-
-	if (characterState_.isHitLightPunch && comboCount_ == 0)
-	{
-		firstAttack_ = "LightPunch";
-		comboCount_ = 1;
-		timerData_.comboTimer = 30;
+		comboCount_ = kComboCount_[1];
+		timerData_.comboTimer = kMiddleRecoveryTime;
 		timerData_.comboTimer--;
 	}
 
 	if (firstAttack_ == "JumpAttack")
 	{
-		if (characterState_.isHitLightPunch && comboCount_ == 1)
+		//弱パンチ
+		if (characterState_.isHitLightPunch && comboCount_ == kComboCount_[1])
 		{
-			comboCount_ = 2;
-			timerData_.comboTimer = 60;
+			comboCount_ = kComboCount_[2];
+			timerData_.comboTimer = kMiddleRecoveryTime;
 			timerData_.comboTimer--;
 		}
 
-		if (characterState_.isHitTCMiddlePunch && comboCount_ == 2)
+		//TC中パンチ
+		if (characterState_.isHitTCMiddlePunch && comboCount_ == kComboCount_[2])
 		{
-			comboCount_ = 3;
-			timerData_.comboTimer = 60;
+			comboCount_ = kComboCount_[3];
+			timerData_.comboTimer = kMiddleRecoveryTime;
 			timerData_.comboTimer--;
 		}
 
-		if (characterState_.isHitTCHighPunch && comboCount_ == 3)
+		//TC強パンチ
+		if (characterState_.isHitTCHighPunch && comboCount_ == kComboCount_[2])
 		{
-			comboCount_ = 4;
-			timerData_.comboTimer = 60;
+			comboCount_ = kComboCount_[4];
+			timerData_.comboTimer = kMiddleRecoveryTime;
 			timerData_.comboTimer--;
 		}
 
-		if (characterState_.isHitHighPunch && comboCount_ == 3)
+		//強パンチ
+		if (characterState_.isHitHighPunch && comboCount_ == kComboCount_[3])
 		{
-			comboCount_ = 4;
-			timerData_.comboTimer = 120;
+			comboCount_ = kComboCount_[4];
+			timerData_.comboTimer = kHeavyRecoveryTime;
 			timerData_.comboTimer--;
 		}
 
-		if (characterState_.isHitTackle && comboCount_ == 4)
+		//タックル
+		if (characterState_.isHitTackle && comboCount_ == kComboCount_[4])
 		{
-			comboCount_ = 5;
-			timerData_.comboTimer = 60;
+			comboCount_ = kComboCount_[5];
+			timerData_.comboTimer = kMiddleRecoveryTime;
 			timerData_.comboTimer--;
 		}
+	}
+
+	//始動技が弱攻撃の場合
+	if (characterState_.isHitLightPunch && comboCount_ == 0)
+	{
+		firstAttack_ = "LightPunch";
+		comboCount_ = kComboCount_[1];
+		timerData_.comboTimer = kLightRecoveryTime;
+		timerData_.comboTimer--;
 	}
 
 	if (firstAttack_ == "LightPunch")
 	{
-		if (characterState_.isHitTCMiddlePunch && comboCount_ == 1)
+		//TC中パンチ
+		if (characterState_.isHitTCMiddlePunch && comboCount_ == kComboCount_[1])
 		{
-			comboCount_ = 2;
-			timerData_.comboTimer = 60;
+			comboCount_ = kComboCount_[2];
+			timerData_.comboTimer = kMiddleRecoveryTime;
 			timerData_.comboTimer--;
 		}
 
-		if (characterState_.isHitTCHighPunch && comboCount_ == 2)
+		//TC強パンチ
+		if (characterState_.isHitTCHighPunch && comboCount_ == kComboCount_[2])
 		{
-			comboCount_ = 3;
-			timerData_.comboTimer = 60;
+			comboCount_ = kComboCount_[3];
+			timerData_.comboTimer = kMiddleRecoveryTime;
 			timerData_.comboTimer--;
 		}
 
-		if (characterState_.isHitHighPunch && comboCount_ == 2)
+		//強パンチ
+		if (characterState_.isHitHighPunch && comboCount_ == kComboCount_[2])
 		{
-			comboCount_ = 3;
-			timerData_.comboTimer = 120;
+			comboCount_ = kComboCount_[3];
+			timerData_.comboTimer = kHeavyRecoveryTime;
 			timerData_.comboTimer--;
 		}
 
-		if (characterState_.isHitTackle && comboCount_ == 3)
+		//タックル
+		if (characterState_.isHitTackle && comboCount_ == kComboCount_[3])
 		{
-			comboCount_ = 4;
-			timerData_.comboTimer = 60;
+			comboCount_ = kComboCount_[4];
+			timerData_.comboTimer = kMiddleRecoveryTime;
 			timerData_.comboTimer--;
 		}
 	}
 
+	//コンボタイマーを減らす
 	if (timerData_.comboTimer >= 0)
 	{
 		timerData_.comboTimer--;
 	}
 
+	//終了処理
 	if (timerData_.comboTimer < 0)
 	{
 		timerData_.comboTimer = 0;
 		comboCount_ = 0;
 		firstAttack_ = "";
 	}
+}
+
+Vector3 Player::GetWorldPosition()
+{
+	Vector3 pos{};
+	pos.x = worldTransform_.matWorld.m[3][0];
+	pos.y = worldTransform_.matWorld.m[3][1];
+	pos.z = worldTransform_.matWorld.m[3][2];
+	return pos;
 }
 
 Vector3 Player::GetRightHandJointWorldPosition()

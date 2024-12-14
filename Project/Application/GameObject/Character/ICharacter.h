@@ -460,7 +460,7 @@ protected:
 	//距離
 	Vector3 difference_ = { 0.0f,0.0f,0.0f };
 	float distance_ = 0.0f;
-	const float maxDistance_ = 5.0f;
+	const float kMaxDistance_ = 5.0f;
 
 	//前フレームのX座標
 	float previousPositionX_ = 0.0f;
@@ -472,15 +472,19 @@ protected:
 	bool isKO_ = false;
 
 	//時間の調整用
-	const float scaleFacter_ = 100.0f;
+	const float kScaleFacter_ = 100.0f;
 
 	//ゲーム開始時間
-	const int maxMigrationTime_ = 200;
+	const int kMaxMigrationTime_ = 200;
 
 	//補完速度
-	const float lerpSpeed_ = 0.1f;
+	const float kLerpSpeed_ = 0.1f;
 
+	//通常時の当たり判定
+	const AABB defaultCollsiion_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 
+	//コンボカウントの定数
+	const int kComboCount_[10] = { 0,1,2,3,4,5,6,7,8,9 };
 
 	//ImGui用
 	const float kMinLeftEdge_ = -10.0f;

@@ -184,17 +184,17 @@ private:
 
 	//Sprite(hp)
 	UI hpBar_;
-	const float barSpace_ = 15.6f;
+	const float kBarSpace_ = 15.6f;
 	float barSize_ = 480.0f;
 
 	//Sprite(ガードゲージ)
 	UI guardGaugeBar_;
-	const float guardGaugeBarSpace_ = 48.5f;
+	const float kGuardGaugeBarSpace_ = 48.5f;
 	float guardGaugeBarSize_ = 240.0f;
 
 	//Sprite(必殺技ゲージ)
 	UI finisherGaugeBar_;
-	const float finisherGaugeBarSpace_ = 627.0f;
+	const float kFinisherGaugeBarSpace_ = 627.0f;
 	float finisherGaugeBarSize_ = 240.0f;
 
 	//キャラクターアイコンのSprite
@@ -213,6 +213,7 @@ private:
 	uint32_t weaponAttackSoundHandle_ = 0u;
 	uint32_t damageSoundHandle_ = 0u;
 	uint32_t guardSoundHandle_ = 0u;
+	float volume_ = 1.0f;
 
 	//フィニッシャー中に表示するか
 	bool isFinisherEffect_ = false;
@@ -222,6 +223,6 @@ private:
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
 
 	//スティックの閾値
-	const float value_ = 0.7f;
+	const float kValue_ = 0.7f;
 };
 
