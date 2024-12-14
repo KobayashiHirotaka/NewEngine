@@ -76,7 +76,7 @@ private:
 	uint32_t titleTextureHandle_ = 0;
 	Vector2 titleSpritePosition_ = { 0.0f,-25.0f };
 	float titleSpriteMoveSpeed_ = 1.5f;
-	const float kSpriteMoveSpeed_ = -0.1f;
+	const float kSpriteMoveSpeed_ = -1.0f;
 	const int kMaxSpriteMoveTime_ = 30;
 	int titleSpriteMoveTimer_ = kMaxSpriteMoveTime_;
 
