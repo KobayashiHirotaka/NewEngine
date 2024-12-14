@@ -21,48 +21,53 @@ GamePlayScene::~GamePlayScene() {};
 
 void GamePlayScene::Initialize()
 {
-	//TextureManagerのinstance
+	//TextureManagerのインスタンスを取得
 	textureManager_ = TextureManager::GetInstance();
 
-	//ModelManagerのinstance
+	//ModelManagerのインスタンスを取得
 	modelManager_ = ModelManager::GetInstance();
 
-	//Inputのinstance
+	//Inputのインスタンスを取得
 	input_ = Input::GetInstance();
 
-	//Audioのinstance
+	//Audioのインスタンスを取得
 	audio_ = Audio::GetInstance();
 
-	//CollisionManagerのinstance
+	//CollisionManagerのインスタンスを取得
 	collisionManager_ = std::make_unique<CollisionManager>();
 
-	//Game3dObjectManagerのinstance
+	//Game3dObjectManagerのインスタンスを取得
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
+
+	//Game3dObjectManagerの初期化
 	game3dObjectManager_->Initialize();
 
 	//Levelの読み込み
 	levelLoarder_ = LevelLoader::GetInstance();
 	levelLoarder_->LoadLevel("LevelData");
 
-	//InputLogの生成
+	//InputLogの生成、初期化
 	inputLog_ = std::make_unique<InputLog>();
 	inputLog_->Initialize();
 
-	//HitStopの生成
+	//HitStopの生成、初期化
 	hitStop_ = std::make_unique<HitStop>();
 
+	//CameraControllerの生成、初期化
 	cameraController_ = std::make_unique<CameraController>();
 	cameraController_->Initialize();
 
-	//Playerの生成、初期化
+	//Playerの取得
 	player_ = game3dObjectManager_->GetGameObject<Player>("Player");
 
-	//Enemyの生成、初期化
+	//Enemyの取得
 	enemy_ = game3dObjectManager_->GetGameObject<Enemy>("Enemy");
 
+	//EnemyとHitStopのセット
 	player_->SetEnemy(enemy_);
 	player_->SetHitStop(hitStop_.get());
 
+	//PlayerとHitStopのセット
 	enemy_->SetPlayer(player_);
 	enemy_->SetHitStop(hitStop_.get());
 
@@ -82,15 +87,13 @@ void GamePlayScene::Initialize()
 	generalCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/PlayGeneralCommandList.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
-	//攻撃操作説明
+	//攻撃操作説明(コンボ)
 	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("resource/images/NewPlayAttackCommandList.png");
 	attackCommandListSprite_[0].reset(Sprite::Create(attackCommandListTextureHandle_[0], { 0.0f,0.0f }));
 
+	//攻撃操作説明(必殺技)
 	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("resource/images/NewPlayAttackCommandList2.png");
 	attackCommandListSprite_[1].reset(Sprite::Create(attackCommandListTextureHandle_[1], { 0.0f,0.0f }));
-
-	commandListBackTextureHandle_ = TextureManager::LoadTexture("resource/images/CommandListBack.png");
-	commandListBackSprite_.reset(Sprite::Create(commandListBackTextureHandle_, { 0.0f,0.0f }));
 
 	//ラウンド表示
 	roundTextureHandle_[0] = TextureManager::LoadTexture("resource/images/Round1.png");
@@ -101,12 +104,15 @@ void GamePlayScene::Initialize()
 	roundSprite_[1].reset(Sprite::Create(roundTextureHandle_[1], { 0.0f, 0.0f }));
 	roundSprite_[2].reset(Sprite::Create(roundTextureHandle_[2], { 0.0f, 0.0f }));
 
+	//ラウンド取得数表示
 	roundGetTextureHandle_ = TextureManager::LoadTexture("resource/images/RoundGet.png");
 
-	roundGetSprite_[0].reset(Sprite::Create(roundGetTextureHandle_, { 400.0f, 70.0f }));
-	roundGetSprite_[1].reset(Sprite::Create(roundGetTextureHandle_, { 480.0f, 70.0f }));
-	roundGetSprite_[2].reset(Sprite::Create(roundGetTextureHandle_, { 800.0f, 70.0f }));
-	roundGetSprite_[3].reset(Sprite::Create(roundGetTextureHandle_, { 720.0f, 70.0f }));
+	const Vector2 kRoundGetPosition[4] = { { 400.0f, 70.0f }, { 480.0f, 70.0f }, { 800.0f, 70.0f }, { 720.0f, 70.0f } };
+
+	roundGetSprite_[0].reset(Sprite::Create(roundGetTextureHandle_, kRoundGetPosition[0]));
+	roundGetSprite_[1].reset(Sprite::Create(roundGetTextureHandle_, kRoundGetPosition[1]));
+	roundGetSprite_[2].reset(Sprite::Create(roundGetTextureHandle_, kRoundGetPosition[2]));
+	roundGetSprite_[3].reset(Sprite::Create(roundGetTextureHandle_, kRoundGetPosition[3]));
 
 	//ラウンド開始時
 	fightTextureHandle_ = TextureManager::LoadTexture("resource/images/FIGHT.png");
@@ -135,13 +141,16 @@ void GamePlayScene::Initialize()
 	tensTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
 	onesTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
 
-	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, { 590.0f, 0.0f }));
-	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, { 630.0f, 0.0f }));
+	const Vector2 kNumberTensPosition = { 590.0f, 0.0f };
+	const Vector2 kNumberOnesPosition = { 630.0f, 0.0f };
+
+	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, kNumberTensPosition));
+	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, kNumberOnesPosition));
 
 	//トランジション
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
 	transitionSprite_->SetColor(transitionColor_);
-	transitionSprite_->SetSize(Vector2{ 1280.0f,720.0f });
+	transitionSprite_->SetSize(transitionTextureSize_);
 
 	//SE
 	selectSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Select.mp3");
@@ -153,14 +162,14 @@ void GamePlayScene::Initialize()
 #endif // ADJUSTMENT
 
 	//ラウンドごとの時間
-	currentSeconds_ = 99;
+	currentSeconds_ = kMaxRoundTime_;
 	UpdateNumberSprite();
 
+	//時間の初期設定
 	sMigrationTimer = kMaxMigrationTime_;
-
-	frameTime_ = 1.0f / 60.0f;
+	const float deltaTime = 1.0f / 60.0f;
+	frameTime_ = deltaTime;
 	elapsedTime_ = 0.0f;
-
 	sRoundStartTimer_ = kMaxRoundStartTime_;
 
 	//勝敗
@@ -173,6 +182,7 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
+	//操作説明を開いていない場合
 	if (!isOpen_)
 	{
 		//ラウンド間の時間の処理
@@ -184,9 +194,10 @@ void GamePlayScene::Update()
 			elapsedTime_ += GameTimer::GetDeltaTime();
 
 			//タイムカウントを更新
-			if (currentSeconds_ > 0 && elapsedTime_ >= 1.0f && sMigrationTimer == kMaxMigrationTime_)
+			const float kTimeStep = 1.0f;
+			if (currentSeconds_ > 0 && elapsedTime_ >= kTimeStep && sMigrationTimer == kMaxMigrationTime_)
 			{
-				if (player_->GetFinisherTimer() == 120)
+				if (player_->GetFinisherTimer() == kFinisherTime_)
 				{
 					currentSeconds_--;
 					UpdateNumberSprite();
@@ -197,11 +208,12 @@ void GamePlayScene::Update()
 			}
 		}
 
-		if (player_->GetIsKO() && sMigrationTimer > 20)
+		//KOの処理
+		if (player_->GetIsKO() && sMigrationTimer > kKOConditionTime)
 		{
 			isKO_ = true;
 		}
-		else if (enemy_->GetIsKO() && sMigrationTimer > 20)
+		else if (enemy_->GetIsKO() && sMigrationTimer > kKOConditionTime)
 		{
 			isKO_ = true;
 		}
@@ -212,6 +224,7 @@ void GamePlayScene::Update()
 			enemy_->SetIsKO(false);
 		}
 
+		//KOではない場合
 		if (!isKO_)
 		{
 			//Game3dObjectManagerの更新
@@ -223,39 +236,10 @@ void GamePlayScene::Update()
 
 		//BackGroundの更新
 		backGround_->Update();
-
-		//シェイク
-		if ((player_->GetIsShake() || enemy_->GetIsShake()) && !isPlayerWin_ && sRoundStartTimer_ <= 0)
-		{
-			isShake_ = true;
-			shakeTimer_ = kShakeTime_;
-			//backGround_->SetStateNum(1);
-		}
-
-		if (isShake_)
-		{
-			cameraController_->GetCamera().translation_.y = Random(shakePower_.x, shakePower_.y);
-			cameraController_->GetCamera().UpdateMatrix();
-
-			if (--shakeTimer_ < 0)
-			{
-				isShake_ = false;
-			}
-		}
 	}
 
-	////PostEffectの値変更
-	//if (player_->GetHP() >= -25.0f)
-	//{
-	//	PostProcess::GetInstance()->SetIsVignetteActive(true);
-	//}
-	//else
-	//{
-	//	PostProcess::GetInstance()->SetIsVignetteActive(false);
-	//}
-
 	//必殺技発動時のカメラ移動処理
-	if (player_->GetIsFinisher() && player_->GetFinisherTimer() != 120)
+	if (player_->GetIsFinisher() && player_->GetFinisherTimer() != kFinisherTime_)
 	{
 		isFinisherStart_ = true;
 	}
@@ -264,14 +248,14 @@ void GamePlayScene::Update()
 	{
 		if (player_->GetIsDirectionRight())
 		{
-			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, player_->GetWorldPosition().x + 4.0f, 0.2f);
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -0.7f, 0.2f);
+			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, player_->GetWorldPosition().x + kCameraFinisherOffsetY_, kCameraLerpSpeed_);
+			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -kCameraFinisherRotationY_, kCameraLerpSpeed_);
 			cameraController_->GetCamera().UpdateMatrix();
 		}
 		else
 		{
-			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, player_->GetWorldPosition().x - 4.0f, 0.2f);
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, 0.7f, 0.2f);
+			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, player_->GetWorldPosition().x - kCameraFinisherOffsetY_, kCameraLerpSpeed_);
+			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, kCameraFinisherRotationY_, kCameraLerpSpeed_);
 			cameraController_->GetCamera().UpdateMatrix();
 		}
 
@@ -282,12 +266,13 @@ void GamePlayScene::Update()
 		}
 	}
 
+	//必殺技終了時のカメラ移動処理
 	if (isFinisherEnd_)
 	{
 		if (player_->GetIsDirectionRight())
 		{
-			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, cameraController_->GetCenter().x - 0.1f, 0.2f);
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, 0.1f, 0.1f);
+			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, cameraController_->GetCenter().x - kCameraEndCorrectionY_, kCameraLerpSpeed_);
+			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, kCameraEndCorrectionY_, kCameraSmallLerpSpeed_);
 			cameraController_->GetCamera().UpdateMatrix();
 
 			if (cameraController_->GetCamera().translation_.x <= cameraController_->GetCenter().x && cameraController_->GetCamera().rotation_.y >= 0.0f)
@@ -299,8 +284,8 @@ void GamePlayScene::Update()
 		}
 		else
 		{
-			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, cameraController_->GetCenter().x + 0.1f, 0.2f);
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -0.1f, 0.1f);
+			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, cameraController_->GetCenter().x + kCameraEndCorrectionY_, kCameraLerpSpeed_);
+			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -kCameraEndCorrectionY_, kCameraSmallLerpSpeed_);
 			cameraController_->GetCamera().UpdateMatrix();
 
 			if (cameraController_->GetCamera().translation_.x >= cameraController_->GetCenter().x && cameraController_->GetCamera().rotation_.y <= 0.0f)
@@ -312,6 +297,7 @@ void GamePlayScene::Update()
 		}
 	}
 
+	//必殺技演出時ではない場合
 	if (!isFinisherStart_ && !isFinisherEnd_)
 	{
 		//通常時のCameraControllerの更新
@@ -321,45 +307,68 @@ void GamePlayScene::Update()
 	//勝ち負けの処理
 	HandleGameOutcome();
 
+	//クールダウンタイム
+	const int kStickInputCooldownTime = 10;
+
 	//操作説明の開閉
-	if (input_->GetJoystickState() && !isKO_&& sRoundStartTimer_ <= 0 && sMigrationTimer == 200)
+	if (input_->GetJoystickState())
 	{
+		//オプションボタンを押して操作説明を開く
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_START) && !isOpen_)
 		{
-			audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
+			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
 			isOpen_ = true;
-			spriteCount_ = 1;
+			spriteCount_ = static_cast<int>(CommandSpriteType::GeneralCommandSprite);
 		}
+		//Bボタンを押して操作説明を閉じる
 		else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && isOpen_)
 		{
-			audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
+			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
 			isOpen_ = false;
-			spriteCount_ = 0;
+			spriteCount_ = static_cast<int>(CommandSpriteType::GeneralCommandSprite);
 		}
 
-
+		//操作説明が開いている場合
 		if (isOpen_)
 		{
+			//右の方向キーかスティック右入力で次の説明へ
 			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) || (input_->GetLeftStickX() > kValue_ && stickInputCooldown_ <= 0))
 			{
-				if (spriteCount_ < 3)
+				if (spriteCount_ != static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite))
 				{
-					spriteCount_++;
-					audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
-					stickInputCooldown_ = 10;
+					if (spriteCount_ == static_cast<int>(CommandSpriteType::GeneralCommandSprite))
+					{
+						spriteCount_ = static_cast<int>(CommandSpriteType::ComboAttackCommandSprite);
+					}
+					else if (spriteCount_ == static_cast<int>(CommandSpriteType::ComboAttackCommandSprite))
+					{
+						spriteCount_ = static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite);
+					}
+
+					audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
+					stickInputCooldown_ = kStickInputCooldownTime;
 				}
 			}
+			//左の方向キーかスティック左入力で前の説明に戻る
 			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) || (input_->GetLeftStickX() < -kValue_ && stickInputCooldown_ <= 0))
 			{
-				if (spriteCount_ > 1)
+				if (spriteCount_ != static_cast<int>(CommandSpriteType::GeneralCommandSprite))
 				{
-					spriteCount_--;
-					audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
-					stickInputCooldown_ = 10;
+					if (spriteCount_ == static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite))
+					{
+						spriteCount_ = static_cast<int>(CommandSpriteType::ComboAttackCommandSprite);
+					}
+					else if (spriteCount_ == static_cast<int>(CommandSpriteType::ComboAttackCommandSprite))
+					{
+						spriteCount_ = static_cast<int>(CommandSpriteType::GeneralCommandSprite);
+					}
+
+					audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
+					stickInputCooldown_ = kStickInputCooldownTime;
 				}
 			}
 
-			//クールダウンを減らす
+			// クールダウンを減らす
 			if (stickInputCooldown_ > 0)
 			{
 				stickInputCooldown_--;
@@ -380,12 +389,13 @@ void GamePlayScene::Update()
 
 	collisionManager_->CheckAllCollision();
 
+	//HitStopの更新
 	hitStop_->Update();
 
 	//InputLogの更新
 	inputLog_->Update();
 
-	//Camera、DebugCameraの処理
+	//DebugCameraの更新
 	debugCamera_.Update();
 
 #ifdef _ADJUSTMENT
@@ -401,6 +411,7 @@ void GamePlayScene::Update()
 
 #endif 
 
+	//DebugCameraの処理
 	if (isDebugCamera_)
 	{
 		camera_.matView_ = debugCamera_.GetCamera().matView_;
@@ -409,6 +420,7 @@ void GamePlayScene::Update()
 	}
 	else
 	{
+		//カメラの更新
 		camera_.UpdateMatrix();
 	}
 };
@@ -423,7 +435,7 @@ void GamePlayScene::Draw()
 
 	Model::PreDraw();
 
-	////Skydomeの描画
+	//Skydomeの描画
 	skydome_->Draw(cameraController_->GetCamera());
 
 	if (!isOpen_)
@@ -485,15 +497,15 @@ void GamePlayScene::Draw()
 	//ラウンド開始表示
 	if (sRoundStartTimer_ <= kMaxRoundStartTime_ && sRoundStartTimer_ > kHalfRoundStartTime_)
 	{
-		if (round_ == 1)
+		if (round_ == kRoundOne_)
 		{
 			roundSprite_[0]->Draw();
 		}
-		else if (round_ == 2)
+		else if (round_ == kRoundTwo_)
 		{
 			roundSprite_[1]->Draw();
 		}
-		else if (round_ == 3)
+		else if (round_ == kRoundThree_)
 		{
 			roundSprite_[2]->Draw();
 		}
@@ -505,7 +517,7 @@ void GamePlayScene::Draw()
 	}
 
 	//ラウンド終了時の勝敗表示
-	if (sMigrationTimer < kOutComeTime_ && sMigrationTimer > 20)
+	if (sMigrationTimer < kOutComeTime_ && sMigrationTimer > kKOConditionTime)
 	{
 	
 		if (isPlayerWin_ && !isTimeOver_)
@@ -535,47 +547,45 @@ void GamePlayScene::Draw()
 		numberOnesSprite_->Draw();
 		numberTensSprite_->Draw();
 
-		if (PlayerWinCount_ >= 1)
+		if (PlayerWinCount_ >= kPlayerFirstWinCount_)
 		{
 			roundGetSprite_[1]->Draw();
 		}
 
-		if (PlayerWinCount_ >= 2)
+		if (PlayerWinCount_ >= kPlayerSecondWinCount_)
 		{
 			roundGetSprite_[0]->Draw();
 		}
 
 
-		if (EnemyWinCount_ >= 1)
+		if (EnemyWinCount_ >= kEnemyFirstWinCount_)
 		{
 			roundGetSprite_[3]->Draw();
 		}
 
-		if (EnemyWinCount_ >= 2)
+		if (EnemyWinCount_ >= kEnemySecondWinCount_)
 		{
 			roundGetSprite_[2]->Draw();
 		}
 
 	}
 
-	/*if (isOpen_)
+	//操作説明の描画
+	if (isOpen_ && spriteCount_ == static_cast<int>(CommandSpriteType::GeneralCommandSprite))
 	{
-		commandListBackSprite_->Draw();
-	}*/
-
-	//操作説明
-	if (isOpen_ && spriteCount_ == 1)
-	{
+		//基本操作
 		generalCommandListSprite_->Draw();
 	}
 
-	if (isOpen_ && spriteCount_ == 2)
+	if (isOpen_ && spriteCount_ == static_cast<int>(CommandSpriteType::ComboAttackCommandSprite))
 	{
+		//コンボ攻撃
 		attackCommandListSprite_[0]->Draw();
 	}
 
-	if (isOpen_ && spriteCount_ == 3)
+	if (isOpen_ && spriteCount_ == static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite))
 	{
+		//必殺技攻撃
 		attackCommandListSprite_[1]->Draw();
 	}
 	
@@ -602,23 +612,15 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::ImGui()
 {
-	/*ImGui::Begin("PlayScene");
-	ImGui::Text("roundTransitionTimer %d", roundTransitionTimer_);
-	ImGui::Checkbox("isDebug_", &isDebug_);
-	ImGui::End();*/
-
-	/*player_->ImGui("Player");
-	enemy_->ImGui("Enemy");*/
-
-	//camera_.ImGui();
-
-	//cameraController_->ImGui();
+	
 }
 
 void GamePlayScene::UpdateNumberSprite()
 {
-	int tensDigit = currentSeconds_ / 10;
-	int onesDigit = currentSeconds_ % 10;
+	//時間表示の更新
+	const int kDecimalBase = 10;
+	int tensDigit = currentSeconds_ / kDecimalBase;
+	int onesDigit = currentSeconds_ % kDecimalBase;
 
 	tensTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(tensDigit) + ".png");
 	onesTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(onesDigit) + ".png");
@@ -629,6 +631,7 @@ void GamePlayScene::UpdateNumberSprite()
 
 float GamePlayScene::Random(float min_value, float max_value)
 {
+	//乱数を生成
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<float> dis(min_value, max_value);
@@ -636,11 +639,11 @@ float GamePlayScene::Random(float min_value, float max_value)
 	return dis(gen);
 }
 
-//TODO:長いので簡潔にする
+//TODO:長いので簡潔にする(冬休み)
 void GamePlayScene::HandleGameOutcome()
 {
 	//Playerが勝ったとき
-	if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == 1 && !isRoundTransition_)
+	if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == kRoundOne_ && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		sMigrationTimer--;
@@ -648,11 +651,11 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
 		{
-			PlayerWinCount_ = 1;
+			PlayerWinCount_ = kPlayerFirstWinCount_;
 			isRoundTransition_ = true;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == 2 && PlayerWinCount_ == 1 && !isRoundTransition_)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == kRoundTwo_ && PlayerWinCount_ == kPlayerFirstWinCount_ && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		sMigrationTimer--;
@@ -660,10 +663,10 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
 		{
-			PlayerWinCount_ = 2;
+			PlayerWinCount_ = kPlayerSecondWinCount_;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == 2 && PlayerWinCount_ == 0 && !isRoundTransition_)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == kRoundTwo_ && PlayerWinCount_ == 0 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		sMigrationTimer--;
@@ -671,11 +674,11 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
 		{
-			PlayerWinCount_ = 1;
+			PlayerWinCount_ = kPlayerFirstWinCount_;
 			isRoundTransition_ = true;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == 3 && PlayerWinCount_ == 1 && !isRoundTransition_)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == kRoundThree_ && PlayerWinCount_ == kPlayerFirstWinCount_ && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		sMigrationTimer--;
@@ -683,12 +686,12 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
 		{
-			PlayerWinCount_ = 2;
+			PlayerWinCount_ = kPlayerSecondWinCount_;
 		}
 	}
 
 	//時間切れ
-	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 1 && !isRoundTransition_)
+	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == kRoundOne_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = true;
@@ -696,11 +699,11 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			PlayerWinCount_ = 1;
+			PlayerWinCount_ = kPlayerFirstWinCount_;
 			isRoundTransition_ = true;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 2 && PlayerWinCount_ == 1 && !isRoundTransition_)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == kRoundTwo_ && PlayerWinCount_ == kPlayerFirstWinCount_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = true;
@@ -708,10 +711,10 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			PlayerWinCount_ = 2;
+			PlayerWinCount_ = kPlayerSecondWinCount_;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 2 && PlayerWinCount_ == 0 && !isRoundTransition_)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == kRoundTwo_ && PlayerWinCount_ == 0 && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = true;
@@ -719,11 +722,11 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			PlayerWinCount_ = 1;
+			PlayerWinCount_ = kPlayerFirstWinCount_;
 			isRoundTransition_ = true;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == 3 && PlayerWinCount_ == 1 && !isRoundTransition_)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == kRoundThree_ && PlayerWinCount_ == kPlayerFirstWinCount_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = true;
@@ -731,17 +734,17 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			PlayerWinCount_ = 2;
+			PlayerWinCount_ = kPlayerSecondWinCount_;
 		}
 	}
 
-	if (PlayerWinCount_ == 2)
+	if (PlayerWinCount_ == kPlayerSecondWinCount_)
 	{
 		isTransitionStart_ = true;
 	}
 
 	//Enemyが勝ったとき
-	if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == 1 && !isRoundTransition_)
+	if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == kRoundOne_ && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		sMigrationTimer--;
@@ -749,11 +752,11 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
 		{
-			EnemyWinCount_ = 1;
+			EnemyWinCount_ = kEnemyFirstWinCount_;
 			isRoundTransition_ = true;
 		}
 	}
-	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == 2 && EnemyWinCount_ == 1 && !isRoundTransition_)
+	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == kRoundTwo_ && EnemyWinCount_ == kEnemyFirstWinCount_ && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		sMigrationTimer--;
@@ -761,10 +764,10 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
 		{
-			EnemyWinCount_ = 2;
+			EnemyWinCount_ = kEnemySecondWinCount_;
 		}
 	}
-	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == 2 && EnemyWinCount_ == 0 && !isRoundTransition_)
+	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == kRoundTwo_ && EnemyWinCount_ == 0 && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		sMigrationTimer--;
@@ -772,11 +775,11 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
 		{
-			EnemyWinCount_ = 1;
+			EnemyWinCount_ = kEnemyFirstWinCount_;
 			isRoundTransition_ = true;
 		}
 	}
-	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == 3 && EnemyWinCount_ == 1 && !isRoundTransition_)
+	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == kRoundThree_ && EnemyWinCount_ == kEnemyFirstWinCount_ && !isRoundTransition_)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		sMigrationTimer--;
@@ -784,12 +787,12 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
 		{
-			EnemyWinCount_ = 2;
+			EnemyWinCount_ = kEnemySecondWinCount_;
 		}
 	}
 
 	//時間切れ
-	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 1 && !isRoundTransition_)
+	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == kRoundOne_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = false;
@@ -797,11 +800,11 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			EnemyWinCount_ = 1;
+			EnemyWinCount_ = kEnemyFirstWinCount_;
 			isRoundTransition_ = true;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 2 && EnemyWinCount_ == 1 && !isRoundTransition_)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == kRoundTwo_ && EnemyWinCount_ == kEnemyFirstWinCount_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = false;
@@ -809,10 +812,10 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			EnemyWinCount_ = 2;
+			EnemyWinCount_ = kEnemySecondWinCount_;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 2 && EnemyWinCount_ == 0 && !isRoundTransition_)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == kRoundTwo_ && EnemyWinCount_ == 0 && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = false;
@@ -820,11 +823,11 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			EnemyWinCount_ = 1;
+			EnemyWinCount_ = kEnemyFirstWinCount_;
 			isRoundTransition_ = true;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == 3 && EnemyWinCount_ == 1 && !isRoundTransition_)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == kRoundThree_ && EnemyWinCount_ == kEnemyFirstWinCount_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = false;
@@ -832,11 +835,11 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			EnemyWinCount_ = 2;
+			EnemyWinCount_ = kEnemySecondWinCount_;
 		}
 	}
 
-	if (EnemyWinCount_ == 2)
+	if (EnemyWinCount_ == kEnemySecondWinCount_)
 	{
 		if (isTransitionStart_ == false && isTransitionEnd_ == true)
 		{
@@ -845,7 +848,7 @@ void GamePlayScene::HandleGameOutcome()
 	}
 
 	//時間切れ(ドロー)
-	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && round_ == 1 && !isRoundTransition_)
+	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && round_ == kRoundOne_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isDrow_ = true;
@@ -853,12 +856,12 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			PlayerWinCount_ = 1;
-			EnemyWinCount_ = 1;
+			PlayerWinCount_ = kPlayerFirstWinCount_;
+			EnemyWinCount_ = kEnemyFirstWinCount_;
 			isRoundTransition_ = true;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && round_ == 3 && !isRoundTransition_)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && round_ == kRoundThree_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isDrow_ = true;
@@ -866,12 +869,12 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			PlayerWinCount_ = 1;
-			EnemyWinCount_ = 1;
+			PlayerWinCount_ = kPlayerFirstWinCount_;
+			EnemyWinCount_ = kEnemyFirstWinCount_;
 			isRoundTransition_ = true;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && PlayerWinCount_ == 1 && EnemyWinCount_ == 0 && round_ == 2 && !isRoundTransition_)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && PlayerWinCount_ == kPlayerFirstWinCount_ && EnemyWinCount_ == 0 && round_ == kRoundTwo_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = true;
@@ -879,10 +882,10 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			PlayerWinCount_ = 2;
+			PlayerWinCount_ = kPlayerSecondWinCount_;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && EnemyWinCount_ == 1 && PlayerWinCount_ == 0 && round_ == 2 && !isRoundTransition_)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && EnemyWinCount_ == kEnemyFirstWinCount_ && PlayerWinCount_ == 0 && round_ == kRoundTwo_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = false;
@@ -890,10 +893,10 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			EnemyWinCount_ = 2;
+			EnemyWinCount_ = kEnemySecondWinCount_;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && PlayerWinCount_ == 1 && EnemyWinCount_ == 0 && round_ == 3 && !isRoundTransition_)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && PlayerWinCount_ == kPlayerFirstWinCount_ && EnemyWinCount_ == 0 && round_ == kRoundThree_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = true;
@@ -901,10 +904,10 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			PlayerWinCount_ = 2;
+			PlayerWinCount_ = kPlayerSecondWinCount_;
 		}
 	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && EnemyWinCount_ == 1 && PlayerWinCount_ == 0 && round_ == 3 && !isRoundTransition_)
+	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && EnemyWinCount_ == kEnemyFirstWinCount_ && PlayerWinCount_ == 0 && round_ == kRoundThree_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = false;
@@ -912,12 +915,12 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			EnemyWinCount_ = 2;
+			EnemyWinCount_ = kEnemySecondWinCount_;
 		}
 	}
 
 	//相打ち
-	if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && round_ == 1 && !isRoundTransition_)
+	if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && round_ == kRoundOne_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isDrow_ = true;
@@ -925,12 +928,12 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
-			PlayerWinCount_ = 1;
-			EnemyWinCount_ = 1;
+			PlayerWinCount_ = kPlayerFirstWinCount_;
+			EnemyWinCount_ = kEnemyFirstWinCount_;
 			isRoundTransition_ = true;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && round_ == 3 && !isRoundTransition_)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && round_ == kRoundThree_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isDrow_ = true;
@@ -938,60 +941,62 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
-			PlayerWinCount_ = 1;
-			EnemyWinCount_ = 1;
+			PlayerWinCount_ = kPlayerFirstWinCount_;
+			EnemyWinCount_ = kEnemyFirstWinCount_;
 			isRoundTransition_ = true;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && PlayerWinCount_ == 1 && EnemyWinCount_ == 0 && round_ == 2 && !isRoundTransition_)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && PlayerWinCount_ == kPlayerFirstWinCount_ && EnemyWinCount_ == 0 && round_ == kRoundTwo_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = true;
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
-			PlayerWinCount_ = 2;
+			PlayerWinCount_ = kPlayerSecondWinCount_;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && EnemyWinCount_ == 1 && PlayerWinCount_ == 0 && round_ == 2 && !isRoundTransition_)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && EnemyWinCount_ == kEnemyFirstWinCount_ && PlayerWinCount_ == 0 && round_ == kRoundTwo_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = false;
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
-			EnemyWinCount_ = 2;
+			EnemyWinCount_ = kEnemySecondWinCount_;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && PlayerWinCount_ == 1 && EnemyWinCount_ == 0 && round_ == 3 && !isRoundTransition_)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && PlayerWinCount_ == kPlayerFirstWinCount_ && EnemyWinCount_ == 0 && round_ == kRoundThree_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = true;
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
-			PlayerWinCount_ = 2;
+			PlayerWinCount_ = kPlayerSecondWinCount_;
 		}
 	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && EnemyWinCount_ == 1 && PlayerWinCount_ == 0 && round_ == 3 && !isRoundTransition_)
+	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && EnemyWinCount_ == kEnemyFirstWinCount_ && PlayerWinCount_ == 0 && round_ == kRoundThree_ && !isRoundTransition_)
 	{
 		sMigrationTimer--;
 		isPlayerWin_ = false;
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
-			EnemyWinCount_ = 2;
+			EnemyWinCount_ = kEnemySecondWinCount_;
 		}
 	}
 
 	//トランジション
+	const float deltaTime = 1.0f / kTransitionTime;
+
 	if (!isTransitionEnd_)
 	{
-		transitionTimer_ += 1.0f / kTransitionTime;
-		transitionColor_.w = Lerp(transitionColor_.w, 0.0f, transitionTimer_);
+		transitionTimer_ += deltaTime;
+		transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, transitionTimer_);
 		transitionSprite_->SetColor(transitionColor_);
 
-		if (transitionColor_.w <= 0.0f)
+		if (transitionColor_.w <= kTransitionEndAlpha_)
 		{
 			isTransitionEnd_ = true;
 			transitionTimer_ = 0.0f;
@@ -1000,49 +1005,48 @@ void GamePlayScene::HandleGameOutcome()
 
 	if (isTransitionStart_)
 	{
-		transitionTimer_ += 1.0f / kTransitionTime;
-		transitionColor_.w = Lerp(transitionColor_.w, 1.0f, transitionTimer_);
+		transitionTimer_ += deltaTime;
+		transitionColor_.w = Lerp(transitionColor_.w, kTransitionStartAlpha_, transitionTimer_);
 		transitionSprite_->SetColor(transitionColor_);
 
-		if (transitionColor_.w >= 1.0f)
+		//Playerが勝利した場合
+		if (PlayerWinCount_ == kPlayerSecondWinCount_)
 		{
-			if (PlayerWinCount_ == 2)
-			{
-				PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-				PostProcess::GetInstance()->SetIsVignetteActive(false);
-				sceneManager_->ChangeScene("GameWinScene");
-				return;
-			}
+			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+			PostProcess::GetInstance()->SetIsVignetteActive(false);
+			sceneManager_->ChangeScene("GameWinScene");
+			return;
+		}
 
-			if (EnemyWinCount_ == 2)
-			{
-				PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-				PostProcess::GetInstance()->SetIsVignetteActive(false);
-				sceneManager_->ChangeScene("GameLoseScene");
-				return;
-			}
+		//Enemyが勝利した場合
+		if (EnemyWinCount_ == kEnemySecondWinCount_)
+		{
+			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+			PostProcess::GetInstance()->SetIsVignetteActive(false);
+			sceneManager_->ChangeScene("GameLoseScene");
+			return;
 		}
 	}
 
-	int roundCount = 1;
+	int roundCount = kRoundOne_;
 
 	if (isRoundTransition_)
 	{
 		if (isDrow_)
 		{
-			roundCount = 3;
+			roundCount = kRoundThree_;
 		}
-		else if (round_ == 1)
+		else if (round_ == kRoundOne_)
 		{
-			roundCount = 2;
+			roundCount = kRoundTwo_;
 		}
-		else if (round_ == 2)
+		else if (round_ == kRoundTwo_)
 		{
-			roundCount = 3;
+			roundCount = kRoundThree_;
 		}
-		else if (round_ == 3)
+		else if (round_ == kRoundThree_)
 		{
-			roundCount = 3;
+			roundCount = kRoundThree_;
 		}
 
 		RoundTransition(roundCount);
@@ -1053,44 +1057,54 @@ void GamePlayScene::RoundTransition(int round)
 {
 	if (isRoundTransition_)
 	{
+		//トランジションタイマーの処理
 		roundTransitionTimer_--;
 
-		if (roundTransitionTimer_ > 75)
+		//トランジション
+		const float kLerpSpeed = 0.1f;
+		const int kTransitionOffset = 10;
+		if (roundTransitionTimer_ > kHalfkRoundTransitionTime_)
 		{
-			transitionColor_.w = Lerp(transitionColor_.w, 1.0f, 0.1f);
+			transitionColor_.w = Lerp(transitionColor_.w, kTransitionStartAlpha_, kLerpSpeed);
 			transitionSprite_->SetColor(transitionColor_);
 		}
-		else if (roundTransitionTimer_ <= 65 && roundTransitionTimer_ > 0)
+		else if (roundTransitionTimer_ <= kHalfkRoundTransitionTime_ - kTransitionOffset && roundTransitionTimer_ > 0)
 		{
-			transitionColor_.w = Lerp(transitionColor_.w, 0.0f, 0.1f);
+			transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, kLerpSpeed);
 			transitionSprite_->SetColor(transitionColor_);
-
 		}
 		else if (roundTransitionTimer_ <= 0)
 		{
 			isRoundTransition_ = false;
-			roundTransitionTimer_ = 150;
+			roundTransitionTimer_ = kRoundTransitionTime_;
 		}
 
-		if (roundTransitionTimer_ == 75)
+		//ラウンド間の初期化処理
+		if (roundTransitionTimer_ == kHalfkRoundTransitionTime_)
 		{
+			//勝敗を元に戻す
 			isPlayerWin_ = false;
 			isDrow_ = false;
 			isTimeOver_ = false;
 			round_ = round;
 
+			//キャラクターのリセット
 			player_->Reset();
 			enemy_->Reset();
 
-			currentSeconds_ = 99;
+			//時間の設定
+			currentSeconds_ = kMaxRoundTime_;
 			UpdateNumberSprite();
 
-			sMigrationTimer = 200;
+			sMigrationTimer = kMaxMigrationTime_;
 
-			frameTime_ = 1.0f / 60.0f;
+			const float deltaTime = 1.0f / 60.0f;
+			frameTime_ = deltaTime;
 			elapsedTime_ = 0.0f;
 
-			sRoundStartTimer_ = 100;
+			sRoundStartTimer_ = kMaxRoundStartTime_;
+
+			//PostEffectの設定
 			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
 			PostProcess::GetInstance()->SetIsVignetteActive(false);
 		}

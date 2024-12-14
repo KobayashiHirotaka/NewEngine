@@ -18,6 +18,12 @@ void ICharacter::Initialize()
 
 #endif 
 		//isDebug_ = true;
+
+		//Inputのインスタンスを取得
+		input_ = Input::GetInstance();
+
+		//Audioのインスタンスを取得
+		audio_ = Audio::GetInstance();
 }
 
 void ICharacter::Update()
@@ -73,7 +79,7 @@ void ICharacter::Update()
 	{
 	case Behavior::kRoot:
 	default:
-		if (GamePlayScene::sRoundStartTimer_ <= 0 && GamePlayScene::sMigrationTimer == maxMigrationTime_)
+		if (GamePlayScene::sRoundStartTimer_ <= 0 && GamePlayScene::sMigrationTimer == kMaxMigrationTime_)
 		{
 			//移動
 			UpdateBehaviorRoot();
@@ -110,12 +116,12 @@ void ICharacter::Update()
 	//端での攻撃時の処理
 	if (!attackData_.isAttack && worldTransform_.translation.x >= attackRightEdge_ && characterState_.direction == Direction::Right)
 	{
-		worldTransform_.translation.x = Lerp(worldTransform_.translation.x, attackRightEdge_, lerpSpeed_);
+		worldTransform_.translation.x = Lerp(worldTransform_.translation.x, attackRightEdge_, kLerpSpeed_);
 	}
 
 	if (!attackData_.isAttack && worldTransform_.translation.x <= attackLeftEdge_ && characterState_.direction == Direction::Left)
 	{
-		worldTransform_.translation.x = Lerp(worldTransform_.translation.x, attackLeftEdge_, lerpSpeed_);
+		worldTransform_.translation.x = Lerp(worldTransform_.translation.x, attackLeftEdge_, kLerpSpeed_);
 	}
 
 	//ジャンプ中にプレイヤーと当たったときの処理

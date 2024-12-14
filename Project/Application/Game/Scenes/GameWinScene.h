@@ -11,7 +11,7 @@
 class GameWinScene : public IScene
 {
 public:
-	//Transition用の時間
+	//トランジション用の時間
 	static const int kTransitionTime = 60;
 
 	/// <summary>コンストラクタ</summary>

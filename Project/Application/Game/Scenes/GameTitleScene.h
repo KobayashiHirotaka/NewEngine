@@ -132,6 +132,6 @@ private:
 	std::unique_ptr<Skydome> skydome_;
 
 	//スティック操作対応
-	const float value_ = 0.7f;
+	const float kValue_ = 0.7f;
 	int stickInputCooldown_ = 10;
 };
