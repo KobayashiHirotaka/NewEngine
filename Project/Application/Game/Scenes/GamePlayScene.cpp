@@ -136,7 +136,8 @@ void GamePlayScene::Initialize()
 
 	//testWorldTransformの初期化
 	testWorldTransform_.Initialize();
-	testWorldTransform_.scale = { 1.0f,1.0f,1.0f };
+	testWorldTransform_.scale = { 0.7f,0.7f,0.7f };
+	testWorldTransform_.translation = { 0.0f,2.7f,3.5f };
 
 	//トランジション
 	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
@@ -173,6 +174,10 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
+	//背景オブジェクトの回転
+	const float kRotateSpeed = 0.1f;
+	testWorldTransform_.rotation.y += kRotateSpeed;
+
 	if (!isOpen_)
 	{
 		//ラウンド間の時間の処理
