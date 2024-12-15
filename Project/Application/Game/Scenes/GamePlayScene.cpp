@@ -387,20 +387,20 @@ void GamePlayScene::Update()
 
 #ifdef _DEBUG
 
-	if (input_->PressKey(DIK_A))
+	/*if (input_->PressKey(DIK_A))
 	{
 		camera_.translation_.x -= 0.1f;
 	}
 	else if (input_->PressKey(DIK_D))
 	{
 		camera_.translation_.x += 0.1f;
-	}
+	}*/
 
-	if (input_->PushKey(DIK_K))
+	if (input_->PushKey(DIK_1))
 	{
 		isDebugCamera_ = true;
 	}
-	else if (input_->PushKey(DIK_L))
+	else if (input_->PushKey(DIK_2))
 	{
 		isDebugCamera_ = false;
 	}
@@ -449,8 +449,8 @@ void GamePlayScene::Draw()
 		//Enemyの弾の描画
 		enemy_->BulletDraw(camera_);
 
-		//BackGroundの描画
-		backGround_->Draw(camera_);
+		////BackGroundの描画
+		//backGround_->Draw(camera_);
 	}
 
 	Model::PostDraw();
