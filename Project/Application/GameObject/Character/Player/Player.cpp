@@ -16,6 +16,13 @@ Player::~Player()
 	delete hpBar_.sprite_;
 	delete guardGaugeBar_.sprite_;
 	delete finisherGaugeBar_.sprite_;
+
+	//弾の削除
+	for (auto& bullet : bullets_)
+	{
+		delete bullet;
+	}
+	bullets_.clear();
 }
 
 void Player::Initialize()
@@ -120,6 +127,9 @@ void Player::Initialize()
 
 	worldTransformCursol_.parent = &worldTransform_;
 
+	//弾のモデルを生成
+	bulletModel_.reset(Model::CreateFromOBJ("resource/bullet", "bullet.obj"));
+
 	//パーティクル
 	particleEffectPlayer_ = std::make_unique<ParticleEffectPlayer>();
 	particleEffectPlayer_->Initialize();
@@ -223,6 +233,9 @@ void Player::Update()
 		timerData_.guardAnimationTimer = timerData_.maxGuardAnimationTimer;
 	}
 
+	//弾の更新
+	UpdateBullets();
+
 	//LineBoxの更新
 	lineBox_->Update(aabb_);
 
@@ -283,10 +296,24 @@ void Player::DrawSprite()
 	}
 }
 
+void Player::DrawBullet(const Camera& camera)
+{
+	//弾の描画
+	for (auto& bullet : bullets_)
+	{
+		bullet->Draw(camera);
+	}
+}
+
 void Player::DrawParticle(const Camera& camera)
 {
 	//パーティクルの描画
 	particleEffectPlayer_->Draw(camera);
+
+	for (auto& bullet : bullets_)
+	{
+		bullet->DrawParticle(camera);
+	}
 }
 
 void Player::ImGui()
@@ -320,10 +347,17 @@ void Player::UpdateBehaviorRoot()
 
 		//攻撃
 		//弱攻撃
-		if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B)) && !characterState_.isDown)
+		if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)) && !characterState_.isDown)
 		{
 			attackType_ = "弱攻撃";
 			StartAttack(attackData_.isLightPunch);
+		}
+
+		//弾攻撃
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown)
+		{
+			attackType_ = "弾攻撃";
+			StartAttack(attackData_.isShot);
 		}
 		
 		//タックル攻撃
@@ -408,8 +442,8 @@ void Player::UpdateBehaviorAttack()
 
 		if (input_->GetJoystickState())
 		{
-			if (!characterState_.isDown && attackData_.attackAnimationFrame >= kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X)
-				|| input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))  && enemy_->GetIsDown())
+			if (!characterState_.isDown && attackData_.attackAnimationFrame >= kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime && 
+				(input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))  && enemy_->GetIsDown())
 			{
 				attackType_ = "中攻撃(ターゲット)";
 				attackData_.isAttack = false;
@@ -487,23 +521,9 @@ void Player::UpdateBehaviorAttack()
 
 		if (input_->GetJoystickState())
 		{
-			//弱コンボ
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && enemy_->GetIsDown())
-			{
-				attackType_ = "強攻撃(ターゲット)";
-				attackData_.isAttack = false;
-				attackData_.isTCMiddlePunch = false;
-				attackData_.isTCHighPunch = true;
-				animationTime_ = 0.0f;
-				attackData_.attackAnimationFrame = 0;
-				model_->SetAnimationTime(animationTime_);
-				ResetCollision();
-			}
-
 			//中コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && characterState_.isHitCharacter)
 			{
 				attackType_ = "強攻撃";
 				attackData_.isAttack = false;
@@ -517,7 +537,7 @@ void Player::UpdateBehaviorAttack()
 
 			//強コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && characterState_.isHitCharacter)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
 			{
 				attackType_ = "アッパー";
 				attackData_.isAttack = false;
@@ -528,62 +548,6 @@ void Player::UpdateBehaviorAttack()
 				model_->SetAnimationTime(animationTime_);
 				ResetCollision();
 			}
-		}
-
-		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
-	}
-
-	//TC用の攻撃(3発目)
-	if (attackData_.isTCHighPunch)
-	{
-		//アニメーション
-		const int kAnimationTCHighPunch = 11;
-		const float animationSpeed = 1.5f;
-
-		animationIndex_ = kAnimationTCHighPunch;
-		characterState_.isGuard = false;
-
-		if (!characterState_.isDown)
-		{
-			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
-		}
-
-		attackData_.isAttack = true;
-
-		//移動用のパラメータ
-		const int kMoveTime = 5;
-		const float kMoveSpeed = 0.03f;
-
-		//当たり判定を設定
-		if (characterState_.direction == Direction::Right)
-		{
-			SetAABB(aabb_);
-
-			//コンボがつながりやすくなるように移動する
-			if (attackData_.attackAnimationFrame < kMoveTime)
-			{
-				worldTransform_.translation.x += kMoveSpeed;
-			}
-		}
-		else if (characterState_.direction == Direction::Left)
-		{
-			SetAABB(aabb_);
-
-			//コンボがつながりやすくなるように移動する
-			if (attackData_.attackAnimationFrame < kMoveTime)
-			{
-				worldTransform_.translation.x -= kMoveSpeed;
-			}
-		}
-
-		//攻撃判定をつけるタイミングの設定
-		EvaluateAttackTiming();
-
-		//終了処理
-		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
-		{
-			EndAttack(attackData_.isTCHighPunch);
-			ResetCollision();
 		}
 
 		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
@@ -651,7 +615,7 @@ void Player::UpdateBehaviorAttack()
 		{
 			//タックル攻撃
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime &&
-				input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))
+				input_->IsPressButtonEnter(XINPUT_GAMEPAD_X))
 			{
 				attackType_ = "タックル";
 				attackData_.isAttack = false;
@@ -662,6 +626,58 @@ void Player::UpdateBehaviorAttack()
 				model_->SetAnimationTime(animationTime_);
 				ResetCollision();
 			}
+		}
+
+		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
+	}
+
+	//弾攻撃
+	if (attackData_.isShot)
+	{
+		//アニメーション
+		const int kAnimationShot = 19;
+		const float animationSpeed = 1.2f;
+
+		animationIndex_ = kAnimationShot;
+		characterState_.isGuard = false;
+
+		if (!characterState_.isDown)
+		{
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+		}
+
+		//まだ弾を発射していない場合
+		const Vector2 kRespownPos = { 0.2f,0.5f };
+		if (!hasShot_)
+		{
+			if (characterState_.direction == Direction::Right)
+			{
+				//弾の発射位置を敵の位置に設定
+				Vector3 bulletStartPosition = { worldTransform_.translation.x + kRespownPos.x, worldTransform_.translation.y + kRespownPos.y, worldTransform_.translation.z };
+				Vector3 bulletVelocity = { 0.1f, 0.0f, 0.0f };
+
+				ShootBullet(bulletStartPosition, bulletVelocity);
+			}
+			else if (characterState_.direction == Direction::Left)
+			{
+				//弾の発射位置を敵の位置に設定
+				Vector3 bulletStartPosition = { worldTransform_.translation.x - kRespownPos.x, worldTransform_.translation.y + kRespownPos.y, worldTransform_.translation.z };
+				Vector3 bulletVelocity = { -0.1f, 0.0f, 0.0f };
+
+				ShootBullet(bulletStartPosition, bulletVelocity);
+			}
+
+			//弾を発射したことを記録
+			hasShot_ = true;
+		}
+
+		//終了処理
+		const int kShotEndTimer = 50;
+		if (characterState_.isDown || attackData_.attackAnimationFrame >= kShotEndTimer)
+		{
+			EndAttack(attackData_.isShot);
+			hasShot_ = false;
+			ResetCollision();
 		}
 
 		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
@@ -806,7 +822,7 @@ void Player::UpdateBehaviorAttack()
 		{
 			//強コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && enemy_->GetComboCount() >= kComboCount_[3] && isFinisherCharge_ &&
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && enemy_->GetComboCount() >= kComboCount_[3] && isFinisherCharge_ &&
 				characterState_.isHitCharacter)
 			{
 				attackData_.isAttack = false;
@@ -1197,6 +1213,7 @@ void Player::OnCollision(Collider* collider)
 	const float kParticlePositionX = 0.1f;
 	const float kParticlePositionY = 0.5f;
 
+	//敵の弾との当たり判定
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemyBullet)
 	{
 		//ガードバック
@@ -1777,6 +1794,32 @@ void Player::Move()
 			const float kIdleAnimationSpeed = 1.0f;
 			animationIndex_ = kAnimationIdle;
 			UpdateAnimationTime(animationTime_, true, kIdleAnimationSpeed, animationIndex_, model_);
+		}
+	}
+}
+
+void Player::ShootBullet(const Vector3& startPosition, const Vector3& velocity)
+{
+	//弾を生成してリストに追加する
+	PlayerBullet* newBullet = new PlayerBullet();
+	newBullet->Initialize(bulletModel_.get(), startPosition, velocity);
+	bullets_.push_back(newBullet);
+}
+
+void Player::UpdateBullets()
+{
+	//弾の更新と衝突判定などを行う
+	for (auto it = bullets_.begin(); it != bullets_.end();)
+	{
+		(*it)->Update();
+		if ((*it)->GetIsDead())
+		{
+			delete* it;
+			it = bullets_.erase(it);
+		}
+		else
+		{
+			++it;
 		}
 	}
 }

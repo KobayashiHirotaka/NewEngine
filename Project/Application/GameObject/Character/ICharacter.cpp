@@ -14,7 +14,7 @@ void ICharacter::Initialize()
 #ifdef _ADJUSTMENT
 
 	    //デバッグ状態かどうか
-		isDebug_ = true;
+		//isDebug_ = true;
 
 #endif 
 		//isDebug_ = true;

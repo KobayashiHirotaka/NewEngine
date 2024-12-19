@@ -822,6 +822,115 @@ void Enemy::OnCollision(Collider* collider)
 	const float kParticlePositionX = 0.1f;
 	const float kParticlePositionY = 0.5f;
 
+	//プレイヤーの弾との当たり判定
+	if (collider->GetCollisionAttribute() & kCollisionAttributePlayerBullet)
+	{
+		//ガードバック
+		const float kGuardBackSpeed = 0.1f;
+
+		//地上で弾に当たった場合
+		if (!characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y <= 0.0f)
+		{
+			//アニメーション
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
+
+			//サウンド再生
+			audio_->PlaySoundMP3(damageSoundHandle_, false, volume_);
+
+			//ダメージの適応
+			ApplyDamage();
+
+			//体力に応じてダウンの仕方を変更
+			if (hp_ > 0)
+			{
+				characterState_.isHitBullet = true;
+				attackData_.isFinisher = false;
+			}
+			else
+			{
+				characterState_.isHitTCHighPunch = true;
+				attackData_.isFinisher = false;
+			}
+
+			//ゲージ増加
+			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
+		}
+
+		//空中で弾に当たった場合
+		if (!characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.0f)
+		{
+			//アニメーション
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
+
+			//サウンド再生
+			audio_->PlaySoundMP3(damageSoundHandle_, false, volume_);
+
+			//ダメージの適応
+			ApplyDamage();
+
+			//ダウン状態の設定
+			characterState_.isHitAirBullet = true;
+
+			//ゲージ増加
+			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
+		}
+
+		if (characterState_.isGuard && characterState_.direction == Direction::Right)
+		{
+			//ガードタイマー
+			timerData_.guardAnimationTimer--;
+
+			//アニメーション
+			animationIndex_ = kAnimationGuard;
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+			//サウンド再生
+			audio_->PlaySoundMP3(guardSoundHandle_, false, volume_);
+
+			//ガードバック
+			worldTransform_.translation.x -= kGuardBackSpeed;
+
+			//ゲージ増加
+			AdjustGuardGauge();
+
+			//パーティクル
+			if (timerData_.guardAnimationTimer > kParticleTime)
+			{
+
+				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + kParticlePositionX,
+					worldTransform_.translation.y + kParticlePositionY,worldTransform_.translation.z });
+			}
+		}
+		else if (characterState_.isGuard && characterState_.direction == Direction::Left)
+		{
+			//ガードタイマー
+			timerData_.guardAnimationTimer--;
+
+			//アニメーション
+			animationIndex_ = kAnimationGuard;
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+			//サウンド再生
+			audio_->PlaySoundMP3(guardSoundHandle_, false, volume_);
+
+			//ガードバック
+			worldTransform_.translation.x += kGuardBackSpeed;
+
+			//ゲージ増加
+			AdjustGuardGauge();
+
+			//パーティクル
+			if (timerData_.guardAnimationTimer > kParticleTime)
+			{
+
+				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - kParticlePositionX,
+					worldTransform_.translation.y + kParticlePositionY,worldTransform_.translation.z });
+			}
+		}
+	}
+
 	//プレイヤーとの当たり判定
 	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
 	{
@@ -1865,6 +1974,117 @@ void Enemy::DownAnimation()
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
 			EndDownAnimation(kAnimationIdle, characterState_.isHitJumpAttack);
+			isKO_ = false;
+		}
+	}
+
+	//弾攻撃(地上)
+	if (characterState_.isHitBullet)
+	{
+		//ダウン状態に設定
+		const int kDownTime = 20;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		//アニメーション
+		const int kAnimationLightDown = 4;
+		const float animationSpeed = 1.5f;
+		animationIndex_ = kAnimationLightDown;
+		UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+		//パーティクル
+		const float kParticleMoveSpeed = 0.1f;
+		float particlePositionX = (characterState_.direction == Direction::Right) ? -kParticleMoveSpeed : kParticleMoveSpeed;
+		const float particlePositionY = 0.5f;
+
+		if (!isParticle_)
+		{
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
+				worldTransform_.translation.y + particlePositionY, worldTransform_.translation.z });
+
+			isParticle_ = true;
+		}
+
+		//終了処理
+		if (timerData_.downAnimationTimer < kDownTime && hp_ > 0)
+		{
+			//アニメーションの設定
+			const int kAnimationIdle = 5;
+			EndDownAnimation(kAnimationIdle, characterState_.isHitBullet);
+			ResetCollision();
+
+			patternCount_ = RandomMove();
+			isParticle_ = false;
+			isKO_ = false;
+		}
+	}
+	//弾攻撃(空中)
+	else if (characterState_.isHitAirBullet)
+	{
+		//ダウン状態に設定
+		const int kDownTime = 20;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		//アニメーション
+		const int kAnimationHeavyDown = 6;
+		const float animationSpeed = 1.5f;
+		animationIndex_ = kAnimationHeavyDown;
+		UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+		//パーティクル
+		const float kParticleMoveSpeed = 0.1f;
+		float particlePositionX = (characterState_.direction == Direction::Right) ? -kParticleMoveSpeed : kParticleMoveSpeed;
+		const float particlePositionY = 0.5f;
+
+		if (!isParticle_)
+		{
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
+				 worldTransform_.translation.y + particlePositionY,worldTransform_.translation.z });
+
+			isParticle_ = true;
+		}
+
+		//当たり判定の設定
+		const AABB kDownAABB = (player_->GetDirection() == Direction::Right) ? AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} } :
+			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
+
+		aabb_ = kDownAABB;
+		SetAABB(aabb_);
+
+		//移動処理
+		const int kMoveTime = 35;
+		const float kMoveSpeed = player_->GetDirection() == Direction::Right ? -0.08f : 0.08f;
+		const float kFallSpeed = 0.03f;
+		float moveX = kMoveSpeed;
+		float rotationY = player_->GetDirection() == Direction::Right ? characterState_.leftDirectionRotation : characterState_.rightDirectionRotation;
+
+		//移動
+		if (timerData_.downAnimationTimer > kMoveTime && worldTransform_.translation.x > -4.0f)
+		{
+			worldTransform_.translation.x -= moveX;
+			worldTransform_.rotation.y = rotationY;
+		}
+
+		//落ちる
+		if (worldTransform_.translation.y > 0.0f)
+		{
+			worldTransform_.translation.y -= kFallSpeed;
+		}
+		else if (worldTransform_.translation.y <= 0.0f)
+		{
+			worldTransform_.translation.y = 0.0f;
+		}
+
+		//終了処理
+		if (timerData_.downAnimationTimer < kDownTime && hp_ > 0)
+		{
+			//アニメーションの設定
+			const int kAnimationIdle = 5;
+			EndDownAnimation(kAnimationIdle, characterState_.isHitAirBullet);
+			ResetCollision();
+
+			isParticle_ = false;
 			isKO_ = false;
 		}
 	}

@@ -95,6 +95,16 @@ public:
 	void HitCombo();
 
 
+	/// <summary>弾を発射</summary>
+	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
+
+	/// <summary>弾の更新</summary>
+	void UpdateBullets();
+
+	/// <summary>弾の描画</summary>
+	void DrawBullet(const Camera& camera);
+
+
 	/// <summary>当たり判定</summary>
 	void OnCollision(Collider* collider)override;
 
@@ -123,16 +133,6 @@ public:
 
 	/// <summary>コンボ表示のUIの更新</summary>
 	virtual void UpdateComboNumberSprite()override;
-
-
-	/// <summary>弾を発射</summary>
-	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
-
-	/// <summary>弾の更新</summary>
-	void UpdateBullets();
-
-	/// <summary>弾の描画</summary>
-	void DrawBullet(const Camera& camera);
 
 
 	/// <summary>WorldPositionの取得</summary>
@@ -188,13 +188,13 @@ private:
 	int patternCount_ = 1;
 	int moveTimer_ = 60;
 
-	//当たり判定
-	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
-
 	//プレイヤー
 	Player* player_ = nullptr;
 
-	//敵の弾テスト用
+	//当たり判定
+	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+
+	//弾
 	std::unique_ptr<Model> bulletModel_;
 	std::vector<EnemyBullet*> bullets_;
 

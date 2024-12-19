@@ -471,6 +471,9 @@
     <ClCompile Include="Application\Game\HitStop\HitStop.cpp">
       <Filter>ソース ファイル\Project\Game\HitStop</Filter>
     </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Player\PlayerBullet.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -721,6 +724,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Base\D3DResourceLeakChecker.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Player\PlayerBullet.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
