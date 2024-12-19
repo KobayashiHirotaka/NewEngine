@@ -356,7 +356,7 @@ void Player::UpdateBehaviorRoot()
 		//弾攻撃
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown)
 		{
-			attackType_ = "弾攻撃";
+			attackType_ = "ショット";
 			StartAttack(attackData_.isShot);
 		}
 		

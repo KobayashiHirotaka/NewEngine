@@ -346,7 +346,7 @@ void Enemy::UpdateBehaviorRoot()
 		{
 			const int kAnimationShot = 1;
 			animationIndex_ = kAnimationShot;
-			attackType_ = "弾攻撃";
+			attackType_ = "ショット";
 			StartAttack(attackData_.isShot);
 		}
 
