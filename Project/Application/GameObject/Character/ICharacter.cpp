@@ -14,7 +14,7 @@ void ICharacter::Initialize()
 #ifdef _ADJUSTMENT
 
 	    //デバッグ状態かどうか
-		//isDebug_ = true;
+		isDebug_ = true;
 
 #endif 
 		//isDebug_ = true;
@@ -146,12 +146,8 @@ void ICharacter::Update()
 
 void ICharacter::ImGui()
 {
-	ImGui::Begin("Character");
+	ImGui::Begin("CharacterDEBUG");
 	ImGui::Checkbox("isDebug", &isDebug_);
-	ImGui::SliderFloat("LeftEdge", &leftEdge_, kMinLeftEdge_, kMaxLeftEdge_);
-	ImGui::SliderFloat("RightEdge", &rightEdge_, kMinRightEdge_, kMaxRightEdge_);
-	ImGui::SliderFloat("attackLeftEdge", &attackLeftEdge_, kMinAttackLeftEdge_, kMaxAttackLeftEdge_);
-	ImGui::SliderFloat("attackRightEdge", &attackRightEdge_, kMinAttackRightEdge_, kMaxAttackRightEdge_);
 	ImGui::End();
 }
 

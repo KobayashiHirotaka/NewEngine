@@ -136,12 +136,14 @@ void Enemy::Initialize()
 void Enemy::Update()
 {
 #ifdef _ADJUSTMENT
-	
 
 #endif
 
 	//更新
 	ICharacter::Update();
+
+	//ImGui
+	ICharacter::ImGui();
 
 	//エディターで設定したパラメータをセット
 	AttackEditor::GetInstance()->SetAttackParameters(attackType_, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
