@@ -14,37 +14,21 @@
 
 class Collider
 {
-private:
-	//半径
-	float radius_ = 1.0f;
-
-	//AABB
-	AABB aabb_ = { {-1.0f,-1.0f,-1.0f},{1.0f,1.0f,1.0f} };
-
-	//属性
-	uint32_t collisionAttribute_ = 0xffffffff;
-
-	//マスク
-	uint32_t collisionMask_ = 0xffffffff;
-
-	//形状
-	uint32_t collisionPrimitive_ = kCollisionPrimitiveSphere;
-
-	//ダメージ
-	float damage_ = 1.0f;
-
 public:
 	/// <summary>デストラクタ</summary>
-	virtual ~Collider() {}
+	~Collider() {}
+
+	/// <summary>更新</summary>
+	void Update();
 
 	/// <summary>当たり判定</summary>
-	virtual void OnCollision(Collider* collider) = 0;
+	void OnCollision(Collider* collider);
 
 	//WorldPosition
-	virtual Vector3 GetWorldPosition() = 0;
+	Vector3 GetWorldPosition();
 
 	//WorldTransform
-	virtual WorldTransform& GetWorldTransform() = 0;
+	WorldTransform& GetWorldTransform();
 
 	//Radius
 	float GetRadius() const { return radius_; }
@@ -65,4 +49,23 @@ public:
 	//Primitive
 	uint32_t GetCollisionPrimitive() { return collisionPrimitive_; };
 	void SetCollisionPrimitive(uint32_t collisionPrimitive) { collisionPrimitive_ = collisionPrimitive; };
+
+private:
+	//半径
+	float radius_ = 1.0f;
+
+	//AABB
+	AABB aabb_ = { {-1.0f,-1.0f,-1.0f},{1.0f,1.0f,1.0f} };
+
+	//属性
+	uint32_t collisionAttribute_ = 0xffffffff;
+
+	//マスク
+	uint32_t collisionMask_ = 0xffffffff;
+
+	//形状
+	uint32_t collisionPrimitive_ = kCollisionPrimitiveSphere;
+
+	//ダメージ
+	float damage_ = 1.0f;
 };

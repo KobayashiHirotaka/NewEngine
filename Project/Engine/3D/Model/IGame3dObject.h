@@ -28,6 +28,9 @@ public:
 	/// <summary>ImGui</summary>
 	virtual void ImGui() = 0;
 
+	/// <summary>当たり判定</summary>
+	virtual void OnCollision(Collider* collider) = 0;
+
 	//Getter,Setter
 	//モデル
 	const Model* GetModel() const { return model_.get(); }
