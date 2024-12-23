@@ -432,7 +432,7 @@
     <ClCompile Include="Application\GameObject\Character\Enemy\EnemyBullet.cpp">
       <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\ICharacter.cpp">
+    <ClCompile Include="Application\GameObject\Character\BaseCharacter.cpp">
       <Filter>ソース ファイル\Project\GameObject\Character</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp">
@@ -683,7 +683,7 @@
     <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBullet.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\ICharacter.h">
+    <ClInclude Include="Application\GameObject\Character\BaseCharacter.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Model\IGame3dObject.h">

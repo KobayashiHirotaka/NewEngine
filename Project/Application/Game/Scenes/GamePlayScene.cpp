@@ -8,7 +8,7 @@
 #include "GamePlayScene.h"
 #include "Engine/Framework/SceneManager.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
-#include "Application/GameObject/Character/ICharacter.h"
+#include "Application/GameObject/Character/BaseCharacter.h"
 #include "Application/Game/GameTimer/GameTimer.h"
 #include <cassert>
 

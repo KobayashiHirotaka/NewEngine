@@ -1,15 +1,15 @@
 /**
- * @file ICharacter.cpp
+ * @file BaseCharacter.cpp
  * @brief 各キャラクター(Player,Enemy)の基底クラス
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
 
-#include "ICharacter.h"
+#include "BaseCharacter.h"
 #include "Application/Game/Scenes/GamePlayScene.h"
 #include "Application/Game/GameTimer/GameTimer.h"
 
-void ICharacter::Initialize()
+void BaseCharacter::Initialize()
 {
 #ifdef _ADJUSTMENT
 
@@ -26,7 +26,7 @@ void ICharacter::Initialize()
 		audio_ = Audio::GetInstance();
 }
 
-void ICharacter::Update()
+void BaseCharacter::Update()
 {
 	//シェイク
 	effectState_.isShake = false;
@@ -144,14 +144,14 @@ void ICharacter::Update()
 	characterState_.isHitCharacter = false;
 }
 
-void ICharacter::ImGui()
+void BaseCharacter::ImGui()
 {
 	ImGui::Begin("CharacterDEBUG");
 	ImGui::Checkbox("isDebug", &isDebug_);
 	ImGui::End();
 }
 
-void ICharacter::Reset()
+void BaseCharacter::Reset()
 {
 	//行動
 	characterState_.behaviorRequest = Behavior::kRoot;
@@ -223,7 +223,7 @@ void ICharacter::Reset()
 	isReset_ = false;
 }
 
-void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, 
+void BaseCharacter::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, 
 	int animationIndex, std::unique_ptr<Model>& modelFighterBody)
 {
 	//TODO:Engine側に移行する
@@ -254,7 +254,7 @@ void ICharacter::UpdateAnimationTime(float animationTime, bool isLoop, float fra
 	modelFighterBody->ApplyAnimation(animationIndex);
 }
 
-void ICharacter::EndDownAnimation(int animationIndex, bool& isHitAttackType)
+void BaseCharacter::EndDownAnimation(int animationIndex, bool& isHitAttackType)
 {
 	//Behaviorの設定
 	characterState_.behaviorRequest = Behavior::kRoot;
@@ -279,7 +279,7 @@ void ICharacter::EndDownAnimation(int animationIndex, bool& isHitAttackType)
 	characterState_.isDown = false;
 }
 
-void ICharacter::StartAttack(bool& isAttackType)
+void BaseCharacter::StartAttack(bool& isAttackType)
 {   
 	//Behaviorの設定
 	characterState_.behaviorRequest = Behavior::kAttack;
@@ -292,7 +292,7 @@ void ICharacter::StartAttack(bool& isAttackType)
 	isAttackType = true;
 }
 
-void ICharacter::EndAttack(bool& isAttackType)
+void BaseCharacter::EndAttack(bool& isAttackType)
 {
 	//Behaviorの設定
 	characterState_.behaviorRequest = Behavior::kRoot;
@@ -313,7 +313,7 @@ void ICharacter::EndAttack(bool& isAttackType)
 	model_->SetAnimationTime(animationTime_);
 }
 
-void ICharacter::EvaluateAttackTiming()
+void BaseCharacter::EvaluateAttackTiming()
 {
 	//攻撃
 	if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame <= attackData_.attackEndTime)

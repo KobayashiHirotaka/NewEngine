@@ -6,14 +6,14 @@
  */
 
 #pragma once
-#include "Application/GameObject/Character/ICharacter.h"
+#include "Application/GameObject/Character/BaseCharacter.h"
 #include "Engine/Utility/AttackEditor/AttackEditor.h"
 #include "PlayerBullet.h"
 
 //前方宣言
 class Enemy;
 
-class Player : public ICharacter, public Collider
+class Player : public BaseCharacter, public Collider
 {
 public:
 	/// <summary>デストラクタ</summary>

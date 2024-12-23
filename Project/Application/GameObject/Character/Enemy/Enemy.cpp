@@ -31,7 +31,7 @@ void Enemy::Initialize()
 	IGame3dObject::SetTag("Enemy");
 
 	//初期化
-	ICharacter::Initialize();
+	BaseCharacter::Initialize();
 
 	//WorldTransformの初期化
 	worldTransform_.Initialize();
@@ -140,10 +140,10 @@ void Enemy::Update()
 #endif
 
 	//更新
-	ICharacter::Update();
+	BaseCharacter::Update();
 
 	//ImGui
-	ICharacter::ImGui();
+	BaseCharacter::ImGui();
 
 	//エディターで設定したパラメータをセット
 	AttackEditor::GetInstance()->SetAttackParameters(attackType_, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
@@ -1287,7 +1287,7 @@ void Enemy::UpdateAnimationTime(float animationTime, bool isLoop, float frameRat
 	int animationIndex, std::unique_ptr<Model>& modelFighterBody)
 {
 	//アニメーションの再生
-	ICharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, modelFighterBody);
+	BaseCharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, modelFighterBody);
 }
 
 void Enemy::Move()
@@ -1495,20 +1495,20 @@ void Enemy::Move()
 void Enemy::StartAttack(bool& isAttackType)
 {
 	//攻撃の開始処理
-	ICharacter::StartAttack(isAttackType);
+	BaseCharacter::StartAttack(isAttackType);
 }
 
 void Enemy::EndAttack(bool& isAttackType)
 {
 	//攻撃の終了処理
 	player_->SetIsGuarded(false);
-	ICharacter::EndAttack(isAttackType);
+	BaseCharacter::EndAttack(isAttackType);
 }
 
 void Enemy::EvaluateAttackTiming()
 {
 	//攻撃判定をつけるタイミングの設定
-	ICharacter::EvaluateAttackTiming();
+	BaseCharacter::EvaluateAttackTiming();
 }
 
 void Enemy::ApplyDamage()
@@ -1687,7 +1687,7 @@ void Enemy::Reset()
 	const int kMaxHp = 100;
 
 	//リセット
-	ICharacter::Reset();
+	BaseCharacter::Reset();
 
 	//HPの設定
 	hp_ = kMaxHp;
@@ -2319,7 +2319,7 @@ void Enemy::DownAnimation()
 void Enemy::EndDownAnimation(int animationIndex, bool& isHitAttackType)
 {
 	//ダウンアニメーションの終了処理
-	ICharacter::EndDownAnimation(animationIndex, isHitAttackType);
+	BaseCharacter::EndDownAnimation(animationIndex, isHitAttackType);
 }
 
 void Enemy::UpdateComboNumberSprite()
