@@ -474,6 +474,9 @@
     <ClCompile Include="Application\GameObject\Character\Player\PlayerBullet.cpp">
       <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\BaseBullet.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -727,6 +730,9 @@
     </ClInclude>
     <ClInclude Include="Application\GameObject\Character\Player\PlayerBullet.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\BaseBullet.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

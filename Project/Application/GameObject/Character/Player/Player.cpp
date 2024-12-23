@@ -296,15 +296,6 @@ void Player::DrawSprite()
 	}
 }
 
-void Player::DrawBullet(const Camera& camera)
-{
-	//弾の描画
-	for (auto& bullet : bullets_)
-	{
-		bullet->Draw(camera);
-	}
-}
-
 void Player::DrawParticle(const Camera& camera)
 {
 	//パーティクルの描画
@@ -1802,7 +1793,7 @@ void Player::ShootBullet(const Vector3& startPosition, const Vector3& velocity)
 {
 	//弾を生成してリストに追加する
 	PlayerBullet* newBullet = new PlayerBullet();
-	newBullet->Initialize(bulletModel_.get(), startPosition, velocity);
+	newBullet->Create(bulletModel_.get(), startPosition, velocity);
 	bullets_.push_back(newBullet);
 }
 

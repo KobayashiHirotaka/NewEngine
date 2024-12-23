@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\GameObject\BackGround\BackGround.cpp" />
+    <ClCompile Include="Application\GameObject\Character\BaseBullet.cpp" />
     <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Application\GameObject\Character\Enemy\EnemyBullet.cpp" />
     <ClCompile Include="Application\GameObject\Character\ICharacter.cpp" />
@@ -152,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameObject\BackGround\BackGround.h" />
+    <ClInclude Include="Application\GameObject\Character\BaseBullet.h" />
     <ClInclude Include="Application\GameObject\Character\Direction.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBullet.h" />

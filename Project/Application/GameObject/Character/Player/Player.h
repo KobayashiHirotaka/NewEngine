@@ -102,9 +102,6 @@ public:
 	/// <summary>弾の更新</summary>
 	void UpdateBullets();
 
-	/// <summary>弾の描画</summary>
-	void DrawBullet(const Camera& camera);
-
 
 	/// <summary>当たり判定</summary>
 	void OnCollision(Collider* collider)override;

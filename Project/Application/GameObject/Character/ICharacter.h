@@ -6,7 +6,7 @@
  */
 
 #pragma once
-#include "Engine/3D/Model/Model.h"
+#include "Engine/3D/Model/IGame3dObject.h"
 #include "Engine/3D/Model/ModelManager.h"
 #include "Engine/3D/Line/LineBox.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
@@ -17,7 +17,6 @@
 #include "Engine/Components/Audio/Audio.h"
 #include "Engine/2D/Sprite/UI.h"
 #include "Engine/3D/Particle/ParticleEffectPlayer.h"
-#include "Engine/3D/Model/IGame3dObject.h"
 #include "Application/GameObject/Character/Direction.h"
 #include "Application/Game/HitStop/HitStop.h"
 #include <random>

@@ -448,12 +448,6 @@ void GamePlayScene::Draw()
 		//Game3dObjectManagerの描画
 		game3dObjectManager_->Draw(cameraController_->GetCamera());
 
-		//Playerの弾の描画
-		player_->DrawBullet(cameraController_->GetCamera());
-
-		//Enemyの弾の描画
-		enemy_->DrawBullet(cameraController_->GetCamera());
-
 		//BackGroundの描画
 		backGround_->Draw(cameraController_->GetCamera());
 	}

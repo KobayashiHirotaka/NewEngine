@@ -277,15 +277,6 @@ void Enemy::DrawSprite()
 	}
 }
 
-void Enemy::DrawBullet(const Camera& camera)
-{
-	//弾の描画
-	for (auto& bullet : bullets_)
-	{
-		bullet->Draw(camera);
-	}
-}
-
 void Enemy::DrawParticle(const Camera& camera)
 {
 	//パーティクルの描画
@@ -2416,7 +2407,7 @@ void Enemy::ShootBullet(const Vector3& startPosition, const Vector3& velocity)
 {
 	//弾を生成してリストに追加する
 	EnemyBullet* newBullet = new EnemyBullet();
-	newBullet->Initialize(bulletModel_.get(), startPosition, velocity);
+	newBullet->Create(bulletModel_.get(), startPosition, velocity);
 	bullets_.push_back(newBullet);
 }
 
