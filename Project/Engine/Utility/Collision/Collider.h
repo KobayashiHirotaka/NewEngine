@@ -1,6 +1,6 @@
 /**
  * @file Collider.h
- * @brief 当たり判定のクラス
+ * @brief 当たり判定に必要なデータの管理を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

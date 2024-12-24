@@ -1,8 +1,8 @@
 /**
  * @file Collider.cpp
- * @brief 当たり判定のクラス
+ * @brief 当たり判定に必要なデータの管理を行う
  * @author  KOBAYASHI HIROTAKA
- * @date 未記録
+ * @date 12/24
  */
 
 #include "Collider.h"
