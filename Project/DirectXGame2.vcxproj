@@ -96,6 +96,7 @@
     <ClCompile Include="Engine\Framework\EngineCore.cpp" />
     <ClCompile Include="Engine\Framework\SceneManager.cpp" />
     <ClCompile Include="Engine\Utility\AttackEditor\AttackEditor.cpp" />
+    <ClCompile Include="Engine\Utility\Collision\Collider.cpp" />
     <ClCompile Include="Engine\Utility\Collision\CollisionManager.cpp" />
     <ClCompile Include="Engine\Utility\ConvertString\ConvertString.cpp" />
     <ClCompile Include="Engine\Utility\CSV\LoadCSV.cpp" />

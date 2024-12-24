@@ -7,8 +7,11 @@
 
 #pragma once
 #include "Engine//3D/Model/Model.h"
+#include "Engine/Utility/Collision/Collider.h"
 
+//前方宣言
 class Game3dObjectManager;
+class Collider;
 
 class IGame3dObject
 {
@@ -32,6 +35,9 @@ public:
 	virtual void OnCollision(Collider* collider) = 0;
 
 	//Getter,Setter
+	//WorldTransform 
+	WorldTransform GetWorldTransform()const { return worldTransform_; };
+
 	//モデル
 	const Model* GetModel() const { return model_.get(); }
 	void SetModel(std::unique_ptr<Model> model) { model_ = std::move(model); }

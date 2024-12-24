@@ -378,18 +378,18 @@ void GamePlayScene::Update()
 
 	//当たり判定
 	collisionManager_->ClearColliders();
-	collisionManager_->AddCollider(player_);
+	collisionManager_->AddCollider(player_->GetCollider());
 
-	collisionManager_->AddCollider(enemy_);
+	collisionManager_->AddCollider(enemy_->GetCollider());
 
 	for (const auto& bullet : player_->GetBullets())
 	{
-		collisionManager_->AddCollider(bullet);
+		collisionManager_->AddCollider(bullet->GetCollider());
 	}
 
 	for (const auto& bullet : enemy_->GetBullets())
 	{
-		collisionManager_->AddCollider(bullet);
+		collisionManager_->AddCollider(bullet->GetCollider());
 	}
 
 	collisionManager_->CheckAllCollision();

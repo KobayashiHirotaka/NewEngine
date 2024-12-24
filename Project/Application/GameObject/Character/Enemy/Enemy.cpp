@@ -37,11 +37,14 @@ void Enemy::Initialize()
 	worldTransform_.Initialize();
 
 	//当たり判定の設定
-	SetAABB(aabb_);
+	collider_ = std::make_unique<Collider>();
+	collider_->SetAABB(aabb_);
 
-	SetCollisionAttribute(kCollisionAttributeEnemy);
-	SetCollisionMask(kCollisionMaskEnemy);
-	SetCollisionPrimitive(kCollisionPrimitiveAABB);
+	collider_->SetCollisionAttribute(kCollisionAttributeEnemy);
+	collider_->SetCollisionMask(kCollisionMaskEnemy);
+	collider_->SetCollisionPrimitive(kCollisionPrimitiveAABB);
+
+	collider_->SetGameObject(this);
 
 	//LineBoxの描画
 	lineBox_.reset(LineBox::Create(aabb_));
@@ -232,6 +235,9 @@ void Enemy::Update()
 
 	//WorldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
+
+	//当たり判定の更新
+	collider_->Update();
 }
 
 void Enemy::Draw(const Camera& camera)
@@ -388,11 +394,11 @@ void Enemy::UpdateBehaviorAttack()
 			//当たり判定を設定
 			if (characterState_.direction == Direction::Right)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 			}
 
 			//攻撃判定をつけるタイミングの設定
@@ -449,11 +455,11 @@ void Enemy::UpdateBehaviorAttack()
 			//当たり判定を設定
 			if (characterState_.direction == Direction::Right)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 			}
 
 			//攻撃判定をつけるタイミングの設定
@@ -511,7 +517,7 @@ void Enemy::UpdateBehaviorAttack()
 			//当たり判定を設定
 			if (characterState_.direction == Direction::Right)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 
 				//コンボがつながりやすくなるように移動する
 				if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= kMoveTime)
@@ -521,7 +527,7 @@ void Enemy::UpdateBehaviorAttack()
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 
 				//コンボがつながりやすくなるように移動する
 				if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= kMoveTime)
@@ -596,7 +602,7 @@ void Enemy::UpdateBehaviorAttack()
 				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kMoveTime)
 				{
 					//当たり判定を設定
-					SetAABB(aabb_);
+					collider_->SetAABB(aabb_);
 
 					//移動
 					worldTransform_.translation.x += kMoveSpeed * GameTimer::GetDeltaTime();
@@ -615,7 +621,7 @@ void Enemy::UpdateBehaviorAttack()
 					//硬直中の当たり判定を設定
 					const AABB recoveryCollsion = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 					aabb_ = recoveryCollsion;
-					SetAABB(aabb_);
+					collider_->SetAABB(aabb_);
 				}
 			}
 			else if (characterState_.direction == Direction::Left)
@@ -623,7 +629,7 @@ void Enemy::UpdateBehaviorAttack()
 				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kMoveTime)
 				{
 					//当たり判定を設定
-					SetAABB(aabb_);
+					collider_->SetAABB(aabb_);
 
 					//移動
 					worldTransform_.translation.x -= kMoveSpeed * GameTimer::GetDeltaTime();
@@ -642,7 +648,7 @@ void Enemy::UpdateBehaviorAttack()
 					//硬直中の当たり判定を設定
 					const AABB recoveryCollsion = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 					aabb_ = recoveryCollsion;
-					SetAABB(aabb_);
+					collider_->SetAABB(aabb_);
 				}
 			}
 
@@ -784,11 +790,11 @@ void Enemy::UpdateBehaviorStan()
 	//当たり判定を設定
 	if (characterState_.direction == Direction::Left)
 	{
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 	}
 	else if (characterState_.direction == Direction::Right)
 	{
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 	}
 
 	//終了処理
@@ -1472,7 +1478,7 @@ void Enemy::Move()
 		const AABB kDownAABB = { {-0.05f,0.0f,-0.3f},{0.05f,1.0f,0.3f} };
 
 		aabb_ = kDownAABB;
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 
 		//確定反撃
 		if (!player_->GetIsAttack())
@@ -1525,14 +1531,14 @@ void Enemy::ResetCollision()
 {
 	//当たり判定のリセット
 	aabb_ = defaultCollsiion_;
-	SetAABB(aabb_);
+	collider_->SetAABB(aabb_);
 }
 
 void Enemy::ConfigureCollision(Vector3 min, Vector3 max)
 {
 	//当たり判定の設定
 	aabb_ = { {min.x, min.y, min.z},{max.x, max.y, max.z} };
-	SetAABB(aabb_);
+	collider_->SetAABB(aabb_);
 }
 
 void Enemy::UpdateHPBar()
@@ -1803,7 +1809,7 @@ void Enemy::DownAnimation()
 			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
 
 		aabb_ = kDownAABB;
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 
 		//移動処理
 		const int kJumpTime = 55;
@@ -1911,7 +1917,7 @@ void Enemy::DownAnimation()
 			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
 
 		aabb_ = kDownAABB;
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 
 		//移動処理
 		const int kMoveTime = 35;
@@ -2043,7 +2049,7 @@ void Enemy::DownAnimation()
 			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
 
 		aabb_ = kDownAABB;
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 
 		//移動処理
 		const int kMoveTime = 35;
@@ -2113,7 +2119,7 @@ void Enemy::DownAnimation()
 			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
 
 		aabb_ = kDownAABB;
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 
 		//移動処理
 		const int kMoveTime = 35;

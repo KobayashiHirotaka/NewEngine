@@ -13,7 +13,7 @@
 //前方宣言
 class Enemy;
 
-class Player : public BaseCharacter, public Collider
+class Player : public BaseCharacter
 {
 public:
 	/// <summary>デストラクタ</summary>
@@ -134,7 +134,7 @@ public:
 
 
 	/// <summary>WorldPositionの取得</summary>
-	Vector3 GetWorldPosition() override;
+	Vector3 GetWorldPosition();
 
 	/// <summary>右手のJoint座標の取得</summary>
 	Vector3 GetRightHandJointWorldPosition();
@@ -144,7 +144,10 @@ public:
 	uint32_t GetAnimationIndex() { return animationIndex_; };
 
 	//WorldTransform
-	WorldTransform& GetWorldTransform()override { return worldTransform_; }
+	WorldTransform& GetWorldTransform() { return worldTransform_; }
+
+	//Collider
+	Collider* GetCollider() { return collider_.get(); }
 
 	//IsDirectionRight
 	bool GetIsDirectionRight() { return isDirectionRight_; };
@@ -181,12 +184,13 @@ private:
 	//敵
 	Enemy* enemy_ = nullptr;
 
+	//当たり判定
+	std::unique_ptr<Collider>collider_ = nullptr;
+	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+
 	//カーソル
 	std::unique_ptr<Model> playerCursol_;
 	WorldTransform worldTransformCursol_;
-
-	//当たり判定
-	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 
 	//弾
 	std::unique_ptr<Model> bulletModel_;

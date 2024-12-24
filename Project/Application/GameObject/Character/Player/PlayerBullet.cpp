@@ -18,6 +18,9 @@ void PlayerBullet::Update()
 {
 	//更新
 	BaseBullet::Update();
+
+	//当たり判定の更新
+	collider_->Update();
 }
 
 void PlayerBullet::Draw(const Camera& camera)
@@ -40,11 +43,14 @@ void PlayerBullet::ImGui()
 void PlayerBullet::Create(Model* model, const Vector3& positon, const Vector3& velocity)
 {
 	//当たり判定の設定
-	SetAABB(aabb_);
+	collider_ = std::make_unique<Collider>();
+	collider_->SetAABB(aabb_);
 
-	SetCollisionAttribute(kCollisionAttributePlayerBullet);
-	SetCollisionMask(kCollisionMaskPlayerBullet);
-	SetCollisionPrimitive(kCollisionPrimitiveAABB);
+	collider_->SetCollisionAttribute(kCollisionAttributePlayerBullet);
+	collider_->SetCollisionMask(kCollisionMaskPlayerBullet);
+	collider_->SetCollisionPrimitive(kCollisionPrimitiveAABB);
+
+	collider_->SetGameObject(this);
 
 	//弾の生成
 	BaseBullet::Create(model, positon, velocity);
@@ -55,7 +61,7 @@ void PlayerBullet::OnCollision(Collider* collider)
 	//敵と弾が当たった時の処理
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemy || collider->GetCollisionAttribute() & kCollisionAttributeEnemyBullet)
 	{
-		BaseBullet::SetIsDead(true);
+		isDead_ = true;
 	}
 }
 

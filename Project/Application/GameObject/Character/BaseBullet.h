@@ -44,9 +44,6 @@ public:
 	void SetIsDead(bool isDead) { isDead_ = isDead; }
 
 protected:
-	//WorldTransform
-	WorldTransform worldTransform_;
-
 	//モデル
 	Model* model_ = nullptr;
 

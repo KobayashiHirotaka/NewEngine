@@ -12,7 +12,7 @@
 //前方宣言
 class Player;
 
-class Enemy : public BaseCharacter, public Collider
+class Enemy : public BaseCharacter
 {
 public:
 	/// <summary>デストラクタ</summary>
@@ -133,7 +133,7 @@ public:
 
 
 	/// <summary>WorldPositionの取得</summary>
-	Vector3 GetWorldPosition() override;
+	Vector3 GetWorldPosition();
 
 
 	//Getter
@@ -141,7 +141,10 @@ public:
 	uint32_t GetAnimationIndex() { return animationIndex_; };
 
 	//WorldTransform
-	WorldTransform& GetWorldTransform()override { return worldTransform_; }
+	WorldTransform& GetWorldTransform() { return worldTransform_; }
+
+	//Collider
+	Collider* GetCollider() { return collider_.get(); }
 
 	//AABB
 	AABB GetAABB() { return aabb_; };
@@ -181,15 +184,16 @@ private:
 	int RandomBulletOrMove();
 	
 private:
-	//行動のパターン
-	int patternCount_ = 1;
-	int moveTimer_ = 60;
-
 	//プレイヤー
 	Player* player_ = nullptr;
 
 	//当たり判定
+	std::unique_ptr<Collider>collider_ = nullptr;
 	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+
+	//行動のパターン
+	int patternCount_ = 1;
+	int moveTimer_ = 60;
 
 	//弾
 	std::unique_ptr<Model> bulletModel_;

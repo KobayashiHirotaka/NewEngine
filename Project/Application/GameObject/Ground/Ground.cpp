@@ -33,3 +33,8 @@ void Ground::ImGui()
 {
 
 }
+
+void Ground::OnCollision(Collider*)
+{
+
+}

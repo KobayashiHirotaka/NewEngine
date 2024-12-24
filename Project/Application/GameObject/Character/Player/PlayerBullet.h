@@ -7,7 +7,7 @@
 
 #include "Application/GameObject/Character/BaseBullet.h"
 
-class PlayerBullet : public BaseBullet, public Collider
+class PlayerBullet : public BaseBullet
 {
 public:
 	/// <summary>初期化</summary>
@@ -25,20 +25,24 @@ public:
 	/// <summary>ImGui</summary>
 	void ImGui()override;
 
-	/// <summary>生成</summary>
-	virtual void Create(Model* model, const Vector3& position, const Vector3& velocity)override;
-
 	/// <summary>当たり判定</summary>
 	void OnCollision(Collider* collider)override;
 
+	/// <summary>生成</summary>
+	virtual void Create(Model* model, const Vector3& position, const Vector3& velocity)override;
+
 	/// <summary>WorldPositionの取得</summary>
-	Vector3 GetWorldPosition() override;
+	Vector3 GetWorldPosition();
 
 	//Getter
 	//WorldTransform
-	WorldTransform& GetWorldTransform()override { return worldTransform_; }
+	WorldTransform& GetWorldTransform() { return worldTransform_; }
+
+	//Collider
+	Collider* GetCollider() { return collider_.get(); }
 
 private:
 	//当たり判定
+	std::unique_ptr<Collider>collider_ = nullptr;
 	AABB aabb_ = { {-0.2f,-0.2f,-0.2f},{0.2f,0.2f,0.2f} };
 };

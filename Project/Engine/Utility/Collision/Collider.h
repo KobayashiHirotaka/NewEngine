@@ -1,34 +1,33 @@
 /**
  * @file Collider.h
- * @brief 当たり判定の基底クラス
+ * @brief 当たり判定のクラス
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
 
 #pragma once
+#include "Engine/3D/Model/IGame3dObject.h"
 #include "Engine/3D/WorldTransform/WorldTransform.h"
 #include "Engine/Utility/Math/MyMath.h"
 #include "CollisionConfig.h"
 #include <stdint.h>
 #include <algorithm>
 
+ //前方宣言
+class IGame3dObject;
+
 class Collider
 {
 public:
-	/// <summary>デストラクタ</summary>
-	~Collider() {}
-
 	/// <summary>更新</summary>
 	void Update();
 
 	/// <summary>当たり判定</summary>
 	void OnCollision(Collider* collider);
 
+	//Getter,Setter
 	//WorldPosition
-	Vector3 GetWorldPosition();
-
-	//WorldTransform
-	WorldTransform& GetWorldTransform();
+	Vector3 GetWorldPosition() { return  worldPosition_; };
 
 	//Radius
 	float GetRadius() const { return radius_; }
@@ -50,7 +49,16 @@ public:
 	uint32_t GetCollisionPrimitive() { return collisionPrimitive_; };
 	void SetCollisionPrimitive(uint32_t collisionPrimitive) { collisionPrimitive_ = collisionPrimitive; };
 
+	//GameObject
+	void SetGameObject(IGame3dObject* gameObject) { gameObject_ = gameObject; };
+
 private:
+	//ゲームオブジェクトのポインタ
+	IGame3dObject* gameObject_ = nullptr;
+
+	//ワールド座標
+	Vector3 worldPosition_;
+
 	//半径
 	float radius_ = 1.0f;
 

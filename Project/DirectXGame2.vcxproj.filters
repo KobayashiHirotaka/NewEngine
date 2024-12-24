@@ -477,6 +477,9 @@
     <ClCompile Include="Application\GameObject\Character\BaseBullet.cpp">
       <Filter>ソース ファイル\Project\GameObject\Character</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Utility\Collision\Collider.cpp">
+      <Filter>ソース ファイル\Engine\Utility\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
