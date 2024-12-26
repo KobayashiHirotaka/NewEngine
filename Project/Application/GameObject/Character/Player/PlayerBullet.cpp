@@ -1,20 +1,20 @@
 /**
- * @file EnemyBullet.cpp
- * @brief 敵の弾の管理(移動、削除)を行う
+ * @file PlayerBullet.cpp
+ * @brief プレイヤーの弾の管理(移動、削除)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
 
-#include "EnemyBullet.h"
+#include "PlayerBullet.h"
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include <cassert>
 
-void EnemyBullet::Initialize()
+void PlayerBullet::Initialize()
 {
-
+	
 }
 
-void EnemyBullet::Update()
+void PlayerBullet::Update()
 {
 	//更新
 	BaseBullet::Update();
@@ -23,31 +23,31 @@ void EnemyBullet::Update()
 	collider_->Update();
 }
 
-void EnemyBullet::Draw(const Camera& camera)
+void PlayerBullet::Draw(const Camera& camera)
 {
 	//弾本体の描画
 	BaseBullet::Draw(camera);
 }
 
-void EnemyBullet::DrawParticle(const Camera& camera)
+void PlayerBullet::DrawParticle(const Camera& camera)
 {
 	//弾のパーティクルの描画
 	BaseBullet::DrawParticle(camera);
 }
 
-void EnemyBullet::ImGui()
+void PlayerBullet::ImGui()
 {
 
 }
 
-void EnemyBullet::Create(Model* model, const Vector3& positon, const Vector3& velocity)
+void PlayerBullet::Create(Model* model, const Vector3& positon, const Vector3& velocity)
 {
 	//当たり判定の設定
 	collider_ = std::make_unique<Collider>();
 	collider_->SetAABB(aabb_);
 
-	collider_->SetCollisionAttribute(kCollisionAttributeEnemyBullet);
-	collider_->SetCollisionMask(kCollisionMaskEnemyBullet);
+	collider_->SetCollisionAttribute(kCollisionAttributePlayerBullet);
+	collider_->SetCollisionMask(kCollisionMaskPlayerBullet);
 	collider_->SetCollisionPrimitive(kCollisionPrimitiveAABB);
 
 	collider_->SetGameObject(this);
@@ -56,16 +56,16 @@ void EnemyBullet::Create(Model* model, const Vector3& positon, const Vector3& ve
 	BaseBullet::Create(model, positon, velocity);
 }
 
-void EnemyBullet::OnCollision(Collider* collider)
+void PlayerBullet::OnCollision(Collider* collider)
 {
 	//敵と弾が当たった時の処理
-	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer || collider->GetCollisionAttribute() & kCollisionAttributePlayerBullet)
+	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemy || collider->GetCollisionAttribute() & kCollisionAttributeEnemyBullet)
 	{
 		isDead_ = true;
 	}
 }
 
-Vector3 EnemyBullet::GetWorldPosition()
+Vector3 PlayerBullet::GetWorldPosition()
 {
 	Vector3 worldPos;
 

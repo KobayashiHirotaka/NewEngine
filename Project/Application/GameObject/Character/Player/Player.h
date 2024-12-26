@@ -6,13 +6,14 @@
  */
 
 #pragma once
-#include "Application/GameObject/Character/ICharacter.h"
+#include "Application/GameObject/Character/BaseCharacter.h"
 #include "Engine/Utility/AttackEditor/AttackEditor.h"
+#include "PlayerBullet.h"
 
 //前方宣言
 class Enemy;
 
-class Player : public ICharacter, public Collider
+class Player : public BaseCharacter
 {
 public:
 	/// <summary>デストラクタ</summary>
@@ -95,6 +96,13 @@ public:
 	void HitCombo();
 
 
+	/// <summary>弾を発射</summary>
+	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
+
+	/// <summary>弾の更新</summary>
+	void UpdateBullets();
+
+
 	/// <summary>当たり判定</summary>
 	void OnCollision(Collider* collider)override;
 
@@ -126,7 +134,7 @@ public:
 
 
 	/// <summary>WorldPositionの取得</summary>
-	Vector3 GetWorldPosition() override;
+	Vector3 GetWorldPosition();
 
 	/// <summary>右手のJoint座標の取得</summary>
 	Vector3 GetRightHandJointWorldPosition();
@@ -136,13 +144,19 @@ public:
 	uint32_t GetAnimationIndex() { return animationIndex_; };
 
 	//WorldTransform
-	WorldTransform& GetWorldTransform()override { return worldTransform_; }
+	WorldTransform& GetWorldTransform() { return worldTransform_; }
+
+	//Collider
+	Collider* GetCollider() { return collider_.get(); }
 
 	//IsDirectionRight
 	bool GetIsDirectionRight() { return isDirectionRight_; };
 
 	//IsFinisherEffect
 	bool GetIsFinisherEffect() { return isFinisherEffect_; };
+
+	//Bullets
+	const std::vector<PlayerBullet*>& GetBullets() const { return bullets_; };
 
 	//AABB
 	AABB GetAABB() { return aabb_; };
@@ -170,12 +184,23 @@ private:
 	//敵
 	Enemy* enemy_ = nullptr;
 
+	//当たり判定
+	std::unique_ptr<Collider>collider_ = nullptr;
+	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+
 	//カーソル
 	std::unique_ptr<Model> playerCursol_;
 	WorldTransform worldTransformCursol_;
 
-	//当たり判定
-	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+	//弾
+	std::unique_ptr<Model> bulletModel_;
+	std::vector<PlayerBullet*> bullets_;
+
+	//弾攻撃のクールダウン
+	int shotCooldownTimer_ = 0;
+
+	//弾を打ったか
+	bool hasShot_ = false;
 
 	//向き
 	bool isDirectionRight_ = false;

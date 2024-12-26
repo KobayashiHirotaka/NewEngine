@@ -16,10 +16,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\GameObject\BackGround\BackGround.cpp" />
+    <ClCompile Include="Application\GameObject\Character\BaseBullet.cpp" />
     <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Application\GameObject\Character\Enemy\EnemyBullet.cpp" />
-    <ClCompile Include="Application\GameObject\Character\ICharacter.cpp" />
+    <ClCompile Include="Application\GameObject\Character\BaseCharacter.cpp" />
     <ClCompile Include="Application\GameObject\Character\Player\Player.cpp" />
+    <ClCompile Include="Application\GameObject\Character\Player\PlayerBullet.cpp" />
     <ClCompile Include="Application\GameObject\Ground\Ground.cpp" />
     <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp" />
     <ClCompile Include="Application\Game\CameraController\CameraController.cpp" />
@@ -94,6 +96,7 @@
     <ClCompile Include="Engine\Framework\EngineCore.cpp" />
     <ClCompile Include="Engine\Framework\SceneManager.cpp" />
     <ClCompile Include="Engine\Utility\AttackEditor\AttackEditor.cpp" />
+    <ClCompile Include="Engine\Utility\Collision\Collider.cpp" />
     <ClCompile Include="Engine\Utility\Collision\CollisionManager.cpp" />
     <ClCompile Include="Engine\Utility\ConvertString\ConvertString.cpp" />
     <ClCompile Include="Engine\Utility\CSV\LoadCSV.cpp" />
@@ -151,11 +154,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameObject\BackGround\BackGround.h" />
+    <ClInclude Include="Application\GameObject\Character\BaseBullet.h" />
     <ClInclude Include="Application\GameObject\Character\Direction.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBullet.h" />
-    <ClInclude Include="Application\GameObject\Character\ICharacter.h" />
+    <ClInclude Include="Application\GameObject\Character\BaseCharacter.h" />
     <ClInclude Include="Application\GameObject\Character\Player\Player.h" />
+    <ClInclude Include="Application\GameObject\Character\Player\PlayerBullet.h" />
     <ClInclude Include="Application\GameObject\Ground\Ground.h" />
     <ClInclude Include="Application\GameObject\Skydome\Skydome.h" />
     <ClInclude Include="Application\Game\CameraController\CameraController.h" />

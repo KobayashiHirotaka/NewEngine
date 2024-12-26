@@ -31,17 +31,20 @@ void Enemy::Initialize()
 	IGame3dObject::SetTag("Enemy");
 
 	//初期化
-	ICharacter::Initialize();
+	BaseCharacter::Initialize();
 
 	//WorldTransformの初期化
 	worldTransform_.Initialize();
 
 	//当たり判定の設定
-	SetAABB(aabb_);
+	collider_ = std::make_unique<Collider>();
+	collider_->SetAABB(aabb_);
 
-	SetCollisionAttribute(kCollisionAttributeEnemy);
-	SetCollisionMask(kCollisionMaskEnemy);
-	SetCollisionPrimitive(kCollisionPrimitiveAABB);
+	collider_->SetCollisionAttribute(kCollisionAttributeEnemy);
+	collider_->SetCollisionMask(kCollisionMaskEnemy);
+	collider_->SetCollisionPrimitive(kCollisionPrimitiveAABB);
+
+	collider_->SetGameObject(this);
 
 	//LineBoxの描画
 	lineBox_.reset(LineBox::Create(aabb_));
@@ -136,12 +139,14 @@ void Enemy::Initialize()
 void Enemy::Update()
 {
 #ifdef _ADJUSTMENT
-	
 
 #endif
 
 	//更新
-	ICharacter::Update();
+	BaseCharacter::Update();
+
+	//ImGui
+	BaseCharacter::ImGui();
 
 	//エディターで設定したパラメータをセット
 	AttackEditor::GetInstance()->SetAttackParameters(attackType_, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
@@ -230,6 +235,9 @@ void Enemy::Update()
 
 	//WorldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
+
+	//当たり判定の更新
+	collider_->Update();
 }
 
 void Enemy::Draw(const Camera& camera)
@@ -272,15 +280,6 @@ void Enemy::DrawSprite()
 	{
 		hitSprite_->Draw();
 		comboNumSprite_->Draw();
-	}
-}
-
-void Enemy::DrawBullet(const Camera& camera)
-{
-	//弾の描画
-	for (auto& bullet : bullets_)
-	{
-		bullet->Draw(camera);
 	}
 }
 
@@ -346,7 +345,7 @@ void Enemy::UpdateBehaviorRoot()
 		{
 			const int kAnimationShot = 1;
 			animationIndex_ = kAnimationShot;
-			attackType_ = "弾攻撃";
+			attackType_ = "ショット";
 			StartAttack(attackData_.isShot);
 		}
 
@@ -395,11 +394,11 @@ void Enemy::UpdateBehaviorAttack()
 			//当たり判定を設定
 			if (characterState_.direction == Direction::Right)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 			}
 
 			//攻撃判定をつけるタイミングの設定
@@ -456,11 +455,11 @@ void Enemy::UpdateBehaviorAttack()
 			//当たり判定を設定
 			if (characterState_.direction == Direction::Right)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 			}
 
 			//攻撃判定をつけるタイミングの設定
@@ -518,7 +517,7 @@ void Enemy::UpdateBehaviorAttack()
 			//当たり判定を設定
 			if (characterState_.direction == Direction::Right)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 
 				//コンボがつながりやすくなるように移動する
 				if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= kMoveTime)
@@ -528,7 +527,7 @@ void Enemy::UpdateBehaviorAttack()
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 
 				//コンボがつながりやすくなるように移動する
 				if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= kMoveTime)
@@ -603,7 +602,7 @@ void Enemy::UpdateBehaviorAttack()
 				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kMoveTime)
 				{
 					//当たり判定を設定
-					SetAABB(aabb_);
+					collider_->SetAABB(aabb_);
 
 					//移動
 					worldTransform_.translation.x += kMoveSpeed * GameTimer::GetDeltaTime();
@@ -622,7 +621,7 @@ void Enemy::UpdateBehaviorAttack()
 					//硬直中の当たり判定を設定
 					const AABB recoveryCollsion = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 					aabb_ = recoveryCollsion;
-					SetAABB(aabb_);
+					collider_->SetAABB(aabb_);
 				}
 			}
 			else if (characterState_.direction == Direction::Left)
@@ -630,7 +629,7 @@ void Enemy::UpdateBehaviorAttack()
 				if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kMoveTime)
 				{
 					//当たり判定を設定
-					SetAABB(aabb_);
+					collider_->SetAABB(aabb_);
 
 					//移動
 					worldTransform_.translation.x -= kMoveSpeed * GameTimer::GetDeltaTime();
@@ -649,7 +648,7 @@ void Enemy::UpdateBehaviorAttack()
 					//硬直中の当たり判定を設定
 					const AABB recoveryCollsion = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 					aabb_ = recoveryCollsion;
-					SetAABB(aabb_);
+					collider_->SetAABB(aabb_);
 				}
 			}
 
@@ -791,11 +790,11 @@ void Enemy::UpdateBehaviorStan()
 	//当たり判定を設定
 	if (characterState_.direction == Direction::Left)
 	{
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 	}
 	else if (characterState_.direction == Direction::Right)
 	{
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 	}
 
 	//終了処理
@@ -821,6 +820,115 @@ void Enemy::OnCollision(Collider* collider)
 	const int kParticleTime = 55;
 	const float kParticlePositionX = 0.1f;
 	const float kParticlePositionY = 0.5f;
+
+	//プレイヤーの弾との当たり判定
+	if (collider->GetCollisionAttribute() & kCollisionAttributePlayerBullet)
+	{
+		//ガードバック
+		const float kGuardBackSpeed = 0.1f;
+
+		//地上で弾に当たった場合
+		if (!characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y <= 0.0f)
+		{
+			//アニメーション
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
+
+			//サウンド再生
+			audio_->PlaySoundMP3(damageSoundHandle_, false, volume_);
+
+			//ダメージの適応
+			ApplyDamage();
+
+			//体力に応じてダウンの仕方を変更
+			if (hp_ > 0)
+			{
+				characterState_.isHitBullet = true;
+				attackData_.isFinisher = false;
+			}
+			else
+			{
+				characterState_.isHitTCHighPunch = true;
+				attackData_.isFinisher = false;
+			}
+
+			//ゲージ増加
+			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
+		}
+
+		//空中で弾に当たった場合
+		if (!characterState_.isDown && !characterState_.isGuard && worldTransform_.translation.y > 0.0f)
+		{
+			//アニメーション
+			animationTime_ = 0.0f;
+			model_->SetAnimationTime(animationTime_);
+
+			//サウンド再生
+			audio_->PlaySoundMP3(damageSoundHandle_, false, volume_);
+
+			//ダメージの適応
+			ApplyDamage();
+
+			//ダウン状態の設定
+			characterState_.isHitAirBullet = true;
+
+			//ゲージ増加
+			AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
+		}
+
+		if (characterState_.isGuard && characterState_.direction == Direction::Right)
+		{
+			//ガードタイマー
+			timerData_.guardAnimationTimer--;
+
+			//アニメーション
+			animationIndex_ = kAnimationGuard;
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+			//サウンド再生
+			audio_->PlaySoundMP3(guardSoundHandle_, false, volume_);
+
+			//ガードバック
+			worldTransform_.translation.x -= kGuardBackSpeed;
+
+			//ゲージ増加
+			AdjustGuardGauge();
+
+			//パーティクル
+			if (timerData_.guardAnimationTimer > kParticleTime)
+			{
+
+				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x + kParticlePositionX,
+					worldTransform_.translation.y + kParticlePositionY,worldTransform_.translation.z });
+			}
+		}
+		else if (characterState_.isGuard && characterState_.direction == Direction::Left)
+		{
+			//ガードタイマー
+			timerData_.guardAnimationTimer--;
+
+			//アニメーション
+			animationIndex_ = kAnimationGuard;
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+			//サウンド再生
+			audio_->PlaySoundMP3(guardSoundHandle_, false, volume_);
+
+			//ガードバック
+			worldTransform_.translation.x += kGuardBackSpeed;
+
+			//ゲージ増加
+			AdjustGuardGauge();
+
+			//パーティクル
+			if (timerData_.guardAnimationTimer > kParticleTime)
+			{
+
+				particleEffectPlayer_->PlayParticle("Guard", { worldTransform_.translation.x - kParticlePositionX,
+					worldTransform_.translation.y + kParticlePositionY,worldTransform_.translation.z });
+			}
+		}
+	}
 
 	//プレイヤーとの当たり判定
 	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
@@ -1185,7 +1293,7 @@ void Enemy::UpdateAnimationTime(float animationTime, bool isLoop, float frameRat
 	int animationIndex, std::unique_ptr<Model>& modelFighterBody)
 {
 	//アニメーションの再生
-	ICharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, modelFighterBody);
+	BaseCharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, modelFighterBody);
 }
 
 void Enemy::Move()
@@ -1370,7 +1478,7 @@ void Enemy::Move()
 		const AABB kDownAABB = { {-0.05f,0.0f,-0.3f},{0.05f,1.0f,0.3f} };
 
 		aabb_ = kDownAABB;
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 
 		//確定反撃
 		if (!player_->GetIsAttack())
@@ -1393,20 +1501,20 @@ void Enemy::Move()
 void Enemy::StartAttack(bool& isAttackType)
 {
 	//攻撃の開始処理
-	ICharacter::StartAttack(isAttackType);
+	BaseCharacter::StartAttack(isAttackType);
 }
 
 void Enemy::EndAttack(bool& isAttackType)
 {
 	//攻撃の終了処理
 	player_->SetIsGuarded(false);
-	ICharacter::EndAttack(isAttackType);
+	BaseCharacter::EndAttack(isAttackType);
 }
 
 void Enemy::EvaluateAttackTiming()
 {
 	//攻撃判定をつけるタイミングの設定
-	ICharacter::EvaluateAttackTiming();
+	BaseCharacter::EvaluateAttackTiming();
 }
 
 void Enemy::ApplyDamage()
@@ -1423,14 +1531,14 @@ void Enemy::ResetCollision()
 {
 	//当たり判定のリセット
 	aabb_ = defaultCollsiion_;
-	SetAABB(aabb_);
+	collider_->SetAABB(aabb_);
 }
 
 void Enemy::ConfigureCollision(Vector3 min, Vector3 max)
 {
 	//当たり判定の設定
 	aabb_ = { {min.x, min.y, min.z},{max.x, max.y, max.z} };
-	SetAABB(aabb_);
+	collider_->SetAABB(aabb_);
 }
 
 void Enemy::UpdateHPBar()
@@ -1585,7 +1693,7 @@ void Enemy::Reset()
 	const int kMaxHp = 100;
 
 	//リセット
-	ICharacter::Reset();
+	BaseCharacter::Reset();
 
 	//HPの設定
 	hp_ = kMaxHp;
@@ -1701,7 +1809,7 @@ void Enemy::DownAnimation()
 			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
 
 		aabb_ = kDownAABB;
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 
 		//移動処理
 		const int kJumpTime = 55;
@@ -1809,7 +1917,7 @@ void Enemy::DownAnimation()
 			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
 
 		aabb_ = kDownAABB;
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 
 		//移動処理
 		const int kMoveTime = 35;
@@ -1869,6 +1977,117 @@ void Enemy::DownAnimation()
 		}
 	}
 
+	//弾攻撃(地上)
+	if (characterState_.isHitBullet)
+	{
+		//ダウン状態に設定
+		const int kDownTime = 20;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		//アニメーション
+		const int kAnimationLightDown = 4;
+		const float animationSpeed = 1.5f;
+		animationIndex_ = kAnimationLightDown;
+		UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+		//パーティクル
+		const float kParticleMoveSpeed = 0.1f;
+		float particlePositionX = (characterState_.direction == Direction::Right) ? -kParticleMoveSpeed : kParticleMoveSpeed;
+		const float particlePositionY = 0.5f;
+
+		if (!isParticle_)
+		{
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
+				worldTransform_.translation.y + particlePositionY, worldTransform_.translation.z });
+
+			isParticle_ = true;
+		}
+
+		//終了処理
+		if (timerData_.downAnimationTimer < kDownTime && hp_ > 0)
+		{
+			//アニメーションの設定
+			const int kAnimationIdle = 5;
+			EndDownAnimation(kAnimationIdle, characterState_.isHitBullet);
+			ResetCollision();
+
+			patternCount_ = RandomMove();
+			isParticle_ = false;
+			isKO_ = false;
+		}
+	}
+	//弾攻撃(空中)
+	else if (characterState_.isHitAirBullet)
+	{
+		//ダウン状態に設定
+		const int kDownTime = 20;
+		characterState_.isDown = true;
+		timerData_.downAnimationTimer--;
+
+		//アニメーション
+		const int kAnimationHeavyDown = 6;
+		const float animationSpeed = 1.5f;
+		animationIndex_ = kAnimationHeavyDown;
+		UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+
+		//パーティクル
+		const float kParticleMoveSpeed = 0.1f;
+		float particlePositionX = (characterState_.direction == Direction::Right) ? -kParticleMoveSpeed : kParticleMoveSpeed;
+		const float particlePositionY = 0.5f;
+
+		if (!isParticle_)
+		{
+			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
+				 worldTransform_.translation.y + particlePositionY,worldTransform_.translation.z });
+
+			isParticle_ = true;
+		}
+
+		//当たり判定の設定
+		const AABB kDownAABB = (player_->GetDirection() == Direction::Right) ? AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} } :
+			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
+
+		aabb_ = kDownAABB;
+		collider_->SetAABB(aabb_);
+
+		//移動処理
+		const int kMoveTime = 35;
+		const float kMoveSpeed = player_->GetDirection() == Direction::Right ? -0.08f : 0.08f;
+		const float kFallSpeed = 0.03f;
+		float moveX = kMoveSpeed;
+		float rotationY = player_->GetDirection() == Direction::Right ? characterState_.leftDirectionRotation : characterState_.rightDirectionRotation;
+
+		//移動
+		if (timerData_.downAnimationTimer > kMoveTime && worldTransform_.translation.x > -4.0f)
+		{
+			worldTransform_.translation.x -= moveX;
+			worldTransform_.rotation.y = rotationY;
+		}
+
+		//落ちる
+		if (worldTransform_.translation.y > 0.0f)
+		{
+			worldTransform_.translation.y -= kFallSpeed;
+		}
+		else if (worldTransform_.translation.y <= 0.0f)
+		{
+			worldTransform_.translation.y = 0.0f;
+		}
+
+		//終了処理
+		if (timerData_.downAnimationTimer < kDownTime && hp_ > 0)
+		{
+			//アニメーションの設定
+			const int kAnimationIdle = 5;
+			EndDownAnimation(kAnimationIdle, characterState_.isHitAirBullet);
+			ResetCollision();
+
+			isParticle_ = false;
+			isKO_ = false;
+		}
+	}
+
 	//タックル攻撃
 	if (characterState_.isHitTackle)
 	{
@@ -1900,7 +2119,7 @@ void Enemy::DownAnimation()
 			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
 
 		aabb_ = kDownAABB;
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 
 		//移動処理
 		const int kMoveTime = 35;
@@ -2106,7 +2325,7 @@ void Enemy::DownAnimation()
 void Enemy::EndDownAnimation(int animationIndex, bool& isHitAttackType)
 {
 	//ダウンアニメーションの終了処理
-	ICharacter::EndDownAnimation(animationIndex, isHitAttackType);
+	BaseCharacter::EndDownAnimation(animationIndex, isHitAttackType);
 }
 
 void Enemy::UpdateComboNumberSprite()
@@ -2194,7 +2413,7 @@ void Enemy::ShootBullet(const Vector3& startPosition, const Vector3& velocity)
 {
 	//弾を生成してリストに追加する
 	EnemyBullet* newBullet = new EnemyBullet();
-	newBullet->Initialize(bulletModel_.get(), startPosition, velocity);
+	newBullet->Create(bulletModel_.get(), startPosition, velocity);
 	bullets_.push_back(newBullet);
 }
 

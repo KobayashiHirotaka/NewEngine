@@ -16,6 +16,13 @@ Player::~Player()
 	delete hpBar_.sprite_;
 	delete guardGaugeBar_.sprite_;
 	delete finisherGaugeBar_.sprite_;
+
+	//弾の削除
+	for (auto& bullet : bullets_)
+	{
+		delete bullet;
+	}
+	bullets_.clear();
 }
 
 void Player::Initialize()
@@ -24,17 +31,20 @@ void Player::Initialize()
 	IGame3dObject::SetTag("Player");
 
 	//初期化
-	ICharacter::Initialize();
+	BaseCharacter::Initialize();
 
 	//WorldTransformの初期化
 	worldTransform_.Initialize();
 
 	//当たり判定の設定
-	SetAABB(aabb_);
+	collider_ = std::make_unique<Collider>();
+	collider_->SetAABB(aabb_);
 
-	SetCollisionAttribute(kCollisionAttributePlayer);
-	SetCollisionMask(kCollisionMaskPlayer);
-	SetCollisionPrimitive(kCollisionPrimitiveAABB);
+	collider_->SetCollisionAttribute(kCollisionAttributePlayer);
+	collider_->SetCollisionMask(kCollisionMaskPlayer);
+	collider_->SetCollisionPrimitive(kCollisionPrimitiveAABB);
+
+	collider_->SetGameObject(this);
 
 	//LineBoxの描画
 	lineBox_.reset(LineBox::Create(aabb_));
@@ -120,6 +130,9 @@ void Player::Initialize()
 
 	worldTransformCursol_.parent = &worldTransform_;
 
+	//弾のモデルを生成
+	bulletModel_.reset(Model::CreateFromOBJ("resource/bullet", "bullet.obj"));
+
 	//パーティクル
 	particleEffectPlayer_ = std::make_unique<ParticleEffectPlayer>();
 	particleEffectPlayer_->Initialize();
@@ -142,7 +155,7 @@ void Player::Update()
 #endif
 
 	//更新
-	ICharacter::Update();
+	BaseCharacter::Update();
 
 	//エディターで設定したパラメータをセット
 	AttackEditor::GetInstance()->SetAttackParameters(attackType_, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
@@ -223,6 +236,9 @@ void Player::Update()
 		timerData_.guardAnimationTimer = timerData_.maxGuardAnimationTimer;
 	}
 
+	//弾の更新
+	UpdateBullets();
+
 	//LineBoxの更新
 	lineBox_->Update(aabb_);
 
@@ -232,6 +248,9 @@ void Player::Update()
 	//WorldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 	worldTransformCursol_.UpdateMatrixEuler();
+
+	//当たり判定の更新
+	collider_->Update();
 }
 
 void Player::Draw(const Camera& camera)
@@ -287,6 +306,11 @@ void Player::DrawParticle(const Camera& camera)
 {
 	//パーティクルの描画
 	particleEffectPlayer_->Draw(camera);
+
+	for (auto& bullet : bullets_)
+	{
+		bullet->DrawParticle(camera);
+	}
 }
 
 void Player::ImGui()
@@ -320,10 +344,17 @@ void Player::UpdateBehaviorRoot()
 
 		//攻撃
 		//弱攻撃
-		if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B)) && !characterState_.isDown)
+		if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)) && !characterState_.isDown)
 		{
 			attackType_ = "弱攻撃";
 			StartAttack(attackData_.isLightPunch);
+		}
+
+		//弾攻撃
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown)
+		{
+			attackType_ = "ショット";
+			StartAttack(attackData_.isShot);
 		}
 		
 		//タックル攻撃
@@ -382,11 +413,11 @@ void Player::UpdateBehaviorAttack()
 		//当たり判定を設定
 		if (characterState_.direction == Direction::Right)
 		{
-			SetAABB(aabb_);
+			collider_->SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			SetAABB(aabb_);
+			collider_->SetAABB(aabb_);
 		}
 
 		//攻撃判定をつけるタイミングの設定
@@ -408,8 +439,8 @@ void Player::UpdateBehaviorAttack()
 
 		if (input_->GetJoystickState())
 		{
-			if (!characterState_.isDown && attackData_.attackAnimationFrame >= kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime && (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X)
-				|| input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))  && enemy_->GetIsDown())
+			if (!characterState_.isDown && attackData_.attackAnimationFrame >= kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime && 
+				(input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))  && enemy_->GetIsDown())
 			{
 				attackType_ = "中攻撃(ターゲット)";
 				attackData_.isAttack = false;
@@ -449,7 +480,7 @@ void Player::UpdateBehaviorAttack()
 		//当たり判定を設定
 		if (characterState_.direction == Direction::Right)
 		{
-			SetAABB(aabb_);
+			collider_->SetAABB(aabb_);
 
 			//コンボがつながりやすくなるように移動する
 			if (attackData_.attackAnimationFrame < kMoveTime)
@@ -459,7 +490,7 @@ void Player::UpdateBehaviorAttack()
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			SetAABB(aabb_);
+			collider_->SetAABB(aabb_);
 
 			//コンボがつながりやすくなるように移動する
 			if (attackData_.attackAnimationFrame < kMoveTime)
@@ -487,23 +518,9 @@ void Player::UpdateBehaviorAttack()
 
 		if (input_->GetJoystickState())
 		{
-			//弱コンボ
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && enemy_->GetIsDown())
-			{
-				attackType_ = "強攻撃(ターゲット)";
-				attackData_.isAttack = false;
-				attackData_.isTCMiddlePunch = false;
-				attackData_.isTCHighPunch = true;
-				animationTime_ = 0.0f;
-				attackData_.attackAnimationFrame = 0;
-				model_->SetAnimationTime(animationTime_);
-				ResetCollision();
-			}
-
 			//中コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && characterState_.isHitCharacter)
 			{
 				attackType_ = "強攻撃";
 				attackData_.isAttack = false;
@@ -517,7 +534,7 @@ void Player::UpdateBehaviorAttack()
 
 			//強コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && characterState_.isHitCharacter)
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
 			{
 				attackType_ = "アッパー";
 				attackData_.isAttack = false;
@@ -528,62 +545,6 @@ void Player::UpdateBehaviorAttack()
 				model_->SetAnimationTime(animationTime_);
 				ResetCollision();
 			}
-		}
-
-		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
-	}
-
-	//TC用の攻撃(3発目)
-	if (attackData_.isTCHighPunch)
-	{
-		//アニメーション
-		const int kAnimationTCHighPunch = 11;
-		const float animationSpeed = 1.5f;
-
-		animationIndex_ = kAnimationTCHighPunch;
-		characterState_.isGuard = false;
-
-		if (!characterState_.isDown)
-		{
-			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
-		}
-
-		attackData_.isAttack = true;
-
-		//移動用のパラメータ
-		const int kMoveTime = 5;
-		const float kMoveSpeed = 0.03f;
-
-		//当たり判定を設定
-		if (characterState_.direction == Direction::Right)
-		{
-			SetAABB(aabb_);
-
-			//コンボがつながりやすくなるように移動する
-			if (attackData_.attackAnimationFrame < kMoveTime)
-			{
-				worldTransform_.translation.x += kMoveSpeed;
-			}
-		}
-		else if (characterState_.direction == Direction::Left)
-		{
-			SetAABB(aabb_);
-
-			//コンボがつながりやすくなるように移動する
-			if (attackData_.attackAnimationFrame < kMoveTime)
-			{
-				worldTransform_.translation.x -= kMoveSpeed;
-			}
-		}
-
-		//攻撃判定をつけるタイミングの設定
-		EvaluateAttackTiming();
-
-		//終了処理
-		if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
-		{
-			EndAttack(attackData_.isTCHighPunch);
-			ResetCollision();
 		}
 
 		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
@@ -611,7 +572,7 @@ void Player::UpdateBehaviorAttack()
 		//当たり判定を設定
 		if (characterState_.direction == Direction::Right)
 		{
-			SetAABB(aabb_);
+			collider_->SetAABB(aabb_);
 
 			//コンボがつながりやすくなるように移動する
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= kMoveTime)
@@ -621,7 +582,7 @@ void Player::UpdateBehaviorAttack()
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			SetAABB(aabb_);
+			collider_->SetAABB(aabb_);
 
 			//コンボがつながりやすくなるように移動する
 			if (characterState_.isHitCharacter && attackData_.attackAnimationFrame <= kMoveTime)
@@ -651,7 +612,7 @@ void Player::UpdateBehaviorAttack()
 		{
 			//タックル攻撃
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime &&
-				input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))
+				input_->IsPressButtonEnter(XINPUT_GAMEPAD_X))
 			{
 				attackType_ = "タックル";
 				attackData_.isAttack = false;
@@ -662,6 +623,58 @@ void Player::UpdateBehaviorAttack()
 				model_->SetAnimationTime(animationTime_);
 				ResetCollision();
 			}
+		}
+
+		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
+	}
+
+	//弾攻撃
+	if (attackData_.isShot)
+	{
+		//アニメーション
+		const int kAnimationShot = 19;
+		const float animationSpeed = 1.2f;
+
+		animationIndex_ = kAnimationShot;
+		characterState_.isGuard = false;
+
+		if (!characterState_.isDown)
+		{
+			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
+		}
+
+		//まだ弾を発射していない場合
+		const Vector2 kRespownPos = { 0.2f,0.5f };
+		if (!hasShot_)
+		{
+			if (characterState_.direction == Direction::Right)
+			{
+				//弾の発射位置を敵の位置に設定
+				Vector3 bulletStartPosition = { worldTransform_.translation.x + kRespownPos.x, worldTransform_.translation.y + kRespownPos.y, worldTransform_.translation.z };
+				Vector3 bulletVelocity = { 0.1f, 0.0f, 0.0f };
+
+				ShootBullet(bulletStartPosition, bulletVelocity);
+			}
+			else if (characterState_.direction == Direction::Left)
+			{
+				//弾の発射位置を敵の位置に設定
+				Vector3 bulletStartPosition = { worldTransform_.translation.x - kRespownPos.x, worldTransform_.translation.y + kRespownPos.y, worldTransform_.translation.z };
+				Vector3 bulletVelocity = { -0.1f, 0.0f, 0.0f };
+
+				ShootBullet(bulletStartPosition, bulletVelocity);
+			}
+
+			//弾を発射したことを記録
+			hasShot_ = true;
+		}
+
+		//終了処理
+		const int kShotEndTimer = 50;
+		if (characterState_.isDown || attackData_.attackAnimationFrame >= kShotEndTimer)
+		{
+			EndAttack(attackData_.isShot);
+			hasShot_ = false;
+			ResetCollision();
 		}
 
 		attackData_.attackAnimationFrame += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
@@ -700,7 +713,7 @@ void Player::UpdateBehaviorAttack()
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kMoveTime)
 			{
 				//当たり判定を設定
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 
 				//移動
 				worldTransform_.translation.x += kMoveSpeed * GameTimer::GetDeltaTime();
@@ -719,7 +732,7 @@ void Player::UpdateBehaviorAttack()
 				//硬直中の当たり判定を設定
 				const AABB recoveryCollsion = { {-0.1f,0.0f,-0.3f},{0.2f,1.0f,0.3f} };
 				aabb_ = recoveryCollsion;
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 			}
 		}
 		else if (characterState_.direction == Direction::Left)
@@ -727,7 +740,7 @@ void Player::UpdateBehaviorAttack()
 			if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame < kMoveTime)
 			{
 				//当たり判定を設定
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 
 				//移動
 				worldTransform_.translation.x -= kMoveSpeed * GameTimer::GetDeltaTime();
@@ -746,7 +759,7 @@ void Player::UpdateBehaviorAttack()
 				//硬直中の当たり判定を設定
 				const AABB recoveryCollsion = { {-0.2f,0.0f,-0.3f},{0.1f,1.0f,0.3f} };
 				aabb_ = recoveryCollsion;
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 			}
 		}
 
@@ -778,11 +791,11 @@ void Player::UpdateBehaviorAttack()
 		//当たり判定を設定
 		if (characterState_.direction == Direction::Right)
 		{
-			SetAABB(aabb_);
+			collider_->SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			SetAABB(aabb_);
+			collider_->SetAABB(aabb_);
 		}
 
 		//攻撃判定をつけるタイミングの設定
@@ -806,7 +819,7 @@ void Player::UpdateBehaviorAttack()
 		{
 			//強コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
-				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && enemy_->GetComboCount() >= kComboCount_[3] && isFinisherCharge_ &&
+				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && enemy_->GetComboCount() >= kComboCount_[3] && isFinisherCharge_ &&
 				characterState_.isHitCharacter)
 			{
 				attackData_.isAttack = false;
@@ -886,11 +899,11 @@ void Player::UpdateBehaviorAttack()
 			//当たり判定を設定
 			if (characterState_.direction == Direction::Right)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 			}
 
 			//攻撃判定をつけるタイミングの設定
@@ -948,7 +961,7 @@ void Player::UpdateBehaviorAttack()
 			//当たり判定を設定
 			if (characterState_.direction == Direction::Right)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 
 				//コンボがつながりやすくなるように移動
 				if (!characterState_.isHitCharacter)
@@ -958,7 +971,7 @@ void Player::UpdateBehaviorAttack()
 			}
 			else if (characterState_.direction == Direction::Left)
 			{
-				SetAABB(aabb_);
+				collider_->SetAABB(aabb_);
 
 				//コンボがつながりやすくなるように移動
 				if (!characterState_.isHitCharacter)
@@ -1092,11 +1105,11 @@ void Player::UpdateBehaviorJump()
 		//当たり判定を設定
 		if (characterState_.direction == Direction::Right)
 		{
-			SetAABB(aabb_);
+			collider_->SetAABB(aabb_);
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
-			SetAABB(aabb_);
+			collider_->SetAABB(aabb_);
 		}
 
 		//攻撃判定をつけるタイミングの設定
@@ -1166,11 +1179,11 @@ void Player::UpdateBehaviorStan()
 	//当たり判定を設定
 	if (characterState_.direction == Direction::Left)
 	{
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 	}
 	else if (characterState_.direction == Direction::Right)
 	{
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 	}
 
 	//終了処理
@@ -1197,6 +1210,7 @@ void Player::OnCollision(Collider* collider)
 	const float kParticlePositionX = 0.1f;
 	const float kParticlePositionY = 0.5f;
 
+	//敵の弾との当たり判定
 	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemyBullet)
 	{
 		//ガードバック
@@ -1554,7 +1568,7 @@ void Player::UpdateAnimationTime(float animationTime, bool isLoop, float frameRa
 	int animationIndex, std::unique_ptr<Model>& modelFighterBody)
 {
 	//アニメーションの再生
-	ICharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, modelFighterBody);
+	BaseCharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, modelFighterBody);
 }
 
 void Player::Move()
@@ -1781,23 +1795,49 @@ void Player::Move()
 	}
 }
 
+void Player::ShootBullet(const Vector3& startPosition, const Vector3& velocity)
+{
+	//弾を生成してリストに追加する
+	PlayerBullet* newBullet = new PlayerBullet();
+	newBullet->Create(bulletModel_.get(), startPosition, velocity);
+	bullets_.push_back(newBullet);
+}
+
+void Player::UpdateBullets()
+{
+	//弾の更新と衝突判定などを行う
+	for (auto it = bullets_.begin(); it != bullets_.end();)
+	{
+		(*it)->Update();
+		if ((*it)->GetIsDead())
+		{
+			delete* it;
+			it = bullets_.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
 void Player::StartAttack(bool& isAttackType)
 {
 	//攻撃の開始処理
-	ICharacter::StartAttack(isAttackType);
+	BaseCharacter::StartAttack(isAttackType);
 }
 
 void Player::EndAttack(bool& isAttackType)
 {
 	//攻撃の終了処理
 	enemy_->SetIsGuarded(false);
-	ICharacter::EndAttack(isAttackType);
+	BaseCharacter::EndAttack(isAttackType);
 }
 
 void Player::EvaluateAttackTiming()
 {
 	//攻撃判定をつけるタイミングの設定
-	ICharacter::EvaluateAttackTiming();
+	BaseCharacter::EvaluateAttackTiming();
 }
 
 void Player::ApplyDamage()
@@ -1814,14 +1854,14 @@ void Player::ResetCollision()
 {
 	//当たり判定のリセット
 	aabb_ = defaultCollsiion_;
-	SetAABB(aabb_);
+	collider_->SetAABB(aabb_);
 }
 
 void Player::ConfigureCollision(Vector3 min, Vector3 max)
 {
 	//当たり判定の設定
 	aabb_ = { {min.x, min.y, min.z},{max.x, max.y, max.z} };
-	SetAABB(aabb_);
+	collider_->SetAABB(aabb_);
 }
 
 void Player::UpdateHPBar()
@@ -1983,7 +2023,7 @@ void Player::Reset()
 	const int kMaxHp = -100;
 
 	//リセット
-	ICharacter::Reset();
+	BaseCharacter::Reset();
 
 	//HPの設定
 	hp_ = kMaxHp;
@@ -2128,7 +2168,7 @@ void Player::DownAnimation()
 			AABB{ {0.1f, 0.0f, -0.3f}, {1.1f, 0.2f, 0.3f} };
 
 		aabb_ = kDownAABB;
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 
 		//移動処理
 		const int kMoveTime = 35;
@@ -2182,7 +2222,7 @@ void Player::DownAnimation()
 			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
 
 		aabb_ = kDownAABB;
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 
 		//移動処理
 		const int kJumpTime = 55;
@@ -2256,7 +2296,7 @@ void Player::DownAnimation()
 			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
 
 		aabb_ = kDownAABB;
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 
 		//移動処理
 		const int kMoveTime = 35;
@@ -2375,7 +2415,7 @@ void Player::DownAnimation()
 			AABB{ {-1.1f, 0.0f, -0.3f}, {-0.1f, 0.2f, 0.3f} };
 
 		aabb_ = kDownAABB;
-		SetAABB(aabb_);
+		collider_->SetAABB(aabb_);
 
 		//移動処理
 		const int kMoveTime = 35;
@@ -2425,7 +2465,7 @@ void Player::DownAnimation()
 void Player::EndDownAnimation(int animationIndex, bool& isHitAttackType)
 {
 	//ダウンアニメーションの終了処理
-	ICharacter::EndDownAnimation(animationIndex, isHitAttackType);
+	BaseCharacter::EndDownAnimation(animationIndex, isHitAttackType);
 }
 
 void Player::PushEnemy(Vector3& enemyPosition, float pushSpeed)

@@ -432,7 +432,7 @@
     <ClCompile Include="Application\GameObject\Character\Enemy\EnemyBullet.cpp">
       <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\ICharacter.cpp">
+    <ClCompile Include="Application\GameObject\Character\BaseCharacter.cpp">
       <Filter>ソース ファイル\Project\GameObject\Character</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\Model\Game3dObjectFactory.cpp">
@@ -470,6 +470,15 @@
     </ClCompile>
     <ClCompile Include="Application\Game\HitStop\HitStop.cpp">
       <Filter>ソース ファイル\Project\Game\HitStop</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Player\PlayerBullet.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\BaseBullet.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Utility\Collision\Collider.cpp">
+      <Filter>ソース ファイル\Engine\Utility\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -677,7 +686,7 @@
     <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBullet.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\ICharacter.h">
+    <ClInclude Include="Application\GameObject\Character\BaseCharacter.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Model\IGame3dObject.h">
@@ -721,6 +730,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Base\D3DResourceLeakChecker.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Player\PlayerBullet.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\BaseBullet.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,13 +6,13 @@
  */
 
 #pragma once
-#include "Application/GameObject/Character/ICharacter.h"
+#include "Application/GameObject/Character/BaseCharacter.h"
 #include "EnemyBullet.h"
 
 //前方宣言
 class Player;
 
-class Enemy : public ICharacter, public Collider
+class Enemy : public BaseCharacter
 {
 public:
 	/// <summary>デストラクタ</summary>
@@ -95,6 +95,13 @@ public:
 	void HitCombo();
 
 
+	/// <summary>弾を発射</summary>
+	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
+
+	/// <summary>弾の更新</summary>
+	void UpdateBullets();
+
+
 	/// <summary>当たり判定</summary>
 	void OnCollision(Collider* collider)override;
 
@@ -125,18 +132,8 @@ public:
 	virtual void UpdateComboNumberSprite()override;
 
 
-	/// <summary>弾を発射</summary>
-	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
-
-	/// <summary>弾の更新</summary>
-	void UpdateBullets();
-
-	/// <summary>弾の描画</summary>
-	void DrawBullet(const Camera& camera);
-
-
 	/// <summary>WorldPositionの取得</summary>
-	Vector3 GetWorldPosition() override;
+	Vector3 GetWorldPosition();
 
 
 	//Getter
@@ -144,7 +141,10 @@ public:
 	uint32_t GetAnimationIndex() { return animationIndex_; };
 
 	//WorldTransform
-	WorldTransform& GetWorldTransform()override { return worldTransform_; }
+	WorldTransform& GetWorldTransform() { return worldTransform_; }
+
+	//Collider
+	Collider* GetCollider() { return collider_.get(); }
 
 	//AABB
 	AABB GetAABB() { return aabb_; };
@@ -184,17 +184,18 @@ private:
 	int RandomBulletOrMove();
 	
 private:
+	//プレイヤー
+	Player* player_ = nullptr;
+
+	//当たり判定
+	std::unique_ptr<Collider>collider_ = nullptr;
+	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+
 	//行動のパターン
 	int patternCount_ = 1;
 	int moveTimer_ = 60;
 
-	//当たり判定
-	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
-
-	//プレイヤー
-	Player* player_ = nullptr;
-
-	//敵の弾テスト用
+	//弾
 	std::unique_ptr<Model> bulletModel_;
 	std::vector<EnemyBullet*> bullets_;
 

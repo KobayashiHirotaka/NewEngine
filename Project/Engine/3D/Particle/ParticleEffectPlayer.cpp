@@ -188,7 +188,99 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
-	else if (std::string("RightBullet") == name)
+	else if (std::string("PlayerRightBullet") == name)
+	{
+		//各パラメータの設定
+		const float adjustPositionX = 0.1f;
+
+		const Vector3 scaleMin = { 0.4f,0.4f,0.4f };
+		const Vector3 scaleMax = { 0.5f,0.5f,0.5f };
+
+		const float azimuthMin = 0.0f;
+		const float azimuthMax = 0.8f;
+
+		const float elevationMin = -9.0f;
+		const float elevationMax = 9.0f;
+
+		const Vector3 velocityMin = { 0.0f ,0.0f ,0.0f };
+		const Vector3 velocityMax = { 0.01f ,0.01f ,0.01f };
+
+		const Vector4 colorMin = { 1.0f ,0.0f ,0.0f ,1.0f };
+		const Vector4 colorMax = { 1.0f ,0.5f ,0.0f ,1.0f };
+
+		const float lifeTimeMin = 0.1f;
+		const float lifeTimeMax = 0.6f;
+
+		const int count = 10;
+
+		const float frequency = 4.0f;
+
+		const float deleteTime = 0.03f;
+
+		ParticleEmitter* newParticleEmitter = EmitterBuilder()
+			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+			.SetTranslation({ position.x + adjustPositionX, position.y,  position.z })
+			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetScale(scaleMin, scaleMax)
+			.SetAzimuth(azimuthMin, azimuthMax)
+			.SetElevation(elevationMin, elevationMax)
+			.SetVelocity(velocityMin, velocityMax)
+			.SetColor(colorMin, colorMax)
+			.SetLifeTime(lifeTimeMin, lifeTimeMax)
+			.SetCount(count)
+			.SetFrequency(frequency)
+			.SetDeleteTime(deleteTime)
+			.Build();
+		particleSystem_->AddParticleEmitter(newParticleEmitter);
+	}
+	else if (std::string("PlayerLeftBullet") == name)
+	{
+		//各パラメータの設定
+		const float adjustPositionX = 0.1f;
+
+		const Vector3 scaleMin = { 0.4f,0.4f,0.4f };
+		const Vector3 scaleMax = { 0.5f,0.5f,0.5f };
+
+		const float azimuthMin = 0.0f;
+		const float azimuthMax = 0.8f;
+
+		const float elevationMin = -9.0f;
+		const float elevationMax = 9.0f;
+
+		const Vector3 velocityMin = { 0.0f ,0.0f ,0.0f };
+		const Vector3 velocityMax = { 0.01f ,0.01f ,0.01f };
+
+		const Vector4 colorMin = { 1.0f ,0.0f ,0.0f ,1.0f };
+		const Vector4 colorMax = { 1.0f ,0.5f ,0.0f ,1.0f };
+
+		const float lifeTimeMin = 0.1f;
+		const float lifeTimeMax = 0.6f;
+
+		const int count = 10;
+
+		const float frequency = 4.0f;
+
+		const float deleteTime = 0.03f;
+
+		ParticleEmitter* newParticleEmitter = EmitterBuilder()
+			.SetParticleType(ParticleEmitter::ParticleType::kNormal)
+			.SetTranslation({ position.x - adjustPositionX, position.y,  position.z })
+			.SetArea({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetRotation({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f })
+			.SetScale(scaleMin, scaleMax)
+			.SetAzimuth(azimuthMin, azimuthMax)
+			.SetElevation(elevationMin, elevationMax)
+			.SetVelocity(velocityMin, velocityMax)
+			.SetColor(colorMin, colorMax)
+			.SetLifeTime(lifeTimeMin, lifeTimeMax)
+			.SetCount(count)
+			.SetFrequency(frequency)
+			.SetDeleteTime(deleteTime)
+			.Build();
+		particleSystem_->AddParticleEmitter(newParticleEmitter);
+	}
+	else if (std::string("EnemyRightBullet") == name)
 	{
 		//各パラメータの設定
 		const float adjustPositionX = 0.1f;
@@ -233,8 +325,8 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.SetDeleteTime(deleteTime)
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
-	}
-	else if (std::string("LeftBullet") == name)
+		}
+	else if (std::string("EnemyLeftBullet") == name)
 	{
 		//各パラメータの設定
 		const float adjustPositionX = 0.1f;
@@ -279,7 +371,7 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.SetDeleteTime(deleteTime)
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
-	}
+		}
 	else if (std::string("Hit") == name)
 	{
 		//各パラメータの設定

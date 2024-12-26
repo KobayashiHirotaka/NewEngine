@@ -8,7 +8,7 @@
 #include "GamePlayScene.h"
 #include "Engine/Framework/SceneManager.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
-#include "Application/GameObject/Character/ICharacter.h"
+#include "Application/GameObject/Character/BaseCharacter.h"
 #include "Application/Game/GameTimer/GameTimer.h"
 #include <cassert>
 
@@ -378,13 +378,18 @@ void GamePlayScene::Update()
 
 	//当たり判定
 	collisionManager_->ClearColliders();
-	collisionManager_->AddCollider(player_);
+	collisionManager_->AddCollider(player_->GetCollider());
 
-	collisionManager_->AddCollider(enemy_);
+	collisionManager_->AddCollider(enemy_->GetCollider());
+
+	for (const auto& bullet : player_->GetBullets())
+	{
+		collisionManager_->AddCollider(bullet->GetCollider());
+	}
 
 	for (const auto& bullet : enemy_->GetBullets())
 	{
-		collisionManager_->AddCollider(bullet);
+		collisionManager_->AddCollider(bullet->GetCollider());
 	}
 
 	collisionManager_->CheckAllCollision();
@@ -442,9 +447,6 @@ void GamePlayScene::Draw()
 	{
 		//Game3dObjectManagerの描画
 		game3dObjectManager_->Draw(cameraController_->GetCamera());
-
-		//Enemyの弾の描画
-		enemy_->DrawBullet(cameraController_->GetCamera());
 
 		//BackGroundの描画
 		backGround_->Draw(cameraController_->GetCamera());

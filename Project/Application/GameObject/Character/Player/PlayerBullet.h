@@ -1,14 +1,13 @@
 /**
- * @file EnemyBullet.h
- * @brief 敵の弾の管理(移動、削除)を行う
+ * @file PlayerBullet.h
+ * @brief プレイヤーの弾の管理(移動、削除)を行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
 
-#pragma once
 #include "Application/GameObject/Character/BaseBullet.h"
 
-class EnemyBullet : public BaseBullet
+class PlayerBullet : public BaseBullet
 {
 public:
 	/// <summary>初期化</summary>

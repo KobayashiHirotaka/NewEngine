@@ -26,5 +26,8 @@ public:
 	/// <summary>ImGui</summary>
 	void ImGui()override;
 
+	/// <summary>当たり判定</summary>
+	void OnCollision(Collider*)override;
+
 private:
 };
