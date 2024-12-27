@@ -67,14 +67,13 @@ public:
 	float Random(float min_value, float max_value);
 
 private:
-
 	/// <summary>数字の更新</summary>
 	void UpdateNumberSprite();
 
-	/// <summary>ゲーム全体の勝敗を決める</summary>
+	/// <summary>ゲーム全体の勝敗を管理する</summary>
 	void HandleGameOutcome();
 
-	/// <summary>ゲーム結果を決める</summary>
+	/// <summary>ラウンドの勝敗を判定する</summary>
 	void HandleRoundResult(int playerHP, int enemyHP, int currentSeconds);
 
 	/// <summary>Playerが勝ったときの処理</summary>
