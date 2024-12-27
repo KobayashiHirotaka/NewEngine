@@ -75,7 +75,7 @@ private:
 	void HandleGameOutcome();
 
 	/// <summary>ゲーム結果を決める</summary>
-	void HandleRoundResult(bool isRoundTransition, int playerHP, int enemyHP, int currentSeconds);
+	void HandleRoundResult(int playerHP, int enemyHP, int currentSeconds);
 
 	/// <summary>Playerが勝ったときの処理</summary>
 	void HandlePlayerWin(bool isTimeOver);
