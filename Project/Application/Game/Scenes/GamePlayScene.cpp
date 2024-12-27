@@ -645,207 +645,23 @@ float GamePlayScene::Random(float min_value, float max_value)
 //TODO:長いので簡潔にする(冬休み)
 void GamePlayScene::HandleGameOutcome()
 {
-	switch (round_)
+	// ラウンドごとの勝敗処理
+	if (!isRoundTransition_)
 	{
-	case kRoundOne_:
-		//ラウンド1の処理
-		if (!isRoundTransition_)
-		{
-			//Playerが勝ったとき(EnemyのHPを0にした)
-			if (enemy_->GetHP() <= 0 && player_->GetHP() < 0)
-			{
-				HandlePlayerWin(kPlayerFirstWinCount_, false);
-			}
-
-			//Enemyが勝ったとき(PlayerのHPを0にした)
-			if (player_->GetHP() >= 0 && enemy_->GetHP() > 0)
-			{
-				HandleEnemyWin(kEnemyFirstWinCount_, false);
-			}
-
-			//引分けのとき(相打ち)
-			if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0)
-			{
-				HandleDrow(kPlayerFirstWinCount_, kEnemyFirstWinCount_, false);
-			}
-
-
-			//Playerが勝ったとき(時間切れ)
-			if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()))
-			{
-				HandlePlayerWin(kPlayerFirstWinCount_, true);
-			}
-
-			//Enemyが勝ったとき(時間切れ)
-			if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()))
-			{
-				HandleEnemyWin(kEnemyFirstWinCount_, true);
-			}
-
-			//引分けのとき(時間切れ)
-			if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()))
-			{
-				HandleDrow(kPlayerFirstWinCount_, kEnemyFirstWinCount_, true);
-			}
-		}
-		break;
-
-	case kRoundTwo_:
-		//ラウンド2の処理
-		//Playerが勝ったとき(EnemyのHPを0にした)
-		if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && !isRoundTransition_)
-		{
-			if (playerWinCount_ == kPlayerFirstWinCount_)
-			{
-				HandlePlayerWin(kPlayerSecondWinCount_, false);
-			}
-			else if (playerWinCount_ == 0)
-			{
-				HandlePlayerWin(kPlayerFirstWinCount_, false);
-			}
-		}
-
-		//Enemyが勝ったとき(PlayerのHPを0にした)
-		if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && !isRoundTransition_)
-		{
-			if (enemyWinCount_ == kEnemyFirstWinCount_ && !isRoundTransition_)
-			{
-				HandleEnemyWin(kEnemySecondWinCount_, false);
-			}
-			else if (enemyWinCount_ == 0)
-			{
-				HandleEnemyWin(kEnemyFirstWinCount_, false);
-			}
-		}
-
-		//引分けのとき(相打ち)
-		if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && !isRoundTransition_)
-		{
-			if (playerWinCount_ == kPlayerFirstWinCount_ && enemyWinCount_ == 0)
-			{
-				HandleDrow(kPlayerSecondWinCount_, kEnemyFirstWinCount_, false);
-			}
-			else if (enemyWinCount_ == kEnemyFirstWinCount_ && playerWinCount_ == 0)
-			{
-				HandleDrow(kPlayerFirstWinCount_, kEnemySecondWinCount_, false);
-			}
-		}
-
-
-		//Playerが勝ったとき(時間切れ)
-		if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && !isRoundTransition_)
-		{
-			if (playerWinCount_ == kPlayerFirstWinCount_)
-			{
-				HandlePlayerWin(kPlayerSecondWinCount_, true);
-			}
-			else if (playerWinCount_ == 0)
-			{
-				HandlePlayerWin(kPlayerFirstWinCount_, true);
-			}
-		}
-
-		//Enemyが勝ったとき(時間切れ)
-		if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && !isRoundTransition_)
-		{
-			if (enemyWinCount_ == kEnemyFirstWinCount_)
-			{
-				HandleEnemyWin(kEnemySecondWinCount_, true);
-			}
-			else if (enemyWinCount_ == 0)
-			{
-				HandleEnemyWin(kEnemyFirstWinCount_, true);
-			}
-		}
-
-		//引分けのとき(時間切れ)
-		if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && !isRoundTransition_)
-		{
-			if (playerWinCount_ == kPlayerFirstWinCount_ && enemyWinCount_ == 0)
-			{
-				HandleDrow(kPlayerSecondWinCount_, 0, true);
-			}
-			else if (enemyWinCount_ == kEnemyFirstWinCount_ && playerWinCount_ == 0)
-			{
-				HandleDrow(0, kEnemySecondWinCount_, true);
-			}
-		}
-		break;
-
-	case kRoundThree_:
-		//ラウンド3の処理
-		if (!isRoundTransition_)
-		{
-			//Playerが勝ったとき(EnemyのHPを0にした)
-			if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && playerWinCount_ == kPlayerFirstWinCount_)
-			{
-				HandlePlayerWin(kPlayerSecondWinCount_, false);
-			}
-
-			//Enemyが勝ったとき(PlayerのHPを0にした)
-			if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && enemyWinCount_ == kEnemyFirstWinCount_)
-			{
-				HandleEnemyWin(kEnemySecondWinCount_, false);
-			}
-
-			//引分けのとき(相打ち)
-			if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0)
-			{
-				HandleDrow(kPlayerFirstWinCount_, kEnemyFirstWinCount_, false);
-			}
-			else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && playerWinCount_ == kPlayerFirstWinCount_ && enemyWinCount_ == 0)
-			{
-				HandleDrow(kPlayerSecondWinCount_, kEnemyFirstWinCount_, false);
-			}
-			else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && enemyWinCount_ == kEnemyFirstWinCount_ && playerWinCount_ == 0)
-			{
-				HandleDrow(kPlayerFirstWinCount_, kEnemySecondWinCount_, false);
-			}
-
-
-			//Playerが勝ったとき(時間切れ)
-			if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && playerWinCount_ == kPlayerFirstWinCount_)
-			{
-				HandlePlayerWin(kPlayerSecondWinCount_, true);
-			}
-
-			//Enemyが勝ったとき(時間切れ)
-			if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && enemyWinCount_ == kEnemyFirstWinCount_)
-			{
-				HandleEnemyWin(kEnemySecondWinCount_, true);
-			}
-
-			//引分けのとき(時間切れ)
-			if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()))
-			{
-				HandleDrow(kPlayerFirstWinCount_, kEnemyFirstWinCount_, true);
-			}
-			else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && playerWinCount_ == kPlayerFirstWinCount_ && enemyWinCount_ == 0)
-			{
-				HandleDrow(kPlayerSecondWinCount_, kEnemyFirstWinCount_, true);
-			}
-			else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && enemyWinCount_ == kEnemyFirstWinCount_ && playerWinCount_ == 0)
-			{
-				HandleDrow(kPlayerFirstWinCount_, kEnemySecondWinCount_, true);
-			}
-		}
-		break;
-
-	default:
-		//PlayerもしくはEnemyが2本先に取ったとき
-		if (playerWinCount_ == kPlayerSecondWinCount_ || enemyWinCount_ == kEnemySecondWinCount_)
-		{
-			if (isTransitionStart_ == false && isTransitionEnd_ == true)
-			{
-				isTransitionStart_ = true;
-			}
-		}
-		break;
+		HandleRoundResult(isRoundTransition_, player_->GetHP(), enemy_->GetHP(), currentSeconds_);
 	}
 
-	//トランジション
-	const float deltaTime = 1.0f / kTransitionTime;
+	// PlayerもしくはEnemyが2本先に取ったとき
+	if (playerWinCount_ == kPlayerSecondWinCount_ || enemyWinCount_ == kEnemySecondWinCount_)
+	{
+		if (!isTransitionStart_ && isTransitionEnd_)
+		{
+			isTransitionStart_ = true;
+		}
+	}
 
+	// トランジションの進行
+	const float deltaTime = 1.0f / kTransitionTime;
 	if (!isTransitionEnd_)
 	{
 		transitionTimer_ += deltaTime;
@@ -865,7 +681,7 @@ void GamePlayScene::HandleGameOutcome()
 		transitionColor_.w = Lerp(transitionColor_.w, kTransitionStartAlpha_, transitionTimer_);
 		transitionSprite_->SetColor(transitionColor_);
 
-		//Playerが勝利したとき
+		// Playerが勝利したとき
 		if (playerWinCount_ == kPlayerSecondWinCount_)
 		{
 			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
@@ -874,7 +690,7 @@ void GamePlayScene::HandleGameOutcome()
 			return;
 		}
 
-		//Enemyが勝利したとき
+		// Enemyが勝利したとき
 		if (enemyWinCount_ == kEnemySecondWinCount_)
 		{
 			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
@@ -884,66 +700,108 @@ void GamePlayScene::HandleGameOutcome()
 		}
 	}
 
-	int roundCount = kRoundOne_;
-
+	// ラウンド遷移の処理
 	if (isRoundTransition_)
 	{
+		int nextRound = round_;
 		if (isDrow_)
 		{
-			roundCount = kRoundThree_;
+			nextRound = kRoundThree_;
 		}
-		else if (round_ == kRoundOne_)
+		else
 		{
-			roundCount = kRoundTwo_;
-		}
-		else if (round_ == kRoundTwo_)
-		{
-			roundCount = kRoundThree_;
-		}
-		else if (round_ == kRoundThree_)
-		{
-			roundCount = kRoundThree_;
+			nextRound++;
 		}
 
-		RoundTransition(roundCount);
+		if (nextRound > kRoundThree_)
+		{
+			nextRound = kRoundThree_;
+		}
+
+		RoundTransition(nextRound);
 	}
 }
 
-void GamePlayScene::HandlePlayerWin(const int playerWinCount, bool isTimeOver)
+void GamePlayScene::HandleRoundResult(bool isRoundTransition, int playerHP, int enemyHP, int currentSeconds)
 {
-	//Playerが勝ったとき
+	// 時間切れの場合
+	if (currentSeconds <= 0)
+	{
+		if (abs(enemyHP) < abs(playerHP))
+		{
+			HandlePlayerWin(true); // 時間切れでPlayerの勝利
+		}
+		else if (abs(enemyHP) > abs(playerHP))
+		{
+			HandleEnemyWin(true); // 時間切れでEnemyの勝利
+		}
+		else
+		{
+			HandleDrow(true); // 時間切れで引き分け
+		}
+		return; // 時間切れで処理が終了したらここで抜ける
+	}
+
+	// Playerの勝敗判定
+	if (enemyHP <= 0 && playerHP > 0 && !isRoundTransition)
+	{
+		HandlePlayerWin(false);
+	}
+
+	// Enemyの勝敗判定
+	if (playerHP > 0 && enemyHP <= 0 && !isRoundTransition)
+	{
+		HandleEnemyWin(false);
+	}
+
+	// 引き分けの場合
+	if (playerHP <= 0 && enemyHP <= 0 && !isRoundTransition)
+	{
+		HandleDrow(false);
+	}
+}
+
+void GamePlayScene::HandlePlayerWin(bool isTimeOver)
+{
+	// Playerが勝ったとき
 	if (!isTimeOver)
 	{
-		//ラウンド終了時の処理(Enemyを倒した時)
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 		sMigrationTimer--;
 		isPlayerWin_ = true;
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
 		{
-			playerWinCount_ = playerWinCount;
-			isRoundTransition_ = true;
+			playerWinCount_++;
+
+			if (playerWinCount_ != kPlayerSecondWinCount_)
+			{
+				isRoundTransition_ = true;
+			}
 		}
 	}
 	else
 	{
-		//ラウンド終了時の処理(時間切れの時)
+		// 時間切れの場合の処理
 		sMigrationTimer--;
 		isPlayerWin_ = true;
 		isTimeOver_ = true;
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			playerWinCount_ = playerWinCount;
-			isRoundTransition_ = true;
+			playerWinCount_++;
+
+			if (playerWinCount_ != kPlayerSecondWinCount_)
+			{
+				isRoundTransition_ = true;
+			}
 		}
 	}
 }
 
-void GamePlayScene::HandleEnemyWin(const int enemyWinCount, bool isTimeOver)
+void GamePlayScene::HandleEnemyWin(bool isTimeOver)
 {
-	//Enemyが勝ったとき
-	//ラウンド終了時の処理(Playerを倒した時)
+	// Enemyが勝ったとき
 	if (!isTimeOver)
 	{
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
@@ -952,53 +810,70 @@ void GamePlayScene::HandleEnemyWin(const int enemyWinCount, bool isTimeOver)
 
 		if (sMigrationTimer < kKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
 		{
-			enemyWinCount_ = enemyWinCount;
-			isRoundTransition_ = true;
+			enemyWinCount_++;
+
+			if (enemyWinCount_ != kEnemySecondWinCount_)
+			{
+				isRoundTransition_ = true;
+			}
 		}
 	}
 	else
 	{
-		//ラウンド終了時の処理(時間切れの時)
+		// 時間切れの場合の処理
 		sMigrationTimer--;
 		isPlayerWin_ = false;
 		isTimeOver_ = true;
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			enemyWinCount_ = kEnemyFirstWinCount_;
-			isRoundTransition_ = true;
+			enemyWinCount_++;
+
+			if (enemyWinCount_ != kEnemySecondWinCount_)
+			{
+				isRoundTransition_ = true;
+			}
 		}
 	}
 }
 
-void GamePlayScene::HandleDrow(const int playerWinCountconst, int enemyWinCount, bool isTimeOver)
+void GamePlayScene::HandleDrow(bool isTimeOver)
 {
+	// 引き分けの場合
 	if (!isTimeOver)
 	{
-		//相打ち
 		sMigrationTimer--;
 		isDrow_ = true;
 		isPlayerWin_ = true;
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
-			playerWinCount_ = playerWinCountconst;
-			enemyWinCount_ = enemyWinCount;
-			isRoundTransition_ = true;
+			playerWinCount_++;
+
+			enemyWinCount_++;
+
+			if (playerWinCount_ != kPlayerSecondWinCount_ || enemyWinCount_ != kEnemySecondWinCount_)
+			{
+				isRoundTransition_ = true;
+			}
 		}
 	}
 	else
 	{
-		//時間切れ(ドロー)
 		sMigrationTimer--;
 		isDrow_ = true;
 		isTimeOver_ = true;
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			playerWinCount_ = playerWinCountconst;
-			enemyWinCount_ = enemyWinCount;
-			isRoundTransition_ = true;
+			playerWinCount_++;
+
+			enemyWinCount_++;
+
+			if (playerWinCount_ != kPlayerSecondWinCount_ || enemyWinCount_ != kEnemySecondWinCount_)
+			{
+				isRoundTransition_ = true;
+			}
 		}
 	}
 }

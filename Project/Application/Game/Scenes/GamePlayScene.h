@@ -66,20 +66,25 @@ public:
 	/// <summary>ランダム</summary>
 	float Random(float min_value, float max_value);
 
+private:
+
 	/// <summary>数字の更新</summary>
 	void UpdateNumberSprite();
 
 	/// <summary>ゲーム全体の勝敗を決める</summary>
 	void HandleGameOutcome();
 
+	/// <summary>ゲーム結果を決める</summary>
+	void HandleRoundResult(bool isRoundTransition, int playerHP, int enemyHP, int currentSeconds);
+
 	/// <summary>Playerが勝ったときの処理</summary>
-	void HandlePlayerWin(const int playerWinCount, bool isTimeOver);
+	void HandlePlayerWin(bool isTimeOver);
 
 	/// <summary>Enemyが勝ったときの処理</summary>
-	void HandleEnemyWin(const int enemyWinCount, bool isTimeOver);
+	void HandleEnemyWin(bool isTimeOver);
 
 	/// <summary>Drowだったときの処理</summary>
-	void HandleDrow(const int playerWinCountconst, int enemyWinCount, bool isTimeOver);
+	void HandleDrow(bool isTimeOver);
 
 	/// <summary>ラウンド間でのトランジション</summary>
 	void RoundTransition(int round);
