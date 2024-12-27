@@ -645,22 +645,13 @@ float GamePlayScene::Random(float min_value, float max_value)
 //TODO:長いので簡潔にする(冬休み)
 void GamePlayScene::HandleGameOutcome()
 {
-	// ラウンドごとの勝敗処理
+	//ラウンドごとの勝敗処理
 	if (!isRoundTransition_)
 	{
 		HandleRoundResult(isRoundTransition_, player_->GetHP(), enemy_->GetHP(), currentSeconds_);
 	}
 
-	// PlayerもしくはEnemyが2本先に取ったとき
-	if (playerWinCount_ == kPlayerSecondWinCount_ || enemyWinCount_ == kEnemySecondWinCount_)
-	{
-		if (!isTransitionStart_ && isTransitionEnd_)
-		{
-			isTransitionStart_ = true;
-		}
-	}
-
-	// トランジションの進行
+	//トランジション
 	const float deltaTime = 1.0f / kTransitionTime;
 	if (!isTransitionEnd_)
 	{
@@ -681,7 +672,7 @@ void GamePlayScene::HandleGameOutcome()
 		transitionColor_.w = Lerp(transitionColor_.w, kTransitionStartAlpha_, transitionTimer_);
 		transitionSprite_->SetColor(transitionColor_);
 
-		// Playerが勝利したとき
+		//Playerが勝利したとき
 		if (playerWinCount_ == kPlayerSecondWinCount_)
 		{
 			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
@@ -690,7 +681,7 @@ void GamePlayScene::HandleGameOutcome()
 			return;
 		}
 
-		// Enemyが勝利したとき
+		//Enemyが勝利したとき
 		if (enemyWinCount_ == kEnemySecondWinCount_)
 		{
 			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
@@ -700,10 +691,11 @@ void GamePlayScene::HandleGameOutcome()
 		}
 	}
 
-	// ラウンド遷移の処理
+	//ラウンド遷移の処理
 	if (isRoundTransition_)
 	{
 		int nextRound = round_;
+
 		if (isDrow_)
 		{
 			nextRound = kRoundThree_;
@@ -724,37 +716,40 @@ void GamePlayScene::HandleGameOutcome()
 
 void GamePlayScene::HandleRoundResult(bool isRoundTransition, int playerHP, int enemyHP, int currentSeconds)
 {
-	// 時間切れの場合
+	//時間切れ
 	if (currentSeconds <= 0)
 	{
 		if (abs(enemyHP) < abs(playerHP))
 		{
-			HandlePlayerWin(true); // 時間切れでPlayerの勝利
+			//Playerの勝利
+			HandlePlayerWin(true); 
 		}
 		else if (abs(enemyHP) > abs(playerHP))
 		{
-			HandleEnemyWin(true); // 時間切れでEnemyの勝利
+			//Enemyの勝利
+			HandleEnemyWin(true); 
 		}
 		else
 		{
-			HandleDrow(true); // 時間切れで引き分け
+			//引き分け
+			HandleDrow(true); 
 		}
-		return; // 時間切れで処理が終了したらここで抜ける
+		return; 
 	}
 
-	// Playerの勝敗判定
+	//Playerの勝敗判定
 	if (enemyHP <= 0 && playerHP > 0 && !isRoundTransition)
 	{
 		HandlePlayerWin(false);
 	}
 
-	// Enemyの勝敗判定
+	//Enemyの勝敗判定
 	if (playerHP > 0 && enemyHP <= 0 && !isRoundTransition)
 	{
 		HandleEnemyWin(false);
 	}
 
-	// 引き分けの場合
+	//引き分け
 	if (playerHP <= 0 && enemyHP <= 0 && !isRoundTransition)
 	{
 		HandleDrow(false);
@@ -763,117 +758,92 @@ void GamePlayScene::HandleRoundResult(bool isRoundTransition, int playerHP, int 
 
 void GamePlayScene::HandlePlayerWin(bool isTimeOver)
 {
-	// Playerが勝ったとき
+	sMigrationTimer--;
+	isPlayerWin_ = true;
+
+	//Playerが勝ったとき
 	if (!isTimeOver)
 	{
+		//倒した
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-		sMigrationTimer--;
-		isPlayerWin_ = true;
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
 		{
 			playerWinCount_++;
-
-			if (playerWinCount_ != kPlayerSecondWinCount_)
-			{
-				isRoundTransition_ = true;
-			}
+			isRoundTransition_ = true;
 		}
 	}
 	else
 	{
-		// 時間切れの場合の処理
-		sMigrationTimer--;
-		isPlayerWin_ = true;
+		//時間切れ
 		isTimeOver_ = true;
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
 			playerWinCount_++;
-
-			if (playerWinCount_ != kPlayerSecondWinCount_)
-			{
-				isRoundTransition_ = true;
-			}
+			isRoundTransition_ = true;
 		}
 	}
 }
 
 void GamePlayScene::HandleEnemyWin(bool isTimeOver)
 {
-	// Enemyが勝ったとき
+	sMigrationTimer--;
+	isPlayerWin_ = false;
+
+	//Enemyが勝ったとき
 	if (!isTimeOver)
 	{
+		//倒した
 		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-		sMigrationTimer--;
-		isPlayerWin_ = false;
 
 		if (sMigrationTimer < kKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
 		{
 			enemyWinCount_++;
-
-			if (enemyWinCount_ != kEnemySecondWinCount_)
-			{
-				isRoundTransition_ = true;
-			}
+			isRoundTransition_ = true;
 		}
 	}
 	else
 	{
-		// 時間切れの場合の処理
-		sMigrationTimer--;
-		isPlayerWin_ = false;
+		//時間切れ
 		isTimeOver_ = true;
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
 			enemyWinCount_++;
-
-			if (enemyWinCount_ != kEnemySecondWinCount_)
-			{
-				isRoundTransition_ = true;
-			}
+			isRoundTransition_ = true;
 		}
 	}
 }
 
 void GamePlayScene::HandleDrow(bool isTimeOver)
 {
-	// 引き分けの場合
+	sMigrationTimer--;
+	isDrow_ = true;
+
+	//引き分けのとき
 	if (!isTimeOver)
 	{
-		sMigrationTimer--;
-		isDrow_ = true;
+		//相打ち
 		isPlayerWin_ = true;
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
 			playerWinCount_++;
-
 			enemyWinCount_++;
-
-			if (playerWinCount_ != kPlayerSecondWinCount_ || enemyWinCount_ != kEnemySecondWinCount_)
-			{
-				isRoundTransition_ = true;
-			}
+			isRoundTransition_ = true;
 		}
 	}
 	else
 	{
-		sMigrationTimer--;
-		isDrow_ = true;
+		//時間切れ
 		isTimeOver_ = true;
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
 			playerWinCount_++;
-
 			enemyWinCount_++;
-
-			if (playerWinCount_ != kPlayerSecondWinCount_ || enemyWinCount_ != kEnemySecondWinCount_)
-			{
-				isRoundTransition_ = true;
-			}
+			isRoundTransition_ = true;
 		}
 	}
 }
@@ -882,6 +852,15 @@ void GamePlayScene::RoundTransition(int round)
 {
 	if (isRoundTransition_)
 	{
+		////PlayerもしくはEnemyが2本先に取ったとき
+		//if (playerWinCount_ == kPlayerSecondWinCount_ || enemyWinCount_ == kEnemySecondWinCount_)
+		//{
+		//	if (!isTransitionStart_ && isTransitionEnd_)
+		//	{
+		//		isTransitionStart_ = true;
+		//	}
+		//}
+
 		//トランジションタイマーの処理
 		roundTransitionTimer_--;
 
@@ -895,8 +874,15 @@ void GamePlayScene::RoundTransition(int round)
 		}
 		else if (roundTransitionTimer_ <= kHalfkRoundTransitionTime_ - kTransitionOffset && roundTransitionTimer_ > 0)
 		{
-			transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, kLerpSpeed);
-			transitionSprite_->SetColor(transitionColor_);
+			if (playerWinCount_ == kPlayerSecondWinCount_ || enemyWinCount_ == kEnemySecondWinCount_)
+			{
+				isTransitionStart_ = true;
+			}
+			else
+			{
+				transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, kLerpSpeed);
+				transitionSprite_->SetColor(transitionColor_);
+			}
 		}
 		else if (roundTransitionTimer_ <= 0)
 		{
