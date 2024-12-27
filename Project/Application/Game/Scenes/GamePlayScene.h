@@ -69,8 +69,17 @@ public:
 	/// <summary>数字の更新</summary>
 	void UpdateNumberSprite();
 
-	/// <summary>勝敗を決める</summary>
+	/// <summary>ゲーム全体の勝敗を決める</summary>
 	void HandleGameOutcome();
+
+	/// <summary>Playerが勝ったときの処理</summary>
+	void HandlePlayerWin(const int playerWinCount, bool isTimeOver);
+
+	/// <summary>Enemyが勝ったときの処理</summary>
+	void HandleEnemyWin(const int enemyWinCount, bool isTimeOver);
+
+	/// <summary>Drowだったときの処理</summary>
+	void HandleDrow(const int playerWinCountconst, int enemyWinCount, bool isTimeOver);
 
 	/// <summary>ラウンド間でのトランジション</summary>
 	void RoundTransition(int round);
@@ -180,7 +189,7 @@ private:
 
 	//時間
 	//ラウンドの最大時間
-	const int kMaxRoundTime_ = 99;
+	const int kMaxRoundTime_ = 5;
 	
 	//現在の時間
 	int currentSeconds_ = 0;
@@ -239,9 +248,9 @@ private:
 	bool isBoneDraw_ = true;
 
 	//ラウンド
-	const int kRoundOne_ = 1;
-	const int kRoundTwo_ = 2;
-	const int kRoundThree_ = 3;
+	static const int kRoundOne_ = 1;
+	static const int kRoundTwo_ = 2;
+	static const int kRoundThree_ = 3;
 
 	int round_ = kRoundOne_;
 
@@ -251,8 +260,8 @@ private:
 	bool isDrow_ = false;
 
 	//キャラクターが勝っている回数
-	int PlayerWinCount_ = 0;
-	int EnemyWinCount_ = 0;
+	int playerWinCount_ = 0;
+	int enemyWinCount_ = 0;
 
 	//勝利カウント
 	//Player
