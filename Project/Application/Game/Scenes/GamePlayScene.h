@@ -193,7 +193,7 @@ private:
 
 	//時間
 	//ラウンドの最大時間
-	const int kMaxRoundTime_ = 5;
+	const int kMaxRoundTime_ = 99;
 	
 	//現在の時間
 	int currentSeconds_ = 0;
