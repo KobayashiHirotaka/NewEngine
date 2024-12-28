@@ -9,8 +9,11 @@
 
 void ParticleEffectPlayer::Initialize()
 {
-	//パーティクルの初期化
-	particleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle", "Particle.obj"));
+	//モデルの生成
+	baseParticleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle/BaseParticle", "baseParticle.obj"));
+	//shockWaveParticleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle/ShockWaveParticle", "shockWaveParticle.obj"));
+
+	//パーティクルシステムの初期化
 	particleSystem_ = std::make_unique<ParticleSystem>();
 	particleSystem_->Initialize();
 }
@@ -415,7 +418,6 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 	}
 	else if (std::string("Guard") == name)
 	{
-
 		//各パラメータの設定
 		const Vector3 scaleMin = { 0.1f,0.1f,0.1f };
 		const Vector3 scaleMax = { 0.2f,0.2f,0.2f };
@@ -455,10 +457,15 @@ void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
 			.Build();
 		particleSystem_->AddParticleEmitter(newParticleEmitter);
 	}
+	else if (std::string("ShockWave") == name)
+	{
+		
+	}
 }
 
 void ParticleEffectPlayer::Draw(const Camera& camera)
 {
 	//パーティクルの描画
-	particleModel_->Draw(particleSystem_.get(), camera);
+	baseParticleModel_->Draw(particleSystem_.get(), camera);
+	//shockWaveParticleModel_->Draw(particleSystem_.get(), camera);
 }

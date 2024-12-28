@@ -25,8 +25,11 @@ public:
 	void PlayParticle(const char* name, Vector3 position);
 
 private:
-	//モデル
-	std::unique_ptr<ParticleModel> particleModel_ = nullptr;
+	//基本のパーティクルモデル
+	std::unique_ptr<ParticleModel> baseParticleModel_ = nullptr;
+
+	//衝撃波のパーティクルモデル
+	std::unique_ptr<ParticleModel> shockWaveParticleModel_ = nullptr;
 
 	//パーティクルシステム
 	std::unique_ptr<ParticleSystem> particleSystem_ = nullptr;
