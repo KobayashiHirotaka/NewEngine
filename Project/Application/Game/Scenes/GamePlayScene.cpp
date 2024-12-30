@@ -182,61 +182,63 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
-	//操作説明を開いていない場合
-	if (!isOpen_)
+	//操作説明の開閉処理
+	UpdateCommandSprite();
+
+	//操作説明を開いている場合
+	if (isOpen_)return;
+
+	//ラウンド間の時間の処理
+	sRoundStartTimer_--;
+
+	if (sRoundStartTimer_ <= 0)
 	{
-		//ラウンド間の時間の処理
-		sRoundStartTimer_--;
+		//時間経過を加算
+		elapsedTime_ += GameTimer::GetDeltaTime();
 
-		if (sRoundStartTimer_ <= 0)
+		//タイムカウントを更新
+		const float kTimeStep = 1.0f;
+		if (currentSeconds_ > 0 && elapsedTime_ >= kTimeStep && sMigrationTimer == kMaxMigrationTime_)
 		{
-			//時間経過を加算
-			elapsedTime_ += GameTimer::GetDeltaTime();
-
-			//タイムカウントを更新
-			const float kTimeStep = 1.0f;
-			if (currentSeconds_ > 0 && elapsedTime_ >= kTimeStep && sMigrationTimer == kMaxMigrationTime_)
+			if (player_->GetFinisherTimer() == kFinisherTime_)
 			{
-				if (player_->GetFinisherTimer() == kFinisherTime_)
-				{
-					currentSeconds_--;
-					UpdateNumberSprite();
+				currentSeconds_--;
+				UpdateNumberSprite();
 
-					//elapsedTimeをリセット
-					elapsedTime_ = 0.0f;
-				}
+				//elapsedTimeをリセット
+				elapsedTime_ = 0.0f;
 			}
 		}
-
-		//KOの処理
-		if (player_->GetIsKO() && sMigrationTimer > kKOConditionTime)
-		{
-			isKO_ = true;
-		}
-		else if (enemy_->GetIsKO() && sMigrationTimer > kKOConditionTime)
-		{
-			isKO_ = true;
-		}
-		else
-		{
-			isKO_ = false;
-
-			enemy_->SetIsKO(false);
-		}
-
-		//KOではない場合
-		if (!isKO_)
-		{
-			//Game3dObjectManagerの更新
-			game3dObjectManager_->Update();
-		}
-
-		//Skydomeの更新
-		skydome_->Update();
-
-		//BackGroundの更新
-		backGround_->Update();
 	}
+
+	//KOの処理
+	if (player_->GetIsKO() && sMigrationTimer > kKOConditionTime)
+	{
+		isKO_ = true;
+	}
+	else if (enemy_->GetIsKO() && sMigrationTimer > kKOConditionTime)
+	{
+		isKO_ = true;
+	}
+	else
+	{
+		isKO_ = false;
+
+		enemy_->SetIsKO(false);
+	}
+
+	//KOではない場合
+	if (!isKO_)
+	{
+		//Game3dObjectManagerの更新
+		game3dObjectManager_->Update();
+	}
+
+	//Skydomeの更新
+	skydome_->Update();
+
+	//BackGroundの更新
+	backGround_->Update();
 
 	//必殺技発動時のカメラ移動処理
 	if (player_->GetIsFinisher() && player_->GetFinisherTimer() != kFinisherTime_)
@@ -306,41 +308,6 @@ void GamePlayScene::Update()
 
 	//勝ち負けの処理
 	HandleGameOutcome();
-
-	//操作説明の開閉
-	if (input_->GetJoystickState())
-	{
-		//オプションボタンを押して操作説明を開く
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_START) && !isOpen_)
-		{
-			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-			isOpen_ = true;
-			spriteCount_ = CommandSpriteType::GeneralCommandSprite;
-		}
-		//Bボタンを押して操作説明を閉じる
-		else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && isOpen_)
-		{
-			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-			isOpen_ = false;
-			spriteCount_ = CommandSpriteType::GeneralCommandSprite;
-		}
-
-		//操作説明が開いている場合
-		if (isOpen_)
-		{
-			// スティック入力のクールダウンが終わっている場合のみ移動
-			if (stickInputCooldown_ <= 0)
-			{
-				ChangeCommandSprite();
-			}
-
-			// クールダウンを減らす
-			if (stickInputCooldown_ > 0)
-			{
-				stickInputCooldown_--;
-			}
-		}
-	}
 
 	//当たり判定
 	collisionManager_->ClearColliders();
@@ -582,6 +549,44 @@ void GamePlayScene::Finalize()
 void GamePlayScene::ImGui()
 {
 	
+}
+
+void GamePlayScene::UpdateCommandSprite()
+{
+	//操作説明の開閉
+	if (input_->GetJoystickState() && sRoundStartTimer_ <= 0)
+	{
+		//オプションボタンを押して操作説明を開く
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_START) && !isOpen_)
+		{
+			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
+			isOpen_ = true;
+			spriteCount_ = CommandSpriteType::GeneralCommandSprite;
+		}
+		//Bボタンを押して操作説明を閉じる
+		else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_START) && isOpen_)
+		{
+			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
+			isOpen_ = false;
+			spriteCount_ = CommandSpriteType::GeneralCommandSprite;
+		}
+
+		//操作説明が開いている場合
+		if (isOpen_)
+		{
+			// スティック入力のクールダウンが終わっている場合のみ移動
+			if (stickInputCooldown_ <= 0)
+			{
+				ChangeCommandSprite();
+			}
+
+			// クールダウンを減らす
+			if (stickInputCooldown_ > 0)
+			{
+				stickInputCooldown_--;
+			}
+		}
+	}
 }
 
 void GamePlayScene::ChangeCommandSprite()

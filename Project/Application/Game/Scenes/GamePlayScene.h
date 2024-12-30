@@ -88,6 +88,9 @@ private:
 	/// <summary>ラウンド間でのトランジション</summary>
 	void RoundTransition(int round);
 
+	/// <summary>操作説明の更新</summary>
+	void UpdateCommandSprite();
+
 	/// <summary>操作説明の変更</summary>
 	void ChangeCommandSprite();
 
