@@ -307,9 +307,6 @@ void GamePlayScene::Update()
 	//勝ち負けの処理
 	HandleGameOutcome();
 
-	//クールダウンタイム
-	const int kStickInputCooldownTime = 10;
-
 	//操作説明の開閉
 	if (input_->GetJoystickState())
 	{
@@ -318,54 +315,23 @@ void GamePlayScene::Update()
 		{
 			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
 			isOpen_ = true;
-			spriteCount_ = static_cast<int>(CommandSpriteType::GeneralCommandSprite);
+			spriteCount_ = CommandSpriteType::GeneralCommandSprite;
 		}
 		//Bボタンを押して操作説明を閉じる
 		else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && isOpen_)
 		{
 			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
 			isOpen_ = false;
-			spriteCount_ = static_cast<int>(CommandSpriteType::GeneralCommandSprite);
+			spriteCount_ = CommandSpriteType::GeneralCommandSprite;
 		}
 
 		//操作説明が開いている場合
 		if (isOpen_)
 		{
-			//右の方向キーかスティック右入力で次の説明へ
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) || (input_->GetLeftStickX() > kValue_ && stickInputCooldown_ <= 0))
+			// スティック入力のクールダウンが終わっている場合のみ移動
+			if (stickInputCooldown_ <= 0)
 			{
-				if (spriteCount_ != static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite))
-				{
-					if (spriteCount_ == static_cast<int>(CommandSpriteType::GeneralCommandSprite))
-					{
-						spriteCount_ = static_cast<int>(CommandSpriteType::ComboAttackCommandSprite);
-					}
-					else if (spriteCount_ == static_cast<int>(CommandSpriteType::ComboAttackCommandSprite))
-					{
-						spriteCount_ = static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite);
-					}
-
-					audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-					stickInputCooldown_ = kStickInputCooldownTime;
-				}
-			}
-			//左の方向キーかスティック左入力で前の説明に戻る
-			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) || (input_->GetLeftStickX() < -kValue_ && stickInputCooldown_ <= 0))
-			{
-				if (spriteCount_ != static_cast<int>(CommandSpriteType::GeneralCommandSprite))
-				{
-					if (spriteCount_ == static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite))
-					{
-						spriteCount_ = static_cast<int>(CommandSpriteType::ComboAttackCommandSprite);
-					}
-					else if (spriteCount_ == static_cast<int>(CommandSpriteType::ComboAttackCommandSprite))
-					{
-						spriteCount_ = static_cast<int>(CommandSpriteType::GeneralCommandSprite);
-					}
-
-					audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-					stickInputCooldown_ = kStickInputCooldownTime;
-				}
+				ChangeCommandSprite();
 			}
 
 			// クールダウンを減らす
@@ -573,19 +539,19 @@ void GamePlayScene::Draw()
 	}
 
 	//操作説明の描画
-	if (isOpen_ && spriteCount_ == static_cast<int>(CommandSpriteType::GeneralCommandSprite))
+	if (isOpen_ && spriteCount_ == CommandSpriteType::GeneralCommandSprite)
 	{
 		//基本操作
 		generalCommandListSprite_->Draw();
 	}
 
-	if (isOpen_ && spriteCount_ == static_cast<int>(CommandSpriteType::ComboAttackCommandSprite))
+	if (isOpen_ && spriteCount_ == CommandSpriteType::ComboAttackCommandSprite)
 	{
 		//コンボ攻撃
 		attackCommandListSprite_[0]->Draw();
 	}
 
-	if (isOpen_ && spriteCount_ == static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite))
+	if (isOpen_ && spriteCount_ == CommandSpriteType::FinisherAttackCommandSprite)
 	{
 		//必殺技攻撃
 		attackCommandListSprite_[1]->Draw();
@@ -616,6 +582,53 @@ void GamePlayScene::Finalize()
 void GamePlayScene::ImGui()
 {
 	
+}
+
+void GamePlayScene::ChangeCommandSprite()
+{
+	//スプライトの移動に必用な定数
+	const int kNextSprite = 1;
+	const int kPreviousSprite = -1;
+
+	//操作説明の移動処理
+	if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kValue_) &&
+		spriteCount_ != CommandSpriteType::FinisherAttackCommandSprite)
+	{
+		//次の説明に進む
+		ApplyCommandSprite(kNextSprite);
+	}
+	else if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -kValue_) &&
+		spriteCount_ != CommandSpriteType::GeneralCommandSprite)
+	{
+		//前の説明に戻る
+		ApplyCommandSprite(kPreviousSprite);
+	}
+}
+
+void GamePlayScene::ApplyCommandSprite(int changeAmount)
+{
+	//スプライトの遷移用のベクター
+	static const std::vector<CommandSpriteType> spriteOrder = {
+		CommandSpriteType::GeneralCommandSprite,
+		CommandSpriteType::ComboAttackCommandSprite,
+		CommandSpriteType::FinisherAttackCommandSprite
+	};
+
+	//現在のスプライトインデックスを取得
+	auto it = std::find(spriteOrder.begin(), spriteOrder.end(), static_cast<CommandSpriteType>(spriteCount_));
+	if (it == spriteOrder.end()) return;
+
+	size_t currentIndex = std::distance(spriteOrder.begin(), it);
+
+	//次のスプライトインデックスを計算
+	size_t nextIndex = (currentIndex + changeAmount + spriteOrder.size()) % spriteOrder.size();
+
+	//スプライトを変更
+	spriteCount_ = spriteOrder[nextIndex];
+
+	//サウンド再生とスティックのクールダウンを設定
+	audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
+	stickInputCooldown_ = kStickInputCooldownTime_;
 }
 
 void GamePlayScene::UpdateNumberSprite()

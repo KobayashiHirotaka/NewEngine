@@ -88,6 +88,12 @@ private:
 	/// <summary>ラウンド間でのトランジション</summary>
 	void RoundTransition(int round);
 
+	/// <summary>操作説明の変更</summary>
+	void ChangeCommandSprite();
+
+	/// <summary>操作説明の適用</summary>
+	void ApplyCommandSprite(int changeAmount);
+
 	//void HandleTransition();
 
 private:
@@ -186,7 +192,7 @@ private:
 	uint32_t frameUITextureHandle_ = 0;
 
 	//何枚目のSpriteが表示されているか
-	int spriteCount_ = 0;
+	CommandSpriteType spriteCount_ = CommandSpriteType::GeneralCommandSprite;
 
 	//操作説明が開かれているか
 	bool isOpen_ = false;
@@ -287,7 +293,8 @@ private:
 
 	//スティック操作対応
 	const float kValue_ = 0.7f;
-	int stickInputCooldown_ = 10;
+	const int kStickInputCooldownTime_ = 10;
+	int stickInputCooldown_ = kStickInputCooldownTime_;
 
 	//必殺技の開始・終了
 	bool isFinisherStart_ = false;
