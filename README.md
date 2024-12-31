@@ -8,8 +8,8 @@
 - 制作人数：1人
 - 開発環境：DirectX12、Windows SDK(10.0.22621.3233)
 - 外部ライブラリ：assimp、DirectXTex、imgui、nlohmann/json
-  
-![スクリーンショット 2024-10-30 030752](https://github.com/user-attachments/assets/6834cdb5-de2f-4e68-ba17-78f5120e59b8)
+
+![モノクロファイター](https://github.com/user-attachments/assets/bc0bb249-77c6-4b04-b3c0-14a262a67c2d)
 
 ## 特にこだわっているところ
 ### 気持ちのいいコンボ
