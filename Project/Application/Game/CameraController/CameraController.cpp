@@ -38,10 +38,12 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 	{
 		if (distance_ > previousDistance_)
 		{
+			//最大値に固定
 			if (position_.z <= kMax_)
 			{
 				position_.z = kMax_;
 			}
+			//カメラを引く
 			else
 			{
 				position_.z -= cameraSpeed_.z;
@@ -51,10 +53,12 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 
 	if (previousDistance_ > distance_)
 	{
+		//最小値に固定
 		if (position_.z >= kMin_)
 		{
 			position_.z = kMin_;
 		}
+		//カメラを近づける
 		else
 		{
 			position_.z += cameraSpeed_.z;
@@ -78,6 +82,7 @@ void CameraController::ImGui()
 
 void CameraController::StartFinisherCamera(Direction direction, float positionX)
 {
+	//必殺技演出のカメラ処理(開始時)
 	if (direction == Direction::Right)
 	{
 		camera_.translation_.x = Lerp(camera_.translation_.x, positionX + kCameraFinisherOffsetY_, kCameraLerpSpeed_);
@@ -94,6 +99,7 @@ void CameraController::StartFinisherCamera(Direction direction, float positionX)
 
 void CameraController::EndFinisherCamera(Direction direction, bool& isFinisherEnd)
 {
+	//必殺技演出のカメラ処理(終了時)
 	if (direction == Direction::Right)
 	{
 		camera_.translation_.x = Lerp(camera_.translation_.x, center_.x - kCameraEndCorrectionY_, kCameraLerpSpeed_);
