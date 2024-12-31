@@ -20,19 +20,6 @@
 class GamePlayScene : public IScene
 {
 public:
-	//操作説明の種類
-	enum class CommandSpriteType
-	{
-		//基本操作
-		GeneralCommandSprite,
-
-		//コンボ攻撃
-		ComboAttackCommandSprite,
-
-		//必殺技攻撃
-		FinisherAttackCommandSprite,
-	};
-
 	//トランジション用の時間
 	static const int kTransitionTime = 60;
 

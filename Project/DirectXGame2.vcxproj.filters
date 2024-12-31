@@ -480,6 +480,9 @@
     <ClCompile Include="Engine\Utility\Collision\Collider.cpp">
       <Filter>ソース ファイル\Engine\Utility\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GameSceneUI.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -736,6 +739,12 @@
     </ClInclude>
     <ClInclude Include="Application\GameObject\Character\BaseBullet.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GameSceneUI.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

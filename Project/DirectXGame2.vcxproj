@@ -30,6 +30,7 @@
     <ClCompile Include="Application\Game\InputLog\InputLog.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameLoseScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
+    <ClCompile Include="Application\Game\Scenes\GameSceneUI.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameTitleScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameWinScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\Manager\GameManager.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="Application\Game\InputLog\InputLog.h" />
     <ClInclude Include="Application\Game\Scenes\GameLoseScene.h" />
     <ClInclude Include="Application\Game\Scenes\GamePlayScene.h" />
+    <ClInclude Include="Application\Game\Scenes\GameSceneUI.h" />
     <ClInclude Include="Application\Game\Scenes\GameTitleScene.h" />
     <ClInclude Include="Application\Game\Scenes\GameWinScene.h" />
     <ClInclude Include="Application\Game\Scenes\IScene.h" />
@@ -228,6 +230,7 @@
     <ClInclude Include="Engine\Utility\LevelLoader\LevelLoader.h" />
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
     <ClInclude Include="Engine\Utility\Structs.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\BoneVisualization.PS.hlsl">

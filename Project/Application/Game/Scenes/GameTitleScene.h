@@ -50,8 +50,17 @@ public:
 	void ImGui()override;
 
 private:
-	//タイトルの文字を動かす
+	/// <summary>タイトルの文字を動かす</summary>
 	void AnimationTitle();
+
+	/// <summary>操作説明の更新</summary>
+	void UpdateCommandSprite();
+
+	/// <summary>操作説明の変更</summary>
+	void ChangeCommandSprite();
+
+	/// <summary>操作説明の適用</summary>
+	void ApplyCommandSprite(int changeAmount);
 
 private:
 	//TextureManager
@@ -103,7 +112,7 @@ private:
 	bool isPlayAudio_ = false;
 
 	//何枚目のSpriteが表示されているか
-	int spriteCount_ = 0;
+	CommandSpriteType spriteCount_ = CommandSpriteType::GeneralCommandSprite;
 
 	//操作説明が開かれているか
 	bool isOpen_ = false;
@@ -133,5 +142,6 @@ private:
 
 	//スティック操作対応
 	const float kValue_ = 0.7f;
-	int stickInputCooldown_ = 10;
+	const int kStickInputCooldownTime_ = 10;
+	int stickInputCooldown_ = kStickInputCooldownTime_;
 };

@@ -19,6 +19,7 @@
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Utility/Collision/CollisionManager.h"
 #include "Engine/Utility/LevelLoader/LevelLoader.h"
+#include "Application/Game/Scenes/GameSceneUI.h"
 #include <memory>
 
 class SceneManager;

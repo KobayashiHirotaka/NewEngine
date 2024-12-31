@@ -254,6 +254,7 @@ void LevelLoader::CreateObjectsFromLevelData(const LevelData* levelData)
 		//スケーリング
 		newObject->SetScale(objectData.scale);
 
+		//表示するか
 		newObject->SetIsVisible(objectData.isVisible);
 
 		//キャラクターごとのパラメータ

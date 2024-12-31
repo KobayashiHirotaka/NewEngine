@@ -158,6 +158,11 @@ void Player::Update()
 	
 #endif
 
+	if (input_->PressKey(DIK_RETURN))
+	{
+		finisherGauge_ -= 1.0f;
+	}
+
 	//更新
 	BaseCharacter::Update();
 
@@ -166,28 +171,28 @@ void Player::Update()
 		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop,
 		aabb_, true, characterState_.direction);
 
-	//デバッグ用の処理
-	if (isDebug_)
-	{
-		Vector4 kAttackColor = { 1.0f,0.0f,0.0f,1.0f };
-		Vector4 kRecoveryColor = { 0.0f,0.0f,1.0f,1.0f };
-		Vector4 kDefaultColor = { 1.0f,1.0f,1.0f,1.0f };
+	////デバッグ用の処理
+	//if (isDebug_)
+	//{
+	//	Vector4 kAttackColor = { 1.0f,0.0f,0.0f,1.0f };
+	//	Vector4 kRecoveryColor = { 0.0f,0.0f,1.0f,1.0f };
+	//	Vector4 kDefaultColor = { 1.0f,1.0f,1.0f,1.0f };
 
-		if (attackData_.isAttack)
-		{
-			//攻撃中(攻撃判定あり)にモデルの色を変える
-			model_->GetMaterial()->SetColor(kAttackColor);
-		}
-	    else if (attackData_.isRecovery)
-	    {
-		    //硬直中にモデルの色を変える
-		    model_->GetMaterial()->SetColor(kRecoveryColor);
-	    }
-		else
-		{
-			model_->GetMaterial()->SetColor(kDefaultColor);
-		}
-	}
+	//	if (attackData_.isAttack)
+	//	{
+	//		//攻撃中(攻撃判定あり)にモデルの色を変える
+	//		model_->GetMaterial()->SetColor(kAttackColor);
+	//	}
+	//    else if (attackData_.isRecovery)
+	//    {
+	//	    //硬直中にモデルの色を変える
+	//	    model_->GetMaterial()->SetColor(kRecoveryColor);
+	//    }
+	//	else
+	//	{
+	//		model_->GetMaterial()->SetColor(kDefaultColor);
+	//	}
+	//}
 
 	//振り向きの処理
 	Vector3 playerWorldPosition = worldTransform_.translation;

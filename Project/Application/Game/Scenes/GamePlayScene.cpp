@@ -88,11 +88,11 @@ void GamePlayScene::Initialize()
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
 	//攻撃操作説明(コンボ)
-	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("resource/images/NewPlayAttackCommandList.png");
+	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("resource/images/PlayDefaultAttackCommandList.png");
 	attackCommandListSprite_[0].reset(Sprite::Create(attackCommandListTextureHandle_[0], { 0.0f,0.0f }));
 
 	//攻撃操作説明(必殺技)
-	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("resource/images/NewPlayAttackCommandList2.png");
+	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("resource/images/PlayFinisherAttackCommandList.png");
 	attackCommandListSprite_[1].reset(Sprite::Create(attackCommandListTextureHandle_[1], { 0.0f,0.0f }));
 
 	//ラウンド表示
