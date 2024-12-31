@@ -22,6 +22,12 @@ public:
 	/// <summary>ImGui</summary>
 	void ImGui();
 
+	/// <summary>必殺技のカメラ演出の開始処理</summary>
+	void StartFinisherCamera(Direction direction, float positionX);
+
+	/// <summary>必殺技のカメラ演出の終了処理</summary>
+	void EndFinisherCamera(Direction direction, bool& isFinisherEnd);
+
 	//カメラのGetter
 	Camera& GetCamera() { return camera_; };
 
@@ -58,4 +64,23 @@ private:
 
 	//前フレームの距離
 	float previousDistance_ = 0.0f;
+
+	//必殺技時のカメラ演出用のパラメータ
+    //プレイヤーの位置からのカメラのオフセット
+	const float kCameraFinisherOffsetY_ = 4.0f;
+
+	//カメラ移動と回転の補間速度
+	const float kCameraLerpSpeed_ = 0.2f;
+
+	//必殺技発動時のカメラ回転角
+	const float kCameraFinisherRotationY_ = 0.7f;
+
+	//必殺技終了時のカメラ微調整オフセット
+	const float kCameraEndCorrectionY_ = 0.1f;
+
+	//微調整用補間速度
+	const float kCameraSmallLerpSpeed_ = 0.1f;
+
+	//微小な回転補正角度
+	const float kCameraSmallRotationCorrection_ = 0.1f;
 };

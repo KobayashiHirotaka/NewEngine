@@ -302,23 +302,4 @@ private:
 	//必殺技の開始・終了
 	bool isFinisherStart_ = false;
 	bool isFinisherEnd_ = false;
-
-	//必殺技時のカメラ演出用のパラメータ
-	//プレイヤーの位置からのカメラのオフセット
-	const float kCameraFinisherOffsetY_ = 4.0f;
-
-	//カメラ移動と回転の補間速度
-	const float kCameraLerpSpeed_ = 0.2f;
-
-	//必殺技発動時のカメラ回転角
-	const float kCameraFinisherRotationY_ = 0.7f;
-
-	//必殺技終了時のカメラ微調整オフセット
-	const float kCameraEndCorrectionY_ = 0.1f;
-
-	//微調整用補間速度
-	const float kCameraSmallLerpSpeed_ = 0.1f;
-
-	//微小な回転補正角度
-	const float kCameraSmallRotationCorrection_ = 0.1f;
 };

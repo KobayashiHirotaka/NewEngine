@@ -75,3 +75,49 @@ void CameraController::ImGui()
 {
 
 }
+
+void CameraController::StartFinisherCamera(Direction direction, float positionX)
+{
+	if (direction == Direction::Right)
+	{
+		camera_.translation_.x = Lerp(camera_.translation_.x, positionX + kCameraFinisherOffsetY_, kCameraLerpSpeed_);
+		camera_.rotation_.y = Lerp(camera_.rotation_.y, -kCameraFinisherRotationY_, kCameraLerpSpeed_);
+	}
+	else
+	{
+		camera_.translation_.x = Lerp(camera_.translation_.x, positionX - kCameraFinisherOffsetY_, kCameraLerpSpeed_);
+		camera_.rotation_.y = Lerp(camera_.rotation_.y, kCameraFinisherRotationY_, kCameraLerpSpeed_);
+	}
+
+	camera_.UpdateMatrix();
+}
+
+void CameraController::EndFinisherCamera(Direction direction, bool& isFinisherEnd)
+{
+	if (direction == Direction::Right)
+	{
+		camera_.translation_.x = Lerp(camera_.translation_.x, center_.x - kCameraEndCorrectionY_, kCameraLerpSpeed_);
+		camera_.rotation_.y = Lerp(camera_.rotation_.y, kCameraEndCorrectionY_, kCameraSmallLerpSpeed_);
+
+		if (camera_.translation_.x <= center_.x && camera_.rotation_.y >= 0.0f)
+		{
+			camera_.translation_.x = center_.x;
+			camera_.rotation_.y = 0.0f;
+			isFinisherEnd = false;
+		}
+	}
+	else
+	{
+		camera_.translation_.x = Lerp(camera_.translation_.x, center_.x + kCameraEndCorrectionY_, kCameraLerpSpeed_);
+		camera_.rotation_.y = Lerp(camera_.rotation_.y, -kCameraEndCorrectionY_, kCameraSmallLerpSpeed_);
+
+		if (camera_.translation_.x >= center_.x && camera_.rotation_.y <= 0.0f)
+		{
+			camera_.translation_.x = center_.x;
+			camera_.rotation_.y = 0.0f;
+			isFinisherEnd = false;
+		}
+	}
+
+	camera_.UpdateMatrix();
+}

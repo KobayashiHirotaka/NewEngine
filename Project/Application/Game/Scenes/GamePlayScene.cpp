@@ -248,18 +248,7 @@ void GamePlayScene::Update()
 
 	if (isFinisherStart_)
 	{
-		if (player_->GetIsDirectionRight())
-		{
-			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, player_->GetWorldPosition().x + kCameraFinisherOffsetY_, kCameraLerpSpeed_);
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -kCameraFinisherRotationY_, kCameraLerpSpeed_);
-			cameraController_->GetCamera().UpdateMatrix();
-		}
-		else
-		{
-			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, player_->GetWorldPosition().x - kCameraFinisherOffsetY_, kCameraLerpSpeed_);
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, kCameraFinisherRotationY_, kCameraLerpSpeed_);
-			cameraController_->GetCamera().UpdateMatrix();
-		}
+		cameraController_->StartFinisherCamera(player_->GetDirection(), player_->GetWorldPosition().x);
 
 		if (!player_->GetIsFinisherEffect())
 		{
@@ -271,32 +260,7 @@ void GamePlayScene::Update()
 	//必殺技終了時のカメラ移動処理
 	if (isFinisherEnd_)
 	{
-		if (player_->GetIsDirectionRight())
-		{
-			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, cameraController_->GetCenter().x - kCameraEndCorrectionY_, kCameraLerpSpeed_);
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, kCameraEndCorrectionY_, kCameraSmallLerpSpeed_);
-			cameraController_->GetCamera().UpdateMatrix();
-
-			if (cameraController_->GetCamera().translation_.x <= cameraController_->GetCenter().x && cameraController_->GetCamera().rotation_.y >= 0.0f)
-			{
-				cameraController_->GetCamera().translation_.x = cameraController_->GetCenter().x;
-				cameraController_->GetCamera().rotation_.y = 0.0f;
-				isFinisherEnd_ = false;
-			}
-		}
-		else
-		{
-			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, cameraController_->GetCenter().x + kCameraEndCorrectionY_, kCameraLerpSpeed_);
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -kCameraEndCorrectionY_, kCameraSmallLerpSpeed_);
-			cameraController_->GetCamera().UpdateMatrix();
-
-			if (cameraController_->GetCamera().translation_.x >= cameraController_->GetCenter().x && cameraController_->GetCamera().rotation_.y <= 0.0f)
-			{
-				cameraController_->GetCamera().translation_.x = cameraController_->GetCenter().x;
-				cameraController_->GetCamera().rotation_.y = 0.0f;
-				isFinisherEnd_ = false;
-			}
-		}
+		cameraController_->EndFinisherCamera(player_->GetDirection(), isFinisherEnd_);
 	}
 
 	//必殺技演出時ではない場合
