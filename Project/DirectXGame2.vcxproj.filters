@@ -277,6 +277,12 @@
     <Filter Include="ヘッダー ファイル\Project\Game\HitStop">
       <UniqueIdentifier>{54cdd9d4-4079-44e1-b856-87c1e621cdd7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\Character\CharacterDataLoader">
+      <UniqueIdentifier>{2a185d6e-6c46-467e-b1b3-3b7db5a683fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\Character\CharacterDataLoader">
+      <UniqueIdentifier>{4f35978d-108b-4f39-bdfa-6aa5816370df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -482,6 +488,9 @@
     </ClCompile>
     <ClCompile Include="Application\Game\Scenes\GameSceneUI.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\CharacterDataLoader\CharacterDataLoader.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\CharacterDataLoader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -745,6 +754,9 @@
     </ClInclude>
     <ClInclude Include="Application\Game\Scenes\GameSceneUI.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\CharacterDataLoader\CharacterDataLoader.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\CharacterDataLoader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
