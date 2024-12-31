@@ -48,6 +48,39 @@ public:
 	virtual void Reset()override;
 
 
+	/// <summary>WorldPositionの取得</summary>
+	Vector3 GetWorldPosition();
+
+	/// <summary>右手のJoint座標の取得</summary>
+	Vector3 GetRightHandJointWorldPosition();
+
+	//Getter
+	//AnimationIndex
+	uint32_t GetAnimationIndex() { return animationIndex_; };
+
+	//WorldTransform
+	WorldTransform& GetWorldTransform() { return worldTransform_; }
+
+	//Collider
+	Collider* GetCollider() { return collider_.get(); }
+
+	//IsDirectionRight
+	bool GetIsDirectionRight() { return isDirectionRight_; };
+
+	//IsFinisherEffect
+	bool GetIsFinisherEffect() { return isFinisherEffect_; };
+
+	//Bullets
+	const std::vector<PlayerBullet*>& GetBullets() const { return bullets_; };
+
+	//AABB
+	AABB GetAABB() { return aabb_; };
+
+	//Setter
+	//Enemy
+	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
+
+private:
 	//キャラクターの状態
 	/// <summary>移動状態の初期化</summary>
 	virtual void InitializeBehaviorRoot()override;
@@ -133,39 +166,6 @@ public:
 	virtual void UpdateComboNumberSprite()override;
 
 
-	/// <summary>WorldPositionの取得</summary>
-	Vector3 GetWorldPosition();
-
-	/// <summary>右手のJoint座標の取得</summary>
-	Vector3 GetRightHandJointWorldPosition();
-
-	//Getter
-	//AnimationIndex
-	uint32_t GetAnimationIndex() { return animationIndex_; };
-
-	//WorldTransform
-	WorldTransform& GetWorldTransform() { return worldTransform_; }
-
-	//Collider
-	Collider* GetCollider() { return collider_.get(); }
-
-	//IsDirectionRight
-	bool GetIsDirectionRight() { return isDirectionRight_; };
-
-	//IsFinisherEffect
-	bool GetIsFinisherEffect() { return isFinisherEffect_; };
-
-	//Bullets
-	const std::vector<PlayerBullet*>& GetBullets() const { return bullets_; };
-
-	//AABB
-	AABB GetAABB() { return aabb_; };
-
-	//Setter
-	//Enemy
-	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
-
-private:
 	/// <summary>敵を押す</summary>
 	void PushEnemy(Vector3& enemyPosition, float pushSpeed);
 

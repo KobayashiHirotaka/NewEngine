@@ -47,8 +47,36 @@ public:
 	virtual void Reset()override;
 
 
+	/// <summary>WorldPositionの取得</summary>
+	Vector3 GetWorldPosition();
+
+
+	//Getter
+	//AnimationIndex
+	uint32_t GetAnimationIndex() { return animationIndex_; };
+
+	//WorldTransform
+	WorldTransform& GetWorldTransform() { return worldTransform_; }
+
+	//Collider
+	Collider* GetCollider() { return collider_.get(); }
+
+	//AABB
+	AABB GetAABB() { return aabb_; };
+
+	//Bullets
+	const std::vector<EnemyBullet*>& GetBullets() const{ return bullets_; };
+
+	//Setter
+	//Player
+	void SetPlayer(Player* player) { player_ = player; };
+
+	//IsKO
+	void SetIsKO(bool isKO) { isKO_ = isKO; };
+
+private:
 	//キャラクターの状態
-	/// <summary>移動状態の初期化</summary>
+/// <summary>移動状態の初期化</summary>
 	virtual void InitializeBehaviorRoot()override;
 
 	/// <summary>移動状態の更新</summary>
@@ -113,7 +141,7 @@ public:
 
 
 	//UIの更新
-    /// <summary>HPのUIの更新</summary>
+	/// <summary>HPのUIの更新</summary>
 	virtual void UpdateHPBar()override;
 
 	/// <summary>ガードゲージのUIの更新</summary>
@@ -132,34 +160,6 @@ public:
 	virtual void UpdateComboNumberSprite()override;
 
 
-	/// <summary>WorldPositionの取得</summary>
-	Vector3 GetWorldPosition();
-
-
-	//Getter
-	//AnimationIndex
-	uint32_t GetAnimationIndex() { return animationIndex_; };
-
-	//WorldTransform
-	WorldTransform& GetWorldTransform() { return worldTransform_; }
-
-	//Collider
-	Collider* GetCollider() { return collider_.get(); }
-
-	//AABB
-	AABB GetAABB() { return aabb_; };
-
-	//Bullets
-	const std::vector<EnemyBullet*>& GetBullets() const{ return bullets_; };
-
-	//Setter
-	//Player
-	void SetPlayer(Player* player) { player_ = player; };
-
-	//IsKO
-	void SetIsKO(bool isKO) { isKO_ = isKO; };
-
-private:
 	//アニメーション
 	/// <summary>アニメーションの更新</summary>
 	virtual void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate,
@@ -170,6 +170,7 @@ private:
 
 	/// <summary>ダウンアニメーションの終了</summary>
 	virtual void EndDownAnimation(int animationIndex, bool& isHitAttackType)override;
+
 
 	/// <summary>指定した範囲内のランダムな整数を生成</summary>
 	int Random(int min_value, int max_value);

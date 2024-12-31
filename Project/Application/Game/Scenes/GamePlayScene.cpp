@@ -182,61 +182,63 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
-	//操作説明を開いていない場合
-	if (!isOpen_)
+	//操作説明の開閉処理
+	UpdateCommandSprite();
+
+	//操作説明を開いている場合
+	if (isOpen_)return;
+
+	//ラウンド間の時間の処理
+	sRoundStartTimer_--;
+
+	if (sRoundStartTimer_ <= 0)
 	{
-		//ラウンド間の時間の処理
-		sRoundStartTimer_--;
+		//時間経過を加算
+		elapsedTime_ += GameTimer::GetDeltaTime();
 
-		if (sRoundStartTimer_ <= 0)
+		//タイムカウントを更新
+		const float kTimeStep = 1.0f;
+		if (currentSeconds_ > 0 && elapsedTime_ >= kTimeStep && sMigrationTimer == kMaxMigrationTime_)
 		{
-			//時間経過を加算
-			elapsedTime_ += GameTimer::GetDeltaTime();
-
-			//タイムカウントを更新
-			const float kTimeStep = 1.0f;
-			if (currentSeconds_ > 0 && elapsedTime_ >= kTimeStep && sMigrationTimer == kMaxMigrationTime_)
+			if (player_->GetFinisherTimer() == kFinisherTime_)
 			{
-				if (player_->GetFinisherTimer() == kFinisherTime_)
-				{
-					currentSeconds_--;
-					UpdateNumberSprite();
+				currentSeconds_--;
+				UpdateNumberSprite();
 
-					//elapsedTimeをリセット
-					elapsedTime_ = 0.0f;
-				}
+				//elapsedTimeをリセット
+				elapsedTime_ = 0.0f;
 			}
 		}
-
-		//KOの処理
-		if (player_->GetIsKO() && sMigrationTimer > kKOConditionTime)
-		{
-			isKO_ = true;
-		}
-		else if (enemy_->GetIsKO() && sMigrationTimer > kKOConditionTime)
-		{
-			isKO_ = true;
-		}
-		else
-		{
-			isKO_ = false;
-
-			enemy_->SetIsKO(false);
-		}
-
-		//KOではない場合
-		if (!isKO_)
-		{
-			//Game3dObjectManagerの更新
-			game3dObjectManager_->Update();
-		}
-
-		//Skydomeの更新
-		skydome_->Update();
-
-		//BackGroundの更新
-		backGround_->Update();
 	}
+
+	//KOの処理
+	if (player_->GetIsKO() && sMigrationTimer > kKOConditionTime)
+	{
+		isKO_ = true;
+	}
+	else if (enemy_->GetIsKO() && sMigrationTimer > kKOConditionTime)
+	{
+		isKO_ = true;
+	}
+	else
+	{
+		isKO_ = false;
+
+		enemy_->SetIsKO(false);
+	}
+
+	//KOではない場合
+	if (!isKO_)
+	{
+		//Game3dObjectManagerの更新
+		game3dObjectManager_->Update();
+	}
+
+	//Skydomeの更新
+	skydome_->Update();
+
+	//BackGroundの更新
+	backGround_->Update();
 
 	//必殺技発動時のカメラ移動処理
 	if (player_->GetIsFinisher() && player_->GetFinisherTimer() != kFinisherTime_)
@@ -246,18 +248,7 @@ void GamePlayScene::Update()
 
 	if (isFinisherStart_)
 	{
-		if (player_->GetIsDirectionRight())
-		{
-			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, player_->GetWorldPosition().x + kCameraFinisherOffsetY_, kCameraLerpSpeed_);
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -kCameraFinisherRotationY_, kCameraLerpSpeed_);
-			cameraController_->GetCamera().UpdateMatrix();
-		}
-		else
-		{
-			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, player_->GetWorldPosition().x - kCameraFinisherOffsetY_, kCameraLerpSpeed_);
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, kCameraFinisherRotationY_, kCameraLerpSpeed_);
-			cameraController_->GetCamera().UpdateMatrix();
-		}
+		cameraController_->StartFinisherCamera(player_->GetDirection(), player_->GetWorldPosition().x);
 
 		if (!player_->GetIsFinisherEffect())
 		{
@@ -269,32 +260,7 @@ void GamePlayScene::Update()
 	//必殺技終了時のカメラ移動処理
 	if (isFinisherEnd_)
 	{
-		if (player_->GetIsDirectionRight())
-		{
-			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, cameraController_->GetCenter().x - kCameraEndCorrectionY_, kCameraLerpSpeed_);
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, kCameraEndCorrectionY_, kCameraSmallLerpSpeed_);
-			cameraController_->GetCamera().UpdateMatrix();
-
-			if (cameraController_->GetCamera().translation_.x <= cameraController_->GetCenter().x && cameraController_->GetCamera().rotation_.y >= 0.0f)
-			{
-				cameraController_->GetCamera().translation_.x = cameraController_->GetCenter().x;
-				cameraController_->GetCamera().rotation_.y = 0.0f;
-				isFinisherEnd_ = false;
-			}
-		}
-		else
-		{
-			cameraController_->GetCamera().translation_.x = Lerp(cameraController_->GetCamera().translation_.x, cameraController_->GetCenter().x + kCameraEndCorrectionY_, kCameraLerpSpeed_);
-			cameraController_->GetCamera().rotation_.y = Lerp(cameraController_->GetCamera().rotation_.y, -kCameraEndCorrectionY_, kCameraSmallLerpSpeed_);
-			cameraController_->GetCamera().UpdateMatrix();
-
-			if (cameraController_->GetCamera().translation_.x >= cameraController_->GetCenter().x && cameraController_->GetCamera().rotation_.y <= 0.0f)
-			{
-				cameraController_->GetCamera().translation_.x = cameraController_->GetCenter().x;
-				cameraController_->GetCamera().rotation_.y = 0.0f;
-				isFinisherEnd_ = false;
-			}
-		}
+		cameraController_->EndFinisherCamera(player_->GetDirection(), isFinisherEnd_);
 	}
 
 	//必殺技演出時ではない場合
@@ -306,75 +272,6 @@ void GamePlayScene::Update()
 
 	//勝ち負けの処理
 	HandleGameOutcome();
-
-	//クールダウンタイム
-	const int kStickInputCooldownTime = 10;
-
-	//操作説明の開閉
-	if (input_->GetJoystickState())
-	{
-		//オプションボタンを押して操作説明を開く
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_START) && !isOpen_)
-		{
-			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-			isOpen_ = true;
-			spriteCount_ = static_cast<int>(CommandSpriteType::GeneralCommandSprite);
-		}
-		//Bボタンを押して操作説明を閉じる
-		else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && isOpen_)
-		{
-			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-			isOpen_ = false;
-			spriteCount_ = static_cast<int>(CommandSpriteType::GeneralCommandSprite);
-		}
-
-		//操作説明が開いている場合
-		if (isOpen_)
-		{
-			//右の方向キーかスティック右入力で次の説明へ
-			if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) || (input_->GetLeftStickX() > kValue_ && stickInputCooldown_ <= 0))
-			{
-				if (spriteCount_ != static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite))
-				{
-					if (spriteCount_ == static_cast<int>(CommandSpriteType::GeneralCommandSprite))
-					{
-						spriteCount_ = static_cast<int>(CommandSpriteType::ComboAttackCommandSprite);
-					}
-					else if (spriteCount_ == static_cast<int>(CommandSpriteType::ComboAttackCommandSprite))
-					{
-						spriteCount_ = static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite);
-					}
-
-					audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-					stickInputCooldown_ = kStickInputCooldownTime;
-				}
-			}
-			//左の方向キーかスティック左入力で前の説明に戻る
-			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) || (input_->GetLeftStickX() < -kValue_ && stickInputCooldown_ <= 0))
-			{
-				if (spriteCount_ != static_cast<int>(CommandSpriteType::GeneralCommandSprite))
-				{
-					if (spriteCount_ == static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite))
-					{
-						spriteCount_ = static_cast<int>(CommandSpriteType::ComboAttackCommandSprite);
-					}
-					else if (spriteCount_ == static_cast<int>(CommandSpriteType::ComboAttackCommandSprite))
-					{
-						spriteCount_ = static_cast<int>(CommandSpriteType::GeneralCommandSprite);
-					}
-
-					audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-					stickInputCooldown_ = kStickInputCooldownTime;
-				}
-			}
-
-			// クールダウンを減らす
-			if (stickInputCooldown_ > 0)
-			{
-				stickInputCooldown_--;
-			}
-		}
-	}
 
 	//当たり判定
 	collisionManager_->ClearColliders();
@@ -549,23 +446,23 @@ void GamePlayScene::Draw()
 		numberOnesSprite_->Draw();
 		numberTensSprite_->Draw();
 
-		if (PlayerWinCount_ >= kPlayerFirstWinCount_)
+		if (playerWinCount_ >= kPlayerFirstWinCount_)
 		{
 			roundGetSprite_[1]->Draw();
 		}
 
-		if (PlayerWinCount_ >= kPlayerSecondWinCount_)
+		if (playerWinCount_ >= kPlayerSecondWinCount_)
 		{
 			roundGetSprite_[0]->Draw();
 		}
 
 
-		if (EnemyWinCount_ >= kEnemyFirstWinCount_)
+		if (enemyWinCount_ >= kEnemyFirstWinCount_)
 		{
 			roundGetSprite_[3]->Draw();
 		}
 
-		if (EnemyWinCount_ >= kEnemySecondWinCount_)
+		if (enemyWinCount_ >= kEnemySecondWinCount_)
 		{
 			roundGetSprite_[2]->Draw();
 		}
@@ -573,19 +470,19 @@ void GamePlayScene::Draw()
 	}
 
 	//操作説明の描画
-	if (isOpen_ && spriteCount_ == static_cast<int>(CommandSpriteType::GeneralCommandSprite))
+	if (isOpen_ && spriteCount_ == CommandSpriteType::GeneralCommandSprite)
 	{
 		//基本操作
 		generalCommandListSprite_->Draw();
 	}
 
-	if (isOpen_ && spriteCount_ == static_cast<int>(CommandSpriteType::ComboAttackCommandSprite))
+	if (isOpen_ && spriteCount_ == CommandSpriteType::ComboAttackCommandSprite)
 	{
 		//コンボ攻撃
 		attackCommandListSprite_[0]->Draw();
 	}
 
-	if (isOpen_ && spriteCount_ == static_cast<int>(CommandSpriteType::FinisherAttackCommandSprite))
+	if (isOpen_ && spriteCount_ == CommandSpriteType::FinisherAttackCommandSprite)
 	{
 		//必殺技攻撃
 		attackCommandListSprite_[1]->Draw();
@@ -609,12 +506,98 @@ void GamePlayScene::Draw()
 
 void GamePlayScene::Finalize()
 {
+
 	
 }
 
 void GamePlayScene::ImGui()
 {
 	
+}
+
+void GamePlayScene::UpdateCommandSprite()
+{
+	//操作説明の開閉
+	if (input_->GetJoystickState() && sRoundStartTimer_ <= 0)
+	{
+		//オプションボタンを押して操作説明を開く
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_START) && !isOpen_)
+		{
+			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
+			isOpen_ = true;
+			spriteCount_ = CommandSpriteType::GeneralCommandSprite;
+		}
+		//Bボタンを押して操作説明を閉じる
+		else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_START) && isOpen_)
+		{
+			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
+			isOpen_ = false;
+			spriteCount_ = CommandSpriteType::GeneralCommandSprite;
+		}
+
+		//操作説明が開いている場合
+		if (isOpen_)
+		{
+			// スティック入力のクールダウンが終わっている場合のみ移動
+			if (stickInputCooldown_ <= 0)
+			{
+				ChangeCommandSprite();
+			}
+
+			// クールダウンを減らす
+			if (stickInputCooldown_ > 0)
+			{
+				stickInputCooldown_--;
+			}
+		}
+	}
+}
+
+void GamePlayScene::ChangeCommandSprite()
+{
+	//スプライトの移動に必用な定数
+	const int kNextSprite = 1;
+	const int kPreviousSprite = -1;
+
+	//操作説明の移動処理
+	if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kValue_) &&
+		spriteCount_ != CommandSpriteType::FinisherAttackCommandSprite)
+	{
+		//次の説明に進む
+		ApplyCommandSprite(kNextSprite);
+	}
+	else if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -kValue_) &&
+		spriteCount_ != CommandSpriteType::GeneralCommandSprite)
+	{
+		//前の説明に戻る
+		ApplyCommandSprite(kPreviousSprite);
+	}
+}
+
+void GamePlayScene::ApplyCommandSprite(int changeAmount)
+{
+	//スプライトの遷移用のベクター
+	static const std::vector<CommandSpriteType> spriteOrder = {
+		CommandSpriteType::GeneralCommandSprite,
+		CommandSpriteType::ComboAttackCommandSprite,
+		CommandSpriteType::FinisherAttackCommandSprite
+	};
+
+	//現在のスプライトインデックスを取得
+	auto it = std::find(spriteOrder.begin(), spriteOrder.end(), static_cast<CommandSpriteType>(spriteCount_));
+	if (it == spriteOrder.end()) return;
+
+	size_t currentIndex = std::distance(spriteOrder.begin(), it);
+
+	//次のスプライトインデックスを計算
+	size_t nextIndex = (currentIndex + changeAmount + spriteOrder.size()) % spriteOrder.size();
+
+	//スプライトを変更
+	spriteCount_ = spriteOrder[nextIndex];
+
+	//サウンド再生とスティックのクールダウンを設定
+	audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
+	stickInputCooldown_ = kStickInputCooldownTime_;
 }
 
 void GamePlayScene::UpdateNumberSprite()
@@ -641,357 +624,16 @@ float GamePlayScene::Random(float min_value, float max_value)
 	return dis(gen);
 }
 
-//TODO:長いので簡潔にする(冬休み)
 void GamePlayScene::HandleGameOutcome()
 {
-	//Playerが勝ったとき
-	if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == kRoundOne_ && !isRoundTransition_)
+	//ラウンドごとの勝敗処理
+	if (!isRoundTransition_)
 	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-		sMigrationTimer--;
-		isPlayerWin_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
-		{
-			PlayerWinCount_ = kPlayerFirstWinCount_;
-			isRoundTransition_ = true;
-		}
-	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == kRoundTwo_ && PlayerWinCount_ == kPlayerFirstWinCount_ && !isRoundTransition_)
-	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-		sMigrationTimer--;
-		isPlayerWin_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
-		{
-			PlayerWinCount_ = kPlayerSecondWinCount_;
-		}
-	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == kRoundTwo_ && PlayerWinCount_ == 0 && !isRoundTransition_)
-	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-		sMigrationTimer--;
-		isPlayerWin_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
-		{
-			PlayerWinCount_ = kPlayerFirstWinCount_;
-			isRoundTransition_ = true;
-		}
-	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() < 0 && round_ == kRoundThree_ && PlayerWinCount_ == kPlayerFirstWinCount_ && !isRoundTransition_)
-	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-		sMigrationTimer--;
-		isPlayerWin_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
-		{
-			PlayerWinCount_ = kPlayerSecondWinCount_;
-		}
-	}
-
-	//時間切れ
-	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == kRoundOne_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = true;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			PlayerWinCount_ = kPlayerFirstWinCount_;
-			isRoundTransition_ = true;
-		}
-	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == kRoundTwo_ && PlayerWinCount_ == kPlayerFirstWinCount_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = true;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			PlayerWinCount_ = kPlayerSecondWinCount_;
-		}
-	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == kRoundTwo_ && PlayerWinCount_ == 0 && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = true;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			PlayerWinCount_ = kPlayerFirstWinCount_;
-			isRoundTransition_ = true;
-		}
-	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) < abs(player_->GetHP()) && round_ == kRoundThree_ && PlayerWinCount_ == kPlayerFirstWinCount_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = true;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			PlayerWinCount_ = kPlayerSecondWinCount_;
-		}
-	}
-
-	if (PlayerWinCount_ == kPlayerSecondWinCount_)
-	{
-		isTransitionStart_ = true;
-	}
-
-	//Enemyが勝ったとき
-	if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == kRoundOne_ && !isRoundTransition_)
-	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-		sMigrationTimer--;
-		isPlayerWin_ = false;
-
-		if (sMigrationTimer < kKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
-		{
-			EnemyWinCount_ = kEnemyFirstWinCount_;
-			isRoundTransition_ = true;
-		}
-	}
-	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == kRoundTwo_ && EnemyWinCount_ == kEnemyFirstWinCount_ && !isRoundTransition_)
-	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-		sMigrationTimer--;
-		isPlayerWin_ = false;
-
-		if (sMigrationTimer < kKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
-		{
-			EnemyWinCount_ = kEnemySecondWinCount_;
-		}
-	}
-	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == kRoundTwo_ && EnemyWinCount_ == 0 && !isRoundTransition_)
-	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-		sMigrationTimer--;
-		isPlayerWin_ = false;
-
-		if (sMigrationTimer < kKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
-		{
-			EnemyWinCount_ = kEnemyFirstWinCount_;
-			isRoundTransition_ = true;
-		}
-	}
-	else if (player_->GetHP() >= 0 && enemy_->GetHP() > 0 && round_ == kRoundThree_ && EnemyWinCount_ == kEnemyFirstWinCount_ && !isRoundTransition_)
-	{
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
-		sMigrationTimer--;
-		isPlayerWin_ = false;
-
-		if (sMigrationTimer < kKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
-		{
-			EnemyWinCount_ = kEnemySecondWinCount_;
-		}
-	}
-
-	//時間切れ
-	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == kRoundOne_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = false;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			EnemyWinCount_ = kEnemyFirstWinCount_;
-			isRoundTransition_ = true;
-		}
-	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == kRoundTwo_ && EnemyWinCount_ == kEnemyFirstWinCount_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = false;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			EnemyWinCount_ = kEnemySecondWinCount_;
-		}
-	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == kRoundTwo_ && EnemyWinCount_ == 0 && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = false;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			EnemyWinCount_ = kEnemyFirstWinCount_;
-			isRoundTransition_ = true;
-		}
-	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) > abs(player_->GetHP()) && round_ == kRoundThree_ && EnemyWinCount_ == kEnemyFirstWinCount_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = false;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			EnemyWinCount_ = kEnemySecondWinCount_;
-		}
-	}
-
-	if (EnemyWinCount_ == kEnemySecondWinCount_)
-	{
-		if (isTransitionStart_ == false && isTransitionEnd_ == true)
-		{
-			isTransitionStart_ = true;
-		}
-	}
-
-	//時間切れ(ドロー)
-	if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && round_ == kRoundOne_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isDrow_ = true;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			PlayerWinCount_ = kPlayerFirstWinCount_;
-			EnemyWinCount_ = kEnemyFirstWinCount_;
-			isRoundTransition_ = true;
-		}
-	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && round_ == kRoundThree_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isDrow_ = true;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			PlayerWinCount_ = kPlayerFirstWinCount_;
-			EnemyWinCount_ = kEnemyFirstWinCount_;
-			isRoundTransition_ = true;
-		}
-	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && PlayerWinCount_ == kPlayerFirstWinCount_ && EnemyWinCount_ == 0 && round_ == kRoundTwo_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = true;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			PlayerWinCount_ = kPlayerSecondWinCount_;
-		}
-	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && EnemyWinCount_ == kEnemyFirstWinCount_ && PlayerWinCount_ == 0 && round_ == kRoundTwo_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = false;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			EnemyWinCount_ = kEnemySecondWinCount_;
-		}
-	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && PlayerWinCount_ == kPlayerFirstWinCount_ && EnemyWinCount_ == 0 && round_ == kRoundThree_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = true;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			PlayerWinCount_ = kPlayerSecondWinCount_;
-		}
-	}
-	else if (currentSeconds_ <= 0 && abs(enemy_->GetHP()) == abs(player_->GetHP()) && EnemyWinCount_ == kEnemyFirstWinCount_ && PlayerWinCount_ == 0 && round_ == kRoundThree_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = false;
-		isTimeOver_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_)
-		{
-			EnemyWinCount_ = kEnemySecondWinCount_;
-		}
-	}
-
-	//相打ち
-	if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && round_ == kRoundOne_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isDrow_ = true;
-		isPlayerWin_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
-		{
-			PlayerWinCount_ = kPlayerFirstWinCount_;
-			EnemyWinCount_ = kEnemyFirstWinCount_;
-			isRoundTransition_ = true;
-		}
-	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && round_ == kRoundThree_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isDrow_ = true;
-		isPlayerWin_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
-		{
-			PlayerWinCount_ = kPlayerFirstWinCount_;
-			EnemyWinCount_ = kEnemyFirstWinCount_;
-			isRoundTransition_ = true;
-		}
-	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && PlayerWinCount_ == kPlayerFirstWinCount_ && EnemyWinCount_ == 0 && round_ == kRoundTwo_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
-		{
-			PlayerWinCount_ = kPlayerSecondWinCount_;
-		}
-	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && EnemyWinCount_ == kEnemyFirstWinCount_ && PlayerWinCount_ == 0 && round_ == kRoundTwo_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = false;
-
-		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
-		{
-			EnemyWinCount_ = kEnemySecondWinCount_;
-		}
-	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && PlayerWinCount_ == kPlayerFirstWinCount_ && EnemyWinCount_ == 0 && round_ == kRoundThree_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = true;
-
-		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
-		{
-			PlayerWinCount_ = kPlayerSecondWinCount_;
-		}
-	}
-	else if (enemy_->GetHP() <= 0 && player_->GetHP() >= 0 && EnemyWinCount_ == kEnemyFirstWinCount_ && PlayerWinCount_ == 0 && round_ == kRoundThree_ && !isRoundTransition_)
-	{
-		sMigrationTimer--;
-		isPlayerWin_ = false;
-
-		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
-		{
-			EnemyWinCount_ = kEnemySecondWinCount_;
-		}
+		HandleRoundResult(player_->GetHP(), enemy_->GetHP(), currentSeconds_);
 	}
 
 	//トランジション
 	const float deltaTime = 1.0f / kTransitionTime;
-
 	if (!isTransitionEnd_)
 	{
 		transitionTimer_ += deltaTime;
@@ -1011,8 +653,8 @@ void GamePlayScene::HandleGameOutcome()
 		transitionColor_.w = Lerp(transitionColor_.w, kTransitionStartAlpha_, transitionTimer_);
 		transitionSprite_->SetColor(transitionColor_);
 
-		//Playerが勝利した場合
-		if (PlayerWinCount_ == kPlayerSecondWinCount_)
+		//Playerが勝利したとき
+		if (playerWinCount_ == kPlayerSecondWinCount_)
 		{
 			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
 			PostProcess::GetInstance()->SetIsVignetteActive(false);
@@ -1020,8 +662,8 @@ void GamePlayScene::HandleGameOutcome()
 			return;
 		}
 
-		//Enemyが勝利した場合
-		if (EnemyWinCount_ == kEnemySecondWinCount_)
+		//Enemyが勝利したとき
+		if (enemyWinCount_ == kEnemySecondWinCount_)
 		{
 			PostProcess::GetInstance()->SetIsGrayScaleActive(false);
 			PostProcess::GetInstance()->SetIsVignetteActive(false);
@@ -1030,28 +672,171 @@ void GamePlayScene::HandleGameOutcome()
 		}
 	}
 
-	int roundCount = kRoundOne_;
-
+	//ラウンド遷移の処理
 	if (isRoundTransition_)
 	{
+		int nextRound = round_;
+
 		if (isDrow_)
 		{
-			roundCount = kRoundThree_;
+			nextRound = kRoundThree_;
 		}
-		else if (round_ == kRoundOne_)
+		else
 		{
-			roundCount = kRoundTwo_;
-		}
-		else if (round_ == kRoundTwo_)
-		{
-			roundCount = kRoundThree_;
-		}
-		else if (round_ == kRoundThree_)
-		{
-			roundCount = kRoundThree_;
+			nextRound++;
 		}
 
-		RoundTransition(roundCount);
+		if (nextRound > kRoundThree_)
+		{
+			nextRound = kRoundThree_;
+		}
+
+		RoundTransition(nextRound);
+	}
+}
+
+void GamePlayScene::HandleRoundResult(int playerHP, int enemyHP, int currentSeconds)
+{
+	//時間切れ
+	if (currentSeconds <= 0)
+	{
+		if (abs(enemyHP) < abs(playerHP))
+		{
+			//Playerの勝利
+			HandlePlayerWin(true); 
+		}
+		else if (abs(enemyHP) > abs(playerHP))
+		{
+			//Enemyの勝利
+			HandleEnemyWin(true); 
+		}
+		else
+		{
+			//引き分け
+			HandleDrow(true); 
+		}
+		return; 
+	}
+
+	if (!isRoundTransition_)
+	{
+		//Playerの勝敗判定
+		if (enemyHP <= 0 && playerHP < 0)
+		{
+			HandlePlayerWin(false);
+		}
+
+		//Enemyの勝敗判定
+		if (playerHP >= 0 && enemyHP > 0)
+		{
+			HandleEnemyWin(false);
+		}
+
+		//引き分け
+		if (playerHP >= 0 && enemyHP <= 0)
+		{
+			HandleDrow(false);
+		}
+	}
+}
+
+void GamePlayScene::HandlePlayerWin(bool isTimeOver)
+{
+	sMigrationTimer--;
+	isPlayerWin_ = true;
+
+	//Playerが勝ったとき
+	if (!isTimeOver)
+	{
+		//倒した
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
+
+		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
+		{
+			playerWinCount_++;
+			isRoundTransition_ = true;
+		}
+	}
+	else
+	{
+		//時間切れ
+		isTimeOver_ = true;
+
+		if (sMigrationTimer < kKoActiveTime_)
+		{
+			playerWinCount_++;
+			isRoundTransition_ = true;
+		}
+	}
+}
+
+void GamePlayScene::HandleEnemyWin(bool isTimeOver)
+{
+	sMigrationTimer--;
+	isPlayerWin_ = false;
+
+	//Enemyが勝ったとき
+	if (!isTimeOver)
+	{
+		//倒した
+		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
+
+		if (sMigrationTimer < kKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
+		{
+			enemyWinCount_++;
+			isRoundTransition_ = true;
+		}
+	}
+	else
+	{
+		//時間切れ
+		isTimeOver_ = true;
+
+		if (sMigrationTimer < kKoActiveTime_)
+		{
+			enemyWinCount_++;
+			isRoundTransition_ = true;
+		}
+	}
+}
+
+void GamePlayScene::HandleDrow(bool isTimeOver)
+{
+	sMigrationTimer--;
+	isDrow_ = true;
+
+	//引き分けのとき
+	if (!isTimeOver)
+	{
+		//相打ち
+		isPlayerWin_ = true;
+
+		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
+		{
+			if (round_ != kRoundThree_)
+			{
+				playerWinCount_++;
+				enemyWinCount_++;
+			}
+
+			isRoundTransition_ = true;
+		}
+	}
+	else
+	{
+		//時間切れ
+		isTimeOver_ = true;
+
+		if (sMigrationTimer < kKoActiveTime_)
+		{
+			if (round_ != kRoundThree_)
+			{
+				playerWinCount_++;
+				enemyWinCount_++;
+			}
+
+			isRoundTransition_ = true;
+		}
 	}
 }
 
@@ -1072,8 +857,15 @@ void GamePlayScene::RoundTransition(int round)
 		}
 		else if (roundTransitionTimer_ <= kHalfkRoundTransitionTime_ - kTransitionOffset && roundTransitionTimer_ > 0)
 		{
-			transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, kLerpSpeed);
-			transitionSprite_->SetColor(transitionColor_);
+			if (playerWinCount_ == kPlayerSecondWinCount_ || enemyWinCount_ == kEnemySecondWinCount_)
+			{
+				isTransitionStart_ = true;
+			}
+			else
+			{
+				transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, kLerpSpeed);
+				transitionSprite_->SetColor(transitionColor_);
+			}
 		}
 		else if (roundTransitionTimer_ <= 0)
 		{

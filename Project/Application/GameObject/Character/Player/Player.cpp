@@ -151,6 +151,10 @@ void Player::Update()
 {
 #ifdef _ADJUSTMENT
 
+	if (input_->PressKey(DIK_RETURN))
+	{
+		finisherGauge_ -= 1.0f;
+	}
 	
 #endif
 

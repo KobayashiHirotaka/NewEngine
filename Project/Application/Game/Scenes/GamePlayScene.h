@@ -66,14 +66,36 @@ public:
 	/// <summary>ランダム</summary>
 	float Random(float min_value, float max_value);
 
+private:
 	/// <summary>数字の更新</summary>
 	void UpdateNumberSprite();
 
-	/// <summary>勝敗を決める</summary>
+	/// <summary>ゲーム全体の勝敗を管理する</summary>
 	void HandleGameOutcome();
+
+	/// <summary>ラウンドの勝敗を判定する</summary>
+	void HandleRoundResult(int playerHP, int enemyHP, int currentSeconds);
+
+	/// <summary>Playerが勝ったときの処理</summary>
+	void HandlePlayerWin(bool isTimeOver);
+
+	/// <summary>Enemyが勝ったときの処理</summary>
+	void HandleEnemyWin(bool isTimeOver);
+
+	/// <summary>Drowだったときの処理</summary>
+	void HandleDrow(bool isTimeOver);
 
 	/// <summary>ラウンド間でのトランジション</summary>
 	void RoundTransition(int round);
+
+	/// <summary>操作説明の更新</summary>
+	void UpdateCommandSprite();
+
+	/// <summary>操作説明の変更</summary>
+	void ChangeCommandSprite();
+
+	/// <summary>操作説明の適用</summary>
+	void ApplyCommandSprite(int changeAmount);
 
 	//void HandleTransition();
 
@@ -173,7 +195,7 @@ private:
 	uint32_t frameUITextureHandle_ = 0;
 
 	//何枚目のSpriteが表示されているか
-	int spriteCount_ = 0;
+	CommandSpriteType spriteCount_ = CommandSpriteType::GeneralCommandSprite;
 
 	//操作説明が開かれているか
 	bool isOpen_ = false;
@@ -239,9 +261,9 @@ private:
 	bool isBoneDraw_ = true;
 
 	//ラウンド
-	const int kRoundOne_ = 1;
-	const int kRoundTwo_ = 2;
-	const int kRoundThree_ = 3;
+	static const int kRoundOne_ = 1;
+	static const int kRoundTwo_ = 2;
+	static const int kRoundThree_ = 3;
 
 	int round_ = kRoundOne_;
 
@@ -251,8 +273,8 @@ private:
 	bool isDrow_ = false;
 
 	//キャラクターが勝っている回数
-	int PlayerWinCount_ = 0;
-	int EnemyWinCount_ = 0;
+	int playerWinCount_ = 0;
+	int enemyWinCount_ = 0;
 
 	//勝利カウント
 	//Player
@@ -274,28 +296,10 @@ private:
 
 	//スティック操作対応
 	const float kValue_ = 0.7f;
-	int stickInputCooldown_ = 10;
+	const int kStickInputCooldownTime_ = 10;
+	int stickInputCooldown_ = kStickInputCooldownTime_;
 
 	//必殺技の開始・終了
 	bool isFinisherStart_ = false;
 	bool isFinisherEnd_ = false;
-
-	//必殺技時のカメラ演出用のパラメータ
-	//プレイヤーの位置からのカメラのオフセット
-	const float kCameraFinisherOffsetY_ = 4.0f;
-
-	//カメラ移動と回転の補間速度
-	const float kCameraLerpSpeed_ = 0.2f;
-
-	//必殺技発動時のカメラ回転角
-	const float kCameraFinisherRotationY_ = 0.7f;
-
-	//必殺技終了時のカメラ微調整オフセット
-	const float kCameraEndCorrectionY_ = 0.1f;
-
-	//微調整用補間速度
-	const float kCameraSmallLerpSpeed_ = 0.1f;
-
-	//微小な回転補正角度
-	const float kCameraSmallRotationCorrection_ = 0.1f;
 };
