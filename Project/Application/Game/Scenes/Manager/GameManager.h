@@ -8,6 +8,7 @@
 #pragma once
 #include "Engine/Framework/EngineCore.h"
 #include "Application/Game/Scenes/SceneFactory.h"
+#include "Application/Game/AttackEditor/AttackEditor.h"
 
 class GameManager : public EngineCore
 {
@@ -17,5 +18,9 @@ public:
 
 	/// <summary>描画</summary>
 	void Draw()override;
+
+private:
+	//AttackEditor
+	AttackEditor* attackEditor_ = nullptr;
 };
 

@@ -16,6 +16,7 @@
 #include "Application/GameObject/Skydome/Skydome.h"
 #include "Application/GameObject/BackGround/BackGround.h"
 #include "Application/Game/HitStop/HitStop.h"
+#include "Application/Game/AttackEditor/AttackEditor.h"
 
 class GamePlayScene : public IScene
 {
@@ -101,6 +102,9 @@ private:
 
 	//LevelLoader
 	LevelLoader* levelLoarder_ = nullptr;
+
+	//AttackEditor
+	AttackEditor* attackEditor_ = nullptr;
 
 	//GameObjectManager
 	Game3dObjectManager* game3dObjectManager_;

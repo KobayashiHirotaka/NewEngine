@@ -33,16 +33,17 @@ void GamePlayScene::Initialize()
 	//Audioのインスタンスを取得
 	audio_ = Audio::GetInstance();
 
-	//CollisionManagerのインスタンスを取得
-	collisionManager_ = std::make_unique<CollisionManager>();
+	//AttackEditorのインスタンスを取得
+	attackEditor_ = AttackEditor::GetInstance();
 
-	//Game3dObjectManagerのインスタンスを取得
+	//Game3dObjectManagerのインスタンスを取得、初期化
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
-
-	//Game3dObjectManagerの初期化
 	game3dObjectManager_->Initialize();
 
-	//Levelの読み込み
+	//CollisionManagerを生成
+	collisionManager_ = std::make_unique<CollisionManager>();
+
+	//LevelDataのインスタンスを取得、読み込み
 	levelLoarder_ = LevelLoader::GetInstance();
 	levelLoarder_->LoadLevel("LevelData");
 
@@ -50,7 +51,7 @@ void GamePlayScene::Initialize()
 	inputLog_ = std::make_unique<InputLog>();
 	inputLog_->Initialize();
 
-	//HitStopの生成、初期化
+	//HitStopの生成
 	hitStop_ = std::make_unique<HitStop>();
 
 	//CameraControllerの生成、初期化
@@ -182,6 +183,9 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
+	//AttackEditorの更新
+	attackEditor_->Update();
+
 	//操作説明の開閉処理
 	UpdateCommandSprite();
 

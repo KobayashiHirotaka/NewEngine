@@ -17,7 +17,6 @@
   <ItemGroup>
     <ClCompile Include="Application\GameObject\BackGround\BackGround.cpp" />
     <ClCompile Include="Application\GameObject\Character\BaseBullet.cpp" />
-    <ClCompile Include="Application\GameObject\Character\CharacterDataLoader\CharacterDataLoader.cpp" />
     <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Application\GameObject\Character\Enemy\EnemyBullet.cpp" />
     <ClCompile Include="Application\GameObject\Character\BaseCharacter.cpp" />
@@ -25,6 +24,7 @@
     <ClCompile Include="Application\GameObject\Character\Player\PlayerBullet.cpp" />
     <ClCompile Include="Application\GameObject\Ground\Ground.cpp" />
     <ClCompile Include="Application\GameObject\Skydome\Skydome.cpp" />
+    <ClCompile Include="Application\Game\AttackEditor\AttackEditor.cpp" />
     <ClCompile Include="Application\Game\CameraController\CameraController.cpp" />
     <ClCompile Include="Application\Game\GameTimer\GameTimer.cpp" />
     <ClCompile Include="Application\Game\HitStop\HitStop.cpp" />
@@ -97,7 +97,6 @@
     </ClCompile>
     <ClCompile Include="Engine\Framework\EngineCore.cpp" />
     <ClCompile Include="Engine\Framework\SceneManager.cpp" />
-    <ClCompile Include="Engine\Utility\AttackEditor\AttackEditor.cpp" />
     <ClCompile Include="Engine\Utility\Collision\Collider.cpp" />
     <ClCompile Include="Engine\Utility\Collision\CollisionManager.cpp" />
     <ClCompile Include="Engine\Utility\ConvertString\ConvertString.cpp" />
@@ -157,7 +156,6 @@
   <ItemGroup>
     <ClInclude Include="Application\GameObject\BackGround\BackGround.h" />
     <ClInclude Include="Application\GameObject\Character\BaseBullet.h" />
-    <ClInclude Include="Application\GameObject\Character\CharacterDataLoader\CharacterDataLoader.h" />
     <ClInclude Include="Application\GameObject\Character\Direction.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBullet.h" />
@@ -166,6 +164,7 @@
     <ClInclude Include="Application\GameObject\Character\Player\PlayerBullet.h" />
     <ClInclude Include="Application\GameObject\Ground\Ground.h" />
     <ClInclude Include="Application\GameObject\Skydome\Skydome.h" />
+    <ClInclude Include="Application\Game\AttackEditor\AttackEditor.h" />
     <ClInclude Include="Application\Game\CameraController\CameraController.h" />
     <ClInclude Include="Application\Game\GameTimer\GameTimer.h" />
     <ClInclude Include="Application\Game\HitStop\HitStop.h" />
@@ -223,7 +222,6 @@
     <ClInclude Include="Engine\Framework\AbstractSceneFactory.h" />
     <ClInclude Include="Engine\Framework\EngineCore.h" />
     <ClInclude Include="Engine\Framework\SceneManager.h" />
-    <ClInclude Include="Engine\Utility\AttackEditor\AttackEditor.h" />
     <ClInclude Include="Engine\Utility\Collision\Collider.h" />
     <ClInclude Include="Engine\Utility\Collision\CollisionConfig.h" />
     <ClInclude Include="Engine\Utility\Collision\CollisionManager.h" />

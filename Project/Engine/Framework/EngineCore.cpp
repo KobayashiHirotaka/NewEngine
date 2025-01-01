@@ -48,9 +48,6 @@ void EngineCore::Initialize()
 	Line::StaticInitialize();
 	Sprite::StaticInitialize();
 
-	//AttackEditorのロード
-	AttackEditor::GetInstance()->Initialize();
-
 	//ゲームオブジェクト管理の準備
 	game3dObjectFactory_ = std::make_unique<Game3dObjectFactory>();
 	game3dObjectManager_ = Game3dObjectManager::GetInstance();
@@ -116,8 +113,6 @@ void EngineCore::Update()
 	input_->Update();
 
 	//GlobalVariables::GetInstance()->Update();
-
-	AttackEditor::GetInstance()->Update();
 
 	postProcess_->Update();
 

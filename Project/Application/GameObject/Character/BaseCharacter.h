@@ -19,6 +19,7 @@
 #include "Engine/3D/Particle/ParticleEffectPlayer.h"
 #include "Application/GameObject/Character/Direction.h"
 #include "Application/Game/HitStop/HitStop.h"
+#include "Application/Game/AttackEditor/AttackEditor.h"
 #include <random>
 #include <numbers>
 #include <unordered_map>

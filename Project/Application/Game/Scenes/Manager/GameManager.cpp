@@ -18,6 +18,10 @@ void GameManager::Initialize()
 
 	//初期シーンの設定
 	sceneManager_->ChangeScene("GameTitleScene");
+
+	//AttackEditorのインスタンスを取得、初期化
+	attackEditor_ = AttackEditor::GetInstance();
+	attackEditor_->Initialize();
 }
 
 void GameManager::Draw()
