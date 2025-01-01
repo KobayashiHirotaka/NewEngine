@@ -22,18 +22,7 @@
                 ]
             },
             "visible": true,
-            "file_name": "remakePlayer",
-            "character_data": {
-                "type": "",
-                "hp": 100.0,
-                "maxHp": 100.0,
-                "frontSpeed": "0.03",
-                "backSpeed": "0.02",
-                "guardGauge": "0.00",
-                "maxGuardGauge": "50.00",
-                "finisherGauge": "0.00",
-                "maxFinisherGauge": "50.00"
-            }
+            "file_name": "remakePlayer"
         },
         {
             "type": "LIGHT",
@@ -123,18 +112,7 @@
                 ]
             },
             "visible": true,
-            "file_name": "newPlayer",
-            "character_data": {
-                "type": "",
-                "hp": -100.0,
-                "maxHp": 100.0,
-                "frontSpeed": "0.04",
-                "backSpeed": "0.04",
-                "guardGauge": "0.00",
-                "maxGuardGauge": "50.00",
-                "finisherGauge": "0.00",
-                "maxFinisherGauge": "50.00"
-            }
+            "file_name": "newPlayer"
         }
     ]
 }
