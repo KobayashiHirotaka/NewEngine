@@ -245,7 +245,12 @@ private:
 	uint32_t guardSoundHandle_ = 0u;
 	float volume_ = 1.0f;
 
+	//当たり判定描画用のLineBox
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
+
+	//足の速さ
+	const float kMaxFrontSpeed_ = 0.03f;
+	const float kMaxBackSpeed_ = 0.02f;
 
 	//ガード状態か
 	bool isGuardMode_ = false;

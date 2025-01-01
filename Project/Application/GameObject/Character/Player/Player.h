@@ -247,6 +247,10 @@ private:
 	//LineBox
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
 
+	//足の速さ
+	const float kMaxFrontSpeed_ = 0.04f;
+	const float kMaxBackSpeed_ = 0.04f;
+
 	//スティックの閾値
 	const float kValue_ = 0.7f;
 };

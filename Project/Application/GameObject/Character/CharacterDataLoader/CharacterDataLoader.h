@@ -6,8 +6,10 @@
  */
 
 #pragma once
+
 class CharacterDataLoader
 {
-
+public:
+private:
 };
 

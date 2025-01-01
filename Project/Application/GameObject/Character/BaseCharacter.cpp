@@ -171,7 +171,7 @@ void BaseCharacter::Reset()
 	comboCount_ = 0;
 
 	//ゲージ
-	guardGauge_ = 0.0f;
+	baseData_.guardGauge_ = 0.0f;
 
 	//キャラクターがガードしているかどうか
 	characterState_.isGuard = false;

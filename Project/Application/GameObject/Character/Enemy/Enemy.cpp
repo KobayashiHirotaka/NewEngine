@@ -123,11 +123,16 @@ void Enemy::Initialize()
 	particleEffectPlayer_ = std::make_unique<ParticleEffectPlayer>();
 	particleEffectPlayer_->Initialize();
 
-	//SEの初期化
+	//SEの読み込み
 	attackSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Attack.mp3");
 	weaponAttackSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/WeaponAttack.mp3");
 	damageSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/HitPunch1.mp3");
 	guardSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Guard.mp3");
+
+	//基本データの設定
+	baseData_.hp_ = baseData_.kMaxHp_;
+	moveData_.frontSpeed_ = kMaxFrontSpeed_;
+	moveData_.backSpeed_ = kMaxBackSpeed_;
 
 	//行動パターンの初期化
 	patternCount_ = RandomMove();
@@ -261,7 +266,7 @@ void Enemy::DrawCollision(const Camera& camera)
 void Enemy::DrawSprite()
 {
 	//体力ゲージの描画
-	if (hp_ >= 0)
+	if (baseData_.hp_ >= 0)
 	{
 		hpBar_.sprite_->Draw();
 	}
@@ -819,7 +824,7 @@ void Enemy::UpdateBehaviorStan()
 		characterState_.behaviorRequest = Behavior::kRoot;
 		animationTime_ = 0.0f;
 		attackData_.attackAnimationFrame = 0;
-		guardGauge_ = 0.0f;
+		baseData_.guardGauge_ = 0.0f;
 		timerData_.stanTimer = timerData_.maxStanTimer;
 		model_->SetAnimationTime(animationTime_);
 
@@ -857,7 +862,7 @@ void Enemy::OnCollision(Collider* collider)
 			ApplyDamage();
 
 			//体力に応じてダウンの仕方を変更
-			if (hp_ > 0)
+			if (baseData_.hp_ > 0)
 			{
 				characterState_.isHitBullet = true;
 				attackData_.isFinisher = false;
@@ -1068,7 +1073,7 @@ void Enemy::OnCollision(Collider* collider)
 					hitStop_->Start(player_->GetHitStop());
 
 					//体力に応じてダウン状態を変更
-					if (hp_ > 0)
+					if (baseData_.hp_ > 0)
 					{
 						characterState_.isHitLightPunch = true;
 					}
@@ -1094,7 +1099,7 @@ void Enemy::OnCollision(Collider* collider)
 					AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 					//体力に応じてダウン状態を変更
-					if (hp_ > 0)
+					if (baseData_.hp_ > 0)
 					{
 						characterState_.isHitLightPunch = true;
 					}
@@ -1143,7 +1148,7 @@ void Enemy::OnCollision(Collider* collider)
 				AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 				//体力に応じてダウン状態を変更
-				if (hp_ > 0)
+				if (baseData_.hp_ > 0)
 				{
 					characterState_.isHitTCMiddlePunch = true;
 				}
@@ -1183,7 +1188,7 @@ void Enemy::OnCollision(Collider* collider)
 				hitStop_->Start(player_->GetHitStop());
 
 				//体力に応じてダウン状態を変更
-				if (hp_ > 0)
+				if (baseData_.hp_ > 0)
 				{
 					characterState_.isHitJumpAttack = true;
 				}
@@ -1224,7 +1229,7 @@ void Enemy::OnCollision(Collider* collider)
 				AdjustFinisherGauge(player_->GetFinisherGaugeIncreaseAmount());
 
 				//体力に応じてダウン状態を変更
-				if (hp_ > 0)
+				if (baseData_.hp_ > 0)
 				{
 					characterState_.isHitUppercut = true;
 				}
@@ -1243,7 +1248,7 @@ void Enemy::OnCollision(Collider* collider)
 				ApplyDamage();
 
 				//体力に応じてダウン状態を変更
-				if (hp_ > 0)
+				if (baseData_.hp_ > 0)
 				{
 					characterState_.isHitFinisherFirstAttack = true;
 				}
@@ -1365,7 +1370,7 @@ void Enemy::Move()
 
 			//移動処理
 			moveData_.velocity = Normalize(moveData_.velocity);
-			moveData_.velocity = Multiply(backSpeed_, moveData_.velocity);
+			moveData_.velocity = Multiply(moveData_.backSpeed_, moveData_.velocity);
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 			//WorldTransformの更新
@@ -1434,7 +1439,7 @@ void Enemy::Move()
 
 			//移動処理
 			moveData_.velocity = Normalize(moveData_.velocity);
-			moveData_.velocity = Multiply(frontSpeed_, moveData_.velocity);
+			moveData_.velocity = Multiply(moveData_.frontSpeed_, moveData_.velocity);
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
 			//WorldTransformの更新
@@ -1539,7 +1544,7 @@ void Enemy::ApplyDamage()
 	if (!attackData_.isDamaged)
 	{
 		attackData_.isDamaged = true;
-		hp_ -= player_->GetDamage();
+		baseData_.hp_ -= player_->GetDamage();
 	}
 }
 
@@ -1562,7 +1567,7 @@ void Enemy::UpdateHPBar()
 	//体力ゲージ
 	const float kHpBarSizeY = 7.0f;
 	const int kDivisionFactor = 2;
-	const int kHalfHp = maxHp_ / kDivisionFactor;
+	const int kHalfHp = baseData_.kMaxHp_ / kDivisionFactor;
 	const int kQuarterHp = kHalfHp / kDivisionFactor;
 
 	//色
@@ -1571,20 +1576,20 @@ void Enemy::UpdateHPBar()
 	const Vector4 kQuarterHpColor = { 1.0f, 0.0f, 0.0f, 1.0f };
 
 	//サイズを設定
-	hpBar_.size_ = { (static_cast<float>(hp_) / static_cast<float>(maxHp_)) * barSize_, kHpBarSizeY };
+	hpBar_.size_ = { (static_cast<float>(baseData_.hp_) / static_cast<float>(baseData_.kMaxHp_)) * barSize_, kHpBarSizeY };
 	hpBar_.sprite_->SetSize(hpBar_.size_);
 
 	//体力に応じて色を変化
-	if (hp_ > kHalfHp)
+	if (baseData_.hp_ > kHalfHp)
 	{
 		hpBar_.sprite_->SetColor(kDefaultHpColor);
 	}
 
-	if (hp_ <= kHalfHp && hp_ > kQuarterHp)
+	if (baseData_.hp_ <= kHalfHp && baseData_.hp_ > kQuarterHp)
 	{
 		hpBar_.sprite_->SetColor(kHalfHpColor);
 	}
-	else if (hp_ <= kQuarterHp)
+	else if (baseData_.hp_ <= kQuarterHp)
 	{
 		hpBar_.sprite_->SetColor(kQuarterHpColor);
 	}
@@ -1595,27 +1600,26 @@ void Enemy::UpdateGuardGaugeBar()
 	//ガードゲージ
 	const float kGuradGaugeBarSizeY = 7.0f;
 	const float kGuardGaugeIncreaseSpeed = 0.03f;
-	const float kMaxGuardGauge = 50.0f;
 
 	//色
 	const Vector4 kDefaultGuardGaugeColor = { 0.0f, 0.5f, 1.0f, 1.0f };
 
-	if (guardGauge_ > 0 && guardGauge_ < kMaxGuardGauge)
+	if (baseData_.guardGauge_ > 0 && baseData_.guardGauge_ < baseData_.kMaxGuardGauge_)
 	{
-		guardGauge_ -= kGuardGaugeIncreaseSpeed;
+		baseData_.guardGauge_ -= kGuardGaugeIncreaseSpeed;
 	}
 
 	//サイズを設定
-	guardGaugeBar_.size_ = { (guardGauge_ / maxGuardGauge_) * guardGaugeBarSize_,kGuradGaugeBarSizeY };
+	guardGaugeBar_.size_ = { (baseData_.guardGauge_ / baseData_.kMaxGuardGauge_) * guardGaugeBarSize_,kGuradGaugeBarSizeY };
 	guardGaugeBar_.sprite_->SetSize(guardGaugeBar_.size_);
 
 	//色を設定
 	guardGaugeBar_.sprite_->SetColor(kDefaultGuardGaugeColor);
 
 	//ガードゲージが最大になった場合
-	if (guardGauge_ >= kMaxGuardGauge)
+	if (baseData_.guardGauge_ >= baseData_.kMaxGuardGauge_)
 	{
-		guardGauge_ = kMaxGuardGauge;
+		baseData_.guardGauge_ = baseData_.kMaxGuardGauge_;
 		characterState_.isGuard = false;
 		attackData_.isAttack = false;
 		characterState_.behaviorRequest = Behavior::kStan;
@@ -1625,13 +1629,11 @@ void Enemy::UpdateGuardGaugeBar()
 void Enemy::AdjustGuardGauge()
 {
 	//攻撃パラメータに設定されているデータを適応
-	const float kMaxGuardGauge = -50.0f;
-
 	if (!attackData_.isGuarded)
 	{
-		if (finisherGauge_ < kMaxGuardGauge)
+		if (baseData_.finisherGauge_ < -baseData_.kMaxGuardGauge_)
 		{
-			guardGauge_ += player_->GetGuardGaugeIncreaseAmount();
+			baseData_.guardGauge_ += player_->GetGuardGaugeIncreaseAmount();
 		}
 
 		attackData_.isGuarded = true;
@@ -1642,17 +1644,16 @@ void Enemy::UpdateFinisherGaugeBar()
 {
 	//必殺技ゲージ
 	const float kFinisherGaugeBarSizeY = 19.3f;
-	const float kMaxFinisherGauge = 50.0f;
 
 	//色
 	const Vector4 kDefaultHpColor = { 0.0f, 0.5f, 1.0f, 1.0f };
 	const Vector4 kMaxChargeColor = { 1.0f, 0.5f, 0.0f, 1.0f };
 
 	//サイズを設定
-	finisherGaugeBar_.size_ = { (finisherGauge_ / maxFinisherGauge_) * finisherGaugeBarSize_,kFinisherGaugeBarSizeY };
+	finisherGaugeBar_.size_ = { (baseData_.finisherGauge_ / baseData_.kMaxFinisherGauge_) * finisherGaugeBarSize_,kFinisherGaugeBarSizeY };
 	finisherGaugeBar_.sprite_->SetSize(finisherGaugeBar_.size_);
 
-	if (finisherGauge_ < kMaxFinisherGauge)
+	if (baseData_.finisherGauge_ < baseData_.kMaxFinisherGauge_)
 	{
 		finisherGaugeBar_.sprite_->SetColor(kDefaultHpColor);
 	}
@@ -1661,9 +1662,9 @@ void Enemy::UpdateFinisherGaugeBar()
 		finisherGaugeBar_.sprite_->SetColor(kMaxChargeColor);
 	}
 
-	if (finisherGauge_ >= kMaxFinisherGauge)
+	if (baseData_.finisherGauge_ >= baseData_.kMaxFinisherGauge_)
 	{
-		finisherGauge_ = kMaxFinisherGauge;
+		baseData_.finisherGauge_ = baseData_.kMaxFinisherGauge_;
 	}
 }
 
@@ -1671,18 +1672,16 @@ void Enemy::AdjustFinisherGauge(float value)
 {
 	//プレイヤーの必殺技ゲージを取得
 	float finisherGaugePlayer = player_->GetFinisherGauge();
-	const float kPlayerMaxFinisherGauge = -50.0f;
 
 	//攻撃パラメータに設定されているデータを適応
-	const float kMaxFinisherGauge = 50.0f;
 	if (!attackData_.isFinisherGaugeIncreased)
 	{
-		if (finisherGauge_ < kMaxFinisherGauge)
+		if (baseData_.finisherGauge_ < baseData_.kMaxFinisherGauge_)
 		{
-			finisherGauge_ += value * attackData_.takeFinisherGaugeIncreaseAmount;
+			baseData_.finisherGauge_ += value * attackData_.takeFinisherGaugeIncreaseAmount;
 		}
 
-		if (finisherGaugePlayer > kPlayerMaxFinisherGauge)
+		if (finisherGaugePlayer > -baseData_.kMaxFinisherGauge_)
 		{
 			finisherGaugePlayer -= value;
 		}
@@ -1691,14 +1690,14 @@ void Enemy::AdjustFinisherGauge(float value)
 	}
 
 	//最大値に設定
-	if (finisherGauge_ > kMaxFinisherGauge)
+	if (baseData_.finisherGauge_ > baseData_.kMaxFinisherGauge_)
 	{
-		finisherGauge_ = kMaxFinisherGauge;
+		baseData_.finisherGauge_ = baseData_.kMaxFinisherGauge_;
 	}
 
-	if (finisherGaugePlayer < kPlayerMaxFinisherGauge)
+	if (finisherGaugePlayer < -baseData_.kMaxFinisherGauge_)
 	{
-		finisherGaugePlayer = kPlayerMaxFinisherGauge;
+		finisherGaugePlayer = -baseData_.kMaxFinisherGauge_;
 	}
 
 	player_->SetFinisherGauge(finisherGaugePlayer);
@@ -1706,13 +1705,11 @@ void Enemy::AdjustFinisherGauge(float value)
 
 void Enemy::Reset()
 {
-	const int kMaxHp = 100;
-
 	//リセット
 	BaseCharacter::Reset();
 
 	//HPの設定
-	hp_ = kMaxHp;
+	baseData_.hp_ = baseData_.kMaxHp_;
 
 	//パターンの初期化
 	patternCount_ = RandomMove();
@@ -1783,7 +1780,7 @@ void Enemy::DownAnimation()
 		}
 
 		//終了処理
-		if (!player_->GetIsLightPunch() && hp_ > 0)
+		if (!player_->GetIsLightPunch() && baseData_.hp_ > 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
@@ -1858,7 +1855,7 @@ void Enemy::DownAnimation()
 		}
 
 		//終了処理
-		if (!player_->GetIsHighPunch() && worldTransform_.translation.y <= 0.0f && hp_ > 0)
+		if (!player_->GetIsHighPunch() && worldTransform_.translation.y <= 0.0f && baseData_.hp_ > 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
@@ -1894,7 +1891,7 @@ void Enemy::DownAnimation()
 		}
 
 		//終了処理
-		if (!player_->GetIsTCMiddlePunch() && hp_ > 0)
+		if (!player_->GetIsTCMiddlePunch() && baseData_.hp_ > 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
@@ -1947,7 +1944,7 @@ void Enemy::DownAnimation()
 		}
 
 		//終了処理
-		if (!player_->GetIsTCHighPunch() && hp_ > 0)
+		if (!player_->GetIsTCHighPunch() && baseData_.hp_ > 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
@@ -1984,7 +1981,7 @@ void Enemy::DownAnimation()
 
 		//終了処理
 		const int kJumpAttaackEndTime = 35;
-		if (timerData_.downAnimationTimer < kJumpAttaackEndTime && hp_ > 0)
+		if (timerData_.downAnimationTimer < kJumpAttaackEndTime && baseData_.hp_ > 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
@@ -2021,7 +2018,7 @@ void Enemy::DownAnimation()
 		}
 
 		//終了処理
-		if (timerData_.downAnimationTimer < kDownTime && hp_ > 0)
+		if (timerData_.downAnimationTimer < kDownTime && baseData_.hp_ > 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
@@ -2092,7 +2089,7 @@ void Enemy::DownAnimation()
 		}
 
 		//終了処理
-		if (timerData_.downAnimationTimer < kDownTime && hp_ > 0)
+		if (timerData_.downAnimationTimer < kDownTime && baseData_.hp_ > 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
@@ -2180,7 +2177,7 @@ void Enemy::DownAnimation()
 		}
 
 		//終了処理
-		if (timerData_.downAnimationTimer < 0 && hp_ > 0)
+		if (timerData_.downAnimationTimer < 0 && baseData_.hp_ > 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
@@ -2217,7 +2214,7 @@ void Enemy::DownAnimation()
 		}
 
 		//終了処理
-		if (!player_->GetIsUppercut() && hp_ > 0)
+		if (!player_->GetIsUppercut() && baseData_.hp_ > 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
@@ -2286,7 +2283,7 @@ void Enemy::DownAnimation()
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
 				 worldTransform_.translation.y + particlePositionY,worldTransform_.translation.z });
 		}
-		else if(hp_ <= 0)
+		else if(baseData_.hp_ <= 0)
 		{
 			isKO_ = true;
 		}
@@ -2303,7 +2300,7 @@ void Enemy::DownAnimation()
 
 			//体力を減らす
 			const int dmage = 1;
-			hp_ -= dmage;
+			baseData_.hp_ -= dmage;
 		}
 
 		//3発目の攻撃時
@@ -2317,7 +2314,7 @@ void Enemy::DownAnimation()
 
 			//体力を減らす
 			const int dmage = 1;
-			hp_ -= dmage;
+			baseData_.hp_ -= dmage;
 		}
 
 		//終了処理
@@ -2332,7 +2329,7 @@ void Enemy::DownAnimation()
 
 	//KOの場合
 	const int kKOTime = 50;
-	if (timerData_.downAnimationTimer < kKOTime && hp_ <= 0)
+	if (timerData_.downAnimationTimer < kKOTime && baseData_.hp_ <= 0)
 	{
 		isKO_ = true;
 	}
@@ -2386,10 +2383,10 @@ int Enemy::RandomAttackOrMove()
 
 	//体力の半分
 	const int kDivisionFactor = 2;
-	const int kHalfHP = maxHp_ / kDivisionFactor;
+	const int kHalfHP = baseData_.kMaxHp_ / kDivisionFactor;
 
 	//体力に応じて行動をランダムで設定
-	if (hp_ >= kHalfHP)
+	if (baseData_.hp_ >= kHalfHP)
 	{
 		//前歩きか突進攻撃
 		actions = { kPatternCount_[2], kPatternCount_[2], kPatternCount_[3] };

@@ -59,24 +59,6 @@ public:
 	//スケール
 	void SetScale(const Vector3& scale) { worldTransform_.scale = scale; };
 
-	//体力
-	int const GetHP() const { return hp_; };
-	void SetHp(const int& hp) { hp_ = hp; };
-	void SetMaxHp(const int& maxHp) { maxHp_ = maxHp; };
-
-	//足の速さ
-	void SetFrontSpeed(const float& frontSpeed) { frontSpeed_ = frontSpeed; };
-	void SetBackSpeed(const float& backSpeed) { backSpeed_ = backSpeed; };
-
-	//ガードゲージ
-	void SetGuardGauge(const float& guardGauge) { guardGauge_ = guardGauge; };
-	void SetMaxGuardGauge(const float& maxGuardGauge) { maxGuardGauge_ = maxGuardGauge; };
-
-	//必殺技ゲージ
-	const float GetFinisherGauge() const { return finisherGauge_; };
-	void SetFinisherGauge(const float& finisherGauge) { finisherGauge_ = finisherGauge; };
-	void SetMaxFinisherGauge(const float& maxFinisherGauge) { maxFinisherGauge_ = maxFinisherGauge; };
-
 	//タグ
 	const std::string GetTag() const { return tag_; };
 	void SetTag(const std::string tag) { tag_ = tag; };
@@ -93,23 +75,6 @@ protected:
 
 	//タグ
 	std::string tag_;
-
-	//レベルエディターで設定できるキャラクターのパラメータ
-	//HP
-	int maxHp_ = 0;
-	int hp_ = 0;
-
-	//足の速さ
-	float frontSpeed_ = 0.0f;
-	float backSpeed_ = 0.0f;
-
-	//ガードゲージ
-	float maxGuardGauge_ = 0.0f;
-	float guardGauge_ = 0.0f;
-
-	//必殺技のゲージ
-	float maxFinisherGauge_ = 0.0f;
-	float finisherGauge_ = 0.0f;
 
 	//表示するかどうか
 	bool isVisible_ = false;

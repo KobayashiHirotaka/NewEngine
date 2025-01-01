@@ -48,31 +48,6 @@ public:
 
             //表示されているか
             bool isVisible;
-
-            struct CharacterData
-            {
-                //キャラクターごとのデータ
-                std::string type;
-
-                //体力
-                int hp;
-                int maxHp;
-
-                //足の速さ
-                float frontSpeed;
-                float backSpeed;
-
-                //ガードゲージ
-                float maxGuardGauge;
-                float guardGauge;
-
-                //必殺技ゲージ
-                float maxFinisherGauge;
-                float finisherGauge;
-            };
-
-            //キャラクターデータ
-            CharacterData characterData;
         };
 
         struct CameraObjectData

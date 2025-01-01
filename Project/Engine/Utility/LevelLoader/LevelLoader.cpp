@@ -118,56 +118,6 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 			objectData.isVisible = true;
 		}
 
-		//キャラクターのパラメータ
-		if (objectData.objectName == "Player" || objectData.objectName == "Enemy")
-		{
-			json& characterData = object["character_data"];
-
-			//体力
-			if (characterData.contains("hp"))
-			{
-				objectData.characterData.hp = (int)characterData["hp"];
-			}
-
-			if (characterData.contains("maxHp"))
-			{
-				objectData.characterData.maxHp = (int)characterData["maxHp"];
-			}
-	
-			//足の速さ
-			if (characterData.contains("frontSpeed")) 
-			{
-				objectData.characterData.frontSpeed = std::stof(characterData["frontSpeed"].get<std::string>());
-			}
-
-			if (characterData.contains("backSpeed")) 
-			{
-				objectData.characterData.backSpeed = std::stof(characterData["backSpeed"].get<std::string>());
-			}
-
-			//ガードゲージ
-			if (characterData.contains("guardGauge"))
-			{
-				objectData.characterData.guardGauge = std::stof(characterData["guardGauge"].get<std::string>());
-			}
-
-			if (characterData.contains("maxGuardGauge"))
-			{
-				objectData.characterData.maxGuardGauge = std::stof(characterData["maxGuardGauge"].get<std::string>());
-			}
-
-			//必殺技ゲージ
-			if (characterData.contains("finisherGauge"))
-			{
-				objectData.characterData.finisherGauge = std::stof(characterData["finisherGauge"].get<std::string>());
-			}
-
-			if (characterData.contains("maxFinisherGauge"))
-			{
-				objectData.characterData.maxFinisherGauge = std::stof(characterData["maxFinisherGauge"].get<std::string>());
-			}
-		}
-
 		json& transform = object["transform"];
 
 		//平行移動
@@ -256,18 +206,5 @@ void LevelLoader::CreateObjectsFromLevelData(const LevelData* levelData)
 
 		//表示するか
 		newObject->SetIsVisible(objectData.isVisible);
-
-		//キャラクターごとのパラメータ
-		if (objectData.objectName == "Player" || objectData.objectName == "Enemy")
-		{
-			newObject->SetHp(objectData.characterData.hp);
-			newObject->SetMaxHp(objectData.characterData.maxHp);
-			newObject->SetFrontSpeed(objectData.characterData.frontSpeed);
-			newObject->SetBackSpeed(objectData.characterData.backSpeed);
-			newObject->SetGuardGauge(objectData.characterData.guardGauge);
-			newObject->SetMaxGuardGauge(objectData.characterData.maxGuardGauge);
-			newObject->SetFinisherGauge(objectData.characterData.finisherGauge);
-			newObject->SetMaxFinisherGauge(objectData.characterData.maxFinisherGauge);
-		}
 	}
 }
