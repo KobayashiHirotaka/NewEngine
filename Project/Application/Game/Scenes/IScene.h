@@ -20,6 +20,7 @@
 #include "Engine/Utility/Collision/CollisionManager.h"
 #include "Engine/Utility/LevelLoader/LevelLoader.h"
 #include "Application/Game/Scenes/GameSceneUI.h"
+#include "Application/Game/Transition/Transition.h"
 #include <memory>
 
 class SceneManager;
@@ -52,4 +53,11 @@ public:
 protected:
 	//SceneManagerのポインタ
 	SceneManager* sceneManager_ = nullptr;
+
+	//Transitionのポインタ
+	std::unique_ptr<Transition> transition_ = nullptr;
+	
+	//Transition開始・終了フラグ
+	bool isTransitionStart_ = false;
+	bool isTransitionEnd_ = false;
 };

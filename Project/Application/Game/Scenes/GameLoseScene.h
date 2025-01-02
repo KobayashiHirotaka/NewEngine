@@ -11,9 +11,6 @@
 class GameLoseScene : public IScene
 {
 public:
-	//トランジション用の時間
-	static const int kTransitionTime = 60;
-
 	/// <summary>コンストラクタ</summary>
 	GameLoseScene();
 
@@ -57,7 +54,7 @@ private:
 	std::unique_ptr<Skydome> skydome_;
 
 	//Lose表示のSprite
-	std::unique_ptr<Sprite>loseSceneSprite_ = nullptr;
+	std::unique_ptr<Sprite> loseSceneSprite_ = nullptr;
 	uint32_t loseSceneTextureHandle_ = 0;
 
 	//サウンド
@@ -68,26 +65,6 @@ private:
 
 	//再生されているか
 	bool isPlayAudio_ = false;
-
-	//トランジション
-	//Sprite関係
-	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
-	uint32_t transitionTextureHandle_ = 0;
-	Vector2 transitionTextureSize_ = { 1280.0f,720.0f };
-	Vector4 transitionColor_ = { 0.0f,0.0f,0.0f,1.0f };
-
-	//トランジションタイマー
-	float transitionTimer_ = 0;
-
-	//トランジション開始時のアルファ値
-	const float kTransitionStartAlpha_ = 1.0f; 
-
-	//トランジション終了時のアルファ値
-	const float kTransitionEndAlpha_ = 0.0f;   
-
-	//トランジション開始・終了フラグ
-	bool isTransitionStart_ = false;
-	bool isTransitionEnd_ = false;
 };
 
 

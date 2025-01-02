@@ -21,9 +21,6 @@
 class GamePlayScene : public IScene
 {
 public:
-	//トランジション用の時間
-	static const int kTransitionTime = 60;
-
 	//ラウンド移行の時間
 	static int sMigrationTimer;
 
@@ -85,8 +82,6 @@ private:
 	/// <summary>操作説明の適用</summary>
 	void ApplyCommandSprite(int changeAmount);
 
-	//void HandleTransition();
-
 private:
 	//TextureManager
 	TextureManager* textureManager_ = nullptr;
@@ -145,44 +140,44 @@ private:
 	uint32_t onesTextureHandle_;
 
 	//Round表示のSprite
-	std::unique_ptr<Sprite>roundSprite_[3];
+	std::unique_ptr<Sprite> roundSprite_[3];
 	uint32_t roundTextureHandle_[3];
 
-	std::unique_ptr<Sprite>roundGetSprite_[4];
+	std::unique_ptr<Sprite> roundGetSprite_[4];
 	uint32_t roundGetTextureHandle_;
 
 	//試合開始時用のSprite(Fightの文字)
-	std::unique_ptr<Sprite>fightSprite_ = nullptr;
+	std::unique_ptr<Sprite> fightSprite_ = nullptr;
 	uint32_t fightTextureHandle_;
 
 	//KO表示用Sprite
-	std::unique_ptr<Sprite>koSprite_ = nullptr;
+	std::unique_ptr<Sprite> koSprite_ = nullptr;
 	uint32_t koTextureHandle_;
 
 	//勝敗に関するSprite
-	std::unique_ptr<Sprite>winSprite_ = nullptr;
+	std::unique_ptr<Sprite> winSprite_ = nullptr;
 	uint32_t winTextureHandle_;
 
-	std::unique_ptr<Sprite>loseSprite_ = nullptr;
+	std::unique_ptr<Sprite> loseSprite_ = nullptr;
 	uint32_t loseTextureHandle_;
 
-	std::unique_ptr<Sprite>timeOverSprite_ = nullptr;
+	std::unique_ptr<Sprite> timeOverSprite_ = nullptr;
 	uint32_t timeOverTextureHandle_;
 
 	//操作説明用のSprite
-	std::unique_ptr<Sprite>UICommandListSprite_ = nullptr;
+	std::unique_ptr<Sprite> UICommandListSprite_ = nullptr;
 	uint32_t UICommandListTextureHandle_ = 0;
 
 	//基本操作説明用のSprite
-	std::unique_ptr<Sprite>generalCommandListSprite_ = nullptr;
+	std::unique_ptr<Sprite> generalCommandListSprite_ = nullptr;
 	uint32_t generalCommandListTextureHandle_ = 0;
 
 	//攻撃操作説明用のSprite
-	std::unique_ptr<Sprite>attackCommandListSprite_[2];
+	std::unique_ptr<Sprite> attackCommandListSprite_[2];
 	uint32_t attackCommandListTextureHandle_[2];
 
 	//UI枠のSprite
-	std::unique_ptr<Sprite>frameUISprite_ = nullptr;
+	std::unique_ptr<Sprite> frameUISprite_ = nullptr;
 	uint32_t frameUITextureHandle_ = 0;
 
 	//何枚目のSpriteが表示されているか
@@ -222,25 +217,6 @@ private:
 	//サウンド
 	uint32_t selectSoundHandle_ = 0u;
 	const float volume_ = 1.0f;
-
-	//トランジション
-	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
-	uint32_t transitionTextureHandle_ = 0;
-	Vector2 transitionTextureSize_ = { 1280.0f,720.0f };
-	Vector4 transitionColor_ = { 0.0f,0.0f,0.0f,1.0f };
-	
-	//トランジションタイマー
-	float transitionTimer_ = 0;
-
-	//トランジション開始時のアルファ値
-	const float kTransitionStartAlpha_ = 1.0f;
-
-	//トランジション終了時のアルファ値
-	const float kTransitionEndAlpha_ = 0.0f;
-
-	//トランジション開始・終了フラグ
-	bool isTransitionStart_ = false;
-	bool isTransitionEnd_ = false;
 
 	//ラウンド間のトランジション
 	bool isRoundTransition_ = false;

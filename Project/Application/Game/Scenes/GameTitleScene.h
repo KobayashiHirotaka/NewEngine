@@ -25,9 +25,6 @@ public:
 	    FinisherAttackCommandSprite,
 	};
 
-	//Transition用の時間
-	static const int kTransitionTime = 60;
-
 	/// <summary>コンストラクタ</summary>
 	GameTitleScene();
 
@@ -81,7 +78,7 @@ private:
 	bool isDebugCamera_ = false;
 
 	//タイトル(モノクロファイター)のSprite
-	std::unique_ptr<Sprite>titleSprite_ = nullptr;
+	std::unique_ptr<Sprite> titleSprite_ = nullptr;
 	uint32_t titleTextureHandle_ = 0;
 	Vector2 titleSpritePosition_ = { 0.0f,-25.0f };
 	float titleSpriteMoveSpeed_ = 1.5f;
@@ -90,15 +87,15 @@ private:
 	int titleSpriteMoveTimer_ = kMaxSpriteMoveTime_;
 
 	//タイトル(操作用)のSprite
-	std::unique_ptr<Sprite>titleUISprite_ = nullptr;
+	std::unique_ptr<Sprite> titleUISprite_ = nullptr;
 	uint32_t titleUITextureHandle_ = 0;
 
 	//基本操作説明用のSprite
-	std::unique_ptr<Sprite>generalCommandListSprite_ = nullptr;
+	std::unique_ptr<Sprite> generalCommandListSprite_ = nullptr;
 	uint32_t generalCommandListTextureHandle_ = 0;
 
 	//攻撃操作説明用のSprite
-	std::unique_ptr<Sprite>attackCommandListSprite_[2];
+	std::unique_ptr<Sprite> attackCommandListSprite_[2];
 	uint32_t attackCommandListTextureHandle_[2];
 
 	//サウンド
@@ -116,26 +113,6 @@ private:
 
 	//操作説明が開かれているか
 	bool isOpen_ = false;
-
-	//トランジション
-	//Sprite関係
-	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
-	uint32_t transitionTextureHandle_ = 0;
-	Vector2 transitionTextureSize_ = { 1280.0f,720.0f };
-	Vector4 transitionColor_ = { 0.0f,0.0f,0.0f,1.0f };
-
-	//トランジションタイマー
-	float transitionTimer_ = 0;
-
-	//トランジション開始時のアルファ値
-	const float kTransitionStartAlpha_ = 1.0f;
-
-	//トランジション終了時のアルファ値
-	const float kTransitionEndAlpha_ = 0.0f;
-
-	//トランジション開始・終了フラグ
-	bool isTransitionStart_ = false;
-	bool isTransitionEnd_ = false;
 
 	//Skydome
 	std::unique_ptr<Skydome> skydome_;

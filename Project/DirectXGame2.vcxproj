@@ -36,6 +36,7 @@
     <ClCompile Include="Application\Game\Scenes\GameWinScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\Manager\GameManager.cpp" />
     <ClCompile Include="Application\Game\Scenes\SceneFactory.cpp" />
+    <ClCompile Include="Application\Game\Transition\Transition.cpp" />
     <ClCompile Include="Engine\2D\Sprite\Sprite.cpp" />
     <ClCompile Include="Engine\3D\Camera\Camera.cpp" />
     <ClCompile Include="Engine\3D\Camera\DebugCamera.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Application\Game\Scenes\IScene.h" />
     <ClInclude Include="Application\Game\Scenes\Manager\GameManager.h" />
     <ClInclude Include="Application\Game\Scenes\SceneFactory.h" />
+    <ClInclude Include="Application\Game\Transition\Transition.h" />
     <ClInclude Include="Engine\2D\Sprite\Sprite.h" />
     <ClInclude Include="Engine\2D\Sprite\UI.h" />
     <ClInclude Include="Engine\3D\Camera\Camera.h" />

@@ -277,6 +277,12 @@
     <Filter Include="ソース ファイル\Project\Game\AttackEditor">
       <UniqueIdentifier>{429f36ca-b8b5-4459-97d9-ecfceec82a7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Project\Game\Transition">
+      <UniqueIdentifier>{e2b4a5cf-906c-4a32-a292-1823f3d72a05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\Game\Transition">
+      <UniqueIdentifier>{33e823a9-2267-4b6d-b681-03dbcff5d665}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -482,6 +488,9 @@
     </ClCompile>
     <ClCompile Include="Application\Game\AttackEditor\AttackEditor.cpp">
       <Filter>ソース ファイル\Project\Game\AttackEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Transition\Transition.cpp">
+      <Filter>ソース ファイル\Project\Game\Transition</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -745,6 +754,9 @@
     </ClInclude>
     <ClInclude Include="Application\Game\AttackEditor\AttackEditor.h">
       <Filter>ヘッダー ファイル\Project\Game\AttackEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Transition\Transition.h">
+      <Filter>ヘッダー ファイル\Project\Game\Transition</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

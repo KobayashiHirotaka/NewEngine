@@ -63,10 +63,9 @@ void GameTitleScene::Initialize()
 	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("resource/images/PlayFinisherAttackCommandList.png");
 	attackCommandListSprite_[1].reset(Sprite::Create(attackCommandListTextureHandle_[1], { 0.0f,0.0f }));
 
-	//トランジション用のSprite
-	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
-	transitionSprite_->SetColor(transitionColor_);
-	transitionSprite_->SetSize(transitionTextureSize_);
+	//Transition生成、初期化
+	transition_ = std::make_unique<Transition>();
+	transition_->Initialize();
 
 	//BGM,SEの読み込み
 	titleSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/BGM.mp3");
@@ -105,7 +104,7 @@ void GameTitleScene::Update()
 	//シーン切り替え
 	if (input_->GetJoystickState() && !isOpen_)
 	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isTransitionEnd_)
 		{
 			isTransitionStart_ = true;
 
@@ -118,34 +117,11 @@ void GameTitleScene::Update()
 		}
 	}
 
-	//トランジション
-	const float deltaTime = 1.0f / kTransitionTime;
+	//Transition終了処理
+	transition_->EndTransition(isTransitionEnd_);
 
-	if (!isTransitionEnd_)
-	{
-		transitionTimer_ += deltaTime;
-		transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, transitionTimer_);
-		transitionSprite_->SetColor(transitionColor_);
-
-		if (transitionColor_.w <= kTransitionEndAlpha_)
-		{
-			isTransitionEnd_ = true;
-			transitionTimer_ = 0.0f;
-		}
-	}
-
-	if (isTransitionStart_)
-	{
-		transitionTimer_ += deltaTime;
-		transitionColor_.w = Lerp(transitionColor_.w, kTransitionStartAlpha_, transitionTimer_);
-		transitionSprite_->SetColor(transitionColor_);
-
-		if (transitionColor_.w >= kTransitionStartAlpha_)
-		{
-			sceneManager_->ChangeScene("GamePlayScene");
-			return;
-		}
-	}
+	//Transition開始処理
+	transition_->StartTransition(isTransitionStart_, sceneManager_, "GamePlayScene");
 
 	//Camera、DebugCameraの処理
 	debugCamera_.Update();
@@ -228,8 +204,8 @@ void GameTitleScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	//トランジション
-	transitionSprite_->Draw();
+	//Transition用Spriteの描画
+	transition_->Draw();
 
 	Sprite::PostDraw();
 };

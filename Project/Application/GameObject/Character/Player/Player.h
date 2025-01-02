@@ -184,7 +184,7 @@ private:
 	Enemy* enemy_ = nullptr;
 
 	//当たり判定
-	std::unique_ptr<Collider>collider_ = nullptr;
+	std::unique_ptr<Collider> collider_ = nullptr;
 	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 
 	//カーソル
@@ -226,10 +226,10 @@ private:
 	uint32_t playerIconTextureHandle_ = 0;
 
 	//Sprite(コンボ表示)
-	std::unique_ptr<Sprite>hitSprite_ = nullptr;
+	std::unique_ptr<Sprite> hitSprite_ = nullptr;
 	uint32_t hitTextureHandle_;
 
-	std::unique_ptr<Sprite>comboNumSprite_ = nullptr;
+	std::unique_ptr<Sprite> comboNumSprite_ = nullptr;
 	uint32_t comboNumTextureHandle_;
 
 	//サウンド
