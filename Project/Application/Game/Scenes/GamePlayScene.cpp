@@ -833,8 +833,9 @@ void GamePlayScene::HandleDrow(bool isTimeOver)
 	}
 }
 
-void GamePlayScene::RoundTransition(int round)
+void GamePlayScene::ChangeRound(int round)
 {
+	//ラウンド間のトランジション処理
 	transition_->RoundTransition(isRoundTransition_);
 
 	//ラウンド間の初期化処理

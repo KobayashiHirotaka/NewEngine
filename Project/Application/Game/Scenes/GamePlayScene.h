@@ -70,8 +70,8 @@ private:
 	/// <summary>Drowだったときの処理</summary>
 	void HandleDrow(bool isTimeOver);
 
-	/// <summary>ラウンド間でのトランジション</summary>
-	void RoundTransition(int round);
+	/// <summary>ラウンドの変更処理</summary>
+	void ChangeRound(int round);
 
 	/// <summary>操作説明の更新</summary>
 	void UpdateCommandSprite();

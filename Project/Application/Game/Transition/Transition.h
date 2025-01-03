@@ -21,13 +21,13 @@ public:
 	/// <summary>描画</summary>
 	void Draw();
 
-	/// <summary>SceneTransitionの開始処理</summary>
+	/// <summary>シーン間のTransitionの開始処理</summary>
 	void StartSceneTransition(bool& isTransitionStart, SceneManager* sceneManager, const std::string& nextScene);
 
-	/// <summary>SceneTransitionの終了処理</summary>
+	/// <summary>シーン間のTransitionの終了処理</summary>
 	void EndSceneTransition(bool& isTransitionEnd);
 
-	/// <summary>RoundTransitionの処理</summary>
+	/// <summary>ラウンド間のTransitionの処理</summary>
 	void RoundTransition(bool &isRoundTransition);
 
 	//Getter
@@ -43,7 +43,7 @@ private:
 	Vector2 transitionTextureSize_ = { 1280.0f,720.0f };
 	Vector4 transitionColor_ = { 0.0f,0.0f,0.0f,1.0f };
 
-	//Transition用の時間
+	//シーン間のTransition用の時間
 	static const int kSceneTransitionTime = 60;
 	const float kDeltaTime = 1.0f / 60.0f;
 	float sceneTransitionTimer_ = 0;
@@ -54,7 +54,7 @@ private:
 	//Transition終了時のアルファ値
 	const float kTransitionEndAlpha_ = 0.0f;
 
-	//RoundTransition用の時間
+	//ラウンド間のTransition用の時間
 	const int kRoundTransitionTime_ = 150;
 	const int kHalfkRoundTransitionTime_ = kRoundTransitionTime_ / 2;
 	int roundTransitionTimer_ = kRoundTransitionTime_;
