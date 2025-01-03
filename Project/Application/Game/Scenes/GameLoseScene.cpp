@@ -28,6 +28,10 @@ void GameLoseScene::Initialize()
 	//Audioのインスタンスの取得
 	audio_ = Audio::GetInstance();
 
+	//PostEffectの切り替え
+	PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+	PostProcess::GetInstance()->SetIsVignetteActive(false);
+
 	//Skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
@@ -83,10 +87,10 @@ void GameLoseScene::Update()
 	}
 
 	//Transition終了処理
-	transition_->EndTransition(isTransitionEnd_);
+	transition_->EndSceneTransition(isTransitionEnd_);
 
 	//Transition開始処理
-	transition_->StartTransition(isTransitionStart_, sceneManager_, "GameTitleScene");
+	transition_->StartSceneTransition(isTransitionStart_, sceneManager_, "GameTitleScene");
 
 	//Camera、DebugCameraの処理
 	debugCamera_.Update();

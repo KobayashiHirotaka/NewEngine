@@ -21,11 +21,20 @@ public:
 	/// <summary>描画</summary>
 	void Draw();
 
-	/// <summary>Transitionの開始処理</summary>
-	void StartTransition(bool& isTransitionStart, SceneManager* sceneManager, const std::string& nextScene);
+	/// <summary>SceneTransitionの開始処理</summary>
+	void StartSceneTransition(bool& isTransitionStart, SceneManager* sceneManager, const std::string& nextScene);
 
-	/// <summary>Transitionの終了処理</summary>
-	void EndTransition(bool& isTransitionEnd);
+	/// <summary>SceneTransitionの終了処理</summary>
+	void EndSceneTransition(bool& isTransitionEnd);
+
+	/// <summary>RoundTransitionの処理</summary>
+	void RoundTransition(bool &isRoundTransition);
+
+	//Getter
+	bool GetIsRoundTransitioning() { return isRoundTransitioning_; };
+
+	//Setter
+	void SetIsRoundTransitioning(bool isRoundTransitioning) { isRoundTransitioning_ = isRoundTransitioning; };
 
 private:
 	//Sprite関係
@@ -35,14 +44,22 @@ private:
 	Vector4 transitionColor_ = { 0.0f,0.0f,0.0f,1.0f };
 
 	//Transition用の時間
-	static const int kTransitionTime = 60;
-	const float kDeltaTime = 1.0f / kTransitionTime;
-	float transitionTimer_ = 0;
+	static const int kSceneTransitionTime = 60;
+	const float kDeltaTime = 1.0f / 60.0f;
+	float sceneTransitionTimer_ = 0;
 
 	//Transition開始時のアルファ値
 	const float kTransitionStartAlpha_ = 1.0f;
 
 	//Transition終了時のアルファ値
 	const float kTransitionEndAlpha_ = 0.0f;
+
+	//RoundTransition用の時間
+	const int kRoundTransitionTime_ = 150;
+	const int kHalfkRoundTransitionTime_ = kRoundTransitionTime_ / 2;
+	int roundTransitionTimer_ = kRoundTransitionTime_;
+
+	//RoundTranisiton中かどうか
+	bool isRoundTransitioning_ = false;
 };
 

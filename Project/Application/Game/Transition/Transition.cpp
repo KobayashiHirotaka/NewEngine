@@ -22,13 +22,13 @@ void Transition::Draw()
 	transitionSprite_->Draw();
 }
 
-void Transition::StartTransition(bool& isTransitionStart, SceneManager* sceneManager, const std::string& nextScene)
+void Transition::StartSceneTransition(bool& isTransitionStart, SceneManager* sceneManager, const std::string& nextScene)
 {
 	//Transitionの開始処理
 	if (isTransitionStart)
 	{
-		transitionTimer_ += kDeltaTime;
-		transitionColor_.w = Lerp(transitionColor_.w, kTransitionStartAlpha_, transitionTimer_);
+		sceneTransitionTimer_ += kDeltaTime;
+		transitionColor_.w = Lerp(transitionColor_.w, kTransitionStartAlpha_, sceneTransitionTimer_);
 		transitionSprite_->SetColor(transitionColor_);
 
 		if (transitionColor_.w >= kTransitionStartAlpha_)
@@ -39,19 +39,53 @@ void Transition::StartTransition(bool& isTransitionStart, SceneManager* sceneMan
 	}
 }
 
-void Transition::EndTransition(bool& isTransitionEnd)
+void Transition::EndSceneTransition(bool& isTransitionEnd)
 {
 	//Transitionの終了処理
 	if (!isTransitionEnd)
 	{
-		transitionTimer_ += kDeltaTime;
-		transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, transitionTimer_);
+		sceneTransitionTimer_ += kDeltaTime;
+		transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, sceneTransitionTimer_);
 		transitionSprite_->SetColor(transitionColor_);
 
 		if (transitionColor_.w <= kTransitionEndAlpha_)
 		{
 			isTransitionEnd = true;
-			transitionTimer_ = 0.0f;
+			sceneTransitionTimer_ = 0.0f;
+		}
+	}
+}
+
+void Transition::RoundTransition(bool& isRoundTransition)
+{
+	if (isRoundTransition)
+	{
+		roundTransitionTimer_ --;
+
+		//トランジション
+		const float kLerpSpeed = 0.1f;
+		const int kTransitionOffset = 10;
+
+		if (roundTransitionTimer_ > kHalfkRoundTransitionTime_)
+		{
+			transitionColor_.w = Lerp(transitionColor_.w, kTransitionStartAlpha_, kLerpSpeed);
+			transitionSprite_->SetColor(transitionColor_);
+		}
+		else if (roundTransitionTimer_ <= kHalfkRoundTransitionTime_ - kTransitionOffset && roundTransitionTimer_ > 0)
+		{
+			transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, kLerpSpeed);
+			transitionSprite_->SetColor(transitionColor_);
+		}
+		else if (roundTransitionTimer_ <= 0)
+		{
+			isRoundTransition = false;
+			roundTransitionTimer_ = kRoundTransitionTime_;
+		}
+
+		//ラウンド間の初期化処理
+		if (roundTransitionTimer_ == kHalfkRoundTransitionTime_)
+		{
+			isRoundTransitioning_ = true;
 		}
 	}
 }

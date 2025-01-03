@@ -118,10 +118,10 @@ void GameTitleScene::Update()
 	}
 
 	//Transition終了処理
-	transition_->EndTransition(isTransitionEnd_);
+	transition_->EndSceneTransition(isTransitionEnd_);
 
 	//Transition開始処理
-	transition_->StartTransition(isTransitionStart_, sceneManager_, "GamePlayScene");
+	transition_->StartSceneTransition(isTransitionStart_, sceneManager_, "GamePlayScene");
 
 	//Camera、DebugCameraの処理
 	debugCamera_.Update();

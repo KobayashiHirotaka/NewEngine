@@ -218,16 +218,11 @@ private:
 	uint32_t selectSoundHandle_ = 0u;
 	const float volume_ = 1.0f;
 
-	//ラウンド間のトランジション
-	bool isRoundTransition_ = false;
-	const int kRoundTransitionTime_ = 150;
-	const int kHalfkRoundTransitionTime_ = kRoundTransitionTime_ / 2;
-	int roundTransitionTimer_ = kRoundTransitionTime_;
-
 	//モデルの骨を描画するかどうか
 	bool isBoneDraw_ = true;
 
 	//ラウンド
+	bool isRoundTransition_ = false;
 	static const int kRoundOne_ = 1;
 	static const int kRoundTwo_ = 2;
 	static const int kRoundThree_ = 3;

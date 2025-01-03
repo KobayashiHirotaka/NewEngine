@@ -647,15 +647,13 @@ void GamePlayScene::HandleGameOutcome()
 	}
 	
 	//Transition終了処理
-	transition_->EndTransition(isTransitionEnd_);
+	transition_->EndSceneTransition(isTransitionEnd_);
 
 	//Playerが勝利したとき
 	if (playerWinCount_ == kPlayerSecondWinCount_)
 	{
 		isTransitionStart_ = true;
-		PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-		PostProcess::GetInstance()->SetIsVignetteActive(false);
-		transition_->StartTransition(isTransitionStart_, sceneManager_, "GameWinScene");
+		transition_->StartSceneTransition(isTransitionStart_, sceneManager_, "GameWinScene");
 		return;
 	}
 
@@ -663,9 +661,7 @@ void GamePlayScene::HandleGameOutcome()
 	if (enemyWinCount_ == kEnemySecondWinCount_)
 	{
 		isTransitionStart_ = true;
-		PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-		PostProcess::GetInstance()->SetIsVignetteActive(false);
-		transition_->StartTransition(isTransitionStart_, sceneManager_, "GameLoseScene");
+		transition_->StartSceneTransition(isTransitionStart_, sceneManager_, "GameLoseScene");
 		return;
 	}
 
@@ -839,66 +835,37 @@ void GamePlayScene::HandleDrow(bool isTimeOver)
 
 void GamePlayScene::RoundTransition(int round)
 {
-	(void)round;
-	//if (isRoundTransition_)
-	//{
-	//	//トランジションタイマーの処理
-	//	roundTransitionTimer_--;
+	transition_->RoundTransition(isRoundTransition_);
 
-	//	//トランジション
-	//	const float kLerpSpeed = 0.1f;
-	//	const int kTransitionOffset = 10;
-	//	if (roundTransitionTimer_ > kHalfkRoundTransitionTime_)
-	//	{
-	//		transitionColor_.w = Lerp(transitionColor_.w, kTransitionStartAlpha_, kLerpSpeed);
-	//		transitionSprite_->SetColor(transitionColor_);
-	//	}
-	//	else if (roundTransitionTimer_ <= kHalfkRoundTransitionTime_ - kTransitionOffset && roundTransitionTimer_ > 0)
-	//	{
-	//		if (playerWinCount_ == kPlayerSecondWinCount_ || enemyWinCount_ == kEnemySecondWinCount_)
-	//		{
-	//			isTransitionStart_ = true;
-	//		}
-	//		else
-	//		{
-	//			transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, kLerpSpeed);
-	//			transitionSprite_->SetColor(transitionColor_);
-	//		}
-	//	}
-	//	else if (roundTransitionTimer_ <= 0)
-	//	{
-	//		isRoundTransition_ = false;
-	//		roundTransitionTimer_ = kRoundTransitionTime_;
-	//	}
+	//ラウンド間の初期化処理
+	if (transition_->GetIsRoundTransitioning())
+	{
+		//勝敗を元に戻す
+		isPlayerWin_ = false;
+		isDrow_ = false;
+		isTimeOver_ = false;
+		round_ = round;
 
-	//	//ラウンド間の初期化処理
-	//	if (roundTransitionTimer_ == kHalfkRoundTransitionTime_)
-	//	{
-	//		//勝敗を元に戻す
-	//		isPlayerWin_ = false;
-	//		isDrow_ = false;
-	//		isTimeOver_ = false;
-	//		round_ = round;
+		//キャラクターのリセット
+		player_->Reset();
+		enemy_->Reset();
 
-	//		//キャラクターのリセット
-	//		player_->Reset();
-	//		enemy_->Reset();
+		//時間の設定
+		currentSeconds_ = kMaxRoundTime_;
+		UpdateNumberSprite();
 
-	//		//時間の設定
-	//		currentSeconds_ = kMaxRoundTime_;
-	//		UpdateNumberSprite();
+		sMigrationTimer = kMaxMigrationTime_;
 
-	//		sMigrationTimer = kMaxMigrationTime_;
+		const float deltaTime = 1.0f / 60.0f;
+		frameTime_ = deltaTime;
+		elapsedTime_ = 0.0f;
 
-	//		const float deltaTime = 1.0f / 60.0f;
-	//		frameTime_ = deltaTime;
-	//		elapsedTime_ = 0.0f;
+		sRoundStartTimer_ = kMaxRoundStartTime_;
 
-	//		sRoundStartTimer_ = kMaxRoundStartTime_;
+		//PostEffectの設定
+		PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+		PostProcess::GetInstance()->SetIsVignetteActive(false);
 
-	//		//PostEffectの設定
-	//		PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-	//		PostProcess::GetInstance()->SetIsVignetteActive(false);
-	//	}
-	//}
+		transition_->SetIsRoundTransitioning(false);
+	}
 }
