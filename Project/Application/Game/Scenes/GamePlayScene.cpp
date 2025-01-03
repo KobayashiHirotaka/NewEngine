@@ -684,7 +684,7 @@ void GamePlayScene::HandleGameOutcome()
 			nextRound = kRoundThree_;
 		}
 
-		RoundTransition(nextRound);
+		ChangeRound(nextRound);
 	}
 }
 
