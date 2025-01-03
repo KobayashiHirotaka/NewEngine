@@ -127,6 +127,9 @@ private:
 	/// <summary>コンボされているとき</summary>
 	void HitCombo();
 
+	/// <summary>コンボカウントの更新</summary>
+	void ComboCountUpdate(const int kRecoveryTime);
+
 
 	/// <summary>弾を発射</summary>
 	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);

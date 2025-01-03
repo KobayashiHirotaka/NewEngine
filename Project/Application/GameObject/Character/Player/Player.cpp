@@ -2500,67 +2500,12 @@ void Player::HitCombo()
 	//強
 	const int kHeavyRecoveryTime = 120;
 
-	//TODO:冗長的なコードなので改善する
 	//コンボを食らっているとき
-	//始動技がジャンプ攻撃の場合
-	if (characterState_.isHitJumpAttack && comboCount_ == 0)
-	{
-		firstAttack_ = "JumpAttack";
-		comboCount_ = kComboCount_[1];
-		timerData_.comboTimer = kMiddleRecoveryTime;
-		timerData_.comboTimer--;
-	}
-
-	if (firstAttack_ == "JumpAttack")
-	{
-		//弱パンチ
-		if (characterState_.isHitLightPunch && comboCount_ == kComboCount_[1])
-		{
-			comboCount_ = kComboCount_[2];
-			timerData_.comboTimer = kMiddleRecoveryTime;
-			timerData_.comboTimer--;
-		}
-
-		//TC中パンチ
-		if (characterState_.isHitTCMiddlePunch && comboCount_ == kComboCount_[2])
-		{
-			comboCount_ = kComboCount_[3];
-			timerData_.comboTimer = kMiddleRecoveryTime;
-			timerData_.comboTimer--;
-		}
-
-		//TC強パンチ
-		if (characterState_.isHitTCHighPunch && comboCount_ == kComboCount_[2])
-		{
-			comboCount_ = kComboCount_[4];
-			timerData_.comboTimer = kMiddleRecoveryTime;
-			timerData_.comboTimer--;
-		}
-
-		//強パンチ
-		if (characterState_.isHitHighPunch && comboCount_ == kComboCount_[3])
-		{
-			comboCount_ = kComboCount_[4];
-			timerData_.comboTimer = kHeavyRecoveryTime;
-			timerData_.comboTimer--;
-		}
-
-		//タックル
-		if (characterState_.isHitTackle && comboCount_ == kComboCount_[4])
-		{
-			comboCount_ = kComboCount_[5];
-			timerData_.comboTimer = kMiddleRecoveryTime;
-			timerData_.comboTimer--;
-		}
-	}
-
 	//始動技が弱攻撃の場合
 	if (characterState_.isHitLightPunch && comboCount_ == 0)
 	{
 		firstAttack_ = "LightPunch";
-		comboCount_ = kComboCount_[1];
-		timerData_.comboTimer = kLightRecoveryTime;
-		timerData_.comboTimer--;
+		ComboCountUpdate(kLightRecoveryTime);
 	}
 
 	if (firstAttack_ == "LightPunch")
@@ -2568,33 +2513,25 @@ void Player::HitCombo()
 		//TC中パンチ
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == kComboCount_[1])
 		{
-			comboCount_ = kComboCount_[2];
-			timerData_.comboTimer = kMiddleRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kMiddleRecoveryTime);
 		}
 
 		//TC強パンチ
 		if (characterState_.isHitTCHighPunch && comboCount_ == kComboCount_[2])
 		{
-			comboCount_ = kComboCount_[3];
-			timerData_.comboTimer = kMiddleRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kMiddleRecoveryTime);
 		}
 
 		//強パンチ
 		if (characterState_.isHitHighPunch && comboCount_ == kComboCount_[2])
 		{
-			comboCount_ = kComboCount_[3];
-			timerData_.comboTimer = kHeavyRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kHeavyRecoveryTime);
 		}
 
 		//タックル
 		if (characterState_.isHitTackle && comboCount_ == kComboCount_[3])
 		{
-			comboCount_ = kComboCount_[4];
-			timerData_.comboTimer = kMiddleRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kMiddleRecoveryTime);
 		}
 	}
 
@@ -2611,6 +2548,12 @@ void Player::HitCombo()
 		comboCount_ = 0;
 		firstAttack_ = "";
 	}
+}
+
+void Player::ComboCountUpdate(const int kRecoveryTime)
+{
+	comboCount_++;
+	timerData_.comboTimer = kRecoveryTime;
 }
 
 Vector3 Player::GetWorldPosition()

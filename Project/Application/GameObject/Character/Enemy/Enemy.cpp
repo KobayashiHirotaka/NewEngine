@@ -147,6 +147,12 @@ void Enemy::Update()
 
 #endif
 
+	if (input_->PushKey(DIK_L))
+	{
+		comboCount_ = 4;
+		timerData_.comboTimer = 60;
+	}
+
 	//更新
 	BaseCharacter::Update();
 
@@ -2479,15 +2485,12 @@ void Enemy::HitCombo()
 	const int kFinisherFourAttackRecoveryTime = 220;
 	const int kFinisherFiveAttackRecoveryTime = 210;
 
-	//TODO:冗長的なコードなので改善する
 	//コンボを食らっているとき
 	//始動技がジャンプ攻撃の場合
 	if (characterState_.isHitJumpAttack && comboCount_ == 0)
 	{
 		firstAttack_ = "JumpAttack";
-		comboCount_ = kComboCount_[1];
-		timerData_.comboTimer = kJumpAttackRecoveryTime;
-		timerData_.comboTimer--;
+		ComboCountUpdate(kJumpAttackRecoveryTime);
 	}
 
 	if (firstAttack_ == "JumpAttack")
@@ -2495,33 +2498,25 @@ void Enemy::HitCombo()
 		//弱パンチ
 		if (characterState_.isHitLightPunch && comboCount_ == kComboCount_[1])
 		{
-			comboCount_ = kComboCount_[2];
-			timerData_.comboTimer = kLightPunchRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kLightPunchRecoveryTime);
 		}
 
 		//TC中パンチ
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == kComboCount_[2])
 		{
-			comboCount_ = kComboCount_[3];
-			timerData_.comboTimer = kTCMiddlePunchRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kTCMiddlePunchRecoveryTime);
 		}
 
 		//アッパー
 		if (characterState_.isHitUppercut && comboCount_ == kComboCount_[3])
 		{
-			comboCount_ = kComboCount_[4];
-			timerData_.comboTimer = kUpperCutRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kUpperCutRecoveryTime);
 		}
 
 		//必殺技(1段目)
 		if (characterState_.isHitFinisherFirstAttack && comboCount_ == kComboCount_[4])
 		{
-			comboCount_ = kComboCount_[5];
-			timerData_.comboTimer = kFinisherFirstAttackRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kFinisherFirstAttackRecoveryTime);
 		}
 
 		//必殺技(2段目)
@@ -2554,33 +2549,25 @@ void Enemy::HitCombo()
 		//タックル
 		if (characterState_.isHitTackle && comboCount_ == kComboCount_[8])
 		{
-			comboCount_ = kComboCount_[9];
-			timerData_.comboTimer = kTackleRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kTackleRecoveryTime);
 		}
 
 		//TC強パンチ
 		if (characterState_.isHitTCHighPunch && comboCount_ == kComboCount_[3])
 		{
-			comboCount_ = kComboCount_[4];
-			timerData_.comboTimer = kTCHighPunchRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kTCHighPunchRecoveryTime);
 		}
 
 		//強パンチ
 		if (characterState_.isHitHighPunch && comboCount_ == kComboCount_[3])
 		{
-			comboCount_ = kComboCount_[4];
-			timerData_.comboTimer = kHighPunchRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kHighPunchRecoveryTime);
 		}
 
 		//TCタックル
 		if (characterState_.isHitTackle && comboCount_ == kComboCount_[4])
 		{
-			comboCount_ = kComboCount_[5];
-			timerData_.comboTimer = kHighPunchRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kHighPunchRecoveryTime);
 		}
 	}
 
@@ -2588,9 +2575,7 @@ void Enemy::HitCombo()
 	if (characterState_.isHitLightPunch && comboCount_ == 0)
 	{
 		firstAttack_ = "LightPunch";
-		comboCount_ = kComboCount_[1];
-		timerData_.comboTimer = kLightPunchRecoveryTime;
-		timerData_.comboTimer--;
+		ComboCountUpdate(kLightPunchRecoveryTime);
 	}
 
 	if (firstAttack_ == "LightPunch")
@@ -2598,33 +2583,25 @@ void Enemy::HitCombo()
 		//TC中パンチ
 		if (characterState_.isHitTCMiddlePunch && comboCount_ == kComboCount_[1])
 		{
-			comboCount_ = kComboCount_[2];
-			timerData_.comboTimer = kTCMiddlePunchRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kTCMiddlePunchRecoveryTime);
 		}
 
 		//TC強パンチ
 		if (characterState_.isHitTCHighPunch && comboCount_ == kComboCount_[2])
 		{
-			comboCount_ = kComboCount_[3];
-			timerData_.comboTimer = kTCHighPunchRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kTCHighPunchRecoveryTime);
 		}
 
 		//アッパー
 		if (characterState_.isHitUppercut && comboCount_ == kComboCount_[2])
 		{
-			comboCount_ = kComboCount_[3];
-			timerData_.comboTimer = kUpperCutRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kUpperCutRecoveryTime);
 		}
 
 		//必殺技(1段目)
 		if (characterState_.isHitFinisherFirstAttack && comboCount_ == kComboCount_[3])
 		{
-			comboCount_ = kComboCount_[4];
-			timerData_.comboTimer = kFinisherFirstAttackRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kFinisherFirstAttackRecoveryTime);
 		}
 
 		//必殺技(2段目)
@@ -2657,25 +2634,19 @@ void Enemy::HitCombo()
 		//タックル
 		if (characterState_.isHitTackle && comboCount_ == kComboCount_[7])
 		{
-			comboCount_ = kComboCount_[8];
-			timerData_.comboTimer = kTackleRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kTackleRecoveryTime);
 		}
 
 		//強攻撃
 		if (characterState_.isHitHighPunch && comboCount_ == kComboCount_[2])
 		{
-			comboCount_ = kComboCount_[3];
-			timerData_.comboTimer = kHighPunchRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kHighPunchRecoveryTime);
 		}
 
 		//タックル
 		if (characterState_.isHitTackle && comboCount_ == kComboCount_[3])
 		{
-			comboCount_ = kComboCount_[4];
-			timerData_.comboTimer = kTackleRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kTackleRecoveryTime);
 		}
 	}
 
@@ -2683,9 +2654,7 @@ void Enemy::HitCombo()
 	if (characterState_.isHitFinisherFirstAttack && comboCount_ == 0)
 	{
 		firstAttack_ = "FinisherFirstAttack";
-		comboCount_ = kComboCount_[1];
-		timerData_.comboTimer = kFinisherSecondAttackRecoveryTime;
-		timerData_.comboTimer--;
+		ComboCountUpdate(kFinisherSecondAttackRecoveryTime);
 	}
 
 	//必殺技(2段目)
@@ -2720,13 +2689,11 @@ void Enemy::HitCombo()
 		//タックル
 		if (characterState_.isHitTackle && comboCount_ == kComboCount_[4])
 		{
-			comboCount_ = kComboCount_[5];
-			timerData_.comboTimer = kTackleRecoveryTime;
-			timerData_.comboTimer--;
+			ComboCountUpdate(kTackleRecoveryTime);
 		}
 	}
 
-	//相手の硬直中に書道の攻撃を当てた場合
+	//相手の硬直中に始動の攻撃を当てた場合
 	if (comboCount_ >= kComboCount_[3])
 	{
 		if (characterState_.isHitJumpAttack)
@@ -2759,6 +2726,12 @@ void Enemy::HitCombo()
 		comboCount_ = 0;
 		firstAttack_ = "";
 	}
+}
+
+void Enemy::ComboCountUpdate(const int kRecoveryTime)
+{
+	comboCount_++;
+	timerData_.comboTimer = kRecoveryTime;
 }
 
 Vector3 Enemy::GetWorldPosition()

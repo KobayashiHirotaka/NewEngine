@@ -76,7 +76,7 @@ public:
 
 private:
 	//キャラクターの状態
-/// <summary>移動状態の初期化</summary>
+    /// <summary>移動状態の初期化</summary>
 	virtual void InitializeBehaviorRoot()override;
 
 	/// <summary>移動状態の更新</summary>
@@ -121,6 +121,9 @@ private:
 
 	/// <summary>コンボされているとき</summary>
 	void HitCombo();
+
+	/// <summary>コンボカウントの更新</summary>
+	void ComboCountUpdate(const int kRecoveryTime);
 
 
 	/// <summary>弾を発射</summary>
