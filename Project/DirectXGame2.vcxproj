@@ -442,20 +442,20 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(IncludePath)</IncludePath>
-    <IntDir>$(SolutionDir)\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)\generated\outputs\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\Generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)\Generated\outputs\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(IncludePath)</IncludePath>
-    <IntDir>$(SolutionDir)\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)\generated\outputs\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\Generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)\Generated\outputs\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Demo|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(IncludePath)</IncludePath>
-    <IntDir>$(SolutionDir)\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)\generated\outputs\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\Generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)\Generated\outputs\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
