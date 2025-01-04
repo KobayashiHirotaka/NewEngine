@@ -125,10 +125,10 @@ private:
 	virtual void ApplyDamage()override;
 
 	/// <summary>コンボされているとき</summary>
-	void HitCombo();
+	virtual void HitCombo()override;
 
 	/// <summary>コンボカウントの更新</summary>
-	void ComboCountUpdate(const int kRecoveryTime);
+	virtual void ComboCountUpdate(const int kRecoveryTime)override;
 
 
 	/// <summary>弾を発射</summary>

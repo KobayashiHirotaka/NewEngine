@@ -120,10 +120,10 @@ private:
 	virtual void ApplyDamage()override;
 
 	/// <summary>コンボされているとき</summary>
-	void HitCombo();
+	virtual void HitCombo()override;
 
 	/// <summary>コンボカウントの更新</summary>
-	void ComboCountUpdate(const int kRecoveryTime);
+	virtual void ComboCountUpdate(const int kRecoveryTime)override;
 
 
 	/// <summary>弾を発射</summary>
@@ -263,5 +263,9 @@ private:
 
 	//パターンカウントの定数
 	const int kPatternCount_[8] = { 0,1,2,3,4,5,6,7 };
+
+	//テスト
+	bool isHitSecondAttack = false;
+	bool isHitThirdAttack = false;
 };
 

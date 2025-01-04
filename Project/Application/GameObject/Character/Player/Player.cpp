@@ -178,6 +178,11 @@ void Player::Update()
 			model_->GetMaterial()->SetColor(kDefaultColor);
 		}
 	}
+
+	if (input_->PushKey(DIK_L))
+	{
+		baseData_.finisherGauge_ = -50.0f;
+	}
 	
 #endif
 
@@ -1538,7 +1543,6 @@ void Player::OnCollision(Collider* collider)
 		{
 			//キャンセルのとき
 			const float kHitStop = 0.3f;
-			isCancel_ = true;
 			attackData_.isDamaged = false;
 			attackData_.isFinisherGaugeIncreased = false;
 
@@ -2270,6 +2274,7 @@ void Player::DownAnimation()
 	{
 		//ダウン状態に設定
 		characterState_.isDown = true;
+		isCancel_ = true;
 		timerData_.downAnimationTimer -= static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
 		timerData_.effectTimer--;
 
@@ -2501,38 +2506,34 @@ void Player::HitCombo()
 	const int kHeavyRecoveryTime = 120;
 
 	//コンボを食らっているとき
-	//始動技が弱攻撃の場合
-	if (characterState_.isHitLightPunch && comboCount_ == 0)
+	//弱パンチ
+	if (characterState_.isHitLightPunch && !characterState_.isDown)
 	{
-		firstAttack_ = "LightPunch";
 		ComboCountUpdate(kLightRecoveryTime);
 	}
 
-	if (firstAttack_ == "LightPunch")
+	//TC中パンチ
+	if (characterState_.isHitTCMiddlePunch && !characterState_.isDown)
 	{
-		//TC中パンチ
-		if (characterState_.isHitTCMiddlePunch && comboCount_ == kComboCount_[1])
-		{
-			ComboCountUpdate(kMiddleRecoveryTime);
-		}
+		ComboCountUpdate(kMiddleRecoveryTime);
+	}
 
-		//TC強パンチ
-		if (characterState_.isHitTCHighPunch && comboCount_ == kComboCount_[2])
-		{
-			ComboCountUpdate(kMiddleRecoveryTime);
-		}
+	//TC強パンチ
+	if (characterState_.isHitTCHighPunch && !characterState_.isDown)
+	{
+		ComboCountUpdate(kMiddleRecoveryTime);
+	}
 
-		//強パンチ
-		if (characterState_.isHitHighPunch && comboCount_ == kComboCount_[2])
-		{
-			ComboCountUpdate(kHeavyRecoveryTime);
-		}
+	//強パンチ
+	if (characterState_.isHitHighPunch && !characterState_.isDown)
+	{
+		ComboCountUpdate(kHeavyRecoveryTime);
+	}
 
-		//タックル
-		if (characterState_.isHitTackle && comboCount_ == kComboCount_[3])
-		{
-			ComboCountUpdate(kMiddleRecoveryTime);
-		}
+	//タックル
+	if (characterState_.isHitTackle && !isCancel_)
+	{
+		ComboCountUpdate(kMiddleRecoveryTime);
 	}
 
 	//コンボタイマーを減らす

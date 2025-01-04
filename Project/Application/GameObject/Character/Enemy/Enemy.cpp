@@ -147,12 +147,6 @@ void Enemy::Update()
 
 #endif
 
-	if (input_->PushKey(DIK_L))
-	{
-		comboCount_ = 4;
-		timerData_.comboTimer = 60;
-	}
-
 	//更新
 	BaseCharacter::Update();
 
@@ -227,10 +221,6 @@ void Enemy::Update()
 		//ParticleEffectPlayerの更新
 		particleEffectPlayer_->Update();
 	}
-
-	//コンボ関連の処理
-	HitCombo();
-	UpdateComboNumberSprite();
 
 	//ガードアニメーションタイマーのリセット
 	if (!player_->GetIsAttack())
@@ -1285,7 +1275,6 @@ void Enemy::OnCollision(Collider* collider)
 			{
 				//キャンセルのとき
 				const float kHitStop = 0.3f;
-				isCancel_ = true;
 				attackData_.isDamaged = false;
 				attackData_.isFinisherGaugeIncreased = false;
 
@@ -2112,6 +2101,7 @@ void Enemy::DownAnimation()
 	{
 		//ダウン状態に設定
 		characterState_.isDown = true;
+		isCancel_ = true;
 		timerData_.downAnimationTimer -= static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
 		timerData_.effectTimer--;
 
@@ -2294,19 +2284,27 @@ void Enemy::DownAnimation()
 			isKO_ = true;
 		}
 
+		//必殺技のヒット硬直
+		const int kFinisherAttackRecoveryTime = 120;
+
 		//2発目の攻撃時
 		if (timerData_.downAnimationTimer < kParticleTime[1] && timerData_.downAnimationTimer > kParticleTime[2])
 		{
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
 				 worldTransform_.translation.y + particlePositionY,worldTransform_.translation.z });
 
+			if (!isHitSecondAttack)
+			{
+				//サウンド再生
+				audio_->PlaySoundMP3(damageSoundHandle_, false, 1.0f);
 
-			//サウンド再生
-			audio_->PlaySoundMP3(damageSoundHandle_, false, 1.0f);
+				//体力を減らす
+				const int damage = 1;
+				baseData_.hp_ -= damage;
+				ComboCountUpdate(kFinisherAttackRecoveryTime);
+			}
 
-			//体力を減らす
-			const int dmage = 1;
-			baseData_.hp_ -= dmage;
+			isHitSecondAttack = true;
 		}
 
 		//3発目の攻撃時
@@ -2315,12 +2313,18 @@ void Enemy::DownAnimation()
 			particleEffectPlayer_->PlayParticle("Hit", { worldTransform_.translation.x + particlePositionX,
 				 worldTransform_.translation.y + particlePositionY,worldTransform_.translation.z });
 
-			//サウンド再生
-			audio_->PlaySoundMP3(damageSoundHandle_, false, 1.0f);
+			if (!isHitThirdAttack)
+			{
+				//サウンド再生
+				audio_->PlaySoundMP3(damageSoundHandle_, false, 1.0f);
 
-			//体力を減らす
-			const int dmage = 1;
-			baseData_.hp_ -= dmage;
+				//体力を減らす
+				const int damage = 1;
+				baseData_.hp_ -= damage;
+				ComboCountUpdate(kFinisherAttackRecoveryTime);
+			}
+
+			isHitThirdAttack = true;
 		}
 
 		//終了処理
@@ -2329,6 +2333,8 @@ void Enemy::DownAnimation()
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
 			EndDownAnimation(kAnimationIdle, characterState_.isHitFinisherSecondAttack);
+			isHitSecondAttack = false;
+			isHitThirdAttack = false;
 			isKO_ = false;
 		}
 	}
@@ -2458,7 +2464,7 @@ void Enemy::HitCombo()
 {
 	//攻撃ごとの硬直
 	//弱パンチ
-	const int kLightPunchRecoveryTime = 15;
+	const int kLightPunchRecoveryTime = 25;
 
 	//強パンチ
 	const int kHighPunchRecoveryTime = 60;
@@ -2473,244 +2479,73 @@ void Enemy::HitCombo()
 	const int kJumpAttackRecoveryTime = 40;
 
 	//アッパー
-	const int kUpperCutRecoveryTime = 40;
+	const int kUpperCutRecoveryTime = 30;
 
 	//タックル
 	const int kTackleRecoveryTime = 40;
 
 	//必殺技
-	const int kFinisherFirstAttackRecoveryTime = 120;
-	const int kFinisherSecondAttackRecoveryTime = 240;
-	const int kFinisherThreeAttackRecoveryTime = 230;
-	const int kFinisherFourAttackRecoveryTime = 220;
-	const int kFinisherFiveAttackRecoveryTime = 210;
+	const int kFinisherAttackRecoveryTime = 120;
 
-	//コンボを食らっているとき
-	//始動技がジャンプ攻撃の場合
-	if (characterState_.isHitJumpAttack && comboCount_ == 0)
-	{
-		firstAttack_ = "JumpAttack";
-		ComboCountUpdate(kJumpAttackRecoveryTime);
-	}
 
-	if (firstAttack_ == "JumpAttack")
+	if (!characterState_.isDown)
 	{
-		//弱パンチ
-		if (characterState_.isHitLightPunch && comboCount_ == kComboCount_[1])
+		//コンボを食らっているとき
+		//ジャンプ攻撃
+		if (characterState_.isHitJumpAttack)
 		{
+			firstAttack_ = "JumpAttack";
+			ComboCountUpdate(kJumpAttackRecoveryTime);
+		}
+
+		//弱パンチ
+		if (characterState_.isHitLightPunch)
+		{
+			firstAttack_ = "LightPunch";
 			ComboCountUpdate(kLightPunchRecoveryTime);
 		}
 
 		//TC中パンチ
-		if (characterState_.isHitTCMiddlePunch && comboCount_ == kComboCount_[2])
+		if (characterState_.isHitTCMiddlePunch)
 		{
 			ComboCountUpdate(kTCMiddlePunchRecoveryTime);
 		}
 
-		//アッパー
-		if (characterState_.isHitUppercut && comboCount_ == kComboCount_[3])
-		{
-			ComboCountUpdate(kUpperCutRecoveryTime);
-		}
-
-		//必殺技(1段目)
-		if (characterState_.isHitFinisherFirstAttack && comboCount_ == kComboCount_[4])
-		{
-			ComboCountUpdate(kFinisherFirstAttackRecoveryTime);
-		}
-
-		//必殺技(2段目)
-		if (characterState_.isHitFinisherSecondAttack)
-		{
-			if (comboCount_ == kComboCount_[5])
-			{
-				timerData_.comboTimer = kFinisherSecondAttackRecoveryTime;
-			}
-
-			if (timerData_.comboTimer > 0)
-			{
-				timerData_.comboTimer--;
-
-				if (timerData_.comboTimer > kFinisherThreeAttackRecoveryTime)
-				{
-					comboCount_ = kComboCount_[6];
-				}
-				else if (timerData_.comboTimer > kFinisherFourAttackRecoveryTime)
-				{
-					comboCount_ = kComboCount_[7];
-				}
-				else if (timerData_.comboTimer > kFinisherFiveAttackRecoveryTime)
-				{
-					comboCount_ = kComboCount_[8];
-				}
-			}
-		}
-
-		//タックル
-		if (characterState_.isHitTackle && comboCount_ == kComboCount_[8])
-		{
-			ComboCountUpdate(kTackleRecoveryTime);
-		}
-
 		//TC強パンチ
-		if (characterState_.isHitTCHighPunch && comboCount_ == kComboCount_[3])
+		if (characterState_.isHitTCHighPunch)
 		{
 			ComboCountUpdate(kTCHighPunchRecoveryTime);
 		}
 
 		//強パンチ
-		if (characterState_.isHitHighPunch && comboCount_ == kComboCount_[3])
+		if (characterState_.isHitHighPunch)
 		{
 			ComboCountUpdate(kHighPunchRecoveryTime);
-		}
-
-		//TCタックル
-		if (characterState_.isHitTackle && comboCount_ == kComboCount_[4])
-		{
-			ComboCountUpdate(kHighPunchRecoveryTime);
-		}
-	}
-
-	//始動技が弱パンチの場合
-	if (characterState_.isHitLightPunch && comboCount_ == 0)
-	{
-		firstAttack_ = "LightPunch";
-		ComboCountUpdate(kLightPunchRecoveryTime);
-	}
-
-	if (firstAttack_ == "LightPunch")
-	{
-		//TC中パンチ
-		if (characterState_.isHitTCMiddlePunch && comboCount_ == kComboCount_[1])
-		{
-			ComboCountUpdate(kTCMiddlePunchRecoveryTime);
-		}
-
-		//TC強パンチ
-		if (characterState_.isHitTCHighPunch && comboCount_ == kComboCount_[2])
-		{
-			ComboCountUpdate(kTCHighPunchRecoveryTime);
 		}
 
 		//アッパー
-		if (characterState_.isHitUppercut && comboCount_ == kComboCount_[2])
+		if (characterState_.isHitUppercut)
 		{
 			ComboCountUpdate(kUpperCutRecoveryTime);
 		}
 
 		//必殺技(1段目)
-		if (characterState_.isHitFinisherFirstAttack && comboCount_ == kComboCount_[3])
+		if (characterState_.isHitFinisherFirstAttack)
 		{
-			ComboCountUpdate(kFinisherFirstAttackRecoveryTime);
+			ComboCountUpdate(kFinisherAttackRecoveryTime);
 		}
 
 		//必殺技(2段目)
 		if (characterState_.isHitFinisherSecondAttack)
 		{
-			if (comboCount_ == kComboCount_[4])
-			{
-				timerData_.comboTimer = kFinisherSecondAttackRecoveryTime;
-			}
-
-			if (timerData_.comboTimer > 0)
-			{	
-				timerData_.comboTimer--;
-
-				if (timerData_.comboTimer > kFinisherThreeAttackRecoveryTime)
-				{
-					comboCount_ = kComboCount_[5];
-				}
-				else if (timerData_.comboTimer > kFinisherFourAttackRecoveryTime)
-				{
-					comboCount_ = kComboCount_[6];
-				}
-				else if (timerData_.comboTimer > kFinisherFiveAttackRecoveryTime)
-				{
-					comboCount_ = kComboCount_[7];
-				}
-			}
-		}
-
-		//タックル
-		if (characterState_.isHitTackle && comboCount_ == kComboCount_[7])
-		{
-			ComboCountUpdate(kTackleRecoveryTime);
-		}
-
-		//強攻撃
-		if (characterState_.isHitHighPunch && comboCount_ == kComboCount_[2])
-		{
-			ComboCountUpdate(kHighPunchRecoveryTime);
-		}
-
-		//タックル
-		if (characterState_.isHitTackle && comboCount_ == kComboCount_[3])
-		{
-			ComboCountUpdate(kTackleRecoveryTime);
+			ComboCountUpdate(kFinisherAttackRecoveryTime);
 		}
 	}
 
-	//始動技が必殺技の場合
-	if (characterState_.isHitFinisherFirstAttack && comboCount_ == 0)
+	//タックル
+	if (characterState_.isHitTackle && !isCancel_)
 	{
-		firstAttack_ = "FinisherFirstAttack";
-		ComboCountUpdate(kFinisherSecondAttackRecoveryTime);
-	}
-
-	//必殺技(2段目)
-	if (firstAttack_ == "FinisherFirstAttack")
-	{
-		if (characterState_.isHitFinisherSecondAttack)
-		{
-			if (comboCount_ == kComboCount_[1])
-			{
-				timerData_.comboTimer = kFinisherSecondAttackRecoveryTime;
-			}
-
-			if (timerData_.comboTimer > 0)
-			{
-				timerData_.comboTimer--;
-
-				if (timerData_.comboTimer > kFinisherThreeAttackRecoveryTime)
-				{
-					comboCount_ = kComboCount_[2];
-				}
-				else if (timerData_.comboTimer > kFinisherFourAttackRecoveryTime)
-				{
-					comboCount_ = kComboCount_[3];
-				}
-				else if (timerData_.comboTimer > kFinisherFiveAttackRecoveryTime)
-				{
-					comboCount_ = kComboCount_[4];
-				}
-			}
-		}
-
-		//タックル
-		if (characterState_.isHitTackle && comboCount_ == kComboCount_[4])
-		{
-			ComboCountUpdate(kTackleRecoveryTime);
-		}
-	}
-
-	//相手の硬直中に始動の攻撃を当てた場合
-	if (comboCount_ >= kComboCount_[3])
-	{
-		if (characterState_.isHitJumpAttack)
-		{
-			firstAttack_ = "JumpAttack";
-			comboCount_ = kComboCount_[1];
-			timerData_.comboTimer = kJumpAttackRecoveryTime;
-			timerData_.comboTimer--;
-		}
-
-		if (characterState_.isHitLightPunch)
-		{
-			firstAttack_ = "LightPunch";
-			comboCount_ = kComboCount_[1];
-			timerData_.comboTimer = kLightPunchRecoveryTime;
-			timerData_.comboTimer--;
-		}
+		ComboCountUpdate(kTackleRecoveryTime);
 	}
 
 	//コンボタイマーを減らす

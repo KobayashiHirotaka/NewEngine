@@ -130,6 +130,10 @@ void BaseCharacter::Update()
 		worldTransform_.translation.y = 0.0f;
 	}
 	
+	//コンボ関連の処理
+	HitCombo();
+	UpdateComboNumberSprite();
+
 	//ダウン時のアニメーション
 	DownAnimation();
 

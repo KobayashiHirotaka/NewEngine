@@ -327,6 +327,12 @@ public:
 	/// <summary>ダメージの適応</summary>
 	virtual void ApplyDamage() = 0;
 
+	/// <summary>コンボされているとき</summary>
+	virtual void HitCombo() = 0;
+
+	/// <summary>コンボカウントの更新</summary>
+	virtual void ComboCountUpdate(const int kRecoveryTime) = 0;
+
 
 	//当たり判定
 	/// <summary>当たり判定のリセット</summary>
