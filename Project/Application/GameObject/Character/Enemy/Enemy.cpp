@@ -1472,6 +1472,13 @@ void Enemy::Move()
 	//ガード
 	if (player_->GetIsAttack() && player_->GetIsTackle() && !characterState_.isDown)
 	{
+		patternCount_ = kPatternCount_[6];
+	}
+
+	if (patternCount_ == kPatternCount_[6] && !isGuardMode_)
+	{
+		animationTime_ = 0.0f;
+		model_->SetAnimationTime(animationTime_);
 		isGuardMode_ = true;
 	}
 
@@ -1485,8 +1492,7 @@ void Enemy::Move()
 	//ガード状態
 	if (isGuardMode_)
 	{
-		//行動パターンの設定
-		patternCount_ = kPatternCount_[6];
+		//状態の設定
 		characterState_.isGuard = true;
 
 		//アニメーション
@@ -1497,23 +1503,32 @@ void Enemy::Move()
 		UpdateAnimationTime(animationTime_, true, animationSpeed, animationIndex_, model_);
 
 		//当たり判定の設定
-		const AABB kDownAABB = { {-0.05f,0.0f,-0.3f},{0.05f,1.0f,0.3f} };
+		const AABB kDefaultGuardAABB = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+		const AABB kNackleGuardAABB = { {-0.05f,0.0f,-0.3f},{0.05f,1.0f,0.3f} };
 
-		aabb_ = kDownAABB;
+		if (player_->GetIsAttack() && player_->GetIsTackle())
+		{
+			aabb_ = kNackleGuardAABB;
+		}
+		else
+		{
+			aabb_ = kDefaultGuardAABB;
+		}
+
 		collider_->SetAABB(aabb_);
 
 		//確定反撃
 		if (!player_->GetIsAttack())
 		{
-			const int kGuardTimer = 4;
 			guardTimer_--;
 
 			if (guardTimer_ < 0)
 			{
-				guardTimer_ = kGuardTimer;
+				guardTimer_ = kGuardTime_;
 				isGuardMode_ = false;
 				characterState_.isGuard = false;
 				moveTimer_ = Random(kMinMoveTimer, kMaxMoveTimer);
+				ResetCollision();
 				patternCount_ = kPatternCount_[2];
 			}
 		}
@@ -2384,7 +2399,7 @@ int Enemy::RandomMove()
 	std::vector<int> actions;
 
 	//前歩きか後ろ歩きをランダムで設定
-	actions = { kPatternCount_[1], kPatternCount_[2], kPatternCount_[2] };
+	actions = { kPatternCount_[1],kPatternCount_[2], kPatternCount_[2], kPatternCount_[6], kPatternCount_[6] };
 
 	//乱数を生成
 	const int kIndexOffset = 1;
@@ -2407,12 +2422,12 @@ int Enemy::RandomAttackOrMove()
 	if (baseData_.hp_ >= kHalfHP)
 	{
 		//前歩きか突進攻撃
-		actions = { kPatternCount_[2], kPatternCount_[2], kPatternCount_[3] };
+		actions = { kPatternCount_[2], kPatternCount_[2], kPatternCount_[3], kPatternCount_[6] };
 	}
 	else
 	{
 		//前歩きか後ろ歩きか弾攻撃
-		actions = { kPatternCount_[1], kPatternCount_[2], kPatternCount_[4] };
+		actions = { kPatternCount_[1], kPatternCount_[2], kPatternCount_[4], kPatternCount_[6], kPatternCount_[6] };
 	}
 
 	//乱数を生成
@@ -2429,7 +2444,7 @@ int Enemy::RandomBulletOrMove()
 	std::vector<int> actions;
 
 	//前歩きか後ろ歩きか弾攻撃
-	actions = { kPatternCount_[1], kPatternCount_[2], kPatternCount_[4] };
+	actions = { kPatternCount_[1], kPatternCount_[2], kPatternCount_[4], kPatternCount_[6] };
 
 	//乱数を生成
 	const int kIndexOffset = 1;

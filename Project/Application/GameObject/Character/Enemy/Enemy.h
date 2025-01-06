@@ -259,7 +259,8 @@ private:
 	bool isGuardMode_ = false;
 
 	//ガードタイマー(確定反撃用)
-	int guardTimer_ = 4;
+	const int kGuardTime_ = 20;
+	int guardTimer_ = kGuardTime_;
 
 	//パターンカウントの定数
 	const int kPatternCount_[8] = { 0,1,2,3,4,5,6,7 };
