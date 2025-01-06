@@ -374,6 +374,7 @@ void Enemy::InitializeBehaviorAttack()
 
 void Enemy::UpdateBehaviorAttack()
 {
+	//TODO:関数化して同じ処理をまとめる
 	//必殺技演出中でない場合
 	if (player_->GetFinisherTimer() == timerData_.maxFinisherTimer)
 	{
@@ -668,12 +669,6 @@ void Enemy::UpdateBehaviorAttack()
 					collider_->SetAABB(aabb_);
 				}
 			}
-
-			//if (attackData_.attackAnimationFrame >= attackData_.attackEndTime)
-			//{
-			//	attackData_.isAttack = false;
-			//	ResetCollision();
-			//}
 
 			//終了処理
 			if (characterState_.isDown || attackData_.attackAnimationFrame >= attackData_.recoveryTime)

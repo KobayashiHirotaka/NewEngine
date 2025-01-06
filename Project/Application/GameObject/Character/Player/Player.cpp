@@ -404,6 +404,7 @@ void Player::InitializeBehaviorAttack()
 
 void Player::UpdateBehaviorAttack()
 {
+	//TODO:関数化して同じ処理をまとめる
 	//弱攻撃
 	if (attackData_.isLightPunch)
 	{

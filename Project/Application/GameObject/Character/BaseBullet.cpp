@@ -23,18 +23,6 @@ void BaseBullet::Update()
 		isDead_ = true;
 	}
 
-	//パーティクルの再生
-	if (velocity_.x < 0.0f)
-	{
-		particleEffectPlayer_->PlayParticle("PlayerLeftBullet", { worldTransform_.translation.x,
-					worldTransform_.translation.y,worldTransform_.translation.z });
-	}
-	else
-	{
-		particleEffectPlayer_->PlayParticle("PlayerRightBullet", { worldTransform_.translation.x,
-					worldTransform_.translation.y,worldTransform_.translation.z });
-	}
-
 	//パーティクルエフェクトプレイヤーの更新
 	particleEffectPlayer_->Update();
 
