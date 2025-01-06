@@ -321,7 +321,7 @@ void Enemy::UpdateBehaviorRoot()
 				const int kAnimationFrontMove = 0;
 				animationIndex_ = kAnimationFrontMove;
 			}
-			else if (patternCount_ == 2)
+			else if (patternCount_ == kPatternCount_[2])
 			{
 				const int kAnimationBackMove = 2;
 				animationIndex_ = kAnimationBackMove;
@@ -1434,6 +1434,17 @@ void Enemy::Move()
 
 			//WorldTransformの更新
 			worldTransform_.UpdateMatrixEuler();
+		}
+
+		//ジャンプ
+		const float kMinJumpDistance = 1.3f;
+		const float kMaxJumpDistance = 2.0f;
+
+		if (player_->GetIsShot() && distance >= kMinJumpDistance && distance <= kMaxJumpDistance)
+		{
+			const int kAnimationJump = 4;
+			animationIndex_ = kAnimationJump;
+			characterState_.behaviorRequest = Behavior::kJump;
 		}
 
 		//移動後の行動パターンの設定
