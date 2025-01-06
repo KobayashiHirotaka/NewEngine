@@ -182,16 +182,6 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
-	if (input_->PushKey(DIK_A))
-	{
-		playerWinCount_ = kPlayerSecondWinCount_;
-	}
-
-	if (input_->PushKey(DIK_D))
-	{
-		enemyWinCount_ = kEnemySecondWinCount_;
-	}
-
 	//AttackEditorの更新
 	attackEditor_->Update();
 

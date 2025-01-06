@@ -145,6 +145,11 @@ void Enemy::Update()
 {
 #ifdef _ADJUSTMENT
 
+	if (input_->PressKey(DIK_D))
+	{
+		baseData_.hp_ -= 1;
+	}
+
 #endif
 
 	//更新
@@ -1238,15 +1243,8 @@ void Enemy::OnCollision(Collider* collider)
 				//ダメージの適応
 				ApplyDamage();
 
-				//体力に応じてダウン状態を変更
-				if (baseData_.hp_ > 0)
-				{
-					characterState_.isHitFinisherFirstAttack = true;
-				}
-				else
-				{
-					characterState_.isHitTCHighPunch = true;
-				}
+				//ダウン状態を設定
+				characterState_.isHitFinisherFirstAttack = true;
 			}
 			//超必(2段目)
 			else if (player_->GetIsFinisherSecondAttack() && player_->GetIsAttack())
@@ -1485,6 +1483,7 @@ void Enemy::Move()
 	//ダウン状態になった場合
 	if (characterState_.isDown)
 	{
+		ResetCollision();
 		isGuardMode_ = false;
 		characterState_.isGuard = false;
 	}
