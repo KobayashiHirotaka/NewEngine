@@ -750,7 +750,7 @@ void Enemy::InitializeBehaviorJump()
 void Enemy::UpdateBehaviorJump()
 {
 	//アニメーション
-	const int kAnimationJump = 4;
+	const int kAnimationJump = 5;
 	const float animationSpeed = 1.0f;
 
 	animationIndex_ = kAnimationJump;
@@ -1442,7 +1442,7 @@ void Enemy::Move()
 
 		if (player_->GetIsShot() && distance >= kMinJumpDistance && distance <= kMaxJumpDistance)
 		{
-			const int kAnimationJump = 4;
+			const int kAnimationJump = 5;
 			animationIndex_ = kAnimationJump;
 			characterState_.behaviorRequest = Behavior::kJump;
 		}
