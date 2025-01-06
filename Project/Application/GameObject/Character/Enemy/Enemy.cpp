@@ -778,6 +778,7 @@ void Enemy::UpdateBehaviorJump()
 		worldTransform_.translation.y = 0.0f;
 		animationTime_ = 0.0f;
 		model_->SetAnimationTime(animationTime_);
+		patternCount_ = RandomAttackOrMove();
 	}
 }
 
@@ -2398,7 +2399,7 @@ int Enemy::RandomMove()
 	std::vector<int> actions;
 
 	//前歩きか後ろ歩きをランダムで設定
-	actions = { kPatternCount_[1],kPatternCount_[2], kPatternCount_[2], kPatternCount_[6], kPatternCount_[6] };
+	actions = { kPatternCount_[1],kPatternCount_[2], kPatternCount_[2], kPatternCount_[6] };
 
 	//乱数を生成
 	const int kIndexOffset = 1;
@@ -2421,12 +2422,12 @@ int Enemy::RandomAttackOrMove()
 	if (baseData_.hp_ >= kHalfHP)
 	{
 		//前歩きか突進攻撃
-		actions = { kPatternCount_[2], kPatternCount_[2], kPatternCount_[3], kPatternCount_[6] };
+		actions = { kPatternCount_[1], kPatternCount_[2], kPatternCount_[3], kPatternCount_[6] };
 	}
 	else
 	{
 		//前歩きか後ろ歩きか弾攻撃
-		actions = { kPatternCount_[1], kPatternCount_[2], kPatternCount_[4], kPatternCount_[6], kPatternCount_[6] };
+		actions = { kPatternCount_[1], kPatternCount_[2], kPatternCount_[4], kPatternCount_[6] };
 	}
 
 	//乱数を生成

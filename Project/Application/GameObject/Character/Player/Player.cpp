@@ -798,14 +798,30 @@ void Player::UpdateBehaviorAttack()
 			UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, model_);
 		}
 
+		//移動用のパラメータ
+		const int kMoveTime = 5;
+		const float kMoveSpeed = 0.03f;
+
 		//当たり判定を設定
 		if (characterState_.direction == Direction::Right)
 		{
 			collider_->SetAABB(aabb_);
+
+			//コンボがつながりやすくなるように移動する
+			if (attackData_.attackAnimationFrame < kMoveTime)
+			{
+				worldTransform_.translation.x += kMoveSpeed;
+			}
 		}
 		else if (characterState_.direction == Direction::Left)
 		{
 			collider_->SetAABB(aabb_);
+
+			//コンボがつながりやすくなるように移動する
+			if (attackData_.attackAnimationFrame < kMoveTime)
+			{
+				worldTransform_.translation.x -= kMoveSpeed;
+			}
 		}
 
 		//攻撃判定をつけるタイミングの設定
