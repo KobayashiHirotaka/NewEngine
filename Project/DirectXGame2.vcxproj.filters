@@ -241,12 +241,6 @@
     <Filter Include="ソース ファイル\Project\GameObject\BackGround">
       <UniqueIdentifier>{623f1d28-90f6-4760-9dee-007ff1d857e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Engine\Utility\AttackEditor">
-      <UniqueIdentifier>{7823baf5-abcb-4c20-9660-ca04896020cf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Engine\Utility\AttackEditor">
-      <UniqueIdentifier>{60bd5a7a-1d93-482f-825d-57386a4b39a2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Engine\3d\Line">
       <UniqueIdentifier>{c85be4c4-60f1-445b-ba99-c7ead95554a3}</UniqueIdentifier>
     </Filter>
@@ -276,6 +270,18 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\Project\Game\HitStop">
       <UniqueIdentifier>{54cdd9d4-4079-44e1-b856-87c1e621cdd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\Game\AttackEditor">
+      <UniqueIdentifier>{5243bee6-9f85-452a-aaf4-410cfdca0287}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\Game\AttackEditor">
+      <UniqueIdentifier>{429f36ca-b8b5-4459-97d9-ecfceec82a7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\Game\Transition">
+      <UniqueIdentifier>{e2b4a5cf-906c-4a32-a292-1823f3d72a05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\Game\Transition">
+      <UniqueIdentifier>{33e823a9-2267-4b6d-b681-03dbcff5d665}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -450,9 +456,6 @@
     <ClCompile Include="Application\GameObject\BackGround\BackGround.cpp">
       <Filter>ソース ファイル\Project\GameObject\BackGround</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Utility\AttackEditor\AttackEditor.cpp">
-      <Filter>ソース ファイル\Engine\Utility\AttackEditor</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\3D\Line\Line.cpp">
       <Filter>ソース ファイル\Engine\3d\Line</Filter>
     </ClCompile>
@@ -479,6 +482,15 @@
     </ClCompile>
     <ClCompile Include="Engine\Utility\Collision\Collider.cpp">
       <Filter>ソース ファイル\Engine\Utility\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GameSceneUI.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\AttackEditor\AttackEditor.cpp">
+      <Filter>ソース ファイル\Project\Game\AttackEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Transition\Transition.cpp">
+      <Filter>ソース ファイル\Project\Game\Transition</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -704,9 +716,6 @@
     <ClInclude Include="Application\GameObject\BackGround\BackGround.h">
       <Filter>ヘッダー ファイル\Project\GameObject\BackGround</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Utility\AttackEditor\AttackEditor.h">
-      <Filter>ヘッダー ファイル\Engine\Utility\AttackEditor</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\3D\Line\Line.h">
       <Filter>ヘッダー ファイル\Engine\3d\Line</Filter>
     </ClInclude>
@@ -736,6 +745,18 @@
     </ClInclude>
     <ClInclude Include="Application\GameObject\Character\BaseBullet.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GameSceneUI.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\AttackEditor\AttackEditor.h">
+      <Filter>ヘッダー ファイル\Project\Game\AttackEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Transition\Transition.h">
+      <Filter>ヘッダー ファイル\Project\Game\Transition</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -19,6 +19,7 @@
 #include "Engine/3D/Particle/ParticleEffectPlayer.h"
 #include "Application/GameObject/Character/Direction.h"
 #include "Application/Game/HitStop/HitStop.h"
+#include "Application/Game/AttackEditor/AttackEditor.h"
 #include <random>
 #include <numbers>
 #include <unordered_map>
@@ -105,9 +106,29 @@ public:
 		bool isHSVFilter = false;
 	};
 
+	//基本データ
+	struct BaseData
+	{
+		//HP
+		const int kMaxHp_ = 100;
+		int hp_ = 0;
+
+		//ガードゲージ
+		const float kMaxGuardGauge_ = 50.0f;
+		float guardGauge_ = 0.0f;
+
+		//必殺技のゲージ
+		const float kMaxFinisherGauge_ = 50.0f;
+		float finisherGauge_ = 0.0f;
+	};
+
 	//移動データ
 	struct MoveData
 	{
+		//足の速さ
+		float frontSpeed_ = 0.0f;
+		float backSpeed_ = 0.0f;
+
 		//速度
 		Vector3 velocity = {};
 	};
@@ -306,6 +327,12 @@ public:
 	/// <summary>ダメージの適応</summary>
 	virtual void ApplyDamage() = 0;
 
+	/// <summary>コンボされているとき</summary>
+	virtual void HitCombo() = 0;
+
+	/// <summary>コンボカウントの更新</summary>
+	virtual void ComboCountUpdate(const int kRecoveryTime) = 0;
+
 
 	//当たり判定
 	/// <summary>当たり判定のリセット</summary>
@@ -333,6 +360,11 @@ public:
 
 	/// <summary>コンボ表示のUIの更新</summary>
 	virtual void UpdateComboNumberSprite() = 0;
+
+	//基本データに関するGetter
+	int const GetHP() const { return baseData_.hp_; };
+
+	float const GetFinisherGauge() const { return baseData_.finisherGauge_; };
 
 	//移動に関するGetter
 	Direction GetDirection() { return characterState_.direction; };
@@ -387,6 +419,16 @@ public:
 
 	bool GetIsKO() { return isKO_; };
 
+	//基本データに関するSetter
+	void SetHp(const int& hp) { baseData_.hp_ = hp; };
+
+	void SetFrontSpeed(const float& frontSpeed) { moveData_.frontSpeed_ = frontSpeed; };
+	void SetBackSpeed(const float& backSpeed) { moveData_.backSpeed_ = backSpeed; };
+
+	void SetGuardGauge(const float& guardGauge) { baseData_.guardGauge_ = guardGauge; };
+
+	void SetFinisherGauge(const float& finisherGauge) { baseData_.finisherGauge_ = finisherGauge; };
+
 	//攻撃に関するSetter
 	void SetDamage(int damage) { attackData_.damage = damage; };
 
@@ -413,6 +455,9 @@ protected:
 
 	//エフェクト
 	EffectState effectState_;
+
+	//基本データ
+	BaseData baseData_;
 
 	//移動データ
 	MoveData moveData_;

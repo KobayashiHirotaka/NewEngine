@@ -7,7 +7,6 @@
 
 #pragma once
 #include "Application/GameObject/Character/BaseCharacter.h"
-#include "Engine/Utility/AttackEditor/AttackEditor.h"
 #include "PlayerBullet.h"
 
 //前方宣言
@@ -126,7 +125,10 @@ private:
 	virtual void ApplyDamage()override;
 
 	/// <summary>コンボされているとき</summary>
-	void HitCombo();
+	virtual void HitCombo()override;
+
+	/// <summary>コンボカウントの更新</summary>
+	virtual void ComboCountUpdate(const int kRecoveryTime)override;
 
 
 	/// <summary>弾を発射</summary>
@@ -185,7 +187,7 @@ private:
 	Enemy* enemy_ = nullptr;
 
 	//当たり判定
-	std::unique_ptr<Collider>collider_ = nullptr;
+	std::unique_ptr<Collider> collider_ = nullptr;
 	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 
 	//カーソル
@@ -227,10 +229,10 @@ private:
 	uint32_t playerIconTextureHandle_ = 0;
 
 	//Sprite(コンボ表示)
-	std::unique_ptr<Sprite>hitSprite_ = nullptr;
+	std::unique_ptr<Sprite> hitSprite_ = nullptr;
 	uint32_t hitTextureHandle_;
 
-	std::unique_ptr<Sprite>comboNumSprite_ = nullptr;
+	std::unique_ptr<Sprite> comboNumSprite_ = nullptr;
 	uint32_t comboNumTextureHandle_;
 
 	//サウンド
@@ -246,6 +248,10 @@ private:
 
 	//LineBox
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
+
+	//足の速さ
+	const float kMaxFrontSpeed_ = 0.04f;
+	const float kMaxBackSpeed_ = 0.04f;
 
 	//スティックの閾値
 	const float kValue_ = 0.7f;

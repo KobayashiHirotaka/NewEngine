@@ -2,7 +2,7 @@
  * @file BaseBullet.h
  * @brief 各キャラクターの弾の基底クラス
  * @author  KOBAYASHI HIROTAKA
- * @date 12/23
+ * @date 2024/12/23
  */
 
 #pragma once

@@ -28,6 +28,10 @@ void GameWinScene::Initialize()
 	//Audioのインスタンスの取得
 	audio_ = Audio::GetInstance();
 
+	//PostEffectの切り替え
+	PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+	PostProcess::GetInstance()->SetIsVignetteActive(false);
+
 	//Skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
@@ -39,10 +43,9 @@ void GameWinScene::Initialize()
 	winSceneTextureHandle_ = TextureManager::LoadTexture("resource/images/WinScene.png");
 	winSceneSprite_.reset(Sprite::Create(winSceneTextureHandle_, { 0.0f,0.0f }));
 
-	//トランジション
-	transitionSprite_.reset(Sprite::Create(transitionTextureHandle_, { 0.0f,0.0f }));
-	transitionSprite_->SetColor(transitionColor_);
-	transitionSprite_->SetSize(transitionTextureSize_);
+	//Transition生成、初期化
+	transition_ = std::make_unique<Transition>();
+	transition_->Initialize();
 
 	//サウンド
 	selectSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Select.mp3");
@@ -67,49 +70,24 @@ void GameWinScene::Update()
 	//シーン切り替え
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isTransitionEnd_)
 		{
-			if (isTransitionEnd_)
+			isTransitionStart_ = true;
+
+			if (!isPlayAudio_)
 			{
-				isTransitionStart_ = true;
-
-				if (!isPlayAudio_)
-				{
-					audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
-				}
-
-				isPlayAudio_ = true;
+				audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
 			}
+
+			isPlayAudio_ = true;
 		}
 	}
 
-	//トランジション
-	const float deltaTime = 1.0f / kTransitionTime;
+	//Transition終了処理
+	transition_->EndSceneTransition(isTransitionEnd_);
 
-	if (!isTransitionEnd_)
-	{
-		transitionTimer_ += deltaTime;
-		transitionColor_.w = Lerp(transitionColor_.w, kTransitionEndAlpha_, transitionTimer_);
-		transitionSprite_->SetColor(transitionColor_);
-
-		if (transitionColor_.w <= kTransitionEndAlpha_)
-		{
-			isTransitionEnd_ = true;
-			transitionTimer_ = 0.0f;
-		}
-	}
-
-	if (isTransitionStart_)
-	{
-		transitionTimer_ += deltaTime;
-		transitionColor_.w = Lerp(transitionColor_.w, kTransitionStartAlpha_, transitionTimer_);
-		transitionSprite_->SetColor(transitionColor_);
-
-		if (transitionColor_.w >= kTransitionStartAlpha_)
-		{
-			sceneManager_->ChangeScene("GameTitleScene");
-		}
-	}
+	//Transition開始処理
+	transition_->StartSceneTransition(isTransitionStart_, sceneManager_, "GameTitleScene");
 
 	//Camera、DebugCameraの処理
 	debugCamera_.Update();
@@ -161,8 +139,8 @@ void GameWinScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	//トランジション
-	transitionSprite_->Draw();
+	//Transition用Spriteの描画
+	transition_->Draw();
 
 	Sprite::PostDraw();
 };

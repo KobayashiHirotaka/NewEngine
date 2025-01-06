@@ -130,6 +130,10 @@ void BaseCharacter::Update()
 		worldTransform_.translation.y = 0.0f;
 	}
 	
+	//コンボ関連の処理
+	HitCombo();
+	UpdateComboNumberSprite();
+
 	//ダウン時のアニメーション
 	DownAnimation();
 
@@ -171,7 +175,7 @@ void BaseCharacter::Reset()
 	comboCount_ = 0;
 
 	//ゲージ
-	guardGauge_ = 0.0f;
+	baseData_.guardGauge_ = 0.0f;
 
 	//キャラクターがガードしているかどうか
 	characterState_.isGuard = false;

@@ -21,12 +21,14 @@ void CameraController::Initialize()
 
 void CameraController::Update(const Vector3 characterPosition1, const Vector3 characterPositon2)
 {
+	const int kDivisionFactor = 2;
+
 	//2体のキャラクターの中心座標
-	center_ = { (characterPosition1.x + characterPositon2.x) / 2,  ((characterPosition1.y + characterPositon2.y) + 0.8f) / 2 };
+	center_ = { (characterPosition1.x + characterPositon2.x) / kDivisionFactor,  ((characterPosition1.y + characterPositon2.y) + kCameraOffsetY_) / kDivisionFactor };
 
 	//カメラの座標(X,Y)を常に中心にする
-	position_.x = position_.x + (center_.x - position_.x) * cameraSpeed_.x;
-	position_.y = center_.y;
+	camera_.translation_.x = camera_.translation_.x + (center_.x - camera_.translation_.x) * cameraSpeed_.x;
+	camera_.translation_.y = center_.y;
 
 	//2体のキャラクターの座標の差
 	Vector3 difference = characterPosition1 - characterPositon2;
@@ -39,14 +41,14 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 		if (distance_ > previousDistance_)
 		{
 			//最大値に固定
-			if (position_.z <= kMax_)
+			if (camera_.translation_.z <= kMax_)
 			{
-				position_.z = kMax_;
+				camera_.translation_.z = kMax_;
 			}
 			//カメラを引く
 			else
 			{
-				position_.z -= cameraSpeed_.z;
+				camera_.translation_.z -= cameraSpeed_.z;
 			}
 		}
 	}
@@ -54,22 +56,19 @@ void CameraController::Update(const Vector3 characterPosition1, const Vector3 ch
 	if (previousDistance_ > distance_)
 	{
 		//最小値に固定
-		if (position_.z >= kMin_)
+		if (camera_.translation_.z >= kMin_)
 		{
-			position_.z = kMin_;
+			camera_.translation_.z = kMin_;
 		}
 		//カメラを近づける
 		else
 		{
-			position_.z += cameraSpeed_.z;
+			camera_.translation_.z += cameraSpeed_.z;
 		}
 	}
 
 	//前フレームの距離を記録
 	previousDistance_ = distance_;
-
-	//カメラの座標を設定
-	camera_.translation_ = position_;
 
 	//カメラの更新
 	camera_.UpdateMatrix();

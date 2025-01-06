@@ -76,7 +76,7 @@ public:
 
 private:
 	//キャラクターの状態
-/// <summary>移動状態の初期化</summary>
+    /// <summary>移動状態の初期化</summary>
 	virtual void InitializeBehaviorRoot()override;
 
 	/// <summary>移動状態の更新</summary>
@@ -120,7 +120,10 @@ private:
 	virtual void ApplyDamage()override;
 
 	/// <summary>コンボされているとき</summary>
-	void HitCombo();
+	virtual void HitCombo()override;
+
+	/// <summary>コンボカウントの更新</summary>
+	virtual void ComboCountUpdate(const int kRecoveryTime)override;
 
 
 	/// <summary>弾を発射</summary>
@@ -245,15 +248,25 @@ private:
 	uint32_t guardSoundHandle_ = 0u;
 	float volume_ = 1.0f;
 
+	//当たり判定描画用のLineBox
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
+
+	//足の速さ
+	const float kMaxFrontSpeed_ = 0.03f;
+	const float kMaxBackSpeed_ = 0.02f;
 
 	//ガード状態か
 	bool isGuardMode_ = false;
 
 	//ガードタイマー(確定反撃用)
-	int guardTimer_ = 4;
+	const int kGuardTime_ = 20;
+	int guardTimer_ = kGuardTime_;
 
 	//パターンカウントの定数
 	const int kPatternCount_[8] = { 0,1,2,3,4,5,6,7 };
+
+	//テスト
+	bool isHitSecondAttack = false;
+	bool isHitThirdAttack = false;
 };
 

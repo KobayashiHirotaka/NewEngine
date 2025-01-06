@@ -19,6 +19,18 @@ void EnemyBullet::Update()
 	//更新
 	BaseBullet::Update();
 
+	//パーティクルの再生
+	if (velocity_.x < 0.0f)
+	{
+		particleEffectPlayer_->PlayParticle("EnemyLeftBullet", { worldTransform_.translation.x,
+					worldTransform_.translation.y,worldTransform_.translation.z });
+	}
+	else
+	{
+		particleEffectPlayer_->PlayParticle("EnemyRightBullet", { worldTransform_.translation.x,
+					worldTransform_.translation.y,worldTransform_.translation.z });
+	}
+
 	//当たり判定の更新
 	collider_->Update();
 }
@@ -58,7 +70,7 @@ void EnemyBullet::Create(Model* model, const Vector3& positon, const Vector3& ve
 
 void EnemyBullet::OnCollision(Collider* collider)
 {
-	//敵と弾が当たった時の処理
+	//プレイヤーと弾が当たった時の処理
 	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer || collider->GetCollisionAttribute() & kCollisionAttributePlayerBullet)
 	{
 		isDead_ = true;
