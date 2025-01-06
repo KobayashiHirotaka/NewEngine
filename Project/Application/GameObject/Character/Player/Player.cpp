@@ -179,9 +179,10 @@ void Player::Update()
 		}
 	}
 
+	const float kMaxFinisherGauge = -50.0f;
 	if (input_->PushKey(DIK_L))
 	{
-		baseData_.finisherGauge_ = -50.0f;
+		baseData_.finisherGauge_ = kMaxFinisherGauge;
 	}
 	
 #endif

@@ -145,9 +145,11 @@ void Enemy::Update()
 {
 #ifdef _ADJUSTMENT
 
+	//デバッグ用の処理
+	const int kHpDecreaseAmount = 1;
 	if (input_->PressKey(DIK_D))
 	{
-		baseData_.hp_ -= 1;
+		baseData_.hp_ -= kHpDecreaseAmount;
 	}
 
 #endif
