@@ -14,7 +14,7 @@ void Skydome::Initialize()
 	input_ = Input::GetInstance();
 
 	//モデルの生成
-	model_.reset(Model::CreateFromOBJ("resource/skydome", "skydome.obj"));
+	model_.reset(Model::CreateFromOBJ("Resource/Skydome", "Skydome.obj"));
 
 	//WorldTransformの初期化
 	worldTransform_.Initialize();

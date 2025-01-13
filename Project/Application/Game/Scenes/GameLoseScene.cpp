@@ -40,7 +40,7 @@ void GameLoseScene::Initialize()
 	debugCamera_.Initialize();
 
 	//リソース
-	loseSceneTextureHandle_ = TextureManager::LoadTexture("resource/images/LoseScene.png");
+	loseSceneTextureHandle_ = TextureManager::LoadTexture("Resource/Images/LoseScene.png");
 	loseSceneSprite_.reset(Sprite::Create(loseSceneTextureHandle_, { 0.0f,0.0f }));
 
 	//Transition生成、初期化
@@ -48,7 +48,7 @@ void GameLoseScene::Initialize()
 	transition_->Initialize();
 
 	//サウンド
-	selectSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Select.mp3");
+	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 };
 
 void GameLoseScene::Update()

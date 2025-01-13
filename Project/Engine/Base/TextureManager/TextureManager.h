@@ -7,8 +7,8 @@
 
 #pragma once
 #include "Engine/Base/DirectXCore/DirectXCore.h"
-#include "Engine/externals/DirectXTex/DirectXTex.h"
-#include "Engine/externals/DirectXTex/d3dx12.h"
+#include "Engine/Externals/DirectXTex/DirectXTex.h"
+#include "Engine/Externals/DirectXTex/d3dx12.h"
 #include "Engine/Utility/ConvertString/ConvertString.h"
 #include <array>
 #include <cassert>

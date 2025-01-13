@@ -40,7 +40,7 @@ void GameWinScene::Initialize()
 	debugCamera_.Initialize();
 
 	//リソース
-	winSceneTextureHandle_ = TextureManager::LoadTexture("resource/images/WinScene.png");
+	winSceneTextureHandle_ = TextureManager::LoadTexture("Resource/Images/WinScene.png");
 	winSceneSprite_.reset(Sprite::Create(winSceneTextureHandle_, { 0.0f,0.0f }));
 
 	//Transition生成、初期化
@@ -48,7 +48,7 @@ void GameWinScene::Initialize()
 	transition_->Initialize();
 
 	//サウンド
-	selectSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Select.mp3");
+	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 };
 
 void GameWinScene::Update()

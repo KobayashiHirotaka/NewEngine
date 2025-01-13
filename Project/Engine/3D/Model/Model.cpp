@@ -45,7 +45,7 @@ void Model::StaticInitialize()
 	CreateBonePSO();
 
 	//環境テクスチャハンドルの設定
-	sEnvironmentTextureHandle_ = sTextureManager_->LoadTexture("resource/images/skybox.dds");
+	sEnvironmentTextureHandle_ = sTextureManager_->LoadTexture("Resource/Images/Skybox.dds");
 }
 
 void Model::Update()
@@ -531,10 +531,10 @@ void Model::CreatePSO()
 
 
 	//Shaderをコンパイルする
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"resource/shaders/SkinningObject3d.VS.hlsl", L"vs_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"Resource/Shaders/SkinningObject3d.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"resource/shaders/Object3d.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"Resource/Shaders/Object3d.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 
@@ -666,10 +666,10 @@ void Model::CreateBonePSO()
 
 
 	//Shaderをコンパイルする
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"resource/shaders/BoneVisualization.VS.hlsl", L"vs_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"Resource/Shaders/BoneVisualization.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"resource/shaders/BoneVisualization.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"Resource/Shaders/BoneVisualization.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 

@@ -8,7 +8,7 @@
 #pragma once
 #include "Engine/Base/ImGuiManager/ImGuiManager.h"
 #include "Engine/Utility/Math/MyMath.h"
-#include "Engine/externals/nlohmann/json.hpp"
+#include "Engine/Externals/nlohmann/json.hpp"
 #include "Application/GameObject/Character/Direction.h"
 #include <variant>
 #include <string>
@@ -96,12 +96,12 @@ private:
     std::string tempTabName_;
 
     //プレイヤーのファイルパス
-    std::string savePlayerFilePath_ = "resource/AttackData/AttackPlayerData.json";
-    std::string loadPlayerFilePath_ = "resource/AttackData/AttackPlayerData.json";
+    std::string savePlayerFilePath_ = "Resource/AttackData/AttackPlayerData.json";
+    std::string loadPlayerFilePath_ = "Resource/AttackData/AttackPlayerData.json";
 
     //エネミーのファイルパス
-    std::string saveEnemyFilePath_ = "resource/AttackData/AttackEnemyData.json";
-    std::string loadEnemyFilePath_ = "resource/AttackData/AttackEnemyData.json";
+    std::string saveEnemyFilePath_ = "Resource/AttackData/AttackEnemyData.json";
+    std::string loadEnemyFilePath_ = "Resource/AttackData/AttackEnemyData.json";
 
 
     //ImGui用の変数

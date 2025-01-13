@@ -7,7 +7,7 @@
 
 #include "LevelLoader.h"
 
-const std::string LevelLoader::kDirectoryPath = "resource/Level/";
+const std::string LevelLoader::kDirectoryPath = "Resource/Level/";
 
 const std::string LevelLoader::kExtension = ".json";
 
@@ -170,7 +170,7 @@ void LevelLoader::LoadObjectFromJson(LevelData* levelData, json& object)
 
 void LevelLoader::CreateObjectsFromLevelData(const LevelData* levelData)
 {
-	std::string directoryPath = "resource/models/";
+	std::string directoryPath = "Resource/Models/";
 	std::string fileName;
 
 	//レベルデータからobjectを生成、配置

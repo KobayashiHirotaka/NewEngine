@@ -494,10 +494,10 @@ void PostProcess::CreatePSO()
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	//Shaderをコンパイルする
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"resource/shaders/MultiPass.VS.hlsl", L"vs_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"Resource/Shaders/MultiPass.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"resource/shaders/MultiPass.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"Resource/Shaders/MultiPass.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 	//PSOを作成する
@@ -620,10 +620,10 @@ void PostProcess::CreateBlurPSO()
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	//シェーダーをコンパイルする
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"resource/shaders/HorizontalBlur.VS.hlsl", L"vs_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"Resource/Shaders/HorizontalBlur.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"resource/shaders/HorizontalBlur.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"Resource/Shaders/HorizontalBlur.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 	//PSOを作成する
@@ -655,10 +655,10 @@ void PostProcess::CreateBlurPSO()
 	assert(SUCCEEDED(hr));
 
 	//シェーダーをコンパイルする
-	vertexShaderBlob = CompileShader(L"resource/shaders/VerticalBlur.VS.hlsl", L"vs_6_0");
+	vertexShaderBlob = CompileShader(L"Resource/Shaders/VerticalBlur.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	pixelShaderBlob = CompileShader(L"resource/shaders/VerticalBlur.PS.hlsl", L"ps_6_0");
+	pixelShaderBlob = CompileShader(L"Resource/Shaders/VerticalBlur.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 	//PSOを再設定
@@ -825,10 +825,10 @@ void PostProcess::CreatePostProcessPSO()
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	//シェーダーをコンパイルする
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"resource/shaders/PostProcess.VS.hlsl", L"vs_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"Resource/Shaders/PostProcess.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"resource/shaders/PostProcess.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"Resource/Shaders/PostProcess.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 	//DepthStencilStateの設定
