@@ -253,7 +253,7 @@ void GamePlayScene::Update()
 	{
 		cameraController_->StartFinisherCamera(player_->GetDirection(), player_->GetWorldPosition().x);
 
-		if (!player_->GetIsFinisherEffect())
+		if (!player_->GetIsFinisherEffect() || player_->GetIsDown())
 		{
 			isFinisherEnd_ = true;
 			isFinisherStart_ = false;

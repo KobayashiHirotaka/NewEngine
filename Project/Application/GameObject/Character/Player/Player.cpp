@@ -179,13 +179,19 @@ void Player::Update()
 		}
 	}
 
+	/*const float kMaxFinisherGauge = -50.0f;
+	if (input_->PushKey(DIK_L))
+	{
+		baseData_.finisherGauge_ = kMaxFinisherGauge;
+	}*/
+	
+#endif
+
 	const float kMaxFinisherGauge = -50.0f;
 	if (input_->PushKey(DIK_L))
 	{
 		baseData_.finisherGauge_ = kMaxFinisherGauge;
 	}
-	
-#endif
 
 	//更新
 	BaseCharacter::Update();
@@ -391,6 +397,7 @@ void Player::UpdateBehaviorRoot()
 		{
 			attackType_ = "必殺技";
 			StartAttack(attackData_.isFinisher);
+			isFinisherInvincible_ = true;
 			baseData_.finisherGauge_ = 0.0f;
 			timerData_.finisherTimer = timerData_.maxFinisherTimer;
 			attackData_.isFinisherFirstAttack = false;
@@ -917,7 +924,7 @@ void Player::UpdateBehaviorAttack()
 		}
 
 		//必殺技(初段)
-		if (attackData_.isFinisherFirstAttack && !characterState_.isDown)
+		if (attackData_.isFinisherFirstAttack)
 		{
 			//アニメーション
 			animationIndex_ = kAnimationFinisherFirstAttack;
@@ -936,16 +943,6 @@ void Player::UpdateBehaviorAttack()
 			//攻撃判定をつけるタイミングの設定
 			EvaluateAttackTiming();
 
-			//無敵状態の付与
-			if (attackData_.isAttack)
-			{
-				isFinisherInvincible_ = true;
-			}
-			else
-			{
-				isFinisherInvincible_ = false;
-			}
-
 			//当たっていたらキャンセル(必殺技2段目)
 			//キャンセル始まりの時間
 			const int kCancelStartTime = 10;
@@ -953,6 +950,7 @@ void Player::UpdateBehaviorAttack()
 			//キャンセル終わりの時間
 			const int kCancelEndTime = 30;
 
+			//2段目への移行処理
 			if (enemy_->GetIsDown() && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime)
 			{
 				attackType_ = "必殺技(2段目)";
@@ -968,7 +966,7 @@ void Player::UpdateBehaviorAttack()
 			}
 
 			//終了処理
-			if ((characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime) && !enemy_->GetIsDown())
+			if (characterState_.isDown || attackData_.attackAnimationFrame > attackData_.recoveryTime)
 			{
 				timerData_.finisherTimer = timerData_.maxFinisherTimer;
 				EndAttack(attackData_.isFinisher);
@@ -1008,7 +1006,6 @@ void Player::UpdateBehaviorAttack()
 			}
 
 			//攻撃判定をつけるタイミングの設定
-			EvaluateAttackTiming();
 			EvaluateAttackTiming();
 
 			//終了処理
@@ -1260,12 +1257,10 @@ void Player::OnCollision(Collider* collider)
 			if (baseData_.hp_ < 0)
 			{
 				characterState_.isHitBullet = true;
-				attackData_.isFinisher = false;
 			}
 			else
 			{
 				characterState_.isHitTCHighPunch = true;
-				attackData_.isFinisher = false;
 			}
 
 			//ゲージ増加
