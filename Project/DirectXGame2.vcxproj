@@ -232,7 +232,6 @@
     <ClInclude Include="Engine\Utility\LevelLoader\LevelLoader.h" />
     <ClInclude Include="Engine\Utility\Math\MyMath.h" />
     <ClInclude Include="Engine\Utility\Structs.h" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\BoneVisualization.PS.hlsl">
