@@ -2499,7 +2499,7 @@ void Enemy::HitCombo()
 	const int kTCHighPunchRecoveryTime = 45;
 
 	//ジャンプ攻撃
-	const int kJumpAttackRecoveryTime = 40;
+	const int kJumpAttackRecoveryTime = 30;
 
 	//アッパー
 	const int kUpperCutRecoveryTime = 30;
