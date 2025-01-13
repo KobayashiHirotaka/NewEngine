@@ -18,25 +18,25 @@ void InputLog::Initialize()
 
     for (size_t i = 0; i < arrowIndices.size(); ++i)
     {
-        std::string path = "resource/images/arrow_" + std::to_string(arrowIndices[i]) + ".png";
+        std::string path = "Resource/Images/arrow_" + std::to_string(arrowIndices[i]) + ".png";
         stickTextureHandle_[i] = TextureManager::LoadTexture(path.c_str());
     }
 
     //操作(N)
-    stickTextureHandle_[8] = TextureManager::LoadTexture("resource/images/N.png");
+    stickTextureHandle_[8] = TextureManager::LoadTexture("Resource/Images/N.png");
 
 	//ボタン
-	buttonTextureHandle_[0] = TextureManager::LoadTexture("resource/images/A.png");
-	buttonTextureHandle_[1] = TextureManager::LoadTexture("resource/images/B.png");
-	buttonTextureHandle_[2] = TextureManager::LoadTexture("resource/images/X.png");
-	buttonTextureHandle_[3] = TextureManager::LoadTexture("resource/images/Y.png");
-	buttonTextureHandle_[4] = TextureManager::LoadTexture("resource/images/LB.png");
-	buttonTextureHandle_[5] = TextureManager::LoadTexture("resource/images/RB.png");
+	buttonTextureHandle_[0] = TextureManager::LoadTexture("Resource/Images/A.png");
+	buttonTextureHandle_[1] = TextureManager::LoadTexture("Resource/Images/B.png");
+	buttonTextureHandle_[2] = TextureManager::LoadTexture("Resource/Images/X.png");
+	buttonTextureHandle_[3] = TextureManager::LoadTexture("Resource/Images/Y.png");
+	buttonTextureHandle_[4] = TextureManager::LoadTexture("Resource/Images/LB.png");
+	buttonTextureHandle_[5] = TextureManager::LoadTexture("Resource/Images/RB.png");
 
     //数字
     for (int i = 0; i < kMaxNum_; ++i)
     {
-        std::string path = "resource/number/" + std::to_string(i) + ".png";
+        std::string path = "Resource/Number/" + std::to_string(i) + ".png";
         digitTextureHandle_[i] = TextureManager::LoadTexture(path.c_str());
     }
 

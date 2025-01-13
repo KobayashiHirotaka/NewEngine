@@ -8,8 +8,8 @@
 #pragma once
 #include "Engine/Base/WindowsApp/WindowsApp.h"
 #include "Engine/Base/DirectXCore/DirectXCore.h"
-#include "Engine/externals/imgui/imgui.h"
-#include "Engine/externals/imgui/imgui_impl_dx12.h"
+#include "Engine/Externals/imgui/imgui.h"
+#include "Engine/Externals/imgui/imgui_impl_dx12.h"
 
 class ImGuiManager
 {

@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="shaders">
-      <UniqueIdentifier>{7b7ea5e1-b748-4f74-8c27-3a7867154ff1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Imgui">
       <UniqueIdentifier>{aa473f68-5621-46d0-a304-21d5a9d89190}</UniqueIdentifier>
     </Filter>
@@ -283,30 +280,33 @@
     <Filter Include="ソース ファイル\Project\Game\Transition">
       <UniqueIdentifier>{33e823a9-2267-4b6d-b681-03dbcff5d665}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{7b7ea5e1-b748-4f74-8c27-3a7867154ff1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\externals\imgui\imgui.cpp">
+    <ClCompile Include="Engine\Externals\imgui\imgui.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\externals\imgui\imgui_demo.cpp">
+    <ClCompile Include="Engine\Externals\imgui\imgui_demo.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\externals\imgui\imgui_draw.cpp">
+    <ClCompile Include="Engine\Externals\imgui\imgui_draw.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\externals\imgui\imgui_impl_dx12.cpp">
+    <ClCompile Include="Engine\Externals\imgui\imgui_impl_dx12.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\externals\imgui\imgui_impl_win32.cpp">
+    <ClCompile Include="Engine\Externals\imgui\imgui_impl_win32.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\externals\imgui\imgui_tables.cpp">
+    <ClCompile Include="Engine\Externals\imgui\imgui_tables.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\externals\imgui\imgui_widgets.cpp">
+    <ClCompile Include="Engine\Externals\imgui\imgui_widgets.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Base\WindowsApp\WindowsApp.cpp">
@@ -483,69 +483,69 @@
     <ClCompile Include="Engine\Utility\Collision\Collider.cpp">
       <Filter>ソース ファイル\Engine\Utility\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\Scenes\GameSceneUI.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Application\Game\AttackEditor\AttackEditor.cpp">
       <Filter>ソース ファイル\Project\Game\AttackEditor</Filter>
     </ClCompile>
     <ClCompile Include="Application\Game\Transition\Transition.cpp">
       <Filter>ソース ファイル\Project\Game\Transition</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GameSceneUI.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
     <None Include="resource\shaders\Object3d.hlsli">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="resource\shaders\Particle.hlsli">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="resource\shaders\PostProcess.hlsli">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="resource\shaders\MultiPass.hlsli">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="resource\shaders\HorizontalBlur.hlsli">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="resource\shaders\VerticalBlur.hlsli">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="resource\shaders\Sprite.hlsli">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="resource\shaders\BoneVisualization.hlsli">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="resource\shaders\Line.hlsli">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\externals\imgui\imconfig.h">
+    <ClInclude Include="Engine\Externals\imgui\imconfig.h">
       <Filter>Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\externals\imgui\imgui.h">
+    <ClInclude Include="Engine\Externals\imgui\imgui.h">
       <Filter>Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\externals\imgui\imgui_impl_dx12.h">
+    <ClInclude Include="Engine\Externals\imgui\imgui_impl_dx12.h">
       <Filter>Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\externals\imgui\imgui_impl_win32.h">
+    <ClInclude Include="Engine\Externals\imgui\imgui_impl_win32.h">
       <Filter>Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\externals\imgui\imgui_internal.h">
+    <ClInclude Include="Engine\Externals\imgui\imgui_internal.h">
       <Filter>Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\externals\imgui\imstb_rectpack.h">
+    <ClInclude Include="Engine\Externals\imgui\imstb_rectpack.h">
       <Filter>Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\externals\imgui\imstb_textedit.h">
+    <ClInclude Include="Engine\Externals\imgui\imstb_textedit.h">
       <Filter>Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\externals\imgui\imstb_truetype.h">
+    <ClInclude Include="Engine\Externals\imgui\imstb_truetype.h">
       <Filter>Imgui</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Base\WindowsApp\WindowsApp.h">
@@ -746,80 +746,77 @@
     <ClInclude Include="Application\GameObject\Character\BaseBullet.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GameSceneUI.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="Application\Game\AttackEditor\AttackEditor.h">
       <Filter>ヘッダー ファイル\Project\Game\AttackEditor</Filter>
     </ClInclude>
     <ClInclude Include="Application\Game\Transition\Transition.h">
       <Filter>ヘッダー ファイル\Project\Game\Transition</Filter>
     </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GameSceneUI.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\Object3d.PS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\Object3d.VS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\PostProcess.VS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\PostProcess.PS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\MultiPass.VS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\MultiPass.PS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\HorizontalBlur.VS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\HorizontalBlur.PS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\VerticalBlur.PS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\VerticalBlur.VS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\Sprite.PS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\Sprite.VS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\Particle.PS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\Particle.VS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\SkinningObject3d.VS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\BoneVisualization.VS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\BoneVisualization.PS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\Line.VS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="resource\shaders\Line.PS.hlsl">
-      <Filter>shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Engine\externals\imgui\LICENSE.txt">
+    <Text Include="Engine\Externals\imgui\LICENSE.txt">
       <Filter>Imgui</Filter>
     </Text>
   </ItemGroup>

@@ -45,22 +45,22 @@ void GameTitleScene::Initialize()
 
 	//UIの初期化
 	//タイトル(モノクロファイター)のSprite
-	titleTextureHandle_ = TextureManager::LoadTexture("resource/images/title.png");
+	titleTextureHandle_ = TextureManager::LoadTexture("Resource/Images/Title.png");
 	titleSprite_.reset(Sprite::Create(titleTextureHandle_, { titleSpritePosition_.x, titleSpritePosition_.y }));
 
 	//タイトル(操作用)のSprite
-	titleUITextureHandle_ = TextureManager::LoadTexture("resource/images/titleUI.png");
+	titleUITextureHandle_ = TextureManager::LoadTexture("Resource/Images/TitleUI.png");
 	titleUISprite_.reset(Sprite::Create(titleUITextureHandle_, { 0.0f,0.0f }));
 
 	//基本操作説明用のSprite
-	generalCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/PlayGeneralCommandList.png");
+	generalCommandListTextureHandle_ = TextureManager::LoadTexture("Resource/Images/PlayGeneralCommandList.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
 	//攻撃操作説明用のSprite
-	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("resource/images/PlayDefaultAttackCommandList.png");
+	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("Resource/Images/PlayDefaultAttackCommandList.png");
 	attackCommandListSprite_[0].reset(Sprite::Create(attackCommandListTextureHandle_[0], {0.0f,0.0f}));
 
-	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("resource/images/PlayFinisherAttackCommandList.png");
+	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("Resource/Images/PlayFinisherAttackCommandList.png");
 	attackCommandListSprite_[1].reset(Sprite::Create(attackCommandListTextureHandle_[1], { 0.0f,0.0f }));
 
 	//Transition生成、初期化
@@ -68,8 +68,8 @@ void GameTitleScene::Initialize()
 	transition_->Initialize();
 
 	//BGM,SEの読み込み
-	titleSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/BGM.mp3");
-	selectSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Select.mp3");
+	titleSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/BGM.mp3");
+	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 
 	//BGMの再生,停止
 	if (!audio_->IsAudioPlaying(titleSoundHandle_))

@@ -10,8 +10,8 @@
 void ParticleEffectPlayer::Initialize()
 {
 	//モデルの生成
-	baseParticleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle/BaseParticle", "baseParticle.obj"));
-	//shockWaveParticleModel_.reset(ParticleModel::CreateFromOBJ("resource/Particle/ShockWaveParticle", "shockWaveParticle.obj"));
+	baseParticleModel_.reset(ParticleModel::CreateFromOBJ("Resource/Particle/BaseParticle", "BaseParticle.obj"));
+	//shockWaveParticleModel_.reset(ParticleModel::CreateFromOBJ("Resource/Particle/ShockWaveParticle", "ShockWaveParticle.obj"));
 
 	//パーティクルシステムの初期化
 	particleSystem_ = std::make_unique<ParticleSystem>();

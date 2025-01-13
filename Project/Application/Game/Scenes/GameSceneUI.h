@@ -7,7 +7,7 @@
 
 #pragma once
 
- //操作説明の種類
+//操作説明の種類
 enum class CommandSpriteType
 {
 	//基本操作

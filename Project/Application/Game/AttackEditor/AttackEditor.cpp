@@ -105,7 +105,7 @@ void AttackEditor::Update()
             if (ImGui::Button("保存"))
             {
                 SaveFile(savePlayerFilePath_, playerAttackParameter_);
-                std::string message = savePlayerFilePath_ + " saved";
+                std::string message = savePlayerFilePath_ + " Saved";
                 MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
             }
 
@@ -113,7 +113,7 @@ void AttackEditor::Update()
             if (ImGui::Button("読み込み"))
             {
                 LoadFile(loadPlayerFilePath_, playerAttackParameter_);
-                std::string message = loadPlayerFilePath_ + " loaded";
+                std::string message = loadPlayerFilePath_ + " Loaded";
                 MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
             }
 
@@ -193,7 +193,7 @@ void AttackEditor::Update()
             if (ImGui::Button("保存"))
             {
                 SaveFile(saveEnemyFilePath_, enemyAttackParameter_);
-                std::string message = saveEnemyFilePath_ + " saved";
+                std::string message = saveEnemyFilePath_ + " Saved";
                 MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
             }
 
@@ -201,7 +201,7 @@ void AttackEditor::Update()
             if (ImGui::Button("読み込み"))
             {
                 LoadFile(loadEnemyFilePath_, enemyAttackParameter_);
-                std::string message = loadEnemyFilePath_ + " loaded";
+                std::string message = loadEnemyFilePath_ + " Loaded";
                 MessageBoxA(nullptr, message.c_str(), "AttackEditor", 0);
             }
 
@@ -224,7 +224,7 @@ void AttackEditor::LoadJapaneseFont()
     const float pixelSize = 18.0f;
 
     //日本語フォントの指定
-    if (io.Fonts->AddFontFromFileTTF("resource/AttackData/NotoSansJP-Medium.ttf", pixelSize, &config, io.Fonts->GetGlyphRangesJapanese()))
+    if (io.Fonts->AddFontFromFileTTF("Resource/AttackData/NotoSansJP-Medium.ttf", pixelSize, &config, io.Fonts->GetGlyphRangesJapanese()))
     {
         io.Fonts->Build(); 
     }

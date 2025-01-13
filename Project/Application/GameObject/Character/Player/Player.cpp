@@ -56,7 +56,7 @@ void Player::Initialize()
 
 	hpBar_ = {
 		true,
-		TextureManager::LoadTexture("resource/images/HP.png"),
+		TextureManager::LoadTexture("Resource/Images/HP.png"),
 		kHpBarPosition,
 		0.0f,
 		kHpBarSize,
@@ -71,7 +71,7 @@ void Player::Initialize()
 
 	guardGaugeBar_ = {
 		true,
-		TextureManager::LoadTexture("resource/images/guardGauge.png"),
+		TextureManager::LoadTexture("Resource/Images/GuardGauge.png"),
 		{kGuardGaugeBarPosition},
 		0.0f,
 		{kGuardGaugeBarSize},
@@ -86,7 +86,7 @@ void Player::Initialize()
 
 	finisherGaugeBar_ = {
 		true,
-		TextureManager::LoadTexture("resource/images/finisherGauge.png"),
+		TextureManager::LoadTexture("Resource/Images/FinisherGauge.png"),
 		{kFinisherGaugeBarPosition},
 		0.0f,
 		{kFinisherGaugeBarSize},
@@ -98,20 +98,20 @@ void Player::Initialize()
 	//ヒット表示
 	const Vector2 kHitSpritePosition = { 1090.0f, 180.0f };
 
-	hitTextureHandle_ = TextureManager::LoadTexture("resource/images/Hit.png");
+	hitTextureHandle_ = TextureManager::LoadTexture("Resource/Images/Hit.png");
 	hitSprite_.reset(Sprite::Create(hitTextureHandle_, kHitSpritePosition));
 
 	//コンボ表示
 	const Vector2 kComboNumSpritePosition = { 1060.0f, 290.0f };
 
-	comboNumTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
+	comboNumTextureHandle_ = TextureManager::LoadTexture("Resource/Number/0.png");
 	comboNumSprite_.reset(Sprite::Create(comboNumTextureHandle_, kComboNumSpritePosition));
 
 	//キャラクターアイコン
 	const Vector2 kPlayerIconPosition = { 53.0f, 20.0f };
 	const Vector2 kPlayerIconSize = { 120.0f,120.0f };
 
-	playerIconTextureHandle_ = TextureManager::LoadTexture("resource/images/PlayerIcon.png");
+	playerIconTextureHandle_ = TextureManager::LoadTexture("Resource/Images/PlayerIcon.png");
 
 	playerIconSprite_.reset(Sprite::Create(playerIconTextureHandle_, kPlayerIconPosition));
 	playerIconSprite_->SetSize(kPlayerIconSize);
@@ -121,7 +121,7 @@ void Player::Initialize()
 	const float kCursolRotationY = 1.5f;
 	const Vector3 kCursolScale = { 0.3f, 0.3f, 0.3f };
 
-	playerCursol_.reset(Model::CreateFromOBJ("resource/playerCursol", "playerCursol.obj"));
+	playerCursol_.reset(Model::CreateFromOBJ("Resource/PlayerCursol", "PlayerCursol.obj"));
 
 	worldTransformCursol_.Initialize();
 	worldTransformCursol_.translation = { worldTransform_.translation.x, worldTransform_.translation.y + kAdjustCursolPositionY, worldTransform_.translation.z };
@@ -131,17 +131,17 @@ void Player::Initialize()
 	worldTransformCursol_.parent = &worldTransform_;
 
 	//弾のモデルを生成
-	bulletModel_.reset(Model::CreateFromOBJ("resource/bullet", "bullet.obj"));
+	bulletModel_.reset(Model::CreateFromOBJ("Resource/Bullet", "Bullet.obj"));
 
 	//パーティクル
 	particleEffectPlayer_ = std::make_unique<ParticleEffectPlayer>();
 	particleEffectPlayer_->Initialize();
 
 	//SEの読み込み
-	attackSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Attack.mp3");
-	weaponAttackSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/WeaponAttack.mp3");
-	damageSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/HitPunch1.mp3");
-	guardSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Guard.mp3");
+	attackSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Attack.mp3");
+	weaponAttackSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/WeaponAttack.mp3");
+	damageSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/HitPunch1.mp3");
+	guardSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Guard.mp3");
 
 	//基本データの設定
 	baseData_.hp_ = -baseData_.kMaxHp_;
@@ -2501,7 +2501,7 @@ void Player::UpdateComboNumberSprite()
 	//コンボ表示の更新
 	int comboNum = comboCount_;
 
-	comboNumTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(comboNum) + ".png");
+	comboNumTextureHandle_ = TextureManager::LoadTexture("Resource/Number/" + std::to_string(comboNum) + ".png");
 
 	comboNumSprite_->SetTexture(comboNumTextureHandle_);
 }

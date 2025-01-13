@@ -81,32 +81,32 @@ void GamePlayScene::Initialize()
 	backGround_->Initialize();
 
 	//リソース
-	UICommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/UICommandList.png");
+	UICommandListTextureHandle_ = TextureManager::LoadTexture("Resource/Images/UICommandList.png");
 	UICommandListSprite_.reset(Sprite::Create(UICommandListTextureHandle_, { 0.0f,0.0f }));
 
 	//基本操作説明
-	generalCommandListTextureHandle_ = TextureManager::LoadTexture("resource/images/PlayGeneralCommandList.png");
+	generalCommandListTextureHandle_ = TextureManager::LoadTexture("Resource/Images/PlayGeneralCommandList.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
 	//攻撃操作説明(コンボ)
-	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("resource/images/PlayDefaultAttackCommandList.png");
+	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("Resource/Images/PlayDefaultAttackCommandList.png");
 	attackCommandListSprite_[0].reset(Sprite::Create(attackCommandListTextureHandle_[0], { 0.0f,0.0f }));
 
 	//攻撃操作説明(必殺技)
-	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("resource/images/PlayFinisherAttackCommandList.png");
+	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("Resource/Images/PlayFinisherAttackCommandList.png");
 	attackCommandListSprite_[1].reset(Sprite::Create(attackCommandListTextureHandle_[1], { 0.0f,0.0f }));
 
 	//ラウンド表示
-	roundTextureHandle_[0] = TextureManager::LoadTexture("resource/images/Round1.png");
-	roundTextureHandle_[1] = TextureManager::LoadTexture("resource/images/Round2.png");
-	roundTextureHandle_[2] = TextureManager::LoadTexture("resource/images/Round3.png");
+	roundTextureHandle_[0] = TextureManager::LoadTexture("Resource/Images/Round1.png");
+	roundTextureHandle_[1] = TextureManager::LoadTexture("Resource/Images/Round2.png");
+	roundTextureHandle_[2] = TextureManager::LoadTexture("Resource/Images/Round3.png");
 
 	roundSprite_[0].reset(Sprite::Create(roundTextureHandle_[0], { 0.0f, 0.0f }));
 	roundSprite_[1].reset(Sprite::Create(roundTextureHandle_[1], { 0.0f, 0.0f }));
 	roundSprite_[2].reset(Sprite::Create(roundTextureHandle_[2], { 0.0f, 0.0f }));
 
 	//ラウンド取得数表示
-	roundGetTextureHandle_ = TextureManager::LoadTexture("resource/images/RoundGet.png");
+	roundGetTextureHandle_ = TextureManager::LoadTexture("Resource/Images/RoundGet.png");
 
 	const Vector2 kRoundGetPosition[4] = { { 400.0f, 70.0f }, { 480.0f, 70.0f }, { 800.0f, 70.0f }, { 720.0f, 70.0f } };
 
@@ -116,31 +116,31 @@ void GamePlayScene::Initialize()
 	roundGetSprite_[3].reset(Sprite::Create(roundGetTextureHandle_, kRoundGetPosition[3]));
 
 	//ラウンド開始時
-	fightTextureHandle_ = TextureManager::LoadTexture("resource/images/FIGHT.png");
+	fightTextureHandle_ = TextureManager::LoadTexture("Resource/Images/FIGHT.png");
 
 	fightSprite_.reset(Sprite::Create(fightTextureHandle_, { 0.0f, 0.0f }));
 
 	//KO表示
-	koTextureHandle_ = TextureManager::LoadTexture("resource/images/KO.png");
+	koTextureHandle_ = TextureManager::LoadTexture("Resource/Images/KO.png");
 
 	koSprite_.reset(Sprite::Create(koTextureHandle_, { 0.0f, 0.0f }));
 
 	//勝敗表示
-	winTextureHandle_ = TextureManager::LoadTexture("resource/images/WIN.png");
-	loseTextureHandle_ = TextureManager::LoadTexture("resource/images/LOSE.png");
-	timeOverTextureHandle_ = TextureManager::LoadTexture("resource/images/TIMEOVER.png");
+	winTextureHandle_ = TextureManager::LoadTexture("Resource/Images/WIN.png");
+	loseTextureHandle_ = TextureManager::LoadTexture("Resource/Images/LOSE.png");
+	timeOverTextureHandle_ = TextureManager::LoadTexture("Resource/Images/TIMEOVER.png");
 
 	winSprite_.reset(Sprite::Create(winTextureHandle_, { 0.0f, 0.0f }));
 	loseSprite_.reset(Sprite::Create(loseTextureHandle_, { 0.0f, 0.0f }));
 	timeOverSprite_.reset(Sprite::Create(timeOverTextureHandle_, { 0.0f, 0.0f }));
 
 	//UIの枠
-	frameUITextureHandle_ = TextureManager::LoadTexture("resource/images/frameUI.png");
+	frameUITextureHandle_ = TextureManager::LoadTexture("Resource/Images/FrameUI.png");
 	frameUISprite_.reset(Sprite::Create(frameUITextureHandle_, { 0.0f, 0.0f }));
 
 	//数字
-	tensTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
-	onesTextureHandle_ = TextureManager::LoadTexture("resource/number/0.png");
+	tensTextureHandle_ = TextureManager::LoadTexture("Resource/Number/0.png");
+	onesTextureHandle_ = TextureManager::LoadTexture("Resource/Number/0.png");
 
 	const Vector2 kNumberTensPosition = { 590.0f, 0.0f };
 	const Vector2 kNumberOnesPosition = { 630.0f, 0.0f };
@@ -153,7 +153,7 @@ void GamePlayScene::Initialize()
 	transition_->Initialize();
 
 	//SE
-	selectSoundHandle_ = audio_->LoadSoundMP3("resource/Sounds/Select.mp3");
+	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 
 #ifdef _ADJUSTMENT
 
