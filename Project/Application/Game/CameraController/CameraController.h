@@ -42,7 +42,7 @@ private:
 	Camera camera_;
 
 	//位置
-	const float kCameraOffsetY_ = 1.0f;
+	float kCameraOffsetY_ = 1.4f;
 	Vector3 position_ = { 0.0f, kCameraOffsetY_, -5.0f };
 
 	//カメラの速さ
