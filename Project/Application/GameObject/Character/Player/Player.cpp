@@ -157,6 +157,12 @@ void Player::Update()
 #ifdef _ADJUSTMENT
 
 	//デバッグ用の処理
+	const float kMaxFinisherGauge = -50.0f;
+	if (input_->PushKey(DIK_L))
+	{
+		baseData_.finisherGauge_ = kMaxFinisherGauge;
+	}
+
 	if (isDebug_)
 	{
 		Vector4 kAttackColor = { 1.0f,0.0f,0.0f,1.0f };
@@ -179,19 +185,7 @@ void Player::Update()
 		}
 	}
 
-	/*const float kMaxFinisherGauge = -50.0f;
-	if (input_->PushKey(DIK_L))
-	{
-		baseData_.finisherGauge_ = kMaxFinisherGauge;
-	}*/
-	
 #endif
-
-	const float kMaxFinisherGauge = -50.0f;
-	if (input_->PushKey(DIK_L))
-	{
-		baseData_.finisherGauge_ = kMaxFinisherGauge;
-	}
 
 	//更新
 	BaseCharacter::Update();
