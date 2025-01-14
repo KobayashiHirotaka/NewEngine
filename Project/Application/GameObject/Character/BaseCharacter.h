@@ -504,7 +504,7 @@ protected:
 	//距離
 	Vector3 difference_ = { 0.0f,0.0f,0.0f };
 	float distance_ = 0.0f;
-	const float kMaxDistance_ = 5.0f;
+	const float kMaxDistance_ = 4.3f;
 
 	//前フレームのX座標
 	float previousPositionX_ = 0.0f;
@@ -529,14 +529,4 @@ protected:
 
 	//コンボカウントの定数
 	const int kComboCount_[10] = { 0,1,2,3,4,5,6,7,8,9 };
-
-	//ImGui用
-	const float kMinLeftEdge_ = -10.0f;
-	const float kMaxLeftEdge_ = 1.0f;
-	const float kMinRightEdge_ = 1.0f;
-	const float kMaxRightEdge_ = 10.0f;
-	const float kMinAttackLeftEdge_ = -10.0f;
-	const float kMaxAttackLeftEdge_ = 1.0f;
-	const float kMinAttackRightEdge_ = 1.0f;
-	const float kMaxAttackRightEdge_ = 10.0f;
 };

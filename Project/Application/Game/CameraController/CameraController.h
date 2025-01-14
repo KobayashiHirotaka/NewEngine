@@ -58,7 +58,7 @@ private:
 	const float kMin_ = -5.0f;
 
 	//カメラのZ座標の最大値
-	const float kMax_ = -8.0f;
+	const float kMax_ = -7.0f;
 
 	//距離
 	float distance_ = 0.0f;
