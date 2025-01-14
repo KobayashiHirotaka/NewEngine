@@ -152,20 +152,6 @@ void Enemy::Update()
 		baseData_.hp_ -= kHpDecreaseAmount;
 	}
 
-#endif
-
-	//更新
-	BaseCharacter::Update();
-
-	//ImGui
-	BaseCharacter::ImGui();
-
-	//エディターで設定したパラメータをセット
-	AttackEditor::GetInstance()->SetAttackParameters(attackType_, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
-		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop, 
-		aabb_, false, characterState_.direction);
-
-	//デバッグ用の処理
 	if (isDebug_)
 	{
 		if (attackData_.isAttack)
@@ -183,6 +169,19 @@ void Enemy::Update()
 			model_->GetMaterial()->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 	}
+
+#endif
+
+	//更新
+	BaseCharacter::Update();
+
+	//ImGui
+	BaseCharacter::ImGui();
+
+	//エディターで設定したパラメータをセット
+	AttackEditor::GetInstance()->SetAttackParameters(attackType_, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
+		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop, 
+		aabb_, false, characterState_.direction);
 
 	//振り向きの処理
 	Vector3 playerWorldPosition = player_->GetWorldPosition();
