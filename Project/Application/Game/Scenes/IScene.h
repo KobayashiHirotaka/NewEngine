@@ -56,6 +56,9 @@ protected:
 
 	//Transitionのポインタ
 	std::unique_ptr<Transition> transition_ = nullptr;
+
+	//GameSceneUIのポインタ
+	std::unique_ptr<GameSceneUI> gameSceneUI_ = nullptr;
 	
 	//Transition開始・終了フラグ
 	bool isTransitionStart_ = false;

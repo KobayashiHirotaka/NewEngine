@@ -347,7 +347,7 @@ void Player::UpdateBehaviorRoot()
 		}
 
 		//ジャンプ
-		if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > kValue_) && worldTransform_.translation.y == 0.0f && !characterState_.isDown)
+		if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > kStickDeadZone_) && worldTransform_.translation.y == 0.0f && !characterState_.isDown)
 		{
 			characterState_.behaviorRequest = Behavior::kJump;
 		}
@@ -370,7 +370,7 @@ void Player::UpdateBehaviorRoot()
 		//タックル攻撃
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && 
 			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) ||
-			input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kValue_ || input_->GetLeftStickX() < -kValue_))
+			input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kStickDeadZone_ || input_->GetLeftStickX() < -kStickDeadZone_))
 		{
 			attackType_ = "タックル";
 			StartAttack(attackData_.isTackle);
@@ -379,7 +379,7 @@ void Player::UpdateBehaviorRoot()
 		//アッパー攻撃
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) &&
 			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && input_->GetLeftStickX() < kValue_ && input_->GetLeftStickX() > -kValue_ && !characterState_.isDown)
+			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && input_->GetLeftStickX() < kStickDeadZone_ && input_->GetLeftStickX() > -kStickDeadZone_ && !characterState_.isDown)
 		{
 			attackType_ = "アッパー";
 			StartAttack(attackData_.isUppercut);
@@ -1614,12 +1614,12 @@ void Player::Move()
 		if (characterState_.isHitCharacter)
 		{
 			const float kPushSpeed = 0.05f;
-			if (characterState_.direction == Direction::Right && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kValue_))
+			if (characterState_.direction == Direction::Right && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kStickDeadZone_))
 			{
 				//敵を右方向に押す
 				PushEnemy(enemyPosition, kPushSpeed);
 			}
-			else if (characterState_.direction == Direction::Left && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -kValue_))
+			else if (characterState_.direction == Direction::Left && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -kStickDeadZone_))
 			{
 				//敵を左方向に押す
 				PushEnemy(enemyPosition, -kPushSpeed);
@@ -1636,7 +1636,7 @@ void Player::Move()
 			characterState_.isGuard = false;
 		}
 
-		if (input_->GetLeftStickX() < -kValue_ && characterState_.direction == Direction::Left && !characterState_.isDown)
+		if (input_->GetLeftStickX() < -kStickDeadZone_ && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
 			//速度の設定
 			moveData_.velocity.x = -koveSpeed;
@@ -1653,7 +1653,7 @@ void Player::Move()
 			characterState_.isGuard = false;
 		}
 
-		if (input_->GetLeftStickX() > kValue_ && characterState_.direction == Direction::Right && !characterState_.isDown)
+		if (input_->GetLeftStickX() > kStickDeadZone_ && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
 			//速度の設定
 			moveData_.velocity.x = koveSpeed;
@@ -1687,7 +1687,7 @@ void Player::Move()
 			}
 		}
 
-		if (input_->GetLeftStickX() < -kValue_ && characterState_.direction == Direction::Right && !characterState_.isDown)
+		if (input_->GetLeftStickX() < -kStickDeadZone_ && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
 			characterState_.isGuard = true;
 
@@ -1738,7 +1738,7 @@ void Player::Move()
 			}
 		}
 
-		if (input_->GetLeftStickX() > kValue_ && characterState_.direction == Direction::Left && !characterState_.isDown)
+		if (input_->GetLeftStickX() > kStickDeadZone_ && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
 			characterState_.isGuard = true;
 
@@ -1765,7 +1765,7 @@ void Player::Move()
 
 		//移動していない場合
 		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && 
-			!(input_->GetLeftStickX() > kValue_) && !(input_->GetLeftStickX() < -kValue_))
+			!(input_->GetLeftStickX() > kStickDeadZone_) && !(input_->GetLeftStickX() < -kStickDeadZone_))
 		{
 			moveData_.velocity = { 0.0f, 0.0f, 0.0f };
 			characterState_.isGuard = false;

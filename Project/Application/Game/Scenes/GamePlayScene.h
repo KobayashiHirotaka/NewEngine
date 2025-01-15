@@ -257,7 +257,7 @@ private:
 	bool isTimeOver_ = false;
 
 	//スティック操作対応
-	const float kValue_ = 0.7f;
+	const float kStickDeadZone_ = 0.7f;
 	const int kStickInputCooldownTime_ = 10;
 	int stickInputCooldown_ = kStickInputCooldownTime_;
 

@@ -564,13 +564,13 @@ void GamePlayScene::ChangeCommandSprite()
 	const int kPreviousSprite = -1;
 
 	//操作説明の移動処理
-	if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kValue_) &&
+	if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kStickDeadZone_) &&
 		spriteCount_ != CommandSpriteType::FinisherAttackCommandSprite)
 	{
 		//次の説明に進む
 		ApplyCommandSprite(kNextSprite);
 	}
-	else if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -kValue_) &&
+	else if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -kStickDeadZone_) &&
 		spriteCount_ != CommandSpriteType::GeneralCommandSprite)
 	{
 		//前の説明に戻る

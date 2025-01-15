@@ -18,9 +18,5 @@ public:
 
 	/// <summary>描画</summary>
 	void Draw()override;
-
-private:
-	//AttackEditor
-	AttackEditor* attackEditor_ = nullptr;
 };
 

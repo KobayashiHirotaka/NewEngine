@@ -101,7 +101,7 @@ private:
 	const float kBasePositionY_ = 150.0f; 
 
 	//スティックの閾値
-	const float kValue_ = 0.7f;
+	const float kStickDeadZone_ = 0.7f;
 
 	//入力がない
 	const int kNoInput_ = -1;

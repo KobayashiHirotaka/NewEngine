@@ -33,6 +33,7 @@
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameSceneUI.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameTitleScene.cpp" />
+    <ClCompile Include="Application\Game\Scenes\GameTitleSceneUI.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameWinScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\Manager\GameManager.cpp" />
     <ClCompile Include="Application\Game\Scenes\SceneFactory.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="Application\Game\Scenes\GamePlayScene.h" />
     <ClInclude Include="Application\Game\Scenes\GameSceneUI.h" />
     <ClInclude Include="Application\Game\Scenes\GameTitleScene.h" />
+    <ClInclude Include="Application\Game\Scenes\GameTitleSceneUI.h" />
     <ClInclude Include="Application\Game\Scenes\GameWinScene.h" />
     <ClInclude Include="Application\Game\Scenes\IScene.h" />
     <ClInclude Include="Application\Game\Scenes\Manager\GameManager.h" />
