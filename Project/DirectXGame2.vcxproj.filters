@@ -489,11 +489,8 @@
     <ClCompile Include="Application\Game\Transition\Transition.cpp">
       <Filter>ソース ファイル\Project\Game\Transition</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\Scenes\GameSceneUI.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Application\Game\Scenes\GameTitleSceneUI.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -755,11 +752,11 @@
     <ClInclude Include="Application\Game\Transition\Transition.h">
       <Filter>ヘッダー ファイル\Project\Game\Transition</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GameSceneUI.h">
+    <ClInclude Include="Application\Game\Scenes\GameTitleSceneUI.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GameTitleSceneUI.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Application\Game\Scenes\IGameSceneUI.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

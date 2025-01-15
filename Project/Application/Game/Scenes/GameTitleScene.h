@@ -7,6 +7,7 @@
 
 #pragma once
 #include "IScene.h"
+#include "Application/Game/Scenes/GameTitleSceneUI.h"
 #include "Application/GameObject/Skydome/Skydome.h"
 
 class GameTitleScene : public IScene
@@ -50,6 +51,9 @@ private:
 	Camera camera_;
 	DebugCamera debugCamera_;
 	bool isDebugCamera_ = false;
+
+	//GameTitleSceneUI
+	std::unique_ptr<GameTitleSceneUI> gameTitleSceneUI_;
 
 	//サウンド
 	uint32_t titleSoundHandle_ = 0u;

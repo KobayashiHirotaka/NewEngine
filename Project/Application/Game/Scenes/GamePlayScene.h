@@ -17,6 +17,7 @@
 #include "Application/GameObject/BackGround/BackGround.h"
 #include "Application/Game/HitStop/HitStop.h"
 #include "Application/Game/AttackEditor/AttackEditor.h"
+#include "Application/Game/Scenes/IGameSceneUI.h"
 
 class GamePlayScene : public IScene
 {

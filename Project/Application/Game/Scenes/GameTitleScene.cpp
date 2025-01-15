@@ -44,8 +44,8 @@ void GameTitleScene::Initialize()
 	debugCamera_.Initialize();
 
 	//GameSceneUI生成、初期化
-	gameSceneUI_ = std::make_unique<GameSceneUI>();
-	gameSceneUI_->Initialize();
+	gameTitleSceneUI_ = std::make_unique<GameTitleSceneUI>();
+	gameTitleSceneUI_->Initialize();
 
 	//Transition生成、初期化
 	transition_ = std::make_unique<Transition>();
@@ -76,19 +76,19 @@ void GameTitleScene::Update()
 
 #endif 
 
-	gameSceneUI_->Update();
+	gameTitleSceneUI_->Update();
 
 	//Skydomeの更新
 	skydome_->Update();
 
-	if (gameSceneUI_->GetIsChangedSprite())
+	if (gameTitleSceneUI_->GetIsChangedSprite())
 	{
 		audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-		gameSceneUI_->SetIsChangedSprite(false);
+		gameTitleSceneUI_->SetIsChangedSprite(false);
 	}
 
 	//シーン切り替え
-	if (input_->GetJoystickState() && !gameSceneUI_->GetIsOpen())
+	if (input_->GetJoystickState() && !gameTitleSceneUI_->GetIsOpen())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isTransitionEnd_)
 		{
@@ -151,7 +151,7 @@ void GameTitleScene::Draw()
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
 	//UIの描画
-	gameSceneUI_->Draw();
+	gameTitleSceneUI_->Draw();
 
 	Sprite::PostDraw();
 
