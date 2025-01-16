@@ -12,7 +12,7 @@
 #include "Engine/3D/Camera/Camera.h"
 #include "Engine/Utility/Collision/Collider.h"
 #include "Engine/Utility/Collision/CollisionConfig.h"
-#include "Engine/3D/Particle/ParticleEffectPlayer.h"
+#include "Application/GameObject/Effect/ParticleEffectPlayer.h"
 
 class BaseBullet : public IGame3dObject
 {

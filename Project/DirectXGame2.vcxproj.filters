@@ -283,6 +283,18 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{7b7ea5e1-b748-4f74-8c27-3a7867154ff1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Project\Game\GuideUI">
+      <UniqueIdentifier>{37120415-9a52-4af0-a8cd-270949c790c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\Game\GuideUI">
+      <UniqueIdentifier>{c179363c-6f29-468c-88aa-9dd087d72d42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\Effect">
+      <UniqueIdentifier>{12fae7c4-b975-4bcd-8599-06d6d8e58eb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\Effect">
+      <UniqueIdentifier>{775858ad-0fb1-476c-a7b1-91474d8ab162}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -450,9 +462,6 @@
     <ClCompile Include="Engine\3D\Model\IGame3dObject.cpp">
       <Filter>ソース ファイル\Engine\3d\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\3D\Particle\ParticleEffectPlayer.cpp">
-      <Filter>ソース ファイル\Engine\3d\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="Application\GameObject\BackGround\BackGround.cpp">
       <Filter>ソース ファイル\Project\GameObject\BackGround</Filter>
     </ClCompile>
@@ -491,6 +500,12 @@
     </ClCompile>
     <ClCompile Include="Application\Game\Scenes\GameTitleSceneUI.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\GuideUI\GuideUI.cpp">
+      <Filter>ソース ファイル\Project\Game\GuideUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Effect\ParticleEffectPlayer.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -710,9 +725,6 @@
     <ClInclude Include="Engine\3D\Model\Game3dObjectManager.h">
       <Filter>ヘッダー ファイル\Engine\3d\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\3D\Particle\ParticleEffectPlayer.h">
-      <Filter>ヘッダー ファイル\Engine\3d\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="Application\GameObject\BackGround\BackGround.h">
       <Filter>ヘッダー ファイル\Project\GameObject\BackGround</Filter>
     </ClInclude>
@@ -757,6 +769,12 @@
     </ClInclude>
     <ClInclude Include="Application\Game\Scenes\IGameSceneUI.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\GuideUI\GuideUI.h">
+      <Filter>ヘッダー ファイル\Project\Game\GuideUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Effect\ParticleEffectPlayer.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

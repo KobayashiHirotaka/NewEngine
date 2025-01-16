@@ -25,14 +25,14 @@ void GameTitleSceneUI::Initialize()
 	titleUISprite_.reset(Sprite::Create(titleUITextureHandle_, { 0.0f,0.0f }));
 
 	//基本操作説明用のSprite
-	generalCommandListTextureHandle_ = TextureManager::LoadTexture("Resource/Images/PlayGeneralCommandList.png");
+	generalCommandListTextureHandle_ = TextureManager::LoadTexture("Resource/Images/PlayGeneralGuide.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
 	//攻撃操作説明用のSprite
-	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("Resource/Images/PlayDefaultAttackCommandList.png");
+	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("Resource/Images/PlayDefaultAttackGuide.png");
 	attackCommandListSprite_[0].reset(Sprite::Create(attackCommandListTextureHandle_[0], { 0.0f,0.0f }));
 
-	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("Resource/Images/PlayFinisherAttackCommandList.png");
+	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("Resource/Images/PlayFinisherAttackGuide.png");
 	attackCommandListSprite_[1].reset(Sprite::Create(attackCommandListTextureHandle_[1], { 0.0f,0.0f }));
 }
 

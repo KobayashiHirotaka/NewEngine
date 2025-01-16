@@ -81,19 +81,16 @@ void GamePlayScene::Initialize()
 	backGround_->Initialize();
 
 	//リソース
-	UICommandListTextureHandle_ = TextureManager::LoadTexture("Resource/Images/UICommandList.png");
-	UICommandListSprite_.reset(Sprite::Create(UICommandListTextureHandle_, { 0.0f,0.0f }));
-
 	//基本操作説明
-	generalCommandListTextureHandle_ = TextureManager::LoadTexture("Resource/Images/PlayGeneralCommandList.png");
+	generalCommandListTextureHandle_ = TextureManager::LoadTexture("Resource/Images/PlayGeneralGuide.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
 	//攻撃操作説明(コンボ)
-	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("Resource/Images/PlayDefaultAttackCommandList.png");
+	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("Resource/Images/PlayDefaultAttackGuide.png");
 	attackCommandListSprite_[0].reset(Sprite::Create(attackCommandListTextureHandle_[0], { 0.0f,0.0f }));
 
 	//攻撃操作説明(必殺技)
-	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("Resource/Images/PlayFinisherAttackCommandList.png");
+	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("Resource/Images/PlayFinisherAttackGuide.png");
 	attackCommandListSprite_[1].reset(Sprite::Create(attackCommandListTextureHandle_[1], { 0.0f,0.0f }));
 
 	//ラウンド表示

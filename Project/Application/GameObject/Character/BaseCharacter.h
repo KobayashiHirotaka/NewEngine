@@ -16,7 +16,7 @@
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
 #include "Engine/2D/Sprite/UI.h"
-#include "Engine/3D/Particle/ParticleEffectPlayer.h"
+#include "Application/GameObject/Effect/ParticleEffectPlayer.h"
 #include "Application/GameObject/Character/Direction.h"
 #include "Application/Game/HitStop/HitStop.h"
 #include "Application/Game/AttackEditor/AttackEditor.h"
