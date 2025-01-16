@@ -1,23 +1,22 @@
 /**
- * @file GameTitleScene.h
- * @brief タイトルシーンの初期化、更新、描画などを行う
+ * @file GameWinScene.h
+ * @brief 勝利シーンの初期化、更新、描画などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
 
-#pragma once
-#include "IScene.h"
-#include "Application/Game/Scenes/GameTitleSceneUI.h"
+#include "Application/Game/Scenes/IScene.h"
 #include "Application/GameObject/Skydome/Skydome.h"
+#include "GameWinSceneUI.h"
 
-class GameTitleScene : public IScene
+class GameWinScene : public IScene
 {
 public:
 	/// <summary>コンストラクタ</summary>
-	GameTitleScene();
+	GameWinScene();
 
 	/// <summary>デストラクタ</summary>
-	~GameTitleScene();
+	~GameWinScene();
 
 	/// <summary>初期化</summary>
 	void Initialize()override;
@@ -55,11 +54,10 @@ private:
 	//Skydome
 	std::unique_ptr<Skydome> skydome_;
 
-	//GameTitleSceneUI
-	std::unique_ptr<GameTitleSceneUI> gameTitleSceneUI_;
+	//GameWinSceneUI
+	std::unique_ptr<GameWinSceneUI> gameWinSceneUI_;
 
 	//サウンド
-	uint32_t titleSoundHandle_ = 0u;
 	uint32_t selectSoundHandle_ = 0u;
 
 	//大きさ
@@ -68,3 +66,6 @@ private:
 	//再生されているか
 	bool isPlayAudio_ = false;
 };
+
+
+

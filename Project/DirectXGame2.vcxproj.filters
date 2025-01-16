@@ -298,9 +298,6 @@
     <Filter Include="ヘッダー ファイル\Project\Game\Scenes\GameTitleScene">
       <UniqueIdentifier>{ad47268d-2b44-4526-b32b-d91e517741c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Project\Game\Scenes\GamePlay">
-      <UniqueIdentifier>{6cc3a1c6-8c72-4bfc-a181-eb3375798c3f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\Project\Game\Scenes\GameWinScene">
       <UniqueIdentifier>{aa6e68aa-30a0-4423-b803-441ffcee1384}</UniqueIdentifier>
     </Filter>
@@ -318,6 +315,9 @@
     </Filter>
     <Filter Include="ソース ファイル\Project\Game\Scenes\GameWinScene">
       <UniqueIdentifier>{d1635d46-f7a6-4b5c-955c-39d45f856a5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\Game\Scenes\GamePlayScene">
+      <UniqueIdentifier>{6cc3a1c6-8c72-4bfc-a181-eb3375798c3f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -516,22 +516,28 @@
     <ClCompile Include="Application\GameObject\Effect\ParticleEffectPlayer.cpp">
       <Filter>ソース ファイル\Project\GameObject\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\Scenes\GameTitleScene.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes\GameTitleScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Game\Scenes\GameTitleSceneUI.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes\GameTitleScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Game\Scenes\GameLoseScene.cpp">
+    <ClCompile Include="Application\Game\Scenes\GameLoseScene\GameLoseScene.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes\GameLoseScene</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp">
+    <ClCompile Include="Application\Game\Scenes\GameLoseScene\GameLoseSceneUI.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes\GameLoseScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GamePlayScene\GamePlayScene.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes\GamePlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\Scenes\GamePlaySceneUI.cpp">
+    <ClCompile Include="Application\Game\Scenes\GamePlayScene\GamePlaySceneUI.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes\GamePlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\Scenes\GameWinScene.cpp">
+    <ClCompile Include="Application\Game\Scenes\GameTitleScene\GameTitleScene.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes\GameTitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GameTitleScene\GameTitleSceneUI.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes\GameTitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GameWinScene\GameWinScene.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes\GameWinScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GameWinScene\GameWinSceneUI.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes\GameWinScene</Filter>
     </ClCompile>
   </ItemGroup>
@@ -788,29 +794,29 @@
     <ClInclude Include="Application\GameObject\Effect\ParticleEffectPlayer.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GameTitleScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes\GameTitleScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GameTitleSceneUI.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes\GameTitleScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GamePlayScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes\GamePlay</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GamePlaySceneUI.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes\GamePlay</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GameWinScene.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes\GameWinScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GameWinSceneUI.h">
-      <Filter>ヘッダー ファイル\Project\Game\Scenes\GameWinScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GameLoseScene.h">
+    <ClInclude Include="Application\Game\Scenes\GameLoseScene\GameLoseScene.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes\GameLoseScene</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Game\Scenes\GameLoseSceneUI.h">
+    <ClInclude Include="Application\Game\Scenes\GameLoseScene\GameLoseSceneUI.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes\GameLoseScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GamePlayScene\GamePlayScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes\GamePlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GamePlayScene\GamePlaySceneUI.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes\GamePlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GameWinScene\GameWinScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes\GameWinScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GameWinScene\GameWinSceneUI.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes\GameWinScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GameTitleScene\GameTitleScene.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes\GameTitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GameTitleScene\GameTitleSceneUI.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes\GameTitleScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

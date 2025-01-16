@@ -6,8 +6,8 @@
  */
 
 #pragma once
-#include "IScene.h"
 #include "Engine/3D/Line/Line.h"
+#include "Application/Game/Scenes/IScene.h"
 #include "Application/Game/InputLog/InputLog.h"
 #include "Application/Game/CameraController/CameraController.h"
 #include "Application/GameObject/Character/Player/Player.h"
@@ -17,7 +17,7 @@
 #include "Application/GameObject/BackGround/BackGround.h"
 #include "Application/Game/HitStop/HitStop.h"
 #include "Application/Game/AttackEditor/AttackEditor.h"
-#include "Application/Game/Scenes/GamePlaySceneUI.h"
+#include "GamePlaySceneUI.h"
 
 class GamePlayScene : public IScene
 {

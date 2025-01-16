@@ -1,22 +1,22 @@
 /**
- * @file GameWinScene.h
- * @brief 勝利シーンの初期化、更新、描画などを行う
+ * @file GameLoseScene.h
+ * @brief 敗北シーンの初期化、更新、描画などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
 
-#include "IScene.h"
-#include "Application/Game/Scenes/GameWinSceneUI.h"
+#include "Application/Game/Scenes/IScene.h"
 #include "Application/GameObject/Skydome/Skydome.h"
+#include "GameLoseSceneUI.h"
 
-class GameWinScene : public IScene
+class GameLoseScene : public IScene
 {
 public:
 	/// <summary>コンストラクタ</summary>
-	GameWinScene();
+	GameLoseScene();
 
 	/// <summary>デストラクタ</summary>
-	~GameWinScene();
+	~GameLoseScene();
 
 	/// <summary>初期化</summary>
 	void Initialize()override;
@@ -54,8 +54,8 @@ private:
 	//Skydome
 	std::unique_ptr<Skydome> skydome_;
 
-	//GameWinSceneUI
-	std::unique_ptr<GameWinSceneUI> gameWinSceneUI_;
+	//GameLoseSceneUI
+	std::unique_ptr<GameLoseSceneUI> gameLoseSceneUI_;
 
 	//サウンド
 	uint32_t selectSoundHandle_ = 0u;
@@ -66,6 +66,5 @@ private:
 	//再生されているか
 	bool isPlayAudio_ = false;
 };
-
 
 
