@@ -130,17 +130,16 @@ private:
 	const float volume_ = 1.0f;
 
 
-
 	//時間
-	//ラウンドの最大時間
-	const int kMaxRoundTime_ = 99;
-	
 	//現在の時間
 	int currentSeconds_ = 0;
 
 	//ゲーム中の時間
 	float frameTime_ = 1.0f / 60.0f;
 	float elapsedTime_ = 0.0f;
+
+	//ラウンドの最大時間
+	const int kMaxRoundTime_ = 99;
 
 	//ラウンド開始までの時間
 	const int kMaxRoundStartTime_ = 100;
@@ -159,27 +158,20 @@ private:
 	//KO時間
 	const int kKOConditionTime = 20;
 
-
-	//モデルの骨を描画するかどうか
-	bool isBoneDraw_ = true;
-
 	//ラウンド
 	bool isRoundTransition_ = false;
 	const int kMaxRound_ = 3;
 	int round_ = 1;
 
+	//キャラクターが勝っている回数
+	const int kMaxWinCount_ = 2;
+	int playerWinCount_ = 0;
+	int enemyWinCount_ = 0;
+
 	//試合の結果
 	bool isPlayerWin_ = false;
 	bool isEnemyWin_ = false;
 	bool isDrow_ = false;
-
-	//キャラクターが勝っている回数
-	int playerWinCount_ = 0;
-	int enemyWinCount_ = 0;
-	const int kMaxWinCount_ = 2;
-
-	//デバッグかどうか
-	bool isDebug_ = false;
 
 	//どちらかがKOしているか
 	bool isKO_ = false;
@@ -190,4 +182,7 @@ private:
 	//必殺技の開始・終了
 	bool isFinisherStart_ = false;
 	bool isFinisherEnd_ = false;
+
+	//デバッグかどうか
+	bool isDebug_ = false;
 };
