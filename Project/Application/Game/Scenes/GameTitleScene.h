@@ -52,6 +52,9 @@ private:
 	DebugCamera debugCamera_;
 	bool isDebugCamera_ = false;
 
+	//Skydome
+	std::unique_ptr<Skydome> skydome_;
+
 	//GameTitleSceneUI
 	std::unique_ptr<GameTitleSceneUI> gameTitleSceneUI_;
 
@@ -64,7 +67,4 @@ private:
 
 	//再生されているか
 	bool isPlayAudio_ = false;
-
-	//Skydome
-	std::unique_ptr<Skydome> skydome_;
 };

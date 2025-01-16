@@ -1,3 +1,10 @@
+/**
+ * @file GamePlaySceneUI.cpp
+ * @brief プレイシーンのUIの初期化、更新、描画などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 2024/01/16
+ */
+
 #include "GamePlaySceneUI.h"
 
 void GamePlaySceneUI::Initialize()
@@ -55,26 +62,30 @@ void GamePlaySceneUI::Initialize()
 	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, kNumberTensPosition));
 	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, kNumberOnesPosition));
 
-	//操作説明
+	//操作説明の生成、初期化
 	guideUI_ = std::make_unique<GuideUI>();
 	guideUI_->Initialize();
 }
 
 void GamePlaySceneUI::Update()
 {
+	//操作説明の更新
 	guideUI_->Update();
 }
 
 void GamePlaySceneUI::Draw()
 {
+	//Ui用の枠の描画
 	frameUISprite_->Draw();
 
+	//タイマー用の数字の描画
 	numberOnesSprite_->Draw();
 	numberTensSprite_->Draw();
 }
 
 void GamePlaySceneUI::RoundGetDraw(int playerWinCount, int enemyWinCount)
 {
+	//ラウンド取得時の描画
 	if (playerWinCount >= kCharacterFirstWinCount_)
 	{
 		roundGetSprite_[1]->Draw();
@@ -99,6 +110,7 @@ void GamePlaySceneUI::RoundGetDraw(int playerWinCount, int enemyWinCount)
 
 void GamePlaySceneUI::RoundNumberDraw(int round)
 {
+	//ラウンド数字の描画
 	if (round == kRoundOne_)
 	{
 		roundSprite_[0]->Draw();
@@ -115,11 +127,13 @@ void GamePlaySceneUI::RoundNumberDraw(int round)
 
 void GamePlaySceneUI::RoundStartDraw()
 {
+	//ラウンド開始時の描画
 	fightSprite_->Draw();
 }
 
 void GamePlaySceneUI::RoundEndDraw(bool isTimeOver, bool isPlayerWin)
 {
+	//ラウンドが終わった時の描画
 	if (!isTimeOver)
 	{
 		if (isPlayerWin)
@@ -140,6 +154,7 @@ void GamePlaySceneUI::RoundEndDraw(bool isTimeOver, bool isPlayerWin)
 
 void GamePlaySceneUI::GuideDraw()
 {
+	//操作説明の描画
 	guideUI_->Draw();
 }
 

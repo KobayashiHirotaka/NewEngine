@@ -32,23 +32,23 @@ void GameWinScene::Initialize()
 	PostProcess::GetInstance()->SetIsGrayScaleActive(false);
 	PostProcess::GetInstance()->SetIsVignetteActive(false);
 
+	//DebugCameraの初期化
+	debugCamera_.Initialize();
+
 	//Skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
-	//DebugCameraの初期化
-	debugCamera_.Initialize();
+	//UI生成、初期化
+	gameWinSceneUI_ = std::make_unique<GameWinSceneUI>();
+	gameWinSceneUI_->Initialize();
 
-	//リソース
-	winSceneTextureHandle_ = TextureManager::LoadTexture("Resource/Images/WinScene.png");
-	winSceneSprite_.reset(Sprite::Create(winSceneTextureHandle_, { 0.0f,0.0f }));
+	//サウンド
+	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 
 	//Transition生成、初期化
 	transition_ = std::make_unique<Transition>();
 	transition_->Initialize();
-
-	//サウンド
-	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 };
 
 void GameWinScene::Update()
@@ -130,8 +130,8 @@ void GameWinScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	//Winの表示
-	winSceneSprite_->Draw();
+	//UIの描画
+	gameWinSceneUI_->Draw();
 
 	Sprite::PostDraw();
 

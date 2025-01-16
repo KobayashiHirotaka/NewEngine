@@ -6,6 +6,7 @@
  */
 
 #include "IScene.h"
+#include "Application/Game/Scenes/GameLoseSceneUI.h"
 #include "Application/GameObject/Skydome/Skydome.h"
 
 class GameLoseScene : public IScene
@@ -53,9 +54,8 @@ private:
 	//Skydome
 	std::unique_ptr<Skydome> skydome_;
 
-	//Lose表示のSprite
-	std::unique_ptr<Sprite> loseSceneSprite_ = nullptr;
-	uint32_t loseSceneTextureHandle_ = 0;
+	//GameLoseSceneUI
+	std::unique_ptr<GameLoseSceneUI> gameLoseSceneUI_;
 
 	//サウンド
 	uint32_t selectSoundHandle_ = 0u;

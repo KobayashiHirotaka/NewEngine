@@ -6,6 +6,7 @@
  */
 
 #include "IScene.h"
+#include "Application/Game/Scenes/GameWinSceneUI.h"
 #include "Application/GameObject/Skydome/Skydome.h"
 
 class GameWinScene : public IScene
@@ -53,9 +54,8 @@ private:
 	//Skydome
 	std::unique_ptr<Skydome> skydome_;
 
-	//Win表示のSprite
-	std::unique_ptr<Sprite> winSceneSprite_ = nullptr;
-	uint32_t winSceneTextureHandle_ = 0;
+	//GameWinSceneUI
+	std::unique_ptr<GameWinSceneUI> gameWinSceneUI_;
 
 	//サウンド
 	uint32_t selectSoundHandle_ = 0u;

@@ -36,20 +36,16 @@ void GameTitleScene::Initialize()
 	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
 	PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
 
+	//DebugCameraの初期化
+	debugCamera_.Initialize();
+
 	//Skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
-	//DebugCameraの初期化
-	debugCamera_.Initialize();
-
 	//UI生成、初期化
 	gameTitleSceneUI_ = std::make_unique<GameTitleSceneUI>();
 	gameTitleSceneUI_->Initialize();
-
-	//Transition生成、初期化
-	transition_ = std::make_unique<Transition>();
-	transition_->Initialize();
 
 	//BGM,SEの読み込み
 	titleSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/BGM.mp3");
@@ -61,6 +57,10 @@ void GameTitleScene::Initialize()
 		const float bgmVolume = 0.2f;
 		audio_->PlaySoundMP3(titleSoundHandle_, true, bgmVolume);
 	}
+
+	//Transition生成、初期化
+	transition_ = std::make_unique<Transition>();
+	transition_->Initialize();
 };
 
 void GameTitleScene::Update()
@@ -76,6 +76,7 @@ void GameTitleScene::Update()
 
 #endif 
 
+	//UIの更新
 	gameTitleSceneUI_->Update();
 
 	//Skydomeの更新

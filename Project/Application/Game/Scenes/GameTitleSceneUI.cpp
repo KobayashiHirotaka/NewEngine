@@ -1,3 +1,10 @@
+/**
+ * @file GameTitleSceneUI.cpp
+ * @brief タイトルシーンのUIの初期化、更新、描画などを行う
+ * @author  KOBAYASHI HIROTAKA
+ * @date 2024/01/15
+ */
+
 #include "GameTitleSceneUI.h"
 
 void GameTitleSceneUI::Initialize()
@@ -11,15 +18,17 @@ void GameTitleSceneUI::Initialize()
 	titleUITextureHandle_ = TextureManager::LoadTexture("Resource/Images/TitleUI.png");
 	titleUISprite_.reset(Sprite::Create(titleUITextureHandle_, { 0.0f,0.0f }));
 
-	//操作説明
+	//操作説明の生成、初期化
 	guideUI_ = std::make_unique<GuideUI>();
 	guideUI_->Initialize();
 }
 
 void GameTitleSceneUI::Update()
 {
+	//タイトルの文字を動かす
 	AnimationTitle();
 
+	//操作説明の更新
 	guideUI_->Update();
 }
 
@@ -32,6 +41,7 @@ void GameTitleSceneUI::Draw()
 		titleUISprite_->Draw();
 	}
 
+	//操作説明の描画
 	guideUI_->Draw();
 }
 

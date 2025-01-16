@@ -84,12 +84,12 @@ void GamePlayScene::Initialize()
 	gamePlaySceneUI_ = std::make_unique<GamePlaySceneUI>();
 	gamePlaySceneUI_->Initialize();
 
+	//SE
+	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
+
 	//Transition生成、初期化
 	transition_ = std::make_unique<Transition>();
 	transition_->Initialize();
-
-	//SE
-	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 
 #ifdef _ADJUSTMENT
 
@@ -338,7 +338,7 @@ void GamePlayScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	//ラウンド開始表示
+	//ラウンド開始時の描画
 	if (sRoundStartTimer_ <= kMaxRoundStartTime_ && sRoundStartTimer_ > kHalfRoundStartTime_)
 	{
 		gamePlaySceneUI_->RoundNumberDraw(round_);
@@ -349,12 +349,13 @@ void GamePlayScene::Draw()
 		gamePlaySceneUI_->RoundStartDraw();
 	}
 
-	//ラウンド終了時の勝敗表示
+	//ラウンド終了時の描画
 	if (sMigrationTimer < kOutComeTime_ && sMigrationTimer > kKOConditionTime)
 	{
 		gamePlaySceneUI_->RoundEndDraw(isTimeOver_, isPlayerWin_);
 	}
 
+	//プレイ中のUI描画
 	if (sRoundStartTimer_ <= 0 && !gamePlaySceneUI_->GetIsOpen())
 	{
 		player_->DrawSprite();
@@ -364,9 +365,9 @@ void GamePlayScene::Draw()
 		gamePlaySceneUI_->Draw();
 
 		gamePlaySceneUI_->RoundGetDraw(playerWinCount_, enemyWinCount_);
-	}
 
-	gamePlaySceneUI_->GuideDraw();
+		gamePlaySceneUI_->GuideDraw();
+	}
 	
 	Sprite::PostDraw();
 
@@ -374,6 +375,7 @@ void GamePlayScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
+	//入力履歴の描画
 	if (!gamePlaySceneUI_->GetIsOpen() && isDebug_)
 	{
 		inputLog_->Draw();

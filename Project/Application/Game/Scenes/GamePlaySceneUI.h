@@ -79,18 +79,6 @@ private:
 	std::unique_ptr<Sprite> timeOverSprite_ = nullptr;
 	uint32_t timeOverTextureHandle_;
 
-	//操作説明用のSprite
-	std::unique_ptr<Sprite> UICommandListSprite_ = nullptr;
-	uint32_t UICommandListTextureHandle_ = 0;
-
-	//基本操作説明用のSprite
-	std::unique_ptr<Sprite> generalCommandListSprite_ = nullptr;
-	uint32_t generalCommandListTextureHandle_ = 0;
-
-	//攻撃操作説明用のSprite
-	std::unique_ptr<Sprite> attackCommandListSprite_[2];
-	uint32_t attackCommandListTextureHandle_[2];
-
 	//UI枠のSprite
 	std::unique_ptr<Sprite> frameUISprite_ = nullptr;
 	uint32_t frameUITextureHandle_ = 0;

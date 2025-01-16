@@ -32,23 +32,23 @@ void GameLoseScene::Initialize()
 	PostProcess::GetInstance()->SetIsGrayScaleActive(false);
 	PostProcess::GetInstance()->SetIsVignetteActive(false);
 
+	//DebugCameraの初期化
+	debugCamera_.Initialize();
+
 	//Skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
-	//DebugCameraの初期化
-	debugCamera_.Initialize();
+	//UI生成、初期化
+	gameLoseSceneUI_ = std::make_unique<GameLoseSceneUI>();
+	gameLoseSceneUI_->Initialize();
 
-	//リソース
-	loseSceneTextureHandle_ = TextureManager::LoadTexture("Resource/Images/LoseScene.png");
-	loseSceneSprite_.reset(Sprite::Create(loseSceneTextureHandle_, { 0.0f,0.0f }));
+	//サウンド
+	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 
 	//Transition生成、初期化
 	transition_ = std::make_unique<Transition>();
 	transition_->Initialize();
-
-	//サウンド
-	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 };
 
 void GameLoseScene::Update()
@@ -133,8 +133,8 @@ void GameLoseScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	//Loseの表示
-	loseSceneSprite_->Draw();
+	//UIの描画
+	gameLoseSceneUI_->Draw();
 
 	Sprite::PostDraw();
 

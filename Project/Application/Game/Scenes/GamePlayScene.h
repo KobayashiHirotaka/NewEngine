@@ -122,6 +122,15 @@ private:
 	//BackGround
 	std::unique_ptr<BackGround> backGround_;
 
+	//GamePlaySceneUI
+	std::unique_ptr<GamePlaySceneUI> gamePlaySceneUI_;
+
+	//サウンド
+	uint32_t selectSoundHandle_ = 0u;
+	const float volume_ = 1.0f;
+
+
+
 	//時間
 	//ラウンドの最大時間
 	const int kMaxRoundTime_ = 99;
@@ -150,9 +159,6 @@ private:
 	//KO時間
 	const int kKOConditionTime = 20;
 
-	//サウンド
-	uint32_t selectSoundHandle_ = 0u;
-	const float volume_ = 1.0f;
 
 	//モデルの骨を描画するかどうか
 	bool isBoneDraw_ = true;
@@ -184,7 +190,4 @@ private:
 	//必殺技の開始・終了
 	bool isFinisherStart_ = false;
 	bool isFinisherEnd_ = false;
-
-	//GamePlaySceneUI
-	std::unique_ptr<GamePlaySceneUI> gamePlaySceneUI_;
 };

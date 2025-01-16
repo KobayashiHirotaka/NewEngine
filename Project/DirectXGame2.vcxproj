@@ -32,11 +32,13 @@
     <ClCompile Include="Application\Game\HitStop\HitStop.cpp" />
     <ClCompile Include="Application\Game\InputLog\InputLog.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameLoseScene.cpp" />
+    <ClCompile Include="Application\Game\Scenes\GameLoseSceneUI.cpp" />
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GamePlaySceneUI.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameTitleScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameTitleSceneUI.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameWinScene.cpp" />
+    <ClCompile Include="Application\Game\Scenes\GameWinSceneUI.cpp" />
     <ClCompile Include="Application\Game\Scenes\Manager\GameManager.cpp" />
     <ClCompile Include="Application\Game\Scenes\SceneFactory.cpp" />
     <ClCompile Include="Application\Game\Transition\Transition.cpp" />
@@ -175,11 +177,13 @@
     <ClInclude Include="Application\Game\HitStop\HitStop.h" />
     <ClInclude Include="Application\Game\InputLog\InputLog.h" />
     <ClInclude Include="Application\Game\Scenes\GameLoseScene.h" />
+    <ClInclude Include="Application\Game\Scenes\GameLoseSceneUI.h" />
     <ClInclude Include="Application\Game\Scenes\GamePlayScene.h" />
     <ClInclude Include="Application\Game\Scenes\GamePlaySceneUI.h" />
     <ClInclude Include="Application\Game\Scenes\GameTitleScene.h" />
     <ClInclude Include="Application\Game\Scenes\GameTitleSceneUI.h" />
     <ClInclude Include="Application\Game\Scenes\GameWinScene.h" />
+    <ClInclude Include="Application\Game\Scenes\GameWinSceneUI.h" />
     <ClInclude Include="Application\Game\Scenes\IGameSceneUI.h" />
     <ClInclude Include="Application\Game\Scenes\IScene.h" />
     <ClInclude Include="Application\Game\Scenes\Manager\GameManager.h" />
