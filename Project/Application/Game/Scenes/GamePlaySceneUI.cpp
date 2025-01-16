@@ -1,0 +1,158 @@
+#include "GamePlaySceneUI.h"
+
+void GamePlaySceneUI::Initialize()
+{
+	//UIの初期化
+	//ラウンド表示
+	roundTextureHandle_[0] = TextureManager::LoadTexture("Resource/Images/Round1.png");
+	roundTextureHandle_[1] = TextureManager::LoadTexture("Resource/Images/Round2.png");
+	roundTextureHandle_[2] = TextureManager::LoadTexture("Resource/Images/Round3.png");
+
+	roundSprite_[0].reset(Sprite::Create(roundTextureHandle_[0], { 0.0f, 0.0f }));
+	roundSprite_[1].reset(Sprite::Create(roundTextureHandle_[1], { 0.0f, 0.0f }));
+	roundSprite_[2].reset(Sprite::Create(roundTextureHandle_[2], { 0.0f, 0.0f }));
+
+	//ラウンド取得数表示
+	roundGetTextureHandle_ = TextureManager::LoadTexture("Resource/Images/RoundGet.png");
+
+	const Vector2 kRoundGetPosition[4] = { { 400.0f, 70.0f }, { 480.0f, 70.0f }, { 800.0f, 70.0f }, { 720.0f, 70.0f } };
+
+	roundGetSprite_[0].reset(Sprite::Create(roundGetTextureHandle_, kRoundGetPosition[0]));
+	roundGetSprite_[1].reset(Sprite::Create(roundGetTextureHandle_, kRoundGetPosition[1]));
+	roundGetSprite_[2].reset(Sprite::Create(roundGetTextureHandle_, kRoundGetPosition[2]));
+	roundGetSprite_[3].reset(Sprite::Create(roundGetTextureHandle_, kRoundGetPosition[3]));
+
+	//ラウンド開始時
+	fightTextureHandle_ = TextureManager::LoadTexture("Resource/Images/FIGHT.png");
+
+	fightSprite_.reset(Sprite::Create(fightTextureHandle_, { 0.0f, 0.0f }));
+
+	//KO表示
+	koTextureHandle_ = TextureManager::LoadTexture("Resource/Images/KO.png");
+
+	koSprite_.reset(Sprite::Create(koTextureHandle_, { 0.0f, 0.0f }));
+
+	//勝敗表示
+	winTextureHandle_ = TextureManager::LoadTexture("Resource/Images/WIN.png");
+	loseTextureHandle_ = TextureManager::LoadTexture("Resource/Images/LOSE.png");
+	timeOverTextureHandle_ = TextureManager::LoadTexture("Resource/Images/TIMEOVER.png");
+
+	winSprite_.reset(Sprite::Create(winTextureHandle_, { 0.0f, 0.0f }));
+	loseSprite_.reset(Sprite::Create(loseTextureHandle_, { 0.0f, 0.0f }));
+	timeOverSprite_.reset(Sprite::Create(timeOverTextureHandle_, { 0.0f, 0.0f }));
+
+	//UIの枠
+	frameUITextureHandle_ = TextureManager::LoadTexture("Resource/Images/FrameUI.png");
+	frameUISprite_.reset(Sprite::Create(frameUITextureHandle_, { 0.0f, 0.0f }));
+
+	//数字
+	tensTextureHandle_ = TextureManager::LoadTexture("Resource/Number/0.png");
+	onesTextureHandle_ = TextureManager::LoadTexture("Resource/Number/0.png");
+
+	const Vector2 kNumberTensPosition = { 590.0f, 0.0f };
+	const Vector2 kNumberOnesPosition = { 630.0f, 0.0f };
+
+	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, kNumberTensPosition));
+	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, kNumberOnesPosition));
+
+	//操作説明
+	guideUI_ = std::make_unique<GuideUI>();
+	guideUI_->Initialize();
+}
+
+void GamePlaySceneUI::Update()
+{
+	guideUI_->Update();
+}
+
+void GamePlaySceneUI::Draw()
+{
+	frameUISprite_->Draw();
+
+	numberOnesSprite_->Draw();
+	numberTensSprite_->Draw();
+}
+
+void GamePlaySceneUI::RoundGetDraw(int playerWinCount, int enemyWinCount)
+{
+	if (playerWinCount >= kCharacterFirstWinCount_)
+	{
+		roundGetSprite_[1]->Draw();
+	}
+
+	if (playerWinCount >= kCharacterSecondWinCount_)
+	{
+		roundGetSprite_[0]->Draw();
+	}
+
+
+	if (enemyWinCount >= kCharacterFirstWinCount_)
+	{
+		roundGetSprite_[3]->Draw();
+	}
+
+	if (enemyWinCount >= kCharacterSecondWinCount_)
+	{
+		roundGetSprite_[2]->Draw();
+	}
+}
+
+void GamePlaySceneUI::RoundNumberDraw(int round)
+{
+	if (round == kRoundOne_)
+	{
+		roundSprite_[0]->Draw();
+	}
+	else if (round == kRoundTwo_)
+	{
+		roundSprite_[1]->Draw();
+	}
+	else if (round == kRoundThree_)
+	{
+		roundSprite_[2]->Draw();
+	}
+}
+
+void GamePlaySceneUI::RoundStartDraw()
+{
+	fightSprite_->Draw();
+}
+
+void GamePlaySceneUI::RoundEndDraw(bool isTimeOver, bool isPlayerWin)
+{
+	if (!isTimeOver)
+	{
+		if (isPlayerWin)
+		{
+			koSprite_->Draw();
+		}
+		else
+		{
+			koSprite_->Draw();
+		}
+	}
+	else
+	{
+		timeOverSprite_->Draw();
+	}
+}
+
+
+void GamePlaySceneUI::GuideDraw()
+{
+	guideUI_->Draw();
+}
+
+void GamePlaySceneUI::UpdateNumberSprite(int currentSeconds)
+{
+	//時間表示の更新
+	const int kDecimalBase = 10;
+	int tensDigit = currentSeconds / kDecimalBase;
+	int onesDigit = currentSeconds % kDecimalBase;
+
+	tensTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(tensDigit) + ".png");
+	onesTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(onesDigit) + ".png");
+
+	numberTensSprite_->SetTexture(tensTextureHandle_);
+	numberOnesSprite_->SetTexture(onesTextureHandle_);
+}

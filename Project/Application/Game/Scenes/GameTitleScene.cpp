@@ -43,7 +43,7 @@ void GameTitleScene::Initialize()
 	//DebugCameraの初期化
 	debugCamera_.Initialize();
 
-	//GameSceneUI生成、初期化
+	//UI生成、初期化
 	gameTitleSceneUI_ = std::make_unique<GameTitleSceneUI>();
 	gameTitleSceneUI_->Initialize();
 

@@ -17,7 +17,7 @@
 #include "Application/GameObject/BackGround/BackGround.h"
 #include "Application/Game/HitStop/HitStop.h"
 #include "Application/Game/AttackEditor/AttackEditor.h"
-#include "Application/Game/Scenes/IGameSceneUI.h"
+#include "Application/Game/Scenes/GamePlaySceneUI.h"
 
 class GamePlayScene : public IScene
 {
@@ -53,9 +53,6 @@ public:
 	float Random(float min_value, float max_value);
 
 private:
-	/// <summary>数字の更新</summary>
-	void UpdateNumberSprite();
-
 	/// <summary>ゲーム全体の勝敗を管理する</summary>
 	void HandleGameOutcome();
 
@@ -73,15 +70,6 @@ private:
 
 	/// <summary>ラウンドの変更処理</summary>
 	void ChangeRound(int round);
-
-	/// <summary>操作説明の更新</summary>
-	void UpdateCommandSprite();
-
-	/// <summary>操作説明の変更</summary>
-	void ChangeCommandSprite();
-
-	/// <summary>操作説明の適用</summary>
-	void ApplyCommandSprite(int changeAmount);
 
 private:
 	//TextureManager
@@ -134,59 +122,6 @@ private:
 	//BackGround
 	std::unique_ptr<BackGround> backGround_;
 
-	//Timer用のSprite
-	std::unique_ptr<Sprite>numberTensSprite_ = nullptr;
-	std::unique_ptr<Sprite>numberOnesSprite_ = nullptr;
-	uint32_t tensTextureHandle_;
-	uint32_t onesTextureHandle_;
-
-	//Round表示のSprite
-	std::unique_ptr<Sprite> roundSprite_[3];
-	uint32_t roundTextureHandle_[3];
-
-	std::unique_ptr<Sprite> roundGetSprite_[4];
-	uint32_t roundGetTextureHandle_;
-
-	//試合開始時用のSprite(Fightの文字)
-	std::unique_ptr<Sprite> fightSprite_ = nullptr;
-	uint32_t fightTextureHandle_;
-
-	//KO表示用Sprite
-	std::unique_ptr<Sprite> koSprite_ = nullptr;
-	uint32_t koTextureHandle_;
-
-	//勝敗に関するSprite
-	std::unique_ptr<Sprite> winSprite_ = nullptr;
-	uint32_t winTextureHandle_;
-
-	std::unique_ptr<Sprite> loseSprite_ = nullptr;
-	uint32_t loseTextureHandle_;
-
-	std::unique_ptr<Sprite> timeOverSprite_ = nullptr;
-	uint32_t timeOverTextureHandle_;
-
-	//操作説明用のSprite
-	std::unique_ptr<Sprite> UICommandListSprite_ = nullptr;
-	uint32_t UICommandListTextureHandle_ = 0;
-
-	//基本操作説明用のSprite
-	std::unique_ptr<Sprite> generalCommandListSprite_ = nullptr;
-	uint32_t generalCommandListTextureHandle_ = 0;
-
-	//攻撃操作説明用のSprite
-	std::unique_ptr<Sprite> attackCommandListSprite_[2];
-	uint32_t attackCommandListTextureHandle_[2];
-
-	//UI枠のSprite
-	std::unique_ptr<Sprite> frameUISprite_ = nullptr;
-	uint32_t frameUITextureHandle_ = 0;
-
-	//何枚目のSpriteが表示されているか
-	CommandSpriteType spriteCount_ = CommandSpriteType::GeneralCommandSprite;
-
-	//操作説明が開かれているか
-	bool isOpen_ = false;
-
 	//時間
 	//ラウンドの最大時間
 	const int kMaxRoundTime_ = 99;
@@ -224,11 +159,8 @@ private:
 
 	//ラウンド
 	bool isRoundTransition_ = false;
-	static const int kRoundOne_ = 1;
-	static const int kRoundTwo_ = 2;
-	static const int kRoundThree_ = 3;
-
-	int round_ = kRoundOne_;
+	const int kMaxRound_ = 3;
+	int round_ = 1;
 
 	//試合の結果
 	bool isPlayerWin_ = false;
@@ -238,15 +170,7 @@ private:
 	//キャラクターが勝っている回数
 	int playerWinCount_ = 0;
 	int enemyWinCount_ = 0;
-
-	//勝利カウント
-	//Player
-	const int kPlayerFirstWinCount_ = 1;   
-	const int kPlayerSecondWinCount_ = 2; 
-
-	//Enemy
-	const int kEnemyFirstWinCount_ = 1;    
-	const int kEnemySecondWinCount_ = 2;   
+	const int kMaxWinCount_ = 2;
 
 	//デバッグかどうか
 	bool isDebug_ = false;
@@ -257,12 +181,10 @@ private:
 	//タイムオーバーかどうか
 	bool isTimeOver_ = false;
 
-	//スティック操作対応
-	const float kStickDeadZone_ = 0.7f;
-	const int kStickInputCooldownTime_ = 10;
-	int stickInputCooldown_ = kStickInputCooldownTime_;
-
 	//必殺技の開始・終了
 	bool isFinisherStart_ = false;
 	bool isFinisherEnd_ = false;
+
+	//GamePlaySceneUI
+	std::unique_ptr<GamePlaySceneUI> gamePlaySceneUI_;
 };

@@ -507,6 +507,9 @@
     <ClCompile Include="Application\GameObject\Effect\ParticleEffectPlayer.cpp">
       <Filter>ソース ファイル\Project\GameObject\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Game\Scenes\GamePlaySceneUI.cpp">
+      <Filter>ソース ファイル\Project\Game\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -775,6 +778,9 @@
     </ClInclude>
     <ClInclude Include="Application\GameObject\Effect\ParticleEffectPlayer.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scenes\GamePlaySceneUI.h">
+      <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
