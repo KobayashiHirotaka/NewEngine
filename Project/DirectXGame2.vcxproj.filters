@@ -534,12 +534,6 @@
     <ClCompile Include="Application\Game\Scenes\GameWinScene.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes\GameWinScene</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\Scenes\GameWinSceneUI.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes\GameWinScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Game\Scenes\GameLoseSceneUI.cpp">
-      <Filter>ソース ファイル\Project\Game\Scenes\GameLoseScene</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

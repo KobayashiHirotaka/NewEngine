@@ -32,13 +32,11 @@
     <ClCompile Include="Application\Game\HitStop\HitStop.cpp" />
     <ClCompile Include="Application\Game\InputLog\InputLog.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameLoseScene.cpp" />
-    <ClCompile Include="Application\Game\Scenes\GameLoseSceneUI.cpp" />
     <ClCompile Include="Application\Game\Scenes\GamePlayScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GamePlaySceneUI.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameTitleScene.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameTitleSceneUI.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameWinScene.cpp" />
-    <ClCompile Include="Application\Game\Scenes\GameWinSceneUI.cpp" />
     <ClCompile Include="Application\Game\Scenes\Manager\GameManager.cpp" />
     <ClCompile Include="Application\Game\Scenes\SceneFactory.cpp" />
     <ClCompile Include="Application\Game\Transition\Transition.cpp" />
