@@ -6,7 +6,7 @@
  */
 
 #include "BaseCharacter.h"
-#include "Application/Game/Scenes/GamePlayScene.h"
+#include "Application/Game/Scenes/GamePlayScene/GamePlayScene.h"
 #include "Application/Game/GameTimer/GameTimer.h"
 
 void BaseCharacter::Initialize()

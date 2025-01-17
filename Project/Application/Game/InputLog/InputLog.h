@@ -6,7 +6,6 @@
  */
 
 #pragma once
-#include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Components/Input/Input.h"
 #include <deque>

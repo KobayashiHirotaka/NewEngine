@@ -7,7 +7,7 @@
 
 #include "Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
-#include "Application/Game/Scenes/GamePlayScene.h"
+#include "Application/Game/Scenes/GamePlayScene/GamePlayScene.h"
 #include "Application/Game/GameTimer/GameTimer.h"
 
 Player::~Player()
