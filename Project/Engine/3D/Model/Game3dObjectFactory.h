@@ -10,12 +10,11 @@
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Ground/Ground.h"
+#include "Application/GameObject/BackGround/BackGround.h"
 
 class Game3dObjectFactory
 {
 public:
 	/// <summary>ゲームオブジェクトの生成</summary>
 	IGame3dObject* CreateGameObject(const std::string& objectName);
-
-private:
 };

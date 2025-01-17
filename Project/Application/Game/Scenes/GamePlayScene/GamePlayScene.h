@@ -14,7 +14,6 @@
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Character/Enemy/EnemyBullet.h"
 #include "Application/GameObject/Skydome/Skydome.h"
-#include "Application/GameObject/BackGround/BackGround.h"
 #include "Application/Game/HitStop/HitStop.h"
 #include "Application/Game/AttackEditor/AttackEditor.h"
 #include "GamePlaySceneUI.h"
@@ -118,9 +117,6 @@ private:
 
 	//Skydome
 	std::unique_ptr<Skydome> skydome_;
-
-	//BackGround
-	std::unique_ptr<BackGround> backGround_;
 
 	//GamePlaySceneUI
 	std::unique_ptr<GamePlaySceneUI> gamePlaySceneUI_;

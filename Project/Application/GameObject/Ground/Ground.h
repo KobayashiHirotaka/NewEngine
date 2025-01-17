@@ -7,7 +7,6 @@
 
 #pragma once
 #include "Engine/3D/Model/IGame3dObject.h"
-#include "Engine/Components/Input/Input.h"
 
 class Ground : public IGame3dObject
 {
@@ -26,6 +25,4 @@ public:
 
 	/// <summary>当たり判定</summary>
 	void OnCollision(Collider*)override;
-
-private:
 };

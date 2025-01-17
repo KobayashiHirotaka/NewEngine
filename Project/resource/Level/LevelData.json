@@ -2,29 +2,6 @@
     "name": "scene",
     "objects": [
         {
-            "type": "MESH",
-            "name": "Enemy",
-            "transform": {
-                "translation": [
-                    1.5,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    90.00000762939453
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "visible": true,
-            "file_name": "remakePlayer"
-        },
-        {
             "type": "LIGHT",
             "name": "Light",
             "transform": {
@@ -113,6 +90,52 @@
             },
             "visible": true,
             "file_name": "newPlayer"
+        },
+        {
+            "type": "MESH",
+            "name": "Enemy",
+            "transform": {
+                "translation": [
+                    1.5,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    90.00000762939453
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "visible": true,
+            "file_name": "remakePlayer"
+        },
+        {
+            "type": "MESH",
+            "name": "BackGround",
+            "transform": {
+                "translation": [
+                    -5.90849494934082,
+                    13.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    43.60280990600586
+                ],
+                "scaling": [
+                    5.0,
+                    1.8000000715255737,
+                    4.0
+                ]
+            },
+            "visible": true,
+            "file_name": "Wall"
         }
     ]
 }
