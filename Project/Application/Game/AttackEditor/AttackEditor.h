@@ -30,8 +30,17 @@ struct AttackParameter
     //攻撃後の硬直時間
     int recoveryTime = 0;
 
+    //先行入力の開始
+    int preInputStart = 0;
+
+    //先行入力の終了
+    int preInputEnd = 0;
+
     //ダメージ
     int damage = 0;
+
+    //ヒット硬直
+    int hitRecoveryTime = 0;
 
     //ガードゲージ増加量
     float guardGaugeIncreaseAmount = 0.0f;
@@ -65,9 +74,9 @@ public:
     void Update();
 
     /// <summary>調整したパラメータをセット</summary>
-    void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& damage,
-        float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, AABB& collision, bool isPlayer, 
-        Direction& direction);
+    void SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& preInputStart, int& preInputEnd, 
+        int& damage, int& hitRecoveryTime, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, AABB& collision, 
+        bool isPlayer, Direction& direction);
 
     /// <summary>ファイルをセーブ</summary>
     void SaveFile(const std::string& saveFilePath, const std::unordered_map<std::string, AttackParameter>& attackParameters);
@@ -108,7 +117,9 @@ private:
     const int kIntMinValue_ = 0;
     const int kMaxAttackTime_ = 60;
     const int kMaxRecoveryTime_ = 100;
+    const int kMaxPreInput_ = 60;
     const int kMaxDamage_ = 100;
+    const int kMaxHitRecoveryTime_ = 100;
     const float kFloatMinValue_ = 0.0f;
     const float kMaxGuardGauge_ = 50.0f;
     const float kMaxFinisherGauge_ = 50.0f;

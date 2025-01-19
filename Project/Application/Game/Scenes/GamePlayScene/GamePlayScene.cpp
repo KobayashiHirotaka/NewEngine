@@ -126,7 +126,10 @@ void GamePlayScene::Update()
 	attackEditor_->Update();
 
 	//操作説明の開閉処理
-	guide_->Update();
+	if (sRoundStartTimer_ <= 0)
+	{
+		guide_->Update();
+	}
 
 	if (guide_->GetIsChangedSprite())
 	{

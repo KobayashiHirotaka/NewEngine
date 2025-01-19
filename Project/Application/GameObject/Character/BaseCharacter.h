@@ -144,11 +144,20 @@ public:
 		//攻撃判定のつき終わり
 		int attackEndTime = 0;
 
-		//硬直
+		//攻撃時の硬直
 		int recoveryTime = 0;
+
+		//先行入力の開始
+		int preInputStart = 0;
+
+		//先行入力の終了
+		int preInputEnd = 0;
 
 		//ダメージ
 		int damage = 0;
+
+		//ヒット時の硬直
+		int hitRecoveryTime = 0;
 
 		//ガードゲージ増加量
 		float guardGaugeIncreaseAmount = 0.0f;
@@ -397,6 +406,8 @@ public:
 	int GetAttackAnimationFrame() { return attackData_.attackAnimationFrame; };
 
 	int GetDamage() { return attackData_.damage; };
+
+	int GetHitRecoveryTime() { return attackData_.hitRecoveryTime; };
 
 	float GetGuardGaugeIncreaseAmount() { return attackData_.guardGaugeIncreaseAmount; };
 

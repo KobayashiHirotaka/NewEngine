@@ -6,6 +6,7 @@
         "finisherGaugeIncreaseAmount": 3.0,
         "guardGaugeIncreaseAmount": 5.0,
         "hitStop": 0.0,
+        "hitRecoveryTime": 0,
         "leftCollisionMax": {
             "x": 0.0,
             "y": 1.0,
@@ -16,6 +17,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
+        "preInputEnd": 0,
+        "preInputStart": 0,
         "recoveryTime": 34,
         "rightCollisionMax": {
             "x": 0.6000000238418579,
@@ -35,6 +38,7 @@
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 6.0,
         "hitStop": 0.0,
+        "hitRecoveryTime": 0,
         "leftCollisionMax": {
             "x": 0.30000001192092896,
             "y": 1.0,
@@ -45,6 +49,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
+        "preInputEnd": 0,
+        "preInputStart": 0,
         "recoveryTime": 40,
         "rightCollisionMax": {
             "x": 0.30000001192092896,
@@ -64,6 +70,7 @@
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 3.0,
         "hitStop": 0.11999999731779099,
+        "hitRecoveryTime": 0,
         "leftCollisionMax": {
             "x": 0.0,
             "y": 1.0,
@@ -74,6 +81,8 @@
             "y": 0.0,
             "z": -0.5
         },
+        "preInputEnd": 0,
+        "preInputStart": 0,
         "recoveryTime": 25,
         "rightCollisionMax": {
             "x": 0.5,
@@ -93,6 +102,7 @@
         "finisherGaugeIncreaseAmount": 4.0,
         "guardGaugeIncreaseAmount": 4.0,
         "hitStop": 0.11999999731779099,
+        "hitRecoveryTime": 0,
         "leftCollisionMax": {
             "x": 0.10000000149011612,
             "y": 1.0,
@@ -103,6 +113,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
+        "preInputEnd": 0,
+        "preInputStart": 0,
         "recoveryTime": 90,
         "rightCollisionMax": {
             "x": 0.6000000238418579,
@@ -122,6 +134,7 @@
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 3.0,
         "hitStop": 0.0,
+        "hitRecoveryTime": 0,
         "leftCollisionMax": {
             "x": 0.0,
             "y": 1.0,
@@ -132,6 +145,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
+        "preInputEnd": 0,
+        "preInputStart": 0,
         "recoveryTime": 25,
         "rightCollisionMax": {
             "x": 0.6000000238418579,
@@ -151,6 +166,7 @@
         "finisherGaugeIncreaseAmount": 2.0,
         "guardGaugeIncreaseAmount": 0.0,
         "hitStop": 0.0,
+        "hitRecoveryTime": 0,
         "leftCollisionMax": {
             "x": 0.0,
             "y": 1.0,
@@ -161,6 +177,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
+        "preInputEnd": 0,
+        "preInputStart": 0,
         "recoveryTime": 35,
         "rightCollisionMax": {
             "x": 0.5,
@@ -180,6 +198,7 @@
         "finisherGaugeIncreaseAmount": 1.0,
         "guardGaugeIncreaseAmount": 3.0,
         "hitStop": 0.10000000149011612,
+        "hitRecoveryTime": 0,
         "leftCollisionMax": {
             "x": 0.0,
             "y": 1.0,
@@ -190,6 +209,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
+        "preInputEnd": 0,
+        "preInputStart": 0,
         "recoveryTime": 25,
         "rightCollisionMax": {
             "x": 0.5,
@@ -209,6 +230,7 @@
         "finisherGaugeIncreaseAmount": 3.0,
         "guardGaugeIncreaseAmount": 3.0,
         "hitStop": 0.0,
+        "hitRecoveryTime": 0,
         "leftCollisionMax": {
             "x": 0.10000000149011612,
             "y": 1.0,
@@ -219,6 +241,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
+        "preInputEnd": 0,
+        "preInputStart": 0,
         "recoveryTime": 40,
         "rightCollisionMax": {
             "x": 0.75,
@@ -238,6 +262,7 @@
         "finisherGaugeIncreaseAmount": 5.0,
         "guardGaugeIncreaseAmount": 0.0,
         "hitStop": 0.0,
+        "hitRecoveryTime": 0,
         "leftCollisionMax": {
             "x": 0.0,
             "y": 1.0,
@@ -248,6 +273,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
+        "preInputEnd": 0,
+        "preInputStart": 0,
         "recoveryTime": 40,
         "rightCollisionMax": {
             "x": 0.5,
@@ -267,6 +294,7 @@
         "finisherGaugeIncreaseAmount": 0.0,
         "guardGaugeIncreaseAmount": 0.0,
         "hitStop": 0.0,
+        "hitRecoveryTime": 0,
         "leftCollisionMax": {
             "x": 0.0,
             "y": 1.0,
@@ -277,6 +305,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
+        "preInputEnd": 0,
+        "preInputStart": 0,
         "recoveryTime": 25,
         "rightCollisionMax": {
             "x": 0.6000000238418579,
@@ -296,6 +326,7 @@
         "finisherGaugeIncreaseAmount": 0.0,
         "guardGaugeIncreaseAmount": 10.0,
         "hitStop": 0.0,
+        "hitRecoveryTime": 0,
         "leftCollisionMax": {
             "x": 0.0,
             "y": 1.0,
@@ -306,6 +337,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
+        "preInputEnd": 0,
+        "preInputStart": 0,
         "recoveryTime": 65,
         "rightCollisionMax": {
             "x": 0.4000000059604645,

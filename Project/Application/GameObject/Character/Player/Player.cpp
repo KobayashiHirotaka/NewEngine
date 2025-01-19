@@ -192,8 +192,8 @@ void Player::Update()
 
 	//エディターで設定したパラメータをセット
 	AttackEditor::GetInstance()->SetAttackParameters(attackType_, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
-		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop,
-		aabb_, true, characterState_.direction);
+		attackData_.preInputStart, attackData_.preInputEnd,attackData_.damage, attackData_.hitRecoveryTime, attackData_.guardGaugeIncreaseAmount,
+		attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop, aabb_, true, characterState_.direction);
 
 	//振り向きの処理
 	Vector3 playerWorldPosition = worldTransform_.translation;
