@@ -567,7 +567,7 @@ void Player::UpdateBehaviorAttack()
 	{
 		//アニメーション
 		const int kAnimationHighPunch = 3;
-		const float animationSpeed = 1.5f;
+		const float animationSpeed = 1.8f;
 
 		animationIndex_ = kAnimationHighPunch;
 		characterState_.isGuard = false;
@@ -615,10 +615,10 @@ void Player::UpdateBehaviorAttack()
 
 		//キャンセルの処理(横A)
 		//キャンセル始まりの時間
-		const int kCancelStartTime = 5;
+		const int kCancelStartTime = 8;
 
 		//キャンセル終わりの時間
-		const int kCancelEndTime = 15;
+		const int kCancelEndTime = 13;
 
 		if (input_->GetJoystickState())
 		{
@@ -2238,7 +2238,7 @@ void Player::DownAnimation()
 		//移動処理
 		const int kJumpTime = 55;
 		const int kFallTime = -30;
-		const float kJumpFirstSpeed_ = 0.2f;
+		const float kJumpFirstSpeed_ = 0.25f;
 		const float kMoveSpeed = 0.025f;
 		float moveX = (enemy_->GetDirection() == Direction::Right) ? kMoveSpeed : -kMoveSpeed;
 
@@ -2253,7 +2253,7 @@ void Player::DownAnimation()
 			//落ちる
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
-			const float kGravityAcceleration_ = 0.01f;
+			const float kGravityAcceleration_ = 0.013f;
 			Vector3 accelerationVector_ = { 0.0f, -kGravityAcceleration_, 0.0f };
 
 			moveData_.velocity = Add(moveData_.velocity, accelerationVector_);

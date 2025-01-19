@@ -572,10 +572,10 @@ void Enemy::UpdateBehaviorAttack()
 
 			//キャンセルの処理(タックル攻撃)
 			//キャンセル始まりの時間
-			const int kCancelStartTime = 5;
+			const int kCancelStartTime = 8;
 
 			//キャンセル終わりの時間
-			const int kCancelEndTime = 30;
+			const int kCancelEndTime = 13;
 
 			if (!characterState_.isDown && player_->GetIsDown() && attackData_.attackAnimationFrame > kCancelStartTime && 
 				attackData_.attackAnimationFrame < kCancelEndTime && player_->GetHP() < 0)
@@ -1844,7 +1844,7 @@ void Enemy::DownAnimation()
 		//移動処理
 		const int kJumpTime = 55;
 		const int kFallTime = -30;
-		const float kJumpFirstSpeed_ = 0.24f;
+		const float kJumpFirstSpeed_ = 0.25f;
 		const float kMoveSpeed = 0.025f;
 		float moveX = (player_->GetDirection() == Direction::Right) ? kMoveSpeed : -kMoveSpeed;
 
