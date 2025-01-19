@@ -7,6 +7,7 @@
 
 #pragma once
 #include "Application/Game/Scenes/IScene.h"
+#include "Application/Game/GuideUI/Guide.h"
 #include "Application/GameObject/Skydome/Skydome.h"
 #include "GameTitleSceneUI.h"
 
@@ -57,6 +58,9 @@ private:
 
 	//GameTitleSceneUI
 	std::unique_ptr<GameTitleSceneUI> gameTitleSceneUI_;
+
+	//Guide
+	std::unique_ptr<Guide> guide_;
 
 	//サウンド
 	uint32_t titleSoundHandle_ = 0u;

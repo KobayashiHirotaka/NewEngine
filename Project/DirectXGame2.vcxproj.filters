@@ -283,12 +283,6 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{7b7ea5e1-b748-4f74-8c27-3a7867154ff1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Project\Game\GuideUI">
-      <UniqueIdentifier>{37120415-9a52-4af0-a8cd-270949c790c2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Project\Game\GuideUI">
-      <UniqueIdentifier>{c179363c-6f29-468c-88aa-9dd087d72d42}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\Project\GameObject\Effect">
       <UniqueIdentifier>{12fae7c4-b975-4bcd-8599-06d6d8e58eb1}</UniqueIdentifier>
     </Filter>
@@ -318,6 +312,12 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\Project\Game\Scenes\GamePlayScene">
       <UniqueIdentifier>{6cc3a1c6-8c72-4bfc-a181-eb3375798c3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\Game\Guide">
+      <UniqueIdentifier>{37120415-9a52-4af0-a8cd-270949c790c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\Game\Guide">
+      <UniqueIdentifier>{c179363c-6f29-468c-88aa-9dd087d72d42}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -510,8 +510,8 @@
     <ClCompile Include="Application\Game\Transition\Transition.cpp">
       <Filter>ソース ファイル\Project\Game\Transition</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\GuideUI\GuideUI.cpp">
-      <Filter>ソース ファイル\Project\Game\GuideUI</Filter>
+    <ClCompile Include="Application\Game\GuideUI\Guide.cpp">
+      <Filter>ソース ファイル\Project\Game\Guide</Filter>
     </ClCompile>
     <ClCompile Include="Application\GameObject\Effect\ParticleEffectPlayer.cpp">
       <Filter>ソース ファイル\Project\GameObject\Effect</Filter>
@@ -788,8 +788,8 @@
     <ClInclude Include="Application\Game\Scenes\IGameSceneUI.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Game\GuideUI\GuideUI.h">
-      <Filter>ヘッダー ファイル\Project\Game\GuideUI</Filter>
+    <ClInclude Include="Application\Game\GuideUI\Guide.h">
+      <Filter>ヘッダー ファイル\Project\Game\Guide</Filter>
     </ClInclude>
     <ClInclude Include="Application\GameObject\Effect\ParticleEffectPlayer.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Effect</Filter>

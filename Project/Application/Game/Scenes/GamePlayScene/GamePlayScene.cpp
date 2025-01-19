@@ -84,6 +84,10 @@ void GamePlayScene::Initialize()
 	gamePlaySceneUI_ = std::make_unique<GamePlaySceneUI>();
 	gamePlaySceneUI_->Initialize();
 
+	//操作説明の生成、初期化
+	guide_ = std::make_unique<Guide>();
+	guide_->Initialize();
+
 	//SE
 	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 
@@ -122,16 +126,16 @@ void GamePlayScene::Update()
 	attackEditor_->Update();
 
 	//操作説明の開閉処理
-	gamePlaySceneUI_->Update();
+	guide_->Update();
 
-	if (gamePlaySceneUI_->GetIsChangedSprite())
+	if (guide_->GetIsChangedSprite())
 	{
 		audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-		gamePlaySceneUI_->SetIsChangedSprite(false);
+		guide_->SetIsChangedSprite(false);
 	}
 
 	//操作説明を開いている場合
-	if (gamePlaySceneUI_->GetIsOpen())return;
+	if (guide_->GetIsOpen())return;
 
 	//ラウンド間の時間の処理
 	sRoundStartTimer_--;
@@ -285,7 +289,7 @@ void GamePlayScene::Draw()
 	//Skydomeの描画
 	skydome_->Draw(cameraController_->GetCamera());
 
-	if (!gamePlaySceneUI_->GetIsOpen())
+	if (!guide_->GetIsOpen())
 	{
 		//Game3dObjectManagerの描画
 		game3dObjectManager_->Draw(cameraController_->GetCamera());
@@ -298,7 +302,7 @@ void GamePlayScene::Draw()
 
 	ParticleModel::PreDraw();
 
-	if (GamePlayScene::sRoundStartTimer_ <= 0 && !gamePlaySceneUI_->GetIsOpen())
+	if (GamePlayScene::sRoundStartTimer_ <= 0 && !guide_->GetIsOpen())
 	{
 		//Playerのparticle描画
 		player_->DrawParticle(cameraController_->GetCamera());
@@ -311,7 +315,7 @@ void GamePlayScene::Draw()
 
 	Line::PreDraw();
 
-	if (isDebug_ && !gamePlaySceneUI_->GetIsOpen())
+	if (isDebug_ && !guide_->GetIsOpen())
 	{
 		//Playerの当たり判定描画
 		player_->DrawCollision(cameraController_->GetCamera());
@@ -356,17 +360,22 @@ void GamePlayScene::Draw()
 	}
 
 	//プレイ中のUI描画
-	if (sRoundStartTimer_ <= 0 && !gamePlaySceneUI_->GetIsOpen())
+	if (sRoundStartTimer_ <= 0)
 	{
-		player_->DrawSprite();
+		if (!guide_->GetIsOpen())
+		{
+			player_->DrawSprite();
 
-		enemy_->DrawSprite();
+			enemy_->DrawSprite();
 
-		gamePlaySceneUI_->Draw();
+			gamePlaySceneUI_->Draw();
 
-		gamePlaySceneUI_->RoundGetDraw(playerWinCount_, enemyWinCount_);
-
-		gamePlaySceneUI_->GuideDraw();
+			gamePlaySceneUI_->RoundGetDraw(playerWinCount_, enemyWinCount_);
+		}
+		else
+		{
+			guide_->Draw();
+		}
 	}
 	
 	Sprite::PostDraw();
@@ -376,7 +385,7 @@ void GamePlayScene::Draw()
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
 	//入力履歴の描画
-	if (!gamePlaySceneUI_->GetIsOpen() && isDebug_)
+	if (!guide_->GetIsOpen() && isDebug_)
 	{
 		inputLog_->Draw();
 	}

@@ -17,32 +17,19 @@ void GameTitleSceneUI::Initialize()
 	//タイトル(操作用)のSprite
 	titleUITextureHandle_ = TextureManager::LoadTexture("Resource/Images/TitleUI.png");
 	titleUISprite_.reset(Sprite::Create(titleUITextureHandle_, { 0.0f,0.0f }));
-
-	//操作説明の生成、初期化
-	guideUI_ = std::make_unique<GuideUI>();
-	guideUI_->Initialize();
 }
 
 void GameTitleSceneUI::Update()
 {
 	//タイトルの文字を動かす
 	AnimationTitle();
-
-	//操作説明の更新
-	guideUI_->Update();
 }
 
 void GameTitleSceneUI::Draw()
 {
 	//タイトルの描画
-	if (!guideUI_->GetIsOpen())
-	{
-		titleSprite_->Draw();
-		titleUISprite_->Draw();
-	}
-
-	//操作説明の描画
-	guideUI_->Draw();
+	titleSprite_->Draw();
+	titleUISprite_->Draw();
 }
 
 void GameTitleSceneUI::AnimationTitle()

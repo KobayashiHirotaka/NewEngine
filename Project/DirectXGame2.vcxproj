@@ -28,7 +28,7 @@
     <ClCompile Include="Application\Game\AttackEditor\AttackEditor.cpp" />
     <ClCompile Include="Application\Game\CameraController\CameraController.cpp" />
     <ClCompile Include="Application\Game\GameTimer\GameTimer.cpp" />
-    <ClCompile Include="Application\Game\GuideUI\GuideUI.cpp" />
+    <ClCompile Include="Application\Game\GuideUI\Guide.cpp" />
     <ClCompile Include="Application\Game\HitStop\HitStop.cpp" />
     <ClCompile Include="Application\Game\InputLog\InputLog.cpp" />
     <ClCompile Include="Application\Game\Scenes\GameLoseScene\GameLoseScene.cpp" />
@@ -173,7 +173,7 @@
     <ClInclude Include="Application\Game\AttackEditor\AttackEditor.h" />
     <ClInclude Include="Application\Game\CameraController\CameraController.h" />
     <ClInclude Include="Application\Game\GameTimer\GameTimer.h" />
-    <ClInclude Include="Application\Game\GuideUI\GuideUI.h" />
+    <ClInclude Include="Application\Game\GuideUI\Guide.h" />
     <ClInclude Include="Application\Game\HitStop\HitStop.h" />
     <ClInclude Include="Application\Game\InputLog\InputLog.h" />
     <ClInclude Include="Application\Game\Scenes\GameLoseScene\GameLoseScene.h" />

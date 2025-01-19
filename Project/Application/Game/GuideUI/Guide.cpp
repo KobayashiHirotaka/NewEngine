@@ -1,20 +1,20 @@
 /**
- * @file GuideUI.cpp
+ * @file Guide.cpp
  * @brief 操作説明UIの初期化、更新、描画などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 2024/01/16
  */
 
-#include "GuideUI.h"
+#include "Guide.h"
 
 //スプライトの遷移用のベクター
-const std::vector<CommandSpriteType> GuideUI::sSpriteOrder_ = {
+const std::vector<CommandSpriteType> Guide::sSpriteOrder_ = {
 	CommandSpriteType::GeneralCommandSprite,
 	CommandSpriteType::ComboAttackCommandSprite,
 	CommandSpriteType::FinisherAttackCommandSprite
 };
 
-void GuideUI::Initialize()
+void Guide::Initialize()
 {
 	//Inputのインスタンスの取得
 	input_ = Input::GetInstance();
@@ -34,12 +34,12 @@ void GuideUI::Initialize()
 	attackCommandListSprite_[1].reset(Sprite::Create(attackCommandListTextureHandle_[1], { 0.0f,0.0f }));
 }
 
-void GuideUI::Update()
+void Guide::Update()
 {
 	UpdateCommandSprite();
 }
 
-void GuideUI::Draw()
+void Guide::Draw()
 {
 	//操作説明の描画
 	if (isOpen_ && spriteCount_ == CommandSpriteType::GeneralCommandSprite)
@@ -61,7 +61,7 @@ void GuideUI::Draw()
 	}
 }
 
-void GuideUI::UpdateCommandSprite()
+void Guide::UpdateCommandSprite()
 {
 	//操作説明の開閉
 	if (input_->GetJoystickState())
@@ -99,7 +99,7 @@ void GuideUI::UpdateCommandSprite()
 	}
 }
 
-void GuideUI::ChangeCommandSprite()
+void Guide::ChangeCommandSprite()
 {
 	//スプライトの移動に必用な定数
 	const int kNextSprite = 1;
@@ -122,7 +122,7 @@ void GuideUI::ChangeCommandSprite()
 	}
 }
 
-void GuideUI::ApplyCommandSprite(int changeAmount)
+void Guide::ApplyCommandSprite(int changeAmount)
 {
 	//現在のスプライトインデックスを取得
 	auto it = std::find(sSpriteOrder_.begin(), sSpriteOrder_.end(), static_cast<CommandSpriteType>(spriteCount_));

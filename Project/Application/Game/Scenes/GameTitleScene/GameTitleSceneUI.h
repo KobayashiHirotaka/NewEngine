@@ -7,7 +7,6 @@
 
 #pragma once
 #include "Application/Game/Scenes/IGameSceneUI.h"
-#include "Application/Game/GuideUI/GuideUI.h"
 
 class GameTitleSceneUI : public IGameSceneUI
 {
@@ -20,14 +19,6 @@ public:
 
 	/// <summary>描画</summary>
 	void Draw()override;
-
-	//Getter
-	bool GetIsOpen() { return guideUI_->GetIsOpen(); };
-
-	bool GetIsChangedSprite() { return  guideUI_->GetIsChangedSprite(); };
-
-	//Setter
-	void SetIsChangedSprite(bool isChangedSprite) { guideUI_->SetIsChangedSprite(isChangedSprite); };
 
 private:
 	/// <summary>タイトルの文字を動かす</summary>
@@ -46,8 +37,5 @@ private:
 	//タイトル(操作用)のSprite
 	std::unique_ptr<Sprite> titleUISprite_ = nullptr;
 	uint32_t titleUITextureHandle_ = 0;
-
-	//操作説明
-	std::unique_ptr<GuideUI> guideUI_ = nullptr;
 };
 

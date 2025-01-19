@@ -47,6 +47,10 @@ void GameTitleScene::Initialize()
 	gameTitleSceneUI_ = std::make_unique<GameTitleSceneUI>();
 	gameTitleSceneUI_->Initialize();
 
+	//操作説明の生成、初期化
+	guide_ = std::make_unique<Guide>();
+	guide_->Initialize();
+
 	//BGM,SEの読み込み
 	titleSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/BGM.mp3");
 	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
@@ -79,17 +83,20 @@ void GameTitleScene::Update()
 	//UIの更新
 	gameTitleSceneUI_->Update();
 
+	//操作説明の更新
+	guide_->Update();
+
 	//Skydomeの更新
 	skydome_->Update();
 
-	if (gameTitleSceneUI_->GetIsChangedSprite())
+	if (guide_->GetIsChangedSprite())
 	{
 		audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-		gameTitleSceneUI_->SetIsChangedSprite(false);
+		guide_->SetIsChangedSprite(false);
 	}
 
 	//シーン切り替え
-	if (input_->GetJoystickState() && !gameTitleSceneUI_->GetIsOpen())
+	if (input_->GetJoystickState() && !guide_->GetIsOpen())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isTransitionEnd_)
 		{
@@ -151,8 +158,15 @@ void GameTitleScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	//UIの描画
-	gameTitleSceneUI_->Draw();
+	//タイトルのUI描画
+	if (!guide_->GetIsOpen())
+	{
+		gameTitleSceneUI_->Draw();
+	}
+	else
+	{
+		guide_->Draw();
+	}
 
 	Sprite::PostDraw();
 

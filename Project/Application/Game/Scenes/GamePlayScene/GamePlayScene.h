@@ -8,8 +8,9 @@
 #pragma once
 #include "Engine/3D/Line/Line.h"
 #include "Application/Game/Scenes/IScene.h"
-#include "Application/Game/InputLog/InputLog.h"
 #include "Application/Game/CameraController/CameraController.h"
+#include "Application/Game/InputLog/InputLog.h"
+#include "Application/Game/GuideUI/Guide.h"
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Character/Enemy/EnemyBullet.h"
@@ -124,6 +125,9 @@ private:
 
 	//GamePlaySceneUI
 	std::unique_ptr<GamePlaySceneUI> gamePlaySceneUI_;
+
+	//Guide
+	std::unique_ptr<Guide> guide_;
 
 	//サウンド
 	uint32_t selectSoundHandle_ = 0u;

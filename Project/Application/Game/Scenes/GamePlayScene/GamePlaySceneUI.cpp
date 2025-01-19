@@ -61,16 +61,11 @@ void GamePlaySceneUI::Initialize()
 
 	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, kNumberTensPosition));
 	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, kNumberOnesPosition));
-
-	//操作説明の生成、初期化
-	guideUI_ = std::make_unique<GuideUI>();
-	guideUI_->Initialize();
 }
 
 void GamePlaySceneUI::Update()
 {
-	//操作説明の更新
-	guideUI_->Update();
+	
 }
 
 void GamePlaySceneUI::Draw()
@@ -149,13 +144,6 @@ void GamePlaySceneUI::RoundEndDraw(bool isTimeOver, bool isPlayerWin)
 	{
 		timeOverSprite_->Draw();
 	}
-}
-
-
-void GamePlaySceneUI::GuideDraw()
-{
-	//操作説明の描画
-	guideUI_->Draw();
 }
 
 void GamePlaySceneUI::UpdateNumberSprite(int currentSeconds)

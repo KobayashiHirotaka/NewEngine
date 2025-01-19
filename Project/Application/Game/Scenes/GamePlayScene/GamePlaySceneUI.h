@@ -7,7 +7,6 @@
 
 #pragma once
 #include "Application/Game/Scenes/IGameSceneUI.h"
-#include "Application/Game/GuideUI/GuideUI.h"
 
 class GamePlaySceneUI : public IGameSceneUI
 {
@@ -33,19 +32,8 @@ public:
 	/// <summary>ラウンド終了時の描画</summary>
 	void RoundEndDraw(bool isTimeOver, bool isPlayerWin);
 
-	/// <summary>操作説明の描画</summary>
-	void GuideDraw();
-
 	/// <summary>数字の更新</summary>
 	void UpdateNumberSprite(int currentSeconds);
-
-	//Getter
-	bool GetIsOpen() { return guideUI_->GetIsOpen(); };
-
-	bool GetIsChangedSprite() { return  guideUI_->GetIsChangedSprite(); };
-
-	//Setter
-	void SetIsChangedSprite(bool isChangedSprite) { guideUI_->SetIsChangedSprite(isChangedSprite); };
 
 private:
 	//Timer用のSprite
@@ -82,9 +70,6 @@ private:
 	//UI枠のSprite
 	std::unique_ptr<Sprite> frameUISprite_ = nullptr;
 	uint32_t frameUITextureHandle_ = 0;
-
-	//操作説明
-	std::unique_ptr<GuideUI> guideUI_ = nullptr;
 
 	//ラウンド数
 	static const int kRoundOne_ = 1;
