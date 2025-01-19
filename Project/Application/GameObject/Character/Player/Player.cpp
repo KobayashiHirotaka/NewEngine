@@ -615,10 +615,10 @@ void Player::UpdateBehaviorAttack()
 
 		//キャンセルの処理(横A)
 		//キャンセル始まりの時間
-		const int kCancelStartTime = 15;
+		const int kCancelStartTime = 5;
 
 		//キャンセル終わりの時間
-		const int kCancelEndTime = 30;
+		const int kCancelEndTime = 15;
 
 		if (input_->GetJoystickState())
 		{
@@ -697,7 +697,7 @@ void Player::UpdateBehaviorAttack()
 	{
 		//アニメーション
 		const int kAnimationTackle = 9;
-		const float animationSpeed = 1.5f;
+		const float animationSpeed = 1.8f;
 
 		animationIndex_ = kAnimationTackle;
 		characterState_.isGuard = false;
@@ -2238,7 +2238,7 @@ void Player::DownAnimation()
 		//移動処理
 		const int kJumpTime = 55;
 		const int kFallTime = -30;
-		const float kJumpFirstSpeed_ = 0.15f;
+		const float kJumpFirstSpeed_ = 0.2f;
 		const float kMoveSpeed = 0.025f;
 		float moveX = (enemy_->GetDirection() == Direction::Right) ? kMoveSpeed : -kMoveSpeed;
 
@@ -2253,7 +2253,7 @@ void Player::DownAnimation()
 			//落ちる
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
-			const float kGravityAcceleration_ = 0.005f;
+			const float kGravityAcceleration_ = 0.01f;
 			Vector3 accelerationVector_ = { 0.0f, -kGravityAcceleration_, 0.0f };
 
 			moveData_.velocity = Add(moveData_.velocity, accelerationVector_);
@@ -2266,7 +2266,7 @@ void Player::DownAnimation()
 		}
 
 		//終了処理
-		if (!enemy_->GetIsHighPunch() &&  worldTransform_.translation.y <= 0.0f && baseData_.hp_ < 0)
+		if (timerData_.downAnimationTimer < 0 && baseData_.hp_ < 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
@@ -2310,11 +2310,10 @@ void Player::DownAnimation()
 		aabb_ = kDownAABB;
 		collider_->SetAABB(aabb_);
 
-		//移動処理
 		const int kMoveTime = 35;
 		const float kDefaultMoveSpeed = 4.8f;
-		const float kTradeMoveSpeed = 3.0f;
-		const float kFallSpeed = 1.8f;
+		const float kTradeMoveSpeed = 2.0f;
+		const float kFallSpeed = 2.0f;
 		float moveX = 0.0f;
 
 		//相手かダウン状態かどうかで速さを変化

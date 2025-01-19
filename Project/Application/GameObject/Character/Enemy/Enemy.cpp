@@ -572,7 +572,7 @@ void Enemy::UpdateBehaviorAttack()
 
 			//キャンセルの処理(タックル攻撃)
 			//キャンセル始まりの時間
-			const int kCancelStartTime = 15;
+			const int kCancelStartTime = 5;
 
 			//キャンセル終わりの時間
 			const int kCancelEndTime = 30;
@@ -598,7 +598,7 @@ void Enemy::UpdateBehaviorAttack()
 		{
 			//アニメーション
 			const int kAnimationTackle = 8;
-			const float animationSpeed = 1.5f;
+			const float animationSpeed = 1.8f;
 
 			animationIndex_ = kAnimationTackle;
 			characterState_.isGuard = false;
@@ -1844,7 +1844,7 @@ void Enemy::DownAnimation()
 		//移動処理
 		const int kJumpTime = 55;
 		const int kFallTime = -30;
-		const float kJumpFirstSpeed_ = 0.2f;
+		const float kJumpFirstSpeed_ = 0.24f;
 		const float kMoveSpeed = 0.025f;
 		float moveX = (player_->GetDirection() == Direction::Right) ? kMoveSpeed : -kMoveSpeed;
 
@@ -1859,7 +1859,7 @@ void Enemy::DownAnimation()
 			//落ちる
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
-			const float kGravityAcceleration_ = 0.01f;
+			const float kGravityAcceleration_ = 0.013f;
 			Vector3 accelerationVector_ = { 0.0f, -kGravityAcceleration_, 0.0f };
 
 			moveData_.velocity = Add(moveData_.velocity, accelerationVector_);
@@ -1872,7 +1872,7 @@ void Enemy::DownAnimation()
 		}
 
 		//終了処理
-		if (timerData_.downAnimationTimer < 0)
+		if (timerData_.downAnimationTimer < 0 && baseData_.hp_ > 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
@@ -2153,17 +2153,17 @@ void Enemy::DownAnimation()
 		collider_->SetAABB(aabb_);
 
 		//移動処理
-		const int kMoveTime = 35;
+		const int kMoveTime = 38;
 		const float kComboMoveSpeed = 6.0f;
 		const float kDefaultMoveSpeed = 4.8f;
 		const float kTradeMoveSpeed = 2.0f;
-		const float kFallSpeed = 1.8f;
+		const float kFallSpeed = 3.5f;
 		float moveX = 0.0f;
 
 		//相手かダウン状態かどうかで速さを変化
 		if (!player_->GetIsDown())
 		{
-			if (comboCount_ >= kComboCount_[5])
+			if (comboCount_ >= kComboCount_[4])
 			{
 				moveX = (player_->GetDirection() == Direction::Right) ? kComboMoveSpeed : -kComboMoveSpeed;
 			}

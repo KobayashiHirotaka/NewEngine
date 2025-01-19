@@ -28,11 +28,11 @@ enum class StickDirection
 //ボタン入力
 enum class Button
 {
-	A = 0,
-	B = 1,
-	X = 2,
-	Y = 3,
-	LB = 4
+	A,
+	B,
+	X,
+	Y,
+	LB
 };
 
 
