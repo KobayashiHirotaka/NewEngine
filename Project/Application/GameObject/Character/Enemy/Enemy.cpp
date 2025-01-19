@@ -2466,32 +2466,6 @@ void Enemy::UpdateBullets()
 
 void Enemy::HitCombo()
 {
-	//攻撃ごとの硬直
-	//弱パンチ
-	const int kLightPunchRecoveryTime = 25;
-
-	//強パンチ
-	const int kHighPunchRecoveryTime = 60;
-
-	//TC中パンチ
-	const int kTCMiddlePunchRecoveryTime = 30;
-
-	//TC強パンチ
-	const int kTCHighPunchRecoveryTime = 45;
-
-	//ジャンプ攻撃
-	const int kJumpAttackRecoveryTime = 30;
-
-	//アッパー
-	const int kUpperCutRecoveryTime = 30;
-
-	//タックル
-	const int kTackleRecoveryTime = 40;
-
-	//必殺技
-	const int kFinisherAttackRecoveryTime = 120;
-
-
 	if (!characterState_.isDown)
 	{
 		//コンボを食らっているとき
@@ -2499,57 +2473,57 @@ void Enemy::HitCombo()
 		if (characterState_.isHitJumpAttack)
 		{
 			firstAttack_ = "JumpAttack";
-			ComboCountUpdate(kJumpAttackRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//弱パンチ
 		if (characterState_.isHitLightPunch)
 		{
 			firstAttack_ = "LightPunch";
-			ComboCountUpdate(kLightPunchRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//TC中パンチ
 		if (characterState_.isHitTCMiddlePunch)
 		{
-			ComboCountUpdate(kTCMiddlePunchRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//TC強パンチ
 		if (characterState_.isHitTCHighPunch)
 		{
-			ComboCountUpdate(kTCHighPunchRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//強パンチ
 		if (characterState_.isHitHighPunch)
 		{
-			ComboCountUpdate(kHighPunchRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//アッパー
 		if (characterState_.isHitUppercut)
 		{
-			ComboCountUpdate(kUpperCutRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//必殺技(1段目)
 		if (characterState_.isHitFinisherFirstAttack)
 		{
-			ComboCountUpdate(kFinisherAttackRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//必殺技(2段目)
 		if (characterState_.isHitFinisherSecondAttack)
 		{
-			ComboCountUpdate(kFinisherAttackRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 	}
 
 	//タックル
 	if (characterState_.isHitTackle && !isCancel_)
 	{
-		ComboCountUpdate(kTackleRecoveryTime);
+		ComboCountUpdate(player_->GetHitRecoveryTime());
 	}
 
 	//コンボタイマーを減らす

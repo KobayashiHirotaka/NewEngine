@@ -2470,45 +2470,35 @@ void Player::UpdateComboNumberSprite()
 
 void Player::HitCombo()
 {
-	//攻撃ごとの硬直
-	//弱
-	const int kLightRecoveryTime = 30;
-
-	//中
-	const int kMiddleRecoveryTime = 60;
-
-	//強
-	const int kHeavyRecoveryTime = 120;
-
 	//コンボを食らっているとき
 	//弱パンチ
 	if (characterState_.isHitLightPunch && !characterState_.isDown)
 	{
-		ComboCountUpdate(kLightRecoveryTime);
+		ComboCountUpdate(enemy_->GetHitRecoveryTime());
 	}
 
 	//TC中パンチ
 	if (characterState_.isHitTCMiddlePunch && !characterState_.isDown)
 	{
-		ComboCountUpdate(kMiddleRecoveryTime);
+		ComboCountUpdate(enemy_->GetHitRecoveryTime());
 	}
 
 	//TC強パンチ
 	if (characterState_.isHitTCHighPunch && !characterState_.isDown)
 	{
-		ComboCountUpdate(kMiddleRecoveryTime);
+		ComboCountUpdate(enemy_->GetHitRecoveryTime());
 	}
 
 	//強パンチ
 	if (characterState_.isHitHighPunch && !characterState_.isDown)
 	{
-		ComboCountUpdate(kHeavyRecoveryTime);
+		ComboCountUpdate(enemy_->GetHitRecoveryTime());
 	}
 
 	//タックル
 	if (characterState_.isHitTackle && !isCancel_)
 	{
-		ComboCountUpdate(kMiddleRecoveryTime);
+		ComboCountUpdate(enemy_->GetHitRecoveryTime());
 	}
 
 	//コンボタイマーを減らす
