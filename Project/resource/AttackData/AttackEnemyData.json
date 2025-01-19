@@ -17,8 +17,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
-        "preInputEnd": 0,
-        "preInputStart": 0,
+        "cancelEndTime": 0,
+        "cancelStartTime": 0,
         "recoveryTime": 40,
         "rightCollisionMax": {
             "x": 0.30000001192092896,
@@ -49,8 +49,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
-        "preInputEnd": 0,
-        "preInputStart": 0,
+        "cancelEndTime": 0,
+        "cancelStartTime": 0,
         "recoveryTime": 100,
         "rightCollisionMax": {
             "x": 0.6000000238418579,
@@ -81,8 +81,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
-        "preInputEnd": 0,
-        "preInputStart": 0,
+        "cancelEndTime": 0,
+        "cancelStartTime": 0,
         "recoveryTime": 30,
         "rightCollisionMax": {
             "x": 0.5,
@@ -113,8 +113,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
-        "preInputEnd": 0,
-        "preInputStart": 0,
+        "cancelEndTime": 0,
+        "cancelStartTime": 0,
         "recoveryTime": 25,
         "rightCollisionMax": {
             "x": 0.5,
@@ -145,8 +145,8 @@
             "y": 0.0,
             "z": -0.30000001192092896
         },
-        "preInputEnd": 0,
-        "preInputStart": 0,
+        "cancelEndTime": 0,
+        "cancelStartTime": 0,
         "recoveryTime": 40,
         "rightCollisionMax": {
             "x": 0.6000000238418579,

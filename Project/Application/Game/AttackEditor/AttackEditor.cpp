@@ -79,8 +79,8 @@ void AttackEditor::Update()
                     ImGui::SliderInt("当たり判定の付き初め", &param.attackStartTime, kIntMinValue_, kMaxAttackTime_);
                     ImGui::SliderInt("当たり判定の付き終わり", &param.attackEndTime, kIntMinValue_, kMaxAttackTime_);
                     ImGui::SliderInt("攻撃時の硬直時間", &param.recoveryTime, kIntMinValue_, kMaxRecoveryTime_);
-                    ImGui::SliderInt("先行入力の開始", &param.preInputStart, kIntMinValue_, kMaxPreInput_);
-                    ImGui::SliderInt("先行入力の終了", &param.preInputEnd, kIntMinValue_, kMaxPreInput_);
+                    ImGui::SliderInt("キャンセルの開始時間", &param.cancelStartTime, kIntMinValue_, kMaxCancelTime_);
+                    ImGui::SliderInt("キャンセルの終了時間", &param.cancelEndTime, kIntMinValue_, kMaxCancelTime_);
                     ImGui::SliderInt("ダメージ", &param.damage, kIntMinValue_, kMaxDamage_);
                     ImGui::SliderInt("ヒット時の硬直時間", &param.hitRecoveryTime, kIntMinValue_, kMaxHitRecoveryTime_);
 
@@ -171,8 +171,8 @@ void AttackEditor::Update()
                     ImGui::SliderInt("当たり判定の付き初め", &param.attackStartTime, kIntMinValue_, kMaxAttackTime_);
                     ImGui::SliderInt("当たり判定の付き終わり", &param.attackEndTime, kIntMinValue_, kMaxAttackTime_);
                     ImGui::SliderInt("攻撃時の硬直時間", &param.recoveryTime, kIntMinValue_, kMaxRecoveryTime_);
-                    ImGui::SliderInt("先行入力の開始", &param.preInputStart, kIntMinValue_, kMaxPreInput_);
-                    ImGui::SliderInt("先行入力の終了", &param.preInputEnd, kIntMinValue_, kMaxPreInput_);
+                    ImGui::SliderInt("キャンセルの開始時間", &param.cancelStartTime, kIntMinValue_, kMaxCancelTime_);
+                    ImGui::SliderInt("キャンセルの終了時間", &param.cancelEndTime, kIntMinValue_, kMaxCancelTime_);
                     ImGui::SliderInt("ダメージ", &param.damage, kIntMinValue_, kMaxDamage_);
                     ImGui::SliderInt("ヒット時の硬直時間", &param.hitRecoveryTime, kIntMinValue_, kMaxHitRecoveryTime_);
 
@@ -250,8 +250,8 @@ void AttackEditor::SaveFile(const std::string& saveFilePath, const std::unordere
             {"attackStartTime", param.attackStartTime},
             {"attackEndTime", param.attackEndTime},
             {"recoveryTime", param.recoveryTime},
-            {"preInputStart", param.preInputStart},
-            {"preInputEnd", param.preInputEnd},
+            {"cancelStartTime", param.cancelStartTime},
+            {"cancelEndTime", param.cancelEndTime},
             {"damage", param.damage},
             {"guardGaugeIncreaseAmount", param.guardGaugeIncreaseAmount},
             {"finisherGaugeIncreaseAmount", param.finisherGaugeIncreaseAmount},
@@ -312,8 +312,8 @@ void AttackEditor::LoadFile(const std::string& loadFilePath, std::unordered_map<
             param["attackStartTime"].get<int>(),
             param["attackEndTime"].get<int>(),
             param["recoveryTime"].get<int>(),
-            param["preInputStart"].get<int>(),
-            param["preInputEnd"].get<int>(),
+            param["cancelStartTime"].get<int>(),
+            param["cancelEndTime"].get<int>(),
             param["damage"].get<int>(),
             param["hitRecoveryTime"].get<int>(),
             param["guardGaugeIncreaseAmount"].get<float>(),
@@ -328,7 +328,7 @@ void AttackEditor::LoadFile(const std::string& loadFilePath, std::unordered_map<
 }
 
 
-void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& preInputStart, int& preInputEnd,
+void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& cancelStartTime, int& cancelEndTime,
     int& damage, int& hitRecoveryTime, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, AABB& collision, bool isPlayer,
     Direction& direction)
 {
@@ -341,8 +341,8 @@ void AttackEditor::SetAttackParameters(const std::string& name, int& attackStart
         attackStartTime = it->second.attackStartTime;
         attackEndTime = it->second.attackEndTime;
         recoveryTime = it->second.recoveryTime;
-        preInputStart = it->second.preInputStart;
-        preInputEnd = it->second.preInputEnd;
+        cancelStartTime = it->second.cancelStartTime;
+        cancelEndTime = it->second.cancelEndTime;
         damage = it->second.damage;
         hitRecoveryTime = it->second.hitRecoveryTime;
         guardGaugeIncreaseAmount = it->second.guardGaugeIncreaseAmount;

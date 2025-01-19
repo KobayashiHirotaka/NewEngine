@@ -147,11 +147,11 @@ public:
 		//攻撃時の硬直
 		int recoveryTime = 0;
 
-		//先行入力の開始
-		int preInputStart = 0;
+		//キャンセルの開始時間
+		int cancelStartTime = 0;
 
-		//先行入力の終了
-		int preInputEnd = 0;
+		//キャンセルの終了時間
+		int cancelEndTime = 0;
 
 		//ダメージ
 		int damage = 0;
