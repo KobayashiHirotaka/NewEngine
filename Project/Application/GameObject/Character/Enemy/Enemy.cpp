@@ -419,15 +419,9 @@ void Enemy::UpdateBehaviorAttack()
 				ResetCollision();
 			}
 
-			//キャンセルの処理(中TC)
-			//キャンセル始まりの時間
-			const int kCancelStartTime = 15;
-
-			//キャンセル終わりの時間
-			const int kCancelEndTime = 30;
-
-			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() && player_->GetHP() < 0 &&
-				attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime)
+			//キャンセルの処理
+			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() && player_->GetHP() < 0 && attackData_.attackAnimationFrame > attackData_.cancelStartTime && 
+				attackData_.attackAnimationFrame < attackData_.cancelEndTime)
 			{
 				attackType_ = "中攻撃(ターゲット)";
 				attackData_.isAttack = false;
@@ -496,15 +490,9 @@ void Enemy::UpdateBehaviorAttack()
 				ResetCollision();
 			}
 
-			//キャンセルの処理(強攻撃)
-			//キャンセル始まりの時間
-			const int kCancelStartTime = 15;
-
-			//キャンセル終わりの時間
-			const int kCancelEndTime = 30;
-
-			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() && player_->GetHP() < 0 &&
-				attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime)
+			//キャンセルの処理
+			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() && player_->GetHP() < 0 && attackData_.attackAnimationFrame > attackData_.cancelStartTime && 
+				attackData_.attackAnimationFrame < attackData_.cancelEndTime)
 			{
 				attackType_ = "強攻撃";
 				attackData_.isAttack = false;
@@ -570,15 +558,9 @@ void Enemy::UpdateBehaviorAttack()
 				ResetCollision();
 			}
 
-			//キャンセルの処理(タックル攻撃)
-			//キャンセル始まりの時間
-			const int kCancelStartTime = 8;
-
-			//キャンセル終わりの時間
-			const int kCancelEndTime = 13;
-
-			if (!characterState_.isDown && player_->GetIsDown() && attackData_.attackAnimationFrame > kCancelStartTime && 
-				attackData_.attackAnimationFrame < kCancelEndTime && player_->GetHP() < 0)
+			//キャンセルの処理
+			if (!characterState_.isDown && player_->GetIsDown() && attackData_.attackAnimationFrame > attackData_.cancelStartTime &&
+				attackData_.attackAnimationFrame < attackData_.cancelEndTime && player_->GetHP() < 0)
 			{
 				attackType_ = "タックル";
 				attackData_.isAttack = false;

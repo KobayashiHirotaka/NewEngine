@@ -442,16 +442,10 @@ void Player::UpdateBehaviorAttack()
 			ResetCollision();
 		}
 
-		//キャンセルの処理(中TC)
-		//キャンセル始まりの時間
-		const int kCancelStartTime = 10;
-
-		//キャンセル終わりの時間
-		const int kCancelEndTime = 20;
-
+		//キャンセルの処理
 		if (input_->GetJoystickState())
 		{
-			if (!characterState_.isDown && attackData_.attackAnimationFrame >= kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime && 
+			if (!characterState_.isDown && attackData_.attackAnimationFrame >= attackData_.cancelStartTime && attackData_.attackAnimationFrame < attackData_.cancelEndTime &&
 				(input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))  && enemy_->GetIsDown())
 			{
 				attackType_ = "中攻撃(ターゲット)";
@@ -522,16 +516,10 @@ void Player::UpdateBehaviorAttack()
 		}
 
 		//キャンセルの処理
-		//キャンセル始まりの時間
-		const int kCancelStartTime = 15;
-
-		//キャンセル終わりの時間
-		const int kCancelEndTime = 30;
-
 		if (input_->GetJoystickState())
 		{
 			//中コンボ
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > attackData_.cancelStartTime && attackData_.attackAnimationFrame < attackData_.cancelEndTime
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && characterState_.isHitCharacter)
 			{
 				attackType_ = "強攻撃";
@@ -545,7 +533,7 @@ void Player::UpdateBehaviorAttack()
 			}
 
 			//強コンボ
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > attackData_.cancelStartTime && attackData_.attackAnimationFrame < attackData_.cancelEndTime
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
 			{
 				attackType_ = "アッパー";
@@ -613,17 +601,11 @@ void Player::UpdateBehaviorAttack()
 			ResetCollision();
 		}
 
-		//キャンセルの処理(横A)
-		//キャンセル始まりの時間
-		const int kCancelStartTime = 8;
-
-		//キャンセル終わりの時間
-		const int kCancelEndTime = 13;
-
+		//キャンセルの処理
 		if (input_->GetJoystickState())
 		{
 			//タックル攻撃
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime &&
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > attackData_.cancelStartTime && attackData_.attackAnimationFrame < attackData_.cancelEndTime &&
 				input_->IsPressButtonEnter(XINPUT_GAMEPAD_X))
 			{
 				attackType_ = "タックル";
@@ -836,17 +818,11 @@ void Player::UpdateBehaviorAttack()
 			ResetCollision();
 		}
 
-		//キャンセルの処理(超必)
-		//キャンセル始まりの時間
-		const int kCancelStartTime = 10;
-
-		//キャンセル終わりの時間
-		const int kCancelEndTime = 40;
-
+		//キャンセルの処理
 		if (input_->GetJoystickState())
 		{
 			//強コンボ
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > attackData_.cancelStartTime && attackData_.attackAnimationFrame < attackData_.cancelEndTime
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && enemy_->GetComboCount() >= kComboCount_[3] && isFinisherCharge_ &&
 				characterState_.isHitCharacter)
 			{
@@ -937,15 +913,8 @@ void Player::UpdateBehaviorAttack()
 			//攻撃判定をつけるタイミングの設定
 			EvaluateAttackTiming();
 
-			//キャンセルの処理(超必)
-		    //キャンセル始まりの時間
-			const int kCancelStartTime = 10;
-
-			//キャンセル終わりの時間
-			const int kCancelEndTime = 30;
-
 			//2段目への移行処理
-			if (enemy_->GetIsDown() && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime)
+			if (enemy_->GetIsDown() && attackData_.attackAnimationFrame > attackData_.cancelStartTime && attackData_.attackAnimationFrame < attackData_.cancelEndTime)
 			{
 				attackType_ = "必殺技(2段目)";
 				timerData_.finisherTimer = timerData_.maxFinisherTimer;

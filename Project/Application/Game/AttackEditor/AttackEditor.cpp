@@ -253,6 +253,7 @@ void AttackEditor::SaveFile(const std::string& saveFilePath, const std::unordere
             {"cancelStartTime", param.cancelStartTime},
             {"cancelEndTime", param.cancelEndTime},
             {"damage", param.damage},
+            {"hitRecoveryTime", param.hitRecoveryTime},
             {"guardGaugeIncreaseAmount", param.guardGaugeIncreaseAmount},
             {"finisherGaugeIncreaseAmount", param.finisherGaugeIncreaseAmount},
             {"hitStop",param.hitStop},
