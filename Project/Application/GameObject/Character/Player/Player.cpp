@@ -346,55 +346,54 @@ void Player::UpdateBehaviorRoot()
 			Move();
 		}
 
-		//ジャンプ
-		if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > kStickDeadZone_) && worldTransform_.translation.y == 0.0f && !characterState_.isDown)
+		if (!characterState_.isDown)
 		{
-			characterState_.behaviorRequest = Behavior::kJump;
-		}
+			//ジャンプ
+			if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > kStickDeadZone_) && worldTransform_.translation.y == 0.0f)
+			{
+				characterState_.behaviorRequest = Behavior::kJump;
+			}
 
-		//攻撃
-		//弱攻撃
-		if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)) && !characterState_.isDown)
-		{
-			attackType_ = "弱攻撃";
-			StartAttack(attackData_.isLightPunch);
-		}
-
-		//弾攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown)
-		{
-			attackType_ = "ショット";
-			StartAttack(attackData_.isShot);
-		}
-		
-		//タックル攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && 
-			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) ||
-			input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kStickDeadZone_ || input_->GetLeftStickX() < -kStickDeadZone_))
-		{
-			attackType_ = "タックル";
-			StartAttack(attackData_.isTackle);
-		}
-
-		//アッパー攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) &&
-			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && input_->GetLeftStickX() < kStickDeadZone_ && input_->GetLeftStickX() > -kStickDeadZone_ && !characterState_.isDown)
-		{
-			attackType_ = "アッパー";
-			StartAttack(attackData_.isUppercut);
-		}
-
-		//必殺技
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) &&
-			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isFinisherCharge_ && !characterState_.isDown)
-		{
-			attackType_ = "必殺技";
-			StartAttack(attackData_.isFinisher);
-			isFinisherInvincible_ = true;
-			baseData_.finisherGauge_ = 0.0f;
-			timerData_.finisherTimer = timerData_.maxFinisherTimer;
-			attackData_.isFinisherFirstAttack = false;
+			//攻撃
+		    //弱攻撃
+			if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)))
+			{
+				attackType_ = "弱攻撃";
+				StartAttack(attackData_.isLightPunch);
+			}
+			//弾攻撃
+			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
+			{
+				attackType_ = "ショット";
+				StartAttack(attackData_.isShot);
+			}
+			//特殊技
+			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
+			{
+				//アッパー攻撃
+				if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && 
+					input_->GetLeftStickX() < kStickDeadZone_ && input_->GetLeftStickX() > -kStickDeadZone_)
+				{
+					attackType_ = "アッパー";
+					StartAttack(attackData_.isUppercut);
+				}
+				//タックル攻撃
+				else
+				{
+					attackType_ = "タックル";
+					StartAttack(attackData_.isTackle);
+				}
+			}
+			//必殺技
+			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && isFinisherCharge_)
+			{
+				attackType_ = "必殺技";
+				StartAttack(attackData_.isFinisher);
+				isFinisherInvincible_ = true;
+				baseData_.finisherGauge_ = 0.0f;
+				timerData_.finisherTimer = timerData_.maxFinisherTimer;
+				attackData_.isFinisherFirstAttack = false;
+			}
 		}
 	}
 }
