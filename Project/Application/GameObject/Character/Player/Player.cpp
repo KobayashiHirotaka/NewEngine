@@ -518,7 +518,7 @@ void Player::UpdateBehaviorAttack()
 		//キャンセルの処理
 		if (input_->GetJoystickState())
 		{
-			//中コンボ
+			//弱コンボ
 			if (!characterState_.isDown && attackData_.attackAnimationFrame > attackData_.cancelStartTime && attackData_.attackAnimationFrame < attackData_.cancelEndTime
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && characterState_.isHitCharacter)
 			{
@@ -2207,7 +2207,7 @@ void Player::DownAnimation()
 		//移動処理
 		const int kJumpTime = 55;
 		const int kFallTime = -30;
-		const float kJumpFirstSpeed_ = 0.25f;
+		const float kJumpFirstSpeed_ = 0.15f;
 		const float kMoveSpeed = 0.025f;
 		float moveX = (enemy_->GetDirection() == Direction::Right) ? kMoveSpeed : -kMoveSpeed;
 
@@ -2222,7 +2222,7 @@ void Player::DownAnimation()
 			//落ちる
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
-			const float kGravityAcceleration_ = 0.013f;
+			const float kGravityAcceleration_ = 0.005f;
 			Vector3 accelerationVector_ = { 0.0f, -kGravityAcceleration_, 0.0f };
 
 			moveData_.velocity = Add(moveData_.velocity, accelerationVector_);

@@ -1826,7 +1826,7 @@ void Enemy::DownAnimation()
 		//移動処理
 		const int kJumpTime = 55;
 		const int kFallTime = -30;
-		const float kJumpFirstSpeed_ = 0.25f;
+		const float kJumpFirstSpeed_ = 0.15f;
 		const float kMoveSpeed = 0.025f;
 		float moveX = (player_->GetDirection() == Direction::Right) ? kMoveSpeed : -kMoveSpeed;
 
@@ -1841,7 +1841,7 @@ void Enemy::DownAnimation()
 			//落ちる
 			worldTransform_.translation = Add(worldTransform_.translation, moveData_.velocity);
 
-			const float kGravityAcceleration_ = 0.013f;
+			const float kGravityAcceleration_ = 0.005f;
 			Vector3 accelerationVector_ = { 0.0f, -kGravityAcceleration_, 0.0f };
 
 			moveData_.velocity = Add(moveData_.velocity, accelerationVector_);
