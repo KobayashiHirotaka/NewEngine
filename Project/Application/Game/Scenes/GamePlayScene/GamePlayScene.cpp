@@ -152,7 +152,7 @@ void GamePlayScene::Update()
 		const float kTimeStep = 1.0f;
 		if (currentSeconds_ > 0 && elapsedTime_ >= kTimeStep && sMigrationTimer == kMaxMigrationTime_)
 		{
-			if (player_->GetFinisherTimer() == kFinisherTime_)
+			if (player_->GetFinisherTimer() == kFinisherTime_ && !isDebug_)
 			{
 				currentSeconds_--;
 				gamePlaySceneUI_->UpdateNumberSprite(currentSeconds_);
