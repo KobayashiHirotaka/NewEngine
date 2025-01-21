@@ -187,13 +187,6 @@ void Player::Update()
 
 #endif
 
-	//デバッグ用の処理
-	const float kMaxFinisherGauge = -50.0f;
-	if (input_->PushKey(DIK_L))
-	{
-		baseData_.finisherGauge_ = kMaxFinisherGauge;
-	}
-
 	//更新
 	BaseCharacter::Update();
 
