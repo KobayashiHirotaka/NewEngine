@@ -254,6 +254,6 @@ private:
 	const float kMaxBackSpeed_ = 0.04f;
 
 	//スティックの閾値
-	const float kValue_ = 0.7f;
+	const float kStickDeadZone_ = 0.7f;
 };
 

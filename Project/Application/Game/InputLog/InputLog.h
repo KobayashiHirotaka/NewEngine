@@ -6,7 +6,6 @@
  */
 
 #pragma once
-#include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Components/Input/Input.h"
 #include <deque>
@@ -29,11 +28,11 @@ enum class StickDirection
 //ボタン入力
 enum class Button
 {
-	A = 0,
-	B = 1,
-	X = 2,
-	Y = 3,
-	LB = 4
+	A,
+	B,
+	X,
+	Y,
+	LB
 };
 
 
@@ -101,7 +100,7 @@ private:
 	const float kBasePositionY_ = 150.0f; 
 
 	//スティックの閾値
-	const float kValue_ = 0.7f;
+	const float kStickDeadZone_ = 0.7f;
 
 	//入力がない
 	const int kNoInput_ = -1;

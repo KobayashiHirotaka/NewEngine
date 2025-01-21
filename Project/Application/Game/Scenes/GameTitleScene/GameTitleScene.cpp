@@ -1,20 +1,20 @@
 /**
- * @file GameWinScene.cpp
- * @brief 勝利シーンの初期化、更新、描画などを行う
+ * @file GameTitleScene.cpp
+ * @brief タイトルシーンの初期化、更新、描画などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
 
-#include "GameWinScene.h"
+#include "GameTitleScene.h"
 #include "Engine/Framework/SceneManager.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>
 
-GameWinScene::GameWinScene() {};
+GameTitleScene::GameTitleScene() {};
 
-GameWinScene::~GameWinScene() {};
+GameTitleScene::~GameTitleScene() {};
 
-void GameWinScene::Initialize()
+void GameTitleScene::Initialize()
 {
 	//TextureManagerのインスタンスの取得
 	textureManager_ = TextureManager::GetInstance();
@@ -28,47 +28,75 @@ void GameWinScene::Initialize()
 	//Audioのインスタンスの取得
 	audio_ = Audio::GetInstance();
 
+	//PostProcessのインスタンスの取得
+	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+
 	//PostEffectの切り替え
-	PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-	PostProcess::GetInstance()->SetIsVignetteActive(false);
+	PostProcess::GetInstance()->SetIsBloomActive(true);
+	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
+	PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
+
+	//DebugCameraの初期化
+	debugCamera_.Initialize();
 
 	//Skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
-	//DebugCameraの初期化
-	debugCamera_.Initialize();
+	//UI生成、初期化
+	gameTitleSceneUI_ = std::make_unique<GameTitleSceneUI>();
+	gameTitleSceneUI_->Initialize();
 
-	//リソース
-	winSceneTextureHandle_ = TextureManager::LoadTexture("Resource/Images/WinScene.png");
-	winSceneSprite_.reset(Sprite::Create(winSceneTextureHandle_, { 0.0f,0.0f }));
+	//操作説明の生成、初期化
+	guide_ = std::make_unique<Guide>();
+	guide_->Initialize();
+
+	//BGM,SEの読み込み
+	titleSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/BGM.mp3");
+	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
+
+	//BGMの再生,停止
+	if (!audio_->IsAudioPlaying(titleSoundHandle_))
+	{
+		const float bgmVolume = 0.2f;
+		audio_->PlaySoundMP3(titleSoundHandle_, true, bgmVolume);
+	}
 
 	//Transition生成、初期化
 	transition_ = std::make_unique<Transition>();
 	transition_->Initialize();
-
-	//サウンド
-	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 };
 
-void GameWinScene::Update()
+void GameTitleScene::Update()
 {
-#ifdef _DEBUG
+#ifdef _ADJUSTMENT
 
 	//デバッグ用のシーン切り替え
 	if (input_->PushKey(DIK_SPACE))
 	{
 		isTransitionStart_ = true;
-		audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
+		audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
 	}
 
 #endif 
 
+	//UIの更新
+	gameTitleSceneUI_->Update();
+
+	//操作説明の更新
+	guide_->Update();
+
 	//Skydomeの更新
 	skydome_->Update();
 
+	if (guide_->GetIsChangedSprite())
+	{
+		audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
+		guide_->SetIsChangedSprite(false);
+	}
+
 	//シーン切り替え
-	if (input_->GetJoystickState())
+	if (input_->GetJoystickState() && !guide_->GetIsOpen())
 	{
 		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isTransitionEnd_)
 		{
@@ -76,7 +104,7 @@ void GameWinScene::Update()
 
 			if (!isPlayAudio_)
 			{
-				audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
+				audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
 			}
 
 			isPlayAudio_ = true;
@@ -87,7 +115,7 @@ void GameWinScene::Update()
 	transition_->EndSceneTransition(isTransitionEnd_);
 
 	//Transition開始処理
-	transition_->StartSceneTransition(isTransitionStart_, sceneManager_, "GameTitleScene");
+	transition_->StartSceneTransition(isTransitionStart_, sceneManager_, "GamePlayScene");
 
 	//Camera、DebugCameraの処理
 	debugCamera_.Update();
@@ -113,8 +141,12 @@ void GameWinScene::Update()
 	}
 };
 
-void GameWinScene::Draw()
+void GameTitleScene::Draw()
 {
+	Model::PreDraw();
+
+	Model::PostDraw();
+
 	PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
@@ -124,16 +156,23 @@ void GameWinScene::Draw()
 
 	Model::PostDraw();
 
+	Sprite::PreDraw(Sprite::kBlendModeNormal);
+
+	//タイトルのUI描画
+	if (!guide_->GetIsOpen())
+	{
+		gameTitleSceneUI_->Draw();
+	}
+	else
+	{
+		guide_->Draw();
+	}
+
+	Sprite::PostDraw();
+
 	ParticleModel::PreDraw();
 
 	ParticleModel::PostDraw();
-
-	Sprite::PreDraw(Sprite::kBlendModeNormal);
-
-	//Winの表示
-	winSceneSprite_->Draw();
-
-	Sprite::PostDraw();
 
 	PostProcess::GetInstance()->PostDraw();
 
@@ -145,14 +184,13 @@ void GameWinScene::Draw()
 	Sprite::PostDraw();
 };
 
-void GameWinScene::Finalize()
+void GameTitleScene::Finalize()
 {
 
 }
 
-void GameWinScene::ImGui()
+void GameTitleScene::ImGui()
 {
-	ImGui::Begin("WinScene");
-	ImGui::Text("Abutton or SpaceKey : TitleScene");
+	ImGui::Begin("TitleScene");
 	ImGui::End();
 }

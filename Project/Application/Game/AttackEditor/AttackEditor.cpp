@@ -78,8 +78,12 @@ void AttackEditor::Update()
                     //各パラメータの調整
                     ImGui::SliderInt("当たり判定の付き初め", &param.attackStartTime, kIntMinValue_, kMaxAttackTime_);
                     ImGui::SliderInt("当たり判定の付き終わり", &param.attackEndTime, kIntMinValue_, kMaxAttackTime_);
-                    ImGui::SliderInt("硬直時間", &param.recoveryTime, kIntMinValue_, kMaxRecoveryTime_);
+                    ImGui::SliderInt("攻撃時の硬直時間", &param.recoveryTime, kIntMinValue_, kMaxRecoveryTime_);
+                    ImGui::SliderInt("キャンセルの開始時間", &param.cancelStartTime, kIntMinValue_, kMaxCancelTime_);
+                    ImGui::SliderInt("キャンセルの終了時間", &param.cancelEndTime, kIntMinValue_, kMaxCancelTime_);
                     ImGui::SliderInt("ダメージ", &param.damage, kIntMinValue_, kMaxDamage_);
+                    ImGui::SliderInt("ヒット時の硬直時間", &param.hitRecoveryTime, kIntMinValue_, kMaxHitRecoveryTime_);
+
                     ImGui::SliderFloat("ガードゲージ増加量", &param.guardGaugeIncreaseAmount, kFloatMinValue_, kMaxGuardGauge_);
                     ImGui::SliderFloat("必殺技ゲージ増加量", &param.finisherGaugeIncreaseAmount, kFloatMinValue_, kMaxFinisherGauge_);
                     ImGui::SliderFloat("ヒットストップ", &param.hitStop, kFloatMinValue_, kMaxHitStop_);
@@ -166,8 +170,12 @@ void AttackEditor::Update()
                     //各パラメータの調整
                     ImGui::SliderInt("当たり判定の付き初め", &param.attackStartTime, kIntMinValue_, kMaxAttackTime_);
                     ImGui::SliderInt("当たり判定の付き終わり", &param.attackEndTime, kIntMinValue_, kMaxAttackTime_);
-                    ImGui::SliderInt("硬直時間", &param.recoveryTime, kIntMinValue_, kMaxRecoveryTime_);
+                    ImGui::SliderInt("攻撃時の硬直時間", &param.recoveryTime, kIntMinValue_, kMaxRecoveryTime_);
+                    ImGui::SliderInt("キャンセルの開始時間", &param.cancelStartTime, kIntMinValue_, kMaxCancelTime_);
+                    ImGui::SliderInt("キャンセルの終了時間", &param.cancelEndTime, kIntMinValue_, kMaxCancelTime_);
                     ImGui::SliderInt("ダメージ", &param.damage, kIntMinValue_, kMaxDamage_);
+                    ImGui::SliderInt("ヒット時の硬直時間", &param.hitRecoveryTime, kIntMinValue_, kMaxHitRecoveryTime_);
+
                     ImGui::SliderFloat("ガードゲージ増加量", &param.guardGaugeIncreaseAmount, kFloatMinValue_, kMaxGuardGauge_);
                     ImGui::SliderFloat("必殺技ゲージ増加量", &param.finisherGaugeIncreaseAmount, kFloatMinValue_, kMaxFinisherGauge_);
                     ImGui::SliderFloat("ヒットストップ", &param.hitStop, kFloatMinValue_, kMaxHitStop_);
@@ -242,7 +250,10 @@ void AttackEditor::SaveFile(const std::string& saveFilePath, const std::unordere
             {"attackStartTime", param.attackStartTime},
             {"attackEndTime", param.attackEndTime},
             {"recoveryTime", param.recoveryTime},
+            {"cancelStartTime", param.cancelStartTime},
+            {"cancelEndTime", param.cancelEndTime},
             {"damage", param.damage},
+            {"hitRecoveryTime", param.hitRecoveryTime},
             {"guardGaugeIncreaseAmount", param.guardGaugeIncreaseAmount},
             {"finisherGaugeIncreaseAmount", param.finisherGaugeIncreaseAmount},
             {"hitStop",param.hitStop},
@@ -302,7 +313,10 @@ void AttackEditor::LoadFile(const std::string& loadFilePath, std::unordered_map<
             param["attackStartTime"].get<int>(),
             param["attackEndTime"].get<int>(),
             param["recoveryTime"].get<int>(),
+            param["cancelStartTime"].get<int>(),
+            param["cancelEndTime"].get<int>(),
             param["damage"].get<int>(),
+            param["hitRecoveryTime"].get<int>(),
             param["guardGaugeIncreaseAmount"].get<float>(),
             param["finisherGaugeIncreaseAmount"].get<float>(),
             param["hitStop"].get<float>(),
@@ -315,8 +329,8 @@ void AttackEditor::LoadFile(const std::string& loadFilePath, std::unordered_map<
 }
 
 
-void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& damage,
-    float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, AABB& collision, bool isPlayer,
+void AttackEditor::SetAttackParameters(const std::string& name, int& attackStartTime, int& attackEndTime, int& recoveryTime, int& cancelStartTime, int& cancelEndTime,
+    int& damage, int& hitRecoveryTime, float& guardGaugeIncreaseAmount, float& finisherGaugeIncreaseAmount, float& hitStop, AABB& collision, bool isPlayer,
     Direction& direction)
 {
     //調整したパラメータを各キャラクターが持っている変数に代入
@@ -328,7 +342,10 @@ void AttackEditor::SetAttackParameters(const std::string& name, int& attackStart
         attackStartTime = it->second.attackStartTime;
         attackEndTime = it->second.attackEndTime;
         recoveryTime = it->second.recoveryTime;
+        cancelStartTime = it->second.cancelStartTime;
+        cancelEndTime = it->second.cancelEndTime;
         damage = it->second.damage;
+        hitRecoveryTime = it->second.hitRecoveryTime;
         guardGaugeIncreaseAmount = it->second.guardGaugeIncreaseAmount;
         finisherGaugeIncreaseAmount = it->second.finisherGaugeIncreaseAmount;
         hitStop = it->second.hitStop;

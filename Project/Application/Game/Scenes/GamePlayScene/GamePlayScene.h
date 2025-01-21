@@ -6,10 +6,11 @@
  */
 
 #pragma once
-#include "IScene.h"
 #include "Engine/3D/Line/Line.h"
-#include "Application/Game/InputLog/InputLog.h"
+#include "Application/Game/Scenes/IScene.h"
 #include "Application/Game/CameraController/CameraController.h"
+#include "Application/Game/InputLog/InputLog.h"
+#include "Application/Game/GuideUI/Guide.h"
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Character/Enemy/EnemyBullet.h"
@@ -17,6 +18,7 @@
 #include "Application/GameObject/BackGround/BackGround.h"
 #include "Application/Game/HitStop/HitStop.h"
 #include "Application/Game/AttackEditor/AttackEditor.h"
+#include "GamePlaySceneUI.h"
 
 class GamePlayScene : public IScene
 {
@@ -52,9 +54,6 @@ public:
 	float Random(float min_value, float max_value);
 
 private:
-	/// <summary>数字の更新</summary>
-	void UpdateNumberSprite();
-
 	/// <summary>ゲーム全体の勝敗を管理する</summary>
 	void HandleGameOutcome();
 
@@ -72,15 +71,6 @@ private:
 
 	/// <summary>ラウンドの変更処理</summary>
 	void ChangeRound(int round);
-
-	/// <summary>操作説明の更新</summary>
-	void UpdateCommandSprite();
-
-	/// <summary>操作説明の変更</summary>
-	void ChangeCommandSprite();
-
-	/// <summary>操作説明の適用</summary>
-	void ApplyCommandSprite(int changeAmount);
 
 private:
 	//TextureManager
@@ -133,69 +123,27 @@ private:
 	//BackGround
 	std::unique_ptr<BackGround> backGround_;
 
-	//Timer用のSprite
-	std::unique_ptr<Sprite>numberTensSprite_ = nullptr;
-	std::unique_ptr<Sprite>numberOnesSprite_ = nullptr;
-	uint32_t tensTextureHandle_;
-	uint32_t onesTextureHandle_;
+	//GamePlaySceneUI
+	std::unique_ptr<GamePlaySceneUI> gamePlaySceneUI_;
 
-	//Round表示のSprite
-	std::unique_ptr<Sprite> roundSprite_[3];
-	uint32_t roundTextureHandle_[3];
+	//Guide
+	std::unique_ptr<Guide> guide_;
 
-	std::unique_ptr<Sprite> roundGetSprite_[4];
-	uint32_t roundGetTextureHandle_;
+	//サウンド
+	uint32_t selectSoundHandle_ = 0u;
+	const float volume_ = 1.0f;
 
-	//試合開始時用のSprite(Fightの文字)
-	std::unique_ptr<Sprite> fightSprite_ = nullptr;
-	uint32_t fightTextureHandle_;
-
-	//KO表示用Sprite
-	std::unique_ptr<Sprite> koSprite_ = nullptr;
-	uint32_t koTextureHandle_;
-
-	//勝敗に関するSprite
-	std::unique_ptr<Sprite> winSprite_ = nullptr;
-	uint32_t winTextureHandle_;
-
-	std::unique_ptr<Sprite> loseSprite_ = nullptr;
-	uint32_t loseTextureHandle_;
-
-	std::unique_ptr<Sprite> timeOverSprite_ = nullptr;
-	uint32_t timeOverTextureHandle_;
-
-	//操作説明用のSprite
-	std::unique_ptr<Sprite> UICommandListSprite_ = nullptr;
-	uint32_t UICommandListTextureHandle_ = 0;
-
-	//基本操作説明用のSprite
-	std::unique_ptr<Sprite> generalCommandListSprite_ = nullptr;
-	uint32_t generalCommandListTextureHandle_ = 0;
-
-	//攻撃操作説明用のSprite
-	std::unique_ptr<Sprite> attackCommandListSprite_[2];
-	uint32_t attackCommandListTextureHandle_[2];
-
-	//UI枠のSprite
-	std::unique_ptr<Sprite> frameUISprite_ = nullptr;
-	uint32_t frameUITextureHandle_ = 0;
-
-	//何枚目のSpriteが表示されているか
-	CommandSpriteType spriteCount_ = CommandSpriteType::GeneralCommandSprite;
-
-	//操作説明が開かれているか
-	bool isOpen_ = false;
 
 	//時間
-	//ラウンドの最大時間
-	const int kMaxRoundTime_ = 99;
-	
 	//現在の時間
 	int currentSeconds_ = 0;
 
 	//ゲーム中の時間
 	float frameTime_ = 1.0f / 60.0f;
 	float elapsedTime_ = 0.0f;
+
+	//ラウンドの最大時間
+	const int kMaxRoundTime_ = 99;
 
 	//ラウンド開始までの時間
 	const int kMaxRoundStartTime_ = 100;
@@ -214,41 +162,20 @@ private:
 	//KO時間
 	const int kKOConditionTime = 20;
 
-	//サウンド
-	uint32_t selectSoundHandle_ = 0u;
-	const float volume_ = 1.0f;
-
-	//モデルの骨を描画するかどうか
-	bool isBoneDraw_ = true;
-
 	//ラウンド
 	bool isRoundTransition_ = false;
-	static const int kRoundOne_ = 1;
-	static const int kRoundTwo_ = 2;
-	static const int kRoundThree_ = 3;
+	const int kMaxRound_ = 3;
+	int round_ = 1;
 
-	int round_ = kRoundOne_;
+	//キャラクターが勝っている回数
+	const int kMaxWinCount_ = 2;
+	int playerWinCount_ = 0;
+	int enemyWinCount_ = 0;
 
 	//試合の結果
 	bool isPlayerWin_ = false;
 	bool isEnemyWin_ = false;
 	bool isDrow_ = false;
-
-	//キャラクターが勝っている回数
-	int playerWinCount_ = 0;
-	int enemyWinCount_ = 0;
-
-	//勝利カウント
-	//Player
-	const int kPlayerFirstWinCount_ = 1;   
-	const int kPlayerSecondWinCount_ = 2; 
-
-	//Enemy
-	const int kEnemyFirstWinCount_ = 1;    
-	const int kEnemySecondWinCount_ = 2;   
-
-	//デバッグかどうか
-	bool isDebug_ = false;
 
 	//どちらかがKOしているか
 	bool isKO_ = false;
@@ -256,12 +183,10 @@ private:
 	//タイムオーバーかどうか
 	bool isTimeOver_ = false;
 
-	//スティック操作対応
-	const float kValue_ = 0.7f;
-	const int kStickInputCooldownTime_ = 10;
-	int stickInputCooldown_ = kStickInputCooldownTime_;
-
 	//必殺技の開始・終了
 	bool isFinisherStart_ = false;
 	bool isFinisherEnd_ = false;
+
+	//デバッグかどうか
+	bool isDebug_ = false;
 };

@@ -8,14 +8,8 @@
 #include "Application/Game/Scenes/Manager/GameManager.h"
 
 //Windowsアプリでのエントリーポイント
-int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
+int WINAPI WinMain(_In_ HINSTANCE, _In_opt_  HINSTANCE, _In_ LPSTR, _In_ int)
 {
-	//引数として渡された値を使わない場合、警告を防ぐために無視
-	(void)hInstance;
-	(void)hPrevInstance;
-	(void)lpCmdLine;
-	(void)nShowCmd;
-
 	//EngineCoreインスタンスを作成
 	EngineCore* game = new GameManager();
 

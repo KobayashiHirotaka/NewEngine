@@ -7,7 +7,7 @@
 
 #include "Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
-#include "Application/Game/Scenes/GamePlayScene.h"
+#include "Application/Game/Scenes/GamePlayScene/GamePlayScene.h"
 #include "Application/Game/GameTimer/GameTimer.h"
 
 Player::~Player()
@@ -187,13 +187,20 @@ void Player::Update()
 
 #endif
 
+	//デバッグ用の処理
+	const float kMaxFinisherGauge = -50.0f;
+	if (input_->PushKey(DIK_L))
+	{
+		baseData_.finisherGauge_ = kMaxFinisherGauge;
+	}
+
 	//更新
 	BaseCharacter::Update();
 
 	//エディターで設定したパラメータをセット
 	AttackEditor::GetInstance()->SetAttackParameters(attackType_, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
-		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop,
-		aabb_, true, characterState_.direction);
+		attackData_.cancelStartTime, attackData_.cancelEndTime,attackData_.damage, attackData_.hitRecoveryTime, attackData_.guardGaugeIncreaseAmount,
+		attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop, aabb_, true, characterState_.direction);
 
 	//振り向きの処理
 	Vector3 playerWorldPosition = worldTransform_.translation;
@@ -346,55 +353,54 @@ void Player::UpdateBehaviorRoot()
 			Move();
 		}
 
-		//ジャンプ
-		if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > kValue_) && worldTransform_.translation.y == 0.0f && !characterState_.isDown)
+		if (!characterState_.isDown)
 		{
-			characterState_.behaviorRequest = Behavior::kJump;
-		}
+			//ジャンプ
+			if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > kStickDeadZone_) && worldTransform_.translation.y == 0.0f)
+			{
+				characterState_.behaviorRequest = Behavior::kJump;
+			}
 
-		//攻撃
-		//弱攻撃
-		if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)) && !characterState_.isDown)
-		{
-			attackType_ = "弱攻撃";
-			StartAttack(attackData_.isLightPunch);
-		}
-
-		//弾攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown)
-		{
-			attackType_ = "ショット";
-			StartAttack(attackData_.isShot);
-		}
-		
-		//タックル攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && 
-			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !characterState_.isDown && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) ||
-			input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kValue_ || input_->GetLeftStickX() < -kValue_))
-		{
-			attackType_ = "タックル";
-			StartAttack(attackData_.isTackle);
-		}
-
-		//アッパー攻撃
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) &&
-			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT)
-			&& !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && input_->GetLeftStickX() < kValue_ && input_->GetLeftStickX() > -kValue_ && !characterState_.isDown)
-		{
-			attackType_ = "アッパー";
-			StartAttack(attackData_.isUppercut);
-		}
-
-		//必殺技
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) &&
-			!input_->IsPressButtonEnter(XINPUT_GAMEPAD_B) && !input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isFinisherCharge_ && !characterState_.isDown)
-		{
-			attackType_ = "必殺技";
-			StartAttack(attackData_.isFinisher);
-			isFinisherInvincible_ = true;
-			baseData_.finisherGauge_ = 0.0f;
-			timerData_.finisherTimer = timerData_.maxFinisherTimer;
-			attackData_.isFinisherFirstAttack = false;
+			//攻撃
+		    //弱攻撃
+			if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y)))
+			{
+				attackType_ = "弱攻撃";
+				StartAttack(attackData_.isLightPunch);
+			}
+			//弾攻撃
+			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
+			{
+				attackType_ = "ショット";
+				StartAttack(attackData_.isShot);
+			}
+			//特殊技
+			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
+			{
+				//アッパー攻撃
+				if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && 
+					input_->GetLeftStickX() < kStickDeadZone_ && input_->GetLeftStickX() > -kStickDeadZone_)
+				{
+					attackType_ = "アッパー";
+					StartAttack(attackData_.isUppercut);
+				}
+				//タックル攻撃
+				else
+				{
+					attackType_ = "タックル";
+					StartAttack(attackData_.isTackle);
+				}
+			}
+			//必殺技
+			else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_LEFT_SHOULDER) && isFinisherCharge_)
+			{
+				attackType_ = "必殺技";
+				StartAttack(attackData_.isFinisher);
+				isFinisherInvincible_ = true;
+				baseData_.finisherGauge_ = 0.0f;
+				timerData_.finisherTimer = timerData_.maxFinisherTimer;
+				attackData_.isFinisherFirstAttack = false;
+			}
 		}
 	}
 }
@@ -442,16 +448,10 @@ void Player::UpdateBehaviorAttack()
 			ResetCollision();
 		}
 
-		//キャンセルの処理(中TC)
-		//キャンセル始まりの時間
-		const int kCancelStartTime = 10;
-
-		//キャンセル終わりの時間
-		const int kCancelEndTime = 30;
-
+		//キャンセルの処理
 		if (input_->GetJoystickState())
 		{
-			if (!characterState_.isDown && attackData_.attackAnimationFrame >= kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime && 
+			if (!characterState_.isDown && attackData_.attackAnimationFrame >= attackData_.cancelStartTime && attackData_.attackAnimationFrame < attackData_.cancelEndTime &&
 				(input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))  && enemy_->GetIsDown())
 			{
 				attackType_ = "中攻撃(ターゲット)";
@@ -522,16 +522,10 @@ void Player::UpdateBehaviorAttack()
 		}
 
 		//キャンセルの処理
-		//キャンセル始まりの時間
-		const int kCancelStartTime = 15;
-
-		//キャンセル終わりの時間
-		const int kCancelEndTime = 30;
-
 		if (input_->GetJoystickState())
 		{
-			//中コンボ
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
+			//弱コンボ
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > attackData_.cancelStartTime && attackData_.attackAnimationFrame < attackData_.cancelEndTime
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) && characterState_.isHitCharacter)
 			{
 				attackType_ = "強攻撃";
@@ -545,7 +539,7 @@ void Player::UpdateBehaviorAttack()
 			}
 
 			//強コンボ
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > attackData_.cancelStartTime && attackData_.attackAnimationFrame < attackData_.cancelEndTime
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && characterState_.isHitCharacter)
 			{
 				attackType_ = "アッパー";
@@ -567,7 +561,7 @@ void Player::UpdateBehaviorAttack()
 	{
 		//アニメーション
 		const int kAnimationHighPunch = 3;
-		const float animationSpeed = 1.5f;
+		const float animationSpeed = 1.8f;
 
 		animationIndex_ = kAnimationHighPunch;
 		characterState_.isGuard = false;
@@ -613,17 +607,11 @@ void Player::UpdateBehaviorAttack()
 			ResetCollision();
 		}
 
-		//キャンセルの処理(横A)
-		//キャンセル始まりの時間
-		const int kCancelStartTime = 15;
-
-		//キャンセル終わりの時間
-		const int kCancelEndTime = 30;
-
+		//キャンセルの処理
 		if (input_->GetJoystickState())
 		{
 			//タックル攻撃
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime &&
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > attackData_.cancelStartTime && attackData_.attackAnimationFrame < attackData_.cancelEndTime &&
 				input_->IsPressButtonEnter(XINPUT_GAMEPAD_X))
 			{
 				attackType_ = "タックル";
@@ -697,7 +685,7 @@ void Player::UpdateBehaviorAttack()
 	{
 		//アニメーション
 		const int kAnimationTackle = 9;
-		const float animationSpeed = 1.5f;
+		const float animationSpeed = 1.8f;
 
 		animationIndex_ = kAnimationTackle;
 		characterState_.isGuard = false;
@@ -836,17 +824,11 @@ void Player::UpdateBehaviorAttack()
 			ResetCollision();
 		}
 
-		//キャンセルの処理(超必)
-		//キャンセル始まりの時間
-		const int kCancelStartTime = 10;
-
-		//キャンセル終わりの時間
-		const int kCancelEndTime = 40;
-
+		//キャンセルの処理
 		if (input_->GetJoystickState())
 		{
 			//強コンボ
-			if (!characterState_.isDown && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime
+			if (!characterState_.isDown && attackData_.attackAnimationFrame > attackData_.cancelStartTime && attackData_.attackAnimationFrame < attackData_.cancelEndTime
 				&& input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y) && enemy_->GetComboCount() >= kComboCount_[3] && isFinisherCharge_ &&
 				characterState_.isHitCharacter)
 			{
@@ -937,15 +919,8 @@ void Player::UpdateBehaviorAttack()
 			//攻撃判定をつけるタイミングの設定
 			EvaluateAttackTiming();
 
-			//当たっていたらキャンセル(必殺技2段目)
-			//キャンセル始まりの時間
-			const int kCancelStartTime = 10;
-
-			//キャンセル終わりの時間
-			const int kCancelEndTime = 30;
-
 			//2段目への移行処理
-			if (enemy_->GetIsDown() && attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime)
+			if (enemy_->GetIsDown() && attackData_.attackAnimationFrame > attackData_.cancelStartTime && attackData_.attackAnimationFrame < attackData_.cancelEndTime)
 			{
 				attackType_ = "必殺技(2段目)";
 				timerData_.finisherTimer = timerData_.maxFinisherTimer;
@@ -1614,12 +1589,12 @@ void Player::Move()
 		if (characterState_.isHitCharacter)
 		{
 			const float kPushSpeed = 0.05f;
-			if (characterState_.direction == Direction::Right && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kValue_))
+			if (characterState_.direction == Direction::Right && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kStickDeadZone_))
 			{
 				//敵を右方向に押す
 				PushEnemy(enemyPosition, kPushSpeed);
 			}
-			else if (characterState_.direction == Direction::Left && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -kValue_))
+			else if (characterState_.direction == Direction::Left && !attackData_.isAttack && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -kStickDeadZone_))
 			{
 				//敵を左方向に押す
 				PushEnemy(enemyPosition, -kPushSpeed);
@@ -1636,7 +1611,7 @@ void Player::Move()
 			characterState_.isGuard = false;
 		}
 
-		if (input_->GetLeftStickX() < -kValue_ && characterState_.direction == Direction::Left && !characterState_.isDown)
+		if (input_->GetLeftStickX() < -kStickDeadZone_ && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
 			//速度の設定
 			moveData_.velocity.x = -koveSpeed;
@@ -1653,7 +1628,7 @@ void Player::Move()
 			characterState_.isGuard = false;
 		}
 
-		if (input_->GetLeftStickX() > kValue_ && characterState_.direction == Direction::Right && !characterState_.isDown)
+		if (input_->GetLeftStickX() > kStickDeadZone_ && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
 			//速度の設定
 			moveData_.velocity.x = koveSpeed;
@@ -1687,7 +1662,7 @@ void Player::Move()
 			}
 		}
 
-		if (input_->GetLeftStickX() < -kValue_ && characterState_.direction == Direction::Right && !characterState_.isDown)
+		if (input_->GetLeftStickX() < -kStickDeadZone_ && characterState_.direction == Direction::Right && !characterState_.isDown)
 		{
 			characterState_.isGuard = true;
 
@@ -1738,7 +1713,7 @@ void Player::Move()
 			}
 		}
 
-		if (input_->GetLeftStickX() > kValue_ && characterState_.direction == Direction::Left && !characterState_.isDown)
+		if (input_->GetLeftStickX() > kStickDeadZone_ && characterState_.direction == Direction::Left && !characterState_.isDown)
 		{
 			characterState_.isGuard = true;
 
@@ -1765,7 +1740,7 @@ void Player::Move()
 
 		//移動していない場合
 		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && 
-			!(input_->GetLeftStickX() > kValue_) && !(input_->GetLeftStickX() < -kValue_))
+			!(input_->GetLeftStickX() > kStickDeadZone_) && !(input_->GetLeftStickX() < -kStickDeadZone_))
 		{
 			moveData_.velocity = { 0.0f, 0.0f, 0.0f };
 			characterState_.isGuard = false;
@@ -2266,7 +2241,7 @@ void Player::DownAnimation()
 		}
 
 		//終了処理
-		if (!enemy_->GetIsHighPunch() &&  worldTransform_.translation.y <= 0.0f && baseData_.hp_ < 0)
+		if (!enemy_->GetIsHighPunch() && worldTransform_.translation.y <= 0.0f && baseData_.hp_ < 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
@@ -2310,11 +2285,10 @@ void Player::DownAnimation()
 		aabb_ = kDownAABB;
 		collider_->SetAABB(aabb_);
 
-		//移動処理
 		const int kMoveTime = 35;
 		const float kDefaultMoveSpeed = 4.8f;
-		const float kTradeMoveSpeed = 3.0f;
-		const float kFallSpeed = 1.8f;
+		const float kTradeMoveSpeed = 2.0f;
+		const float kFallSpeed = 2.0f;
 		float moveX = 0.0f;
 
 		//相手かダウン状態かどうかで速さを変化
@@ -2502,45 +2476,35 @@ void Player::UpdateComboNumberSprite()
 
 void Player::HitCombo()
 {
-	//攻撃ごとの硬直
-	//弱
-	const int kLightRecoveryTime = 30;
-
-	//中
-	const int kMiddleRecoveryTime = 60;
-
-	//強
-	const int kHeavyRecoveryTime = 120;
-
 	//コンボを食らっているとき
 	//弱パンチ
 	if (characterState_.isHitLightPunch && !characterState_.isDown)
 	{
-		ComboCountUpdate(kLightRecoveryTime);
+		ComboCountUpdate(enemy_->GetHitRecoveryTime());
 	}
 
 	//TC中パンチ
 	if (characterState_.isHitTCMiddlePunch && !characterState_.isDown)
 	{
-		ComboCountUpdate(kMiddleRecoveryTime);
+		ComboCountUpdate(enemy_->GetHitRecoveryTime());
 	}
 
 	//TC強パンチ
 	if (characterState_.isHitTCHighPunch && !characterState_.isDown)
 	{
-		ComboCountUpdate(kMiddleRecoveryTime);
+		ComboCountUpdate(enemy_->GetHitRecoveryTime());
 	}
 
 	//強パンチ
 	if (characterState_.isHitHighPunch && !characterState_.isDown)
 	{
-		ComboCountUpdate(kHeavyRecoveryTime);
+		ComboCountUpdate(enemy_->GetHitRecoveryTime());
 	}
 
 	//タックル
 	if (characterState_.isHitTackle && !isCancel_)
 	{
-		ComboCountUpdate(kMiddleRecoveryTime);
+		ComboCountUpdate(enemy_->GetHitRecoveryTime());
 	}
 
 	//コンボタイマーを減らす

@@ -80,80 +80,20 @@ void GamePlayScene::Initialize()
 	backGround_ = std::make_unique<BackGround>();
 	backGround_->Initialize();
 
-	//リソース
-	UICommandListTextureHandle_ = TextureManager::LoadTexture("Resource/Images/UICommandList.png");
-	UICommandListSprite_.reset(Sprite::Create(UICommandListTextureHandle_, { 0.0f,0.0f }));
+	//UI生成、初期化
+	gamePlaySceneUI_ = std::make_unique<GamePlaySceneUI>();
+	gamePlaySceneUI_->Initialize();
 
-	//基本操作説明
-	generalCommandListTextureHandle_ = TextureManager::LoadTexture("Resource/Images/PlayGeneralCommandList.png");
-	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
+	//操作説明の生成、初期化
+	guide_ = std::make_unique<Guide>();
+	guide_->Initialize();
 
-	//攻撃操作説明(コンボ)
-	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("Resource/Images/PlayDefaultAttackCommandList.png");
-	attackCommandListSprite_[0].reset(Sprite::Create(attackCommandListTextureHandle_[0], { 0.0f,0.0f }));
-
-	//攻撃操作説明(必殺技)
-	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("Resource/Images/PlayFinisherAttackCommandList.png");
-	attackCommandListSprite_[1].reset(Sprite::Create(attackCommandListTextureHandle_[1], { 0.0f,0.0f }));
-
-	//ラウンド表示
-	roundTextureHandle_[0] = TextureManager::LoadTexture("Resource/Images/Round1.png");
-	roundTextureHandle_[1] = TextureManager::LoadTexture("Resource/Images/Round2.png");
-	roundTextureHandle_[2] = TextureManager::LoadTexture("Resource/Images/Round3.png");
-
-	roundSprite_[0].reset(Sprite::Create(roundTextureHandle_[0], { 0.0f, 0.0f }));
-	roundSprite_[1].reset(Sprite::Create(roundTextureHandle_[1], { 0.0f, 0.0f }));
-	roundSprite_[2].reset(Sprite::Create(roundTextureHandle_[2], { 0.0f, 0.0f }));
-
-	//ラウンド取得数表示
-	roundGetTextureHandle_ = TextureManager::LoadTexture("Resource/Images/RoundGet.png");
-
-	const Vector2 kRoundGetPosition[4] = { { 400.0f, 70.0f }, { 480.0f, 70.0f }, { 800.0f, 70.0f }, { 720.0f, 70.0f } };
-
-	roundGetSprite_[0].reset(Sprite::Create(roundGetTextureHandle_, kRoundGetPosition[0]));
-	roundGetSprite_[1].reset(Sprite::Create(roundGetTextureHandle_, kRoundGetPosition[1]));
-	roundGetSprite_[2].reset(Sprite::Create(roundGetTextureHandle_, kRoundGetPosition[2]));
-	roundGetSprite_[3].reset(Sprite::Create(roundGetTextureHandle_, kRoundGetPosition[3]));
-
-	//ラウンド開始時
-	fightTextureHandle_ = TextureManager::LoadTexture("Resource/Images/FIGHT.png");
-
-	fightSprite_.reset(Sprite::Create(fightTextureHandle_, { 0.0f, 0.0f }));
-
-	//KO表示
-	koTextureHandle_ = TextureManager::LoadTexture("Resource/Images/KO.png");
-
-	koSprite_.reset(Sprite::Create(koTextureHandle_, { 0.0f, 0.0f }));
-
-	//勝敗表示
-	winTextureHandle_ = TextureManager::LoadTexture("Resource/Images/WIN.png");
-	loseTextureHandle_ = TextureManager::LoadTexture("Resource/Images/LOSE.png");
-	timeOverTextureHandle_ = TextureManager::LoadTexture("Resource/Images/TIMEOVER.png");
-
-	winSprite_.reset(Sprite::Create(winTextureHandle_, { 0.0f, 0.0f }));
-	loseSprite_.reset(Sprite::Create(loseTextureHandle_, { 0.0f, 0.0f }));
-	timeOverSprite_.reset(Sprite::Create(timeOverTextureHandle_, { 0.0f, 0.0f }));
-
-	//UIの枠
-	frameUITextureHandle_ = TextureManager::LoadTexture("Resource/Images/FrameUI.png");
-	frameUISprite_.reset(Sprite::Create(frameUITextureHandle_, { 0.0f, 0.0f }));
-
-	//数字
-	tensTextureHandle_ = TextureManager::LoadTexture("Resource/Number/0.png");
-	onesTextureHandle_ = TextureManager::LoadTexture("Resource/Number/0.png");
-
-	const Vector2 kNumberTensPosition = { 590.0f, 0.0f };
-	const Vector2 kNumberOnesPosition = { 630.0f, 0.0f };
-
-	numberTensSprite_.reset(Sprite::Create(tensTextureHandle_, kNumberTensPosition));
-	numberOnesSprite_.reset(Sprite::Create(onesTextureHandle_, kNumberOnesPosition));
+	//SE
+	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 
 	//Transition生成、初期化
 	transition_ = std::make_unique<Transition>();
 	transition_->Initialize();
-
-	//SE
-	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 
 #ifdef _ADJUSTMENT
 
@@ -163,7 +103,7 @@ void GamePlayScene::Initialize()
 
 	//ラウンドごとの時間
 	currentSeconds_ = kMaxRoundTime_;
-	UpdateNumberSprite();
+	gamePlaySceneUI_->UpdateNumberSprite(currentSeconds_);
 
 	//時間の初期設定
 	sMigrationTimer = kMaxMigrationTime_;
@@ -186,10 +126,19 @@ void GamePlayScene::Update()
 	attackEditor_->Update();
 
 	//操作説明の開閉処理
-	UpdateCommandSprite();
+	if (sRoundStartTimer_ <= 0)
+	{
+		guide_->Update();
+	}
+
+	if (guide_->GetIsChangedSprite())
+	{
+		audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
+		guide_->SetIsChangedSprite(false);
+	}
 
 	//操作説明を開いている場合
-	if (isOpen_)return;
+	if (guide_->GetIsOpen())return;
 
 	//ラウンド間の時間の処理
 	sRoundStartTimer_--;
@@ -206,7 +155,7 @@ void GamePlayScene::Update()
 			if (player_->GetFinisherTimer() == kFinisherTime_)
 			{
 				currentSeconds_--;
-				UpdateNumberSprite();
+				gamePlaySceneUI_->UpdateNumberSprite(currentSeconds_);
 
 				//elapsedTimeをリセット
 				elapsedTime_ = 0.0f;
@@ -343,7 +292,7 @@ void GamePlayScene::Draw()
 	//Skydomeの描画
 	skydome_->Draw(cameraController_->GetCamera());
 
-	if (!isOpen_)
+	if (!guide_->GetIsOpen())
 	{
 		//Game3dObjectManagerの描画
 		game3dObjectManager_->Draw(cameraController_->GetCamera());
@@ -356,7 +305,7 @@ void GamePlayScene::Draw()
 
 	ParticleModel::PreDraw();
 
-	if (GamePlayScene::sRoundStartTimer_ <= 0 && !isOpen_)
+	if (GamePlayScene::sRoundStartTimer_ <= 0 && !guide_->GetIsOpen())
 	{
 		//Playerのparticle描画
 		player_->DrawParticle(cameraController_->GetCamera());
@@ -369,7 +318,7 @@ void GamePlayScene::Draw()
 
 	Line::PreDraw();
 
-	if (isDebug_ && !isOpen_)
+	if (isDebug_ && !guide_->GetIsOpen())
 	{
 		//Playerの当たり判定描画
 		player_->DrawCollision(cameraController_->GetCamera());
@@ -396,99 +345,40 @@ void GamePlayScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	//ラウンド開始表示
+	//ラウンド開始時の描画
 	if (sRoundStartTimer_ <= kMaxRoundStartTime_ && sRoundStartTimer_ > kHalfRoundStartTime_)
 	{
-		if (round_ == kRoundOne_)
-		{
-			roundSprite_[0]->Draw();
-		}
-		else if (round_ == kRoundTwo_)
-		{
-			roundSprite_[1]->Draw();
-		}
-		else if (round_ == kRoundThree_)
-		{
-			roundSprite_[2]->Draw();
-		}
+		gamePlaySceneUI_->RoundNumberDraw(round_);
 	}
 
 	if (sRoundStartTimer_ <= kHalfRoundStartTime_ && sRoundStartTimer_ > 0)
 	{
-		fightSprite_->Draw();
+		gamePlaySceneUI_->RoundStartDraw();
 	}
 
-	//ラウンド終了時の勝敗表示
+	//ラウンド終了時の描画
 	if (sMigrationTimer < kOutComeTime_ && sMigrationTimer > kKOConditionTime)
 	{
-	
-		if (isPlayerWin_ && !isTimeOver_)
-		{
-			koSprite_->Draw();
-		}
-
-		if (!isPlayerWin_ && !isTimeOver_)
-		{
-			koSprite_->Draw();
-		}
-
-		if (isTimeOver_)
-		{
-			timeOverSprite_->Draw();
-		}
+		gamePlaySceneUI_->RoundEndDraw(isTimeOver_, isPlayerWin_);
 	}
 
-	if (sRoundStartTimer_ <= 0 && !isOpen_)
+	//プレイ中のUI描画
+	if (sRoundStartTimer_ <= 0)
 	{
-		frameUISprite_->Draw();
-
-		player_->DrawSprite();
-
-		enemy_->DrawSprite();
-
-		numberOnesSprite_->Draw();
-		numberTensSprite_->Draw();
-
-		if (playerWinCount_ >= kPlayerFirstWinCount_)
+		if (!guide_->GetIsOpen())
 		{
-			roundGetSprite_[1]->Draw();
-		}
+			player_->DrawSprite();
 
-		if (playerWinCount_ >= kPlayerSecondWinCount_)
+			enemy_->DrawSprite();
+
+			gamePlaySceneUI_->Draw();
+
+			gamePlaySceneUI_->RoundGetDraw(playerWinCount_, enemyWinCount_);
+		}
+		else
 		{
-			roundGetSprite_[0]->Draw();
+			guide_->Draw();
 		}
-
-
-		if (enemyWinCount_ >= kEnemyFirstWinCount_)
-		{
-			roundGetSprite_[3]->Draw();
-		}
-
-		if (enemyWinCount_ >= kEnemySecondWinCount_)
-		{
-			roundGetSprite_[2]->Draw();
-		}
-
-	}
-
-	//操作説明の描画
-	if (isOpen_ && spriteCount_ == CommandSpriteType::GeneralCommandSprite)
-	{
-		//基本操作
-		generalCommandListSprite_->Draw();
-	}
-
-	if (isOpen_ && spriteCount_ == CommandSpriteType::ComboAttackCommandSprite)
-	{
-		//コンボ攻撃
-		attackCommandListSprite_[0]->Draw();
-	}
-
-	if (isOpen_ && spriteCount_ == CommandSpriteType::FinisherAttackCommandSprite)
-	{
-		//必殺技攻撃
-		attackCommandListSprite_[1]->Draw();
 	}
 	
 	Sprite::PostDraw();
@@ -497,7 +387,8 @@ void GamePlayScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	if (!isOpen_ && isDebug_)
+	//入力履歴の描画
+	if (!guide_->GetIsOpen() && isDebug_)
 	{
 		inputLog_->Draw();
 	}
@@ -517,105 +408,6 @@ void GamePlayScene::Finalize()
 void GamePlayScene::ImGui()
 {
 	
-}
-
-void GamePlayScene::UpdateCommandSprite()
-{
-	//操作説明の開閉
-	if (input_->GetJoystickState() && sRoundStartTimer_ <= 0)
-	{
-		//オプションボタンを押して操作説明を開く
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_START) && !isOpen_)
-		{
-			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-			isOpen_ = true;
-			spriteCount_ = CommandSpriteType::GeneralCommandSprite;
-		}
-		//Bボタンを押して操作説明を閉じる
-		else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_START) && isOpen_)
-		{
-			audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-			isOpen_ = false;
-			spriteCount_ = CommandSpriteType::GeneralCommandSprite;
-		}
-
-		//操作説明が開いている場合
-		if (isOpen_)
-		{
-			// スティック入力のクールダウンが終わっている場合のみ移動
-			if (stickInputCooldown_ <= 0)
-			{
-				ChangeCommandSprite();
-			}
-
-			// クールダウンを減らす
-			if (stickInputCooldown_ > 0)
-			{
-				stickInputCooldown_--;
-			}
-		}
-	}
-}
-
-void GamePlayScene::ChangeCommandSprite()
-{
-	//スプライトの移動に必用な定数
-	const int kNextSprite = 1;
-	const int kPreviousSprite = -1;
-
-	//操作説明の移動処理
-	if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > kValue_) &&
-		spriteCount_ != CommandSpriteType::FinisherAttackCommandSprite)
-	{
-		//次の説明に進む
-		ApplyCommandSprite(kNextSprite);
-	}
-	else if ((input_->IsPressButtonEnter(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -kValue_) &&
-		spriteCount_ != CommandSpriteType::GeneralCommandSprite)
-	{
-		//前の説明に戻る
-		ApplyCommandSprite(kPreviousSprite);
-	}
-}
-
-void GamePlayScene::ApplyCommandSprite(int changeAmount)
-{
-	//スプライトの遷移用のベクター
-	static const std::vector<CommandSpriteType> spriteOrder = {
-		CommandSpriteType::GeneralCommandSprite,
-		CommandSpriteType::ComboAttackCommandSprite,
-		CommandSpriteType::FinisherAttackCommandSprite
-	};
-
-	//現在のスプライトインデックスを取得
-	auto it = std::find(spriteOrder.begin(), spriteOrder.end(), static_cast<CommandSpriteType>(spriteCount_));
-	if (it == spriteOrder.end()) return;
-
-	size_t currentIndex = std::distance(spriteOrder.begin(), it);
-
-	//次のスプライトインデックスを計算
-	size_t nextIndex = (currentIndex + changeAmount + spriteOrder.size()) % spriteOrder.size();
-
-	//スプライトを変更
-	spriteCount_ = spriteOrder[nextIndex];
-
-	//サウンド再生とスティックのクールダウンを設定
-	audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-	stickInputCooldown_ = kStickInputCooldownTime_;
-}
-
-void GamePlayScene::UpdateNumberSprite()
-{
-	//時間表示の更新
-	const int kDecimalBase = 10;
-	int tensDigit = currentSeconds_ / kDecimalBase;
-	int onesDigit = currentSeconds_ % kDecimalBase;
-
-	tensTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(tensDigit) + ".png");
-	onesTextureHandle_ = TextureManager::LoadTexture("resource/number/" + std::to_string(onesDigit) + ".png");
-
-	numberTensSprite_->SetTexture(tensTextureHandle_);
-	numberOnesSprite_->SetTexture(onesTextureHandle_);
 }
 
 float GamePlayScene::Random(float min_value, float max_value)
@@ -640,7 +432,7 @@ void GamePlayScene::HandleGameOutcome()
 	transition_->EndSceneTransition(isTransitionEnd_);
 
 	//Playerが勝利したとき
-	if (playerWinCount_ == kPlayerSecondWinCount_)
+	if (playerWinCount_ == kMaxWinCount_)
 	{
 		isTransitionStart_ = true;
 		transition_->StartSceneTransition(isTransitionStart_, sceneManager_, "GameWinScene");
@@ -648,7 +440,7 @@ void GamePlayScene::HandleGameOutcome()
 	}
 
 	//Enemyが勝利したとき
-	if (enemyWinCount_ == kEnemySecondWinCount_)
+	if (enemyWinCount_ == kMaxWinCount_)
 	{
 		isTransitionStart_ = true;
 		transition_->StartSceneTransition(isTransitionStart_, sceneManager_, "GameLoseScene");
@@ -662,16 +454,16 @@ void GamePlayScene::HandleGameOutcome()
 
 		if (isDrow_)
 		{
-			nextRound = kRoundThree_;
+			nextRound = kMaxRound_;
 		}
 		else
 		{
 			nextRound++;
 		}
 
-		if (nextRound > kRoundThree_)
+		if (nextRound > kMaxRound_)
 		{
-			nextRound = kRoundThree_;
+			nextRound = kMaxRound_;
 		}
 
 		ChangeRound(nextRound);
@@ -796,7 +588,7 @@ void GamePlayScene::HandleDrow(bool isTimeOver)
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f)
 		{
-			if (round_ != kRoundThree_)
+			if (round_ != kMaxRound_)
 			{
 				playerWinCount_++;
 				enemyWinCount_++;
@@ -812,7 +604,7 @@ void GamePlayScene::HandleDrow(bool isTimeOver)
 
 		if (sMigrationTimer < kKoActiveTime_)
 		{
-			if (round_ != kRoundThree_)
+			if (round_ != kMaxRound_)
 			{
 				playerWinCount_++;
 				enemyWinCount_++;
@@ -843,7 +635,7 @@ void GamePlayScene::ChangeRound(int round)
 
 		//時間の設定
 		currentSeconds_ = kMaxRoundTime_;
-		UpdateNumberSprite();
+		gamePlaySceneUI_->UpdateNumberSprite(currentSeconds_);
 
 		sMigrationTimer = kMaxMigrationTime_;
 

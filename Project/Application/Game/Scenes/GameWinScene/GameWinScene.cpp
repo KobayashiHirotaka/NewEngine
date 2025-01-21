@@ -1,20 +1,20 @@
 /**
- * @file GameLoseScene.cpp
- * @brief 敗北シーンの初期化、更新、描画などを行う
+ * @file GameWinScene.cpp
+ * @brief 勝利シーンの初期化、更新、描画などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
 
-#include "GameLoseScene.h"
+#include "GameWinScene.h"
 #include "Engine/Framework/SceneManager.h"
 #include "Engine/Components/PostProcess/PostProcess.h"
 #include <cassert>
 
-GameLoseScene::GameLoseScene() {};
+GameWinScene::GameWinScene() {};
 
-GameLoseScene::~GameLoseScene() {};
+GameWinScene::~GameWinScene() {};
 
-void GameLoseScene::Initialize()
+void GameWinScene::Initialize()
 {
 	//TextureManagerのインスタンスの取得
 	textureManager_ = TextureManager::GetInstance();
@@ -32,26 +32,26 @@ void GameLoseScene::Initialize()
 	PostProcess::GetInstance()->SetIsGrayScaleActive(false);
 	PostProcess::GetInstance()->SetIsVignetteActive(false);
 
+	//DebugCameraの初期化
+	debugCamera_.Initialize();
+
 	//Skydomeの生成、初期化
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
-	//DebugCameraの初期化
-	debugCamera_.Initialize();
+	//UI生成、初期化
+	gameWinSceneUI_ = std::make_unique<GameWinSceneUI>();
+	gameWinSceneUI_->Initialize();
 
-	//リソース
-	loseSceneTextureHandle_ = TextureManager::LoadTexture("Resource/Images/LoseScene.png");
-	loseSceneSprite_.reset(Sprite::Create(loseSceneTextureHandle_, { 0.0f,0.0f }));
+	//サウンド
+	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 
 	//Transition生成、初期化
 	transition_ = std::make_unique<Transition>();
 	transition_->Initialize();
-
-	//サウンド
-	selectSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Select.mp3");
 };
 
-void GameLoseScene::Update()
+void GameWinScene::Update()
 {
 #ifdef _DEBUG
 
@@ -59,7 +59,7 @@ void GameLoseScene::Update()
 	if (input_->PushKey(DIK_SPACE))
 	{
 		isTransitionStart_ = true;
-		audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
+		audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
 	}
 
 #endif 
@@ -70,19 +70,16 @@ void GameLoseScene::Update()
 	//シーン切り替え
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isTransitionEnd_)
 		{
-			if (isTransitionEnd_)
+			isTransitionStart_ = true;
+
+			if (!isPlayAudio_)
 			{
-				isTransitionStart_ = true;
-
-				if (!isPlayAudio_)
-				{
-					audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-				}
-
-				isPlayAudio_ = true;
+				audio_->PlaySoundMP3(selectSoundHandle_, false, 1.0f);
 			}
+
+			isPlayAudio_ = true;
 		}
 	}
 
@@ -116,7 +113,7 @@ void GameLoseScene::Update()
 	}
 };
 
-void GameLoseScene::Draw()
+void GameWinScene::Draw()
 {
 	PostProcess::GetInstance()->PreDraw();
 
@@ -133,8 +130,8 @@ void GameLoseScene::Draw()
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
-	//Loseの表示
-	loseSceneSprite_->Draw();
+	//UIの描画
+	gameWinSceneUI_->Draw();
 
 	Sprite::PostDraw();
 
@@ -148,14 +145,14 @@ void GameLoseScene::Draw()
 	Sprite::PostDraw();
 };
 
-void GameLoseScene::Finalize()
+void GameWinScene::Finalize()
 {
 
 }
 
-void GameLoseScene::ImGui()
+void GameWinScene::ImGui()
 {
-	ImGui::Begin("LoseScene");
+	ImGui::Begin("WinScene");
 	ImGui::Text("Abutton or SpaceKey : TitleScene");
 	ImGui::End();
 }

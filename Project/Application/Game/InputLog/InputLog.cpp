@@ -64,15 +64,15 @@ void InputLog::Update()
 
     // スティック入力の検出
     //左
-    if (input_->GetLeftStickX() < -kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
+    if (input_->GetLeftStickX() < -kStickDeadZone_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT))
     { 
         //左下
-        if (input_->GetLeftStickY() < -kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
+        if (input_->GetLeftStickY() < -kStickDeadZone_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
         {
             stickDirection_ = StickDirection::DownLeft;
         }
         //左上
-        else if (input_->GetLeftStickY() > kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+        else if (input_->GetLeftStickY() > kStickDeadZone_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
         {
             stickDirection_ = StickDirection::UpLeft;
         }
@@ -83,15 +83,15 @@ void InputLog::Update()
         }
     }  
     //右
-    else if (input_->GetLeftStickX() > kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
+    else if (input_->GetLeftStickX() > kStickDeadZone_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT))
     { 
         //右下
-        if (input_->GetLeftStickY() < -kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
+        if (input_->GetLeftStickY() < -kStickDeadZone_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
         {
             stickDirection_ = StickDirection::DownRight;
         }
         //右上
-        else if (input_->GetLeftStickY() > kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+        else if (input_->GetLeftStickY() > kStickDeadZone_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
         {
             stickDirection_ = StickDirection::UpRight;
         }
@@ -102,12 +102,12 @@ void InputLog::Update()
         }
     }  
     //上
-    else if (input_->GetLeftStickY() > kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
+    else if (input_->GetLeftStickY() > kStickDeadZone_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP))
     { 
         stickDirection_ = StickDirection::Up;
     }  
     //下
-    else if (input_->GetLeftStickY() < -kValue_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
+    else if (input_->GetLeftStickY() < -kStickDeadZone_ || input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN))
     { 
         stickDirection_ = StickDirection::Down;
     } 

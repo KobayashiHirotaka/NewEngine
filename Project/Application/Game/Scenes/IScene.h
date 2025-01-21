@@ -6,11 +6,8 @@
  */
 
 #pragma once
-#include "Engine/Base/TextureManager/TextureManager.h"
 #include "Engine/3D/Model/Model.h"
 #include "Engine/3D/Model/ModelManager.h"
-#include "Engine/3D/WorldTransform/WorldTransform.h"
-#include "Engine/3D/Camera/Camera.h"
 #include "Engine/3D/Camera/DebugCamera.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
@@ -19,7 +16,6 @@
 #include "Engine/2D/Sprite/Sprite.h"
 #include "Engine/Utility/Collision/CollisionManager.h"
 #include "Engine/Utility/LevelLoader/LevelLoader.h"
-#include "Application/Game/Scenes/GameSceneUI.h"
 #include "Application/Game/Transition/Transition.h"
 #include <memory>
 
@@ -56,7 +52,7 @@ protected:
 
 	//Transitionのポインタ
 	std::unique_ptr<Transition> transition_ = nullptr;
-	
+
 	//Transition開始・終了フラグ
 	bool isTransitionStart_ = false;
 	bool isTransitionEnd_ = false;

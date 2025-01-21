@@ -9,14 +9,12 @@
 #include "Engine/3D/Model/IGame3dObject.h"
 #include "Engine/3D/Model/ModelManager.h"
 #include "Engine/3D/Line/LineBox.h"
-#include "Engine/3D/WorldTransform/WorldTransform.h"
-#include "Engine/3D/Camera/Camera.h"
 #include "Engine/Utility/Collision/Collider.h"
 #include "Engine/Utility/Collision/CollisionConfig.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Components/Audio/Audio.h"
 #include "Engine/2D/Sprite/UI.h"
-#include "Engine/3D/Particle/ParticleEffectPlayer.h"
+#include "Application/GameObject/Effect/ParticleEffectPlayer.h"
 #include "Application/GameObject/Character/Direction.h"
 #include "Application/Game/HitStop/HitStop.h"
 #include "Application/Game/AttackEditor/AttackEditor.h"
@@ -146,11 +144,20 @@ public:
 		//攻撃判定のつき終わり
 		int attackEndTime = 0;
 
-		//硬直
+		//攻撃時の硬直
 		int recoveryTime = 0;
+
+		//キャンセルの開始時間
+		int cancelStartTime = 0;
+
+		//キャンセルの終了時間
+		int cancelEndTime = 0;
 
 		//ダメージ
 		int damage = 0;
+
+		//ヒット時の硬直
+		int hitRecoveryTime = 0;
 
 		//ガードゲージ増加量
 		float guardGaugeIncreaseAmount = 0.0f;
@@ -399,6 +406,8 @@ public:
 	int GetAttackAnimationFrame() { return attackData_.attackAnimationFrame; };
 
 	int GetDamage() { return attackData_.damage; };
+
+	int GetHitRecoveryTime() { return attackData_.hitRecoveryTime; };
 
 	float GetGuardGaugeIncreaseAmount() { return attackData_.guardGaugeIncreaseAmount; };
 

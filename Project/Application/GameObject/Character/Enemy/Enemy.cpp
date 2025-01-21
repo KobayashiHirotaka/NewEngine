@@ -7,7 +7,7 @@
 
 #include "Enemy.h"
 #include "Application/GameObject/Character/Player/Player.h"
-#include "Application/Game/Scenes/GamePlayScene.h"
+#include "Application/Game/Scenes/GamePlayScene/GamePlayScene.h"
 #include "Application/Game/GameTimer/GameTimer.h"
 
 Enemy::~Enemy()
@@ -180,8 +180,8 @@ void Enemy::Update()
 
 	//エディターで設定したパラメータをセット
 	AttackEditor::GetInstance()->SetAttackParameters(attackType_, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
-		attackData_.damage, attackData_.guardGaugeIncreaseAmount, attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop, 
-		aabb_, false, characterState_.direction);
+		attackData_.cancelStartTime, attackData_.cancelEndTime, attackData_.damage, attackData_.hitRecoveryTime, attackData_.guardGaugeIncreaseAmount,
+		attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop, aabb_, false, characterState_.direction);
 
 	//振り向きの処理
 	Vector3 playerWorldPosition = player_->GetWorldPosition();
@@ -419,15 +419,9 @@ void Enemy::UpdateBehaviorAttack()
 				ResetCollision();
 			}
 
-			//キャンセルの処理(中TC)
-			//キャンセル始まりの時間
-			const int kCancelStartTime = 15;
-
-			//キャンセル終わりの時間
-			const int kCancelEndTime = 30;
-
-			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() && player_->GetHP() < 0 &&
-				attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime)
+			//キャンセルの処理
+			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() && player_->GetHP() < 0 && attackData_.attackAnimationFrame > attackData_.cancelStartTime && 
+				attackData_.attackAnimationFrame < attackData_.cancelEndTime)
 			{
 				attackType_ = "中攻撃(ターゲット)";
 				attackData_.isAttack = false;
@@ -496,15 +490,9 @@ void Enemy::UpdateBehaviorAttack()
 				ResetCollision();
 			}
 
-			//キャンセルの処理(強攻撃)
-			//キャンセル始まりの時間
-			const int kCancelStartTime = 15;
-
-			//キャンセル終わりの時間
-			const int kCancelEndTime = 30;
-
-			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() && player_->GetHP() < 0 &&
-				attackData_.attackAnimationFrame > kCancelStartTime && attackData_.attackAnimationFrame < kCancelEndTime)
+			//キャンセルの処理
+			if (!characterState_.isDown && characterState_.isHitCharacter && player_->GetIsDown() && player_->GetHP() < 0 && attackData_.attackAnimationFrame > attackData_.cancelStartTime && 
+				attackData_.attackAnimationFrame < attackData_.cancelEndTime)
 			{
 				attackType_ = "強攻撃";
 				attackData_.isAttack = false;
@@ -570,15 +558,9 @@ void Enemy::UpdateBehaviorAttack()
 				ResetCollision();
 			}
 
-			//キャンセルの処理(タックル攻撃)
-			//キャンセル始まりの時間
-			const int kCancelStartTime = 15;
-
-			//キャンセル終わりの時間
-			const int kCancelEndTime = 30;
-
-			if (!characterState_.isDown && player_->GetIsDown() && attackData_.attackAnimationFrame > kCancelStartTime && 
-				attackData_.attackAnimationFrame < kCancelEndTime && player_->GetHP() < 0)
+			//キャンセルの処理
+			if (!characterState_.isDown && player_->GetIsDown() && attackData_.attackAnimationFrame > attackData_.cancelStartTime &&
+				attackData_.attackAnimationFrame < attackData_.cancelEndTime && player_->GetHP() < 0)
 			{
 				attackType_ = "タックル";
 				attackData_.isAttack = false;
@@ -598,7 +580,7 @@ void Enemy::UpdateBehaviorAttack()
 		{
 			//アニメーション
 			const int kAnimationTackle = 8;
-			const float animationSpeed = 1.5f;
+			const float animationSpeed = 1.8f;
 
 			animationIndex_ = kAnimationTackle;
 			characterState_.isGuard = false;
@@ -2153,17 +2135,17 @@ void Enemy::DownAnimation()
 		collider_->SetAABB(aabb_);
 
 		//移動処理
-		const int kMoveTime = 35;
+		const int kMoveTime = 38;
 		const float kComboMoveSpeed = 6.0f;
 		const float kDefaultMoveSpeed = 4.8f;
 		const float kTradeMoveSpeed = 2.0f;
-		const float kFallSpeed = 1.8f;
+		const float kFallSpeed = 3.5f;
 		float moveX = 0.0f;
 
 		//相手かダウン状態かどうかで速さを変化
 		if (!player_->GetIsDown())
 		{
-			if (comboCount_ >= kComboCount_[5])
+			if (comboCount_ >= kComboCount_[4])
 			{
 				moveX = (player_->GetDirection() == Direction::Right) ? kComboMoveSpeed : -kComboMoveSpeed;
 			}
@@ -2484,32 +2466,6 @@ void Enemy::UpdateBullets()
 
 void Enemy::HitCombo()
 {
-	//攻撃ごとの硬直
-	//弱パンチ
-	const int kLightPunchRecoveryTime = 25;
-
-	//強パンチ
-	const int kHighPunchRecoveryTime = 60;
-
-	//TC中パンチ
-	const int kTCMiddlePunchRecoveryTime = 30;
-
-	//TC強パンチ
-	const int kTCHighPunchRecoveryTime = 45;
-
-	//ジャンプ攻撃
-	const int kJumpAttackRecoveryTime = 30;
-
-	//アッパー
-	const int kUpperCutRecoveryTime = 30;
-
-	//タックル
-	const int kTackleRecoveryTime = 40;
-
-	//必殺技
-	const int kFinisherAttackRecoveryTime = 120;
-
-
 	if (!characterState_.isDown)
 	{
 		//コンボを食らっているとき
@@ -2517,57 +2473,57 @@ void Enemy::HitCombo()
 		if (characterState_.isHitJumpAttack)
 		{
 			firstAttack_ = "JumpAttack";
-			ComboCountUpdate(kJumpAttackRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//弱パンチ
 		if (characterState_.isHitLightPunch)
 		{
 			firstAttack_ = "LightPunch";
-			ComboCountUpdate(kLightPunchRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//TC中パンチ
 		if (characterState_.isHitTCMiddlePunch)
 		{
-			ComboCountUpdate(kTCMiddlePunchRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//TC強パンチ
 		if (characterState_.isHitTCHighPunch)
 		{
-			ComboCountUpdate(kTCHighPunchRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//強パンチ
 		if (characterState_.isHitHighPunch)
 		{
-			ComboCountUpdate(kHighPunchRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//アッパー
 		if (characterState_.isHitUppercut)
 		{
-			ComboCountUpdate(kUpperCutRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//必殺技(1段目)
 		if (characterState_.isHitFinisherFirstAttack)
 		{
-			ComboCountUpdate(kFinisherAttackRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 
 		//必殺技(2段目)
 		if (characterState_.isHitFinisherSecondAttack)
 		{
-			ComboCountUpdate(kFinisherAttackRecoveryTime);
+			ComboCountUpdate(player_->GetHitRecoveryTime());
 		}
 	}
 
 	//タックル
 	if (characterState_.isHitTackle && !isCancel_)
 	{
-		ComboCountUpdate(kTackleRecoveryTime);
+		ComboCountUpdate(player_->GetHitRecoveryTime());
 	}
 
 	//コンボタイマーを減らす
