@@ -17,7 +17,7 @@ void BaseCharacter::Initialize()
 		isDebug_ = true;
 
 #endif 
-		isDebug_ = true;
+		//isDebug_ = true;
 
 		//Inputのインスタンスを取得
 		input_ = Input::GetInstance();

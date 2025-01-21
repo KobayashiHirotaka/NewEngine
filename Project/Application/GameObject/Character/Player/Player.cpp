@@ -187,6 +187,13 @@ void Player::Update()
 
 #endif
 
+	//デバッグ用の処理
+	const float kMaxFinisherGauge = -50.0f;
+	if (input_->PushKey(DIK_L))
+	{
+		baseData_.finisherGauge_ = kMaxFinisherGauge;
+	}
+
 	//更新
 	BaseCharacter::Update();
 
@@ -2234,7 +2241,7 @@ void Player::DownAnimation()
 		}
 
 		//終了処理
-		if (timerData_.downAnimationTimer < 0 && baseData_.hp_ < 0)
+		if (!enemy_->GetIsHighPunch() && worldTransform_.translation.y <= 0.0f && baseData_.hp_ < 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;

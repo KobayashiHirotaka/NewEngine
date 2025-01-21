@@ -1854,7 +1854,7 @@ void Enemy::DownAnimation()
 		}
 
 		//終了処理
-		if (timerData_.downAnimationTimer < 0 && baseData_.hp_ > 0)
+		if (!player_->GetIsHighPunch() && worldTransform_.translation.y <= 0.0f && baseData_.hp_ > 0)
 		{
 			//アニメーションの設定
 			const int kAnimationIdle = 5;
