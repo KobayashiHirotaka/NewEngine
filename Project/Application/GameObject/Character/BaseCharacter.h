@@ -250,6 +250,9 @@ public:
 	};
 
 	//基本
+	/// <summary>デストラクタ</summary>
+	virtual ~BaseCharacter() = default;
+
 	/// <summary>初期化</summary>
 	virtual void Initialize() = 0;
 
