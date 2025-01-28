@@ -282,10 +282,6 @@ public:
 
 
 	//アニメーション
-	/// <summary>アニメーションの更新</summary>
-	virtual void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, 
-		int animationIndex,std::unique_ptr<Model>& modelFighterBody) = 0;
-
 	/// <summary>ダウンアニメーション</summary>
 	virtual void DownAnimation() = 0;
 
@@ -371,6 +367,8 @@ public:
 	/// <summary>コンボ表示のUIの更新</summary>
 	virtual void UpdateComboNumberSprite() = 0;
 
+
+
 	//基本データに関するGetter
 	int const GetHP() const { return baseData_.hp_; };
 
@@ -454,6 +452,12 @@ public:
 
 	//リセット状態のSetter
 	void SetIsReset(bool isReset) { isReset_ = isReset; };
+
+	
+protected:
+		/// <summary>アニメーションの更新</summary>
+		void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate,
+			int animationIndex, const std::unique_ptr<Model>& modelFighterBody);
 
 protected:
 	//Inputのポインタ

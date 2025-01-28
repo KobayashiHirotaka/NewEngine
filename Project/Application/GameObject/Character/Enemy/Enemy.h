@@ -164,10 +164,6 @@ private:
 
 
 	//アニメーション
-	/// <summary>アニメーションの更新</summary>
-	virtual void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate,
-		int animationIndex, std::unique_ptr<Model>& modelFighterBody)override;
-
 	/// <summary>ダウンアニメーション</summary>
 	virtual void DownAnimation()override;
 

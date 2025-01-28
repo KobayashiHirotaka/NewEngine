@@ -1547,13 +1547,6 @@ void Player::OnCollision(Collider* collider)
 	}
 }
 
-void Player::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate,
-	int animationIndex, std::unique_ptr<Model>& modelFighterBody)
-{
-	//アニメーションの再生
-	BaseCharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, modelFighterBody);
-}
-
 void Player::Move()
 {
 	//コントローラーの取得

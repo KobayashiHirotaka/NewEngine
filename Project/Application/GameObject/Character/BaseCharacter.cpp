@@ -227,37 +227,6 @@ void BaseCharacter::Reset()
 	isReset_ = false;
 }
 
-void BaseCharacter::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate, 
-	int animationIndex, std::unique_ptr<Model>& modelFighterBody)
-{
-	//TODO:Engine側に移行する
-	animationTime = 0.0f;
-
-	animationTime = modelFighterBody->GetAnimationTime();
-
-	//アニメーションの再生
-	animationTime += frameRate * GameTimer::GetDeltaTime();
-
-	//ループするか
-	if (isLoop)
-	{
-		animationTime = std::fmod(animationTime, modelFighterBody->GetAnimation()[animationIndex].duration);
-	}
-	else
-	{
-		float duration = modelFighterBody->GetAnimation()[animationIndex].duration;
-
-		if (animationTime > duration)
-		{
-			animationTime = duration; 
-		}
-	}
-
-
-	modelFighterBody->SetAnimationTime(animationTime);
-	modelFighterBody->ApplyAnimation(animationIndex);
-}
-
 void BaseCharacter::EndDownAnimation(int animationIndex, bool& isHitAttackType)
 {
 	//Behaviorの設定
@@ -338,4 +307,35 @@ void BaseCharacter::EvaluateAttackTiming()
 	{
 		attackData_.isRecovery = false;
 	}
+}
+
+void BaseCharacter::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate,
+	int animationIndex, const std::unique_ptr<Model>& modelFighterBody)
+{
+	//TODO:Engine側に移行する
+	animationTime = 0.0f;
+
+	animationTime = modelFighterBody->GetAnimationTime();
+
+	//アニメーションの再生
+	animationTime += frameRate * GameTimer::GetDeltaTime();
+
+	//ループするか
+	if (isLoop)
+	{
+		animationTime = std::fmod(animationTime, modelFighterBody->GetAnimation()[animationIndex].duration);
+	}
+	else
+	{
+		float duration = modelFighterBody->GetAnimation()[animationIndex].duration;
+
+		if (animationTime > duration)
+		{
+			animationTime = duration;
+		}
+	}
+
+
+	modelFighterBody->SetAnimationTime(animationTime);
+	modelFighterBody->ApplyAnimation(animationIndex);
 }

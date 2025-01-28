@@ -1282,13 +1282,6 @@ void Enemy::OnCollision(Collider* collider)
 	}
 }
 
-void Enemy::UpdateAnimationTime(float animationTime, bool isLoop, float frameRate,
-	int animationIndex, std::unique_ptr<Model>& modelFighterBody)
-{
-	//アニメーションの再生
-	BaseCharacter::UpdateAnimationTime(animationTime, isLoop, frameRate, animationIndex, modelFighterBody);
-}
-
 void Enemy::Move()
 {
 	//キャラクター同士の距離を計算
