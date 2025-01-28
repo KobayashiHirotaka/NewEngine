@@ -311,7 +311,7 @@ public:
 	/// <summary>スタン状態の初期化</summary>
 	virtual void InitializeBehaviorStan() = 0;
 
-	/// <summary>ジャンプ状態の更新</summary>
+	/// <summary>スタン状態の更新</summary>
 	virtual void UpdateBehaviorStan() = 0;
 
 
@@ -344,9 +344,6 @@ public:
 	/// <summary>当たり判定のリセット</summary>
 	virtual void ResetCollision() = 0;
 
-	/// <summary>当たり判定の設定</summary>
-	virtual void ConfigureCollision(Vector3 min, Vector3 max) = 0;
-
 
 	//UIの更新
 	/// <summary>HPのUIの更新</summary>
@@ -370,74 +367,74 @@ public:
 
 
 	//基本データに関するGetter
-	int const GetHP() const { return baseData_.hp_; };
+	int GetHP() const { return baseData_.hp_; };
 
-	float const GetFinisherGauge() const { return baseData_.finisherGauge_; };
+	float GetFinisherGauge() const { return baseData_.finisherGauge_; };
 
 	//移動に関するGetter
-	Direction GetDirection() { return characterState_.direction; };
+	Direction GetDirection() const { return characterState_.direction; };
 
 	//攻撃に関するGetter
-	bool GetIsAttack() { return attackData_.isAttack; };
+	bool GetIsAttack() const { return attackData_.isAttack; };
 
-	bool GetIsLightPunch() { return attackData_.isLightPunch; };
+	bool GetIsLightPunch() const { return attackData_.isLightPunch; };
 
-	bool GetIsMiddlePunch() { return attackData_.isMiddlePunch; };
+	bool GetIsMiddlePunch() const { return attackData_.isMiddlePunch; };
 
-	bool GetIsHighPunch() { return attackData_.isHighPunch; };
+	bool GetIsHighPunch() const { return attackData_.isHighPunch; };
 
-	bool GetIsTCMiddlePunch() { return attackData_.isTCMiddlePunch; };
+	bool GetIsTCMiddlePunch() const { return attackData_.isTCMiddlePunch; };
 
-	bool GetIsTCHighPunch() { return attackData_.isTCHighPunch; };
+	bool GetIsTCHighPunch() const { return attackData_.isTCHighPunch; };
 
-	bool GetIsJumpAttack() { return attackData_.isJumpAttack; };
+	bool GetIsJumpAttack() const { return attackData_.isJumpAttack; };
 
-	bool GetIsTackle() { return attackData_.isTackle; };
+	bool GetIsTackle() const { return attackData_.isTackle; };
 
-	bool GetIsUppercut() { return attackData_.isUppercut; };
+	bool GetIsUppercut() const { return attackData_.isUppercut; };
 
-	bool GetIsShot() { return attackData_.isShot; };
+	bool GetIsShot() const { return attackData_.isShot; };
 
-	bool GetIsFinisher() { return attackData_.isFinisher; };
+	bool GetIsFinisher() const { return attackData_.isFinisher; };
 
-	bool GetIsFinisherFirstAttack() { return attackData_.isFinisherFirstAttack; };
+	bool GetIsFinisherFirstAttack() const { return attackData_.isFinisherFirstAttack; };
 
-	bool GetIsFinisherSecondAttack() { return attackData_.isFinisherSecondAttack; };
+	bool GetIsFinisherSecondAttack() const { return attackData_.isFinisherSecondAttack; };
 
-	int GetAttackAnimationFrame() { return attackData_.attackAnimationFrame; };
+	int GetAttackAnimationFrame() const { return attackData_.attackAnimationFrame; };
 
-	int GetDamage() { return attackData_.damage; };
+	int GetDamage() const { return attackData_.damage; };
 
-	int GetHitRecoveryTime() { return attackData_.hitRecoveryTime; };
+	int GetHitRecoveryTime() const { return attackData_.hitRecoveryTime; };
 
-	float GetGuardGaugeIncreaseAmount() { return attackData_.guardGaugeIncreaseAmount; };
+	float GetGuardGaugeIncreaseAmount() const { return attackData_.guardGaugeIncreaseAmount; };
 
-	float GetFinisherGaugeIncreaseAmount() { return attackData_.finisherGaugeIncreaseAmount; };
+	float GetFinisherGaugeIncreaseAmount() const { return attackData_.finisherGaugeIncreaseAmount; };
 
-	float GetHitStop() { return attackData_.hitStop; };
+	float GetHitStop() const { return attackData_.hitStop; };
 
 	//エフェクトに関するGetter
-	bool GetIsShake() { return effectState_.isShake; };
+	bool GetIsShake() const { return effectState_.isShake; };
 
-	bool GetIsHSVFilter() { return effectState_.isHSVFilter; };
+	bool GetIsHSVFilter() const { return effectState_.isHSVFilter; };
 
-	bool GetIsDown() { return characterState_.isDown; };
+	bool GetIsDown() const { return characterState_.isDown; };
 
-	int GetFinisherTimer() { return timerData_.finisherTimer; };
+	int GetFinisherTimer() const { return timerData_.finisherTimer; };
 
-	int GetComboCount() { return comboCount_; };
+	int GetComboCount() const { return comboCount_; };
 
-	bool GetIsKO() { return isKO_; };
+	bool GetIsKO() const { return isKO_; };
 
 	//基本データに関するSetter
-	void SetHp(const int& hp) { baseData_.hp_ = hp; };
+	void SetHp(int hp) { baseData_.hp_ = hp; };
 
-	void SetFrontSpeed(const float& frontSpeed) { moveData_.frontSpeed_ = frontSpeed; };
-	void SetBackSpeed(const float& backSpeed) { moveData_.backSpeed_ = backSpeed; };
+	void SetFrontSpeed(float frontSpeed) { moveData_.frontSpeed_ = frontSpeed; };
+	void SetBackSpeed(float backSpeed) { moveData_.backSpeed_ = backSpeed; };
 
-	void SetGuardGauge(const float& guardGauge) { baseData_.guardGauge_ = guardGauge; };
+	void SetGuardGauge(float guardGauge) { baseData_.guardGauge_ = guardGauge; };
 
-	void SetFinisherGauge(const float& finisherGauge) { baseData_.finisherGauge_ = finisherGauge; };
+	void SetFinisherGauge(float finisherGauge) { baseData_.finisherGauge_ = finisherGauge; };
 
 	//攻撃に関するSetter
 	void SetDamage(int damage) { attackData_.damage = damage; };
@@ -456,8 +453,8 @@ public:
 	
 protected:
 		/// <summary>アニメーションの更新</summary>
-		void UpdateAnimationTime(float animationTime, bool isLoop, float frameRate,
-			int animationIndex, const std::unique_ptr<Model>& modelFighterBody);
+		void UpdateAnimationTime(float animationTime, const bool isLoop, const float frameRate,
+			const int animationIndex, const std::unique_ptr<Model>& modelFighterBody);
 
 protected:
 	//Inputのポインタ

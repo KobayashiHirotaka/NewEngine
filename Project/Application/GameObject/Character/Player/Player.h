@@ -55,25 +55,25 @@ public:
 
 	//Getter
 	//AnimationIndex
-	uint32_t GetAnimationIndex() { return animationIndex_; };
+	uint32_t GetAnimationIndex() const { return animationIndex_; };
 
 	//WorldTransform
 	WorldTransform& GetWorldTransform() { return worldTransform_; }
 
 	//Collider
-	Collider* GetCollider() { return collider_.get(); }
+	Collider* GetCollider() const { return collider_.get(); }
 
 	//IsDirectionRight
-	bool GetIsDirectionRight() { return isDirectionRight_; };
+	bool GetIsDirectionRight() const { return isDirectionRight_; };
 
 	//IsFinisherEffect
-	bool GetIsFinisherEffect() { return isFinisherEffect_; };
+	bool GetIsFinisherEffect() const { return isFinisherEffect_; };
 
 	//Bullets
 	const std::vector<PlayerBullet*>& GetBullets() const { return bullets_; };
 
 	//AABB
-	AABB GetAABB() { return aabb_; };
+	const AABB& GetAABB() const { return aabb_; };
 
 	//Setter
 	//Enemy
@@ -141,11 +141,8 @@ private:
 	/// <summary>当たり判定</summary>
 	void OnCollision(Collider* collider)override;
 
-	//当たり判定の初期化
+	/// <summary>当たり判定の初期化</summary>
 	void ResetCollision()override;
-
-	//当たり判定の設定
-	void ConfigureCollision(Vector3 min, Vector3 max)override;
 
 
 	//UIの更新

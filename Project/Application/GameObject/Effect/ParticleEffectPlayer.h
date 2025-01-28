@@ -22,7 +22,7 @@ public:
 	void Draw(const Camera& camera);
 
 	/// <summary>パーティクルeffectを再生</summary>
-	void PlayParticle(const char* name, Vector3 position);
+	void PlayParticle(const char* name, const Vector3& position);
 
 private:
 	//基本のパーティクルモデル

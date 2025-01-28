@@ -1,5 +1,5 @@
 /**
- * @file ParticleEmitter.h
+ * @file ParticleEmitter.cpp
  * @brief パーティクルエフェクトの生成、再生などを行う
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
@@ -24,7 +24,7 @@ void ParticleEffectPlayer::Update()
 	particleSystem_->Update();
 }
 
-void ParticleEffectPlayer::PlayParticle(const char* name, Vector3 position)
+void ParticleEffectPlayer::PlayParticle(const char* name, const Vector3& position)
 {
 	//名前に応じたパーティクル
 	if (std::string("PlayerRightNackle") == name)

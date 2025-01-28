@@ -1833,13 +1833,6 @@ void Player::ResetCollision()
 	collider_->SetAABB(aabb_);
 }
 
-void Player::ConfigureCollision(Vector3 min, Vector3 max)
-{
-	//当たり判定の設定
-	aabb_ = { {min.x, min.y, min.z},{max.x, max.y, max.z} };
-	collider_->SetAABB(aabb_);
-}
-
 void Player::UpdateHPBar()
 {
 	//体力ゲージ
