@@ -24,9 +24,6 @@ public:
 	/// <summary>ImGui</summary>
 	void ImGui();
 
-	//ステージの状態のSetter
-	void SetStateNum(int stateNum) { stateNum_ = stateNum; };
-
 private:
 	//Inputのポインタ
 	Engine::Input* input_ = nullptr;

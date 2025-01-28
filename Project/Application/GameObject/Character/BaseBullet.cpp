@@ -51,7 +51,7 @@ void BaseBullet::DrawParticle(const Camera& camera)
 	}
 }
 
-void BaseBullet::Create(Model* model, const Vector3& positon, const Vector3& velocity)
+void BaseBullet::Create(Model* model, const Vector3& position, const Vector3& velocity)
 {
 	assert(model);
 
@@ -60,7 +60,7 @@ void BaseBullet::Create(Model* model, const Vector3& positon, const Vector3& vel
 
 	//worldTransformの初期化
 	worldTransform_.Initialize();
-	worldTransform_.translation = positon;
+	worldTransform_.translation = position;
 
 	//速度の設定
 	velocity_ = velocity;
