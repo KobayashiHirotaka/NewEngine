@@ -17,20 +17,20 @@ const std::vector<CommandSpriteType> Guide::sSpriteOrder_ = {
 void Guide::Initialize()
 {
 	//Inputのインスタンスの取得
-	input_ = Input::GetInstance();
+	input_ = Engine::Input::GetInstance();
 
 	//Audioのインスタンスの取得
-	audio_ = Audio::GetInstance();
+	audio_ = Engine::Audio::GetInstance();
 
 	//基本操作説明用のSprite
-	generalCommandListTextureHandle_ = TextureManager::LoadTexture("Resource/Images/PlayGeneralGuide.png");
+	generalCommandListTextureHandle_ = Engine::TextureManager::LoadTexture("Resource/Images/PlayGeneralGuide.png");
 	generalCommandListSprite_.reset(Sprite::Create(generalCommandListTextureHandle_, { 0.0f,0.0f }));
 
 	//攻撃操作説明用のSprite
-	attackCommandListTextureHandle_[0] = TextureManager::LoadTexture("Resource/Images/PlayDefaultAttackGuide.png");
+	attackCommandListTextureHandle_[0] = Engine::TextureManager::LoadTexture("Resource/Images/PlayDefaultAttackGuide.png");
 	attackCommandListSprite_[0].reset(Sprite::Create(attackCommandListTextureHandle_[0], { 0.0f,0.0f }));
 
-	attackCommandListTextureHandle_[1] = TextureManager::LoadTexture("Resource/Images/PlayFinisherAttackGuide.png");
+	attackCommandListTextureHandle_[1] = Engine::TextureManager::LoadTexture("Resource/Images/PlayFinisherAttackGuide.png");
 	attackCommandListSprite_[1].reset(Sprite::Create(attackCommandListTextureHandle_[1], { 0.0f,0.0f }));
 }
 

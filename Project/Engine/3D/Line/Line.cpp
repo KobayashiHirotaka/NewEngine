@@ -8,7 +8,7 @@
 #include "Line.h"
 
 DirectXCore* Line::sDxCore_ = nullptr;
-TextureManager* Line::sTextureManager_ = nullptr;
+Engine::TextureManager* Line::sTextureManager_ = nullptr;
 ID3D12Device* Line::sDevice_ = nullptr;
 ID3D12GraphicsCommandList* Line::sCommandList_ = nullptr;
 Microsoft::WRL::ComPtr<IDxcUtils> Line::sDxcUtils_ = nullptr;
@@ -23,7 +23,7 @@ void Line::StaticInitialize()
 	sDxCore_ = DirectXCore::GetInstance();
 
 	//TextureManagerのインスタンスの取得
-	sTextureManager_ = TextureManager::GetInstance();
+	sTextureManager_ = Engine::TextureManager::GetInstance();
 
 	//デバイスの取得
 	sDevice_ = sDxCore_->GetDevice();

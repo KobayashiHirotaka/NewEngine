@@ -20,7 +20,7 @@ DebugCamera::~DebugCamera()
 void DebugCamera::Initialize()
 {
 	//Inputのインスタンスの取得
-	input_ = Input::GetInstance();
+	input_ = Engine::Input::GetInstance();
 
 	//WorldTransformの初期化
 	worldTransform_.Initialize();

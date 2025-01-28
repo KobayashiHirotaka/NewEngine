@@ -11,7 +11,7 @@ void GameLoseSceneUI::Initialize()
 {
 	//UIの初期化
 	//Lose表示のSprite
-	loseSceneTextureHandle_ = TextureManager::LoadTexture("Resource/Images/LoseScene.png");
+	loseSceneTextureHandle_ = Engine::TextureManager::LoadTexture("Resource/Images/LoseScene.png");
 	loseSceneSprite_.reset(Sprite::Create(loseSceneTextureHandle_, { 0.0f,0.0f }));
 }
 

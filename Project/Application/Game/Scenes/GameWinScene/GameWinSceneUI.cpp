@@ -11,7 +11,7 @@ void GameWinSceneUI::Initialize()
 {
 	//UIの初期化
 	//Win表示のSprite
-	winSceneTextureHandle_ = TextureManager::LoadTexture("Resource/Images/WinScene.png");
+	winSceneTextureHandle_ = Engine::TextureManager::LoadTexture("Resource/Images/WinScene.png");
 	winSceneSprite_.reset(Sprite::Create(winSceneTextureHandle_, { 0.0f,0.0f }));
 }
 

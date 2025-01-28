@@ -457,10 +457,10 @@ public:
 
 protected:
 	//Inputのポインタ
-	Input* input_ = nullptr;
+	Engine::Input* input_ = nullptr;
 
 	//Audioのポインタ
-	Audio* audio_ = nullptr;
+	Engine::Audio* audio_ = nullptr;
 
 	//キャラクターの状態
 	CharacterState characterState_;

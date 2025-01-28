@@ -20,7 +20,7 @@ void EngineCore::Initialize()
 	dxCore_->Initialize();
 
 	//TextureManagerの初期化
-	textureManager_ = TextureManager::GetInstance();
+	textureManager_ = Engine::TextureManager::GetInstance();
 	textureManager_->Initialize();
 
 	//ImGuiManagerの初期化
@@ -28,15 +28,15 @@ void EngineCore::Initialize()
 	imguiManager_->Initialize();
 
 	//DirectXCoreの初期化
-	audio_ = Audio::GetInstance();
+	audio_ = Engine::Audio::GetInstance();
 	audio_->Initialize();
 
 	//Inputの初期化
-	input_ = Input::GetInstance();
+	input_ = Engine::Input::GetInstance();
 	input_->Initialize(win_);
 
 	//PostProcessの初期化
-	postProcess_ = PostProcess::GetInstance();
+	postProcess_ = Engine::PostProcess::GetInstance();
 	postProcess_->Initialize();
 
 	//SceneManagerのインスタンス
@@ -72,7 +72,7 @@ void EngineCore::Finalize()
 	ModelManager::DeleteInstance();
 
 	//PostProcessのインスタンスを削除
-	PostProcess::DeleteInstance();
+	Engine::PostProcess::DeleteInstance();
 
 	//Game3dObjectManagerのインスタンスを削除
 	Game3dObjectManager::DeleteInstance();
@@ -81,7 +81,7 @@ void EngineCore::Finalize()
 	LevelLoader::DeleteInstance();
 
 	//Inputのインスタンスを削除
-	Input::DeleteInstance();
+	Engine::Input::DeleteInstance();
 
 	//Audioの解放
 	audio_->Release();
@@ -93,7 +93,7 @@ void EngineCore::Finalize()
 	imguiManager_->ShutDown();
 
 	//TextureManagerのインスタンスを削除
-	TextureManager::DeleteInstance();
+	Engine::TextureManager::DeleteInstance();
 
 	//DirectXCoreのインスタンスを削除
 	DirectXCore::DeleteInstance();

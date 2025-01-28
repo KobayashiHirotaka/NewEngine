@@ -13,7 +13,7 @@ void ParticleSystem::Initialize()
     CreateInstancingResource();
 
     //SRVの作成
-    srvIndex_ = TextureManager::GetInstance()->CreateInstancingSRV(instancingResource_, kMaxInstance, sizeof(ParticleForGPU));
+    srvIndex_ = Engine::TextureManager::GetInstance()->CreateInstancingSRV(instancingResource_, kMaxInstance, sizeof(ParticleForGPU));
 }
 
 void ParticleSystem::Update()

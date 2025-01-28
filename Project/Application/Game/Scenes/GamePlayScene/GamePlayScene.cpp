@@ -22,16 +22,16 @@ GamePlayScene::~GamePlayScene() {};
 void GamePlayScene::Initialize()
 {
 	//TextureManagerのインスタンスを取得
-	textureManager_ = TextureManager::GetInstance();
+	textureManager_ = Engine::TextureManager::GetInstance();
 
 	//ModelManagerのインスタンスを取得
 	modelManager_ = ModelManager::GetInstance();
 
 	//Inputのインスタンスを取得
-	input_ = Input::GetInstance();
+	input_ = Engine::Input::GetInstance();
 
 	//Audioのインスタンスを取得
-	audio_ = Audio::GetInstance();
+	audio_ = Engine::Audio::GetInstance();
 
 	//AttackEditorのインスタンスを取得
 	attackEditor_ = AttackEditor::GetInstance();
@@ -285,7 +285,7 @@ void GamePlayScene::Draw()
 
 	Model::PostDraw();
 
-	PostProcess::GetInstance()->PreDraw();
+	Engine::PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
 
@@ -383,7 +383,7 @@ void GamePlayScene::Draw()
 	
 	Sprite::PostDraw();
 
-	PostProcess::GetInstance()->PostDraw();
+	Engine::PostProcess::GetInstance()->PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 
@@ -524,7 +524,7 @@ void GamePlayScene::HandlePlayerWin(bool isTimeOver)
 	if (!isTimeOver)
 	{
 		//倒した
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
+		Engine::PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 
 		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
 		{
@@ -554,7 +554,7 @@ void GamePlayScene::HandleEnemyWin(bool isTimeOver)
 	if (!isTimeOver)
 	{
 		//倒した
-		PostProcess::GetInstance()->SetIsGrayScaleActive(true);
+		Engine::PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 
 		if (sMigrationTimer < kKoActiveTime_ && player_->GetWorldPosition().y <= 0.0f)
 		{
@@ -646,8 +646,8 @@ void GamePlayScene::ChangeRound(int round)
 		sRoundStartTimer_ = kMaxRoundStartTime_;
 
 		//PostEffectの設定
-		PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-		PostProcess::GetInstance()->SetIsVignetteActive(false);
+		Engine::PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+		Engine::PostProcess::GetInstance()->SetIsVignetteActive(false);
 
 		transition_->SetIsRoundTransitioning(false);
 	}

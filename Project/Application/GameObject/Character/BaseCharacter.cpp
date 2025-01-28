@@ -20,10 +20,10 @@ void BaseCharacter::Initialize()
 		//isDebug_ = true;
 
 		//Inputのインスタンスを取得
-		input_ = Input::GetInstance();
+		input_ = Engine::Input::GetInstance();
 
 		//Audioのインスタンスを取得
-		audio_ = Audio::GetInstance();
+		audio_ = Engine::Audio::GetInstance();
 }
 
 void BaseCharacter::Update()

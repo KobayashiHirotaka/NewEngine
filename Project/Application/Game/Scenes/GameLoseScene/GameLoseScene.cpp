@@ -17,20 +17,20 @@ GameLoseScene::~GameLoseScene() {};
 void GameLoseScene::Initialize()
 {
 	//TextureManagerのインスタンスの取得
-	textureManager_ = TextureManager::GetInstance();
+	textureManager_ = Engine::TextureManager::GetInstance();
 
 	//ModelManagerのインスタンスの取得
 	modelManager_ = ModelManager::GetInstance();
 
 	//Inputのインスタンスの取得
-	input_ = Input::GetInstance();
+	input_ = Engine::Input::GetInstance();
 
 	//Audioのインスタンスの取得
-	audio_ = Audio::GetInstance();
+	audio_ = Engine::Audio::GetInstance();
 
 	//PostEffectの切り替え
-	PostProcess::GetInstance()->SetIsGrayScaleActive(false);
-	PostProcess::GetInstance()->SetIsVignetteActive(false);
+	Engine::PostProcess::GetInstance()->SetIsGrayScaleActive(false);
+	Engine::PostProcess::GetInstance()->SetIsVignetteActive(false);
 
 	//DebugCameraの初期化
 	debugCamera_.Initialize();
@@ -118,7 +118,7 @@ void GameLoseScene::Update()
 
 void GameLoseScene::Draw()
 {
-	PostProcess::GetInstance()->PreDraw();
+	Engine::PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
 
@@ -138,7 +138,7 @@ void GameLoseScene::Draw()
 
 	Sprite::PostDraw();
 
-	PostProcess::GetInstance()->PostDraw();
+	Engine::PostProcess::GetInstance()->PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 

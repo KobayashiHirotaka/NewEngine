@@ -11,11 +11,11 @@ void GameTitleSceneUI::Initialize()
 {
 	//UIの初期化
 	//タイトル(モノクロファイター)のSprite
-	titleTextureHandle_ = TextureManager::LoadTexture("Resource/Images/Title.png");
+	titleTextureHandle_ = Engine::TextureManager::LoadTexture("Resource/Images/Title.png");
 	titleSprite_.reset(Sprite::Create(titleTextureHandle_, { titleSpritePosition_.x, titleSpritePosition_.y }));
 
 	//タイトル(操作用)のSprite
-	titleUITextureHandle_ = TextureManager::LoadTexture("Resource/Images/TitleUI.png");
+	titleUITextureHandle_ = Engine::TextureManager::LoadTexture("Resource/Images/TitleUI.png");
 	titleUISprite_.reset(Sprite::Create(titleUITextureHandle_, { 0.0f,0.0f }));
 }
 

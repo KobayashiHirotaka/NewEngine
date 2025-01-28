@@ -61,19 +61,19 @@ protected:
 	DirectXCore* dxCore_ = nullptr;
 
 	//TextureManagerのポインタ
-	TextureManager* textureManager_ = nullptr;
+	Engine::TextureManager* textureManager_ = nullptr;
 	
 	//ImGuiManagerのポインタ
 	ImGuiManager* imguiManager_ = nullptr;
 
 	//Audioのポインタ
-	Audio* audio_ = nullptr;
+	Engine::Audio* audio_ = nullptr;
 
 	//Inputのポインタ
-	Input* input_ = nullptr;
+	Engine::Input* input_ = nullptr;
 
 	//PostProcessのポインタ
-	PostProcess* postProcess_ = nullptr;
+	Engine::PostProcess* postProcess_ = nullptr;
 
 	//Game3dObjectFactoryのポインタ
 	std::unique_ptr<Game3dObjectFactory> game3dObjectFactory_ = nullptr;

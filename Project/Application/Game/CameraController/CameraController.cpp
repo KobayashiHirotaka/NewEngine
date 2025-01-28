@@ -10,7 +10,7 @@
 void CameraController::Initialize()
 {
 	//Inputのインスタンスの取得
-	input_ = Input::GetInstance();
+	input_ = Engine::Input::GetInstance();
 
 	//カメラの座標を設定
 	camera_.translation_ = position_;

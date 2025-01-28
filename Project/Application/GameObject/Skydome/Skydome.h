@@ -26,7 +26,7 @@ public:
 
 private:
 	//Inputのポインタ
-	Input* input_ = nullptr;
+	Engine::Input* input_ = nullptr;
 
 	//モデル
 	std::unique_ptr<Model> model_;

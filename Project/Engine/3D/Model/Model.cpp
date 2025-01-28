@@ -8,7 +8,7 @@
 #include "Model.h"
 
 DirectXCore* Model::sDxCore_ = nullptr;
-TextureManager* Model::sTextureManager_ = nullptr;
+Engine::TextureManager* Model::sTextureManager_ = nullptr;
 ID3D12Device* Model::sDevice_ = nullptr;
 ID3D12GraphicsCommandList* Model::sCommandList_ = nullptr;
 Microsoft::WRL::ComPtr<IDxcUtils> Model::sDxcUtils_ = nullptr;
@@ -27,7 +27,7 @@ void Model::StaticInitialize()
 	sDxCore_ = DirectXCore::GetInstance();
 
 	//TextureManagerのインスタンスの取得
-	sTextureManager_ = TextureManager::GetInstance();
+	sTextureManager_ = Engine::TextureManager::GetInstance();
 
 	//デバイスの取得
 	sDevice_ = sDxCore_->GetDevice();

@@ -70,7 +70,7 @@ private:
 	static DirectXCore* sDxCore_;
 
 	//TextureManagerのポインタ
-	static TextureManager* sTextureManager_;
+	static Engine::TextureManager* sTextureManager_;
 
 	//DirectX初期化関連
 	static ID3D12Device* sDevice_;

@@ -56,7 +56,7 @@ void Player::Initialize()
 
 	hpBar_ = {
 		true,
-		TextureManager::LoadTexture("Resource/Images/HP.png"),
+		Engine::TextureManager::LoadTexture("Resource/Images/HP.png"),
 		kHpBarPosition,
 		0.0f,
 		kHpBarSize,
@@ -71,7 +71,7 @@ void Player::Initialize()
 
 	guardGaugeBar_ = {
 		true,
-		TextureManager::LoadTexture("Resource/Images/GuardGauge.png"),
+		Engine::TextureManager::LoadTexture("Resource/Images/GuardGauge.png"),
 		{kGuardGaugeBarPosition},
 		0.0f,
 		{kGuardGaugeBarSize},
@@ -86,7 +86,7 @@ void Player::Initialize()
 
 	finisherGaugeBar_ = {
 		true,
-		TextureManager::LoadTexture("Resource/Images/FinisherGauge.png"),
+		Engine::TextureManager::LoadTexture("Resource/Images/FinisherGauge.png"),
 		{kFinisherGaugeBarPosition},
 		0.0f,
 		{kFinisherGaugeBarSize},
@@ -98,20 +98,20 @@ void Player::Initialize()
 	//ヒット表示
 	const Vector2 kHitSpritePosition = { 1090.0f, 180.0f };
 
-	hitTextureHandle_ = TextureManager::LoadTexture("Resource/Images/Hit.png");
+	hitTextureHandle_ = Engine::TextureManager::LoadTexture("Resource/Images/Hit.png");
 	hitSprite_.reset(Sprite::Create(hitTextureHandle_, kHitSpritePosition));
 
 	//コンボ表示
 	const Vector2 kComboNumSpritePosition = { 1060.0f, 290.0f };
 
-	comboNumTextureHandle_ = TextureManager::LoadTexture("Resource/Number/0.png");
+	comboNumTextureHandle_ = Engine::TextureManager::LoadTexture("Resource/Number/0.png");
 	comboNumSprite_.reset(Sprite::Create(comboNumTextureHandle_, kComboNumSpritePosition));
 
 	//キャラクターアイコン
 	const Vector2 kPlayerIconPosition = { 53.0f, 20.0f };
 	const Vector2 kPlayerIconSize = { 120.0f,120.0f };
 
-	playerIconTextureHandle_ = TextureManager::LoadTexture("Resource/Images/PlayerIcon.png");
+	playerIconTextureHandle_ = Engine::TextureManager::LoadTexture("Resource/Images/PlayerIcon.png");
 
 	playerIconSprite_.reset(Sprite::Create(playerIconTextureHandle_, kPlayerIconPosition));
 	playerIconSprite_->SetSize(kPlayerIconSize);
@@ -2462,7 +2462,7 @@ void Player::UpdateComboNumberSprite()
 	//コンボ表示の更新
 	int comboNum = comboCount_;
 
-	comboNumTextureHandle_ = TextureManager::LoadTexture("Resource/Number/" + std::to_string(comboNum) + ".png");
+	comboNumTextureHandle_ = Engine::TextureManager::LoadTexture("Resource/Number/" + std::to_string(comboNum) + ".png");
 
 	comboNumSprite_->SetTexture(comboNumTextureHandle_);
 }

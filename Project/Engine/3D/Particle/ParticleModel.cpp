@@ -8,7 +8,7 @@
 #include "ParticleModel.h"
 
 DirectXCore* ParticleModel::sDxCore_ = nullptr;
-TextureManager* ParticleModel::sTextureManager_ = nullptr;
+Engine::TextureManager* ParticleModel::sTextureManager_ = nullptr;
 ID3D12Device* ParticleModel::sDevice_ = nullptr;
 ID3D12GraphicsCommandList* ParticleModel::sCommandList_ = nullptr;
 Microsoft::WRL::ComPtr<IDxcUtils> ParticleModel::sDxcUtils_ = nullptr;
@@ -24,7 +24,7 @@ void ParticleModel::StaticInitialize()
 	sDxCore_ = DirectXCore::GetInstance();
 
 	//TextureManagerのインスタンスの取得
-	sTextureManager_ = TextureManager::GetInstance();
+	sTextureManager_ = Engine::TextureManager::GetInstance();
 
 	//デバイスの取得
 	sDevice_ = sDxCore_->GetDevice();

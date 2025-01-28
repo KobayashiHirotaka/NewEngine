@@ -74,16 +74,16 @@ private:
 
 private:
 	//TextureManager
-	TextureManager* textureManager_ = nullptr;
+	Engine::TextureManager* textureManager_ = nullptr;
 
 	//ModelManager
 	ModelManager* modelManager_ = nullptr;
 
 	//Input
-	Input* input_ = nullptr;
+	Engine::Input* input_ = nullptr;
 
 	//Audio
-	Audio* audio_ = nullptr;
+	Engine::Audio* audio_ = nullptr;
 
 	//LevelLoader
 	LevelLoader* levelLoarder_ = nullptr;

@@ -50,7 +50,7 @@ public:
 
 private:
 	//Inputのポインタ
-	Input* input_ = nullptr;
+	Engine::Input* input_ = nullptr;
 
 	//スティック入力
 	static const int kMaxArrow_ = 9;

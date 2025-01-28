@@ -8,7 +8,7 @@
 #include "Sprite.h"
 
 DirectXCore* Sprite::sDxCore_ = nullptr;
-TextureManager* Sprite::sTextureManager_ = nullptr;
+Engine::TextureManager* Sprite::sTextureManager_ = nullptr;
 ID3D12Device* Sprite::sDevice_ = nullptr;
 ID3D12GraphicsCommandList* Sprite::sCommandList_ = nullptr;
 Microsoft::WRL::ComPtr<IDxcUtils> Sprite::sDxcUtils_ = nullptr;
@@ -24,7 +24,7 @@ void Sprite::StaticInitialize()
 	sDxCore_ = DirectXCore::GetInstance();
 
 	//TextureManagerのインスタンスの取得
-	sTextureManager_ = TextureManager::GetInstance();
+	sTextureManager_ = Engine::TextureManager::GetInstance();
 
 	//デバイスの取得
 	sDevice_ = sDxCore_->GetDevice();

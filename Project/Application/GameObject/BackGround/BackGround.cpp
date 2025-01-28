@@ -11,7 +11,7 @@
 void BackGround::Initialize()
 {
 	//Inputのインスタンスの取得
-	input_ = Input::GetInstance();
+	input_ = Engine::Input::GetInstance();
 
 	//背景オブジェクトの生成
 	model_[0].reset(Model::CreateFromOBJ("Resource/BackStage", "Wall.gltf"));

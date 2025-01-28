@@ -29,7 +29,7 @@ public:
 
 private:
 	//Inputのポインタ
-	Input* input_ = nullptr;
+	Engine::Input* input_ = nullptr;
 
 	//背景オブジェクトの数
 	static const int kMaxBackGroundObject_ = 8;

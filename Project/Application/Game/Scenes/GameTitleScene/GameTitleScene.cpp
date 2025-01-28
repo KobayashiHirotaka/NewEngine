@@ -17,24 +17,24 @@ GameTitleScene::~GameTitleScene() {};
 void GameTitleScene::Initialize()
 {
 	//TextureManagerのインスタンスの取得
-	textureManager_ = TextureManager::GetInstance();
+	textureManager_ = Engine::TextureManager::GetInstance();
 
 	//ModelManagerのインスタンスの取得
 	modelManager_ = ModelManager::GetInstance();
 
 	//Inputのインスタンスの取得
-	input_ = Input::GetInstance();
+	input_ = Engine::Input::GetInstance();
 
 	//Audioのインスタンスの取得
-	audio_ = Audio::GetInstance();
+	audio_ = Engine::Audio::GetInstance();
 
 	//PostProcessのインスタンスの取得
-	PostProcess::GetInstance()->SetIsPostProcessActive(true);
+	Engine::PostProcess::GetInstance()->SetIsPostProcessActive(true);
 
 	//PostEffectの切り替え
-	PostProcess::GetInstance()->SetIsBloomActive(true);
-	PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
-	PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
+	Engine::PostProcess::GetInstance()->SetIsBloomActive(true);
+	Engine::PostProcess::GetInstance()->SetIsGaussianFilterActive(true);
+	Engine::PostProcess::GetInstance()->SetIsLuminanceBasedOutlineActive(true);
 
 	//DebugCameraの初期化
 	debugCamera_.Initialize();
@@ -147,7 +147,7 @@ void GameTitleScene::Draw()
 
 	Model::PostDraw();
 
-	PostProcess::GetInstance()->PreDraw();
+	Engine::PostProcess::GetInstance()->PreDraw();
 
 	Model::PreDraw();
 
@@ -174,7 +174,7 @@ void GameTitleScene::Draw()
 
 	ParticleModel::PostDraw();
 
-	PostProcess::GetInstance()->PostDraw();
+	Engine::PostProcess::GetInstance()->PostDraw();
 
 	Sprite::PreDraw(Sprite::kBlendModeNormal);
 

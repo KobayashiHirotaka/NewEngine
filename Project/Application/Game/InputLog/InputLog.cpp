@@ -10,7 +10,7 @@
 void InputLog::Initialize()
 {
     //Inputのインスタンスの取得
-	input_ = Input::GetInstance();
+	input_ = Engine::Input::GetInstance();
 
 	//リソース
 	//操作(矢印)
@@ -19,25 +19,25 @@ void InputLog::Initialize()
     for (size_t i = 0; i < arrowIndices.size(); ++i)
     {
         std::string path = "Resource/Images/arrow_" + std::to_string(arrowIndices[i]) + ".png";
-        stickTextureHandle_[i] = TextureManager::LoadTexture(path.c_str());
+        stickTextureHandle_[i] = Engine::TextureManager::LoadTexture(path.c_str());
     }
 
     //操作(N)
-    stickTextureHandle_[8] = TextureManager::LoadTexture("Resource/Images/N.png");
+    stickTextureHandle_[8] = Engine::TextureManager::LoadTexture("Resource/Images/N.png");
 
 	//ボタン
-	buttonTextureHandle_[0] = TextureManager::LoadTexture("Resource/Images/A.png");
-	buttonTextureHandle_[1] = TextureManager::LoadTexture("Resource/Images/B.png");
-	buttonTextureHandle_[2] = TextureManager::LoadTexture("Resource/Images/X.png");
-	buttonTextureHandle_[3] = TextureManager::LoadTexture("Resource/Images/Y.png");
-	buttonTextureHandle_[4] = TextureManager::LoadTexture("Resource/Images/LB.png");
-	buttonTextureHandle_[5] = TextureManager::LoadTexture("Resource/Images/RB.png");
+	buttonTextureHandle_[0] = Engine::TextureManager::LoadTexture("Resource/Images/A.png");
+	buttonTextureHandle_[1] = Engine::TextureManager::LoadTexture("Resource/Images/B.png");
+	buttonTextureHandle_[2] = Engine::TextureManager::LoadTexture("Resource/Images/X.png");
+	buttonTextureHandle_[3] = Engine::TextureManager::LoadTexture("Resource/Images/Y.png");
+	buttonTextureHandle_[4] = Engine::TextureManager::LoadTexture("Resource/Images/LB.png");
+	buttonTextureHandle_[5] = Engine::TextureManager::LoadTexture("Resource/Images/RB.png");
 
     //数字
     for (int i = 0; i < kMaxNum_; ++i)
     {
         std::string path = "Resource/Number/" + std::to_string(i) + ".png";
-        digitTextureHandle_[i] = TextureManager::LoadTexture(path.c_str());
+        digitTextureHandle_[i] = Engine::TextureManager::LoadTexture(path.c_str());
     }
 
 	//スプライトの初期化

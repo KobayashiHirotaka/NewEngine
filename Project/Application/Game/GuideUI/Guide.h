@@ -55,10 +55,10 @@ private:
 
 private:
 	//Input
-	Input* input_ = nullptr;
+	Engine::Input* input_ = nullptr;
 
 	//Audio
-	Audio* audio_ = nullptr;
+	Engine::Audio* audio_ = nullptr;
 
 	//基本操作説明用のSprite
 	std::unique_ptr<Sprite> generalCommandListSprite_ = nullptr;

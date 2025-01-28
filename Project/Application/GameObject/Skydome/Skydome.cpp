@@ -11,7 +11,7 @@
 void Skydome::Initialize()
 {
 	//Inputのインスタンスの取得
-	input_ = Input::GetInstance();
+	input_ = Engine::Input::GetInstance();
 
 	//モデルの生成
 	model_.reset(Model::CreateFromOBJ("Resource/Skydome", "Skydome.obj"));
