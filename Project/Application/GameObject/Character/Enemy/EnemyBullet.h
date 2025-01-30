@@ -44,6 +44,6 @@ public:
 
 private:
 	//当たり判定
-	std::unique_ptr<Collider>collider_ = nullptr;
+	std::unique_ptr<Collider> collider_ = nullptr;
 	AABB aabb_ = { {-0.2f,-0.2f,-0.2f},{0.2f,0.2f,0.2f} };
 };

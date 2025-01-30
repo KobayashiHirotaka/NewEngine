@@ -28,5 +28,5 @@ struct UI
 	Vector2 size_{};
 
 	//Spriteのポインタ
-	Sprite* sprite_ = nullptr;
+	std::unique_ptr<Sprite> sprite_ = nullptr;
 };

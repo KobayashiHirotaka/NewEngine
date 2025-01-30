@@ -58,10 +58,10 @@ public:
 	uint32_t GetAnimationIndex() const { return animationIndex_; };
 
 	//WorldTransform
-	WorldTransform& GetWorldTransform() { return worldTransform_; }
+	WorldTransform& GetWorldTransform() { return worldTransform_; };
 
 	//Collider
-	Collider* GetCollider() const { return collider_.get(); }
+	Collider* GetCollider() const { return collider_.get(); };
 
 	//IsDirectionRight
 	bool GetIsDirectionRight() const { return isDirectionRight_; };
@@ -70,7 +70,7 @@ public:
 	bool GetIsFinisherEffect() const { return isFinisherEffect_; };
 
 	//Bullets
-	const std::vector<PlayerBullet*>& GetBullets() const { return bullets_; };
+	const std::vector<std::unique_ptr<PlayerBullet>>& GetBullets() const { return bullets_; };
 
 	//AABB
 	const AABB& GetAABB() const { return aabb_; };
@@ -189,7 +189,7 @@ private:
 
 	//弾
 	std::unique_ptr<Model> bulletModel_;
-	std::vector<PlayerBullet*> bullets_;
+	std::vector<std::unique_ptr<PlayerBullet>> bullets_;
 
 	//弾攻撃のクールダウン
 	int shotCooldownTimer_ = 0;
@@ -218,7 +218,7 @@ private:
 	float finisherGaugeBarSize_ = 240.0f;
 
 	//キャラクターアイコンのSprite
-	std::unique_ptr<Sprite>playerIconSprite_ = nullptr;
+	std::unique_ptr<Sprite> playerIconSprite_ = nullptr;
 	uint32_t playerIconTextureHandle_ = 0;
 
 	//Sprite(コンボ表示)

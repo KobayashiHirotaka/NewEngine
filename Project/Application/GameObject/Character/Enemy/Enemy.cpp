@@ -12,17 +12,7 @@
 
 Enemy::~Enemy()
 {
-	//各ゲージの削除
-	delete hpBar_.sprite_;
-	delete guardGaugeBar_.sprite_;
-	delete finisherGaugeBar_.sprite_;
-
-	//弾の削除
-	for (auto& bullet : bullets_) 
-	{
-		delete bullet;
-	}
-	bullets_.clear();
+	
 }
 
 void Enemy::Initialize()
@@ -63,7 +53,7 @@ void Enemy::Initialize()
 		nullptr,
 	};
 
-	hpBar_.sprite_ = Sprite::Create(hpBar_.textureHandle_, hpBar_.position_);
+	hpBar_.sprite_.reset(Sprite::Create(hpBar_.textureHandle_, hpBar_.position_));
 
 	//ガードゲージ
 	const Vector2 kGuardGaugeBarPosition = { 742.0f, kGuardGaugeBarSpace_ };
@@ -78,7 +68,7 @@ void Enemy::Initialize()
 		nullptr,
 	};
 
-	guardGaugeBar_.sprite_ = Sprite::Create(guardGaugeBar_.textureHandle_, guardGaugeBar_.position_);
+	guardGaugeBar_.sprite_.reset(Sprite::Create(guardGaugeBar_.textureHandle_, guardGaugeBar_.position_));
 
 	//必殺技ゲージ
 	const Vector2 kFinisherGaugeBarPosition = { 979.0f, kFinisherGaugeBarSpace_ };
@@ -93,7 +83,7 @@ void Enemy::Initialize()
 		nullptr,
 	};
 
-	finisherGaugeBar_.sprite_ = Sprite::Create(finisherGaugeBar_.textureHandle_, finisherGaugeBar_.position_);
+	finisherGaugeBar_.sprite_.reset(Sprite::Create(finisherGaugeBar_.textureHandle_, finisherGaugeBar_.position_));
 
 	//ヒット表示
 	const Vector2 kHitSpritePosition = { 40.0f, 180.0f };
@@ -2427,9 +2417,9 @@ int Enemy::RandomBulletOrMove()
 void Enemy::ShootBullet(const Vector3& startPosition, const Vector3& velocity)
 {
 	//弾を生成してリストに追加する
-	EnemyBullet* newBullet = new EnemyBullet();
+	auto newBullet = std::make_unique<EnemyBullet>();
 	newBullet->Create(bulletModel_.get(), startPosition, velocity);
-	bullets_.push_back(newBullet);
+	bullets_.push_back(std::move(newBullet));
 }
 
 void Enemy::UpdateBullets()
@@ -2440,8 +2430,7 @@ void Enemy::UpdateBullets()
 		(*it)->Update();
 		if ((*it)->GetIsDead())
 		{
-			delete* it;
-			it = bullets_.erase(it);
+			it = bullets_.erase(it); 
 		}
 		else
 		{

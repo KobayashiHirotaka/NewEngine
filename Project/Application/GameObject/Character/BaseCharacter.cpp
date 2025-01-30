@@ -312,7 +312,6 @@ void BaseCharacter::EvaluateAttackTiming()
 void BaseCharacter::UpdateAnimationTime(float& animationTime, const bool isLoop, const float frameRate,
 	const int animationIndex, const std::unique_ptr<Model>& modelFighterBody)
 {
-	//TODO:Engine側に移行する
 	animationTime = 0.0f;
 
 	animationTime = modelFighterBody->GetAnimationTime();

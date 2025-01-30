@@ -56,16 +56,16 @@ public:
 	uint32_t GetAnimationIndex() const { return animationIndex_; };
 
 	//WorldTransform
-	WorldTransform& GetWorldTransform() { return worldTransform_; }
+	WorldTransform& GetWorldTransform() { return worldTransform_; };
 
 	//Collider
-	Collider* GetCollider() { return collider_.get(); }
+	Collider* GetCollider() { return collider_.get(); };
 
 	//AABB
 	const AABB& GetAABB() const { return aabb_; };
 
 	//Bullets
-	const std::vector<EnemyBullet*>& GetBullets() const{ return bullets_; };
+	const std::vector<std::unique_ptr<EnemyBullet>>& GetBullets() const { return bullets_; };
 
 	//Setter
 	//Player
@@ -194,7 +194,7 @@ private:
 
 	//弾
 	std::unique_ptr<Model> bulletModel_;
-	std::vector<EnemyBullet*> bullets_;
+	std::vector<std::unique_ptr<EnemyBullet>> bullets_;
 
 	//弾攻撃のクールダウン
 	int shotCooldownTimer_ = 0;
@@ -224,14 +224,14 @@ private:
 	float finisherGaugeBarSize_ = 240.0f;
 
 	//キャラクターアイコンのSprite
-	std::unique_ptr<Sprite>enemyIconSprite_ = nullptr;
+	std::unique_ptr<Sprite> enemyIconSprite_ = nullptr;
 	uint32_t enemyIconTextureHandle_ = 0;
 
 	//Sprite(コンボ表示)
-	std::unique_ptr<Sprite>hitSprite_ = nullptr;
+	std::unique_ptr<Sprite> hitSprite_ = nullptr;
 	uint32_t hitTextureHandle_;
 
-	std::unique_ptr<Sprite>comboNumSprite_ = nullptr;
+	std::unique_ptr<Sprite> comboNumSprite_ = nullptr;
 	uint32_t comboNumTextureHandle_;
 
 	//サウンド
