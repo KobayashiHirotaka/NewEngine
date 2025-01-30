@@ -453,7 +453,7 @@ public:
 	
 protected:
 		/// <summary>アニメーションの更新</summary>
-		void UpdateAnimationTime(float animationTime, const bool isLoop, const float frameRate,
+		void UpdateAnimationTime(float& animationTime, const bool isLoop, const float frameRate,
 			const int animationIndex, const std::unique_ptr<Model>& modelFighterBody);
 
 protected:
