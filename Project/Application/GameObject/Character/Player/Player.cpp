@@ -347,6 +347,11 @@ void Player::Move(const Vector3 velocity)
 	worldTransform_.UpdateMatrixEuler();
 }
 
+void Player::ChangeState(PlayerBaseState* state)
+{
+	currentState_.reset(state);
+}
+
 void Player::InitializeBehaviorAttack()
 {
 

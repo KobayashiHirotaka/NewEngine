@@ -50,6 +50,9 @@ public:
 	/// <summary>移動</summary>
 	void Move(const Vector3 velocity);
 
+	/// <summary>Stateの切り替え</summary>
+	void ChangeState(PlayerBaseState* state);
+
 
 	/// <summary>WorldPositionの取得</summary>
 	Vector3 GetWorldPosition();

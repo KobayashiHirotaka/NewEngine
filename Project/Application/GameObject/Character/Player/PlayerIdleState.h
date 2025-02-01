@@ -30,6 +30,9 @@ private:
 	/// <summary>移動</summary>
 	void Move();
 
+	/// <summary>ジャンプ</summary>
+	void Jump();
+
 	/// <summary>移動時の押し出し処理</summary>
 	void PushEnemy(Vector3& enemyPosition, float pushSpeed);
 

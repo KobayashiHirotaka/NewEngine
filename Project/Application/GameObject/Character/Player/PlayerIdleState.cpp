@@ -6,7 +6,8 @@
  */
 
 #include "PlayerIdleState.h"
-#include "Application/GameObject/Character/Player/Player.h"
+#include "Player.h"
+#include "PlayerJumpState.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 
 void PlayerIdleState::Initialize()
@@ -22,6 +23,8 @@ void PlayerIdleState::Initialize()
 void PlayerIdleState::Update()
 {
 	Move();
+
+	Jump();
 }
 
 void PlayerIdleState::Move()
@@ -151,6 +154,16 @@ void PlayerIdleState::Move()
 	}
 
 	player_->SetAnimationIndex(animationIndex_);
+}
+
+void PlayerIdleState::Jump()
+{
+	//ジャンプ
+	//TODO::床のフラグを条件に追加
+	if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > input_->GetDeadZone()))
+	{
+		player_->ChangeState(new PlayerJumpState);
+	}
 }
 
 
