@@ -103,7 +103,7 @@ void PlayerIdleState::Move()
 
 				//速度の設定
 				velocity.x = 0.0f;
-				moveDirection_ = Back;
+				moveDirection_ = Default;
 			}
 		}
 
@@ -121,7 +121,7 @@ void PlayerIdleState::Move()
 		{
 			//アニメーション
 			animationIndex_ = kAnimationFlontMove;
-			player_->UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, player_->GetModel());
+			player_->UpdateAnimationTime(animationTime_, true, animationSpeed, animationIndex_, player_->GetModel());
 
 			//移動処理
 			velocity = Normalize(velocity);
@@ -133,14 +133,14 @@ void PlayerIdleState::Move()
 		{
 			//アニメーション
 			animationIndex_ = kAnimationBackMove;
-			player_->UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, player_->GetModel());
+			player_->UpdateAnimationTime(animationTime_, true, animationSpeed, animationIndex_, player_->GetModel());
 
 			//移動処理
 			velocity = Normalize(velocity);
 			velocity = Multiply(kMoveSpeed, velocity);
 			player_->Move(velocity);
 		}
-		else
+		else if(!player_->GetCharacterState().isGuard)
 		{
 			//アニメーション
 			const float kIdleAnimationSpeed = 1.0f;

@@ -312,10 +312,6 @@ void BaseCharacter::EvaluateAttackTiming()
 void BaseCharacter::UpdateAnimationTime(float& animationTime, const bool isLoop, const float frameRate,
 	const int animationIndex, Model* model)
 {
-	animationTime = 0.0f;
-
-	animationTime = model->GetAnimationTime();
-
 	//アニメーションの再生
 	animationTime += frameRate * GameTimer::GetDeltaTime();
 
