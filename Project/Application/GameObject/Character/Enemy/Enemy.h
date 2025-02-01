@@ -101,11 +101,6 @@ private:
 	virtual void UpdateBehaviorStan()override;
 
 
-	//移動
-	/// <summary>移動</summary>
-	virtual void Move()override;
-
-
 	//攻撃
 	/// <summary>攻撃の開始</summary>
 	virtual void StartAttack(bool& isAttackType)override;
@@ -167,18 +162,6 @@ private:
 	/// <summary>ダウンアニメーションの終了</summary>
 	virtual void EndDownAnimation(int animationIndex, bool& isHitAttackType)override;
 
-
-	/// <summary>指定した範囲内のランダムな整数を生成</summary>
-	int Random(int min_value, int max_value);
-
-	/// <summary>ランダムに移動方向を選択</summary>
-	int RandomMove();
-
-	/// <summary>ランダムに攻撃または移動を選択</summary>
-	int RandomAttackOrMove();
-
-	/// <summary>ランダムに弾攻撃または移動を選択</summary>
-	int RandomBulletOrMove();
 	
 private:
 	//プレイヤー

@@ -8,6 +8,7 @@
 #pragma once
 #include "Application/GameObject/Character/BaseCharacter.h"
 #include "PlayerBullet.h"
+#include "PlayerIdleState.h"
 
 //前方宣言
 class Enemy;
@@ -46,6 +47,9 @@ public:
 	/// <summary>リセット</summary>
 	virtual void Reset()override;
 
+	/// <summary>移動</summary>
+	void Move(const Vector3 velocity);
+
 
 	/// <summary>WorldPositionの取得</summary>
 	Vector3 GetWorldPosition();
@@ -72,12 +76,30 @@ public:
 	//Bullets
 	const std::vector<std::unique_ptr<PlayerBullet>>& GetBullets() const { return bullets_; };
 
+	//Velocity
+	Vector3 GetVelocity() const { return moveData_.velocity; };
+
+	//Enemy
+	Enemy* GetEnemy() const { return enemy_; };
+
 	//AABB
 	const AABB& GetAABB() const { return aabb_; };
+
+	//CharacterState
+	CharacterState GetCharacterState() const { return characterState_; };
+
+	//AttackData
+	AttackData GetAttackData() const { return attackData_; };
 
 	//Setter
 	//Enemy
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
+
+	//Velocity
+	void SetVelocity(Vector3 velocity) { moveData_.velocity = velocity; };
+
+	//CharacterState
+	void SetIsGuard(bool isGuard) { characterState_.isGuard = isGuard; };
 
 private:
 	//キャラクターの状態
@@ -104,11 +126,6 @@ private:
 
 	/// <summary>ジャンプ状態の更新</summary>
 	virtual void UpdateBehaviorStan()override;
-
-
-	//移動
-	/// <summary>移動</summary>
-	virtual void Move()override;
 
 
 	//攻撃
@@ -164,10 +181,6 @@ private:
 	/// <summary>コンボ表示のUIの更新</summary>
 	virtual void UpdateComboNumberSprite()override;
 
-
-	/// <summary>敵を押す</summary>
-	void PushEnemy(Vector3& enemyPosition, float pushSpeed);
-
 	//アニメーション
 	/// <summary>ダウンアニメーション</summary>
 	virtual void DownAnimation()override;
@@ -190,6 +203,9 @@ private:
 	//弾
 	std::unique_ptr<Model> bulletModel_;
 	std::vector<std::unique_ptr<PlayerBullet>> bullets_;
+
+	//State
+	std::unique_ptr<PlayerBaseState> currentState_;
 
 	//弾攻撃のクールダウン
 	int shotCooldownTimer_ = 0;
@@ -246,7 +262,6 @@ private:
 	const float kMaxFrontSpeed_ = 0.04f;
 	const float kMaxBackSpeed_ = 0.04f;
 
-	//スティックの閾値
 	const float kStickDeadZone_ = 0.7f;
 };
 

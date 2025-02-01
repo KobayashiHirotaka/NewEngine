@@ -310,11 +310,11 @@ void BaseCharacter::EvaluateAttackTiming()
 }
 
 void BaseCharacter::UpdateAnimationTime(float& animationTime, const bool isLoop, const float frameRate,
-	const int animationIndex, const std::unique_ptr<Model>& modelFighterBody)
+	const int animationIndex, Model* model)
 {
 	animationTime = 0.0f;
 
-	animationTime = modelFighterBody->GetAnimationTime();
+	animationTime = model->GetAnimationTime();
 
 	//アニメーションの再生
 	animationTime += frameRate * GameTimer::GetDeltaTime();
@@ -322,11 +322,11 @@ void BaseCharacter::UpdateAnimationTime(float& animationTime, const bool isLoop,
 	//ループするか
 	if (isLoop)
 	{
-		animationTime = std::fmod(animationTime, modelFighterBody->GetAnimation()[animationIndex].duration);
+		animationTime = std::fmod(animationTime, model->GetAnimation()[animationIndex].duration);
 	}
 	else
 	{
-		float duration = modelFighterBody->GetAnimation()[animationIndex].duration;
+		float duration = model->GetAnimation()[animationIndex].duration;
 
 		if (animationTime > duration)
 		{
@@ -335,6 +335,6 @@ void BaseCharacter::UpdateAnimationTime(float& animationTime, const bool isLoop,
 	}
 
 
-	modelFighterBody->SetAnimationTime(animationTime);
-	modelFighterBody->ApplyAnimation(animationIndex);
+	model->SetAnimationTime(animationTime);
+	model->ApplyAnimation(animationIndex);
 }

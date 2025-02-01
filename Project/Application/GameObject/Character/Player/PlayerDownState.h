@@ -6,9 +6,9 @@
  */
 
 #pragma once
-#include "Application/GameObject/Character/IState.h"
+#include "PlayerBaseState.h"
 
-class PlayerDownState : public IState
+class PlayerDownState : public PlayerBaseState
 {
 public:
 	/// <summary>初期化</summary>

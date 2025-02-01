@@ -39,7 +39,7 @@ public:
 	WorldTransform GetWorldTransform()const { return worldTransform_; };
 
 	//モデル
-	const Model* GetModel() const { return model_.get(); }
+	Model* GetModel() const { return model_.get(); }
 	void SetModel(std::unique_ptr<Model> model) { model_ = std::move(model); }
 
 	//オブジェクトマネージャー

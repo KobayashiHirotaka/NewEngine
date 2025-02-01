@@ -315,11 +315,6 @@ public:
 	virtual void UpdateBehaviorStan() = 0;
 
 
-	//移動
-	/// <summary>移動</summary>
-	virtual void Move() = 0;
-
-
 	//攻撃
 	/// <summary>攻撃の開始</summary>
 	virtual void StartAttack(bool& isAttackType) = 0;
@@ -365,11 +360,17 @@ public:
 	virtual void UpdateComboNumberSprite() = 0;
 
 
+	/// <summary>アニメーションの更新</summary>
+	void UpdateAnimationTime(float& animationTime, const bool isLoop, const float frameRate,
+		const int animationIndex, Model* model);
+
 
 	//基本データに関するGetter
 	int GetHP() const { return baseData_.hp_; };
 
 	float GetFinisherGauge() const { return baseData_.finisherGauge_; };
+
+	float GetAnimationTime() const { return animationTime_; };
 
 	//移動に関するGetter
 	Direction GetDirection() const { return characterState_.direction; };
@@ -436,6 +437,8 @@ public:
 
 	void SetFinisherGauge(float finisherGauge) { baseData_.finisherGauge_ = finisherGauge; };
 
+	void SetAnimationIndex(uint32_t animationIndex) { animationIndex_ = animationIndex; };
+
 	//攻撃に関するSetter
 	void SetDamage(int damage) { attackData_.damage = damage; };
 
@@ -449,12 +452,6 @@ public:
 
 	//リセット状態のSetter
 	void SetIsReset(bool isReset) { isReset_ = isReset; };
-
-	
-protected:
-		/// <summary>アニメーションの更新</summary>
-		void UpdateAnimationTime(float& animationTime, const bool isLoop, const float frameRate,
-			const int animationIndex, const std::unique_ptr<Model>& modelFighterBody);
 
 protected:
 	//Inputのポインタ

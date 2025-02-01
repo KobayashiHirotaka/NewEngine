@@ -830,9 +830,6 @@
     <ClInclude Include="Application\Game\Scenes\GameTitleScene\GameTitleSceneUI.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes\GameTitleScene</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\IState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
-    </ClInclude>
     <ClInclude Include="Application\GameObject\Character\Player\PlayerIdleState.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
     </ClInclude>
@@ -843,6 +840,9 @@
       <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
     </ClInclude>
     <ClInclude Include="Application\GameObject\Character\Player\PlayerJumpState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Player\PlayerBaseState.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
     </ClInclude>
   </ItemGroup>
