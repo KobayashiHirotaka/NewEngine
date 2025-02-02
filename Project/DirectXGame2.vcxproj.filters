@@ -540,7 +540,7 @@
     <ClCompile Include="Application\Game\Scenes\GameWinScene\GameWinSceneUI.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes\GameWinScene</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\Player\PlayerIdleState.cpp">
+    <ClCompile Include="Application\GameObject\Character\Player\PlayerRootState.cpp">
       <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
     </ClCompile>
     <ClCompile Include="Application\GameObject\Character\Player\PlayerAttackState.cpp">
@@ -830,7 +830,7 @@
     <ClInclude Include="Application\Game\Scenes\GameTitleScene\GameTitleSceneUI.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes\GameTitleScene</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\Player\PlayerIdleState.h">
+    <ClInclude Include="Application\GameObject\Character\Player\PlayerRootState.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
     </ClInclude>
     <ClInclude Include="Application\GameObject\Character\Player\PlayerAttackState.h">

@@ -372,8 +372,13 @@ public:
 
 	float GetAnimationTime() const { return animationTime_; };
 
-	//移動に関するGetter
-	Direction GetDirection() const { return characterState_.direction; };
+	float GetDistance() const { return distance_; };
+
+	const float GetMaxDistance() const { return kMaxDistance_; };
+
+	//キャラクターの状態に関するGetter
+	CharacterState GetCharacterState() const { return characterState_; };
+
 
 	//攻撃に関するGetter
 	bool GetIsAttack() const { return attackData_.isAttack; };
@@ -438,6 +443,10 @@ public:
 	void SetFinisherGauge(float finisherGauge) { baseData_.finisherGauge_ = finisherGauge; };
 
 	void SetAnimationIndex(uint32_t animationIndex) { animationIndex_ = animationIndex; };
+
+	void SetPositionY(float positionY) { worldTransform_.translation.y = positionY; };
+
+	void SetIsGround(bool isGround) { characterState_.isGround = isGround; };
 
 	//攻撃に関するSetter
 	void SetDamage(int damage) { attackData_.damage = damage; };

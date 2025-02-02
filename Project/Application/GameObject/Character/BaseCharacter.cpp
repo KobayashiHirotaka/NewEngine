@@ -129,6 +129,16 @@ void BaseCharacter::Update()
 	{
 		worldTransform_.translation.y = 0.0f;
 	}
+
+	//床についているかどうか
+	if (worldTransform_.translation.x <= 0.0f)
+	{
+		characterState_.isGround = true;
+	}
+	else
+	{
+		characterState_.isGround = false;
+	}
 	
 	//コンボ関連の処理
 	HitCombo();

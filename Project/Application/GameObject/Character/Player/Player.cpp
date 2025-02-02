@@ -40,7 +40,7 @@ void Player::Initialize()
 	lineBox_.reset(LineBox::Create(aabb_));
 
 	//Stateの生成、初期化
-	currentState_ = std::make_unique<PlayerIdleState>();
+	currentState_ = std::make_unique<PlayerRootState>();
 	currentState_->SetPlayer(this);
 	currentState_->Initialize();
 
@@ -347,9 +347,17 @@ void Player::Move(const Vector3 velocity)
 	worldTransform_.UpdateMatrixEuler();
 }
 
-void Player::ChangeState(PlayerBaseState* state)
+void Player::Jump(const Vector3 deltaVelocity)
 {
-	currentState_.reset(state);
+	worldTransform_.translation = Add(worldTransform_.translation, deltaVelocity);
+}
+
+void Player::ChangeState(std::unique_ptr<PlayerBaseState> state)
+{
+	state->SetPlayer(this);
+	state->Initialize();
+
+	currentState_ = std::move(state);
 }
 
 void Player::InitializeBehaviorAttack()
@@ -382,9 +390,44 @@ void Player::UpdateBehaviorStan()
 	
 }
 
-void Player::OnCollision(Collider*)
+void Player::OnCollision(Collider* collider)
 {
+	if (collider->GetCollisionAttribute() & kCollisionAttributeEnemy)
+	{
+		characterState_.isHitCharacter = true;
 
+		//押し出し
+		if (characterState_.isHitCharacter && !characterState_.isDown && !attackData_.isAttack && !attackData_.isTackle && !attackData_.isUppercut && !isFinisherEffect_)
+		{
+			//プレイヤーと敵のAABB
+			float playerMinX = worldTransform_.translation.x + aabb_.min.x;
+			float playerMaxX = worldTransform_.translation.x + aabb_.max.x;
+			float enemyMinX = enemy_->GetWorldTransform().translation.x + enemy_->GetAABB().min.x;
+			float enemyMaxX = enemy_->GetWorldTransform().translation.x + enemy_->GetAABB().max.x;
+
+			//重なりチェック
+			if (!(playerMaxX < enemyMinX || playerMinX > enemyMaxX))
+			{
+				float overlapX =
+					((playerMaxX < enemyMaxX) ? playerMaxX : enemyMaxX) -
+					((playerMinX > enemyMinX) ? playerMinX : enemyMinX);
+
+				//補正量を調整
+				const float kCorrectionFactor = 3.0f;
+				float adjustedOverlapX = overlapX * (kCorrectionFactor * GameTimer::GetDeltaTime());
+
+				//位置補正
+				if (worldTransform_.translation.x < enemy_->GetWorldTransform().translation.x)
+				{
+					worldTransform_.translation.x -= adjustedOverlapX;
+				}
+				else
+				{
+					worldTransform_.translation.x += adjustedOverlapX;
+				}
+			}
+		}
+	}
 }
 
 void Player::ShootBullet(const Vector3&, const Vector3&)

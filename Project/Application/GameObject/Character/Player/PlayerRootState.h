@@ -1,16 +1,16 @@
 /**
- * @file PlayerIdleState.h
+ * @file PlayerRootState.h
  * @brief Playerの通常状態を管理するクラス
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
 
 #pragma once
+#include "PlayerBaseState.h"
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Utility/Math/MyMath.h"
-#include "PlayerBaseState.h"
 
-class PlayerIdleState : public PlayerBaseState
+class PlayerRootState : public PlayerBaseState
 {
 public:
 	enum MoveDirection
@@ -36,14 +36,9 @@ private:
 	/// <summary>移動時の押し出し処理</summary>
 	void PushEnemy(Vector3& enemyPosition, float pushSpeed);
 
-	/// <summary>入力</summary>
-	void IsLeftInputActive();
-
 private:
 	//Inputのポインタ
 	Engine::Input* input_ = nullptr;
-
-	Vector3 velocity_ = { 0.0f, 0.0f, 0.0f };
 
 	MoveDirection moveDirection_ = Flont;
 

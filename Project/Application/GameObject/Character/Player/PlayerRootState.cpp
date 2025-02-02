@@ -1,16 +1,16 @@
 /**
- * @file PlayerIdleState.cpp
+ * @file PlayerRootState.cpp
  * @brief Playerの通常状態を管理するクラス
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
 
-#include "PlayerIdleState.h"
-#include "Player.h"
+#include "PlayerRootState.h"
 #include "PlayerJumpState.h"
+#include "Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 
-void PlayerIdleState::Initialize()
+void PlayerRootState::Initialize()
 {
 	//Inputのインスタンスを取得
 	input_ = Engine::Input::GetInstance();
@@ -20,14 +20,14 @@ void PlayerIdleState::Initialize()
 	player_->SetAnimationIndex(animationIndex_);
 }
 
-void PlayerIdleState::Update()
+void PlayerRootState::Update()
 {
 	Move();
 
 	Jump();
 }
 
-void PlayerIdleState::Move()
+void PlayerRootState::Move()
 {
 	//コントローラーの取得
 	if (input_->GetJoystickState())
@@ -50,7 +50,7 @@ void PlayerIdleState::Move()
 		//敵の位置を取得する
 		Vector3 enemyPosition = player_->GetEnemy()->GetWorldPosition();
 
-		if (player_->GetCharacterState().isHitCharacter && player_->GetAttackData().isAttack)
+		if (player_->GetCharacterState().isHitCharacter && !player_->GetAttackData().isAttack)
 		{
 			const float kPushSpeed = 0.05f;
 			if (player_->GetCharacterState().direction == Direction::Right && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > input_->GetDeadZone()))
@@ -94,6 +94,32 @@ void PlayerIdleState::Move()
 			{
 				//速度の設定
 				velocity.x = -kMoveSpeed;
+				moveDirection_ = Back;
+			}
+
+			//止まってガード
+			if (player_->GetCharacterState().isGuard && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() < kValueY))
+			{
+				//アニメーション
+				animationIndex_ = kAnimationGuard;
+				player_->UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, player_->GetModel());
+
+				//速度の設定
+				velocity.x = 0.0f;
+				moveDirection_ = Default;
+			}
+		}
+
+		//後ろ方向に移動(左を向いている場合)
+		if (player_->GetCharacterState().direction == Direction::Left && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > input_->GetDeadZone()) && !player_->GetCharacterState().isDown)
+		{
+			player_->SetIsGuard(true);
+
+			//移動しながらガード
+			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !(input_->GetLeftStickY() < kValueY))
+			{
+				//速度の設定
+				velocity.x = kMoveSpeed;
 				moveDirection_ = Back;
 			}
 
@@ -156,18 +182,17 @@ void PlayerIdleState::Move()
 	player_->SetAnimationIndex(animationIndex_);
 }
 
-void PlayerIdleState::Jump()
+void PlayerRootState::Jump()
 {
 	//ジャンプ
-	//TODO::床のフラグを条件に追加
-	if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > input_->GetDeadZone()))
+	if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > input_->GetDeadZone()) && player_->GetWorldTransform().translation.y <= 0.0f)
 	{
-		player_->ChangeState(new PlayerJumpState);
+		player_->ChangeState(std::make_unique<PlayerJumpState>());
 	}
 }
 
 
-void PlayerIdleState::PushEnemy(Vector3& enemyPosition, float pushSpeed)
+void PlayerRootState::PushEnemy(Vector3& enemyPosition, float pushSpeed)
 {
 	//敵の位置を取得する
 	WorldTransform enemyWorldTransform = player_->GetEnemy()->GetWorldTransform();

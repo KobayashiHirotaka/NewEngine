@@ -200,7 +200,7 @@ void GamePlayScene::Update()
 
 	if (isFinisherStart_)
 	{
-		cameraController_->StartFinisherCamera(player_->GetDirection(), player_->GetWorldPosition().x);
+		cameraController_->StartFinisherCamera(player_->GetCharacterState().direction, player_->GetWorldPosition().x);
 
 		if (!player_->GetIsFinisherEffect() || player_->GetIsDown())
 		{
@@ -212,7 +212,7 @@ void GamePlayScene::Update()
 	//必殺技終了時のカメラ移動処理
 	if (isFinisherEnd_)
 	{
-		cameraController_->EndFinisherCamera(player_->GetDirection(), isFinisherEnd_);
+		cameraController_->EndFinisherCamera(player_->GetCharacterState().direction, isFinisherEnd_);
 	}
 
 	//必殺技演出時ではない場合

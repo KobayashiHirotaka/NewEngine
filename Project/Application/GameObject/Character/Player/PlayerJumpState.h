@@ -7,6 +7,8 @@
 
 #pragma once
 #include "PlayerBaseState.h"
+#include "Engine/Components/Input/Input.h"
+#include "Engine/Utility/Math/MyMath.h"
 
 class PlayerJumpState : public PlayerBaseState
 {
@@ -18,6 +20,14 @@ public:
 	virtual void Update()override;
 
 private:
+	//Inputのポインタ
+	Engine::Input* input_ = nullptr;
 
+	//速さ
+	Vector3 velocity_ = { 0.0f, 0.0f, 0.0f };
+
+	//再生するanimationの番号
+	uint32_t animationIndex_ = 4;
+	float animationTime_ = 0.0f;
 };
 

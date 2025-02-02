@@ -8,7 +8,7 @@
 #pragma once
 #include "Application/GameObject/Character/BaseCharacter.h"
 #include "PlayerBullet.h"
-#include "PlayerIdleState.h"
+#include "PlayerRootState.h"
 
 //前方宣言
 class Enemy;
@@ -50,8 +50,11 @@ public:
 	/// <summary>移動</summary>
 	void Move(const Vector3 velocity);
 
+	/// <summary>ジャンプ</summary>
+	void Jump(const Vector3 deltaVelocity);
+
 	/// <summary>Stateの切り替え</summary>
-	void ChangeState(PlayerBaseState* state);
+	void ChangeState(std::unique_ptr<PlayerBaseState> state);
 
 
 	/// <summary>WorldPositionの取得</summary>

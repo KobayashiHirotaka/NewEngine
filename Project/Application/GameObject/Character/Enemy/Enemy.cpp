@@ -135,7 +135,15 @@ void Enemy::Update()
 {
 #ifdef _ADJUSTMENT
 
-	
+	if (input_->PressKey(DIK_A))
+	{
+		worldTransform_.translation.x -= 0.05f;
+	}
+
+	if (input_->PressKey(DIK_D))
+	{
+		worldTransform_.translation.x += 0.05f;
+	}
 
 #endif
 
@@ -222,9 +230,12 @@ void Enemy::UpdateBehaviorStan()
 
 }
 
-void Enemy::OnCollision(Collider*)
+void Enemy::OnCollision(Collider* collider)
 {
-	
+	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
+	{
+		characterState_.isHitCharacter = true;
+	}
 }
 
 void Enemy::StartAttack(bool& )

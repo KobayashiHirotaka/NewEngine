@@ -24,7 +24,7 @@
     <ClCompile Include="Application\GameObject\Character\Player\PlayerAttackState.cpp" />
     <ClCompile Include="Application\GameObject\Character\Player\PlayerBullet.cpp" />
     <ClCompile Include="Application\GameObject\Character\Player\PlayerDownState.cpp" />
-    <ClCompile Include="Application\GameObject\Character\Player\PlayerIdleState.cpp" />
+    <ClCompile Include="Application\GameObject\Character\Player\PlayerRootState.cpp" />
     <ClCompile Include="Application\GameObject\Character\Player\PlayerJumpState.cpp" />
     <ClCompile Include="Application\GameObject\Effect\ParticleEffectPlayer.cpp" />
     <ClCompile Include="Application\GameObject\Ground\Ground.cpp" />
@@ -174,7 +174,7 @@
     <ClInclude Include="Application\GameObject\Character\Player\PlayerBaseState.h" />
     <ClInclude Include="Application\GameObject\Character\Player\PlayerBullet.h" />
     <ClInclude Include="Application\GameObject\Character\Player\PlayerDownState.h" />
-    <ClInclude Include="Application\GameObject\Character\Player\PlayerIdleState.h" />
+    <ClInclude Include="Application\GameObject\Character\Player\PlayerRootState.h" />
     <ClInclude Include="Application\GameObject\Character\Player\PlayerJumpState.h" />
     <ClInclude Include="Application\GameObject\Effect\ParticleEffectPlayer.h" />
     <ClInclude Include="Application\GameObject\Ground\Ground.h" />
