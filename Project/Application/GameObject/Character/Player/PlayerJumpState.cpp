@@ -59,7 +59,7 @@ void PlayerJumpState::Update()
 		velocity_.y * GameTimer::GetDeltaTime(),
 		velocity_.z* GameTimer::GetDeltaTime() };
 
-	player_->Jump(deltaVelocity);
+	player_->Move(deltaVelocity);
 
 	const float kGravityAcceleration_ = 80.0f;
 

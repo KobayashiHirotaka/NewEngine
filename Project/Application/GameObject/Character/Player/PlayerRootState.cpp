@@ -29,157 +29,110 @@ void PlayerRootState::Update()
 
 void PlayerRootState::Move()
 {
-	//コントローラーの取得
-	if (input_->GetJoystickState())
-	{
-		//入力
-		const float kValueY = -0.3f;
+    //コントローラーの取得
+    if (input_->GetJoystickState()) 
+    {
+        //定数
+        const float kValueY = -0.3f;
+        const float kPushSpeed = 0.05f;
+        const float kIdleAnimationSpeed = 1.0f;
+        const float kMoveAnimationSpeed = 1.5f;
+        float animationSpeed = kMoveAnimationSpeed;
 
-		//アニメーション
-		const int kAnimationBackMove = 0;
-		const int kAnimationFlontMove = 1;
-		const int kAnimationGuard = 2;
-		const int kAnimationIdle = 5;
-		const float animationSpeed = 1.5f;
+        //アニメーション定数
+        enum AnimationIndex 
+        {
+            kAnimationBackMove = 0,
+            kAnimationFlontMove = 1,
+            kAnimationGuard = 2,
+            kAnimationIdle = 5
+        };
 
-		//速度
-		const float kMoveSpeed = 0.04f;
+        //入力用の変数
+        float stickX = input_->GetLeftStickX();
+        bool isMovingRight = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || stickX > input_->GetDeadZone());
+        bool isMovingLeft = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || stickX < -input_->GetDeadZone());
+        bool isGuarding = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP)) || input_->GetLeftStickY() < kValueY;
 
-		Vector3 velocity = {(float)input_->GetLeftStickX(), 0.0f, 0.0f };
+        // 速度設定
+        Vector3 velocity = { (float)input_->GetLeftStickX(), 0.0f, 0.0f };
+        Vector3 enemyPosition = player_->GetEnemy()->GetWorldPosition();
 
-		//敵の位置を取得する
-		Vector3 enemyPosition = player_->GetEnemy()->GetWorldPosition();
+        // ヒット時の敵の押し処理
+        if (player_->GetCharacterState().isHitCharacter && !player_->GetAttackData().isAttack) 
+        {
+            Direction direction = player_->GetCharacterState().direction;
 
-		if (player_->GetCharacterState().isHitCharacter && !player_->GetAttackData().isAttack)
-		{
-			const float kPushSpeed = 0.05f;
-			if (player_->GetCharacterState().direction == Direction::Right && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > input_->GetDeadZone()))
-			{
-				//敵を右方向に押す
-				PushEnemy(enemyPosition, kPushSpeed);
-			}
-			else if (player_->GetCharacterState().direction == Direction::Left && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -input_->GetDeadZone()))
-			{
-				//敵を左方向に押す
-				PushEnemy(enemyPosition, -kPushSpeed);
-			}
-		}
+            if ((direction == Direction::Right && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || stickX > input_->GetDeadZone())) ||
+                (direction == Direction::Left && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || stickX < -input_->GetDeadZone()))) 
+            {
+                PushEnemy(enemyPosition, (direction == Direction::Right) ? kPushSpeed : -kPushSpeed);
+            }
+        }
 
-		//移動処理
-		//前方向に移動(右を向いている場合)
-		if (player_->GetCharacterState().direction == Direction::Right && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > input_->GetDeadZone()) && !player_->GetCharacterState().isDown)
-		{
-			//速度の設定
-			velocity.x = kMoveSpeed;
-			moveDirection_ = Flont;
-			player_->SetIsGuard(false);
-		}
+        //移動方向の設定
+        if (!player_->GetIsDown())
+        {
+            if (player_->GetCharacterState().direction == Direction::Right) 
+            {
+                moveDirection_ = isMovingRight ? Flont : isMovingLeft ? Back : Default;
+            }
+            else 
+            {
+                moveDirection_ = isMovingLeft ? Flont : isMovingRight ? Back : Default;
+            }
+        }
 
-		//前方向に移動(左を向いている場合)
-		if (player_->GetCharacterState().direction == Direction::Left && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -input_->GetDeadZone()) && !player_->GetCharacterState().isDown)
-		{
-			//速度の設定
-			velocity.x = -kMoveSpeed;
-			moveDirection_ = Flont;
-			player_->SetIsGuard(false);
-		}
+        //ガード処理
+        if (moveDirection_ == Back)
+        {
+            player_->SetIsGuard(true);
 
-		//後ろ方向に移動(右を向いている場合)
-		if (player_->GetCharacterState().direction == Direction::Right && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -input_->GetDeadZone()) && !player_->GetCharacterState().isDown)
-		{
-			player_->SetIsGuard(true);
+            if (isGuarding) 
+            {
+                animationIndex_ = kAnimationGuard;
+                moveDirection_ = Default;
+            }
+        }
+        else 
+        {
+            player_->SetIsGuard(false);
+        }
 
-			//移動しながらガード
-			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !(input_->GetLeftStickY() < kValueY))
-			{
-				//速度の設定
-				velocity.x = -kMoveSpeed;
-				moveDirection_ = Back;
-			}
+        //停止時の処理
+        if (!isMovingRight && !isMovingLeft)
+        {
+            moveDirection_ = Default;
+        }
 
-			//止まってガード
-			if (player_->GetCharacterState().isGuard && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() < kValueY))
-			{
-				//アニメーション
-				animationIndex_ = kAnimationGuard;
-				player_->UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, player_->GetModel());
+        //アニメーション設定
+        if (moveDirection_ == Flont)
+        {
+            animationIndex_ = kAnimationFlontMove;
+            animationSpeed = kMoveAnimationSpeed;
+            player_->UpdateAnimationTime(animationTime_, true, animationSpeed, animationIndex_, player_->GetModel());
+        }
+        else if (moveDirection_ == Back)
+        {
+            animationIndex_ = kAnimationBackMove;
+            animationSpeed = kMoveAnimationSpeed;
+            player_->UpdateAnimationTime(animationTime_, true, animationSpeed, animationIndex_, player_->GetModel());
+        }
+        else if (!player_->GetCharacterState().isGuard)
+        {
+            animationIndex_ = kAnimationIdle;
+            animationSpeed = kIdleAnimationSpeed;
+            player_->UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, player_->GetModel());
+        }
 
-				//速度の設定
-				velocity.x = 0.0f;
-				moveDirection_ = Default;
-			}
-		}
+        //移動処理
+        velocity.x *= moveSpeed[moveDirection_];
+        velocity = Normalize(velocity);
+        velocity = Multiply(moveSpeed[moveDirection_], velocity);
+        player_->Move(velocity);
+    }
 
-		//後ろ方向に移動(左を向いている場合)
-		if (player_->GetCharacterState().direction == Direction::Left && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > input_->GetDeadZone()) && !player_->GetCharacterState().isDown)
-		{
-			player_->SetIsGuard(true);
-
-			//移動しながらガード
-			if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !(input_->GetLeftStickY() < kValueY))
-			{
-				//速度の設定
-				velocity.x = kMoveSpeed;
-				moveDirection_ = Back;
-			}
-
-			//止まってガード
-			if (player_->GetCharacterState().isGuard && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() < kValueY))
-			{
-				//アニメーション
-				animationIndex_ = kAnimationGuard;
-				player_->UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, player_->GetModel());
-
-				//速度の設定
-				velocity.x = 0.0f;
-				moveDirection_ = Default;
-			}
-		}
-
-		//移動していない場合
-		if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) &&
-			!(input_->GetLeftStickX() > input_->GetDeadZone()) && !(input_->GetLeftStickX() < -input_->GetDeadZone()))
-		{
-			velocity.x = 0.0f;
-			moveDirection_ = Default;
-			player_->SetIsGuard(false);
-		}
-
-		//移動
-		if (moveDirection_ == Flont)
-		{
-			//アニメーション
-			animationIndex_ = kAnimationFlontMove;
-			player_->UpdateAnimationTime(animationTime_, true, animationSpeed, animationIndex_, player_->GetModel());
-
-			//移動処理
-			velocity = Normalize(velocity);
-			velocity = Multiply(kMoveSpeed, velocity);
-			player_->Move(velocity);
-
-		}
-		else if (moveDirection_ == Back)
-		{
-			//アニメーション
-			animationIndex_ = kAnimationBackMove;
-			player_->UpdateAnimationTime(animationTime_, true, animationSpeed, animationIndex_, player_->GetModel());
-
-			//移動処理
-			velocity = Normalize(velocity);
-			velocity = Multiply(kMoveSpeed, velocity);
-			player_->Move(velocity);
-		}
-		else if(!player_->GetCharacterState().isGuard)
-		{
-			//アニメーション
-			const float kIdleAnimationSpeed = 1.0f;
-
-			animationIndex_ = kAnimationIdle;
-			player_->UpdateAnimationTime(animationTime_, true, kIdleAnimationSpeed, animationIndex_, player_->GetModel());
-		}
-	}
-
-	player_->SetAnimationIndex(animationIndex_);
+    player_->SetAnimationIndex(animationIndex_);
 }
 
 void PlayerRootState::Jump()

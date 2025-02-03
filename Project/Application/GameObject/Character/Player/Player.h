@@ -50,9 +50,6 @@ public:
 	/// <summary>移動</summary>
 	void Move(const Vector3 velocity);
 
-	/// <summary>ジャンプ</summary>
-	void Jump(const Vector3 deltaVelocity);
-
 	/// <summary>Stateの切り替え</summary>
 	void ChangeState(std::unique_ptr<PlayerBaseState> state);
 

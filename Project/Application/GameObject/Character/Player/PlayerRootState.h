@@ -17,7 +17,8 @@ public:
 	{
 		Flont,
 		Back,
-		Default
+		Default,
+		kCountOfMoveDirection,
 	};
 
 	/// <summary>初期化</summary>
@@ -40,7 +41,11 @@ private:
 	//Inputのポインタ
 	Engine::Input* input_ = nullptr;
 
+	//移動の向き
 	MoveDirection moveDirection_ = Flont;
+
+	//速度
+	float moveSpeed[MoveDirection::kCountOfMoveDirection] = { 0.04f, -0.04f, 0.0f };
 
 	//再生するanimationの番号
 	uint32_t animationIndex_ = 4;

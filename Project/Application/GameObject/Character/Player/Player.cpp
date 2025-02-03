@@ -347,11 +347,6 @@ void Player::Move(const Vector3 velocity)
 	worldTransform_.UpdateMatrixEuler();
 }
 
-void Player::Jump(const Vector3 deltaVelocity)
-{
-	worldTransform_.translation = Add(worldTransform_.translation, deltaVelocity);
-}
-
 void Player::ChangeState(std::unique_ptr<PlayerBaseState> state)
 {
 	state->SetPlayer(this);
