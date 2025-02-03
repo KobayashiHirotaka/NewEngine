@@ -552,6 +552,18 @@
     <ClCompile Include="Application\GameObject\Character\Player\PlayerJumpState.cpp">
       <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyAttackState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyDownState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyJumpState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyRootState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -844,6 +856,21 @@
     </ClInclude>
     <ClInclude Include="Application\GameObject\Character\Player\PlayerBaseState.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyAttackState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyDownState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyJumpState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyRootState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBaseState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

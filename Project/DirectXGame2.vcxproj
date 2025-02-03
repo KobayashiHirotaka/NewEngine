@@ -18,8 +18,12 @@
     <ClCompile Include="Application\GameObject\BackGround\BackGround.cpp" />
     <ClCompile Include="Application\GameObject\Character\BaseBullet.cpp" />
     <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp" />
+    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyAttackState.cpp" />
     <ClCompile Include="Application\GameObject\Character\Enemy\EnemyBullet.cpp" />
     <ClCompile Include="Application\GameObject\Character\BaseCharacter.cpp" />
+    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyDownState.cpp" />
+    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyJumpState.cpp" />
+    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyRootState.cpp" />
     <ClCompile Include="Application\GameObject\Character\Player\Player.cpp" />
     <ClCompile Include="Application\GameObject\Character\Player\PlayerAttackState.cpp" />
     <ClCompile Include="Application\GameObject\Character\Player\PlayerBullet.cpp" />
@@ -167,8 +171,13 @@
     <ClInclude Include="Application\GameObject\Character\BaseBullet.h" />
     <ClInclude Include="Application\GameObject\Character\Direction.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h" />
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyAttackState.h" />
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBaseState.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBullet.h" />
     <ClInclude Include="Application\GameObject\Character\BaseCharacter.h" />
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyDownState.h" />
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyJumpState.h" />
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyRootState.h" />
     <ClInclude Include="Application\GameObject\Character\Player\Player.h" />
     <ClInclude Include="Application\GameObject\Character\Player\PlayerAttackState.h" />
     <ClInclude Include="Application\GameObject\Character\Player\PlayerBaseState.h" />
