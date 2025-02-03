@@ -6,6 +6,8 @@
  */
 
 #pragma once
+#include "Engine/Components/Input/Input.h"
+#include "Engine/Utility/Math/MyMath.h"
 
 class Player;
 

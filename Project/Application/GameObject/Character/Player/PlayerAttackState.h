@@ -18,6 +18,14 @@ public:
 	virtual void Update()override;
 
 private:
+	//Inputのポインタ
+	Engine::Input* input_ = nullptr;
 
+	//再生するanimationの番号
+	uint32_t animationIndex_ = 4;
+	float animationTime_ = 0.0f;
+
+	int attackAnimationFrame_ = 0;
+	const float kScaleFacter_ = 100.0f;
 };
 

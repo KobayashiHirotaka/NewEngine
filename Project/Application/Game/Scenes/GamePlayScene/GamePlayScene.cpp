@@ -193,7 +193,7 @@ void GamePlayScene::Update()
 	backGround_->Update();
 
 	//必殺技発動時のカメラ移動処理
-	if (player_->GetIsFinisher() && player_->GetFinisherTimer() != kFinisherTime_)
+	if (player_->GetAttackData().isFinisher && player_->GetFinisherTimer() != kFinisherTime_)
 	{
 		isFinisherStart_ = true;
 	}
@@ -526,7 +526,7 @@ void GamePlayScene::HandlePlayerWin(bool isTimeOver)
 		//倒した
 		Engine::PostProcess::GetInstance()->SetIsGrayScaleActive(true);
 
-		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetIsFinisherSecondAttack() && !player_->GetIsTackle())
+		if (sMigrationTimer < kKoActiveTime_ && enemy_->GetWorldPosition().y <= 0.0f && !player_->GetAttackData().isFinisherSecondAttack && !player_->GetAttackData().isTackle)
 		{
 			playerWinCount_++;
 			isRoundTransition_ = true;

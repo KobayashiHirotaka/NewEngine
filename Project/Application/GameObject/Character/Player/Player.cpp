@@ -239,7 +239,7 @@ void Player::Update()
 	UpdateComboNumberSprite();
 
 	//ガードアニメーションタイマーのリセット
-	if (!enemy_->GetIsAttack())
+	if (!enemy_->GetAttackData().isGuarded)
 	{
 		timerData_.guardAnimationTimer = timerData_.maxGuardAnimationTimer;
 	}
@@ -461,32 +461,9 @@ void Player::ApplyDamage()
 
 void Player::ResetCollision()
 {
-
-}
-
-void Player::UpdateHPBar()
-{
-
-}
-
-void Player::UpdateGuardGaugeBar()
-{
-
-}
-
-void Player::AdjustGuardGauge()
-{
-
-}
-
-void Player::UpdateFinisherGaugeBar()
-{
-
-}
-
-void Player::AdjustFinisherGauge(float)
-{
-	
+	//当たり判定のリセット
+	aabb_ = defaultCollsiion_;
+	collider_->SetAABB(aabb_);
 }
 
 void Player::Reset()

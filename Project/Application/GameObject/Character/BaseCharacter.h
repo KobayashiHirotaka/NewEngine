@@ -379,45 +379,10 @@ public:
 	//キャラクターの状態に関するGetter
 	CharacterState GetCharacterState() const { return characterState_; };
 
-
 	//攻撃に関するGetter
-	bool GetIsAttack() const { return attackData_.isAttack; };
+	AttackData GetAttackData() const { return attackData_; };
 
-	bool GetIsLightPunch() const { return attackData_.isLightPunch; };
-
-	bool GetIsMiddlePunch() const { return attackData_.isMiddlePunch; };
-
-	bool GetIsHighPunch() const { return attackData_.isHighPunch; };
-
-	bool GetIsTCMiddlePunch() const { return attackData_.isTCMiddlePunch; };
-
-	bool GetIsTCHighPunch() const { return attackData_.isTCHighPunch; };
-
-	bool GetIsJumpAttack() const { return attackData_.isJumpAttack; };
-
-	bool GetIsTackle() const { return attackData_.isTackle; };
-
-	bool GetIsUppercut() const { return attackData_.isUppercut; };
-
-	bool GetIsShot() const { return attackData_.isShot; };
-
-	bool GetIsFinisher() const { return attackData_.isFinisher; };
-
-	bool GetIsFinisherFirstAttack() const { return attackData_.isFinisherFirstAttack; };
-
-	bool GetIsFinisherSecondAttack() const { return attackData_.isFinisherSecondAttack; };
-
-	int GetAttackAnimationFrame() const { return attackData_.attackAnimationFrame; };
-
-	int GetDamage() const { return attackData_.damage; };
-
-	int GetHitRecoveryTime() const { return attackData_.hitRecoveryTime; };
-
-	float GetGuardGaugeIncreaseAmount() const { return attackData_.guardGaugeIncreaseAmount; };
-
-	float GetFinisherGaugeIncreaseAmount() const { return attackData_.finisherGaugeIncreaseAmount; };
-
-	float GetHitStop() const { return attackData_.hitStop; };
+	std::string GetAttackType() const { return attackType_; };
 
 	//エフェクトに関するGetter
 	bool GetIsShake() const { return effectState_.isShake; };
@@ -458,6 +423,8 @@ public:
 	void SetIsGuarded(bool isGuarded) { attackData_.isGuarded = isGuarded; };
 
 	void SetHitStop(HitStop* hitStop) { hitStop_ = hitStop; };
+
+	void SetAttackType(std::string attackType) { attackType_ = attackType; };
 
 	//リセット状態のSetter
 	void SetIsReset(bool isReset) { isReset_ = isReset; };

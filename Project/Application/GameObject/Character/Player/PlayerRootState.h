@@ -7,8 +7,6 @@
 
 #pragma once
 #include "PlayerBaseState.h"
-#include "Engine/Components/Input/Input.h"
-#include "Engine/Utility/Math/MyMath.h"
 
 class PlayerRootState : public PlayerBaseState
 {
@@ -33,6 +31,9 @@ private:
 
 	/// <summary>ジャンプ</summary>
 	void Jump();
+
+	/// <summary>攻撃</summary>
+	void Attack();
 
 	/// <summary>移動時の押し出し処理</summary>
 	void PushEnemy(Vector3& enemyPosition, float pushSpeed);

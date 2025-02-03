@@ -7,8 +7,6 @@
 
 #pragma once
 #include "PlayerBaseState.h"
-#include "Engine/Components/Input/Input.h"
-#include "Engine/Utility/Math/MyMath.h"
 
 class PlayerJumpState : public PlayerBaseState
 {

@@ -47,11 +47,23 @@ public:
 	/// <summary>リセット</summary>
 	virtual void Reset()override;
 
+	/// <summary>Stateの切り替え</summary>
+	void ChangeState(std::unique_ptr<PlayerBaseState> state);
+
+
 	/// <summary>移動</summary>
 	void Move(const Vector3 velocity);
 
-	/// <summary>Stateの切り替え</summary>
-	void ChangeState(std::unique_ptr<PlayerBaseState> state);
+
+	//攻撃
+	/// <summary>攻撃の開始</summary>
+	virtual void StartAttack(bool& isAttackType)override;
+
+	/// <summary>攻撃の終了</summary>
+	virtual void EndAttack(bool& isAttackType)override;
+
+	/// <summary>当たり判定の初期化</summary>
+	void ResetCollision()override;
 
 
 	/// <summary>WorldPositionの取得</summary>
@@ -87,12 +99,6 @@ public:
 
 	//AABB
 	const AABB& GetAABB() const { return aabb_; };
-
-	//CharacterState
-	CharacterState GetCharacterState() const { return characterState_; };
-
-	//AttackData
-	AttackData GetAttackData() const { return attackData_; };
 
 	//Setter
 	//Enemy
@@ -130,14 +136,6 @@ private:
 	/// <summary>ジャンプ状態の更新</summary>
 	virtual void UpdateBehaviorStan()override;
 
-
-	//攻撃
-	/// <summary>攻撃の開始</summary>
-	virtual void StartAttack(bool& isAttackType)override;
-
-	/// <summary>攻撃の終了</summary>
-	virtual void EndAttack(bool& isAttackType)override;
-
 	/// <summary>攻撃タイミングを評価</summary>
 	virtual void EvaluateAttackTiming()override;
 
@@ -160,9 +158,6 @@ private:
 
 	/// <summary>当たり判定</summary>
 	void OnCollision(Collider* collider)override;
-
-	/// <summary>当たり判定の初期化</summary>
-	void ResetCollision()override;
 
 
 	//UIの更新

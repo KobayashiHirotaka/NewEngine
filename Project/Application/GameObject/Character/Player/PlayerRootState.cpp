@@ -7,6 +7,7 @@
 
 #include "PlayerRootState.h"
 #include "PlayerJumpState.h"
+#include "PlayerAttackState.h"
 #include "Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 
@@ -22,9 +23,14 @@ void PlayerRootState::Initialize()
 
 void PlayerRootState::Update()
 {
+    //移動
 	Move();
 
+    //ジャンプ
 	Jump();
+
+    //攻撃
+    Attack();
 }
 
 void PlayerRootState::Move()
@@ -49,9 +55,8 @@ void PlayerRootState::Move()
         };
 
         //入力用の変数
-        float stickX = input_->GetLeftStickX();
-        bool isMovingRight = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || stickX > input_->GetDeadZone());
-        bool isMovingLeft = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || stickX < -input_->GetDeadZone());
+        bool isMovingRight = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > input_->GetDeadZone());
+        bool isMovingLeft = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -input_->GetDeadZone());
         bool isGuarding = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP)) || input_->GetLeftStickY() < kValueY;
 
         // 速度設定
@@ -63,8 +68,7 @@ void PlayerRootState::Move()
         {
             Direction direction = player_->GetCharacterState().direction;
 
-            if ((direction == Direction::Right && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || stickX > input_->GetDeadZone())) ||
-                (direction == Direction::Left && (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || stickX < -input_->GetDeadZone()))) 
+            if (direction == Direction::Right && isMovingRight || direction == Direction::Left && isMovingLeft)
             {
                 PushEnemy(enemyPosition, (direction == Direction::Right) ? kPushSpeed : -kPushSpeed);
             }
@@ -142,6 +146,38 @@ void PlayerRootState::Jump()
 	{
 		player_->ChangeState(std::make_unique<PlayerJumpState>());
 	}
+}
+
+void PlayerRootState::Attack()
+{
+    //攻撃
+    //弱攻撃
+    if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))
+    {
+        player_->SetAttackType("弱攻撃");
+        //player_->StartAttack(player_->GetAttackData().isLightPunch);
+        player_->ChangeState(std::make_unique<PlayerAttackState>());
+    }
+    //弾攻撃
+    else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
+    {
+        player_->SetAttackType("ショット");
+    }
+    //特殊技
+    else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
+    {
+        //アッパー攻撃
+        if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) &&
+            input_->GetLeftStickX() < input_->GetDeadZone() && input_->GetLeftStickX() > -input_->GetDeadZone())
+        {
+            player_->SetAttackType("アッパー");
+        }
+        //タックル攻撃
+        else
+        {
+            player_->SetAttackType("タックル");
+        }
+    }
 }
 
 
