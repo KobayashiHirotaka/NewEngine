@@ -296,10 +296,10 @@ void BaseCharacter::EndAttack(bool& isAttackType)
 	model_->SetAnimationTime(animationTime_);
 }
 
-void BaseCharacter::EvaluateAttackTiming()
+void BaseCharacter::EvaluateAttackTiming(int& attackAnimationFrame)
 {
 	//攻撃
-	if (attackData_.attackAnimationFrame >= attackData_.attackStartTime && attackData_.attackAnimationFrame <= attackData_.attackEndTime)
+	if (attackAnimationFrame >= attackData_.attackStartTime && attackAnimationFrame <= attackData_.attackEndTime)
 	{
 		attackData_.isAttack = true;
 	}
@@ -309,7 +309,7 @@ void BaseCharacter::EvaluateAttackTiming()
 	}
 
 	//硬直
-	if (attackData_.attackAnimationFrame >= attackData_.attackEndTime && attackData_.attackAnimationFrame <= attackData_.recoveryTime)
+	if (attackAnimationFrame >= attackData_.attackEndTime && attackAnimationFrame <= attackData_.recoveryTime)
 	{
 		attackData_.isRecovery = true;
 	}

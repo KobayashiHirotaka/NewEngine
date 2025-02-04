@@ -169,7 +169,7 @@ public:
 		float hitStop = 0.0f;
 
 		//攻撃を受ける側の必殺技ゲージ増加量
-		const float takeFinisherGaugeIncreaseAmount = 1.5f;
+		float takeFinisherGaugeIncreaseAmount = 1.5f;
 
 		//攻撃しているか
 		bool isAttack = false;
@@ -323,7 +323,7 @@ public:
 	virtual void EndAttack(bool& isAttackType) = 0;
 
 	/// <summary>攻撃タイミングを評価</summary>
-	virtual void EvaluateAttackTiming() = 0;
+	void EvaluateAttackTiming(int& attackAnimationFrame);
 
 	/// <summary>ダメージの適応</summary>
 	virtual void ApplyDamage() = 0;
@@ -380,7 +380,7 @@ public:
 	CharacterState GetCharacterState() const { return characterState_; };
 
 	//攻撃に関するGetter
-	AttackData GetAttackData() const { return attackData_; };
+	AttackData& GetAttackData() { return attackData_; };
 
 	std::string GetAttackType() const { return attackType_; };
 
@@ -425,6 +425,8 @@ public:
 	void SetHitStop(HitStop* hitStop) { hitStop_ = hitStop; };
 
 	void SetAttackType(std::string attackType) { attackType_ = attackType; };
+
+	void SetIsAttack(bool isAttack) { attackData_.isAttack = isAttack; };
 
 	//リセット状態のSetter
 	void SetIsReset(bool isReset) { isReset_ = isReset; };

@@ -141,41 +141,50 @@ void PlayerRootState::Move()
 
 void PlayerRootState::Jump()
 {
-	//ジャンプ
-	if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > input_->GetDeadZone()) && player_->GetWorldTransform().translation.y <= 0.0f)
-	{
-		player_->ChangeState(std::make_unique<PlayerJumpState>());
-	}
+    //コントローラーの取得
+    if (input_->GetJoystickState())
+    {
+        //ジャンプ
+        if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > input_->GetDeadZone()) && player_->GetWorldTransform().translation.y <= 0.0f)
+        {
+            player_->ChangeState(std::make_unique<PlayerJumpState>());
+        }
+    }
 }
 
 void PlayerRootState::Attack()
 {
-    //攻撃
-    //弱攻撃
-    if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))
+    bool isMovingRight = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > input_->GetDeadZone());
+    bool isMovingLeft = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -input_->GetDeadZone());
+
+    //コントローラーの取得
+    if (input_->GetJoystickState())
     {
-        player_->SetAttackType("弱攻撃");
-        //player_->StartAttack(player_->GetAttackData().isLightPunch);
-        player_->ChangeState(std::make_unique<PlayerAttackState>());
-    }
-    //弾攻撃
-    else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
-    {
-        player_->SetAttackType("ショット");
-    }
-    //特殊技
-    else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
-    {
-        //アッパー攻撃
-        if (!input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) &&
-            input_->GetLeftStickX() < input_->GetDeadZone() && input_->GetLeftStickX() > -input_->GetDeadZone())
+        //攻撃
+        //弱攻撃
+        if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))
         {
-            player_->SetAttackType("アッパー");
+            player_->SetAttackType("弱攻撃");
+            player_->StartAttack(player_->GetAttackData().isLightPunch);
+            player_->ChangeState(std::make_unique<PlayerAttackState>());
         }
-        //タックル攻撃
-        else
+        //弾攻撃
+        else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
         {
-            player_->SetAttackType("タックル");
+            player_->SetAttackType("ショット");
+            player_->StartAttack(player_->GetAttackData().isShot);
+            player_->ChangeState(std::make_unique<PlayerAttackState>());
+        }
+        //特殊技
+        else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
+        {
+            //タックル攻撃
+            if (isMovingRight || !isMovingLeft)
+            {
+                player_->SetAttackType("タックル");
+                player_->StartAttack(player_->GetAttackData().isTackle);
+                player_->ChangeState(std::make_unique<PlayerAttackState>());
+            }
         }
     }
 }

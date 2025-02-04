@@ -62,6 +62,17 @@ public:
 	/// <summary>攻撃の終了</summary>
 	virtual void EndAttack(bool& isAttackType)override;
 
+	/// <summary>ダメージの適応</summary>
+	virtual void ApplyDamage()override;
+
+	/// <summary>コンボされているとき</summary>
+	virtual void HitCombo()override;
+
+	/// <summary>コンボカウントの更新</summary>
+	virtual void ComboCountUpdate(const int kRecoveryTime)override;
+
+
+	//当たり判定
 	/// <summary>当たり判定の初期化</summary>
 	void ResetCollision()override;
 
@@ -136,18 +147,6 @@ private:
 	/// <summary>ジャンプ状態の更新</summary>
 	virtual void UpdateBehaviorStan()override;
 
-	/// <summary>攻撃タイミングを評価</summary>
-	virtual void EvaluateAttackTiming()override;
-
-	/// <summary>ダメージの適応</summary>
-	virtual void ApplyDamage()override;
-
-	/// <summary>コンボされているとき</summary>
-	virtual void HitCombo()override;
-
-	/// <summary>コンボカウントの更新</summary>
-	virtual void ComboCountUpdate(const int kRecoveryTime)override;
-
 
 	/// <summary>弾を発射</summary>
 	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
@@ -204,6 +203,7 @@ private:
 
 	//State
 	std::unique_ptr<PlayerBaseState> currentState_;
+	std::unique_ptr<PlayerBaseState> nextState_;
 
 	//弾攻撃のクールダウン
 	int shotCooldownTimer_ = 0;

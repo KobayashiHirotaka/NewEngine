@@ -9,6 +9,7 @@
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/Game/Scenes/GamePlayScene/GamePlayScene.h"
 #include "Application/Game/GameTimer/GameTimer.h"
+#include <cassert>
 
 Player::~Player()
 {
@@ -158,26 +159,23 @@ void Player::Update()
 		baseData_.finisherGauge_ = kMaxFinisherGauge;
 	}
 
-	if (isDebug_)
-	{
-		Vector4 kAttackColor = { 1.0f,0.0f,0.0f,1.0f };
-		Vector4 kRecoveryColor = { 0.0f,0.0f,1.0f,1.0f };
-		Vector4 kDefaultColor = { 1.0f,1.0f,1.0f,1.0f };
+	Vector4 kAttackColor = { 1.0f,0.0f,0.0f,1.0f };
+	Vector4 kRecoveryColor = { 0.0f,0.0f,1.0f,1.0f };
+	Vector4 kDefaultColor = { 1.0f,1.0f,1.0f,1.0f };
 
-		if (attackData_.isAttack)
-		{
-			//攻撃中(攻撃判定あり)にモデルの色を変える
-			model_->GetMaterial()->SetColor(kAttackColor);
-		}
-		else if (attackData_.isRecovery)
-		{
-			//硬直中にモデルの色を変える
-			model_->GetMaterial()->SetColor(kRecoveryColor);
-		}
-		else
-		{
-			model_->GetMaterial()->SetColor(kDefaultColor);
-		}
+	if (attackData_.isAttack)
+	{
+		//攻撃中(攻撃判定あり)にモデルの色を変える
+		model_->GetMaterial()->SetColor(kAttackColor);
+	}
+	else if (attackData_.isRecovery)
+	{
+		//硬直中にモデルの色を変える
+		model_->GetMaterial()->SetColor(kRecoveryColor);
+	}
+	else
+	{
+		model_->GetMaterial()->SetColor(kDefaultColor);
 	}
 
 #endif
@@ -189,6 +187,16 @@ void Player::Update()
 	AttackEditor::GetInstance()->SetAttackParameters(attackType_, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
 		attackData_.cancelStartTime, attackData_.cancelEndTime,attackData_.damage, attackData_.hitRecoveryTime, attackData_.guardGaugeIncreaseAmount,
 		attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop, aabb_, true, characterState_.direction);
+
+	if (nextState_)
+	{
+		//Stateの生成
+		nextState_->SetPlayer(this);
+		nextState_->Initialize();
+
+		//State切り替え
+		currentState_ = std::move(nextState_);
+	}
 
 	//Stateの更新
 	currentState_->Update();
@@ -349,10 +357,7 @@ void Player::Move(const Vector3 velocity)
 
 void Player::ChangeState(std::unique_ptr<PlayerBaseState> state)
 {
-	state->SetPlayer(this);
-	state->Initialize();
-
-	currentState_ = std::move(state);
+	nextState_ = std::move(state);
 }
 
 void Player::InitializeBehaviorAttack()
@@ -448,12 +453,6 @@ void Player::EndAttack(bool& isAttackType)
 	BaseCharacter::EndAttack(isAttackType);
 }
 
-void Player::EvaluateAttackTiming()
-{
-	//攻撃判定をつけるタイミングの設定
-	BaseCharacter::EvaluateAttackTiming();
-}
-
 void Player::ApplyDamage()
 {
 
@@ -464,6 +463,31 @@ void Player::ResetCollision()
 	//当たり判定のリセット
 	aabb_ = defaultCollsiion_;
 	collider_->SetAABB(aabb_);
+}
+
+void Player::UpdateHPBar()
+{
+
+}
+
+void Player::UpdateGuardGaugeBar()
+{
+
+}
+
+void Player::AdjustGuardGauge()
+{
+
+}
+
+void Player::UpdateFinisherGaugeBar()
+{
+
+}
+
+void Player::AdjustFinisherGauge(float)
+{
+
 }
 
 void Player::Reset()

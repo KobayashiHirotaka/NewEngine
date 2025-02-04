@@ -10,6 +10,7 @@
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 #include "Application/GameObject/Ground/Ground.h"
+#include "Application/GameObject/BackGround/BackGround.h"
 
 class Game3dObjectFactory
 {

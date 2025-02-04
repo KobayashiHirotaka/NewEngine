@@ -120,9 +120,6 @@ private:
 	//Skydome
 	std::unique_ptr<Skydome> skydome_;
 
-	//BackGround
-	std::unique_ptr<BackGround> backGround_;
-
 	//GamePlaySceneUI
 	std::unique_ptr<GamePlaySceneUI> gamePlaySceneUI_;
 

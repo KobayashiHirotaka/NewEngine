@@ -76,10 +76,6 @@ void GamePlayScene::Initialize()
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
-	//BackGroundの生成、初期化
-	backGround_ = std::make_unique<BackGround>();
-	backGround_->Initialize();
-
 	//UI生成、初期化
 	gamePlaySceneUI_ = std::make_unique<GamePlaySceneUI>();
 	gamePlaySceneUI_->Initialize();
@@ -189,9 +185,6 @@ void GamePlayScene::Update()
 	//Skydomeの更新
 	skydome_->Update();
 
-	//BackGroundの更新
-	backGround_->Update();
-
 	//必殺技発動時のカメラ移動処理
 	if (player_->GetAttackData().isFinisher && player_->GetFinisherTimer() != kFinisherTime_)
 	{
@@ -296,9 +289,6 @@ void GamePlayScene::Draw()
 	{
 		//Game3dObjectManagerの描画
 		game3dObjectManager_->Draw(cameraController_->GetCamera());
-
-		//BackGroundの描画
-		backGround_->Draw(cameraController_->GetCamera());
 	}
 
 	Model::PostDraw();

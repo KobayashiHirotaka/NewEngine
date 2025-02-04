@@ -248,11 +248,6 @@ void Enemy::EndAttack(bool&)
 	
 }
 
-void Enemy::EvaluateAttackTiming()
-{
-	
-}
-
 void Enemy::ApplyDamage()
 {
 	

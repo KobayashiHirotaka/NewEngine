@@ -25,6 +25,12 @@ IGame3dObject* Game3dObjectFactory::CreateGameObject(const std::string& objectNa
 		Ground* ground = new Ground();
 		return ground;
 	}
+	else if (objectName == "BackGround")
+	{
+		BackGround* backGround = new BackGround();
+		return backGround;
+	}
+
 	
 	return nullptr;
 }
