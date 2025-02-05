@@ -38,12 +38,6 @@ public:
 	//キャラクターの状態
 	struct CharacterState
 	{
-		//現在の行動
-		Behavior behavior = Behavior::kRoot;
-
-		//行動のリクエスト
-		std::optional<Behavior> behaviorRequest = std::nullopt;
-
 		//向いている方向
 		Direction direction = Direction::Right;
 
@@ -280,44 +274,9 @@ public:
 	/// <summary>リセット</summary>
 	virtual void Reset() = 0;
 
-
-	//アニメーション
-	/// <summary>ダウンアニメーション</summary>
-	virtual void DownAnimation() = 0;
-
-	/// <summary>ダウンアニメーションの終了</summary>
-	virtual void EndDownAnimation(int animationIndex, bool& isHitAttackType) = 0;
-
-
-	//キャラクターの状態
-	/// <summary>移動状態の初期化</summary>
-	virtual void InitializeBehaviorRoot() = 0;
-
-	/// <summary>移動状態の更新</summary>
-	virtual void UpdateBehaviorRoot() = 0;
-
-	/// <summary>攻撃状態の初期化</summary>
-	virtual void InitializeBehaviorAttack() = 0;
-	 
-	/// <summary>攻撃状態の更新</summary>
-	virtual void UpdateBehaviorAttack() = 0;
-
-	/// <summary>ジャンプ状態の初期化</summary>
-	virtual void InitializeBehaviorJump() = 0;
-
-	/// <summary>ジャンプ状態の更新</summary>
-	virtual void UpdateBehaviorJump() = 0;
-
-	/// <summary>スタン状態の初期化</summary>
-	virtual void InitializeBehaviorStan() = 0;
-
-	/// <summary>スタン状態の更新</summary>
-	virtual void UpdateBehaviorStan() = 0;
-
-
 	//攻撃
 	/// <summary>攻撃の開始</summary>
-	virtual void StartAttack(bool& isAttackType) = 0;
+	void StartAttack(bool& isAttackType);
 
 	/// <summary>攻撃の終了</summary>
 	virtual void EndAttack(bool& isAttackType) = 0;
@@ -338,26 +297,6 @@ public:
 	//当たり判定
 	/// <summary>当たり判定のリセット</summary>
 	virtual void ResetCollision() = 0;
-
-
-	//UIの更新
-	/// <summary>HPのUIの更新</summary>
-	virtual void UpdateHPBar() = 0;
-
-	/// <summary>ガードゲージのUIの更新</summary>
-	virtual void UpdateGuardGaugeBar() = 0;
-
-	/// <summary>ガードゲージのUIの適応</summary>
-	virtual void AdjustGuardGauge() = 0;
-
-	/// <summary>必殺技ゲージのUIの適応</summary>
-	virtual void UpdateFinisherGaugeBar() = 0;
-
-	/// <summary>必殺技ゲージのUIの適応</summary>
-	virtual void AdjustFinisherGauge(float value) = 0;
-
-	/// <summary>コンボ表示のUIの更新</summary>
-	virtual void UpdateComboNumberSprite() = 0;
 
 
 	/// <summary>アニメーションの更新</summary>
@@ -401,6 +340,7 @@ public:
 	void SetHp(int hp) { baseData_.hp_ = hp; };
 
 	void SetFrontSpeed(float frontSpeed) { moveData_.frontSpeed_ = frontSpeed; };
+
 	void SetBackSpeed(float backSpeed) { moveData_.backSpeed_ = backSpeed; };
 
 	void SetGuardGauge(float guardGauge) { baseData_.guardGauge_ = guardGauge; };
@@ -414,6 +354,8 @@ public:
 	void SetIsGround(bool isGround) { characterState_.isGround = isGround; };
 
 	//攻撃に関するSetter
+	void SetIsAttack(bool isAttack) { attackData_.isAttack = isAttack; };
+
 	void SetDamage(int damage) { attackData_.damage = damage; };
 
 	void SetGuardGaugeIncreaseAmount(float guardGaugeIncreaseAmount) { attackData_.guardGaugeIncreaseAmount = guardGaugeIncreaseAmount; };
@@ -425,8 +367,6 @@ public:
 	void SetHitStop(HitStop* hitStop) { hitStop_ = hitStop; };
 
 	void SetAttackType(std::string attackType) { attackType_ = attackType; };
-
-	void SetIsAttack(bool isAttack) { attackData_.isAttack = isAttack; };
 
 	//リセット状態のSetter
 	void SetIsReset(bool isReset) { isReset_ = isReset; };

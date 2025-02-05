@@ -75,36 +75,7 @@ public:
 	void SetIsKO(bool isKO) { isKO_ = isKO; };
 
 private:
-	//キャラクターの状態
-    /// <summary>移動状態の初期化</summary>
-	virtual void InitializeBehaviorRoot()override;
-
-	/// <summary>移動状態の更新</summary>
-	virtual void UpdateBehaviorRoot()override;
-
-	/// <summary>攻撃状態の初期化</summary>
-	virtual void InitializeBehaviorAttack()override;
-
-	/// <summary>攻撃状態の更新</summary>
-	virtual void UpdateBehaviorAttack()override;
-
-	/// <summary>ジャンプ状態の初期化</summary>
-	virtual void InitializeBehaviorJump()override;
-
-	/// <summary>ジャンプ状態の更新</summary>
-	virtual void UpdateBehaviorJump()override;
-
-	/// <summary>スタン状態の初期化</summary>
-	virtual void InitializeBehaviorStan()override;
-
-	/// <summary>ジャンプ状態の更新</summary>
-	virtual void UpdateBehaviorStan()override;
-
-
 	//攻撃
-	/// <summary>攻撃の開始</summary>
-	virtual void StartAttack(bool& isAttackType)override;
-
 	/// <summary>攻撃の終了</summary>
 	virtual void EndAttack(bool& isAttackType)override;
 
@@ -130,35 +101,6 @@ private:
 
 	/// <summary>当たり判定の初期化</summary>
 	void ResetCollision()override;
-
-
-	//UIの更新
-	/// <summary>HPのUIの更新</summary>
-	virtual void UpdateHPBar()override;
-
-	/// <summary>ガードゲージのUIの更新</summary>
-	virtual void UpdateGuardGaugeBar()override;
-
-	/// <summary>ガードゲージのUIの適応</summary>
-	virtual void AdjustGuardGauge()override;
-
-	/// <summary>必殺技ゲージのUIの適応</summary>
-	virtual void UpdateFinisherGaugeBar()override;
-
-	/// <summary>必殺技ゲージのUIの適応</summary>
-	virtual void AdjustFinisherGauge(float value)override;
-
-	/// <summary>コンボ表示のUIの更新</summary>
-	virtual void UpdateComboNumberSprite()override;
-
-
-	//アニメーション
-	/// <summary>ダウンアニメーション</summary>
-	virtual void DownAnimation()override;
-
-	/// <summary>ダウンアニメーションの終了</summary>
-	virtual void EndDownAnimation(int animationIndex, bool& isHitAttackType)override;
-
 	
 private:
 	//プレイヤー

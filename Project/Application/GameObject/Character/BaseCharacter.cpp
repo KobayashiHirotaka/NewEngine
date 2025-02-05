@@ -42,66 +42,6 @@ void BaseCharacter::Update()
 		Reset();
 	}
 
-	//TODO:StatePatternでやる
-	//行動
-	if (characterState_.behaviorRequest)
-	{
-		characterState_.behavior = characterState_.behaviorRequest.value();
-
-		switch (characterState_.behavior)
-		{
-		case Behavior::kRoot:
-		default:
-			//移動
-			InitializeBehaviorRoot();
-			break;
-
-		case Behavior::kAttack:
-			//攻撃
-			InitializeBehaviorAttack();
-			break;
-
-		case Behavior::kJump:
-			//ジャンプ
-			InitializeBehaviorJump();
-			break;
-
-		case Behavior::kStan:
-			//スタン
-			InitializeBehaviorStan();
-			break;
-		}
-
-		characterState_.behaviorRequest = std::nullopt;
-	}
-
-	switch (characterState_.behavior)
-	{
-	case Behavior::kRoot:
-	default:
-		if (GamePlayScene::sRoundStartTimer_ <= 0 && GamePlayScene::sMigrationTimer == kMaxMigrationTime_)
-		{
-			//移動
-			UpdateBehaviorRoot();
-		}
-		break;
-
-	case Behavior::kAttack:
-		//攻撃
-		UpdateBehaviorAttack();
-		break;
-
-	case Behavior::kJump:
-		//ジャンプ
-		UpdateBehaviorJump();
-		break;
-
-	case Behavior::kStan:
-		//スタン
-		UpdateBehaviorStan();
-		break;
-	}
-
 	//画面端の処理
 	if (worldTransform_.translation.x >= rightEdge_)
 	{
@@ -124,11 +64,6 @@ void BaseCharacter::Update()
 		worldTransform_.translation.x = Lerp(worldTransform_.translation.x, attackLeftEdge_, kLerpSpeed_);
 	}
 
-	//ジャンプ中にプレイヤーと当たったときの処理
-	if (characterState_.behaviorRequest == Behavior::kJump && characterState_.isHitCharacter)
-	{
-		worldTransform_.translation.y = 0.0f;
-	}
 
 	//床についているかどうか
 	if (worldTransform_.translation.x <= 0.0f)
@@ -142,17 +77,6 @@ void BaseCharacter::Update()
 	
 	//コンボ関連の処理
 	HitCombo();
-	UpdateComboNumberSprite();
-
-	//ダウン時のアニメーション
-	DownAnimation();
-
-	//各ゲージの更新処理
-	UpdateHPBar();
-
-	UpdateGuardGaugeBar();
-
-	UpdateFinisherGaugeBar();
 
 	//キャラクターと当たっているか
 	characterState_.isHitCharacter = false;
@@ -167,9 +91,6 @@ void BaseCharacter::ImGui()
 
 void BaseCharacter::Reset()
 {
-	//行動
-	characterState_.behaviorRequest = Behavior::kRoot;
-
 	//アニメーション用の変数
 	attackData_.attackAnimationFrame = 0;
 	animationTime_ = 0;
@@ -237,36 +158,8 @@ void BaseCharacter::Reset()
 	isReset_ = false;
 }
 
-void BaseCharacter::EndDownAnimation(int animationIndex, bool& isHitAttackType)
-{
-	//Behaviorの設定
-	characterState_.behaviorRequest = Behavior::kRoot;
-
-	//アニメーション,演出用変数の設定
-	animationIndex_ = animationIndex;
-	timerData_.downAnimationTimer = timerData_.maxDownAnimationTimer;
-	timerData_.effectTimer = timerData_.maxEffectTimer;
-	animationTime_ = 0.0f;
-	model_->SetAnimationTime(animationTime_);
-
-	//くらった攻撃
-	isHitAttackType = false;
-
-	//ダメージを受けたかどうか
-	attackData_.isDamaged = false;
-
-	//必殺技ゲージの増加がされたかどうか
-	attackData_.isFinisherGaugeIncreased = false;
-
-	//ダウンしているかどうか
-	characterState_.isDown = false;
-}
-
 void BaseCharacter::StartAttack(bool& isAttackType)
 {   
-	//Behaviorの設定
-	characterState_.behaviorRequest = Behavior::kAttack;
-
 	//アニメーション用変数の設定
 	animationTime_ = 0.0f;
 	model_->SetAnimationTime(animationTime_);
@@ -277,9 +170,6 @@ void BaseCharacter::StartAttack(bool& isAttackType)
 
 void BaseCharacter::EndAttack(bool& isAttackType)
 {
-	//Behaviorの設定
-	characterState_.behaviorRequest = Behavior::kRoot;
-
 	//攻撃しているかどうか
 	attackData_.isAttack = false;
 

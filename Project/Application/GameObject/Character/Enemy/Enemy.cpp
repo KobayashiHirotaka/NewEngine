@@ -190,57 +190,12 @@ void Enemy::ImGui()
 	
 }
 
-void Enemy::InitializeBehaviorRoot()
-{
-	
-}
-
-void Enemy::UpdateBehaviorRoot()
-{
-	
-}
-
-void Enemy::InitializeBehaviorAttack()
-{
-	
-}
-
-void Enemy::UpdateBehaviorAttack()
-{
-	
-}
-
-void Enemy::InitializeBehaviorJump()
-{
-	
-}
-
-void Enemy::UpdateBehaviorJump()
-{
-	
-}
-
-void Enemy::InitializeBehaviorStan()
-{
-
-}
-
-void Enemy::UpdateBehaviorStan()
-{
-
-}
-
 void Enemy::OnCollision(Collider* collider)
 {
 	if (collider->GetCollisionAttribute() & kCollisionAttributePlayer)
 	{
 		characterState_.isHitCharacter = true;
 	}
-}
-
-void Enemy::StartAttack(bool& )
-{
-
 }
 
 void Enemy::EndAttack(bool&)
@@ -258,47 +213,7 @@ void Enemy::ResetCollision()
 	
 }
 
-void Enemy::UpdateHPBar()
-{
-	
-}
-
-void Enemy::UpdateGuardGaugeBar()
-{
-	
-}
-
-void Enemy::AdjustGuardGauge()
-{
-	
-}
-
-void Enemy::UpdateFinisherGaugeBar()
-{
-	
-}
-
-void Enemy::AdjustFinisherGauge(float )
-{
-	
-}
-
 void Enemy::Reset()
-{
-	
-}
-
-void Enemy::DownAnimation()
-{
-	
-}
-
-void Enemy::EndDownAnimation(int , bool& )
-{
-	
-}
-
-void Enemy::UpdateComboNumberSprite()
 {
 	
 }

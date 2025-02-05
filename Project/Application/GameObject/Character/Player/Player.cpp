@@ -205,16 +205,14 @@ void Player::Update()
 	Vector3 playerWorldPosition = worldTransform_.translation;
 	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
 
-	if (enemyWorldPosition.x > playerWorldPosition.x && characterState_.behavior != Behavior::kJump
-		&& characterState_.behavior != Behavior::kAttack && !characterState_.isDown)
+	if (enemyWorldPosition.x > playerWorldPosition.x && !characterState_.isDown)
 	{
 		characterState_.direction = Direction::Right;
 		worldTransform_.rotation.y = characterState_.rightDirectionRotation;
 		isDirectionRight_ = true;
 	}
 
-	if (enemyWorldPosition.x < playerWorldPosition.x && characterState_.behavior != Behavior::kJump
-		&& characterState_.behavior != Behavior::kAttack && !characterState_.isDown)
+	if (enemyWorldPosition.x < playerWorldPosition.x && !characterState_.isDown)
 	{
 		characterState_.direction = Direction::Left;
 		worldTransform_.rotation.y = characterState_.leftDirectionRotation;
@@ -244,7 +242,6 @@ void Player::Update()
 
 	//コンボ関連の処理
 	HitCombo();
-	UpdateComboNumberSprite();
 
 	//ガードアニメーションタイマーのリセット
 	if (!enemy_->GetAttackData().isGuarded)
@@ -334,18 +331,6 @@ void Player::ImGui()
 	
 }
 
-void Player::InitializeBehaviorRoot()
-{
-	//アニメーション
-	const int kAnimationIdle = 5;
-	animationIndex_ = kAnimationIdle;
-}
-
-void Player::UpdateBehaviorRoot()
-{
-	
-}
-
 void Player::Move(const Vector3 velocity)
 {
 	//移動
@@ -358,36 +343,6 @@ void Player::Move(const Vector3 velocity)
 void Player::ChangeState(std::unique_ptr<PlayerBaseState> state)
 {
 	nextState_ = std::move(state);
-}
-
-void Player::InitializeBehaviorAttack()
-{
-
-}
-
-void Player::UpdateBehaviorAttack()
-{
-	
-}
-
-void Player::InitializeBehaviorJump()
-{
-	
-}
-
-void Player::UpdateBehaviorJump()
-{
-	
-}
-
-void Player::InitializeBehaviorStan()
-{
-
-}
-
-void Player::UpdateBehaviorStan()
-{
-	
 }
 
 void Player::OnCollision(Collider* collider)
@@ -440,12 +395,6 @@ void Player::UpdateBullets()
 
 }
 
-void Player::StartAttack(bool& isAttackType)
-{
-	//攻撃の開始処理
-	BaseCharacter::StartAttack(isAttackType);
-}
-
 void Player::EndAttack(bool& isAttackType)
 {
 	//攻撃の終了処理
@@ -465,48 +414,7 @@ void Player::ResetCollision()
 	collider_->SetAABB(aabb_);
 }
 
-void Player::UpdateHPBar()
-{
-
-}
-
-void Player::UpdateGuardGaugeBar()
-{
-
-}
-
-void Player::AdjustGuardGauge()
-{
-
-}
-
-void Player::UpdateFinisherGaugeBar()
-{
-
-}
-
-void Player::AdjustFinisherGauge(float)
-{
-
-}
-
 void Player::Reset()
-{
-	
-}
-
-void Player::DownAnimation()
-{
-
-}
-
-void Player::EndDownAnimation(int animationIndex, bool& isHitAttackType)
-{
-	//ダウンアニメーションの終了処理
-	BaseCharacter::EndDownAnimation(animationIndex, isHitAttackType);
-}
-
-void Player::UpdateComboNumberSprite()
 {
 	
 }
