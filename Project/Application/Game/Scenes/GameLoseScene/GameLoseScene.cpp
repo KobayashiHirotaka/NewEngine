@@ -70,19 +70,16 @@ void GameLoseScene::Update()
 	//シーン切り替え
 	if (input_->GetJoystickState())
 	{
-		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
+		if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A) && isTransitionEnd_)
 		{
-			if (isTransitionEnd_)
+			isTransitionStart_ = true;
+
+			if (!isPlayAudio_)
 			{
-				isTransitionStart_ = true;
-
-				if (!isPlayAudio_)
-				{
-					audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
-				}
-
-				isPlayAudio_ = true;
+				audio_->PlaySoundMP3(selectSoundHandle_, false, volume_);
 			}
+
+			isPlayAudio_ = true;
 		}
 	}
 
