@@ -385,14 +385,29 @@ void Player::OnCollision(Collider* collider)
 	}
 }
 
-void Player::ShootBullet(const Vector3&, const Vector3&)
+void Player::ShootBullet(const Vector3& startPosition, const Vector3& velocity)
 {
-
+	//弾を生成し、リストに追加する
+	auto newBullet = std::make_unique<PlayerBullet>();
+	newBullet->Create(bulletModel_.get(), startPosition, velocity);
+	bullets_.push_back(std::move(newBullet));
 }
 
 void Player::UpdateBullets()
 {
-
+	//弾の更新と衝突判定などを行う
+	for (auto it = bullets_.begin(); it != bullets_.end();)
+	{
+		(*it)->Update();
+		if ((*it)->GetIsDead())
+		{
+			it = bullets_.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }
 
 void Player::EndAttack(bool& isAttackType)

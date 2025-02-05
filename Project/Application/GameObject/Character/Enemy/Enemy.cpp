@@ -177,12 +177,38 @@ void Enemy::DrawCollision(const Camera& camera)
 
 void Enemy::DrawSprite()
 {
-	
+	//体力ゲージの描画
+	if (baseData_.hp_ >= 0)
+	{
+		hpBar_.sprite_->Draw();
+	}
+
+	//ガードゲージの描画
+	guardGaugeBar_.sprite_->Draw();
+
+	//必殺技ゲージの描画
+	finisherGaugeBar_.sprite_->Draw();
+
+	//エネミーアイコンの描画
+	enemyIconSprite_->Draw();
+
+	//コンボ表示の描画
+	if (comboCount_ >= kComboCount_[2])
+	{
+		hitSprite_->Draw();
+		comboNumSprite_->Draw();
+	}
 }
 
-void Enemy::DrawParticle(const Camera&)
+void Enemy::DrawParticle(const Camera& camera)
 {
+	//パーティクルの描画
+	particleEffectPlayer_->Draw(camera);
 
+	for (auto& bullet : bullets_)
+	{
+		bullet->DrawParticle(camera);
+	}
 }
 
 void Enemy::ImGui()
@@ -198,9 +224,11 @@ void Enemy::OnCollision(Collider* collider)
 	}
 }
 
-void Enemy::EndAttack(bool&)
+void Enemy::EndAttack(bool& isAttackType)
 {
-	
+	//攻撃の終了処理
+	player_->SetIsGuarded(false);
+	BaseCharacter::EndAttack(isAttackType);
 }
 
 void Enemy::ApplyDamage()
@@ -210,7 +238,9 @@ void Enemy::ApplyDamage()
 
 void Enemy::ResetCollision()
 {
-	
+	//当たり判定のリセット
+	aabb_ = defaultCollsiion_;
+	collider_->SetAABB(aabb_);
 }
 
 void Enemy::Reset()
@@ -218,14 +248,29 @@ void Enemy::Reset()
 	
 }
 
-void Enemy::ShootBullet(const Vector3& , const Vector3& )
+void Enemy::ShootBullet(const Vector3& startPosition, const Vector3& velocity)
 {
-
+	//弾を生成し、リストに追加する
+	auto newBullet = std::make_unique<EnemyBullet>();
+	newBullet->Create(bulletModel_.get(), startPosition, velocity);
+	bullets_.push_back(std::move(newBullet));
 }
 
 void Enemy::UpdateBullets()
 {
-
+	//弾の更新と衝突判定などを行う
+	for (auto it = bullets_.begin(); it != bullets_.end();)
+	{
+		(*it)->Update();
+		if ((*it)->GetIsDead())
+		{
+			it = bullets_.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }
 
 void Enemy::HitCombo()
