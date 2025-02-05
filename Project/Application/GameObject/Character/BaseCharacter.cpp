@@ -1,6 +1,6 @@
 /**
  * @file BaseCharacter.cpp
- * @brief 各キャラクター(Player,Enemy)の基底クラス
+ * @brief 各キャラクターの基底クラス
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

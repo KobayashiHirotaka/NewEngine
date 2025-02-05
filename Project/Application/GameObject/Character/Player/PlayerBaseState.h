@@ -1,6 +1,6 @@
 /**
  * @file PlayerBaseState.h
- * @brief Stateの基底クラス
+ * @brief プレイヤーの状態を管理する基底クラス
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

@@ -1,6 +1,6 @@
 /**
  * @file PlayerAttackState.h
- * @brief Playerの攻撃状態を管理するクラス
+ * @brief プレイヤーの攻撃状態を管理するクラス
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

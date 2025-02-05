@@ -1,6 +1,6 @@
 /**
  * @file PlayerRootState.h
- * @brief Playerの通常状態を管理するクラス
+ * @brief プレイヤーの通常状態を管理するクラス
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

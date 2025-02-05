@@ -1,6 +1,6 @@
 /**
  * @file PlayerDownState.h
- * @brief Playerのダウン状態を管理するクラス
+ * @brief プレイヤーのダウン状態を管理するクラス
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */

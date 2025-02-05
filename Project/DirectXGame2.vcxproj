@@ -17,6 +17,10 @@
   <ItemGroup>
     <ClCompile Include="Application\GameObject\BackGround\BackGround.cpp" />
     <ClCompile Include="Application\GameObject\Character\BaseBullet.cpp" />
+    <ClCompile Include="Application\GameObject\Character\CharacterAttackState.cpp" />
+    <ClCompile Include="Application\GameObject\Character\CharacterDownState.cpp" />
+    <ClCompile Include="Application\GameObject\Character\CharacterJumpState.cpp" />
+    <ClCompile Include="Application\GameObject\Character\CharacterRootState.cpp" />
     <ClCompile Include="Application\GameObject\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Application\GameObject\Character\Enemy\EnemyAttackState.cpp" />
     <ClCompile Include="Application\GameObject\Character\Enemy\EnemyBullet.cpp" />
@@ -169,6 +173,10 @@
   <ItemGroup>
     <ClInclude Include="Application\GameObject\BackGround\BackGround.h" />
     <ClInclude Include="Application\GameObject\Character\BaseBullet.h" />
+    <ClInclude Include="Application\GameObject\Character\CharacterAttackState.h" />
+    <ClInclude Include="Application\GameObject\Character\CharacterDownState.h" />
+    <ClInclude Include="Application\GameObject\Character\CharacterJumpState.h" />
+    <ClInclude Include="Application\GameObject\Character\CharacterRootState.h" />
     <ClInclude Include="Application\GameObject\Character\Direction.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\EnemyAttackState.h" />

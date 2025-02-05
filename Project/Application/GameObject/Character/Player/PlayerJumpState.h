@@ -1,6 +1,6 @@
 /**
  * @file PlayerJumpState.h
- * @brief Playerのジャンプ状態を管理するクラス
+ * @brief プレイヤーのジャンプ状態を管理するクラス
  * @author  KOBAYASHI HIROTAKA
  * @date 未記録
  */
