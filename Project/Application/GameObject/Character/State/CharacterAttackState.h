@@ -6,9 +6,14 @@
  */
 
 #pragma once
+#include "Engine/Components/Input/Input.h"
+#include "Engine/Utility/Math/MyMath.h"
+#include "Application/GameObject/Character/Direction.h"
+#include <unordered_map>
 
 class CharacterAttackState
 {
-
+public:
+	
 };
 
