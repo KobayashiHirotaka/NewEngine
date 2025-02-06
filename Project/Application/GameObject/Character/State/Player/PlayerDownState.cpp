@@ -14,5 +14,5 @@ void PlayerDownState::Initialize()
 
 void PlayerDownState::Update()
 {
-
+	
 }

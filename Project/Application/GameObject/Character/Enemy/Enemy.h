@@ -135,27 +135,6 @@ private:
 	const float kBarSpace_ = 15.6f;
 	float barSize_ = 480.0f;
 
-	//Sprite(ガードゲージ)
-	UI guardGaugeBar_;
-	const float kGuardGaugeBarSpace_ = 48.5f;
-	float guardGaugeBarSize_ = 240.0f;
-
-	//Sprite(必殺技ゲージ)
-	UI finisherGaugeBar_;
-	const float kFinisherGaugeBarSpace_ = 627.0f;
-	float finisherGaugeBarSize_ = 240.0f;
-
-	//キャラクターアイコンのSprite
-	std::unique_ptr<Sprite> enemyIconSprite_ = nullptr;
-	uint32_t enemyIconTextureHandle_ = 0;
-
-	//Sprite(コンボ表示)
-	std::unique_ptr<Sprite> hitSprite_ = nullptr;
-	uint32_t hitTextureHandle_;
-
-	std::unique_ptr<Sprite> comboNumSprite_ = nullptr;
-	uint32_t comboNumTextureHandle_;
-
 	//サウンド
 	uint32_t attackSoundHandle_ = 0u;
 	uint32_t weaponAttackSoundHandle_ = 0u;

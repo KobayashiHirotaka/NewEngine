@@ -594,6 +594,12 @@
     <ClCompile Include="Application\GameObject\Character\State\Enemy\EnemyRootState.cpp">
       <Filter>ソース ファイル\Project\GameObject\Character\State\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyUI.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameObject\Character\Player\PlayerUI.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -913,6 +919,15 @@
     </ClInclude>
     <ClInclude Include="Application\GameObject\Character\State\Player\PlayerRootState.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character\State\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\ICharacterUI.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyUI.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObject\Character\Player\PlayerUI.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -7,8 +7,8 @@
 
 #pragma once
 #include "Application/GameObject/Character/BaseCharacter.h"
-#include "PlayerBullet.h"
 #include "Application/GameObject/Character/State/Player/PlayerRootState.h"
+#include "PlayerBullet.h"
 
 //前方宣言
 class Enemy;
@@ -161,32 +161,6 @@ private:
 	bool isDirectionRight_ = false;
 
 	bool isCancel_ = false;
-
-	//Sprite(hp)
-	UI hpBar_;
-	const float kBarSpace_ = 15.6f;
-	float barSize_ = 480.0f;
-
-	//Sprite(ガードゲージ)
-	UI guardGaugeBar_;
-	const float kGuardGaugeBarSpace_ = 48.5f;
-	float guardGaugeBarSize_ = 240.0f;
-
-	//Sprite(必殺技ゲージ)
-	UI finisherGaugeBar_;
-	const float kFinisherGaugeBarSpace_ = 627.0f;
-	float finisherGaugeBarSize_ = 240.0f;
-
-	//キャラクターアイコンのSprite
-	std::unique_ptr<Sprite> playerIconSprite_ = nullptr;
-	uint32_t playerIconTextureHandle_ = 0;
-
-	//Sprite(コンボ表示)
-	std::unique_ptr<Sprite> hitSprite_ = nullptr;
-	uint32_t hitTextureHandle_;
-
-	std::unique_ptr<Sprite> comboNumSprite_ = nullptr;
-	uint32_t comboNumTextureHandle_;
 
 	//サウンド
 	uint32_t attackSoundHandle_ = 0u;
