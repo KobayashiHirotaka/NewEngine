@@ -53,15 +53,6 @@ void PlayerRootState::Move()
         const float kMoveAnimationSpeed = 1.5f;
         float animationSpeed = kMoveAnimationSpeed;
 
-        //アニメーション定数
-        enum AnimationIndex 
-        {
-            kAnimationBackMove = 0,
-            kAnimationFlontMove = 1,
-            kAnimationGuard = 2,
-            kAnimationIdle = 5
-        };
-
         //入力用の変数
         bool isMovingRight = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > input_->GetDeadZone());
         bool isMovingLeft = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -input_->GetDeadZone());

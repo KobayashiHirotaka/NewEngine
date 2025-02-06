@@ -152,12 +152,6 @@ private:
 	std::unique_ptr<PlayerBaseState> currentState_;
 	std::unique_ptr<PlayerBaseState> nextState_;
 
-	//弾攻撃のクールダウン
-	int shotCooldownTimer_ = 0;
-
-	//弾を打ったか
-	bool hasShot_ = false;
-
 	//向き
 	bool isDirectionRight_ = false;
 

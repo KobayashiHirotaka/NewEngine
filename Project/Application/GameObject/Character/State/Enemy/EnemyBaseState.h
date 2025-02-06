@@ -8,6 +8,7 @@
 #pragma once
 #include "Engine/Components/Input/Input.h"
 #include "Engine/Utility/Math/MyMath.h"
+#include "Application/GameObject/Character/Direction.h"
 
 class Enemy;
 
@@ -29,4 +30,12 @@ public:
 protected:
 	//Enemyのポインタ
 	Enemy* enemy_;
+
+	//アニメーション用のパラメーター
+	uint32_t animationIndex_ = 5;
+	float animationTime_ = 0.0f;
+	const float kScaleFacter_ = 100.0f;
+
+	//キャラクターの向き
+	Direction direction_ = Direction::Right;
 };

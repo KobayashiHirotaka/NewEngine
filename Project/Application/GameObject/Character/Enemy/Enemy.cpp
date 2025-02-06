@@ -42,6 +42,11 @@ void Enemy::Initialize()
 	//弾のモデルを生成
 	bulletModel_.reset(Model::CreateFromOBJ("Resource/Bullet", "Bullet.obj"));
 
+	//Stateの生成、初期化
+	currentState_ = std::make_unique<EnemyRootState>();
+	currentState_->SetEnemy(this);
+	currentState_->Initialize();
+
 	//UI生成、初期化
 	enemyUI_ = std::make_unique<EnemyUI>();
 	enemyUI_->SetEnemy(this);
@@ -61,9 +66,6 @@ void Enemy::Initialize()
 	baseData_.hp_ = baseData_.kMaxHp_;
 	moveData_.frontSpeed_ = kMaxFrontSpeed_;
 	moveData_.backSpeed_ = kMaxBackSpeed_;
-
-	//行動パターンの初期化
-	patternCount_ = 0;
 
 	//WorldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
@@ -87,6 +89,24 @@ void Enemy::Update()
 
 	//更新
 	BaseCharacter::Update();
+
+	//エディターで設定したパラメータをセット
+	AttackEditor::GetInstance()->SetAttackParameters(attackType_, attackData_.attackStartTime, attackData_.attackEndTime, attackData_.recoveryTime,
+		attackData_.cancelStartTime, attackData_.cancelEndTime, attackData_.damage, attackData_.hitRecoveryTime, attackData_.guardGaugeIncreaseAmount,
+		attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop, aabb_, false, characterState_.direction);
+
+	if (nextState_)
+	{
+		//Stateの生成
+		nextState_->SetEnemy(this);
+		nextState_->Initialize();
+
+		//State切り替え
+		currentState_ = std::move(nextState_);
+	}
+
+	//Stateの更新
+	currentState_->Update();
 
 	//UIの更新
 	enemyUI_->Update();
@@ -137,6 +157,21 @@ void Enemy::ImGui()
 {
 	
 }
+
+void Enemy::Move(const Vector3 velocity)
+{
+	//移動
+	worldTransform_.translation = Add(worldTransform_.translation, velocity);
+
+	//WorldTransformの更新
+	worldTransform_.UpdateMatrixEuler();
+}
+
+void Enemy::ChangeState(std::unique_ptr<EnemyBaseState> state)
+{
+	nextState_ = std::move(state);
+}
+
 
 void Enemy::OnCollision(Collider* collider)
 {

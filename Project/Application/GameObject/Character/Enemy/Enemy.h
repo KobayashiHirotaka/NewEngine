@@ -7,6 +7,7 @@
 
 #pragma once
 #include "Application/GameObject/Character/BaseCharacter.h"
+#include "Application/GameObject/Character/State/Enemy/EnemyRootState.h"
 #include "EnemyBullet.h"
 #include "EnemyUI.h"
 
@@ -48,6 +49,25 @@ public:
 	virtual void Reset()override;
 
 
+	/// <summary>Stateの切り替え</summary>
+	void ChangeState(std::unique_ptr<EnemyBaseState> state);
+
+
+	/// <summary>移動</summary>
+	void Move(const Vector3 velocity);
+
+
+	/// <summary>当たり判定の初期化</summary>
+	void ResetCollision()override;
+
+
+	/// <summary>弾を発射</summary>
+	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
+
+	/// <summary>弾の更新</summary>
+	void UpdateBullets();
+
+
 	/// <summary>WorldPositionの取得</summary>
 	Vector3 GetWorldPosition();
 
@@ -68,6 +88,9 @@ public:
 	//Bullets
 	const std::vector<std::unique_ptr<EnemyBullet>>& GetBullets() const { return bullets_; };
 
+	//Player
+	Player* GetPlayer() const { return player_; };
+
 	//Setter
 	//Player
 	void SetPlayer(Player* player) { player_ = player; };
@@ -87,18 +110,8 @@ private:
 	virtual void ComboCountUpdate(const int kRecoveryTime)override;
 
 
-	/// <summary>弾を発射</summary>
-	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
-
-	/// <summary>弾の更新</summary>
-	void UpdateBullets();
-
-
 	/// <summary>当たり判定</summary>
 	void OnCollision(Collider* collider)override;
-
-	/// <summary>当たり判定の初期化</summary>
-	void ResetCollision()override;
 	
 private:
 	//プレイヤー
@@ -115,11 +128,9 @@ private:
 	std::unique_ptr<Model> bulletModel_;
 	std::vector<std::unique_ptr<EnemyBullet>> bullets_;
 
-	//弾攻撃のクールダウン
-	int shotCooldownTimer_ = 0;
-
-	//弾を打ったか
-	bool hasShot_ = false;
+	//State
+	std::unique_ptr<EnemyBaseState> currentState_;
+	std::unique_ptr<EnemyBaseState> nextState_;
 
 	//キャンセルかどうか
 	bool isCancel_ = false;
@@ -138,24 +149,9 @@ private:
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
 
 
-	//行動のパターン
-	int patternCount_ = 1;
-	int moveTimer_ = 60;
-
-
 	//足の速さ
 	const float kMaxFrontSpeed_ = 0.03f;
 	const float kMaxBackSpeed_ = 0.02f;
-
-	//ガード状態か
-	bool isGuardMode_ = false;
-
-	//ガードタイマー(確定反撃用)
-	const int kGuardTime_ = 20;
-	int guardTimer_ = kGuardTime_;
-
-	//パターンカウントの定数
-	const int kPatternCount_[8] = { 0,1,2,3,4,5,6,7 };
 
 	//テスト
 	bool isHitSecondAttack = false;
