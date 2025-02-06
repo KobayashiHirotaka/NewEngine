@@ -8,6 +8,7 @@
 #include "PlayerRootState.h"
 #include "PlayerJumpState.h"
 #include "PlayerAttackState.h"
+#include "PlayerDownState.h"
 #include "Application/GameObject/Character/Player/Player.h"
 #include "Application/GameObject/Character/Enemy/Enemy.h"
 
@@ -31,6 +32,13 @@ void PlayerRootState::Update()
 
     //攻撃
     Attack();
+
+    if (input_->PushKey(DIK_RETURN))
+    {
+        player_->SetDownType("軽ダウン");
+        player_->SetIsLightPunch(true);
+        player_->ChangeState(std::make_unique<PlayerDownState>());
+    }
 }
 
 void PlayerRootState::Move()

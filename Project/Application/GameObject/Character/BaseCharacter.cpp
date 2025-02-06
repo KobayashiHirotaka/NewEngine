@@ -234,3 +234,22 @@ void BaseCharacter::UpdateAnimationTime(float& animationTime, const bool isLoop,
 	model->SetAnimationTime(animationTime);
 	model->ApplyAnimation(animationIndex);
 }
+
+void BaseCharacter::EndDownAnimation(const int animationIndex)
+{
+	//アニメーション,演出用変数の設定
+	animationIndex_ = animationIndex;
+	timerData_.downAnimationTimer = timerData_.maxDownAnimationTimer;
+	timerData_.effectTimer = timerData_.maxEffectTimer;
+	animationTime_ = 0.0f;
+	model_->SetAnimationTime(animationTime_);
+
+	//ダメージを受けたかどうか
+	attackData_.isDamaged = false;
+
+	//必殺技ゲージの増加がされたかどうか
+	attackData_.isFinisherGaugeIncreased = false;
+
+	//ダウンしているかどうか
+	characterState_.isDown = false;
+}

@@ -7,7 +7,6 @@
 
 #pragma once
 #include "PlayerBaseState.h"
-#include "Application/GameObject/Character/Direction.h"
 #include <unordered_map>
 
 class PlayerAttackState : public PlayerBaseState
@@ -37,10 +36,10 @@ public:
 		bool isAttackCancel;
 	};
 
-	//攻撃用のパラメータ
+	//攻撃時のパラメータ
 	struct AttackData
 	{
-		int animationId;
+		int animationIndex;
 		float animationSpeed;
 		AttackMoveData moveData;
 		AttackCancelData cancelData;
@@ -73,20 +72,14 @@ private:
 	//Inputのポインタ
 	Engine::Input* input_ = nullptr;
 
-	//アニメーション用のパラメーター
-	uint32_t animationIndex_ = 4;
-	float animationTime_ = 0.0f;
-	int attackAnimationFrame_ = 0;
-	const float kScaleFacter_ = 100.0f;
-
 	//攻撃中の移動用パラメーター
 	AttackMoveData attackMoveData_;
 
 	//攻撃のキャンセル用パラメーター
 	AttackCancelData attackCancelData_;
 
-	//キャラクターの向き
-	Direction direction_ = Direction::Right;
+	//アニメーションフレーム
+	int attackAnimationFrame_ = 0;
 
 	//弾攻撃用のフラグ
 	bool hasShot_ = false;

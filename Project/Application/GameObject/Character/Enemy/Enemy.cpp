@@ -146,16 +146,10 @@ void Enemy::OnCollision(Collider* collider)
 	}
 }
 
-void Enemy::EndAttack(bool& isAttackType)
-{
-	//攻撃の終了処理
-	player_->SetIsGuarded(false);
-	BaseCharacter::EndAttack(isAttackType);
-}
-
 void Enemy::ApplyDamage()
 {
-	
+	attackData_.isDamaged = true;
+	baseData_.hp_ -= player_->GetAttackData().damage;
 }
 
 void Enemy::ResetCollision()

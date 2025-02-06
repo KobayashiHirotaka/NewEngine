@@ -14,8 +14,6 @@ void PlayerAttackState::Initialize()
 	//Inputのインスタンスを取得
 	input_ = Engine::Input::GetInstance();
 
-	attackAnimationFrame_ = player_->GetAttackData().attackAnimationFrame;
-
 	direction_ = player_->GetCharacterState().direction;
 
 	attackTable_ = {
@@ -143,7 +141,7 @@ void PlayerAttackState::HandleAttack()
 		attackCancelData_ = data.cancelData;
 
 		//攻撃
-		Attack(data.animationId, data.animationSpeed, attackMoveData_, attackCancelData_);
+		Attack(data.animationIndex, data.animationSpeed, attackMoveData_, attackCancelData_);
 
 		//弾攻撃の場合
 		if (attackType == "ショット")
@@ -152,3 +150,5 @@ void PlayerAttackState::HandleAttack()
 		}
 	}
 }
+
+

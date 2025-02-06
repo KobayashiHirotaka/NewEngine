@@ -77,9 +77,6 @@ public:
 
 private:
 	//攻撃
-	/// <summary>攻撃の終了</summary>
-	virtual void EndAttack(bool& isAttackType)override;
-
 	/// <summary>ダメージの適応</summary>
 	virtual void ApplyDamage()override;
 

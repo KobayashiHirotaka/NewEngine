@@ -279,7 +279,7 @@ public:
 	void StartAttack(bool& isAttackType);
 
 	/// <summary>攻撃の終了</summary>
-	virtual void EndAttack(bool& isAttackType) = 0;
+	void EndAttack(bool& isAttackType);
 
 	/// <summary>攻撃タイミングを評価</summary>
 	void EvaluateAttackTiming(int& attackAnimationFrame);
@@ -303,6 +303,9 @@ public:
 	void UpdateAnimationTime(float& animationTime, const bool isLoop, const float frameRate,
 		const int animationIndex, Model* model);
 
+	/// <summary>ダウンアニメーションの終了</summary>
+	void EndDownAnimation(const int animationIndex);
+
 
 	//基本データに関するGetter
 	BaseData GetBaseData() { return baseData_; };
@@ -320,6 +323,8 @@ public:
 	AttackData& GetAttackData() { return attackData_; };
 
 	std::string GetAttackType() const { return attackType_; };
+
+	std::string GetDownType() const { return downType_; };
 
 	//エフェクトに関するGetter
 	bool GetIsShake() const { return effectState_.isShake; };
@@ -341,30 +346,26 @@ public:
 
 	void SetBackSpeed(float backSpeed) { moveData_.backSpeed_ = backSpeed; };
 
-	void SetGuardGauge(float guardGauge) { baseData_.guardGauge_ = guardGauge; };
-
-	void SetFinisherGauge(float finisherGauge) { baseData_.finisherGauge_ = finisherGauge; };
-
 	void SetAnimationIndex(uint32_t animationIndex) { animationIndex_ = animationIndex; };
 
 	void SetPositionY(float positionY) { worldTransform_.translation.y = positionY; };
 
 	void SetIsGround(bool isGround) { characterState_.isGround = isGround; };
 
+	void SetIsDown(bool isDown) { characterState_.isDown = isDown; };
+
 	//攻撃に関するSetter
 	void SetIsAttack(bool isAttack) { attackData_.isAttack = isAttack; };
 
 	void SetDamage(int damage) { attackData_.damage = damage; };
 
-	void SetGuardGaugeIncreaseAmount(float guardGaugeIncreaseAmount) { attackData_.guardGaugeIncreaseAmount = guardGaugeIncreaseAmount; };
-
-	void SetFinisherGaugeIncreaseAmount(float finisherGaugeIncreaseAmount) { attackData_.finisherGaugeIncreaseAmount = finisherGaugeIncreaseAmount; };
-
-	void SetIsGuarded(bool isGuarded) { attackData_.isGuarded = isGuarded; };
-
 	void SetHitStop(HitStop* hitStop) { hitStop_ = hitStop; };
 
 	void SetAttackType(std::string attackType) { attackType_ = attackType; };
+
+	void SetDownType(std::string downType) { downType_ = downType; };
+
+	void SetIsLightPunch(bool isLightPunch) { characterState_.isHitLightPunch = isLightPunch; };
 
 	//リセット状態のSetter
 	void SetIsReset(bool isReset) { isReset_ = isReset; };
@@ -402,7 +403,6 @@ protected:
 
 	//パーティクル
 	std::unique_ptr<ParticleEffectPlayer> particleEffectPlayer_;
-	bool isParticle_ = false;
 
 	//再生するanimationの番号
 	uint32_t animationIndex_ = 4;
@@ -437,6 +437,9 @@ protected:
 
 	//エディター用
 	std::string attackType_;
+
+	//ダウンタイプ
+	std::string downType_;
 
 	//KOしているかどうか
 	bool isKO_ = false;

@@ -332,16 +332,14 @@ void Player::UpdateBullets()
 	}
 }
 
-void Player::EndAttack(bool& isAttackType)
-{
-	//攻撃の終了処理
-	enemy_->SetIsGuarded(false);
-	BaseCharacter::EndAttack(isAttackType);
-}
-
 void Player::ApplyDamage()
 {
-
+	//ダメージの適応
+	if (!attackData_.isDamaged)
+	{
+		attackData_.isDamaged = true;
+		baseData_.hp_ += enemy_->GetAttackData().damage;
+	}
 }
 
 void Player::ResetCollision()
