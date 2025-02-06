@@ -11,6 +11,9 @@
 class IGameSceneUI
 {
 public:
+	/// <summary>デストラクタ</summary>
+	virtual ~IGameSceneUI() = default;
+
 	/// <summary>初期化</summary>
 	virtual void Initialize() = 0;
 

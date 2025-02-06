@@ -11,6 +11,9 @@
 class EnemyUI : public ICharacterUI
 {
 public:
+	/// <summary>デストラクタ</summary>
+	virtual ~EnemyUI() = default;
+
 	/// <summary>初期化</summary>
 	void Initialize()override;
 

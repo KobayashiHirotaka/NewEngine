@@ -11,6 +11,9 @@
 class PlayerUI : public ICharacterUI
 {
 public:
+	/// <summary>デストラクタ</summary>
+	virtual ~PlayerUI() = default;
+
 	/// <summary>初期化</summary>
 	void Initialize()override;
 
