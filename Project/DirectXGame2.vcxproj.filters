@@ -319,6 +319,24 @@
     <Filter Include="ソース ファイル\Project\Game\Guide">
       <UniqueIdentifier>{c179363c-6f29-468c-88aa-9dd087d72d42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\Character\State">
+      <UniqueIdentifier>{fef8383d-1853-4dda-aac8-6bc92e107851}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\Character\State">
+      <UniqueIdentifier>{97630240-5b8b-4e36-b01d-28deea754feb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\Character\State\Player">
+      <UniqueIdentifier>{47580b8d-9d57-43cf-8525-37b8cdaa29ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Project\GameObject\Character\State\Enemy">
+      <UniqueIdentifier>{ba65612c-8d53-4579-808b-243a8778a25d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\Character\State\Player">
+      <UniqueIdentifier>{af0641a6-37b4-48c2-af18-1737ed9ea536}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Project\GameObject\Character\State\Enemy">
+      <UniqueIdentifier>{9a8ea6db-d9fe-4612-834e-66269c2ea976}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -540,41 +558,41 @@
     <ClCompile Include="Application\Game\Scenes\GameWinScene\GameWinSceneUI.cpp">
       <Filter>ソース ファイル\Project\Game\Scenes\GameWinScene</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\Player\PlayerRootState.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
+    <ClCompile Include="Application\GameObject\Character\State\CharacterAttackState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\State</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\Player\PlayerAttackState.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
+    <ClCompile Include="Application\GameObject\Character\State\CharacterDownState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\State</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\Player\PlayerDownState.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
+    <ClCompile Include="Application\GameObject\Character\State\CharacterJumpState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\State</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\Player\PlayerJumpState.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Player</Filter>
+    <ClCompile Include="Application\GameObject\Character\State\CharacterRootState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\State</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyAttackState.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
+    <ClCompile Include="Application\GameObject\Character\State\Player\PlayerAttackState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\State\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyDownState.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
+    <ClCompile Include="Application\GameObject\Character\State\Player\PlayerDownState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\State\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyJumpState.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
+    <ClCompile Include="Application\GameObject\Character\State\Player\PlayerJumpState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\State\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\Enemy\EnemyRootState.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character\Enemy</Filter>
+    <ClCompile Include="Application\GameObject\Character\State\Player\PlayerRootState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\State\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\CharacterAttackState.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character</Filter>
+    <ClCompile Include="Application\GameObject\Character\State\Enemy\EnemyAttackState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\State\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\CharacterDownState.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character</Filter>
+    <ClCompile Include="Application\GameObject\Character\State\Enemy\EnemyDownState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\State\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\CharacterJumpState.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character</Filter>
+    <ClCompile Include="Application\GameObject\Character\State\Enemy\EnemyJumpState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\State\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Application\GameObject\Character\CharacterRootState.cpp">
-      <Filter>ソース ファイル\Project\GameObject\Character</Filter>
+    <ClCompile Include="Application\GameObject\Character\State\Enemy\EnemyRootState.cpp">
+      <Filter>ソース ファイル\Project\GameObject\Character\State\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -854,47 +872,47 @@
     <ClInclude Include="Application\Game\Scenes\GameTitleScene\GameTitleSceneUI.h">
       <Filter>ヘッダー ファイル\Project\Game\Scenes\GameTitleScene</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\Player\PlayerRootState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\CharacterAttackState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\Player\PlayerAttackState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\CharacterDownState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\Player\PlayerDownState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\CharacterJumpState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\Player\PlayerJumpState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\CharacterRootState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\Player\PlayerBaseState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Player</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\Enemy\EnemyAttackState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyAttackState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\Enemy\EnemyBaseState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyDownState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\Enemy\EnemyDownState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyJumpState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\Enemy\EnemyJumpState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyRootState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\Enemy\EnemyRootState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBaseState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character\Enemy</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\Player\PlayerAttackState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\CharacterAttackState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\Player\PlayerBaseState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\CharacterDownState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\Player\PlayerDownState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\CharacterJumpState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\Player\PlayerJumpState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\CharacterRootState.h">
-      <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
+    <ClInclude Include="Application\GameObject\Character\State\Player\PlayerRootState.h">
+      <Filter>ヘッダー ファイル\Project\GameObject\Character\State\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
