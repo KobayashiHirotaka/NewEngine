@@ -15,6 +15,8 @@ void PlayerAttackState::Initialize()
 	input_ = Engine::Input::GetInstance();
 
 	attackAnimationFrame_ = player_->GetAttackData().attackAnimationFrame;
+
+	direction_ = player_->GetCharacterState().direction;
 }
 
 void PlayerAttackState::Update()
@@ -50,9 +52,29 @@ void PlayerAttackState::Update()
 
 		//攻撃のキャンセル用のパラメーターを設定
 		attackCancelData_.isAttackCancel = false;
+		attackCancelData_.isCurrentAttack = player_->GetAttackData().isTCMiddlePunch;
 
 		//攻撃
 		Attack(kAnimationTCMiddlePunch, animationSpeed, attackMoveData_, attackCancelData_);
+	}
+	else if (player_->GetAttackType() == "ショット")
+	{
+		//アニメーション用のパラメーターを設定
+		const int kAnimationShot = 19;
+		const float animationSpeed = 1.2f;
+
+		//攻撃中の移動用のパラメーターを設定
+		attackMoveData_.isAttackMove = false;
+
+		//攻撃のキャンセル用のパラメーターを設定
+		attackCancelData_.isAttackCancel = false;
+		attackCancelData_.isCurrentAttack = player_->GetAttackData().isShot;
+
+		//攻撃
+		Attack(kAnimationShot, animationSpeed, attackMoveData_, attackCancelData_);
+
+		//弾攻撃
+		Shot(player_->GetWorldPosition());
 	}
 }
 
@@ -80,7 +102,7 @@ void PlayerAttackState::Attack(const int kAnimationIndex, const float animationS
 	//終了処理
 	if (attackAnimationFrame_ > player_->GetAttackData().recoveryTime)
 	{
-		player_->EndAttack(player_->GetAttackData().isLightPunch);
+		player_->EndAttack(attackCancelData_.isCurrentAttack);
 		player_->ResetCollision();
 		player_->ChangeState(std::make_unique<PlayerRootState>());
 	}
@@ -96,14 +118,44 @@ void PlayerAttackState::Attack(const int kAnimationIndex, const float animationS
 	attackAnimationFrame_ += static_cast<int>(GameTimer::GetDeltaTime() * kScaleFacter_);
 }
 
+void PlayerAttackState::Shot(const Vector3 position)
+{
+	if (!hasShot_)
+	{
+		const Vector2 kRespownPos = { 0.2f, 0.5f };
+		const float kBulletSpeed = 0.1f;
+
+		//向きに応じた方向係数
+		float directionFactor = (direction_ == Direction::Right) ? 1.0f : -1.0f;
+
+		//弾の発射位置と速度を計算
+		Vector3 bulletStartPosition = {
+			position.x + kRespownPos.x * directionFactor,
+			position.y + kRespownPos.y,
+			position.z
+		};
+		Vector3 bulletVelocity = { kBulletSpeed * directionFactor, 0.0f, 0.0f };
+
+		player_->ShootBullet(bulletStartPosition, bulletVelocity);
+
+		hasShot_ = true;
+	}
+
+	//終了処理
+	const int kShotEndTimer = 50;
+	if (attackAnimationFrame_ >= kShotEndTimer)
+	{
+		hasShot_ = false;
+	}
+}
+
 void PlayerAttackState::AttackMove(const AttackMoveData attackMoveData)
 {
 	//コンボがつながりやすくなるように移動する
 	if (attackAnimationFrame_ < attackMoveData.moveTime)
 	{
-		Direction direction = player_->GetCharacterState().direction;
 		Vector3 velocity = { 0.0f ,0.0f, 0.0f };
-		velocity.x = (direction == Direction::Right) ? attackMoveData.moveSpeed : -attackMoveData.moveSpeed;
+		velocity.x = (direction_ == Direction::Right) ? attackMoveData.moveSpeed : -attackMoveData.moveSpeed;
 		player_->Move(velocity);
 	}
 }

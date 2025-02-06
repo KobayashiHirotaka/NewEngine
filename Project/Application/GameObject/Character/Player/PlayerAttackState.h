@@ -7,6 +7,7 @@
 
 #pragma once
 #include "PlayerBaseState.h"
+#include "Application/GameObject/Character/Direction.h"
 
 class PlayerAttackState : public PlayerBaseState
 {
@@ -18,16 +19,7 @@ public:
 		TargetMiddlePunch
 	};
 
-	//攻撃パラメータ
-	struct AttackParameters
-	{
-		int animationIndex;
-		float animationSpeed;
-		bool isAttackMove;
-		bool isAttackCancel;
-		std::string nextAttackType;
-	};
-
+	//攻撃中の移動用のパラメータ
 	struct AttackMoveData
 	{
 		int moveTime;
@@ -35,6 +27,7 @@ public:
 		bool isAttackMove;
 	};
 
+	//攻撃のキャンセル用のパラメータ
 	struct AttackCancelData
 	{
 		std::string attackType;
@@ -53,6 +46,9 @@ private:
 	/// <summary>攻撃</summary>
 	void Attack(const int kAnimationIndex, const float animationSpeed, const AttackMoveData attackMoveData,
 		const AttackCancelData attackCancelData);
+
+	/// <summary>弾攻撃</summary>
+	void Shot(const Vector3 position);
 
 	/// <summary>攻撃中の移動</summary>
 	void AttackMove(const AttackMoveData attackMoveData);
@@ -75,5 +71,11 @@ private:
 
 	//攻撃のキャンセル用パラメーター
 	AttackCancelData attackCancelData_;
+
+	//キャラクターの向き
+	Direction direction_ = Direction::Right;
+
+	//弾攻撃用のフラグ
+	bool hasShot_ = false;
 };
 
