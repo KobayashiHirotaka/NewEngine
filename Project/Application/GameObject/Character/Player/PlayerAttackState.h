@@ -8,6 +8,7 @@
 #pragma once
 #include "PlayerBaseState.h"
 #include "Application/GameObject/Character/Direction.h"
+#include <unordered_map>
 
 class PlayerAttackState : public PlayerBaseState
 {
@@ -36,6 +37,15 @@ public:
 		bool isAttackCancel;
 	};
 
+	//攻撃用のパラメータ
+	struct AttackData
+	{
+		int animationId;
+		float animationSpeed;
+		AttackMoveData moveData;
+		AttackCancelData cancelData;
+	};
+
 	/// <summary>初期化</summary>
 	virtual void Initialize()override;
 
@@ -55,6 +65,9 @@ private:
 
 	/// <summary>キャンセル</summary>
 	void Cancel(AttackCancelData attackCancelData);
+
+	/// <summary>攻撃を管理する</summary>
+	void HandleAttack();
 
 private:
 	//Inputのポインタ
@@ -77,5 +90,29 @@ private:
 
 	//弾攻撃用のフラグ
 	bool hasShot_ = false;
+
+	//各攻撃のデータ
+	std::unordered_map<std::string, AttackData> attackTable_;
+
+	//攻撃ごとの定数
+	//弱攻撃
+	const int kLightPunchAnimationIndex_ = 13;
+	const float kLightPunchAnimationSpeed_ = 1.5f;
+	const AttackMoveData kLightPunchMoveData_ = { 0, 0.0f, false };
+
+	//中攻撃(TC)
+	const int kTCMiddlePunchAnimationIndex_ = 12;
+	const float kTCMiddlePunchAnimationSpeed_ = 1.5f;
+	const AttackMoveData kTCMiddlePunchMoveData_ = { 5, 0.03f, true };
+
+	//強攻撃
+	const int kHighPunchAnimationIndex_ = 3;
+	const float kHighPunchAnimationSpeed_ = 1.8f;
+	const AttackMoveData kHighPunchMoveData_ = { 15, 0.03f, true };
+
+	//弾攻撃
+	const int kShotAnimationIndex_ = 19;
+	const float kShotAnimationSpeed_ = 1.2f;
+	const AttackMoveData kShotMoveData_ = { 0, 0.0f, false };
 };
 
