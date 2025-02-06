@@ -46,16 +46,36 @@ void PlayerAttackState::Update()
 		const float animationSpeed = 1.5f;
 
 		//攻撃中の移動用のパラメーターを設定
+		attackMoveData_.isAttackMove = true;
 		attackMoveData_.moveTime = 5;
 		attackMoveData_.moveSpeed = 0.03f;
-		attackMoveData_.isAttackMove = true;  
 
 		//攻撃のキャンセル用のパラメーターを設定
-		attackCancelData_.isAttackCancel = false;
+		attackCancelData_.isAttackCancel = true;
 		attackCancelData_.isCurrentAttack = player_->GetAttackData().isTCMiddlePunch;
+		attackCancelData_.isNextAttack = player_->GetAttackData().isHighPunch;
+		attackCancelData_.attackType = "強攻撃";
 
 		//攻撃
 		Attack(kAnimationTCMiddlePunch, animationSpeed, attackMoveData_, attackCancelData_);
+	}
+	else if (player_->GetAttackType() == "強攻撃")
+	{
+		//アニメーション用のパラメーターを設定
+		const int kAnimationHighPunch = 3;
+		const float animationSpeed = 1.8f;
+
+		//攻撃中の移動用のパラメーターを設定
+		attackMoveData_.isAttackMove = true;
+		attackMoveData_.moveTime = 15;
+		attackMoveData_.moveSpeed = 0.03f;
+
+		//攻撃のキャンセル用のパラメーターを設定
+		attackCancelData_.isAttackCancel = false;
+		attackCancelData_.isCurrentAttack = player_->GetAttackData().isHighPunch;
+
+		//攻撃
+		Attack(kAnimationHighPunch, animationSpeed, attackMoveData_, attackCancelData_);
 	}
 	else if (player_->GetAttackType() == "ショット")
 	{
