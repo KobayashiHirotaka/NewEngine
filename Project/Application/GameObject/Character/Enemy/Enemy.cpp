@@ -111,6 +111,9 @@ void Enemy::Update()
 	//UIの更新
 	enemyUI_->Update();
 
+	//弾の更新
+	UpdateBullets();
+
 	//WorldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 

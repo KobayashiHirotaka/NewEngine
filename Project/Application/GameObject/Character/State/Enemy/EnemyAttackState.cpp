@@ -82,7 +82,7 @@ void EnemyAttackState::Shot(const Vector3 position)
 		const float kDirectionFactor = 1.0f;
 
 		//向きに応じた方向係数
-		float directionFactor = (direction_ == Direction::Right) ? kDirectionFactor : -kDirectionFactor;
+		float directionFactor = (direction_ == Direction::Left) ? kDirectionFactor : -kDirectionFactor;
 
 		//弾の発射位置と速度を計算
 		Vector3 bulletStartPosition = {

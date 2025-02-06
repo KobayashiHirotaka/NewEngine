@@ -89,12 +89,12 @@ private:
 
 	//攻撃ごとの定数
 	//弱攻撃
-	const int kLightPunchAnimationIndex_ = 13;
+	const int kLightPunchAnimationIndex_ = 12;
 	const float kLightPunchAnimationSpeed_ = 1.5f;
 	const AttackMoveData kLightPunchMoveData_ = { 0, 0.0f, false };
 
 	//中攻撃(TC)
-	const int kTCMiddlePunchAnimationIndex_ = 12;
+	const int kTCMiddlePunchAnimationIndex_ = 11;
 	const float kTCMiddlePunchAnimationSpeed_ = 1.5f;
 	const AttackMoveData kTCMiddlePunchMoveData_ = { 5, 0.03f, true };
 
@@ -104,7 +104,7 @@ private:
 	const AttackMoveData kHighPunchMoveData_ = { 15, 0.03f, true };
 
 	//弾攻撃
-	const int kShotAnimationIndex_ = 19;
+	const int kShotAnimationIndex_ = 1;
 	const float kShotAnimationSpeed_ = 1.2f;
 	const AttackMoveData kShotMoveData_ = { 0, 0.0f, false };
 };
