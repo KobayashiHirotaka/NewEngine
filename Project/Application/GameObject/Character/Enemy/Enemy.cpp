@@ -42,6 +42,11 @@ void Enemy::Initialize()
 	//弾のモデルを生成
 	bulletModel_.reset(Model::CreateFromOBJ("Resource/Bullet", "Bullet.obj"));
 
+	//UI生成、初期化
+	enemyUI_ = std::make_unique<EnemyUI>();
+	enemyUI_->SetEnemy(this);
+	enemyUI_->Initialize();
+
 	//パーティクル
 	particleEffectPlayer_ = std::make_unique<ParticleEffectPlayer>();
 	particleEffectPlayer_->Initialize();
@@ -83,6 +88,9 @@ void Enemy::Update()
 	//更新
 	BaseCharacter::Update();
 
+	//UIの更新
+	enemyUI_->Update();
+
 	//WorldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
 
@@ -110,7 +118,8 @@ void Enemy::DrawCollision(const Camera& camera)
 
 void Enemy::DrawSprite()
 {
-	
+	//UIの描画
+	enemyUI_->Draw();
 }
 
 void Enemy::DrawParticle(const Camera& camera)

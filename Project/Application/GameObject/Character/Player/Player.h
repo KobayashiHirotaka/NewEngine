@@ -9,6 +9,7 @@
 #include "Application/GameObject/Character/BaseCharacter.h"
 #include "Application/GameObject/Character/State/Player/PlayerRootState.h"
 #include "PlayerBullet.h"
+#include "PlayerUI.h"
 
 //前方宣言
 class Enemy;
@@ -138,6 +139,9 @@ private:
 	//当たり判定
 	std::unique_ptr<Collider> collider_ = nullptr;
 	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
+
+	//UI
+	std::unique_ptr<PlayerUI> playerUI_;
 
 	//カーソル
 	std::unique_ptr<Model> playerCursol_;

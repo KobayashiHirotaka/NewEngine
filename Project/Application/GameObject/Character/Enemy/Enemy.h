@@ -8,6 +8,7 @@
 #pragma once
 #include "Application/GameObject/Character/BaseCharacter.h"
 #include "EnemyBullet.h"
+#include "EnemyUI.h"
 
 //前方宣言
 class Player;
@@ -110,9 +111,8 @@ private:
 	std::unique_ptr<Collider>collider_ = nullptr;
 	AABB aabb_ = { {-0.3f,0.0f,-0.3f},{0.3f,1.0f,0.3f} };
 
-	//行動のパターン
-	int patternCount_ = 1;
-	int moveTimer_ = 60;
+	//UI
+	std::unique_ptr<EnemyUI> enemyUI_;
 
 	//弾
 	std::unique_ptr<Model> bulletModel_;
@@ -130,11 +130,6 @@ private:
 	//ヒット時の音
 	bool isHitAudio_ = false;
 
-	//Sprite(hp)
-	UI hpBar_;
-	const float kBarSpace_ = 15.6f;
-	float barSize_ = 480.0f;
-
 	//サウンド
 	uint32_t attackSoundHandle_ = 0u;
 	uint32_t weaponAttackSoundHandle_ = 0u;
@@ -144,6 +139,12 @@ private:
 
 	//当たり判定描画用のLineBox
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
+
+
+	//行動のパターン
+	int patternCount_ = 1;
+	int moveTimer_ = 60;
+
 
 	//足の速さ
 	const float kMaxFrontSpeed_ = 0.03f;

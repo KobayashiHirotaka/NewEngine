@@ -45,6 +45,11 @@ void Player::Initialize()
 	currentState_->SetPlayer(this);
 	currentState_->Initialize();
 
+	//UI生成、初期化
+	playerUI_ = std::make_unique<PlayerUI>();
+	playerUI_->SetPlayer(this);
+	playerUI_->Initialize();
+
 	//カーソル
 	const float kAdjustCursolPositionY = 0.4f;
 	const float kCursolRotationY = 1.5f;
@@ -173,6 +178,9 @@ void Player::Update()
 
 	previousPositionX_ = worldTransform_.translation.x;
 
+	//UIの更新
+	playerUI_->Update();
+
 	//コンボ関連の処理
 	HitCombo();
 
@@ -225,7 +233,8 @@ void Player::DrawCollision(const Camera& camera)
 
 void Player::DrawSprite()
 {
-
+	//UIの描画
+	playerUI_->Draw();
 }
 
 void Player::DrawParticle(const Camera& camera)

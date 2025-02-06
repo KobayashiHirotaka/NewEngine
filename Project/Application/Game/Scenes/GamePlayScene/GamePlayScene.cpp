@@ -415,7 +415,7 @@ void GamePlayScene::HandleGameOutcome()
 	//ラウンドごとの勝敗処理
 	if (!isRoundTransition_)
 	{
-		HandleRoundResult(player_->GetHP(), enemy_->GetHP(), currentSeconds_);
+		HandleRoundResult(player_->GetBaseData().hp_, enemy_->GetBaseData().hp_, currentSeconds_);
 	}
 	
 	//Transition終了処理

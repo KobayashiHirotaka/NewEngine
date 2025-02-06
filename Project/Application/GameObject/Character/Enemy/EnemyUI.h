@@ -6,9 +6,11 @@
  */
 
 #pragma once
-#include "Application/GameObject/Character/ICharacterUI.h"
+#include "Application/GameObject/Character/BaseCharacterUI.h"
 
-class EnemyUI : public ICharacterUI
+class Enemy;
+
+class EnemyUI : public BaseCharacterUI
 {
 public:
 	/// <summary>デストラクタ</summary>
@@ -27,22 +29,15 @@ public:
 	/// <summary>HPのUIの更新</summary>
 	void UpdateHPBar()override;
 
-	/// <summary>ガードゲージのUIの更新</summary>
-	void UpdateGuardGaugeBar()override;
-
-	/// <summary>ガードゲージのUIの適応</summary>
-	void AdjustGuardGauge()override;
-
-	/// <summary>必殺技ゲージのUIの適応</summary>
-	void UpdateFinisherGaugeBar()override;
-
-	/// <summary>必殺技ゲージのUIの適応</summary>
-	void AdjustFinisherGauge(float value)override;
-
-	/// <summary>コンボ表示のUIの更新</summary>
-	void UpdateComboNumberSprite()override;
+	//Setter
+	void SetEnemy(Enemy* enemy) { enemy_ = enemy; };
 
 private:
+	//Sprite(hp)
+	UI hpBar_;
+	const float kBarSpace_ = 15.6f;
+	float barSize_ = 480.0f;
+
 	//Sprite(ガードゲージ)
 	UI guardGaugeBar_;
 	const float kGuardGaugeBarSpace_ = 48.5f;
@@ -63,5 +58,8 @@ private:
 
 	std::unique_ptr<Sprite> comboNumSprite_ = nullptr;
 	uint32_t comboNumTextureHandle_;
+
+	//Enemyのポインタ
+	Enemy* enemy_;
 };
 

@@ -305,9 +305,7 @@ public:
 
 
 	//基本データに関するGetter
-	int GetHP() const { return baseData_.hp_; };
-
-	float GetFinisherGauge() const { return baseData_.finisherGauge_; };
+	BaseData GetBaseData() { return baseData_; };
 
 	float GetAnimationTime() const { return animationTime_; };
 

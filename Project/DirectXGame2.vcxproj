@@ -175,7 +175,7 @@
   <ItemGroup>
     <ClInclude Include="Application\GameObject\BackGround\BackGround.h" />
     <ClInclude Include="Application\GameObject\Character\BaseBullet.h" />
-    <ClInclude Include="Application\GameObject\Character\ICharacterUI.h" />
+    <ClInclude Include="Application\GameObject\Character\BaseCharacterUI.h" />
     <ClInclude Include="Application\GameObject\Character\Direction.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\Enemy.h" />
     <ClInclude Include="Application\GameObject\Character\Enemy\EnemyBullet.h" />

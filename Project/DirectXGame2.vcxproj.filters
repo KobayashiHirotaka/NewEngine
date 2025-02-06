@@ -920,7 +920,7 @@
     <ClInclude Include="Application\GameObject\Character\State\Player\PlayerRootState.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character\State\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Application\GameObject\Character\ICharacterUI.h">
+    <ClInclude Include="Application\GameObject\Character\BaseCharacterUI.h">
       <Filter>ヘッダー ファイル\Project\GameObject\Character</Filter>
     </ClInclude>
     <ClInclude Include="Application\GameObject\Character\Enemy\EnemyUI.h">
