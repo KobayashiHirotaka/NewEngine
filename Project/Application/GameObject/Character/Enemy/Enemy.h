@@ -53,23 +53,16 @@ public:
 	void ChangeState(std::unique_ptr<EnemyBaseState> state);
 
 
-	/// <summary>移動</summary>
-	void Move(const Vector3 velocity);
-
-
-	/// <summary>当たり判定の初期化</summary>
-	void ResetCollision()override;
-
-
+	//弾攻撃
 	/// <summary>弾を発射</summary>
-	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
+	virtual void ShootBullet(const Vector3& startPosition, const Vector3& velocity)override;
 
 	/// <summary>弾の更新</summary>
 	void UpdateBullets();
 
 
-	/// <summary>WorldPositionの取得</summary>
-	Vector3 GetWorldPosition();
+	/// <summary>当たり判定の初期化</summary>
+	void ResetCollision()override;
 
 
 	//Getter
@@ -99,17 +92,6 @@ public:
 	void SetIsKO(bool isKO) { isKO_ = isKO; };
 
 private:
-	//攻撃
-	/// <summary>ダメージの適応</summary>
-	virtual void ApplyDamage()override;
-
-	/// <summary>コンボされているとき</summary>
-	virtual void HitCombo()override;
-
-	/// <summary>コンボカウントの更新</summary>
-	virtual void ComboCountUpdate(const int kRecoveryTime)override;
-
-
 	/// <summary>当たり判定</summary>
 	void OnCollision(Collider* collider)override;
 	
@@ -125,7 +107,6 @@ private:
 	std::unique_ptr<EnemyUI> enemyUI_;
 
 	//弾
-	std::unique_ptr<Model> bulletModel_;
 	std::vector<std::unique_ptr<EnemyBullet>> bullets_;
 
 	//State
@@ -138,16 +119,8 @@ private:
 	//ヒット時の音
 	bool isHitAudio_ = false;
 
-	//サウンド
-	uint32_t attackSoundHandle_ = 0u;
-	uint32_t weaponAttackSoundHandle_ = 0u;
-	uint32_t damageSoundHandle_ = 0u;
-	uint32_t guardSoundHandle_ = 0u;
-	float volume_ = 1.0f;
-
 	//当たり判定描画用のLineBox
 	std::unique_ptr<LineBox> lineBox_ = nullptr;
-
 
 	//足の速さ
 	const float kMaxFrontSpeed_ = 0.03f;

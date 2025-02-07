@@ -37,6 +37,10 @@ void Player::Initialize()
 
 	collider_->SetGameObject(this);
 
+	//弾のモデルを生成
+	bulletModel_.reset(Model::CreateFromOBJ("Resource/Bullet", "Bullet.obj"));
+
+
 	//LineBoxの描画
 	lineBox_.reset(LineBox::Create(aabb_));
 
@@ -63,19 +67,6 @@ void Player::Initialize()
 	worldTransformCursol_.scale = kCursolScale;
 
 	worldTransformCursol_.parent = &worldTransform_;
-
-	//弾のモデルを生成
-	bulletModel_.reset(Model::CreateFromOBJ("Resource/Bullet", "Bullet.obj"));
-
-	//パーティクル
-	particleEffectPlayer_ = std::make_unique<ParticleEffectPlayer>();
-	particleEffectPlayer_->Initialize();
-
-	//SEの読み込み
-	attackSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Attack.mp3");
-	weaponAttackSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/WeaponAttack.mp3");
-	damageSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/HitPunch1.mp3");
-	guardSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Guard.mp3");
 
 	//基本データの設定
 	baseData_.hp_ = -baseData_.kMaxHp_;
@@ -126,6 +117,12 @@ void Player::Update()
 		attackData_.cancelStartTime, attackData_.cancelEndTime,attackData_.damage, attackData_.hitRecoveryTime, attackData_.guardGaugeIncreaseAmount,
 		attackData_.finisherGaugeIncreaseAmount, attackData_.hitStop, aabb_, true, characterState_.direction);
 
+	Vector3 playerWorldPosition = worldTransform_.translation;
+	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
+
+	//向きの更新
+	UpdateDirection(playerWorldPosition, enemyWorldPosition);
+
 	if (nextState_)
 	{
 		//Stateの生成
@@ -139,50 +136,8 @@ void Player::Update()
 	//Stateの更新
 	currentState_->Update();
 
-	//振り向きの処理
-	Vector3 playerWorldPosition = worldTransform_.translation;
-	Vector3 enemyWorldPosition = enemy_->GetWorldPosition();
-
-	if (enemyWorldPosition.x > playerWorldPosition.x && !characterState_.isDown)
-	{
-		characterState_.direction = Direction::Right;
-		worldTransform_.rotation.y = characterState_.rightDirectionRotation;
-		isDirectionRight_ = true;
-	}
-
-	if (enemyWorldPosition.x < playerWorldPosition.x && !characterState_.isDown)
-	{
-		characterState_.direction = Direction::Left;
-		worldTransform_.rotation.y = characterState_.leftDirectionRotation;
-		isDirectionRight_ = false;
-	}
-
-	difference_ = playerWorldPosition - enemyWorldPosition;
-	difference_.y = 0.0f;
-	distance_ = Length(difference_);
-
-	//後ろに戻れないようにする
-	if (distance_ >= kMaxDistance_)
-	{
-		if (worldTransform_.translation.x < previousPositionX_ && characterState_.direction == Direction::Right)
-		{
-			worldTransform_.translation.x = enemyWorldPosition.x - kMaxDistance_;
-			moveData_.velocity.x = 0.0f;
-		}
-		else if (worldTransform_.translation.x > previousPositionX_ && characterState_.direction == Direction::Left)
-		{
-			worldTransform_.translation.x = enemyWorldPosition.x + kMaxDistance_;
-			moveData_.velocity.x = 0.0f;
-		}
-	}
-
-	previousPositionX_ = worldTransform_.translation.x;
-
 	//UIの更新
 	playerUI_->Update();
-
-	//コンボ関連の処理
-	HitCombo();
 
 	//ガードアニメーションタイマーのリセット
 	if (!enemy_->GetAttackData().isGuarded)
@@ -195,9 +150,6 @@ void Player::Update()
 
 	//LineBoxの更新
 	lineBox_->Update(aabb_);
-
-	//ParticleEffectPlayerの更新
-	particleEffectPlayer_->Update();
 
 	//WorldTransformの更新
 	worldTransform_.UpdateMatrixEuler();
@@ -251,15 +203,6 @@ void Player::DrawParticle(const Camera& camera)
 void Player::ImGui()
 {
 	
-}
-
-void Player::Move(const Vector3 velocity)
-{
-	//移動
-	worldTransform_.translation = Add(worldTransform_.translation, velocity);
-
-	//WorldTransformの更新
-	worldTransform_.UpdateMatrixEuler();
 }
 
 void Player::ChangeState(std::unique_ptr<PlayerBaseState> state)
@@ -332,16 +275,6 @@ void Player::UpdateBullets()
 	}
 }
 
-void Player::ApplyDamage()
-{
-	//ダメージの適応
-	if (!attackData_.isDamaged)
-	{
-		attackData_.isDamaged = true;
-		baseData_.hp_ += enemy_->GetAttackData().damage;
-	}
-}
-
 void Player::ResetCollision()
 {
 	//当たり判定のリセット
@@ -352,26 +285,6 @@ void Player::ResetCollision()
 void Player::Reset()
 {
 	
-}
-
-void Player::HitCombo()
-{
-	
-}
-
-void Player::ComboCountUpdate(const int kRecoveryTime)
-{
-	comboCount_++;
-	timerData_.comboTimer = kRecoveryTime;
-}
-
-Vector3 Player::GetWorldPosition()
-{
-	Vector3 pos{};
-	pos.x = worldTransform_.matWorld.m[3][0];
-	pos.y = worldTransform_.matWorld.m[3][1];
-	pos.z = worldTransform_.matWorld.m[3][2];
-	return pos;
 }
 
 Vector3 Player::GetRightHandJointWorldPosition()

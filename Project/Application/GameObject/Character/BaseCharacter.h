@@ -274,6 +274,17 @@ public:
 	/// <summary>リセット</summary>
 	virtual void Reset() = 0;
 
+	/// <summary>弾を発射</summary>
+	virtual void ShootBullet(const Vector3& startPosition, const Vector3& velocity) = 0;
+
+
+	/// <summary>向きの更新</summary>
+	void UpdateDirection(Vector3 character1Position, Vector3 character2Position);
+
+	//移動
+	/// <summary>移動</summary>
+	void Move(const Vector3 velocity);
+
 	//攻撃
 	/// <summary>攻撃の開始</summary>
 	void StartAttack(bool& isAttackType);
@@ -283,15 +294,6 @@ public:
 
 	/// <summary>攻撃タイミングを評価</summary>
 	void EvaluateAttackTiming(int& attackAnimationFrame);
-
-	/// <summary>ダメージの適応</summary>
-	virtual void ApplyDamage() = 0;
-
-	/// <summary>コンボされているとき</summary>
-	virtual void HitCombo() = 0;
-
-	/// <summary>コンボカウントの更新</summary>
-	virtual void ComboCountUpdate(const int kRecoveryTime) = 0;
 
 
 	//当たり判定
@@ -305,6 +307,10 @@ public:
 
 	/// <summary>ダウンアニメーションの終了</summary>
 	void EndDownAnimation(const int animationIndex);
+
+
+	/// <summary>WorldPositionの取得</summary>
+	Vector3 GetWorldPosition();
 
 
 	//基本データに関するGetter
@@ -404,9 +410,19 @@ protected:
 	//パーティクル
 	std::unique_ptr<ParticleEffectPlayer> particleEffectPlayer_;
 
+	//弾のモデル
+	std::unique_ptr<Model> bulletModel_;
+
 	//再生するanimationの番号
 	uint32_t animationIndex_ = 4;
 	float animationTime_ = 0.0f;
+
+	//サウンド
+	uint32_t attackSoundHandle_ = 0u;
+	uint32_t weaponAttackSoundHandle_ = 0u;
+	uint32_t damageSoundHandle_ = 0u;
+	uint32_t guardSoundHandle_ = 0u;
+	float volume_ = 1.0f;
 
 	//コンボの数
 	int comboCount_ = 0;

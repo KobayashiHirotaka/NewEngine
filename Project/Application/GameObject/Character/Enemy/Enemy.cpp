@@ -36,6 +36,10 @@ void Enemy::Initialize()
 
 	collider_->SetGameObject(this);
 
+	//弾のモデルを生成
+	bulletModel_.reset(Model::CreateFromOBJ("Resource/Bullet", "Bullet.obj"));
+
+
 	//LineBoxの描画
 	lineBox_.reset(LineBox::Create(aabb_));
 
@@ -52,16 +56,6 @@ void Enemy::Initialize()
 	enemyUI_->SetEnemy(this);
 	enemyUI_->Initialize();
 
-	//パーティクル
-	particleEffectPlayer_ = std::make_unique<ParticleEffectPlayer>();
-	particleEffectPlayer_->Initialize();
-
-	//SEの読み込み
-	attackSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Attack.mp3");
-	weaponAttackSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/WeaponAttack.mp3");
-	damageSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/HitPunch1.mp3");
-	guardSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Guard.mp3");
-
 	//基本データの設定
 	baseData_.hp_ = baseData_.kMaxHp_;
 	moveData_.frontSpeed_ = kMaxFrontSpeed_;
@@ -75,15 +69,6 @@ void Enemy::Update()
 {
 #ifdef _ADJUSTMENT
 
-	if (input_->PressKey(DIK_A))
-	{
-		worldTransform_.translation.x -= 0.05f;
-	}
-
-	if (input_->PressKey(DIK_D))
-	{
-		worldTransform_.translation.x += 0.05f;
-	}
 
 #endif
 
@@ -161,15 +146,6 @@ void Enemy::ImGui()
 	
 }
 
-void Enemy::Move(const Vector3 velocity)
-{
-	//移動
-	worldTransform_.translation = Add(worldTransform_.translation, velocity);
-
-	//WorldTransformの更新
-	worldTransform_.UpdateMatrixEuler();
-}
-
 void Enemy::ChangeState(std::unique_ptr<EnemyBaseState> state)
 {
 	nextState_ = std::move(state);
@@ -182,12 +158,6 @@ void Enemy::OnCollision(Collider* collider)
 	{
 		characterState_.isHitCharacter = true;
 	}
-}
-
-void Enemy::ApplyDamage()
-{
-	attackData_.isDamaged = true;
-	baseData_.hp_ -= player_->GetAttackData().damage;
 }
 
 void Enemy::ResetCollision()
@@ -225,23 +195,4 @@ void Enemy::UpdateBullets()
 			++it;
 		}
 	}
-}
-
-void Enemy::HitCombo()
-{
-	
-}
-
-void Enemy::ComboCountUpdate(const int )
-{
-	
-}
-
-Vector3 Enemy::GetWorldPosition()
-{
-	Vector3 pos{};
-	pos.x = worldTransform_.matWorld.m[3][0];
-	pos.y = worldTransform_.matWorld.m[3][1];
-	pos.z = worldTransform_.matWorld.m[3][2];
-	return pos;
 }

@@ -46,131 +46,17 @@ void EnemyRootState::Update()
 
 void EnemyRootState::Move()
 {
-    //コントローラーの取得
-    if (input_->GetJoystickState())
-    {
-        //定数
-        const float kValueY = -0.3f;
-        const float kIdleAnimationSpeed = 1.0f;
-        const float kMoveAnimationSpeed = 1.5f;
-        float animationSpeed = kMoveAnimationSpeed;
-
-        //入力用の変数
-        bool isMovingRight = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > input_->GetDeadZone());
-        bool isMovingLeft = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -input_->GetDeadZone());
-        bool isGuarding = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_DOWN) && !input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP)) || input_->GetLeftStickY() < kValueY;
-
-        // 速度設定
-        Vector3 velocity = { (float)input_->GetLeftStickX(), 0.0f, 0.0f };
-        Vector3 enemyPosition = enemy_->GetPlayer()->GetWorldPosition();
-
-        //移動方向の設定
-        if (!enemy_->GetIsDown())
-        {
-            if (enemy_->GetCharacterState().direction == Direction::Right)
-            {
-                moveDirection_ = isMovingRight ? Flont : isMovingLeft ? Back : Default;
-            }
-            else
-            {
-                moveDirection_ = isMovingLeft ? Flont : isMovingRight ? Back : Default;
-            }
-        }
-
-        //ガード処理
-        if (moveDirection_ == Back)
-        {
-            if (isGuarding)
-            {
-                animationIndex_ = kAnimationGuard;
-                moveDirection_ = Default;
-            }
-        }
-
-        //停止時の処理
-        if (!isMovingRight && !isMovingLeft)
-        {
-            moveDirection_ = Default;
-        }
-
-        //アニメーション設定
-        if (moveDirection_ == Flont)
-        {
-            animationIndex_ = kAnimationFlontMove;
-            animationSpeed = kMoveAnimationSpeed;
-            enemy_->UpdateAnimationTime(animationTime_, true, animationSpeed, animationIndex_, enemy_->GetModel());
-        }
-        else if (moveDirection_ == Back)
-        {
-            animationIndex_ = kAnimationBackMove;
-            animationSpeed = kMoveAnimationSpeed;
-            enemy_->UpdateAnimationTime(animationTime_, true, animationSpeed, animationIndex_, enemy_->GetModel());
-        }
-        else if (!enemy_->GetCharacterState().isGuard)
-        {
-            animationIndex_ = kAnimationIdle;
-            animationSpeed = kIdleAnimationSpeed;
-            enemy_->UpdateAnimationTime(animationTime_, false, animationSpeed, animationIndex_, enemy_->GetModel());
-        }
-
-        //移動処理
-        velocity.x *= moveSpeed[moveDirection_];
-        velocity = Normalize(velocity);
-        velocity = Multiply(moveSpeed[moveDirection_], velocity);
-        enemy_->Move(velocity);
-    }
-
-    enemy_->SetAnimationIndex(animationIndex_);
+  
 }
 
 void EnemyRootState::Jump()
 {
-    //コントローラーの取得
-    if (input_->GetJoystickState())
-    {
-        //ジャンプ
-        if ((input_->IsPressButton(XINPUT_GAMEPAD_DPAD_UP) || input_->GetLeftStickY() > input_->GetDeadZone()) && enemy_->GetWorldTransform().translation.y <= 0.0f)
-        {
-            enemy_->ChangeState(std::make_unique<EnemyJumpState>());
-        }
-    }
+    
 }
 
 void EnemyRootState::Attack()
 {
-    bool isMovingRight = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_RIGHT) || input_->GetLeftStickX() > input_->GetDeadZone());
-    bool isMovingLeft = (input_->IsPressButton(XINPUT_GAMEPAD_DPAD_LEFT) || input_->GetLeftStickX() < -input_->GetDeadZone());
-
-    //コントローラーの取得
-    if (input_->GetJoystickState())
-    {
-        //攻撃
-        //弱攻撃
-        if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_X) || input_->IsPressButtonEnter(XINPUT_GAMEPAD_Y))
-        {
-            enemy_->SetAttackType("弱攻撃");
-            enemy_->StartAttack(enemy_->GetAttackData().isLightPunch);
-            enemy_->ChangeState(std::make_unique<EnemyAttackState>());
-        }
-        //弾攻撃
-        else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_B))
-        {
-            enemy_->SetAttackType("ショット");
-            enemy_->StartAttack(enemy_->GetAttackData().isShot);
-            enemy_->ChangeState(std::make_unique<EnemyAttackState>());
-        }
-        //特殊技
-        else if (input_->IsPressButtonEnter(XINPUT_GAMEPAD_A))
-        {
-            //タックル攻撃
-            if (isMovingRight || !isMovingLeft)
-            {
-                enemy_->SetAttackType("タックル");
-                enemy_->StartAttack(enemy_->GetAttackData().isTackle);
-                enemy_->ChangeState(std::make_unique<EnemyAttackState>());
-            }
-        }
-    }
+    
 }
 
 int EnemyRootState::Random(int min_value, int max_value)

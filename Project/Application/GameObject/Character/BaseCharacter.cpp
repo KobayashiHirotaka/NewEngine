@@ -24,6 +24,16 @@ void BaseCharacter::Initialize()
 
 		//Audioのインスタンスを取得
 		audio_ = Engine::Audio::GetInstance();
+
+		//パーティクル
+		particleEffectPlayer_ = std::make_unique<ParticleEffectPlayer>();
+		particleEffectPlayer_->Initialize();
+
+		//SEの読み込み
+		attackSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Attack.mp3");
+		weaponAttackSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/WeaponAttack.mp3");
+		damageSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/HitPunch1.mp3");
+		guardSoundHandle_ = audio_->LoadSoundMP3("Resource/Sounds/Guard.mp3");
 }
 
 void BaseCharacter::Update()
@@ -74,9 +84,11 @@ void BaseCharacter::Update()
 	{
 		characterState_.isGround = false;
 	}
-	
-	//コンボ関連の処理
-	HitCombo();
+
+	//ParticleEffectPlayerの更新
+	particleEffectPlayer_->Update();
+
+
 
 	//キャラクターと当たっているか
 	characterState_.isHitCharacter = false;
@@ -156,6 +168,52 @@ void BaseCharacter::Reset()
 
 	//リセット
 	isReset_ = false;
+}
+
+void BaseCharacter::UpdateDirection(Vector3 character1Position, Vector3 character2Position)
+{
+	//振り向きの処理
+	if (character2Position.x > character1Position.x && !characterState_.isDown)
+	{
+		characterState_.direction = Direction::Right;
+		worldTransform_.rotation.y = characterState_.rightDirectionRotation;
+	}
+
+	if (character2Position.x < character1Position.x && !characterState_.isDown)
+	{
+		characterState_.direction = Direction::Left;
+		worldTransform_.rotation.y = characterState_.leftDirectionRotation;
+	}
+
+	difference_ = character1Position - character2Position;
+	difference_.y = 0.0f;
+	distance_ = Length(difference_);
+
+	//後ろに戻れないようにする
+	if (distance_ >= kMaxDistance_)
+	{
+		if (worldTransform_.translation.x < previousPositionX_ && characterState_.direction == Direction::Right)
+		{
+			worldTransform_.translation.x = character2Position.x - kMaxDistance_;
+			moveData_.velocity.x = 0.0f;
+		}
+		else if (worldTransform_.translation.x > previousPositionX_ && characterState_.direction == Direction::Left)
+		{
+			worldTransform_.translation.x = character2Position.x + kMaxDistance_;
+			moveData_.velocity.x = 0.0f;
+		}
+	}
+
+	previousPositionX_ = worldTransform_.translation.x;
+}
+
+void BaseCharacter::Move(const Vector3 velocity)
+{
+	//移動
+	worldTransform_.translation = Add(worldTransform_.translation, velocity);
+
+	//WorldTransformの更新
+	worldTransform_.UpdateMatrixEuler();
 }
 
 void BaseCharacter::StartAttack(bool& isAttackType)
@@ -252,4 +310,14 @@ void BaseCharacter::EndDownAnimation(const int animationIndex)
 
 	//ダウンしているかどうか
 	characterState_.isDown = false;
+}
+
+
+Vector3 BaseCharacter::GetWorldPosition()
+{
+	Vector3 pos{};
+	pos.x = worldTransform_.matWorld.m[3][0];
+	pos.y = worldTransform_.matWorld.m[3][1];
+	pos.z = worldTransform_.matWorld.m[3][2];
+	return pos;
 }

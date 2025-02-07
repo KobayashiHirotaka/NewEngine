@@ -52,36 +52,17 @@ public:
 	void ChangeState(std::unique_ptr<PlayerBaseState> state);
 
 
-	/// <summary>移動</summary>
-	void Move(const Vector3 velocity);
+	//弾攻撃
+	/// <summary>弾を発射</summary>
+	virtual void ShootBullet(const Vector3& startPosition, const Vector3& velocity)override;
 
-
-	//攻撃
-	/// <summary>ダメージの適応</summary>
-	virtual void ApplyDamage()override;
-
-	/// <summary>コンボされているとき</summary>
-	virtual void HitCombo()override;
-
-	/// <summary>コンボカウントの更新</summary>
-	virtual void ComboCountUpdate(const int kRecoveryTime)override;
-
+	/// <summary>弾の更新</summary>
+	void UpdateBullets();
 
 	//当たり判定
 	/// <summary>当たり判定の初期化</summary>
 	void ResetCollision()override;
 
-
-	//弾攻撃
-	/// <summary>弾を発射</summary>
-	void ShootBullet(const Vector3& startPosition, const Vector3& velocity);
-
-	/// <summary>弾の更新</summary>
-	void UpdateBullets();
-
-
-	/// <summary>WorldPositionの取得</summary>
-	Vector3 GetWorldPosition();
 
 	/// <summary>右手のJoint座標の取得</summary>
 	Vector3 GetRightHandJointWorldPosition();
@@ -95,9 +76,6 @@ public:
 
 	//Collider
 	Collider* GetCollider() const { return collider_.get(); };
-
-	//IsDirectionRight
-	bool GetIsDirectionRight() const { return isDirectionRight_; };
 
 	//IsFinisherEffect
 	bool GetIsFinisherEffect() const { return isFinisherEffect_; };
@@ -152,17 +130,7 @@ private:
 	std::unique_ptr<PlayerBaseState> currentState_;
 	std::unique_ptr<PlayerBaseState> nextState_;
 
-	//向き
-	bool isDirectionRight_ = false;
-
 	bool isCancel_ = false;
-
-	//サウンド
-	uint32_t attackSoundHandle_ = 0u;
-	uint32_t weaponAttackSoundHandle_ = 0u;
-	uint32_t damageSoundHandle_ = 0u;
-	uint32_t guardSoundHandle_ = 0u;
-	float volume_ = 1.0f;
 
 	//フィニッシャー中に表示するか
 	bool isFinisherEffect_ = false;
