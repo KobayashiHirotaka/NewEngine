@@ -44,8 +44,8 @@ void GamePlayScene::Initialize()
 	collisionManager_ = std::make_unique<CollisionManager>();
 
 	//LevelDataのインスタンスを取得、読み込み
-	levelLoarder_ = LevelLoader::GetInstance();
-	levelLoarder_->LoadLevel("LevelData");
+	levelLoader_ = LevelLoader::GetInstance();
+	levelLoader_->LoadLevel("LevelData");
 
 	//InputLogの生成、初期化
 	inputLog_ = std::make_unique<InputLog>();

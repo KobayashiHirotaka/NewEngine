@@ -86,7 +86,7 @@ private:
 	Engine::Audio* audio_ = nullptr;
 
 	//LevelLoader
-	LevelLoader* levelLoarder_ = nullptr;
+	LevelLoader* levelLoader_ = nullptr;
 
 	//AttackEditor
 	AttackEditor* attackEditor_ = nullptr;
