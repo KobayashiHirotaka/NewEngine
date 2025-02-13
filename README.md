@@ -51,6 +51,8 @@ https://github.com/KobayashiHirotaka/NewEngine/tree/master/Project/Application/G
 攻撃やコンボの調整をしやすくするために入力履歴の表示や当たり判定の可視化なども実装し、  
 より調整をしやすいように工夫しています。
 
+![スクリーンショット 2025-01-21 231432](https://github.com/user-attachments/assets/033cdadc-9ee8-4bed-9563-22fe6509ca67)
+
 ## 今後の展望
 - 攻撃時やコンボ時に背景を変化させる(背景オブジェクトが壊れるなど)
 - エフェクトの強化
