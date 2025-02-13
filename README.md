@@ -18,9 +18,12 @@
 
 ![Combo](https://github.com/user-attachments/assets/3379bbac-4e2e-44bc-9357-d0a55c0ef9df)
 
-### 攻撃やコンボの調整をしやすくするための工夫
-攻撃やコンボの調整をしやすくするためにアタックエディターや当たり判定の可視化なども実装し、  
-より調整をしやすいように工夫しています。
+### 敵との対戦
+**敵との駆け引き**を面白くできるように敵AIの実装にも力を入れています。
+（HPに応じた行動パターンの変化や様子見、プレイヤーの行動に対して反撃を取るなど）
+
+![jump](https://github.com/user-attachments/assets/a7c2df31-87cb-4d40-9b42-cd2559b91fbb)
+
 
 ## アタックエディターについて
 https://github.com/KobayashiHirotaka/NewEngine/tree/master/Project/Application/Game/AttackEditor
@@ -41,6 +44,10 @@ https://github.com/KobayashiHirotaka/NewEngine/tree/master/Project/Application/G
 など
 
 ![スクリーンショット 2025-01-20 145123](https://github.com/user-attachments/assets/6d573113-f148-4d69-b5f4-13c55808abb2)
+
+### 攻撃やコンボの調整をしやすくするための工夫
+攻撃やコンボの調整をしやすくするために入力履歴の表示や当たり判定の可視化なども実装し、  
+より調整をしやすいように工夫しています。
 
 ## 今後の展望
 - 攻撃時やコンボ時に背景を変化させる(背景オブジェクトが壊れるなど)
